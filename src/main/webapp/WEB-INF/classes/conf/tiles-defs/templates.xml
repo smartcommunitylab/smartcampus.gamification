@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+    <!-- ********************* Default Main Template *********************** -->
+    <definition name=".mainTemplate" template="/WEB-INF/jsp/common/layout/main.jsp">
+        <put-attribute name="head" value="head" />
+        
+        <put-attribute name="header" value="/WEB-INF/jsp/common/layout/blank.jsp" />        
+        <put-attribute name="menu" value="/WEB-INF/jsp/common/layout/blank.jsp" />
+        <put-attribute name="content" value="/WEB-INF/jsp/common/layout/blank.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/common/layout/blank.jsp" />
+    </definition>
+    
+    <definition name="head" template="/WEB-INF/jsp/common/layout/head.jsp">
+	<put-attribute name="pageTitle" value="common.title" />
+        
+        <!--put-attribute name="firstCSS" value="" />
+        <put-attribute name="secondCSS" value="" />
+        <put-attribute name="pageCSS" value="" />
+        <put-attribute name="printCSS" value="" /-->
+    </definition>
+    
+    <!-- ************************ Template Home Page *********************** -->
+    <definition name="home" extends=".mainTemplate">
+	<put-attribute name="content" value="/WEB-INF/jsp/common/welcome/welcome.jsp" />
+    </definition>
+	
+</tiles-definitions>

@@ -1,0 +1,63 @@
+package eu.trentorise.game.controller;
+
+import eu.trentorise.game.co.HelloGameCO;
+import eu.trentorise.game.model.Badge;
+import eu.trentorise.game.service.IGameManager;
+import javax.servlet.http.HttpSession;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+       
+/**
+ *
+ * @author Luca Piras
+ */
+@Controller("helloGameController")
+@SessionAttributes(value = HelloGameController.CO)
+@RequestMapping(value = HelloGameController.VIEW_ABSOLUTE)
+public class HelloGameController extends AbstractController<HelloGameCO> {
+    
+    public static final String VIEW_WITHOUT_PATH = "helloGame";
+    public static final String VIEW = IGameConstants.VIEW_PATH + VIEW_WITHOUT_PATH;
+    public static final String VIEW_ABSOLUTE = VIEW + IGameConstants.VIEW_PAGE_EXTENSION_SEPARATOR + IGameConstants.VIEW_PAGE_EXTENSION;    
+    
+    public static final String VIEW_INTERNAL =  IGameConstants.VIEW_INTERNAL_NAMESPACE + VIEW_WITHOUT_PATH;
+    
+    public static final String CO = "helloGameCO";
+    
+    public HelloGameController() {
+        super(VIEW_ABSOLUTE, VIEW_INTERNAL, CO,
+              LoggerFactory.getLogger(HelloGameController.class.getName()));
+    }
+    
+    @RequestMapping(method = RequestMethod.GET)
+    public String get(Model model, HttpSession session) {
+        super.manageGet(model, session);
+        
+        gameManager.getGame();
+        
+        return this.viewInternal;
+    }
+    
+    @Override
+    protected HelloGameCO initializeNotExistentCommandObject() {
+        Badge badge = new Badge();
+        
+        badge.setTitle("Welcome to the Gamification Engine!");
+        
+        HelloGameCO co = new HelloGameCO();
+        co.setBadge(badge);
+        
+        return co;
+    }
+    
+    @Override
+    protected void initializeExistentCommandObject(HelloGameCO co) {}
+    
+    @Autowired
+    protected IGameManager gameManager;
+}

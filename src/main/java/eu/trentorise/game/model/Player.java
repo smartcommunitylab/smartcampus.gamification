@@ -1,6 +1,8 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -12,15 +14,21 @@ public class Player {
     
     protected Integer points;
     
-    protected ArrayList<Badge> badges;
+    protected List<Badge> badges;
 
     public Player(String username) {
         this.username = username;
         
         this.points = new Integer(0);
         
-        this.badges = new ArrayList<>();
+        this.badges = Collections.synchronizedList(new ArrayList<Badge>());
     }
+    
+    
+    public Integer getBadgesCount() {
+        return this.badges.size();
+    }
+    
     
     public String getUsername() {
         return username;
@@ -38,11 +46,11 @@ public class Player {
         this.points = points;
     }
 
-    public ArrayList<Badge> getBadges() {
+    public List<Badge> getBadges() {
         return badges;
     }
 
-    public void setBadges(ArrayList<Badge> badges) {
+    public void setBadges(List<Badge> badges) {
         this.badges = badges;
     }
 

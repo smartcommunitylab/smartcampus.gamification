@@ -50,7 +50,7 @@ public class GameManager implements IGameManager {
         String myRule = this.buildBadgeRule("Basic badge", "10", "Basic Mayor");
         addRule(myRule, kbuilder);
         
-        myRule = this.buildBadgeRule("Enhaced badge", "100", "Enhanced Mayor");
+        myRule = this.buildBadgeRule("Enhanced badge", "100", "Enhanced Mayor");
         addRule(myRule, kbuilder);
         
         return prepareNewSession(kbuilder, kbase);

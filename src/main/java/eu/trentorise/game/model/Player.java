@@ -10,13 +10,23 @@ import java.util.List;
  */
 public class Player {
     
+    public static final String USERNAME_DEFAULT = "DEFAULT";
+    
     protected String username;
     
     protected Integer points;
     
     protected List<Badge> badges;
 
+    public Player() {
+        this.init(username);
+    }
+    
     public Player(String username) {
+        this.init(username);
+    }
+    
+    private void init(String username) {
         this.username = username;
         
         this.points = new Integer(0);

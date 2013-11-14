@@ -1,8 +1,8 @@
 package eu.trentorise.game.service;
 
+import eu.trentorise.game.model.Badge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import eu.trentorise.game.model.Player;
 import java.io.Reader;
 import java.io.StringReader;
@@ -19,7 +19,7 @@ import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
 
-@Service
+
 public class GameManager implements IGameManager {
 
     private static Logger logger = LoggerFactory.getLogger(GameManager.class.getName());
@@ -94,7 +94,7 @@ public class GameManager implements IGameManager {
         }
  
         // get the compiled packages (which are serializable)
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Collection<KnowledgePackage> pkgs = this.getKnowledgePackages(kbuilder);
  
         // add the packages to a knowledgebase (deploy the knowledge packages).
         kbase.addKnowledgePackages(pkgs);
@@ -102,6 +102,10 @@ public class GameManager implements IGameManager {
         StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
         
         return ksession;
+    }
+    
+    protected Collection<KnowledgePackage> getKnowledgePackages(Object object) {
+        return ((KnowledgeBuilder) object).getKnowledgePackages();
     }
     
     protected void fireRules(StatelessKnowledgeSession ksession, 
@@ -124,7 +128,7 @@ public class GameManager implements IGameManager {
     protected Collection initCollection() {
         List elements = new ArrayList();
         
-        /*Badge badge = new Badge();
+        Badge badge = new Badge();
         badge.setTitle("Basic Mayor");
         badge.setNecessaryPoints(new Integer(10));
         
@@ -140,7 +144,7 @@ public class GameManager implements IGameManager {
         badge.setTitle("Advanced Mayor");
         badge.setNecessaryPoints(new Integer(1000));
         
-        elements.add(badge);*/
+        elements.add(badge);
         
         Player player = new Player("firstPlayer");
         
@@ -170,10 +174,7 @@ public class GameManager implements IGameManager {
         logger.info("******************* LOG RESULTS *******************");
         
         for (Object object : collection) {
-            Player current = (Player) object;
-                        
-            logger.info("Player: " + current + " - Badges: " + 
-                        current.getBadges());
+            logger.info(object.toString());
         }
     }
 }

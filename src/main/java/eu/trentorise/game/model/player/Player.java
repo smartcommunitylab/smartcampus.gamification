@@ -1,5 +1,6 @@
-package eu.trentorise.game.model;
+package eu.trentorise.game.model.player;
 
+import eu.trentorise.game.model.backpack.Badge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,14 +9,12 @@ import java.util.List;
  *
  * @author luca
  */
-public class Player {
+public class Player extends GameActor {
     
     public static final String USERNAME_DEFAULT = "DEFAULT";
     
-    protected String username;
-    
-    protected Integer points;
-    
+    //TODO: improve the username attribute with a default element and create the
+    //test case
     protected List<Badge> badges;
 
     public Player() {

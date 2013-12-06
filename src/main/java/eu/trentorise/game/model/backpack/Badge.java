@@ -1,4 +1,4 @@
-package eu.trentorise.game.model;
+package eu.trentorise.game.model.backpack;
 
 /**
  *
@@ -10,8 +10,18 @@ public class Badge {
     
     protected Integer necessaryPoints;
 
-    public Badge() {
+    //TODO: improve the title attribute with a default element and create the
+    //test case
+    public Badge(String title, Integer necessaryPoints) {
+        this.title = title;
+        
+        if (necessaryPoints.compareTo(new Integer(0)) < 0) {
+            this.necessaryPoints = necessaryPoints * (- 1);
+        } else {
+            this.necessaryPoints = necessaryPoints;
+        }
     }
+    
 
     public String getTitle() {
         return title;

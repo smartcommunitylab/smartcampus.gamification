@@ -1,18 +1,21 @@
 package eu.trentorise.game.service;
 
 import java.util.Collection;
-import org.drools.KnowledgeBase;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.definition.KnowledgePackage;
-import org.drools.io.ResourceFactory;
-import org.springframework.stereotype.Service;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.agent.KnowledgeAgent;
+import org.kie.internal.agent.KnowledgeAgentFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
 
 /**
  *
  * @author Luca Piras
  */
-@Service
+/**
+ * Very useful to connect to Guvnor 5.5.0 final to retrieve a Knowledge Base
+ * 
+ * @author luca
+ */
 public class ExternalGameManager extends GameManager {
     
     @Override

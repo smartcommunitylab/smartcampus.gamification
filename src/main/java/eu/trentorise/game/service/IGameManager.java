@@ -6,5 +6,5 @@ package eu.trentorise.game.service;
  */
 public interface IGameManager {
     
-    public void getGame();
+    public void getGame() throws Exception;
 }

@@ -1,6 +1,6 @@
 package eu.trentorise.game.co;
 
-import eu.trentorise.game.model.Badge;
+import eu.trentorise.game.model.backpack.Badge;
 
 /**
  *

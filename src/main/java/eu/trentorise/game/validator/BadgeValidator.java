@@ -1,6 +1,6 @@
 package eu.trentorise.game.validator;
 
-import eu.trentorise.game.model.Badge;
+import eu.trentorise.game.model.backpack.Badge;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

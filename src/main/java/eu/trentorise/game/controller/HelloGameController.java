@@ -1,7 +1,7 @@
 package eu.trentorise.game.controller;
 
 import eu.trentorise.game.co.HelloGameCO;
-import eu.trentorise.game.model.Badge;
+import eu.trentorise.game.model.backpack.Badge;
 import eu.trentorise.game.service.IGameManager;
 import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class HelloGameController extends AbstractController<HelloGameCO> {
     }
     
     @RequestMapping(method = RequestMethod.GET)
-    public String get(Model model, HttpSession session) {
+    public String get(Model model, HttpSession session) throws Exception {
         super.manageGet(model, session);
         
         gameManager.getGame();
@@ -45,7 +45,7 @@ public class HelloGameController extends AbstractController<HelloGameCO> {
     
     @Override
     protected HelloGameCO initializeNotExistentCommandObject() {
-        Badge badge = new Badge();
+        Badge badge = new Badge("Welcome Badge", new Integer(10000));
         
         badge.setTitle("Welcome to the Gamification Engine!");
         

@@ -1,4 +1,6 @@
-package eu.trentorise.game.ruleengine.service;
+package eu.trentorise.game.ruleengine.service.preparer;
+
+import eu.trentorise.game.ruleengine.service.IKnowledgeBuilder;
 
 
 /**

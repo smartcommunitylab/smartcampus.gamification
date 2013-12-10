@@ -1,5 +1,6 @@
-package eu.trentorise.game.ruleengine.service;
+package eu.trentorise.game.ruleengine.service.executor;
 
+import eu.trentorise.game.ruleengine.service.IKnowledgeBuilder;
 import java.util.Collection;
 import org.slf4j.Logger;
 

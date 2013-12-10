@@ -1,5 +1,7 @@
 package eu.trentorise.game.ruleengine.service;
 
+import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
+import eu.trentorise.game.ruleengine.service.executor.IRulesExecutionManager;
 import eu.trentorise.game.model.backpack.Badge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

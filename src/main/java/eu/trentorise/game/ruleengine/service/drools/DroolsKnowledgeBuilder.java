@@ -1,6 +1,7 @@
-package eu.trentorise.game.ruleengine.service;
+package eu.trentorise.game.ruleengine.service.drools;
 
 import eu.trentorise.game.rule.Rule;
+import eu.trentorise.game.ruleengine.service.IKnowledgeBuilder;
 import java.io.Reader;
 import java.io.StringReader;
 import org.kie.api.io.Resource;

@@ -1,5 +1,7 @@
-package eu.trentorise.game.ruleengine.service;
+package eu.trentorise.game.ruleengine.service.drools;
 
+import eu.trentorise.game.ruleengine.service.IKnowledgeBuilder;
+import eu.trentorise.game.ruleengine.service.executor.AbstractRulesExecutionManager;
 import java.util.Collection;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;

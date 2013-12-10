@@ -11,10 +11,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.io.ResourceFactory;
-import org.springframework.stereotype.Service;
 
 
-@Service
 public class TemplateGameManager extends GameManager {
 
     @Override

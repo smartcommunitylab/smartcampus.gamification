@@ -6,6 +6,7 @@ import eu.trentorise.game.model.backpack.Badge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.trentorise.game.model.player.Player;
+import eu.trentorise.game.ruleengine.data.IFactsDAO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,8 +29,8 @@ public class RulesEngineManager implements IRulesEngineManager {
         rulesPreparerManager.prepareRules(knowledgeBuilder, 
                                           gamificationApproachId);
         
-        //TODO: refactoring anche dell'inizializzazione dei fatti
-        Collection facts = initFacts();
+        Collection facts = factsDAO.getFacts();
+        
         rulesExecutionManager.executeRules(knowledgeBuilder, facts);
         
         //TODO: refactoring del logResults
@@ -95,7 +96,10 @@ public class RulesEngineManager implements IRulesEngineManager {
     @Qualifier("droolsKnowledgeBuilder")
     @Autowired
     protected IKnowledgeBuilder knowledgeBuilder;
-    
+        
+    @Qualifier("mockFactsDAO")
+    @Autowired
+    protected IFactsDAO factsDAO;    
     
     @Qualifier("rulesPreparerManager")
     @Autowired

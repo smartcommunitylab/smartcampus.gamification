@@ -3,13 +3,11 @@ package eu.trentorise.game.ruleengine.data;
 import eu.trentorise.game.rule.Rule;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author luca
+ * @author Luca Piras
  */
-@Repository("stringRulesDAO")
 public class StringRulesDAO implements IRulesDAO {
     
     @Override

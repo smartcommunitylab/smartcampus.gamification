@@ -36,7 +36,7 @@ public class RulesPreparerManager implements IRulesPreparerManager {
     }
     
     
-    @Qualifier("stringRulesDAO")
+    @Qualifier("templateRulesDAO")
     @Autowired
     protected IRulesDAO dao;
 }

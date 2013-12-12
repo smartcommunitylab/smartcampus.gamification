@@ -1,28 +1,23 @@
-package eu.trentorise.game.ruleengine.data;
+package eu.trentorise.game.ruleengine.data.drools;
 
-import eu.trentorise.game.rule.Rule;
-import java.util.ArrayList;
+import eu.trentorise.game.ruleengine.data.AbstractRulesDAO;
 import java.util.List;
 
 /**
  *
  * @author Luca Piras
  */
-public class StringRulesDAO implements IRulesDAO {
+public class DroolsStringRulesDAO extends AbstractRulesDAO {
     
     @Override
-    public List<Rule> getRules(Integer gamificationApproachId) {
-        List<Rule> rules = new ArrayList<>();
+    protected List<String> obtainsContentRules(List<String> contentRules) {
+        String rule = this.buildBadgeRule("Basic badge", "10", "Basic Mayor");
+        contentRules.add(rule);
         
-        String myRule = this.buildBadgeRule("Basic badge", "10", "Basic Mayor");
-        Rule rule = new Rule("1", null, myRule);
-        rules.add(rule);
+        rule = this.buildBadgeRule("Enhanced badge", "100", "Enhanced Mayor");
+        contentRules.add(rule);
         
-        myRule = this.buildBadgeRule("Enhanced badge", "100", "Enhanced Mayor");
-        rule = new Rule("2", null, myRule);
-        rules.add(rule);
-        
-        return rules;
+        return contentRules;
     }
     
     protected String buildBadgeRule(String ruleName, String points, 

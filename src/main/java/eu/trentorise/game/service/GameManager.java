@@ -90,6 +90,7 @@ public class GameManager implements IGameManager {
     protected StatelessKnowledgeSession prepareNewSession(KnowledgeBuilder kbuilder, KnowledgeBase kbase) {
         // Check the builder for errors
         if (kbuilder.hasErrors()) {
+            //TODO: IMPORTANT!!! remove System.out
             System.out.println(kbuilder.getErrors().toString());
             throw new RuntimeException("Unable to compile drl\".");
         }

@@ -101,9 +101,9 @@
 
 
     <!-- ************************* Utils ****************************** -->
-    <!--bean id="dateConverter" class="eu.trentorise.game.utils.SimpleDateConverter" />
+    <bean id="stringToStream" class="eu.trentorise.utils.io.StringToStream" />
     
-    <bean id="stringToStream" class="eu.trentorise.game.utils.StringToStream" />
+    <!--bean id="dateConverter" class="eu.trentorise.game.utils.SimpleDateConverter" />
     
     <bean id="redirectBuilder" scope="prototype" class="eu.trentorise.game.utils.spring.AbsoluteRedirectBuilder">
         <property name="webappDomainAbsolute" value="${webapp_domain_absolute}"/>

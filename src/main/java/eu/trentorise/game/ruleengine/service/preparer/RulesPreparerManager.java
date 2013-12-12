@@ -36,7 +36,7 @@ public class RulesPreparerManager implements IRulesPreparerManager {
     }
     
     
-    @Qualifier("templateRulesDAO")
+    @Qualifier("droolsTemplateRulesDAO")
     @Autowired
     protected IRulesDAO dao;
 }

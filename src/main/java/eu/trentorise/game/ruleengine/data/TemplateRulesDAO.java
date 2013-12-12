@@ -54,10 +54,17 @@ public abstract class TemplateRulesDAO extends AbstractRulesDAO {
     }
     
     protected abstract String compile(String spreadSheet, InputStream rulesStream);
+
+    
+    public ISpreadSheetDAO getSpreadSheetDAO() {
+        return spreadSheetDAO;
+    }
+
+    public void setSpreadSheetDAO(ISpreadSheetDAO spreadSheetDAO) {
+        this.spreadSheetDAO = spreadSheetDAO;
+    }
     
     
-    @Qualifier("mockSpreadSheetDAO")
-    @Autowired
     protected ISpreadSheetDAO spreadSheetDAO;
     
     @Qualifier("droolsRulesStreamDAO")

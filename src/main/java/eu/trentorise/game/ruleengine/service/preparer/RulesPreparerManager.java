@@ -7,12 +7,8 @@ import eu.trentorise.game.rule.Rule;
 import eu.trentorise.game.ruleengine.data.IRulesDAO;
 import eu.trentorise.game.ruleengine.service.IKnowledgeBuilder;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 
-@Service("rulesPreparerManager")
 public class RulesPreparerManager implements IRulesPreparerManager {
 
     private static final Logger logger = LoggerFactory.getLogger(RulesPreparerManager.class.getName());
@@ -34,9 +30,15 @@ public class RulesPreparerManager implements IRulesPreparerManager {
             kbuilder.addRule(rule);
         }
     }
+
+    public IRulesDAO getDao() {
+        return dao;
+    }
+
+    public void setDao(IRulesDAO dao) {
+        this.dao = dao;
+    }
     
     
-    @Qualifier("droolsTemplateRulesDAO")
-    @Autowired
     protected IRulesDAO dao;
 }

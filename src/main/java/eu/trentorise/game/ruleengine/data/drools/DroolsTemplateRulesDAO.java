@@ -8,14 +8,12 @@ import java.io.UnsupportedEncodingException;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.decisiontable.InputType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 
 /**
  * 
  * @author Luca Piras
  */
-@Repository("droolsTemplateRulesDAO")
 public class DroolsTemplateRulesDAO extends TemplateRulesDAO {
 
     @Override

@@ -2,14 +2,10 @@ package eu.trentorise.game.ruleengine.service;
 
 import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
 import eu.trentorise.game.ruleengine.service.executor.IRulesExecutionManager;
-import eu.trentorise.game.model.backpack.Badge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import eu.trentorise.game.model.player.Player;
 import eu.trentorise.game.ruleengine.data.IFactsDAO;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,69 +22,32 @@ public class RulesEngineManager implements IRulesEngineManager {
     
     @Override
     public void runEngine(Integer gamificationApproachId) {
-        rulesPreparerManager.prepareRules(knowledgeBuilder, 
-                                          gamificationApproachId);
+        //first rules execution
+        this.runRules(rulesPreparerManager, gamificationApproachId);
+        
+        //second rules execution
+        this.runRules(addNewRulePreparerManager, gamificationApproachId);
+    }
+    
+    public void runRules(IRulesPreparerManager rpm, 
+                         Integer gamificationApproachId) {
+        
+        rpm.prepareRules(knowledgeBuilder, gamificationApproachId);
         
         Collection facts = factsDAO.getFacts();
         
         rulesExecutionManager.executeRules(knowledgeBuilder, facts);
         
-        //TODO: refactoring del logResults
         logResults(facts);
-        
-        //TODO: implementare anche questa parte
-        /*facts = initFacts();
-        
-        addNewRule(kbuilder, kbase);
-        fireRules(ksession, collection);
-        
-        logResults(collection);*/
-    }
- 
-    protected Collection initFacts() {
-        List elements = new ArrayList();
-        
-        Badge badge = new Badge("Basic Mayor", new Integer(10));
-        
-        elements.add(badge);
-        
-        badge = new Badge("Enhanced Mayor", new Integer(100));
-        
-        elements.add(badge);
-        
-        badge = new Badge("Advanced Mayor", new Integer(1000));
-        
-        elements.add(badge);
-        
-        Player player = new Player("firstPlayer");
-        
-        elements.add(player);
-        
-        player = new Player("secondPlayer");
-        player.setPoints(new Integer(10));
-        
-        elements.add(player);
-        
-        player = new Player("thirdPlayer");
-        player.setPoints(new Integer(100));
-        
-        elements.add(player);
-        
-        player = new Player("fourthPlayer");
-        player.setPoints(new Integer(1000));
-        
-        elements.add(player);
-        
-        //ksession.insert(messages);
-        
-        return elements;
     }
 
     protected void logResults(Collection collection) {
-        logger.info("******************* LOG RESULTS *******************");
-        
-        for (Object object : collection) {
-            logger.info(object.toString());
+        if (logger.isDebugEnabled()) {
+            logger.info("******************* LOG RESULTS *******************");
+
+            for (Object object : collection) {
+                logger.debug(object.toString());
+            }
         }
     }
     
@@ -104,6 +63,9 @@ public class RulesEngineManager implements IRulesEngineManager {
     @Qualifier("rulesPreparerManager")
     @Autowired
     protected IRulesPreparerManager rulesPreparerManager;
+    @Qualifier("mockAddNewRulePreparerManager")
+    @Autowired
+    protected IRulesPreparerManager addNewRulePreparerManager;
     @Qualifier("droolsRulesExecutionManager")
     @Autowired
     protected IRulesExecutionManager rulesExecutionManager;

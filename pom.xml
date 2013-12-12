@@ -12,37 +12,37 @@
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>3.1.0.RELEASE</version>
+        <version>${spring.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-expression</artifactId>
-        <version>3.1.0.RELEASE</version>
+        <version>${spring.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>3.1.0.RELEASE</version>
+        <version>${spring.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>3.1.0.RELEASE</version>
+        <version>${spring.version}</version>
     </dependency>
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
-        <version>3.1.0.RELEASE</version>
+        <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>3.1.0.RELEASE</version>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
-      <version>3.1.0.RELEASE</version>
+      <version>${spring.version}</version>
     </dependency>
     <!-- utile nel caso in cui si voglia usare AspectJ per iniettare durante la 
          creazione di alcuni oggetti, alcuni dei loro attributi -->
@@ -345,6 +345,7 @@
     </dependency>
   </dependencies>
   <properties>
+    <spring.version>3.2.5.RELEASE</spring.version>
     <!--shared-->
     <messageSource_cacheSeconds>3600</messageSource_cacheSeconds>
     <protocol>http://</protocol>

@@ -9,16 +9,15 @@ import org.springframework.stereotype.Repository;
  * 
  * @author Luca Piras
  */
-@Repository("mockSpreadSheetDAO")
-public class MockSpreadSheetDAO implements ISpreadSheetDAO {
-
-    private static final Logger logger = LoggerFactory.getLogger(MockSpreadSheetDAO.class.getName());
+@Repository("mockAddNewRuleSpreadSheetDAO")
+public class MockAddNewRuleSpreadSheetDAO implements ISpreadSheetDAO {
+    //TODO: deactivate this one because is only a mock
+    private static final Logger logger = LoggerFactory.getLogger(MockAddNewRuleSpreadSheetDAO.class.getName());
     
     @Override
     public String getSpreadSheet() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\"1\",\"10\",\"Basic Mayor\"\n");
-        sb.append("\"2\",\"100\",\"Enhanced Mayor\"\n");
+        sb.append("\"3\",\"1000\",\"Advanced Mayor\"\n");
         
         if (logger.isDebugEnabled()) {
             logger.debug("**************spreadSheet: " + sb);

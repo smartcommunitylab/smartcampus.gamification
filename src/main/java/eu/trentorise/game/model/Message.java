@@ -1,5 +1,5 @@
 package eu.trentorise.game.model;
- 
+
 public class Message {
  
     private String type;
@@ -9,6 +9,7 @@ public class Message {
      * @return the type
      */
     public String getType() {
+        //TODO: clean this Class
         return type;
     }
  

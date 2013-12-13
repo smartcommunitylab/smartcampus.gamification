@@ -51,6 +51,13 @@
         <artifactId>spring-aspects</artifactId> 
         <version>3.1.0.RELEASE</version> 
     </dependency>-->
+    <!-- REST SERVICES - necessary to provide the conversion between a Java
+         Object and a JSON -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.3.0</version>
+    </dependency>
     <!--VALIDATION-->
     <dependency>
         <groupId>javax.validation</groupId>
@@ -374,7 +381,7 @@
     <okIcon>${images_path_webapp_absolute}pos.png</okIcon>
     <koIcon>${images_path_webapp_absolute}neg.png</koIcon>
     <!--webapp-->
-    <webapp_domain>/gamificationengine</webapp_domain>
+    <webapp_domain>/GamificationEngine</webapp_domain>
     <webapp_jsPath_relative>/js/</webapp_jsPath_relative>
     <webapp_jsPath_absolute>${webapp_domain_absolute}${webapp_jsPath_relative}</webapp_jsPath_absolute>
     <webapp_cssPath_relative>/css/</webapp_cssPath_relative>

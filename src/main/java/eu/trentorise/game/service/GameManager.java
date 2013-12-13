@@ -26,6 +26,7 @@ public class GameManager implements IGameManager {
     
     @Override
     public void getGame() throws Exception {
+        //TODO: clean these classes (all the classes of this package)
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         

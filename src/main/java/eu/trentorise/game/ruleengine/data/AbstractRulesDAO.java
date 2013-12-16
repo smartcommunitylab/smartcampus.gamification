@@ -1,6 +1,6 @@
 package eu.trentorise.game.ruleengine.data;
 
-import eu.trentorise.game.rule.Rule;
+import eu.trentorise.game.rule.model.Rule;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +37,10 @@ public abstract class AbstractRulesDAO implements IRulesDAO {
     protected List<Rule> buildRules(List<Rule> rules, List<String> contentRules) {
         int id = 1;
         for (String element : contentRules) {
-            Rule rule = new Rule("" + id, null, element);
+            Rule rule = new Rule();
+            rule.setId(id);
+            rule.setContent(element);
+            
             rules.add(rule);
             
             id++;

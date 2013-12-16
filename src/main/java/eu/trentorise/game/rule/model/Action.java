@@ -1,17 +1,17 @@
-package eu.trentorise.game.rule;
+package eu.trentorise.game.rule.model;
 
 /**
  *
- * @author luca
+ * @author Luca Piras
  */
-public class Event {
+public class Action {
     
     protected String id;
     
     protected String description;
 
     //TODO: id not null
-    public Event(String id, String description) {
+    public Action(String id, String description) {
         this.id = id;
         this.description = description;
     }

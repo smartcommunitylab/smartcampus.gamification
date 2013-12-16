@@ -3,7 +3,7 @@ package eu.trentorise.game.ruleengine.service.preparer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import eu.trentorise.game.rule.Rule;
+import eu.trentorise.game.rule.model.Rule;
 import eu.trentorise.game.ruleengine.data.IRulesDAO;
 import eu.trentorise.game.ruleengine.service.IKnowledgeBuilder;
 import java.util.List;

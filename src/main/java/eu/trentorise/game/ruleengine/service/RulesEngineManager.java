@@ -43,7 +43,7 @@ public class RulesEngineManager implements IRulesEngineManager {
 
     protected void logResults(Collection collection) {
         if (logger.isDebugEnabled()) {
-            logger.info("******************* LOG RESULTS *******************");
+            logger.debug("******************* LOG RESULTS *******************");
 
             for (Object object : collection) {
                 logger.debug(object.toString());

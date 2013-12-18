@@ -30,6 +30,8 @@ public class PointTemplateRule extends TemplateRule {
         this.rewardPoints = rewardPoints;
     }
 
-    
-    
+    @Override
+    public String toString() {
+        return "PointTemplateRule{" + "action=" + action + ", rewardPoints=" + rewardPoints + '}';
+    }
 }

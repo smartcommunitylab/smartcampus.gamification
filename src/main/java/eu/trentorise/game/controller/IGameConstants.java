@@ -10,6 +10,8 @@ public interface IGameConstants {
     public static final String VIEW_PATH = "/game/";
     public static final String SERVICE_PATH = VIEW_PATH + "services";
     public static final String SERVICE_GAME_PROFILE = SERVICE_PATH + "/gameProfile";
+    public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
+    public static final String SERVICE_PLUGIN_POINT = SERVICE_PATH + "/pluginPoint";
     public static final String VIEW_INTERNAL_NAMESPACE = "game.";
     
     public static final String VIEW_PAGE_EXTENSION = "htm";

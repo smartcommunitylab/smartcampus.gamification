@@ -11,23 +11,10 @@ import java.util.List;
  */
 public class Player extends GameActor {
     
-    public static final String USERNAME_DEFAULT = "DEFAULT";
-    
-    //TODO: improve the username attribute with a default element and create the
-    //test case
     protected List<Badge> badges;
-
+    
+    
     public Player() {
-        this.init(username);
-    }
-    
-    public Player(String username) {
-        this.init(username);
-    }
-    
-    private void init(String username) {
-        this.username = username;
-        
         this.points = new Integer(0);
         
         this.badges = Collections.synchronizedList(new ArrayList<Badge>());
@@ -52,7 +39,9 @@ public class Player extends GameActor {
     }
 
     public void setPoints(Integer points) {
-        this.points = points;
+        if (null != points) {
+            this.points = points;
+        }
     }
 
     public List<Badge> getBadges() {
@@ -63,6 +52,7 @@ public class Player extends GameActor {
         this.badges = badges;
     }
 
+    
     @Override
     public String toString() {
         return "Player{" + "username=" + username + ", points=" + points + ", badges=" + badges + '}';

@@ -1,0 +1,20 @@
+template header
+playerUsername
+actionId
+earnedPoints
+
+package pointTemplates;
+
+import eu.trentorise.game.model.player.Player;
+import eu.trentorise.game.rule.model.Action;
+
+template "pointTemplate"
+
+rule "PointRule_@{ruleId}"
+    when
+        player:Player(username == @{playerUsername});
+        action:Action(id == @{actionId});
+    then
+        player.setPoints(player.getPoints() + @{earnedPoints});
+end
+end template

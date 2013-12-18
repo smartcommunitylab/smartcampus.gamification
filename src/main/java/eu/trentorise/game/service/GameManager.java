@@ -143,21 +143,25 @@ public class GameManager implements IGameManager {
         
         elements.add(badge);
         
-        Player player = new Player("firstPlayer");
+        Player player = new Player();
+        player.setUsername("firstPlayer");
         
         elements.add(player);
         
-        player = new Player("secondPlayer");
+        player = new Player();
+        player.setUsername("secondPlayer");
         player.setPoints(new Integer(10));
         
         elements.add(player);
         
-        player = new Player("thirdPlayer");
+        player = new Player();
+        player.setUsername("thirdPlayer");
         player.setPoints(new Integer(100));
         
         elements.add(player);
         
-        player = new Player("fourthPlayer");
+        player = new Player();
+        player.setUsername("fourthPlayer");
         player.setPoints(new Integer(1000));
         
         elements.add(player);

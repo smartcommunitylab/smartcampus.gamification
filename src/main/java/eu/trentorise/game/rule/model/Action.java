@@ -6,13 +6,30 @@ package eu.trentorise.game.rule.model;
  */
 public class Action {
     
-    protected String id;
+    protected Integer id;
     
     protected String description;
 
-    //TODO: id not null
-    public Action(String id, String description) {
+    
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
+    }
+
+    
+    @Override
+    public String toString() {
+        return "Action{" + "id=" + id + ", description=" + description + '}';
     }
 }

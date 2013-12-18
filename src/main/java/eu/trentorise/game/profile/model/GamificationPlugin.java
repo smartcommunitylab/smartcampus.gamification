@@ -6,16 +6,18 @@ package eu.trentorise.game.profile.model;
  */
 public class GamificationPlugin {
     
-    protected Integer id;
+    //TODO: this is the key
+    protected String name;
     
     protected String description;
 
-    public Integer getId() {
-        return id;
+    
+    public String getName() {
+        return name;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -26,8 +28,9 @@ public class GamificationPlugin {
         this.description = description;
     }
 
+    
     @Override
     public String toString() {
-        return "GamificationPlugin{" + "id=" + id + ", description=" + description + '}';
+        return "GamificationPlugin{" + "name=" + name + ", description=" + description + '}';
     }
 }

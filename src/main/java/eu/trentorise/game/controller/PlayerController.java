@@ -24,6 +24,7 @@ public class PlayerController {
     public @ResponseBody SuccessResponse add(@RequestParam(value = "username", required = true) String username,
                                              @RequestParam(value = "initialPoints", required = false) Integer initialPoints) {
         
+        //TODO: manage the case when the username is yet used
         Player player = new Player();
         
         player.setUsername(username);

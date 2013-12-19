@@ -1,4 +1,4 @@
-package eu.trentorise.game.event;
+package eu.trentorise.game.event.model;
 
 import eu.trentorise.game.model.player.Player;
 import eu.trentorise.game.rule.model.Action;

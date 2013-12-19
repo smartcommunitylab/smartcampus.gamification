@@ -1,4 +1,4 @@
-package eu.trentorise.game.event.controller.service;
+package eu.trentorise.game.event.service;
 
 import eu.trentorise.game.event.model.StartEvent;
 import eu.trentorise.game.response.MockResponder;

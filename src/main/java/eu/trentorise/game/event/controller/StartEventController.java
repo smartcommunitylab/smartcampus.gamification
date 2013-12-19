@@ -1,7 +1,7 @@
 package eu.trentorise.game.event.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.event.controller.service.IStartEventManager;
+import eu.trentorise.game.event.service.IStartEventManager;
 import eu.trentorise.game.event.model.StartEvent;
 import eu.trentorise.game.model.player.Player;
 import eu.trentorise.game.response.SuccessResponse;

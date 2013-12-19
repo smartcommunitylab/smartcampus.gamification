@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 
 /**
@@ -16,6 +14,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public abstract class TemplateRulesDAO extends AbstractRulesDAO {
     
     private static final Logger logger = LoggerFactory.getLogger(TemplateRulesDAO.class.getName());
+    
+    protected ISpreadSheetDAO spreadSheetDAO;
+    
+    protected IRulesStreamDAO rulesStreamDAO;
+    
     
     @Override
     protected List<String> obtainsContentRules(List<String> contentRules) {
@@ -63,11 +66,12 @@ public abstract class TemplateRulesDAO extends AbstractRulesDAO {
     public void setSpreadSheetDAO(ISpreadSheetDAO spreadSheetDAO) {
         this.spreadSheetDAO = spreadSheetDAO;
     }
-    
-    
-    protected ISpreadSheetDAO spreadSheetDAO;
-    
-    @Qualifier("droolsRulesStreamDAO")
-    @Autowired
-    protected IRulesStreamDAO rulesStreamDAO;
+
+    public IRulesStreamDAO getRulesStreamDAO() {
+        return rulesStreamDAO;
+    }
+
+    public void setRulesStreamDAO(IRulesStreamDAO rulesStreamDAO) {
+        this.rulesStreamDAO = rulesStreamDAO;
+    }
 }

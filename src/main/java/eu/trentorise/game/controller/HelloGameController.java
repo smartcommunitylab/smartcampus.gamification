@@ -2,6 +2,7 @@ package eu.trentorise.game.controller;
 
 import eu.trentorise.game.co.HelloGameCO;
 import eu.trentorise.game.model.backpack.Badge;
+import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.ruleengine.service.IRulesEngineManager;
 import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class HelloGameController extends AbstractController<HelloGameCO> {
         super.manageGet(model, session);
         
         //TODO: manage the value of the gamification approach id
-        rulesEngineManager.runEngine(1);
+        rulesEngineManager.runEngine(GamificationPluginIdentifier.BADGE_PLUGIN);
         
         return this.viewInternal;
     }
@@ -61,7 +62,7 @@ public class HelloGameController extends AbstractController<HelloGameCO> {
     protected void initializeExistentCommandObject(HelloGameCO co) {}
     
     
-    @Qualifier("rulesEngineManager")
+    @Qualifier("badgeRulesEngineManager")
     @Autowired
     protected IRulesEngineManager rulesEngineManager;
     

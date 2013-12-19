@@ -103,6 +103,8 @@
     <!-- ************************* Utils ****************************** -->
     <bean id="stringToStream" class="eu.trentorise.utils.io.StringToStream" />
     
+    <bean id="classPathResourceDAO" class="eu.trentorise.utils.drools.io.ClassPathResourceDAO" />
+    
     <!--bean id="dateConverter" class="eu.trentorise.game.utils.SimpleDateConverter" />
     
     <bean id="redirectBuilder" scope="prototype" class="eu.trentorise.game.utils.spring.AbsoluteRedirectBuilder">

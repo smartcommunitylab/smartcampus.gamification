@@ -41,7 +41,8 @@ public class HelloGameController extends AbstractController<HelloGameCO> {
         super.manageGet(model, session);
         
         //TODO: manage the value of the gamification approach id
-        rulesEngineManager.runEngine(GamificationPluginIdentifier.BADGE_PLUGIN);
+        rulesEngineManager.runEngine(null, 
+                                     GamificationPluginIdentifier.BADGE_PLUGIN);
         
         return this.viewInternal;
     }

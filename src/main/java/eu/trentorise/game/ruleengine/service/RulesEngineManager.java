@@ -28,27 +28,30 @@ public class RulesEngineManager implements IRulesEngineManager {
     
     
     @Override
-    public void runEngine(GamificationPluginIdentifier gamificationApproachId) {
+    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) {
         //first rules execution
-        this.runRules(rulesPreparerManager, gamificationApproachId);
+        this.runRules(facts, rulesPreparerManager, gamificationApproachId);
         
         //TODO: this one probably will be cleaned
         if (null != addNewRulePreparerManager) {
             //second rules execution
-            this.runRules(addNewRulePreparerManager, gamificationApproachId);
+            this.runRules(facts, addNewRulePreparerManager, gamificationApproachId);
         }
     }
     
-    public void runRules(IRulesPreparerManager rpm, 
-                         GamificationPluginIdentifier gamificationApproachId) {
+    protected void runRules(Collection facts, IRulesPreparerManager rpm, 
+                            GamificationPluginIdentifier gamificationApproachId) {
         
         rpm.prepareRules(knowledgeBuilder, gamificationApproachId);
         
-        Collection facts = factsDAO.getFacts();
+        Collection actualFacts = facts;
+        if (null == actualFacts) {
+            actualFacts = this.factsDAO.getFacts();
+        }
         
-        rulesExecutionManager.executeRules(knowledgeBuilder, facts);
+        rulesExecutionManager.executeRules(knowledgeBuilder, actualFacts);
         
-        logResults(facts);
+        logResults(actualFacts);
     }
 
     protected void logResults(Collection collection) {

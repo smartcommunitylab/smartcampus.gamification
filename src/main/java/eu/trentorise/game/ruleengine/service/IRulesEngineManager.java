@@ -1,6 +1,7 @@
 package eu.trentorise.game.ruleengine.service;
 
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import java.util.Collection;
 
 /**
  *
@@ -8,5 +9,5 @@ import eu.trentorise.game.plugin.GamificationPluginIdentifier;
  */
 public interface IRulesEngineManager {
     
-    public void runEngine(GamificationPluginIdentifier gamificationApproachId);
+    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId);
 }

@@ -44,6 +44,12 @@
       <artifactId>spring-orm</artifactId>
       <version>${spring.version}</version>
     </dependency>
+    <!-- SPRING DATA e JPA -->
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-jpa</artifactId>
+        <version>1.4.3.RELEASE</version>
+    </dependency>
     <!-- utile nel caso in cui si voglia usare AspectJ per iniettare durante la 
          creazione di alcuni oggetti, alcuni dei loro attributi -->
 <!--    <dependency>
@@ -68,8 +74,20 @@
     <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>4.3.0.Final</version>
+        <version>4.3.1.Final</version>
     </dependency>
+    <!-- HIBERNATE e JPA -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>4.3.1.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>javax.persistence</groupId>
+        <artifactId>persistence-api</artifactId>
+        <version>1.0.2</version>
+    </dependency>
+    <!-- UNIT TESTING -->
     <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
@@ -182,13 +200,11 @@
         <version>2.5</version>
         <scope>compile</scope>
     </dependency>
-    <!--dependency>
+    <dependency>
         <groupId>postgresql</groupId>
-        <artifactId>postgresql</artifactId-->
-        <!--TODO: change versione-->
-        <!--version>8.3-603.jdbc3</version>
-        <scope>compile</scope>
-    </dependency-->
+        <artifactId>postgresql</artifactId>
+        <version>9.1-901-1.jdbc4</version>
+    </dependency>
     <!-- client API per chiamare i servizi rest utilizzando inoltre jaxb -->
     <dependency>
         <groupId>com.sun.jersey</groupId>
@@ -359,14 +375,14 @@
     <dateSeparator>-</dateSeparator>
     <timeSeparator>:</timeSeparator>
     <pathDelimiter>/</pathDelimiter>
-    <!--db-->
-    <!--db_driverClassName>org.postgresql.Driver</db_driverClassName>
+    <!--DB-->
+    <db_driverClassName>org.postgresql.Driver</db_driverClassName>
     <db_host>localhost</db_host>
     <db_port>5432</db_port>
     <db_name>game</db_name>
     <db_url>jdbc:postgresql://${db_host}:${db_port}/${db_name}</db_url>
-    <db_username>game</db_username>
-    <db_password>gamedb</db_password-->
+    <db_username>gamificationUser</db_username>
+    <db_password>lkR7vZp7</db_password>
     <!--log-->
     <log_fileName>gamificationengine.log</log_fileName>
     <dailyRollingFileLogger>org.apache.log4j.DailyRollingFileAppender</dailyRollingFileLogger>

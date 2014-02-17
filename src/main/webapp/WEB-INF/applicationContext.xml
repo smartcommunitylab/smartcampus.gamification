@@ -43,6 +43,7 @@
         <property name="sourceList">
             <list>
                 <value>/WEB-INF/deploy.properties</value>
+                <value>/WEB-INF/conf/db/db.properties</value>
             </list>
         </property>
     </bean>

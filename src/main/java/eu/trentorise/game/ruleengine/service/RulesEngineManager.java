@@ -1,5 +1,7 @@
 package eu.trentorise.game.ruleengine.service;
 
+import eu.trentorise.game.data.CustomerRepository;
+import eu.trentorise.game.model.player.Customer;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
 import eu.trentorise.game.ruleengine.service.executor.IRulesExecutionManager;
@@ -7,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.trentorise.game.ruleengine.data.IFactsDAO;
 import java.util.Collection;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -27,8 +30,61 @@ public class RulesEngineManager implements IRulesEngineManager {
     protected IRulesPreparerManager addNewRulePreparerManager;
     
     
+    //TODO: delete this method
+    //@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, readOnly = false)
+    //@Transactional
+    protected void dataJpaTry() {
+
+        /*List<Customer> customers = repository.findByLastName("Piras");
+        Customer customer = customers.get(0);
+        
+        customer.setFirstName("Luca");
+        repository.save(customer);
+        
+        throw new Exception();*/
+        
+        // save a couple of customers
+        repository.save(new Customer("Jack", "Bauer"));
+        repository.save(new Customer("Chloe", "O'Brian"));
+        repository.save(new Customer("Kim", "Bauer"));
+        repository.save(new Customer("David", "Palmer"));
+        repository.save(new Customer("Michelle", "Dessler"));
+        
+        /*Customer findOne = repository.findOne(88L);
+        findOne.setLastName("Piras10");
+        repository.save(findOne);*/
+        
+        // fetch all customers
+        Iterable<Customer> customers = repository.findAll();
+        System.out.println("Customers found with findAll():");
+        System.out.println("-------------------------------");
+        for (Customer customer : customers) {
+            System.out.println(customer);
+        }
+        System.out.println();
+
+        // fetch an individual customer by ID
+        Customer customer = repository.findOne(1L);
+        System.out.println("Customer found with findOne(1L):");
+        System.out.println("--------------------------------");
+        System.out.println(customer);
+        System.out.println();
+
+        // fetch customers by last name
+        List<Customer> bauers = repository.findByLastName("Bauer");
+        System.out.println("Customer found with findByLastName('Bauer'):");
+        System.out.println("--------------------------------------------");
+        for (Customer bauer : bauers) {
+            System.out.println(bauer);
+        }
+    }
+    
+    
     @Override
     public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) {
+        //TODO: DELETE
+        this.dataJpaTry();
+        
         //first rules execution
         this.runRules(facts, rulesPreparerManager, gamificationApproachId);
         
@@ -101,4 +157,8 @@ public class RulesEngineManager implements IRulesEngineManager {
     @Qualifier("droolsRulesExecutionManager")
     @Autowired
     protected IRulesExecutionManager rulesExecutionManager;
+    
+    //TODO: DELETE
+    @Autowired
+    protected CustomerRepository repository;
 }

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,9 +41,13 @@ public class HelloGameController extends AbstractController<HelloGameCO> {
     public String get(Model model, HttpSession session) throws Exception {
         super.manageGet(model, session);
         
+        boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
+        
         //TODO: manage the value of the gamification approach id
         rulesEngineManager.runEngine(null, 
                                      GamificationPluginIdentifier.BADGE_PLUGIN);
+        
+        actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         
         return this.viewInternal;
     }

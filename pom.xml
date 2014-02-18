@@ -44,7 +44,12 @@
       <artifactId>spring-orm</artifactId>
       <version>${spring.version}</version>
     </dependency>
-    <!-- SPRING DATA e JPA -->
+    <!-- SPRING TRANSACTIONS MANAGEMENT, SPRING DATA and JPA -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${spring.version}</version>
+    </dependency>
     <dependency>
         <groupId>org.springframework.data</groupId>
         <artifactId>spring-data-jpa</artifactId>

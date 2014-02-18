@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 
 /**
@@ -32,8 +34,7 @@ public class RulesEngineManager implements IRulesEngineManager {
     
     //TODO: delete this method
     //@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, readOnly = false)
-    //@Transactional
-    protected void dataJpaTry() {
+    public void dataJpaTry() {
 
         /*List<Customer> customers = repository.findByLastName("Piras");
         Customer customer = customers.get(0);
@@ -79,10 +80,11 @@ public class RulesEngineManager implements IRulesEngineManager {
         }
     }
     
-    
+    @Transactional
     @Override
     public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) {
         //TODO: DELETE
+        boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         this.dataJpaTry();
         
         //first rules execution
@@ -93,6 +95,8 @@ public class RulesEngineManager implements IRulesEngineManager {
             //second rules execution
             this.runRules(facts, addNewRulePreparerManager, gamificationApproachId);
         }
+        
+        actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
     }
     
     protected void runRules(Collection facts, IRulesPreparerManager rpm, 

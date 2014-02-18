@@ -7,6 +7,8 @@ import eu.trentorise.game.response.SuccessResponse;
 import eu.trentorise.game.ruleengine.service.IRulesEngineManager;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,15 +17,20 @@ import org.springframework.stereotype.Service;
 @Service("mockStartEventManager")
 public class MockStartEventManager extends MockResponder implements IStartEventManager {
 
+    private static Logger logger = LoggerFactory.getLogger(MockStartEventManager.class.getName());
+    
     @Override
     public SuccessResponse runEvent(StartEvent event) {
         
         List elements = new ArrayList();
         elements.add(event);
-        
-        //TODO: manage the value of the gamification approach id
-        rulesEngineManager.runEngine(elements, 
-                                     GamificationPluginIdentifier.POINT_PLUGIN);
+        try {
+            //TODO: manage the value of the gamification approach id
+            rulesEngineManager.runEngine(elements,
+                    GamificationPluginIdentifier.POINT_PLUGIN);
+        } catch (Exception ex) {
+            logger.debug("************************** EXCEPTION *******************************" + ex);
+        }
         
         return this.getPositiveResponse();
     }

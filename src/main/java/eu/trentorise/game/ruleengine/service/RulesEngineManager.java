@@ -33,9 +33,7 @@ public class RulesEngineManager implements IRulesEngineManager {
     
     
     //TODO: delete this method
-    //@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, readOnly = false)
-    public void dataJpaTry() {
-
+    protected void dataJpaTry() throws Exception {
         /*List<Customer> customers = repository.findByLastName("Piras");
         Customer customer = customers.get(0);
         
@@ -78,15 +76,25 @@ public class RulesEngineManager implements IRulesEngineManager {
         for (Customer bauer : bauers) {
             System.out.println(bauer);
         }
+        
+        //throw new RuntimeException();
+    }
+    
+    protected void nonRepeatableReadAndPhantomRead() throws Exception {
+        List<Customer> customers = repository.findByLastName("Tower");
+        Customer findOne = customers.get(0);
+        
+        customers = repository.findByLastName("Tower");
+        findOne = customers.get(0);
     }
     
     @Transactional
     @Override
-    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) {
+    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) throws Exception {
         //TODO: DELETE
         boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
-        this.dataJpaTry();
-        
+        //this.dataJpaTry();
+        this.nonRepeatableReadAndPhantomRead();
         //first rules execution
         this.runRules(facts, rulesPreparerManager, gamificationApproachId);
         

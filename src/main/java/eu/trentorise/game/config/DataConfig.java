@@ -26,9 +26,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(basePackages = "eu.trentorise.game")
 @EnableTransactionManagement //this one activates transaction management for method annotated by the transactional annotation, the same of <tx:annotation-driven />
 public class DataConfig {
-     
+    
     @Bean(destroyMethod = "close")
     public DataSource dataSource() {
+        //TODO: check if this used Class is ok for production environment
         BasicDataSource bds = new BasicDataSource();
         
         bds.setDriverClassName(dbDriverClassName);
@@ -47,7 +48,7 @@ public class DataConfig {
         lef.setPackagesToScan("eu.trentorise.game");
         return lef;
     }
-
+    
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();

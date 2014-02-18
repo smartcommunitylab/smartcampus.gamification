@@ -9,5 +9,5 @@ import java.util.Collection;
  */
 public interface IRulesEngineManager {
     
-    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId);
+    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) throws Exception;
 }

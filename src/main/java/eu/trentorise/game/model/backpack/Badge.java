@@ -1,15 +1,28 @@
 package eu.trentorise.game.model.backpack;
 
+import eu.trentorise.game.model.player.Player;
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
 /**
  *
  * @author Luca Piras
  */
-public class Badge {
+@Entity
+public class Badge implements Serializable {
     
+    @Id
     protected String title;
     
     protected Integer necessaryPoints;
 
+    //TODO: rethink about this annotation
+    @ManyToMany(mappedBy = "badges")
+    protected List<Player> owners;
+    
     //TODO: improve the title attribute with a default element and create the
     //test case
     public Badge(String title, Integer necessaryPoints) {

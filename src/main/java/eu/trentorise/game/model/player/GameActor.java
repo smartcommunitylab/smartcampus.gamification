@@ -1,11 +1,20 @@
 package eu.trentorise.game.model.player;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+
 /**
  *
- * @author luca
+ * @author Luca Piras
  */
-public class GameActor {
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class GameActor implements Serializable {
     
+    @Id
     protected String username;
     
     protected Integer points;

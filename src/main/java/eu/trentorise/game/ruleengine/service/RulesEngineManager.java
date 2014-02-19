@@ -1,8 +1,8 @@
 package eu.trentorise.game.ruleengine.service;
 
 import eu.trentorise.game.annotation.TransactionalGame;
-import eu.trentorise.game.data.CustomerRepository;
-import eu.trentorise.game.model.player.Customer;
+import eu.trentorise.game.data.PlayerRepository;
+import eu.trentorise.game.model.player.Player;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
 import eu.trentorise.game.ruleengine.service.executor.IRulesExecutionManager;
@@ -34,58 +34,53 @@ public class RulesEngineManager implements IRulesEngineManager {
     
     //TODO: delete this method
     protected void dataJpaTry() throws Exception {
-        /*List<Customer> customers = repository.findByLastName("Piras");
-        Customer customer = customers.get(0);
+        Player player = new Player();
+        player.setUsername("lucap");
+        player.setPoints(0);
         
-        customer.setFirstName("Luca");
-        repository.save(customer);
+        repository.save(player);
         
-        throw new Exception();*/
+        player.setUsername("OtherPlayer");
         
-        // save a couple of customers
-        repository.save(new Customer("Jack", "Bauer"));
-        repository.save(new Customer("Chloe", "O'Brian"));
-        repository.save(new Customer("Kim", "Bauer"));
-        repository.save(new Customer("David", "Palmer"));
-        repository.save(new Customer("Michelle", "Dessler"));
+        repository.save(player);
         
-        /*Customer findOne = repository.findOne(88L);
-        findOne.setLastName("Piras10");
-        repository.save(findOne);*/
+        Player findOne = repository.findOne("lucap");
+        findOne.setPoints(100);
+        repository.save(findOne);
         
         // fetch all customers
-        Iterable<Customer> customers = repository.findAll();
-        logger.debug("Customers found with findAll():");
+        Iterable<Player> items = repository.findAll();
+        logger.debug("Items found with findAll():");
         logger.debug("-------------------------------");
-        for (Customer customer : customers) {
-            logger.debug(customer + "");
+        for (Player item : items) {
+            logger.debug(item + "");
         }
         logger.debug("/n");
 
         // fetch an individual customer by ID
-        Customer customer = repository.findOne(1L);
-        logger.debug("Customer found with findOne(1L):");
+        Player item = repository.findOne("OtherPlayer");
+        logger.debug("Item found with findOne(OtherPlayer):");
         logger.debug("--------------------------------");
-        logger.debug(customer + "");
+        logger.debug(item + "");
         logger.debug("/n");
 
         // fetch customers by last name
-        List<Customer> bauers = repository.findByLastName("Bauer");
-        logger.debug("Customer found with findByLastName('Bauer'):");
+        List<Player> foundByPoints = repository.findByPoints(0);
+        logger.debug("Player found with findByPoints(0):");
         logger.debug("--------------------------------------------");
-        for (Customer bauer : bauers) {
-            logger.debug(bauer + "");
+        for (Player current : items) {
+            logger.debug(current + "");
         }
         
-        throw new Exception();
+        //throw new Exception();
     }
     
     protected void nonRepeatableReadAndPhantomRead() throws Exception {
-        List<Customer> customers = repository.findByLastName("Tower");
-        Customer findOne = customers.get(0);
+        List<Player> items = repository.findByPoints(0);
+        Player findOne = items.get(0);
         
-        customers = repository.findByLastName("Tower");
-        findOne = customers.get(0);
+        items = repository.findByPoints(0);
+        findOne = items.get(0);
     }
     
     @TransactionalGame
@@ -94,7 +89,7 @@ public class RulesEngineManager implements IRulesEngineManager {
         //TODO: DELETE
         boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         //this.dataJpaTry();
-        this.nonRepeatableReadAndPhantomRead();
+        //this.nonRepeatableReadAndPhantomRead();
         //first rules execution
         this.runRules(facts, rulesPreparerManager, gamificationApproachId);
         
@@ -172,5 +167,5 @@ public class RulesEngineManager implements IRulesEngineManager {
     
     //TODO: DELETE
     @Autowired
-    protected CustomerRepository repository;
+    protected PlayerRepository repository;
 }

@@ -92,7 +92,7 @@ public class GameManager implements IGameManager {
         // Check the builder for errors
         if (kbuilder.hasErrors()) {
             //TODO: IMPORTANT!!! remove System.out
-            System.out.println(kbuilder.getErrors().toString());
+            logger.error(kbuilder.getErrors().toString());
             throw new RuntimeException("Unable to compile drl\".");
         }
  

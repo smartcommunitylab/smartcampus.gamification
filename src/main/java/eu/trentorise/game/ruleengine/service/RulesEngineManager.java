@@ -1,5 +1,6 @@
 package eu.trentorise.game.ruleengine.service;
 
+import eu.trentorise.game.annotation.TransactionalGame;
 import eu.trentorise.game.data.CustomerRepository;
 import eu.trentorise.game.model.player.Customer;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
@@ -12,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 
@@ -55,29 +55,29 @@ public class RulesEngineManager implements IRulesEngineManager {
         
         // fetch all customers
         Iterable<Customer> customers = repository.findAll();
-        System.out.println("Customers found with findAll():");
-        System.out.println("-------------------------------");
+        logger.debug("Customers found with findAll():");
+        logger.debug("-------------------------------");
         for (Customer customer : customers) {
-            System.out.println(customer);
+            logger.debug(customer + "");
         }
-        System.out.println();
+        logger.debug("/n");
 
         // fetch an individual customer by ID
         Customer customer = repository.findOne(1L);
-        System.out.println("Customer found with findOne(1L):");
-        System.out.println("--------------------------------");
-        System.out.println(customer);
-        System.out.println();
+        logger.debug("Customer found with findOne(1L):");
+        logger.debug("--------------------------------");
+        logger.debug(customer + "");
+        logger.debug("/n");
 
         // fetch customers by last name
         List<Customer> bauers = repository.findByLastName("Bauer");
-        System.out.println("Customer found with findByLastName('Bauer'):");
-        System.out.println("--------------------------------------------");
+        logger.debug("Customer found with findByLastName('Bauer'):");
+        logger.debug("--------------------------------------------");
         for (Customer bauer : bauers) {
-            System.out.println(bauer);
+            logger.debug(bauer + "");
         }
         
-        //throw new RuntimeException();
+        throw new Exception();
     }
     
     protected void nonRepeatableReadAndPhantomRead() throws Exception {
@@ -88,7 +88,7 @@ public class RulesEngineManager implements IRulesEngineManager {
         findOne = customers.get(0);
     }
     
-    @Transactional
+    @TransactionalGame
     @Override
     public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) throws Exception {
         //TODO: DELETE

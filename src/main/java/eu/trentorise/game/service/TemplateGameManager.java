@@ -11,10 +11,14 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.io.ResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class TemplateGameManager extends GameManager {
 
+    private static Logger logger = LoggerFactory.getLogger(TemplateGameManager.class.getName());
+    
     @Override
     protected void addRules(KnowledgeBuilder kbuilder) {
         this.addRules(kbuilder, null);
@@ -38,7 +42,10 @@ public class TemplateGameManager extends GameManager {
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read spreadsheet or rules stream." ,e);
         }
-        System.out.println(drl);
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug(drl + "");
+        }
         
         //DecisionTableConfiguration conf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         //conf.setInputType(DecisionTableInputType.CSV);
@@ -65,7 +72,10 @@ public class TemplateGameManager extends GameManager {
         StringBuilder sb = new StringBuilder(buildSpreadSheetHeader());
         sb.append("\"Basic badge\",\"1\",\"10\",\"Basic Mayor\"\n");
         sb.append("\"Enhanced badge\",\"2\",\"100\",\"Enhanced Mayor\"\n");
-        System.out.println(sb);
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug(sb + "");
+        }
         
         return spreadSheetToStream(sb.toString());
     }

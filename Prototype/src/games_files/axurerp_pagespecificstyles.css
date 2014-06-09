@@ -1,0 +1,2409 @@
+﻿body {
+    margin: 0px;
+}
+
+div {
+    background-repeat: no-repeat;
+}
+
+.raw_image {
+    width: 100%;
+    height: 100%;
+}
+
+.preload {
+    display: none;
+}
+#main_container {
+}
+
+.form_sketch {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.u0_normal {
+    background-image: url('../Games_files/u0_normal.png');
+}
+
+.u0_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:1024px;
+    height:768px;
+}
+
+#u0_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:1024px;
+    height:768px;
+}
+
+.u1 {
+    position:absolute;
+    left:2px;
+    top:376px;
+    width:1020px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u2 {
+    position:absolute;
+    left:0px;
+    top:168px;
+    width:954px;
+    height:550px;
+    overflow:hidden;
+}
+
+#pd2u2 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:954px;
+    height:550px;
+    
+}
+
+.u3_normal {
+    background-image: url('../Games_files/u3_normal.png');
+}
+
+.u3_container {
+    position:absolute;
+    left:10px;
+    top:10px;
+    width:492px;
+    height:180px;
+}
+
+#u3_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:498px;
+    height:186px;
+}
+
+.u4 {
+    position:absolute;
+    left:2px;
+    top:82px;
+    width:488px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u5_normal {
+    background-image: url('../Games_files/u5_normal.png');
+}
+
+.u5_container {
+    position:absolute;
+    left:10px;
+    top:10px;
+    width:128px;
+    height:59px;
+}
+
+#u5_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:65px;
+}
+
+.u6 {
+    position:absolute;
+    left:2px;
+    top:13px;
+    width:124px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u7_normal {
+    background-image: url('../Games_files/u7_normal.png');
+}
+
+.u7_container {
+    position:absolute;
+    left:10px;
+    top:129px;
+    width:128px;
+    height:60px;
+}
+
+#u7_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:66px;
+}
+
+.u8 {
+    position:absolute;
+    left:2px;
+    top:4px;
+    width:124px;
+    height:53px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u9_normal {
+    background-image: url('../Games_files/u9_normal.png');
+}
+
+.u9_container {
+    position:absolute;
+    left:138px;
+    top:129px;
+    width:15px;
+    height:60px;
+}
+
+#u9_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:21px;
+    height:66px;
+}
+
+.u10 {
+    position:absolute;
+    left:2px;
+    top:22px;
+    width:11px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u11_normal {
+    background-image: url('../Games_files/u5_normal.png');
+}
+
+.u11_container {
+    position:absolute;
+    left:10px;
+    top:69px;
+    width:128px;
+    height:59px;
+}
+
+#u11_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:65px;
+}
+
+.u12 {
+    position:absolute;
+    left:2px;
+    top:13px;
+    width:124px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd1u2 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:954px;
+    height:550px;
+    
+}
+
+.u13_normal {
+    background-image: url('../Games_files/u13_normal.png');
+}
+
+.u13_container {
+    position:absolute;
+    left:34px;
+    top:10px;
+    width:943px;
+    height:538px;
+}
+
+#u13_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:949px;
+    height:544px;
+}
+
+.u14 {
+    position:absolute;
+    left:2px;
+    top:261px;
+    width:939px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u15_normal {
+    background-image: url('../Games_files/u5_normal.png');
+}
+
+.u15_container {
+    position:absolute;
+    left:10px;
+    top:10px;
+    width:128px;
+    height:59px;
+}
+
+#u15_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:65px;
+}
+
+.u16 {
+    position:absolute;
+    left:2px;
+    top:13px;
+    width:124px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u17_normal {
+    background-image: url('../Games_files/u7_normal.png');
+}
+
+.u17_container {
+    position:absolute;
+    left:10px;
+    top:70px;
+    width:128px;
+    height:60px;
+}
+
+#u17_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:66px;
+}
+
+.u18 {
+    position:absolute;
+    left:2px;
+    top:14px;
+    width:124px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u19_normal {
+    background-image: url('../Games_files/u9_normal.png');
+}
+
+.u19_container {
+    position:absolute;
+    left:138px;
+    top:70px;
+    width:15px;
+    height:60px;
+}
+
+#u19_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:21px;
+    height:66px;
+}
+
+.u20 {
+    position:absolute;
+    left:2px;
+    top:22px;
+    width:11px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u21_normal {
+    background-image: url('../Games_files/u5_normal.png');
+}
+
+.u21_container {
+    position:absolute;
+    left:10px;
+    top:131px;
+    width:128px;
+    height:59px;
+}
+
+#u21_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:65px;
+}
+
+.u22 {
+    position:absolute;
+    left:2px;
+    top:3px;
+    width:124px;
+    height:53px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u23 {
+    position:absolute;
+    left:324px;
+    top:32px;
+    width:439px;
+    height:21px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u24 {
+    position:absolute;
+    left:324px;
+    top:70px;
+    width:201px;
+    height:151px;
+    overflow:hidden;
+}
+
+#pd1u24 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:201px;
+    height:151px;
+    
+}
+
+.u25_normal {
+    background-image: url('../Games_files/u25_normal.png');
+}
+
+.u25_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:200px;
+    height:20px;
+}
+
+#u25_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:206px;
+    height:26px;
+}
+
+.u26 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:196px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u27 {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:200px;
+    height:130px;
+    ;
+    ;
+    ;
+    font-family:'Arial';
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+#pd0u24 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:201px;
+    height:151px;
+    
+}
+
+.u28_normal {
+    background-image: url('../Games_files/u25_normal.png');
+}
+
+.u28_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:200px;
+    height:20px;
+}
+
+#u28_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:206px;
+    height:26px;
+}
+
+.u29 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:196px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u30 {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:200px;
+    height:130px;
+    ;
+    ;
+    ;
+    font-family:'Arial';
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+#u31 {
+    position:absolute;
+    left:564px;
+    top:71px;
+    width:201px;
+    height:151px;
+    overflow:hidden;
+}
+
+#pd1u31 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:201px;
+    height:151px;
+    
+}
+
+.u32_normal {
+    background-image: url('../Games_files/u25_normal.png');
+}
+
+.u32_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:200px;
+    height:20px;
+}
+
+#u32_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:206px;
+    height:26px;
+}
+
+.u33 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:196px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u34 {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:200px;
+    height:130px;
+    ;
+    ;
+    ;
+    font-family:'Arial';
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+#pd0u31 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:201px;
+    height:151px;
+    
+}
+
+.u35_normal {
+    background-image: url('../Games_files/u25_normal.png');
+}
+
+.u35_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:200px;
+    height:20px;
+}
+
+#u35_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:206px;
+    height:26px;
+}
+
+.u36 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:196px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u37 {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:200px;
+    height:130px;
+    ;
+    ;
+    ;
+    font-family:'Arial';
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+.u38 {
+    position:absolute;
+    left:6px;
+    top:24px;
+    width:150px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u39_normal {
+    background-image: url('../Games_files/u39_normal.png');
+}
+
+.u39_container {
+    position:absolute;
+    left:529px;
+    top:121px;
+    width:30px;
+    height:20px;
+}
+
+#u39_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:36px;
+    height:26px;
+}
+
+.u40 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:26px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u41_normal {
+    background-image: url('../Games_files/u39_normal.png');
+}
+
+.u41_container {
+    position:absolute;
+    left:529px;
+    top:151px;
+    width:30px;
+    height:20px;
+}
+
+#u41_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:36px;
+    height:26px;
+}
+
+.u42 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:26px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u43 {
+    position:absolute;
+    left:323px;
+    top:248px;
+    width:439px;
+    height:21px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u44 {
+    position:absolute;
+    left:323px;
+    top:288px;
+    width:201px;
+    height:151px;
+    overflow:hidden;
+}
+
+#pd1u44 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:201px;
+    height:151px;
+    
+}
+
+.u45_normal {
+    background-image: url('../Games_files/u25_normal.png');
+}
+
+.u45_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:200px;
+    height:20px;
+}
+
+#u45_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:206px;
+    height:26px;
+}
+
+.u46 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:196px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u47 {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:200px;
+    height:130px;
+    ;
+    ;
+    ;
+    font-family:'Arial';
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+#pd0u44 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:201px;
+    height:151px;
+    
+}
+
+.u48_normal {
+    background-image: url('../Games_files/u25_normal.png');
+}
+
+.u48_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:200px;
+    height:20px;
+}
+
+#u48_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:206px;
+    height:26px;
+}
+
+.u49 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:196px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u50 {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:200px;
+    height:130px;
+    ;
+    ;
+    ;
+    font-family:'Arial';
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+.u51 {
+    position:absolute;
+    left:6px;
+    top:24px;
+    width:150px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u52 {
+    position:absolute;
+    left:171px;
+    top:257px;
+    width:772px;
+    height:117px
+}
+
+.u53_normal {
+    background-image: url('../Games_files/u53_normal.png');
+}
+
+.u53_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:100px;
+    height:20px;
+}
+
+#u53_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:26px;
+}
+
+.u54 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u55_normal {
+    background-image: url('../Games_files/u53_normal.png');
+}
+
+.u55_container {
+    position:absolute;
+    left:100px;
+    top:0px;
+    width:100px;
+    height:20px;
+}
+
+#u55_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:26px;
+}
+
+.u56 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u57_normal {
+    background-image: url('../Games_files/u53_normal.png');
+}
+
+.u57_container {
+    position:absolute;
+    left:200px;
+    top:0px;
+    width:100px;
+    height:20px;
+}
+
+#u57_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:26px;
+}
+
+.u58 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u59_normal {
+    background-image: url('../Games_files/u59_normal.png');
+}
+
+.u59_container {
+    position:absolute;
+    left:300px;
+    top:0px;
+    width:393px;
+    height:20px;
+}
+
+#u59_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:399px;
+    height:26px;
+}
+
+.u60 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:389px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u61_normal {
+    background-image: url('../Games_files/u61_normal.png');
+}
+
+.u61_container {
+    position:absolute;
+    left:693px;
+    top:0px;
+    width:74px;
+    height:20px;
+}
+
+#u61_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:80px;
+    height:26px;
+}
+
+.u62 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:70px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u63_normal {
+    background-image: url('../Games_files/u63_normal.png');
+}
+
+.u63_container {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:100px;
+    height:31px;
+}
+
+#u63_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:37px;
+}
+
+.u64 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:96px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u65_normal {
+    background-image: url('../Games_files/u63_normal.png');
+}
+
+.u65_container {
+    position:absolute;
+    left:100px;
+    top:20px;
+    width:100px;
+    height:31px;
+}
+
+#u65_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:37px;
+}
+
+.u66 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u67_normal {
+    background-image: url('../Games_files/u63_normal.png');
+}
+
+.u67_container {
+    position:absolute;
+    left:200px;
+    top:20px;
+    width:100px;
+    height:31px;
+}
+
+#u67_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:37px;
+}
+
+.u68 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u69_normal {
+    background-image: url('../Games_files/u69_normal.png');
+}
+
+.u69_container {
+    position:absolute;
+    left:300px;
+    top:20px;
+    width:393px;
+    height:31px;
+}
+
+#u69_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:399px;
+    height:37px;
+}
+
+.u70 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:389px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u71_normal {
+    background-image: url('../Games_files/u71_normal.png');
+}
+
+.u71_container {
+    position:absolute;
+    left:693px;
+    top:20px;
+    width:74px;
+    height:31px;
+}
+
+#u71_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:80px;
+    height:37px;
+}
+
+.u72 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:70px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u73_normal {
+    background-image: url('../Games_files/u73_normal.png');
+}
+
+.u73_container {
+    position:absolute;
+    left:0px;
+    top:51px;
+    width:100px;
+    height:30px;
+}
+
+#u73_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:36px;
+}
+
+.u74 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:96px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u75_normal {
+    background-image: url('../Games_files/u73_normal.png');
+}
+
+.u75_container {
+    position:absolute;
+    left:100px;
+    top:51px;
+    width:100px;
+    height:30px;
+}
+
+#u75_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:36px;
+}
+
+.u76 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u77_normal {
+    background-image: url('../Games_files/u73_normal.png');
+}
+
+.u77_container {
+    position:absolute;
+    left:200px;
+    top:51px;
+    width:100px;
+    height:30px;
+}
+
+#u77_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:36px;
+}
+
+.u78 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u79_normal {
+    background-image: url('../Games_files/u79_normal.png');
+}
+
+.u79_container {
+    position:absolute;
+    left:300px;
+    top:51px;
+    width:393px;
+    height:30px;
+}
+
+#u79_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:399px;
+    height:36px;
+}
+
+.u80 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:389px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u81_normal {
+    background-image: url('../Games_files/u81_normal.png');
+}
+
+.u81_container {
+    position:absolute;
+    left:693px;
+    top:51px;
+    width:74px;
+    height:30px;
+}
+
+#u81_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:80px;
+    height:36px;
+}
+
+.u82 {
+    position:absolute;
+    left:2px;
+    top:7px;
+    width:70px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u83_normal {
+    background-image: url('../Games_files/u63_normal.png');
+}
+
+.u83_container {
+    position:absolute;
+    left:0px;
+    top:81px;
+    width:100px;
+    height:31px;
+}
+
+#u83_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:37px;
+}
+
+.u84 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:96px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u85_normal {
+    background-image: url('../Games_files/u63_normal.png');
+}
+
+.u85_container {
+    position:absolute;
+    left:100px;
+    top:81px;
+    width:100px;
+    height:31px;
+}
+
+#u85_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:37px;
+}
+
+.u86 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u87_normal {
+    background-image: url('../Games_files/u63_normal.png');
+}
+
+.u87_container {
+    position:absolute;
+    left:200px;
+    top:81px;
+    width:100px;
+    height:31px;
+}
+
+#u87_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:106px;
+    height:37px;
+}
+
+.u88 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:96px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u89_normal {
+    background-image: url('../Games_files/u69_normal.png');
+}
+
+.u89_container {
+    position:absolute;
+    left:300px;
+    top:81px;
+    width:393px;
+    height:31px;
+}
+
+#u89_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:399px;
+    height:37px;
+}
+
+.u90 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:389px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u91_normal {
+    background-image: url('../Games_files/u71_normal.png');
+}
+
+.u91_container {
+    position:absolute;
+    left:693px;
+    top:81px;
+    width:74px;
+    height:31px;
+}
+
+#u91_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:80px;
+    height:37px;
+}
+
+.u92 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:70px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u93 {
+    position:absolute;
+    left:173px;
+    top:282px;
+    width:101px;
+    height:20px;
+    overflow:hidden;
+}
+
+#pd1u93 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:101px;
+    height:20px;
+    
+}
+
+.u94_normal {
+    background-image: url('../Games_files/u94_normal.png');
+}
+
+.u94_container {
+    position:absolute;
+    left:5px;
+    top:3px;
+    width:85px;
+    height:15px;
+}
+
+#u94_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:85px;
+    height:15px;
+}
+
+.u95 {
+    position:absolute;
+    left:2px;
+    top:0px;
+    width:81px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd0u93 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:101px;
+    height:20px;
+    
+}
+
+.u96_normal {
+    background-image: url('../Games_files/u96_normal.png');
+}
+
+.u96_container {
+    position:absolute;
+    left:5px;
+    top:3px;
+    width:85px;
+    height:15px;
+}
+
+#u96_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:85px;
+    height:15px;
+}
+
+.u97 {
+    position:absolute;
+    left:2px;
+    top:0px;
+    width:81px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u98 {
+    position:absolute;
+    left:173px;
+    top:313px;
+    width:101px;
+    height:20px;
+    overflow:hidden;
+}
+
+#pd1u98 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:101px;
+    height:20px;
+    
+}
+
+.u99_normal {
+    background-image: url('../Games_files/u94_normal.png');
+}
+
+.u99_container {
+    position:absolute;
+    left:5px;
+    top:3px;
+    width:85px;
+    height:15px;
+}
+
+#u99_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:85px;
+    height:15px;
+}
+
+.u100 {
+    position:absolute;
+    left:2px;
+    top:0px;
+    width:81px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd0u98 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:101px;
+    height:20px;
+    
+}
+
+.u101_normal {
+    background-image: url('../Games_files/u96_normal.png');
+}
+
+.u101_container {
+    position:absolute;
+    left:5px;
+    top:3px;
+    width:85px;
+    height:15px;
+}
+
+#u101_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:85px;
+    height:15px;
+}
+
+.u102 {
+    position:absolute;
+    left:2px;
+    top:0px;
+    width:81px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u103 {
+    position:absolute;
+    left:173px;
+    top:342px;
+    width:101px;
+    height:20px;
+    overflow:hidden;
+}
+
+#pd1u103 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:101px;
+    height:20px;
+    
+}
+
+.u104_normal {
+    background-image: url('../Games_files/u94_normal.png');
+}
+
+.u104_container {
+    position:absolute;
+    left:5px;
+    top:3px;
+    width:85px;
+    height:15px;
+}
+
+#u104_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:85px;
+    height:15px;
+}
+
+.u105 {
+    position:absolute;
+    left:2px;
+    top:0px;
+    width:81px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd0u103 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:101px;
+    height:20px;
+    
+}
+
+.u106_normal {
+    background-image: url('../Games_files/u96_normal.png');
+}
+
+.u106_container {
+    position:absolute;
+    left:5px;
+    top:3px;
+    width:85px;
+    height:15px;
+}
+
+#u106_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:85px;
+    height:15px;
+}
+
+.u107 {
+    position:absolute;
+    left:2px;
+    top:0px;
+    width:81px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u108_normal {
+    background-image: url('../Games_files/u108_normal.png');
+}
+
+.u108_container {
+    position:absolute;
+    left:891px;
+    top:282px;
+    width:20px;
+    height:20px;
+}
+
+#u108_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:20px;
+    height:20px;
+}
+
+.u109 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:16px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u110_normal {
+    background-image: url('../Games_files/u108_normal.png');
+}
+
+.u110_container {
+    position:absolute;
+    left:891px;
+    top:311px;
+    width:20px;
+    height:20px;
+}
+
+#u110_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:20px;
+    height:20px;
+}
+
+.u111 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:16px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u112_normal {
+    background-image: url('../Games_files/u108_normal.png');
+}
+
+.u112_container {
+    position:absolute;
+    left:891px;
+    top:343px;
+    width:20px;
+    height:20px;
+}
+
+#u112_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:20px;
+    height:20px;
+}
+
+.u113 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:16px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u114_normal {
+    background-image: url('../Games_files/u114_normal.png');
+}
+
+.u114_container {
+    position:absolute;
+    left:486px;
+    top:394px;
+    width:117px;
+    height:44px;
+}
+
+#u114_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:123px;
+    height:50px;
+}
+
+.u115 {
+    position:absolute;
+    left:2px;
+    top:3px;
+    width:113px;
+    height:38px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u116 {
+    position:absolute;
+    left:619px;
+    top:394px;
+    width:51px;
+    height:46px;
+    overflow:hidden;
+}
+
+#pd1u116 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:51px;
+    height:46px;
+    
+}
+
+.u117_normal {
+    background-image: url('../Games_files/u117_normal.png');
+}
+
+.u117_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:40px;
+    height:40px;
+}
+
+#u117_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:40px;
+    height:40px;
+}
+
+.u118 {
+    position:absolute;
+    left:2px;
+    top:12px;
+    width:36px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd0u116 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:51px;
+    height:46px;
+    
+}
+
+#pd0u2 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:954px;
+    height:550px;
+    
+}
+
+.u119_normal {
+    background-image: url('../Games_files/u119_normal.png');
+}
+
+.u119_container {
+    position:absolute;
+    left:10px;
+    top:10px;
+    width:942px;
+    height:539px;
+}
+
+#u119_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:948px;
+    height:545px;
+}
+
+.u120 {
+    position:absolute;
+    left:2px;
+    top:262px;
+    width:938px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u121_normal {
+    background-image: url('../Games_files/u5_normal.png');
+}
+
+.u121_container {
+    position:absolute;
+    left:10px;
+    top:72px;
+    width:128px;
+    height:59px;
+}
+
+#u121_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:65px;
+}
+
+.u122 {
+    position:absolute;
+    left:2px;
+    top:13px;
+    width:124px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u123_normal {
+    background-image: url('../Games_files/u7_normal.png');
+}
+
+.u123_container {
+    position:absolute;
+    left:10px;
+    top:11px;
+    width:128px;
+    height:60px;
+}
+
+#u123_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:66px;
+}
+
+.u124 {
+    position:absolute;
+    left:2px;
+    top:14px;
+    width:124px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u125_normal {
+    background-image: url('../Games_files/u9_normal.png');
+}
+
+.u125_container {
+    position:absolute;
+    left:138px;
+    top:11px;
+    width:15px;
+    height:60px;
+}
+
+#u125_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:21px;
+    height:66px;
+}
+
+.u126 {
+    position:absolute;
+    left:2px;
+    top:22px;
+    width:11px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u127_normal {
+    background-image: url('../Games_files/u5_normal.png');
+}
+
+.u127_container {
+    position:absolute;
+    left:10px;
+    top:131px;
+    width:128px;
+    height:59px;
+}
+
+#u127_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:134px;
+    height:65px;
+}
+
+.u128 {
+    position:absolute;
+    left:2px;
+    top:3px;
+    width:124px;
+    height:53px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u129 {
+    position:absolute;
+    left:323px;
+    top:91px;
+    width:350px;
+    height:21px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u130 {
+    position:absolute;
+    left:323px;
+    top:122px;
+    width:201px;
+    height:151px;
+    overflow:hidden;
+}
+
+#pd0u130 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:201px;
+    height:151px;
+    
+}
+
+.u131_normal {
+    background-image: url('../Games_files/u25_normal.png');
+}
+
+.u131_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:200px;
+    height:20px;
+}
+
+#u131_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:206px;
+    height:26px;
+}
+
+.u132 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:196px;
+    height:15px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u133 {
+    position:absolute;
+    left:0px;
+    top:20px;
+    width:201px;
+    height:129px;
+    ;
+    ;
+    ;
+    font-family:'Arial';
+    font-size: 13px;
+    color:#000000;
+    font-style:normal;
+    font-weight:normal;
+    text-decoration:none;
+    
+}
+
+.u134_normal {
+    background-image: url('../Games_files/u134_normal.png');
+}
+
+.u134_container {
+    position:absolute;
+    left:323px;
+    top:31px;
+    width:117px;
+    height:40px;
+}
+
+#u134_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:123px;
+    height:46px;
+}
+
+.u135 {
+    position:absolute;
+    left:2px;
+    top:8px;
+    width:113px;
+    height:23px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+

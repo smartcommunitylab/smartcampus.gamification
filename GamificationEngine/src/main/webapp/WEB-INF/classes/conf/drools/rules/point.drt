@@ -1,0 +1,20 @@
+template header
+ruleId
+actionId
+rewardPoints
+
+package pointTemplates;
+
+import eu.trentorise.game.event.model.StartEvent;
+import eu.trentorise.game.model.player.Player;
+import eu.trentorise.game.rule.model.Action;
+
+template "pointTemplate"
+
+rule "PointRule_@{ruleId}"
+    when
+        startEvent: StartEvent(action.id == @{actionId}, player : player);
+    then
+        player.setPoints(player.getPoints() + @{rewardPoints});
+end
+end template

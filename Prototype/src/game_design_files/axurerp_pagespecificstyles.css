@@ -1,0 +1,593 @@
+﻿body {
+    margin: 0px;
+}
+
+div {
+    background-repeat: no-repeat;
+}
+
+.raw_image {
+    width: 100%;
+    height: 100%;
+}
+
+.preload {
+    display: none;
+}
+#main_container {
+}
+
+.form_sketch {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.u0_normal {
+    background-image: url('../Game_Design_files/u0_normal.png');
+}
+
+.u0_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:1024px;
+    height:768px;
+}
+
+#u0_img {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:1024px;
+    height:768px;
+}
+
+.u1 {
+    position:absolute;
+    left:2px;
+    top:376px;
+    width:1020px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u2 {
+    position:absolute;
+    left:291px;
+    top:97px;
+    width:344px;
+    height:90px;
+    overflow:hidden;
+}
+
+#pd2u2 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:344px;
+    height:90px;
+    
+}
+
+.u3_normal {
+    background-image: url('../Game_Design_Header_files/u3_normal.png');
+}
+
+.u3_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:340px;
+    height:85px;
+}
+
+#u3_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:346px;
+    height:91px;
+}
+
+.u4 {
+    position:absolute;
+    left:2px;
+    top:34px;
+    width:336px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u5 {
+    position:absolute;
+    left:13px;
+    top:25px;
+    width:352px;
+    height:22px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u6 {
+    position:absolute;
+    left:13px;
+    top:4px;
+    width:352px;
+    height:22px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u7 {
+    position:absolute;
+    left:13px;
+    top:45px;
+    width:352px;
+    height:22px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u8 {
+    position:absolute;
+    left:13px;
+    top:64px;
+    width:352px;
+    height:22px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd1u2 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:344px;
+    height:90px;
+    
+}
+
+.u9_normal {
+    background-image: url('../Game_Design_Header_files/u3_normal.png');
+}
+
+.u9_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:340px;
+    height:85px;
+}
+
+#u9_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:346px;
+    height:91px;
+}
+
+.u10 {
+    position:absolute;
+    left:2px;
+    top:34px;
+    width:336px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u11 {
+    position:absolute;
+    left:38px;
+    top:32px;
+    width:352px;
+    height:26px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u12 {
+    position:absolute;
+    left:38px;
+    top:4px;
+    width:352px;
+    height:26px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u13 {
+    position:absolute;
+    left:38px;
+    top:58px;
+    width:352px;
+    height:26px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd0u2 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:344px;
+    height:90px;
+    
+}
+
+.u14_normal {
+    background-image: url('../Game_Design_Header_files/u14_normal.png');
+}
+
+.u14_container {
+    position:absolute;
+    left:0px;
+    top:10px;
+    width:343px;
+    height:66px;
+}
+
+#u14_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:349px;
+    height:72px;
+}
+
+.u15 {
+    position:absolute;
+    left:2px;
+    top:25px;
+    width:339px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u16 {
+    position:absolute;
+    left:38px;
+    top:43px;
+    width:350px;
+    height:26px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u17 {
+    position:absolute;
+    left:38px;
+    top:14px;
+    width:350px;
+    height:26px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u19_normal {
+    background-image: url('../Game_Design_files/u19_normal.png');
+}
+
+.u19_container {
+    position:absolute;
+    left:390px;
+    top:309px;
+    width:146px;
+    height:65px;
+}
+
+#u19_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:152px;
+    height:71px;
+}
+
+.u20 {
+    position:absolute;
+    left:2px;
+    top:10px;
+    width:142px;
+    height:46px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u21_normal {
+    background-image: url('../Game_Design_files/u19_normal.png');
+}
+
+.u21_container {
+    position:absolute;
+    left:390px;
+    top:394px;
+    width:146px;
+    height:65px;
+}
+
+#u21_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:152px;
+    height:71px;
+}
+
+.u22 {
+    position:absolute;
+    left:2px;
+    top:10px;
+    width:142px;
+    height:46px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u23 {
+    position:absolute;
+    left:200px;
+    top:235px;
+    width:543px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u24 {
+    position:absolute;
+    left:559px;
+    top:15px;
+    width:395px;
+    height:265px;
+    overflow:hidden;
+}
+
+#pd0u24 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:395px;
+    height:265px;
+    
+}
+
+.u25_normal {
+    background-image: url('../resources/images/transparent.gif');
+}
+
+.u25_container {
+    position:absolute;
+    left:10px;
+    top:10px;
+    width:379px;
+    height:131px;
+}
+
+#u25_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:385px;
+    height:137px;
+}
+
+.u26 {
+    position:absolute;
+    left:2px;
+    top:58px;
+    width:375px;
+    height:16px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#u27 {
+    position:absolute;
+    left:33px;
+    top:47px;
+    width:358px;
+    height:215px;
+    overflow:hidden;
+}
+
+#pd1u27 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:358px;
+    height:215px;
+    
+}
+
+.u28_mouseOver {
+    background-image: url('../resources/images/transparent.gif');
+}
+
+.u28_normal {
+    background-image: url('../resources/images/transparent.gif');
+}
+
+.u28_container {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:309px;
+    height:37px;
+}
+
+#u28_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:315px;
+    height:43px;
+}
+
+.u29 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:305px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+.u30_mouseOver {
+    background-image: url('../Header_files/u71_mouseOver.png');
+}
+
+.u30_normal {
+    background-image: url('../Header_files/u71_mouseOver.png');
+}
+
+.u30_container {
+    position:absolute;
+    left:0px;
+    top:37px;
+    width:309px;
+    height:37px;
+}
+
+#u30_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:315px;
+    height:43px;
+}
+
+.u31 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:305px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+
+#pd0u27 {
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:358px;
+    height:215px;
+    
+}
+
+.u32_normal {
+    background-image: url('../Header_files/u73_normal.png');
+}
+
+.u32_container {
+    position:absolute;
+    left:10px;
+    top:10px;
+    width:309px;
+    height:37px;
+}
+
+#u32_img {
+    position:absolute;
+    left:-3px;
+    top:-3px;
+    width:315px;
+    height:43px;
+}
+
+.u33 {
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:305px;
+    height:33px;
+    ;
+    ;
+    ;
+    font-family:Arial;
+    text-align:left;
+    word-wrap:break-word;
+}
+

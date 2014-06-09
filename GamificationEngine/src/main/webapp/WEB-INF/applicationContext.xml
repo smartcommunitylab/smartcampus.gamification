@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+               
+    <import resource="/gamificationengine-servlet.xml"/>
+    
+    <!-- annotations configuration --> 
+    <context:component-scan base-package="eu.trentorise"/>
+    
+    <context:annotation-config />
+    
+    <!-- Enable annotation driven controllers, validation etc... proprietà 
+         validator settata perchè necessaria per fare in modo tale che il 
+         validator possa usare il messageSource-->
+    <mvc:annotation-driven validator="validator" />
+
+    <!-- utile nel caso in cui si voglia usare AspectJ per iniettare durante la 
+         creazione di alcuni oggetti, alcuni dei loro attributi -->
+    <!--<context:spring-configured/>-->
+    
+    <!-- necessario per fare in modo tale che il validator possa usare il 
+         messageSource-->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    
+    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    
+    <bean id="propertiesLocations" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>/WEB-INF/deploy.properties</value>
+                <value>/WEB-INF/conf/db/db.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations" ref="propertiesLocations"/>
+    </bean>
+
+    <!-- Property Configurer -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" ref="properties"/>
+    </bean>
+          
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>/WEB-INF/i18n/messages</value>
+                <value>/WEB-INF/i18n/game</value>
+            </list>
+        </property>
+        <property name="cacheSeconds" value="${messageSource_cacheSeconds}"/>
+    </bean>
+    
+    <!-- Properties beans -->
+    <bean id="dateSeparator" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${dateSeparator}"/>
+    </bean>
+    
+    <bean id="timeSeparator" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${timeSeparator}"/>
+    </bean>
+    
+    <bean id="pathDelimiter" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${pathDelimiter}"/>
+    </bean>
+    
+    
+    <!-- ************************ Error Handlers *************************** -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.Exception">game.baseError</prop>
+                <prop key="org.springframework.web.HttpSessionRequiredException">${view_session_expired_error}</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- ************************* Helpers ****************************** -->
+    <!--bean id="urlParamsHelper" class="eu.trentorise.utils.helper.UrlParamsHelper" /-->
+    
+    <!--bean id="calendarHelper" class="eu.trentorise.utils.helper.CalendarHelper">
+        <property name="dateSeparator" ref="dateSeparator"/>
+        <property name="timeSeparator" ref="timeSeparator"/>
+        <property name="converter" ref="calendarXMLGregorianCalendarConverter" />
+    </bean-->
+
+
+    <!-- ************************* Utils ****************************** -->
+    <bean id="stringToStream" class="eu.trentorise.utils.io.StringToStream" />
+    
+    <bean id="classPathResourceDAO" class="eu.trentorise.utils.drools.io.ClassPathResourceDAO" />
+    
+    <!--bean id="dateConverter" class="eu.trentorise.game.utils.SimpleDateConverter" />
+    
+    <bean id="redirectBuilder" scope="prototype" class="eu.trentorise.game.utils.spring.AbsoluteRedirectBuilder">
+        <property name="webappDomainAbsolute" value="${webapp_domain_absolute}"/>
+    </bean>
+    
+    <bean id="calendarXMLGregorianCalendarConverter" scope="prototype" class="eu.trentorise.utils.dateandtime.CalendarXMLGregorianCalendarConverter" /-->
+    
+    
+    <!-- ************************* Collections ****************************** -->
+</beans>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<gamifiable-actions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:noNamespaceSchemaLocation="gamifiableActions.xsd">
+    
+    <action id="1">
+        <name>BusDelayReporting</name>
+        <description>The user has reported the delay of a bus</description>
+    </action>
+    
+    <action id="2">
+        <name>BusServiceRating</name>
+        <description>The user has rated the bus service quality</description>
+    </action>
+    
+    <action id="3">
+        <name>BusCommentAdding</name>
+        <description>The user has commented the bus service</description>
+    </action>
+    
+    <action id="4">
+        <name>ItenerarySaving</name>
+        <description>The user has saved an interary</description>
+        
+        <params>
+            <composite-param name="itinerary" id="">
+                <basic-param name="numberOfMeans" id="" type="Integer"/>
+                
+                <enumeration-param name="means" id="">
+                    <enum-entry name="BIKE"/>
+                    <enum-entry name="CAR"/>
+                    <enum-entry name="BUS"/>
+                </enumeration-param>
+                
+                <composite-param name="KM" id="">
+                    <basic-param name="totalKM" id="" type="Integer" />
+                    <basic-param name="bikeKM" id="" type="Integer"/>
+                    <basic-param name="carKM" id="" type="Integer"/>
+                    <basic-param name="busKM" id="" type="Integer"/>
+                </composite-param>
+            </composite-param>
+        </params>
+    </action>
+    
+    <action id="5">
+        <name>BikeUsage</name>
+        <description>The user has used a bike</description>
+        
+        <params>
+            <basic-param name="bikeKM" id="" type="Integer"/>
+        </params>
+    </action>
+    
+    <action id="6">
+        <name>CarUsage</name>
+        <description>The user has used a car</description>
+        
+        <params>
+            <basic-param name="carKM" id="" type="Integer"/>
+        </params>
+    </action>
+    
+    <action id="7">
+        <name>BusUsage</name>
+        <description>The user has used a bus</description>
+        
+        <params>
+            <basic-param name="busKM" id="" type="Integer"/>
+        </params>
+    </action>
+</gamifiable-actions>

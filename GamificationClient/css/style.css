@@ -1,7 +1,11 @@
+body {
+  /* Needed if navbar-fixed-top and/or navbar-fixed-bottom */
+  padding-top: 50px;
+  padding-bottom: 70px;
+}
 .navbar-brand.navbar-brand-bigger {
   font-size: 36px;
 }
-
 .vertical-aligned {
   vertical-align: middle;
 }

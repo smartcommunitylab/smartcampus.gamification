@@ -1,16 +1,20 @@
-var app = angular.module('gamificationEngine', ['ui.bootstrap', 'localization']);
+var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'localization']);
 
-app.config(function ($routeProvider) {
+app.config(
+  function ($routeProvider) {
     $routeProvider.when('/login', {
-        templateUrl: 'templates/login.html',
-        controller: 'TmpCtrl'
+      templateUrl: 'templates/login.html',
+      controller: 'TmpCtrl'
+    })
+
+    .otherwise({
+      redirectTo: '/login'
     });
-    $routeProvider.otherwise({
-        redirectTo: '/login'
-    });
+  }
+);
 
-});
-
-function TmpCtrl($scope) {
-
-}
+app.controller('TmpCtrl',
+  function ($scope) {
+    // TODO
+  }
+);

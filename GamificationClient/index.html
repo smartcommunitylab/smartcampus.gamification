@@ -14,49 +14,34 @@
   <link href="css/bootstrap.min.css" rel="stylesheet" />
   <link href="css/bootstrap.vertical-tabs.min.css" rel="stylesheet" />
   <link href="css/style.css" rel="stylesheet" />
-
-  <!-- Javascripts -->
-  <script src="js/libs/angular.min.js"></script>
-  <script src="js/libs/ui-bootstrap-tpls-0.11.0.min.js"></script>
-  <script src="js/libs/sprintf.min.js"></script>
-  <script src="js/libs/localization.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/controllers.js"></script>
-  <script src="js/services.js"></script>
 </head>
 
 <body>
   <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="navbar-header">
-            <a class="navbar-brand navbar-brand-bigger" href="#">Gamification engine</a>
-          </div>
-          <div class="pull-right">
-            <ul class="nav navbar-nav">
-              <li class="active">
-                <a href="#">{{'btn_home' | i18n}}</a>
-              </li>
-              <li>
-                <a href="#">{{'btn_configure' | i18n}}</a>
-              </li>
-              <li>
-                <a href="#">{{'btn_actions' | i18n}}</a>
-              </li>
-              <li>
-                <a href="#">{{'btn_logout' | i18n}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+      <div class="navbar-header">
+        <a class="navbar-brand navbar-brand-bigger" href="#">Gamification engine</a>
       </div>
-
+      <div class="pull-right">
+        <ul class="nav navbar-nav">
+          <li class="active">
+            <a href="#">{{'btn_home' | i18n}}</a>
+          </li>
+          <li>
+            <a href="#">{{'btn_configure' | i18n}}</a>
+          </li>
+          <li>
+            <a href="#">{{'btn_actions' | i18n}}</a>
+          </li>
+          <li>
+            <a href="#">{{'btn_logout' | i18n}}</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="container">
     <div ng-view>
-
     </div>
   </div>
   <div class="navbar navbar-default navbar-fixed-bottom">
@@ -94,9 +79,18 @@
           </ul>
         </div>
       </div>
-
     </div>
   </div>
+
+  <!-- Javascripts -->
+  <script src="js/libs/angular.min.js"></script>
+  <script src="js/libs/angular-route.min.js"></script>
+  <script src="js/libs/ui-bootstrap-tpls-0.11.0.min.js"></script>
+  <script src="js/libs/sprintf.min.js"></script>
+  <script src="js/libs/localization.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="js/services.js"></script>
 </body>
 
 </html>

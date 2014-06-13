@@ -23,3 +23,11 @@ body {
 .pull-center {
   margin-top: 50%;
 }
+
+.panel.panel-games {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 40px;
+  min-height: 320px;
+  max-height: 320px;
+}

@@ -1,8 +1,7 @@
-.navbar-brand {
-  font-size: 40px
+.navbar-brand.navbar-brand-bigger {
+  font-size: 36px;
 }
 
-.footer {
-  position: fixed;
-  bottom: 0
+.vertical-aligned {
+  vertical-align: middle;
 }

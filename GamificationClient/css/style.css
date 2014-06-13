@@ -1,11 +1,25 @@
 body {
   /* Needed if navbar-fixed-top and/or navbar-fixed-bottom */
-  padding-top: 50px;
+  padding-top: 70px;
   padding-bottom: 70px;
 }
+
+.navbar-brand.navbar-brand-logo {
+  padding-top: 0px;
+}
+
 .navbar-brand.navbar-brand-bigger {
   font-size: 36px;
 }
+
 .vertical-aligned {
   vertical-align: middle;
+}
+
+.vertical-spacing {
+  margin-bottom: 20px;
+}
+
+.pull-center {
+  margin-top: 50%;
 }

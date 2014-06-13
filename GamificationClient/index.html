@@ -27,24 +27,45 @@
 <body>
   <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">Gamification engine</a>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Gamification engine</a>
+          </div>
+          <div class="pull-right">
+            <ul class="nav navbar-nav">
+              <li class="active">
+                <a href="#">{{'btn_home' | i18n}}</a>
+              </li>
+              <li>
+                <a href="#">Configure</a>
+              </li>
+              <li>
+                <a href="#">Actions</a>
+              </li>
+              <li>
+                <a href="#">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="pull-right">
-        <ul class="nav navbar-nav">
-          <li class="active">
-            <a href="#">{{'btn_home' | i18n}}</a>
-          </li>
-          <li>
-            <a href="#">Configure</a>
-          </li>
-          <li>
-            <a href="#">Actions</a>
-          </li>
-          <li>
-            <a href="#">Logout</a>
-          </li>
-        </ul>
+
+    </div>
+  </div>
+  <div class="container">
+    <div ng-view>
+
+    </div>
+  </div>
+  <div class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="pull-right">
+            <p>Prova testo pulled-right</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

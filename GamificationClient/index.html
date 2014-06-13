@@ -11,20 +11,43 @@
   <title>Gamification engine</title>
 
   <!-- Cascading style sheets  (CSS) -->
-  <link href="css/bootstrap.min.css">
-  <link href="css/bootstrap.vertical-tabs.min.css">
-  <link href="css/style.css">
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/bootstrap.vertical-tabs.min.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
 
   <!-- Javascripts -->
   <script src="js/libs/angular.min.js"></script>
   <script src="js/libs/ui-bootstrap-tpls-0.11.0.min.js"></script>
+  <script src="js/libs/localization.js"></script>
   <script src="js/app.js"></script>
   <script src="js/controllers.js"></script>
   <script src="js/services.js"></script>
 </head>
 
 <body>
-
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Gamification engine</a>
+      </div>
+      <div class="pull-right">
+        <ul class="nav navbar-nav">
+          <li class="active">
+            <a href="#">{{'btn_home' | i18n}}</a>
+          </li>
+          <li>
+            <a href="#">Configure</a>
+          </li>
+          <li>
+            <a href="#">Actions</a>
+          </li>
+          <li>
+            <a href="#">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

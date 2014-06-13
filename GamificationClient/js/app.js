@@ -1,1 +1,1 @@
-var app = angular.module('gamificationEngine', ['ui.bootstrap']);
+var app = angular.module('gamificationEngine', ['ui.bootstrap', 'localization']);

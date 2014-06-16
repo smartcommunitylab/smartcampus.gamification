@@ -8,8 +8,7 @@
   "lbl_add_game": "Aggiungi un nuovo gioco",
   "lbl_name": "Nome",
   "lbl_enter_name": "Inserisci nome",
-  "lbl_description": "Descrizione",
-  "lbl_enter_description": "Inserisci descrizione",
   "btn_cancel": "Annulla",
-  "btn_ok": "OK"
+  "btn_ok": "OK",
+  "game_info": "%d attivi su %d"
 }

@@ -22,6 +22,20 @@ function HomeCtrl($scope, $modal, initFactory) {
       $scope.games.push(gameName);
     });
   };
+
+  $scope.countActive = function (game, type) {
+    var count = 0;
+    angular.forEach(game.instances[type], function (value) {
+      if (value.is_active) {
+        count++;
+      }
+    });
+    return count;
+  };
+
+  $scope.getLength = function(game, type) {
+    return game.instances[type].length;
+  }
 }
 
 function GameModalInstanceCtrl($scope, $modalInstance) {
@@ -30,8 +44,8 @@ function GameModalInstanceCtrl($scope, $modalInstance) {
   $scope.ok = function () {
     var gameName = $scope.gameName;
 
-    if (gameName != "" && gameName != undefined)
-      $modalInstance.close(gameName);
+    //    if (gameName != "" && gameName != undefined)
+    $modalInstance.close(gameName);
   };
 
   $scope.cancel = function () {

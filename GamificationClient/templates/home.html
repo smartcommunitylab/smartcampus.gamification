@@ -23,9 +23,9 @@ Text in the panel body MUST be no longer than 7 lines!!!
         </div>
         <div class="panel-body">
           <p>
-            {{game.points}}
-            <br />{{game.badges}}
-            <br />{{game.leaderboards}}
+            Points: {{'game_info' | i18n:countActive(game, 'points'):''+getLength(game, 'points')}}.
+            <br />Badges collections: {{'game_info' | i18n:countActive(game, 'badges_collections'):''+game.instances.['badges_collections'].length}}.
+            <br />Leaderboards: {{'game_info' | i18n:countActive(game, 'leaderboards'):''+game.instances.['leaderboards'].length}}.
           </p>
         </div>
         <div class="panel-footer ">

@@ -11,8 +11,9 @@ function HomeCtrl($scope, $modal) {
       controller: GameModalInstanceCtrl
     });
 
-    modalInstance.result.then(function (game) {
+    modalInstance.result.then(function (gameName) {
       /* TODO: Add new game! */
+      $scope.games.push(gameName);
     });
   };
 }
@@ -21,7 +22,10 @@ function GameModalInstanceCtrl($scope, $modalInstance) {
   $scope.game = {};
 
   $scope.ok = function () {
-    $modalInstance.close($scope.game);
+    var gameName = $scope.gameName;
+
+    if (gameName != "" && gameName != undefined)
+      $modalInstance.close(gameName);
   };
 
   $scope.cancel = function () {
@@ -32,22 +36,32 @@ function GameModalInstanceCtrl($scope, $modalInstance) {
 var games = [
   {
     'name': 'Game 1. Lorem ipsum dolor sit amet.',
-    'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius.'
+    'points': 'Points: 1 active out of 3.',
+    'badges': 'Badges collections: 3 active out of 7.',
+    'leaderboards': 'Leaderboards: 0 active out of 2.'
     },
   {
     'name': 'Game 2',
-    'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum.'
+    'points': 'Points: 1 active out of 3.',
+    'badges': 'Badges collections: 3 active out of 7.',
+    'leaderboards': 'Leaderboards: 0 active out of 2.'
     },
   {
     'name': 'Game 3',
-    'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius.'
+    'points': 'Points: 1 active out of 3.',
+    'badges': 'Badges collections: 3 active out of 7.',
+    'leaderboards': 'Leaderboards: 0 active out of 2.'
     },
   {
     'name': 'Game 4',
-    'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+    'points': 'Points: 1 active out of 3.',
+    'badges': 'Badges collections: 3 active out of 7.',
+    'leaderboards': 'Leaderboards: 0 active out of 2.'
     },
   {
     'name': 'Game 5',
-    'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius.'
+    'points': 'Points: 1 active out of 3.',
+    'badges': 'Badges collections: 3 active out of 7.',
+    'leaderboards': 'Leaderboards: 0 active out of 2.'
     }
 ];

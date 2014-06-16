@@ -21,7 +21,13 @@ Text in the panel body MUST be no longer than 7 lines!!!
           <h3 class="ellipsis">{{game.name}}</h3>
         </div>
         <div class="panel-body">
-          <p>{{game.description}}</p>
+          <p>
+            {{game.points}}
+            <br />{{game.badges}}
+            <br />{{game.leaderboards}}
+          </p>
+        </div>
+        <div class="panel-footer ">
         </div>
       </div>
     </li>

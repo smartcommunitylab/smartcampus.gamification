@@ -22,10 +22,11 @@ body {
   margin-left: 10px;
   margin-right: 10px;
   margin-bottom: 40px;
-  min-height: 260px;
-  max-height: 260px;
+  height: 260px;
+  overflow: hidden;
 }
-.truncated {
+.ellipsis {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }

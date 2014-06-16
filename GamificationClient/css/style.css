@@ -3,31 +3,29 @@ body {
   padding-top: 70px;
   padding-bottom: 70px;
 }
-
 .navbar-brand.navbar-brand-logo {
   padding-top: 0px;
 }
-
 .navbar-brand.navbar-brand-bigger {
   font-size: 36px;
 }
-
 .vertical-aligned {
   vertical-align: middle;
 }
-
 .vertical-spacing {
   margin-bottom: 20px;
 }
-
 .pull-center {
   margin-top: 50%;
 }
-
 .panel.panel-games {
   margin-left: 10px;
   margin-right: 10px;
   margin-bottom: 40px;
-  min-height: 320px;
-  max-height: 320px;
+  min-height: 260px;
+  max-height: 260px;
+}
+.truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

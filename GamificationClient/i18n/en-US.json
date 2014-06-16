@@ -2,5 +2,14 @@
   "btn_home": "Home",
   "btn_configure": "Configure",
   "btn_actions": "Actions",
-  "btn_logout": "Logout"
+  "btn_logout": "Logout",
+  "btn_login": "Login",
+  "btn_add_game": "Add new game",
+  "lbl_add_game": "Add new game",
+  "lbl_name": "Name",
+  "lbl_enter_name": "Enter name",
+  "lbl_description": "Description",
+  "lbl_enter_description": "Enter description",
+  "btn_cancel": "Cancel",
+  "btn_ok": "OK"
 }

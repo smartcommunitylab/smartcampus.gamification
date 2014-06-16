@@ -3,21 +3,22 @@ function LoginCtrl($scope) {
 }
 
 function HomeCtrl($scope, $modal) {
-  $scope.openAddGameModal = function () {
+  $scope.openGameModal = function () {
 
     var modalInstance = $modal.open({
-      templateUrl: 'templates/addGameModal.html',
-      controller: AddGameModalInstanceCtrl,
+      templateUrl: 'templates/gamemodal.html',
+      controller: GameModalInstanceCtrl
     });
 
     modalInstance.result.then(function (game) {
       /* TODO: Add new game! */
-      $scope.game = game;
     });
   };
 }
 
-function AddGameModalInstanceCtrl($scope, $modalInstance) {
+function GameModalInstanceCtrl($scope, $modalInstance) {
+  $scope.game = {};
+
   $scope.ok = function () {
     $modalInstance.close($scope.game);
   };

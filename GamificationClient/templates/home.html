@@ -1,14 +1,13 @@
 <br />
 <div class="row vertical-spacing">
   <div class="col-md-4 col-md-offset-8 text-center">
-    <button type="button" class="btn btn-lg btn-success" ng-click="openAddGameModal()">Add new game <span class="glyphicon glyphicon-plus-sign"></span>
+    <button type="button" class="btn btn-lg btn-success" ng-click="openGameModal()">{{'btn_add_game' |  i18n}} <span class="glyphicon glyphicon-plus-sign"></span>
     </button>
   </div>
 </div>
 <!--
 
 Text will be soon placed in the middle of the panel-body
-A (+) ICON will be soon placed in the 'ADD GAME' button
 
 Text in the panel-heading MUST be no longer than 1 line!!!
 Text in the panel body MUST be no longer than 7 lines!!!
@@ -67,10 +66,4 @@ Text in the panel body MUST be no longer than 7 lines!!!
       </div>
     </li>
   </ul>
-</div>
-<div class="row vertical-spacing">
-  <div class="col-md-12">
-    <p>Name: {{game.name}}</p>
-    <p>Description: {{game.description}}</p>
-  </div>
 </div>

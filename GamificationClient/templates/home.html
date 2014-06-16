@@ -1,7 +1,7 @@
 <br />
 <div class="row vertical-spacing">
   <div class="col-md-4 col-md-offset-8 text-center">
-    <button type="button" class="btn btn-lg btn-success">Add new game <span class="glyphicon glyphicon-plus-sign"></span>
+    <button type="button" class="btn btn-lg btn-success" ng-click="openAddGameModal()">Add new game <span class="glyphicon glyphicon-plus-sign"></span>
     </button>
   </div>
 </div>
@@ -22,7 +22,7 @@ Text in the panel body MUST be no longer than 7 lines!!!
           <h3 class="truncated">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin</h3>
         </div>
         <div class="panel-body">
-          <p class="truncated">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius.</p>
+          <p class="truncated">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla justo sit amet aliquam congue. Ut malesuada ligula enim, ut ultricies tortor tempor bibendum. Donec id tempor eros. Aenean bibendum leo ut ipsum sollicitudin, et faucibus nulla sollicitudin. Pellentesque suscipit egestas varius.</p>
         </div>
       </div>
     </li>
@@ -67,4 +67,10 @@ Text in the panel body MUST be no longer than 7 lines!!!
       </div>
     </li>
   </ul>
+</div>
+<div class="row vertical-spacing">
+  <div class="col-md-12">
+    <p>Name: {{game.name}}</p>
+    <p>Description: {{game.description}}</p>
+  </div>
 </div>

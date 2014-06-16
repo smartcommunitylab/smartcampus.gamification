@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Game 1. Lorem ipsum dolor sit amet.",
+    "instances": {
+      "points": [
+        {
+          "points_id": 1,
+          "name": "",
+          "typology": "",
+          "is_active": true
+        }
+      ],
+      "badges_collections": [];
+      "leaderboards": []
+    }
+  }
+]

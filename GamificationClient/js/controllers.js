@@ -1,11 +1,17 @@
 function LoginCtrl($scope) {
-
+  // TODO
 }
 
-function HomeCtrl($scope, $modal) {
-  $scope.games = games;
-  $scope.openGameModal = function () {
+function HomeCtrl($scope, $modal, initFactory) {
+  $scope.games = null;
 
+  initFactory.getGames().then(function (games) {
+    $scope.games = games;
+  }, function () {
+    alert('errore');
+  });
+
+  $scope.openGameModal = function () {
     var modalInstance = $modal.open({
       templateUrl: 'templates/gamemodal.html',
       controller: GameModalInstanceCtrl
@@ -32,36 +38,3 @@ function GameModalInstanceCtrl($scope, $modalInstance) {
     $modalInstance.dismiss('cancel');
   };
 }
-
-var games = [
-  {
-    'name': 'Game 1. Lorem ipsum dolor sit amet.',
-    'points': 'Points: 1 active out of 3.',
-    'badges': 'Badges collections: 3 active out of 7.',
-    'leaderboards': 'Leaderboards: 0 active out of 2.'
-    },
-  {
-    'name': 'Game 2',
-    'points': 'Points: 1 active out of 3.',
-    'badges': 'Badges collections: 3 active out of 7.',
-    'leaderboards': 'Leaderboards: 0 active out of 2.'
-    },
-  {
-    'name': 'Game 3',
-    'points': 'Points: 1 active out of 3.',
-    'badges': 'Badges collections: 3 active out of 7.',
-    'leaderboards': 'Leaderboards: 0 active out of 2.'
-    },
-  {
-    'name': 'Game 4',
-    'points': 'Points: 1 active out of 3.',
-    'badges': 'Badges collections: 3 active out of 7.',
-    'leaderboards': 'Leaderboards: 0 active out of 2.'
-    },
-  {
-    'name': 'Game 5',
-    'points': 'Points: 1 active out of 3.',
-    'badges': 'Badges collections: 3 active out of 7.',
-    'leaderboards': 'Leaderboards: 0 active out of 2.'
-    }
-];

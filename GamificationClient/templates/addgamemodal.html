@@ -5,11 +5,11 @@
   <div class="modal-body">
     <div class="form-group">
       <label for="gameName">{{'lbl_name' | i18n}}</label>
-      <input type="text" class="form-control" id="gameName" ng-model="gameName" placeholder="{{'lbl_enter_name' | i18n}}" required />
+      <input type="text" class="form-control" id="gameName" ng-model="game.name" placeholder="{{'lbl_enter_name' | i18n}}" required />
     </div>
   </div>
   <div class="modal-footer">
-    <button type="reset" class="btn btn-danger" ng-click="cancel()">{{'btn_cancel' | i18n}}</button>
+    <button type="reset" class="btn btn-default" ng-click="cancel()">{{'btn_cancel' | i18n}}</button>
     <button type="submit" class="btn btn-primary" ng-click="ok()">{{'btn_ok' | i18n}}</button>
   </div>
 </form>

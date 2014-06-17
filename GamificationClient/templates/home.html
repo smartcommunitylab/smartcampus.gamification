@@ -1,7 +1,7 @@
 <br />
 <div class="row vertical-spacing">
   <div class="col-md-4 col-md-offset-8 text-center">
-    <button type="button" class="btn btn-lg btn-success" ng-click="openGameModal()">
+    <button type="button" class="btn btn-lg btn-primary" ng-click="openGameModal()">
       {{'btn_add_game' | i18n}} <span class="glyphicon glyphicon-plus-sign"></span>
     </button>
   </div>
@@ -18,7 +18,7 @@ Text in the panel body MUST be no longer than 7 lines!!!
   <ul class="list-unstyled list-inline">
     <li class="col-md-4" ng-repeat="game in games">
       <div class="panel panel-info panel-games">
-        <div class="panel-heading">
+        <div class="panel-heading" ng-click="goto('#/game/' + game.id)">
           <h3 class="ellipsis">{{game.name}}</h3>
         </div>
         <div class="panel-body">
@@ -28,7 +28,11 @@ Text in the panel body MUST be no longer than 7 lines!!!
             <br />Leaderboards: {{'game_info' | i18n:countActive(game, 'leaderboards'):''+game.instances.['leaderboards'].length}}.
           </p>
         </div>
-        <div class="panel-footer ">
+        <div class="panel-footer">
+          <button type="button" class="btn btn-default btn-edit btn-circle pull-right" ng-click="openEditModal(game.id)">
+            <span class="glyphicon glyphicon-cog"></span>
+          </button>
+          <div class="clearfix" />
         </div>
       </div>
     </li>

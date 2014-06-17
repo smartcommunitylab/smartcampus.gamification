@@ -24,8 +24,29 @@ body {
   margin-bottom: 40px;
   overflow: hidden;
 }
+/* --------------DOESN'T WORK YET-------------- */
+.panel-games.panel-heading {
+  cursor: pointer;
+  cursor: hand;
+}
+/* -------------------------------------------- */
 .ellipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 16px;
+  line-height: 1.42;
+  border-radius: 15px;
+}
+button.btn-default.btn-edit {
+  color: #d9534f;
+}
+button.btn-default.btn-edit:focus {
+  outline: none;
 }

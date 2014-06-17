@@ -12,6 +12,11 @@ app.config(
       controller: 'HomeCtrl'
     })
 
+    .when('/game/:id', {
+      templateUrl: 'templates/game.html',
+      controller: 'GameCtrl'
+    })
+
     .otherwise({
       redirectTo: '/login'
     });

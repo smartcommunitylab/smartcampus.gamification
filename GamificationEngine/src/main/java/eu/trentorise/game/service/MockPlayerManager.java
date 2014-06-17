@@ -2,7 +2,7 @@ package eu.trentorise.game.service;
 
 import eu.trentorise.game.model.player.Player;
 import eu.trentorise.game.response.MockResponder;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.response.GameResponse;
 import org.springframework.stereotype.Service;
 
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class MockPlayerManager extends MockResponder implements IPlayerManager {
 
     @Override
-    public SuccessResponse add(Player player) {
+    public GameResponse add(Player player) {
         return this.getPositiveResponse();
     }
 }

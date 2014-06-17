@@ -6,7 +6,11 @@ package eu.trentorise.game.response;
  */
 public interface IMockResponder {
     
-    public SuccessResponse getPositiveResponse();
+    public GameResponse getPositiveResponse();
     
-    public SuccessResponse getNegativeResponse();
+    public GameResponse buildPositiveResponse(GameResponse response);
+    
+    public GameResponse getNegativeResponse();
+    
+    public GameResponse buildNegativeResponse(GameResponse response);
 }

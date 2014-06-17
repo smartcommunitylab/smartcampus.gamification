@@ -1,7 +1,7 @@
 package eu.trentorise.game.service;
 
 import eu.trentorise.game.model.player.Player;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.response.GameResponse;
 
 /**
  *
@@ -9,5 +9,5 @@ import eu.trentorise.game.response.SuccessResponse;
  */
 public interface IPlayerManager {
     
-    public SuccessResponse add(Player player);
+    public GameResponse add(Player player);
 }

@@ -7,17 +7,29 @@ package eu.trentorise.game.response;
 public class MockResponder implements IMockResponder {
     
     @Override
-    public SuccessResponse getPositiveResponse() {
-        return this.getResponse(Boolean.TRUE);
+    public GameResponse getPositiveResponse() {
+        return this.getResponse(null, Boolean.TRUE);
+    }
+    
+    @Override
+    public GameResponse buildPositiveResponse(GameResponse response) {
+        return this.getResponse(response, Boolean.TRUE);
     }
 
     @Override
-    public SuccessResponse getNegativeResponse() {
-        return this.getResponse(Boolean.FALSE);
+    public GameResponse getNegativeResponse() {
+        return this.getResponse(null, Boolean.FALSE);
     }
     
-    protected SuccessResponse getResponse(Boolean success) {
-        SuccessResponse response = new SuccessResponse();
+    @Override
+    public GameResponse buildNegativeResponse(GameResponse response) {
+        return this.getResponse(response, Boolean.FALSE);
+    }
+    
+    protected GameResponse getResponse(GameResponse response, Boolean success) {
+        if (null == response) {
+            response = new GameResponse();
+        }
         
         response.setSuccess(success);
         

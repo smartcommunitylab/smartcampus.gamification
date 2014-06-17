@@ -4,7 +4,7 @@ package eu.trentorise.game.response;
  *
  * @author Luca Piras
  */
-public class SuccessResponse {
+public class GameResponse {
     
     protected Boolean success;
 
@@ -18,6 +18,6 @@ public class SuccessResponse {
 
     @Override
     public String toString() {
-        return "SuccessResponse{" + "success=" + success + '}';
+        return "GameResponse{" + "success=" + success + '}';
     }
 }

@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.point.service;
 
 import eu.trentorise.game.plugin.point.model.rule.PointTemplateRule;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.response.GameResponse;
 
 
 /**
@@ -10,5 +10,5 @@ import eu.trentorise.game.response.SuccessResponse;
  */
 public interface IPointRuleManager {
     
-    public SuccessResponse add(PointTemplateRule rule);
+    public GameResponse add(PointTemplateRule rule);
 }

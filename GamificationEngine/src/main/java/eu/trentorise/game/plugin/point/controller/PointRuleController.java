@@ -4,8 +4,8 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.plugin.point.model.rule.PointTemplateRule;
 import eu.trentorise.game.plugin.point.service.IPointRuleManager;
-import eu.trentorise.game.profile.model.GamificationPlugin;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.profile.game.model.GamificationPlugin;
+import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.rule.model.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class PointRuleController {
     
     @RequestMapping(method = RequestMethod.GET, value = "/addRule" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody SuccessResponse addRule(@RequestParam(value = "actionId", required = true) Integer actionId,
+    public @ResponseBody GameResponse addRule(@RequestParam(value = "actionId", required = true) Integer actionId,
                                                  @RequestParam(value = "rewardPoints", required = true) Integer rewardPoints) {
         
         Action action = new Action();

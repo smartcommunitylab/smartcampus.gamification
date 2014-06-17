@@ -1,2 +1,44 @@
-<h1>Game page</h1>
-<h2>ID: {{game.id}}</h2>
+<div class="row vertical-spacing">
+  <div class="col-md-6">
+    <ol class="breadcrumb">
+      <li><a href="#/home">Home</a>
+      </li>
+      <li><a ng-href="#/game/{{game.id}}">{{game.name}}</a>
+      </li>
+      <li class="active">Configure gamification plugin</li>
+    </ol>
+  </div>
+</div>
+<div class="row vertical-spacing">
+  <div class="col-md-12">
+    <tabset>
+      <tab heading="{{'tab_points' | i18n}}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in gravida lorem. Proin a turpis a lectus posuere sodales quis sit amet erat. Vivamus in ornare tortor, ut egestas nibh. Morbi nec hendrerit odio, laoreet tincidunt dui. Fusce consequat felis libero, non aliquam erat elementum eget. Nam dignissim magna volutpat mauris dignissim ultricies. Ut nulla neque, ultricies vel egestas sit amet, pulvinar at enim. Sed bibendum in tellus ut ultrices. Vivamus porta consequat vestibulum. Nulla ultrices dui id libero tincidunt, in condimentum sapien vehicula. Morbi nunc nibh, facilisis eu fermentum eu, mattis a risus. Nunc id arcu ac nunc fermentum euismod sit amet ut sapien. Suspendisse dictum, erat placerat fermentum pharetra, nibh orci consectetur augue, ac eleifend nunc arcu at ligula. Curabitur mattis dui id turpis eleifend, vitae faucibus eros ornare. Vestibulum placerat nisl bibendum pellentesque dapibus. Fusce ornare elit nisl, quis lobortis odio tincidunt in. Phasellus mollis malesuada turpis. Sed ut odio sit amet leo hendrerit blandit rhoncus at massa. Pellentesque nulla tortor, sodales vel quam sed, tincidunt semper odio. Suspendisse at ultricies sapien. In vehicula metus sit amet lectus sollicitudin tincidunt. Etiam sed dolor quis felis tempor elementum. Sed nec viverra turpis. Sed in sollicitudin mauris. Donec tristique nulla et felis tincidunt vulputate condimentum accumsan augue. Cras egestas mi urna, in pretium sapien laoreet vitae. Pellentesque quis tristique tortor.</tab>
+      <tab heading="{{'tab_badges_collections' | i18n}}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in gravida lorem. Proin a turpis a lectus posuere sodales quis sit amet erat. Vivamus in ornare tortor, ut egestas nibh. Morbi nec hendrerit odio, laoreet tincidunt dui. Fusce consequat felis libero, non aliquam erat elementum eget. Nam dignissim magna volutpat mauris dignissim ultricies. Ut nulla neque, ultricies vel egestas sit amet, pulvinar at enim. Sed bibendum in tellus ut ultrices. Vivamus porta consequat vestibulum. Nulla ultrices dui id libero tincidunt, in condimentum sapien vehicula. Morbi nunc nibh, facilisis eu fermentum eu, mattis a risus. Nunc id arcu ac nunc fermentum euismod sit amet ut sapien. Suspendisse dictum, erat placerat fermentum pharetra, nibh orci consectetur augue, ac eleifend nunc arcu at ligula. Curabitur mattis dui id turpis eleifend, vitae faucibus eros ornare. Vestibulum placerat nisl bibendum pellentesque dapibus. Fusce ornare elit nisl, quis lobortis odio tincidunt in. Phasellus mollis malesuada turpis. Sed ut odio sit amet leo hendrerit blandit rhoncus at massa. Pellentesque nulla tortor, sodales vel quam sed, tincidunt semper odio. Suspendisse at ultricies sapien. In vehicula metus sit amet lectus sollicitudin tincidunt. Etiam sed dolor quis felis tempor elementum. Sed nec viverra turpis. Sed in sollicitudin mauris. Donec tristique nulla et felis tincidunt vulputate condimentum accumsan augue. Cras egestas mi urna, in pretium sapien laoreet vitae. Pellentesque quis tristique tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in gravida lorem. Proin a turpis a lectus posuere sodales quis sit amet erat. Vivamus in ornare tortor, ut egestas nibh. Morbi nec hendrerit odio, laoreet tincidunt dui. Fusce consequat felis libero, non aliquam erat elementum eget. Nam dignissim magna volutpat mauris dignissim ultricies. Ut nulla neque, ultricies vel egestas sit amet, pulvinar at enim. Sed bibendum in tellus ut ultrices. Vivamus porta consequat vestibulum. Nulla ultrices dui id libero tincidunt, in condimentum sapien vehicula. Morbi nunc nibh, facilisis eu fermentum eu, mattis a risus. Nunc id arcu ac nunc fermentum euismod sit amet ut sapien. Suspendisse dictum, erat placerat fermentum pharetra, nibh orci consectetur augue, ac eleifend nunc arcu at ligula. Curabitur mattis dui id turpis eleifend, vitae faucibus eros ornare. Vestibulum placerat nisl bibendum pellentesque dapibus. Fusce ornare elit nisl, quis lobortis odio tincidunt in. Phasellus mollis malesuada turpis. Sed ut odio sit amet leo hendrerit blandit rhoncus at massa. Pellentesque nulla tortor, sodales vel quam sed, tincidunt semper odio. Suspendisse at ultricies sapien. In vehicula metus sit amet lectus sollicitudin tincidunt. Etiam sed dolor quis felis tempor elementum. Sed nec viverra turpis. Sed in sollicitudin mauris. Donec tristique nulla et felis tincidunt vulputate condimentum accumsan augue. Cras egestas mi urna, in pretium sapien laoreet vitae. Pellentesque quis tristique tortor.</tab>
+      <tab heading="{{'tab_leaderboards' | i18n}}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in gravida lorem. Proin a turpis a lectus posuere sodales quis sit amet erat. Vivamus in ornare tortor, ut egestas nibh. Morbi nec hendrerit odio, laoreet tincidunt dui. Fusce consequat felis libero, non aliquam erat elementum eget. Nam dignissim magna volutpat mauris dignissim ultricies. Ut nulla neque, ultricies vel egestas sit amet, pulvinar at enim.</tab>
+    </tabset>
+  </div>
+
+  <!--
+  <div class="col-md-3">
+    <ul class="nav nav-tabs tabs-left">
+      <li class="active">
+        <a href="#points" data-toggle="tab">Points</a>
+      </li>
+      <li>
+        <a href="#badges_collections" data-toggle="tab">Badges collections</a>
+      </li>
+      <li>
+        <a href="#leaderboards" data-toggle="tab">Leaderboards</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-md-9">
+    <div class="tab-content">
+      <div class="tab-pane active" id="points">Points Tab.</div>
+      <div class="tab-pane" id="badges_collections">Badges collections Tab.</div>
+      <div class="tab-pane" id="leaderboards">Leaderboards Tab.</div>
+    </div>
+  </div>
+-->
+</div>

@@ -37,16 +37,19 @@
       </div>
       <div class="pull-right">
         <ul class="nav navbar-nav">
-          <li class="active">
-            <a href="#">{{'btn_home' | i18n}}</a>
+          <li ng-class="{active:currentNav == 'login'}">
+            <a href="#/home">{{'btn_login' | i18n}}</a>
           </li>
-          <li>
-            <a href="#">{{'btn_configure' | i18n}}</a>
+          <li ng-class="{active:currentNav == 'home'}">
+            <a href="#/home">{{'btn_home' | i18n}}</a>
           </li>
-          <li>
+          <li ng-class="{active:currentNav == 'configure'}">
+            <a href="#/game/1">{{'btn_configure' | i18n}}</a>
+          </li>
+          <li ng-class="{active:currentNav == 'actions'}">
             <a href="#">{{'btn_actions' | i18n}}</a>
           </li>
-          <li>
+          <li ng-class="{active:currentNav == 'logout'}">
             <a href="#">{{'btn_logout' | i18n}}</a>
           </li>
         </ul>

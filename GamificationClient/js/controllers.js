@@ -1,14 +1,16 @@
-function LoginCtrl($scope) {
+function LoginCtrl($scope, $rootScope) {
   // TODO
+  $rootScope.currentNav = 'login';
 }
 
-function HomeCtrl($scope, $modal, $window, initFactory) {
-  $scope.games = null;
+function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
+  $rootScope.games = null;
+  $rootScope.currentNav = 'home';
 
   initFactory.getGames().then(function (games) {
-    $scope.games = games;
+    $rootScope.games = games;
   }, function () {
-    alert('errore');
+    alert('Errore nel caricamento dei giochi da file');
   });
 
   $scope.openGameModal = function () {
@@ -20,19 +22,13 @@ function HomeCtrl($scope, $modal, $window, initFactory) {
     modalInstance.result.then(function (game) {
       //    TODO: Add new game!
       //    Soluzione provvisoria...
-      $scope.games.push(game);
+      $rootScope.games.push(game);
     });
   };
 
   $scope.openEditModal = function (id) {
 
-    var gameEdited;
-
-    angular.forEach($scope.games, function (game) {
-      if (game.id == id) {
-        gameEdited = game;
-      }
-    });
+    var gameEdited = getGameById(id, $rootScope.games);
 
     var modalInstance = $modal.open({
       templateUrl: 'templates/editgamemodal.html',
@@ -65,7 +61,7 @@ function HomeCtrl($scope, $modal, $window, initFactory) {
     return game.instances[type].length;
   };
 
-  $scope.goto = function(path) {
+  $scope.goto = function (path) {
     $window.location.href = path;
   }
 }
@@ -76,7 +72,7 @@ function AddGameModalInstanceCtrl($scope, $modalInstance) {
   $scope.ok = function () {
     var game = $scope.game;
 
-    if (game.name != null) {
+    if (!!game.name) {
       $modalInstance.close(game);
     }
   };
@@ -93,7 +89,7 @@ function EditGameModalInstanceCtrl($scope, $modalInstance, oldGameName) {
   $scope.ok = function () {
     var newGameName = $scope.game.newGameName;
 
-    if (newGameName != oldGameName && newGameName != null) {
+    if (newGameName != oldGameName && !!newGameName) {
       $modalInstance.close(newGameName);
     }
   };
@@ -103,7 +99,31 @@ function EditGameModalInstanceCtrl($scope, $modalInstance, oldGameName) {
   };
 }
 
-function GameCtrl($scope, $routeParams) {
-  $scope.game = {};
-  $scope.game.id = $routeParams.id;
+function getGameById(id, games) {
+  var found = false;
+  var obj = null;
+
+  angular.forEach(games, function (game) {
+    if (!found) {
+      if (game.id == id) {
+        obj = game;
+        found = true;
+      }
+    }
+  });
+
+  return obj;
+}
+
+function GameCtrl($scope, $rootScope, $routeParams, initFactory) {
+
+  initFactory.getGames().then(function (games) {
+    $rootScope.games = games;
+    $scope.game = getGameById($routeParams.id, $rootScope.games);
+  }, function () {
+    alert('Errore nel caricamento dei giochi da file');
+  });
+
+  $rootScope.currentNav = 'configure'
+
 }

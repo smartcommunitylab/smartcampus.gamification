@@ -1,4 +1,5 @@
 {
+  "btn_login": "Login",
   "btn_home": "Home",
   "btn_configure": "Configure",
   "btn_actions": "Actions",
@@ -14,5 +15,8 @@
   "lbl_edit_game": "Edit game settings",
   "lbl_new_name": "Game name",
   "lbl_enter_new_name": "Enter new name",
-  "btn_delete": "Delete game"
+  "btn_delete": "Delete game",
+  "tab_points": "Points",
+  "tab_badges_collections": "Badges collections",
+  "tab_leaderboards": "Leaderboards"
 }

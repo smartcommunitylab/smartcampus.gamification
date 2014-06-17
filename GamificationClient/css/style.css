@@ -25,11 +25,12 @@ body {
   overflow: hidden;
 }
 /* --------------DOESN'T WORK YET-------------- */
+
 .panel-games.panel-heading {
   cursor: pointer;
-  cursor: hand;
 }
 /* -------------------------------------------- */
+
 .ellipsis {
   white-space: nowrap;
   overflow: hidden;

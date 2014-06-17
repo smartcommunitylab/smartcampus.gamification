@@ -1,4 +1,5 @@
 {
+  "btn_login": "Accedi",
   "btn_home": "Home",
   "btn_configure": "Configura",
   "btn_actions": "Azioni",
@@ -14,5 +15,8 @@
   "lbl_edit_game": "Modifica impostazioni gioco",
   "lbl_new_name": "Nome del gioco",
   "lbl_enter_new_name": "Inserisci nuovo nome",
-  "btn_delete": "Elimina gioco"
+  "btn_delete": "Elimina gioco",
+  "tab_points": "Punti",
+  "tab_badges_collections": "Collezioni di medaglie",
+  "tab_leaderboards": "Classifiche"
 }

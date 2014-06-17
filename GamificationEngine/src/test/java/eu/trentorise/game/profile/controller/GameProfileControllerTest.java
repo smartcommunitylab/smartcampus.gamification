@@ -61,22 +61,4 @@ public class GameProfileControllerTest {
             assertEquals(new Integer(135), response.getNewGameId());
         }
     }
-    
-    /**
-     * Test of activateDeactivatePlugin method, of class GameProfileController.
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testActivateDeactivatePlugin() throws Exception {
-        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>();
-        
-        GameResponse response = helper.executeTest("activateDeactivatePlugin", 
-                                                   BASE_RELATIVE_URL + "/activateDeactivatePlugin" + FINAL_PART_RELATIVE_URL,
-                                                   GameResponse.class,
-                                                   "{\"gameProfileId\":\"1\",\"gamificationPluginId\":\"2\",\"active\":\"true\"}");
-        
-        if (null != response) {
-            assertTrue(response.isSuccess());
-        }
-    }
 }

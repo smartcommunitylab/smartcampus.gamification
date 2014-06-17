@@ -1,0 +1,362 @@
+[
+  {
+    "id": 1,
+    "name": "Game 1. Lorem ipsum dolor sit amet.",
+    "instances": {
+      "points": [
+        {
+          "points_id": 1,
+          "name": "Points 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "points_id": 2,
+          "name": "Points 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "points_id": 3,
+          "name": "Points 3",
+          "typology": "",
+          "is_active": true
+        }
+      ],
+      "badges_collections": [
+        {
+          "badges_collection_id": 1,
+          "name": "BG 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "badges_collection_id": 2,
+          "name": "BG 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "badges_collection_id": 3,
+          "name": "BG 3",
+          "typology": "",
+          "is_active": false
+        }
+      ],
+      "leaderboards": [
+        {
+          "leaderboards_id": 1,
+          "name": "LDB 1",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 2,
+          "name": "LDB 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 3,
+          "name": "LDB 3",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 4,
+          "name": "LDB 4",
+          "typology": "",
+          "is_active": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "name": "Game 2",
+    "instances": {
+      "points": [
+        {
+          "points_id": 1,
+          "name": "Points 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "points_id": 2,
+          "name": "Points 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "points_id": 3,
+          "name": "Points 3",
+          "typology": "",
+          "is_active": true
+        }
+      ],
+      "badges_collections": [
+        {
+          "badges_collection_id": 1,
+          "name": "BG 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "badges_collection_id": 2,
+          "name": "BG 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "badges_collection_id": 3,
+          "name": "BG 3",
+          "typology": "",
+          "is_active": false
+        }
+      ],
+      "leaderboards": [
+        {
+          "leaderboards_id": 1,
+          "name": "LDB 1",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 2,
+          "name": "LDB 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 3,
+          "name": "LDB 3",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 4,
+          "name": "LDB 4",
+          "typology": "",
+          "is_active": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "name": "Game 3",
+    "instances": {
+      "points": [
+        {
+          "points_id": 1,
+          "name": "Points 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "points_id": 2,
+          "name": "Points 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "points_id": 3,
+          "name": "Points 3",
+          "typology": "",
+          "is_active": true
+        }
+      ],
+      "badges_collections": [
+        {
+          "badges_collection_id": 1,
+          "name": "BG 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "badges_collection_id": 2,
+          "name": "BG 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "badges_collection_id": 3,
+          "name": "BG 3",
+          "typology": "",
+          "is_active": false
+        }
+      ],
+      "leaderboards": [
+        {
+          "leaderboards_id": 1,
+          "name": "LDB 1",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 2,
+          "name": "LDB 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 3,
+          "name": "LDB 3",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 4,
+          "name": "LDB 4",
+          "typology": "",
+          "is_active": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "name": "Game 4",
+    "instances": {
+      "points": [
+        {
+          "points_id": 1,
+          "name": "Points 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "points_id": 2,
+          "name": "Points 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "points_id": 3,
+          "name": "Points 3",
+          "typology": "",
+          "is_active": true
+        }
+      ],
+      "badges_collections": [
+        {
+          "badges_collection_id": 1,
+          "name": "BG 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "badges_collection_id": 2,
+          "name": "BG 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "badges_collection_id": 3,
+          "name": "BG 3",
+          "typology": "",
+          "is_active": false
+        }
+      ],
+      "leaderboards": [
+        {
+          "leaderboards_id": 1,
+          "name": "LDB 1",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 2,
+          "name": "LDB 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 3,
+          "name": "LDB 3",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 4,
+          "name": "LDB 4",
+          "typology": "",
+          "is_active": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "name": "Game 5",
+    "instances": {
+      "points": [
+        {
+          "points_id": 1,
+          "name": "Points 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "points_id": 2,
+          "name": "Points 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "points_id": 3,
+          "name": "Points 3",
+          "typology": "",
+          "is_active": true
+        }
+      ],
+      "badges_collections": [
+        {
+          "badges_collection_id": 1,
+          "name": "BG 1",
+          "typology": "",
+          "is_active": true
+        },
+        {
+          "badges_collection_id": 2,
+          "name": "BG 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "badges_collection_id": 3,
+          "name": "BG 3",
+          "typology": "",
+          "is_active": false
+        }
+      ],
+      "leaderboards": [
+        {
+          "leaderboards_id": 1,
+          "name": "LDB 1",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 2,
+          "name": "LDB 2",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 3,
+          "name": "LDB 3",
+          "typology": "",
+          "is_active": false
+        },
+        {
+          "leaderboards_id": 4,
+          "name": "LDB 4",
+          "typology": "",
+          "is_active": true
+        }
+      ]
+    }
+  }
+]

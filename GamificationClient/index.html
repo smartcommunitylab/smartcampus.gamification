@@ -1,0 +1,100 @@
+<!doctype html>
+<html ng-app="gamificationEngine">
+
+<head>
+  <meta lang="en">
+  <meta charset="utf-8">
+
+  <!-- Width configuration for responsiveness -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Gamification engine</title>
+
+  <!-- Cascading style sheets  (CSS) -->
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/bootstrap.vertical-tabs.min.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
+
+    <!-- Javascripts -->
+  <script src="js/libs/angular.min.js"></script>
+  <script src="js/libs/angular-route.min.js"></script>
+  <script src="js/libs/ui-bootstrap-tpls-0.11.0.min.js"></script>
+  <script src="js/libs/sprintf.min.js"></script>
+  <script src="js/libs/localization.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="js/services.js"></script>
+</head>
+
+<body>
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand navbar-brand-logo" href="#">
+          <img src="img/smartcampuslab_logo.png" width="170px" />
+        </a>
+        <a class="navbar-brand navbar-brand-bigger" href="#">Gamification engine</a>
+      </div>
+      <div class="pull-right">
+        <ul class="nav navbar-nav">
+          <li class="active">
+            <a href="#">{{'btn_home' | i18n}}</a>
+          </li>
+          <li>
+            <a href="#">{{'btn_configure' | i18n}}</a>
+          </li>
+          <li>
+            <a href="#">{{'btn_actions' | i18n}}</a>
+          </li>
+          <li>
+            <a href="#">{{'btn_logout' | i18n}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div ng-view>
+    </div>
+  </div>
+  <div class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ul class="nav navbar-nav pull-right">
+            <li>
+              <a href="#">
+                <img src="http://placekitten.com/24/24" />
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <img src="http://placekitten.com/24/24" />
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <img src="http://placekitten.com/24/24" />
+              </a>
+            </li>
+            <!-- THESE NAMES ARE JUST PLACEHOLDERS -->
+            <li>
+              <a href="#">Home</a>
+            </li>
+            <li>
+              <a href="#">Products</a>
+            </li>
+            <li>
+              <a href="#">Company</a>
+            </li>
+            <li>
+              <a href="#">Blog</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

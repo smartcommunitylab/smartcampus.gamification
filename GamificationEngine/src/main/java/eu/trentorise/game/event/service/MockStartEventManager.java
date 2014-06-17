@@ -3,7 +3,7 @@ package eu.trentorise.game.event.service;
 import eu.trentorise.game.event.model.StartEvent;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.response.MockResponder;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.ruleengine.service.IRulesEngineManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class MockStartEventManager extends MockResponder implements IStartEventM
     private static Logger logger = LoggerFactory.getLogger(MockStartEventManager.class.getName());
     
     @Override
-    public SuccessResponse runEvent(StartEvent event) {
+    public GameResponse runEvent(StartEvent event) {
         
         List elements = new ArrayList();
         elements.add(event);

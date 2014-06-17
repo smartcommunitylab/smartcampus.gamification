@@ -1,7 +1,7 @@
 package eu.trentorise.game.rule.model;
 
-import eu.trentorise.game.profile.model.GameProfile;
-import eu.trentorise.game.profile.model.GamificationPlugin;
+import eu.trentorise.game.profile.game.model.GameProfile;
+import eu.trentorise.game.profile.game.model.GamificationPlugin;
 import java.util.List;
 
 /**

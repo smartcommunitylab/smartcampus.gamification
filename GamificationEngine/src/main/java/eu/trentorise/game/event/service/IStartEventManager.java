@@ -1,7 +1,7 @@
 package eu.trentorise.game.event.service;
 
 import eu.trentorise.game.event.model.StartEvent;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.response.GameResponse;
 
 /**
  *
@@ -9,5 +9,5 @@ import eu.trentorise.game.response.SuccessResponse;
  */
 public interface IStartEventManager {
     
-    public SuccessResponse runEvent(StartEvent event);
+    public GameResponse runEvent(StartEvent event);
 }

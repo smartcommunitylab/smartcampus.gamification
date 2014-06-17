@@ -12,7 +12,11 @@ public interface IGameConstants {
     /*views and services - services -*/
     public static final String SERVICE_PATH = VIEW_PATH + "services";
     /*views and services - services - profile*/
-    public static final String SERVICE_GAME_PROFILE = SERVICE_PATH + "/gameProfile";
+    public static final String SERVICE_GAME_AAA = SERVICE_PATH + "/AAA";
+    /*views and services - services - profile*/
+    public static final String SERVICE_GAME_PROFILE = SERVICE_PATH + "/profile";
+    /*views and services - services - profile*/
+    public static final String SERVICE_GAME_PROFILE_GAME = SERVICE_GAME_PROFILE + "/game";
     /*views and services - services - player*/
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
     /*views and services - services - plugins*/

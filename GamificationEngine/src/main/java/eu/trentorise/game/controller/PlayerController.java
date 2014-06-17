@@ -1,7 +1,7 @@
 package eu.trentorise.game.controller;
 
 import eu.trentorise.game.model.player.Player;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.service.IPlayerManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class PlayerController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/add" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody SuccessResponse add(@RequestParam(value = "username", required = true) String username,
+    public @ResponseBody GameResponse add(@RequestParam(value = "username", required = true) String username,
                                              @RequestParam(value = "initialPoints", required = false) Integer initialPoints) {
         
         //TODO: manage the case when the username is yet used

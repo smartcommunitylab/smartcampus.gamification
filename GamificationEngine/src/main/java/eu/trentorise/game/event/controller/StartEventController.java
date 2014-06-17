@@ -4,7 +4,7 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.event.service.IStartEventManager;
 import eu.trentorise.game.event.model.StartEvent;
 import eu.trentorise.game.model.player.Player;
-import eu.trentorise.game.response.SuccessResponse;
+import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.rule.model.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class StartEventController {
     
     @RequestMapping(method = RequestMethod.GET, value = "/runEvent" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody SuccessResponse runEvent(@RequestParam(value = "actionPerformerUsername", required = true) String actionPerformerUsername,
+    public @ResponseBody GameResponse runEvent(@RequestParam(value = "actionPerformerUsername", required = true) String actionPerformerUsername,
                                                        @RequestParam(value = "actionId", required = true) Integer actionId) {
         
         //TODO: substitute it with the retrieve from the db of the user, in 

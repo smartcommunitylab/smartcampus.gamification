@@ -9,6 +9,13 @@ public interface IGameConstants {
     /*views and services*/
     public static final String VIEW_PATH = "/game/";
     public static final String VIEW_INTERNAL_NAMESPACE = "game.";
+    
+    
+    /*parameters*/
+    public static final String PARAM_GAME_ID = "gameId";
+    public static final String PARAM_GAMIFIABLE_ACTIONS_FILE = "gamifiableActionsFile";
+    
+    
     /*views and services - services -*/
     public static final String SERVICE_PATH = VIEW_PATH + "services";
     /*views and services - services - profile*/
@@ -19,6 +26,8 @@ public interface IGameConstants {
     public static final String SERVICE_GAME_PROFILE_GAME = SERVICE_GAME_PROFILE + "/game";
     /*views and services - services - player*/
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
+    /*views and services - services - configuration*/
+    public static final String SERVICE_GAME_CONFIGURATION = SERVICE_PATH + "/configuration";
     /*views and services - services - plugins*/
     public static final String SERVICE_PLUGINS_PATH = SERVICE_PATH + "/plugins";
     public static final String SERVICE_PLUGINS_POINT = SERVICE_PLUGINS_PATH + "/point";

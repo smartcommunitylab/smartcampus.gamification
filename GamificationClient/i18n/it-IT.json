@@ -18,5 +18,9 @@
   "btn_delete": "Elimina gioco",
   "tab_points": "Punti",
   "tab_badges_collections": "Collezioni di medaglie",
-  "tab_leaderboards": "Classifiche"
+  "tab_leaderboards": "Classifiche",
+  "btn_browse": "Sfoglia...",
+  "btn_upload_import": "Carica e importa",
+  "btn_clear": "Cancella",
+  "btn_confirm": "Conferma"
 }

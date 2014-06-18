@@ -1,4 +1,4 @@
-var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'localization', 'jm.i18next']);
+var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'localization', 'jm.i18next', 'toggle-switch']);
 
 app.config(function ($i18nextProvider) {
   'use strict';
@@ -25,6 +25,11 @@ app.config(
     .when('/game/:id', {
       templateUrl: 'templates/game.html',
       controller: 'GameCtrl'
+    })
+
+    .when('/game/:id/actions', {
+      templateUrl: 'templates/actions.html',
+      controller: 'ActionsCtrl'
     })
 
     .otherwise({

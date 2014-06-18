@@ -1,4 +1,4 @@
-var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'localization']);
+var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'localization', 'toggle-switch']);
 
 app.config(
   function ($routeProvider) {

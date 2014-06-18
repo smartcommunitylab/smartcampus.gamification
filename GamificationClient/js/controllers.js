@@ -6,6 +6,7 @@ function LoginCtrl($scope, $rootScope) {
 function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
   $rootScope.games = null;
   $rootScope.currentNav = 'home';
+  $rootScope.currentGameId = 1;
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;

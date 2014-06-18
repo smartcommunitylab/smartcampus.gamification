@@ -2,7 +2,7 @@
 <div class="row vertical-spacing">
   <div class="col-md-4 col-md-offset-8 text-center">
     <button type="button" class="btn btn-lg btn-primary" ng-click="openGameModal()">
-      {{'btn_add_game' | i18n}} <span class="glyphicon glyphicon-plus-sign"></span>
+      {{'btn_add_game' | i18next}} <span class="glyphicon glyphicon-plus-sign"></span>
     </button>
   </div>
 </div>
@@ -23,9 +23,9 @@ Text in the panel body MUST be no longer than 7 lines!!!
         </div>
         <div class="panel-body">
           <p>
-            Points: {{'game_info' | i18n:countActive(game, 'points'):''+getLength(game, 'points')}}.
-            <br />Badges collections: {{'game_info' | i18n:countActive(game, 'badges_collections'):''+game.instances.['badges_collections'].length}}.
-            <br />Leaderboards: {{'game_info' | i18n:countActive(game, 'leaderboards'):''+game.instances.['leaderboards'].length}}.
+            Points: <span ng-i18next="[i18next]({active: {{countActive(game, 'points')}}, total: {{getLength(game, 'points')}}})game_info"></span>
+            <br/>Badges collections: <span ng-i18next="[i18next]({active: {{countActive(game, 'badges_collections')}}, total: {{getLength(game, 'badges_collections')}}})game_info"></span>
+            <br/>Leaderboards: <span ng-i18next="[i18next]({active: {{countActive(game, 'leaderboards')}}, total: {{getLength(game, 'leaderboards')}}})game_info"></span>
           </p>
         </div>
         <div class="panel-footer">

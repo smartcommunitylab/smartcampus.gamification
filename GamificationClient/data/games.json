@@ -6,20 +6,20 @@
       "points": [
         {
           "points_id": 1,
-          "name": "Points 1",
-          "typology": "",
+          "name": "Green leaves",
+          "typology": "Skill points",
           "is_active": true
         },
         {
           "points_id": 2,
-          "name": "Points 2",
-          "typology": "",
+          "name": "Hearts",
+          "typology": "Skill points",
           "is_active": false
         },
         {
           "points_id": 3,
-          "name": "Points 3",
-          "typology": "",
+          "name": "Usage points",
+          "typology": "Experience points",
           "is_active": true
         }
       ],
@@ -27,19 +27,31 @@
         {
           "badges_collection_id": 1,
           "name": "BG 1",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/gold_badge.png",
+            "data/uploads/badges/silver_badge.png",
+            "data/uploads/badges/bronze_badge.png"
+          ],
           "is_active": true
         },
         {
           "badges_collection_id": 2,
           "name": "BG 2",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/green_hero_2.png",
+            "data/uploads/badges/green_hero_1.png",
+            "data/uploads/badges/green_hero_novice.png"
+          ],
           "is_active": false
         },
         {
           "badges_collection_id": 3,
           "name": "BG 3",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/eco_captain.jpg",
+            "data/uploads/badges/eco_group.png",
+            "data/uploads/badges/eco_team.jpg"
+          ],
           "is_active": false
         }
       ],
@@ -47,25 +59,25 @@
         {
           "leaderboards_id": 1,
           "name": "LDB 1",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 2,
           "name": "LDB 2",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 3,
           "name": "LDB 3",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 4,
           "name": "LDB 4",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": true
         }
       ]
@@ -78,20 +90,20 @@
       "points": [
         {
           "points_id": 1,
-          "name": "Points 1",
-          "typology": "",
+          "name": "Green leaves",
+          "typology": "Skill points",
           "is_active": true
         },
         {
           "points_id": 2,
-          "name": "Points 2",
-          "typology": "",
+          "name": "Hearts",
+          "typology": "Skill points",
           "is_active": false
         },
         {
           "points_id": 3,
-          "name": "Points 3",
-          "typology": "",
+          "name": "Usage points",
+          "typology": "Experience points",
           "is_active": true
         }
       ],
@@ -99,19 +111,31 @@
         {
           "badges_collection_id": 1,
           "name": "BG 1",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/gold_badge.png",
+            "data/uploads/badges/silver_badge.png",
+            "data/uploads/badges/bronze_badge.png"
+          ],
           "is_active": true
         },
         {
           "badges_collection_id": 2,
           "name": "BG 2",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/green_hero_2.png",
+            "data/uploads/badges/green_hero_1.png",
+            "data/uploads/badges/green_hero_novice.png"
+          ],
           "is_active": false
         },
         {
           "badges_collection_id": 3,
           "name": "BG 3",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/eco_captain.jpg",
+            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_team.jpg"
+          ],
           "is_active": false
         }
       ],
@@ -119,25 +143,25 @@
         {
           "leaderboards_id": 1,
           "name": "LDB 1",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 2,
           "name": "LDB 2",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 3,
           "name": "LDB 3",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 4,
           "name": "LDB 4",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": true
         }
       ]
@@ -150,20 +174,20 @@
       "points": [
         {
           "points_id": 1,
-          "name": "Points 1",
-          "typology": "",
+          "name": "Green leaves",
+          "typology": "Skill points",
           "is_active": true
         },
         {
           "points_id": 2,
-          "name": "Points 2",
-          "typology": "",
+          "name": "Hearts",
+          "typology": "Skill points",
           "is_active": false
         },
         {
           "points_id": 3,
-          "name": "Points 3",
-          "typology": "",
+          "name": "Usage points",
+          "typology": "Experience points",
           "is_active": true
         }
       ],
@@ -171,19 +195,31 @@
         {
           "badges_collection_id": 1,
           "name": "BG 1",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/gold_badge.png",
+            "data/uploads/badges/silver_badge.png",
+            "data/uploads/badges/bronze_badge.png"
+          ],
           "is_active": true
         },
         {
           "badges_collection_id": 2,
           "name": "BG 2",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/green_hero_2.png",
+            "data/uploads/badges/green_hero_1.png",
+            "data/uploads/badges/green_hero_novice.png"
+          ],
           "is_active": false
         },
         {
           "badges_collection_id": 3,
           "name": "BG 3",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/eco_captain.jpg",
+            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_team.jpg"
+          ],
           "is_active": false
         }
       ],
@@ -191,25 +227,25 @@
         {
           "leaderboards_id": 1,
           "name": "LDB 1",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 2,
           "name": "LDB 2",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 3,
           "name": "LDB 3",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 4,
           "name": "LDB 4",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": true
         }
       ]
@@ -222,20 +258,20 @@
       "points": [
         {
           "points_id": 1,
-          "name": "Points 1",
-          "typology": "",
+          "name": "Green leaves",
+          "typology": "Skill points",
           "is_active": true
         },
         {
           "points_id": 2,
-          "name": "Points 2",
-          "typology": "",
+          "name": "Hearts",
+          "typology": "Skill points",
           "is_active": false
         },
         {
           "points_id": 3,
-          "name": "Points 3",
-          "typology": "",
+          "name": "Usage points",
+          "typology": "Experience points",
           "is_active": true
         }
       ],
@@ -243,19 +279,31 @@
         {
           "badges_collection_id": 1,
           "name": "BG 1",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/gold_badge.png",
+            "data/uploads/badges/silver_badge.png",
+            "data/uploads/badges/bronze_badge.png"
+          ],
           "is_active": true
         },
         {
           "badges_collection_id": 2,
           "name": "BG 2",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/green_hero_2.png",
+            "data/uploads/badges/green_hero_1.png",
+            "data/uploads/badges/green_hero_novice.png"
+          ],
           "is_active": false
         },
         {
           "badges_collection_id": 3,
           "name": "BG 3",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/eco_captain.jpg",
+            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_team.jpg"
+          ],
           "is_active": false
         }
       ],
@@ -263,25 +311,25 @@
         {
           "leaderboards_id": 1,
           "name": "LDB 1",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 2,
           "name": "LDB 2",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 3,
           "name": "LDB 3",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 4,
           "name": "LDB 4",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": true
         }
       ]
@@ -294,20 +342,20 @@
       "points": [
         {
           "points_id": 1,
-          "name": "Points 1",
-          "typology": "",
+          "name": "Green leaves",
+          "typology": "Skill points",
           "is_active": true
         },
         {
           "points_id": 2,
-          "name": "Points 2",
-          "typology": "",
+          "name": "Hearts",
+          "typology": "Skill points",
           "is_active": false
         },
         {
           "points_id": 3,
-          "name": "Points 3",
-          "typology": "",
+          "name": "Usage points",
+          "typology": "Experience points",
           "is_active": true
         }
       ],
@@ -315,19 +363,31 @@
         {
           "badges_collection_id": 1,
           "name": "BG 1",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/gold_badge.png",
+            "data/uploads/badges/silver_badge.png",
+            "data/uploads/badges/bronze_badge.png"
+          ],
           "is_active": true
         },
         {
           "badges_collection_id": 2,
           "name": "BG 2",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/green_hero_2.png",
+            "data/uploads/badges/green_hero_1.png",
+            "data/uploads/badges/green_hero_novice.png"
+          ],
           "is_active": false
         },
         {
           "badges_collection_id": 3,
           "name": "BG 3",
-          "typology": "",
+          "badges": [
+            "data/uploads/badges/eco_captain.jpg",
+            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_team.jpg"
+          ],
           "is_active": false
         }
       ],
@@ -335,25 +395,25 @@
         {
           "leaderboards_id": 1,
           "name": "LDB 1",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 2,
           "name": "LDB 2",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 3,
           "name": "LDB 3",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": false
         },
         {
           "leaderboards_id": 4,
           "name": "LDB 4",
-          "typology": "",
+          "typology": "Type 1",
           "is_active": true
         }
       ]

@@ -11,12 +11,16 @@
   "lbl_enter_name": "Enter name",
   "btn_cancel": "Cancel",
   "btn_ok": "OK",
-  "game_info": "%d active out of %d",
+  "game_info": "__active__ active out of __total__",
   "lbl_edit_game": "Edit game settings",
   "lbl_new_name": "Game name",
   "lbl_enter_new_name": "Enter new name",
   "btn_delete": "Delete game",
   "tab_points": "Points",
   "tab_badges_collections": "Badges collections",
-  "tab_leaderboards": "Leaderboards"
+  "tab_leaderboards": "Leaderboards",
+  "btn_browse": "Browse...",
+  "btn_upload_import": "Upload & import",
+  "btn_clear": "Clear",
+  "btn_confirm": "Confirm"
 }

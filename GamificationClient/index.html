@@ -12,15 +12,21 @@
 
   <!-- Cascading style sheets  (CSS) -->
   <link href="css/bootstrap.min.css" rel="stylesheet" />
-  <link href="css/bootstrap.vertical-tabs.min.css" rel="stylesheet" />
+  <!-- <link href="css/bootstrap.vertical-tabs.min.css" rel="stylesheet" /> -->
+  <link href="css/bootstrap.vertical-tabs.css" rel="stylesheet" />
+  <link href="css/angular-toggle-switch.css" rel="stylesheet" />
+  <link href="css/angular-toggle-switch-bootstrap.css" rel="stylesheet" />
   <link href="css/style.css" rel="stylesheet" />
 
-    <!-- Javascripts -->
+  <!-- AngularJS -->
   <script src="js/libs/angular.min.js"></script>
   <script src="js/libs/angular-route.min.js"></script>
   <script src="js/libs/ui-bootstrap-tpls-0.11.0.min.js"></script>
-  <script src="js/libs/sprintf.min.js"></script>
-  <script src="js/libs/localization.js"></script>
+  <script src="js/libs/angular-toggle-switch.min.js"></script>
+  <!-- i18n -->
+  <script src="js/libs/i18next-1.7.3.min.js"></script>
+  <script src="js/libs/ng-i18next.min.js"></script>
+  <!-- Custom -->
   <script src="js/app.js"></script>
   <script src="js/controllers.js"></script>
   <script src="js/services.js"></script>
@@ -37,20 +43,20 @@
       </div>
       <div class="pull-right">
         <ul class="nav navbar-nav">
-          <li ng-class="{active:currentNav == 'login'}">
-            <a href="#/home">{{'btn_login' | i18n}}</a>
+          <li ng-class="{'active':currentNav == 'login'}">
+            <a href="#/login">{{'btn_login' | i18next}}</a>
           </li>
-          <li ng-class="{active:currentNav == 'home'}">
-            <a href="#/home">{{'btn_home' | i18n}}</a>
+          <li ng-class="{'active':currentNav == 'home'}">
+            <a ng-href="#/home">{{'btn_home' | i18next}}</a>
           </li>
-          <li ng-class="{active:currentNav == 'configure'}">
-            <a href="#/game/1">{{'btn_configure' | i18n}}</a>
+          <li ng-class="{'active':currentNav == 'configure'}">
+            <a ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
           </li>
-          <li ng-class="{active:currentNav == 'actions'}">
-            <a href="#">{{'btn_actions' | i18n}}</a>
+          <li ng-class="{'active':currentNav == 'actions'}">
+            <a ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18next}}</a>
           </li>
-          <li ng-class="{active:currentNav == 'logout'}">
-            <a href="#">{{'btn_logout' | i18n}}</a>
+          <li ng-class="{'active':currentNav == 'logout'}">
+            <a ng-href="#">{{'btn_logout' | i18next}}</a>
           </li>
         </ul>
       </div>

@@ -6,6 +6,7 @@ function LoginCtrl($scope, $rootScope) {
 function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
   $rootScope.games = null;
   $rootScope.currentNav = 'home';
+  $rootScope.currentGameId = 1;
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
@@ -15,7 +16,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
 
   $scope.openGameModal = function () {
     var modalInstance = $modal.open({
-      templateUrl: 'templates/addgamemodal.html',
+      templateUrl: 'templates/modals/modal_game_add.html',
       controller: AddGameModalInstanceCtrl
     });
 
@@ -31,7 +32,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
     var gameEdited = getGameById(id, $rootScope.games);
 
     var modalInstance = $modal.open({
-      templateUrl: 'templates/editgamemodal.html',
+      templateUrl: 'templates/modals/modal_game_edit.html',
       controller: EditGameModalInstanceCtrl,
       resolve: {
         oldGameName: function () {
@@ -54,6 +55,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
         count++;
       }
     });
+    console.log(count);
     return count;
   };
 
@@ -64,6 +66,9 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
   $scope.goto = function (path) {
     $window.location.href = path;
   }
+
+  $scope.p1 = 1;
+  $scope.p2 = 2;
 }
 
 function AddGameModalInstanceCtrl($scope, $modalInstance) {
@@ -125,5 +130,33 @@ function GameCtrl($scope, $rootScope, $routeParams, initFactory) {
   });
 
   $rootScope.currentNav = 'configure'
+  $rootScope.currentGameId = $routeParams.id;
+}
 
+function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
+
+  initFactory.getGames().then(function (games) {
+    $rootScope.games = games;
+    $scope.game = getGameById($routeParams.id, $rootScope.games);
+  }, function () {
+    alert('Errore nel caricamento dei giochi da file');
+  });
+
+  $rootScope.currentNav = 'actions';
+  $rootScope.currentGameId = $routeParams.id;
+
+  $scope.choose = function() {
+    $scope.path = "OK";
+  };
+
+  $scope.uploadImport = function() {
+    $scope.dataImported = {};
+  };
+
+  $scope.clear = function() {
+    $scope.dataImported = undefined;
+  };
+
+  $scope.confirm = function() {
+  };
 }

@@ -16,7 +16,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
 
   $scope.openGameModal = function () {
     var modalInstance = $modal.open({
-      templateUrl: 'templates/addgamemodal.html',
+      templateUrl: 'templates/modals/modal_game_add.html',
       controller: AddGameModalInstanceCtrl
     });
 
@@ -32,7 +32,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
     var gameEdited = getGameById(id, $rootScope.games);
 
     var modalInstance = $modal.open({
-      templateUrl: 'templates/editgamemodal.html',
+      templateUrl: 'templates/modals/modal_game_edit.html',
       controller: EditGameModalInstanceCtrl,
       resolve: {
         oldGameName: function () {

@@ -1,4 +1,4 @@
-var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'localization', 'jm.i18next', 'toggle-switch']);
+var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'jm.i18next', 'toggle-switch']);
 
 app.config(function ($i18nextProvider) {
   'use strict';

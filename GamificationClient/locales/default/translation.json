@@ -18,5 +18,9 @@
   "btn_delete": "Delete game",
   "tab_points": "Points",
   "tab_badges_collections": "Badges collections",
-  "tab_leaderboards": "Leaderboards"
+  "tab_leaderboards": "Leaderboards",
+  "btn_browse": "Browse...",
+  "btn_upload_import": "Upload & import",
+  "btn_clear": "Clear",
+  "btn_confirm": "Confirm"
 }

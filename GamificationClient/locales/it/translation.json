@@ -11,12 +11,16 @@
   "lbl_enter_name": "Inserisci nome",
   "btn_cancel": "Annulla",
   "btn_ok": "OK",
-  "game_info": "__active__ active out of __total__",
+  "game_info": "__active__ attivi su __total__",
   "lbl_edit_game": "Modifica impostazioni gioco",
   "lbl_new_name": "Nome del gioco",
   "lbl_enter_new_name": "Inserisci nuovo nome",
   "btn_delete": "Elimina gioco",
   "tab_points": "Punti",
   "tab_badges_collections": "Collezioni di medaglie",
-  "tab_leaderboards": "Classifiche"
+  "tab_leaderboards": "Classifiche",
+  "btn_browse": "Sfoglia...",
+  "btn_upload_import": "Carica e importa",
+  "btn_clear": "Cancella",
+  "btn_confirm": "Conferma"
 }

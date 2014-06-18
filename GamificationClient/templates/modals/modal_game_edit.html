@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h3 class="modal-title">{{'lbl_edit_game' | i18next}}</h3>
+</div>
+<form role="form">
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="newGameName">{{'lbl_new_name' | i18next}}</label>
+      <input type="text" class="form-control" id="newGameName" ng-model="game.newGameName" placeholder="{{'lbl_enter_new_name' | i18next}}" required />
+    </div>
+  </div>
+  <div class="modal-footer clearfix">
+    <button type="reset" class="btn btn-default" ng-click="cancel()">{{'btn_cancel' | i18next}}</button>
+    <button type="submit" class="btn btn-primary" ng-click="ok()">{{'btn_ok' | i18next}}</button>
+  </div>
+</form>

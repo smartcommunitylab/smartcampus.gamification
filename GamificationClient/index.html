@@ -26,8 +26,6 @@
   <!-- i18n -->
   <script src="js/libs/i18next-1.7.3.min.js"></script>
   <script src="js/libs/ng-i18next.min.js"></script>
-  <script src="js/libs/sprintf.min.js"></script>
-  <script src="js/libs/localization.js"></script>
   <!-- Custom -->
   <script src="js/app.js"></script>
   <script src="js/controllers.js"></script>
@@ -46,19 +44,19 @@
       <div class="pull-right">
         <ul class="nav navbar-nav">
           <li ng-class="{'active':currentNav == 'login'}">
-            <a href="#/login">{{'btn_login' | i18n}}</a>
+            <a href="#/login">{{'btn_login' | i18next}}</a>
           </li>
           <li ng-class="{'active':currentNav == 'home'}">
-            <a ng-href="#/home">{{'btn_home' | i18n}}</a>
+            <a ng-href="#/home">{{'btn_home' | i18next}}</a>
           </li>
           <li ng-class="{'active':currentNav == 'configure'}">
-            <a ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18n}}</a>
+            <a ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
           </li>
           <li ng-class="{'active':currentNav == 'actions'}">
-            <a ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18n}}</a>
+            <a ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18next}}</a>
           </li>
           <li ng-class="{'active':currentNav == 'logout'}">
-            <a ng-href="#">{{'btn_logout' | i18n}}</a>
+            <a ng-href="#">{{'btn_logout' | i18next}}</a>
           </li>
         </ul>
       </div>

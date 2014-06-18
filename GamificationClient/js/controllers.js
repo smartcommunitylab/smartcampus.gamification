@@ -125,5 +125,33 @@ function GameCtrl($scope, $rootScope, $routeParams, initFactory) {
   });
 
   $rootScope.currentNav = 'configure'
+  $rootScope.currentGameId = $routeParams.id;
+}
 
+function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
+
+  initFactory.getGames().then(function (games) {
+    $rootScope.games = games;
+    $scope.game = getGameById($routeParams.id, $rootScope.games);
+  }, function () {
+    alert('Errore nel caricamento dei giochi da file');
+  });
+
+  $rootScope.currentNav = 'actions';
+  $rootScope.currentGameId = $routeParams.id;
+
+  $scope.choose = function() {
+    $scope.path = "OK";
+  };
+
+  $scope.uploadImport = function() {
+    $scope.dataImported = {};
+  };
+
+  $scope.clear = function() {
+    $scope.dataImported = undefined;
+  };
+
+  $scope.confirm = function() {
+  };
 }

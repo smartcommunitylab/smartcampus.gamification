@@ -17,6 +17,11 @@ app.config(
       controller: 'GameCtrl'
     })
 
+    .when('/game/:id/actions', {
+      templateUrl: 'templates/actions.html',
+      controller: 'ActionsCtrl'
+    })
+
     .otherwise({
       redirectTo: '/login'
     });

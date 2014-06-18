@@ -46,7 +46,7 @@ public class GameAuthenticationControllerTest {
         RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>();
         
         GameResponse response = helper.executeTest("authenticate", 
-                                                   IGameConstants.SERVICE_GAME_AAA + "/login" + FINAL_PART_RELATIVE_URL,
+                                                   IGameConstants.SERVICE_GAME_AAA_PATH + "/login" + FINAL_PART_RELATIVE_URL,
                                                    GameResponse.class,
                                                    "{\"username\":\"username\",\"password\":\"password\"}");
         

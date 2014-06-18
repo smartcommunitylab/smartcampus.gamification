@@ -19,21 +19,21 @@ public interface IGameConstants {
     /*views and services - services -*/
     public static final String SERVICE_PATH = VIEW_PATH + "services";
     /*views and services - services - profile*/
-    public static final String SERVICE_GAME_AAA = SERVICE_PATH + "/AAA";
+    public static final String SERVICE_GAME_AAA_PATH = SERVICE_PATH + "/AAA";
     /*views and services - services - profile*/
-    public static final String SERVICE_GAME_PROFILE = SERVICE_PATH + "/profile";
+    public static final String SERVICE_GAME_PROFILE_PATH = SERVICE_PATH + "/profile";
     /*views and services - services - profile*/
-    public static final String SERVICE_GAME_PROFILE_GAME = SERVICE_GAME_PROFILE + "/game";
+    public static final String SERVICE_GAME_PROFILE_GAME_PATH = SERVICE_GAME_PROFILE_PATH + "/game";
     /*views and services - services - player*/
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
     /*views and services - services - configuration*/
     public static final String SERVICE_GAME_CONFIGURATION = SERVICE_PATH + "/configuration";
     /*views and services - services - plugins*/
     public static final String SERVICE_PLUGINS_PATH = SERVICE_PATH + "/plugins";
-    public static final String SERVICE_PLUGINS_POINT = SERVICE_PLUGINS_PATH + "/point";
+    public static final String SERVICE_PLUGINS_POINT_PATH = SERVICE_PLUGINS_PATH + "/point";
     /*views and services - services - events*/
     public static final String SERVICE_EVENTS_PATH = SERVICE_PATH + "/events";
-    public static final String SERVICE_EVENTS_START_EVENT = SERVICE_EVENTS_PATH + "/startEvent";
+    public static final String SERVICE_EVENTS_START_EVENT_PATH = SERVICE_EVENTS_PATH + "/startEvent";
     
     
     public static final String VIEW_PAGE_EXTENSION = "htm";

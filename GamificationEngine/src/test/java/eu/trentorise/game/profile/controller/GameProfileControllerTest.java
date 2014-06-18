@@ -2,7 +2,6 @@ package eu.trentorise.game.profile.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.profile.game.response.NewGameResponse;
-import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 
 import static junit.framework.TestCase.assertTrue;
@@ -21,7 +20,7 @@ import org.junit.Test;
  */
 public class GameProfileControllerTest {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAME_PROFILE_GAME;
+    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAME_PROFILE_GAME_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
     
     public GameProfileControllerTest() {

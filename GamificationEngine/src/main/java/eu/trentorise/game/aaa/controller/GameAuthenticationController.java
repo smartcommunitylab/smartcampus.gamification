@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Luca Piras
  */
 @Controller("gameAuthenticationController")
-@RequestMapping(IGameConstants.SERVICE_GAME_AAA)
+@RequestMapping(IGameConstants.SERVICE_GAME_AAA_PATH)
 public class GameAuthenticationController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/login" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)

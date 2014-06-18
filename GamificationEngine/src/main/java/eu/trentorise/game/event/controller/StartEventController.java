@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Luca Piras
  */
 @Controller("startEventController")
-@RequestMapping(IGameConstants.SERVICE_EVENTS_START_EVENT)
+@RequestMapping(IGameConstants.SERVICE_EVENTS_START_EVENT_PATH)
 public class StartEventController {
     
     @RequestMapping(method = RequestMethod.GET, value = "/runEvent" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)

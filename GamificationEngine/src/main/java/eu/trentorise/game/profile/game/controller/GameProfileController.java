@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Luca Piras
  */
 @Controller("gameProfileController")
-@RequestMapping(IGameConstants.SERVICE_GAME_PROFILE_GAME)
+@RequestMapping(IGameConstants.SERVICE_GAME_PROFILE_GAME_PATH)
 public class GameProfileController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/newGame" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)

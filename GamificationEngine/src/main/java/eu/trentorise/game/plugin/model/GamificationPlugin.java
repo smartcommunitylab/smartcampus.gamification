@@ -1,4 +1,4 @@
-package eu.trentorise.game.profile.game.model;
+package eu.trentorise.game.plugin.model;
 
 /**
  *
@@ -9,15 +9,24 @@ public class GamificationPlugin {
     //TODO: this is the key
     protected String name;
     
+    protected String version;
+    
     protected String description;
 
-    
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getDescription() {
@@ -28,9 +37,8 @@ public class GamificationPlugin {
         this.description = description;
     }
 
-    
     @Override
     public String toString() {
-        return "GamificationPlugin{" + "name=" + name + ", description=" + description + '}';
+        return "GamificationPlugin{" + "name=" + name + ", version=" + version + ", description=" + description + '}';
     }
 }

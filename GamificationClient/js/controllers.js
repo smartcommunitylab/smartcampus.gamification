@@ -54,6 +54,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
         count++;
       }
     });
+    console.log(count);
     return count;
   };
 
@@ -64,6 +65,9 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
   $scope.goto = function (path) {
     $window.location.href = path;
   }
+
+  $scope.p1 = 1;
+  $scope.p2 = 2;
 }
 
 function AddGameModalInstanceCtrl($scope, $modalInstance) {

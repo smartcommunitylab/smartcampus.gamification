@@ -80,7 +80,7 @@
           "points_id": 1,
           "name": "Points 1",
           "typology": "",
-          "is_active": true
+          "is_active": false
         },
         {
           "points_id": 2,

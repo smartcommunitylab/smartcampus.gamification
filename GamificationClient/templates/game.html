@@ -9,10 +9,20 @@
     </ol>
   </div>
 </div>
+<div class="row row-spacing">
+  <div class="col-md-8">
+    <h4 ng-i18next="[i18next]({active: {{countActive(game, selectedInstance)}}, total: {{getLength(game, selectedInstance)}}})game_info"></h4>
+  </div>
+  <div class="col-md-4">
+    <button type="button" class="btn btn-success pull-right" ng-click="openAddInstanceModal()">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+    </button>
+  </div>
+</div>
 <div class="row vertical-spacing">
   <div class="col-md-12">
     <tabset>
-      <tab heading="{{'tab_points' | i18next}}">
+      <tab heading="{{'lbl_points' | i18next}}" select="setSelectedInstance('points')">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="points in game.instances.points">
             <div class="panel panel-default panel-plugin">
@@ -39,15 +49,15 @@
           </li>
         </ul>
       </tab>
-      <tab heading="{{'tab_badges_collections' | i18next}}">
+      <tab heading="{{'lbl_badges_collections' | i18next}}" select="setSelectedInstance('badges_collections')">
         <ul class="list-unstyled list-inline">
-          <li class="col-md-4" ng-repeat="badges_collections in game.instances.badges_collections">
+          <li class="col-md-4" ng-repeat="badges_collection in game.instances.badges_collections">
             <div class="panel panel-default panel-plugin">
               <div class="panel-body text-center bg-success">
-                <h4>{{badges_collections.name}}</h4>
+                <h4>{{badges_collection.name}}</h4>
                 <h6>Badges collection</h6>
                 <div class="text-center">
-                  <div ng-repeat="path in badges_collections.badges">
+                  <div ng-repeat="path in badges_collection.badges">
                     <img ng-src="{{path}}" class="badge-preview" height="100%" />
                   </div>
                 </div>
@@ -65,7 +75,7 @@
                   </button>
                 </div>
                 <div class="pull-right">
-                  <toggle-switch model="badges_collections.is_active" />
+                  <toggle-switch model="badges_collection.is_active" />
                 </div>
                 <div class="clearfix" />
               </div>
@@ -73,8 +83,36 @@
           </li>
         </ul>
       </tab>
-      <tab heading="{{'tab_leaderboards' | i18next}}">
-        LEADERBOARDS
+      <tab heading="{{'lbl_leaderboards' | i18next}}" select="setSelectedInstance('leaderboards')">
+        <ul class="list-unstyled list-inline">
+          <li class="col-md-4" ng-repeat="leaderboard in game.instances.leaderboards">
+            <div class="panel panel-default panel-plugin">
+              <div class="panel-body text-center bg-warning">
+                <h4>{{leaderboard.name}}</h4>
+                <h6>Leaderboard</h6>
+                <h6>Point dependency: <strong>{{leaderboard.point_dependency}}</strong></h6>
+                <h6>Update rate: <strong>{{leaderboard.update_rate}}</strong></h6>
+              </div>
+              <div class="panel-footer">
+                <div class="pull-left">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
+                    <span class="glyphicon glyphicon-cog"></span>
+                  </button>
+                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
+                    <span class="glyphicon glyphicon-bullhorn"></span>
+                  </button>
+                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
+                    <span class="glyphicon glyphicon-star"></span>
+                  </button>
+                </div>
+                <div class="pull-right">
+                  <toggle-switch model="leaderboard.is_active" />
+                </div>
+                <div class="clearfix" />
+              </div>
+            </div>
+          </li>
+        </ul>
       </tab>
     </tabset>
   </div>

@@ -23,6 +23,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
     modalInstance.result.then(function (game) {
       //    TODO: Add new game!
       //    Soluzione provvisoria...
+      game.id = getNewGameId($rootScope.games);
       $rootScope.games.push(game);
     });
   };
@@ -49,34 +50,52 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
   };
 
   $scope.countActive = function (game, type) {
-    var count = 0;
-    angular.forEach(game.instances[type], function (value) {
-      if (value.is_active) {
-        count++;
-      }
-    });
-    console.log(count);
-    return count;
+    return countActive(game, type);
   };
 
   $scope.getLength = function (game, type) {
-    return game.instances[type].length;
+    return getLength(game, type);
   };
 
   $scope.goto = function (path) {
     $window.location.href = path;
   }
+}
 
-  $scope.p1 = 1;
-  $scope.p2 = 2;
+function countActive(game, type) {
+  var count = 0;
+  if (!!game) {
+    angular.forEach(game.instances[type], function (value) {
+      if (value.is_active) {
+        count++;
+      }
+    });
+  }
+  return count;
+}
+
+function getLength(game, type) {
+  var len = 0;
+
+  if (!!game) {
+    len = game.instances[type].length;
+  }
+
+  return len;
 }
 
 function AddGameModalInstanceCtrl($scope, $modalInstance) {
-  $scope.game = {};
+  var game = $scope.game = {
+    'id': 0,
+    'name': '',
+    'instances': {
+      'points': [],
+      'badges_collections': [],
+      'leaderboards': []
+    }
+  };
 
   $scope.ok = function () {
-    var game = $scope.game;
-
     if (!!game.name) {
       $modalInstance.close(game);
     }
@@ -120,7 +139,27 @@ function getGameById(id, games) {
   return obj;
 }
 
-function GameCtrl($scope, $rootScope, $routeParams, initFactory) {
+function getNewGameId(games) {
+  var higher = -1;
+  angular.forEach(games, function (game) {
+    if (game.id > higher)
+      higher = game.id;
+  });
+
+  return higher + 1;
+}
+
+function getNewPointsId(game) {
+  var higher = -1;
+  angular.forEach(game.instances.points, function (points) {
+    if (points.id > higher)
+      higher = points.id;
+  });
+
+  return higher + 1;
+}
+
+function GameCtrl($scope, $rootScope, $routeParams, $modal, initFactory) {
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
@@ -131,6 +170,71 @@ function GameCtrl($scope, $rootScope, $routeParams, initFactory) {
 
   $rootScope.currentNav = 'configure'
   $rootScope.currentGameId = $routeParams.id;
+
+  $scope.setSelectedInstance = function (type) {
+    $scope.selectedInstance = type;
+  }
+
+  $scope.countActive = function (game, type) {
+    return countActive(game, type);
+  };
+
+  $scope.getLength = function (game, type) {
+    return getLength(game, type);
+  };
+
+  $scope.openAddInstanceModal = function () {
+    switch ($scope.selectedInstance) {
+    case 'points':
+      $scope.openAddPointsInstanceModal();
+      break;
+    case 'badges_collections':
+      $scope.openAddBadgesCollectionsInstanceModal();
+      break;
+    case 'leaderboards':
+      $scope.openAddLeaderboardsInstanceModal();
+      break;
+    }
+  };
+
+  $scope.openAddPointsInstanceModal = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_points_instance_add.html',
+      controller: AddPointsInstanceModalInstanceCtrl
+    });
+
+    modalInstance.result.then(function (newPointsInstance) {
+      newPointsInstance.id = getNewPointsId($scope.game);
+      $scope.game.instances.points.push(newPointsInstance);
+    });
+  };
+
+  $scope.openAddBadgesCollectionsInstanceModal = function () {};
+
+  $scope.openAddLeaderboardsInstanceModal = function () {};
+}
+
+function AddPointsInstanceModalInstanceCtrl($scope, $modalInstance) {
+  $scope.newPointsInstance = {
+    'points_id': 0,
+    'name': '',
+    'typology': 'Skill points',
+    'is_active': true
+  };
+
+  $scope.setTypology = function (type) {
+    $scope.newPointsInstance.typology = type;
+  };
+
+  $scope.save = function () {
+    if (!!$scope.newPointsInstance.name) {
+      $modalInstance.close($scope.newPointsInstance);
+    }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
 }
 
 function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
@@ -145,18 +249,17 @@ function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
   $rootScope.currentNav = 'actions';
   $rootScope.currentGameId = $routeParams.id;
 
-  $scope.choose = function() {
+  $scope.choose = function () {
     $scope.path = "OK";
   };
 
-  $scope.uploadImport = function() {
+  $scope.uploadImport = function () {
     $scope.dataImported = {};
   };
 
-  $scope.clear = function() {
+  $scope.clear = function () {
     $scope.dataImported = undefined;
   };
 
-  $scope.confirm = function() {
-  };
+  $scope.confirm = function () {};
 }

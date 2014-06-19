@@ -57,27 +57,31 @@
       ],
       "leaderboards": [
         {
-          "leaderboards_id": 1,
-          "name": "LDB 1",
-          "typology": "Type 1",
+          "leaderboard_id": 1,
+          "name": "Hearts every month",
+          "point_dependency": "Hearts",
+          "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboards_id": 2,
-          "name": "LDB 2",
-          "typology": "Type 1",
+          "leaderboard_id": 2,
+          "name": "Green leaves frequently",
+          "point_dependency": "Green leaves",
+          "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboards_id": 3,
-          "name": "LDB 3",
-          "typology": "Type 1",
+          "leaderboard_id": 3,
+          "name": "Fastest leaderboard ever",
+          "point_dependency": "Usage points",
+          "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboards_id": 4,
-          "name": "LDB 4",
-          "typology": "Type 1",
+          "leaderboard_id": 4,
+          "name": "Users usage week by week",
+          "point_dependency": "Usage points",
+          "update_rate": "Weekly",
           "is_active": true
         }
       ]
@@ -133,7 +137,7 @@
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
-            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_group.png",
             "data/uploads/badges/eco_team.jpg"
           ],
           "is_active": false
@@ -141,27 +145,31 @@
       ],
       "leaderboards": [
         {
-          "leaderboards_id": 1,
-          "name": "LDB 1",
-          "typology": "Type 1",
+          "leaderboard_id": 1,
+          "name": "Hearts every month",
+          "point_dependency": "Hearts",
+          "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboards_id": 2,
-          "name": "LDB 2",
-          "typology": "Type 1",
+          "leaderboard_id": 2,
+          "name": "Green leaves frequently",
+          "point_dependency": "Green leaves",
+          "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboards_id": 3,
-          "name": "LDB 3",
-          "typology": "Type 1",
+          "leaderboard_id": 3,
+          "name": "Fastest leaderboard ever",
+          "point_dependency": "Usage points",
+          "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboards_id": 4,
-          "name": "LDB 4",
-          "typology": "Type 1",
+          "leaderboard_id": 4,
+          "name": "Users usage week by week",
+          "point_dependency": "Usage points",
+          "update_rate": "Weekly",
           "is_active": true
         }
       ]
@@ -217,7 +225,7 @@
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
-            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_group.png",
             "data/uploads/badges/eco_team.jpg"
           ],
           "is_active": false
@@ -225,27 +233,31 @@
       ],
       "leaderboards": [
         {
-          "leaderboards_id": 1,
-          "name": "LDB 1",
-          "typology": "Type 1",
+          "leaderboard_id": 1,
+          "name": "Hearts every month",
+          "point_dependency": "Hearts",
+          "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboards_id": 2,
-          "name": "LDB 2",
-          "typology": "Type 1",
+          "leaderboard_id": 2,
+          "name": "Green leaves frequently",
+          "point_dependency": "Green leaves",
+          "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboards_id": 3,
-          "name": "LDB 3",
-          "typology": "Type 1",
+          "leaderboard_id": 3,
+          "name": "Fastest leaderboard ever",
+          "point_dependency": "Usage points",
+          "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboards_id": 4,
-          "name": "LDB 4",
-          "typology": "Type 1",
+          "leaderboard_id": 4,
+          "name": "Users usage week by week",
+          "point_dependency": "Usage points",
+          "update_rate": "Weekly",
           "is_active": true
         }
       ]
@@ -301,7 +313,7 @@
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
-            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_group.png",
             "data/uploads/badges/eco_team.jpg"
           ],
           "is_active": false
@@ -309,27 +321,31 @@
       ],
       "leaderboards": [
         {
-          "leaderboards_id": 1,
-          "name": "LDB 1",
-          "typology": "Type 1",
+          "leaderboard_id": 1,
+          "name": "Hearts every month",
+          "point_dependency": "Hearts",
+          "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboards_id": 2,
-          "name": "LDB 2",
-          "typology": "Type 1",
+          "leaderboard_id": 2,
+          "name": "Green leaves frequently",
+          "point_dependency": "Green leaves",
+          "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboards_id": 3,
-          "name": "LDB 3",
-          "typology": "Type 1",
+          "leaderboard_id": 3,
+          "name": "Fastest leaderboard ever",
+          "point_dependency": "Usage points",
+          "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboards_id": 4,
-          "name": "LDB 4",
-          "typology": "Type 1",
+          "leaderboard_id": 4,
+          "name": "Users usage week by week",
+          "point_dependency": "Usage points",
+          "update_rate": "Weekly",
           "is_active": true
         }
       ]
@@ -385,7 +401,7 @@
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
-            "data/uploads/badges/eco_group.jpg",
+            "data/uploads/badges/eco_group.png",
             "data/uploads/badges/eco_team.jpg"
           ],
           "is_active": false
@@ -393,27 +409,31 @@
       ],
       "leaderboards": [
         {
-          "leaderboards_id": 1,
-          "name": "LDB 1",
-          "typology": "Type 1",
+          "leaderboard_id": 1,
+          "name": "Hearts every month",
+          "point_dependency": "Hearts",
+          "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboards_id": 2,
-          "name": "LDB 2",
-          "typology": "Type 1",
+          "leaderboard_id": 2,
+          "name": "Green leaves frequently",
+          "point_dependency": "Green leaves",
+          "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboards_id": 3,
-          "name": "LDB 3",
-          "typology": "Type 1",
+          "leaderboard_id": 3,
+          "name": "Fastest leaderboard ever",
+          "point_dependency": "Usage points",
+          "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboards_id": 4,
-          "name": "LDB 4",
-          "typology": "Type 1",
+          "leaderboard_id": 4,
+          "name": "Users usage week by week",
+          "point_dependency": "Usage points",
+          "update_rate": "Weekly",
           "is_active": true
         }
       ]

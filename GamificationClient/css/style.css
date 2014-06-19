@@ -24,12 +24,10 @@ body {
   margin-bottom: 40px;
   overflow: hidden;
 }
-/* --------------DOESN'T WORK YET-------------- */
 
-.panel-games.panel-heading {
+.panel-games .panel-heading {
   cursor: pointer;
 }
-/* -------------------------------------------- */
 
 .ellipsis {
   white-space: nowrap;

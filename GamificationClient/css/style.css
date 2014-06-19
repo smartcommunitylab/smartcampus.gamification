@@ -24,11 +24,9 @@ body {
   margin-bottom: 40px;
   overflow: hidden;
 }
-
 .clickable {
   cursor: pointer;
 }
-
 .ellipsis {
   white-space: nowrap;
   overflow: hidden;
@@ -68,23 +66,23 @@ button.btn-default.btn-edit:focus {
   margin-bottom: 20px;
 }
 .btn-file {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 .btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 999px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 999px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
 }
 .panel.panel-plugin {
   margin-left: 10px;
@@ -93,7 +91,7 @@ button.btn-default.btn-edit:focus {
   overflow: hidden;
 }
 .switch .switch-left {
-    background: #428bca;
+  background: #428bca;
 }
 .badge-preview {
   float: left;

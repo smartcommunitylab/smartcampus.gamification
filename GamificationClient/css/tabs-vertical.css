@@ -1,15 +1,27 @@
 /*!
- * bootstrap-vertical-tabs - v1.1.0
+ * tabs-vertical
+ * modified from
  * https://dbtek.github.io/bootstrap-vertical-tabs
- * 2014-06-06
+ * 2014-06-19
  * Copyright (c) 2014 İsmail Demirbilek
  * License: MIT
  */
 
+.tabs-vertical-left>div>div,
+.tabs-vertical-right>div>div {
+  width: 83.33333333%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+}
 .tabs-vertical-left>div>ul,
 .tabs-vertical-right>div>ul {
   border-bottom: none;
   padding-top: 2px;
+  width: 16.66666667%;
+  float: left;
+  position: relative;
+  min-height: 1px;
 }
 .tabs-vertical-left>div>ul {
   border-right: 1px solid #ddd;

@@ -209,9 +209,21 @@ function GameCtrl($scope, $rootScope, $routeParams, $modal, initFactory) {
     });
   };
 
-  $scope.openAddBadgesCollectionsInstanceModal = function () {};
+  $scope.openAddBadgesCollectionsInstanceModal = function () {
+    /* TODO */
+  };
 
-  $scope.openAddLeaderboardsInstanceModal = function () {};
+  $scope.openAddLeaderboardsInstanceModal = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_points_instance_add.html',
+      controller: AddPointsInstanceModalInstanceCtrl
+    });
+
+    modalInstance.result.then(function (newPointsInstance) {
+      newPointsInstance.id = getNewPointsId($scope.game);
+      $scope.game.instances.points.push(newPointsInstance);
+    });
+  };
 }
 
 function AddPointsInstanceModalInstanceCtrl($scope, $modalInstance) {
@@ -222,9 +234,23 @@ function AddPointsInstanceModalInstanceCtrl($scope, $modalInstance) {
     'is_active': true
   };
 
-  $scope.setTypology = function (type) {
-    $scope.newPointsInstance.typology = type;
+  $scope.dropdown = {
+    isOpen: false
   };
+
+  $scope.toggleDropdown = function ($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.dropdown.isOpen = !$scope.dropdown.isOpen;
+
+  }
+
+  $scope.setTypology = function (type, $event) {
+    $scope.newPointsInstance.typology = type;
+    $scope.toggleDropdown($event);
+  };
+
+
 
   $scope.save = function () {
     if (!!$scope.newPointsInstance.name) {

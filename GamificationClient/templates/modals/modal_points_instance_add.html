@@ -11,19 +11,19 @@
     <div class="form-group form-inline">
       <label for="pointsType">{{'lbl_typology' | i18next}}</label>
       &nbsp;&nbsp;
-      <div class="btn-group" dropdown is-open="isDropdownOpen">
+      <div class="btn-group" dropdown is-open="dropdown.isOpen">
         <button type="button" class="btn btn-default dropdown-toggle">
           {{newPointsInstance.typology}} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li>
-            <a ng-click="setTypology('Skill points'); isDropdownOpen = !isDropdownOpen">Skill points</a>
+          <li class="clickable">
+            <a ng-click="setTypology('Skill points', $event)">Skill points</a>
           </li>
-          <li>
-            <a ng-click="setTypology('Experience points'); isDropdownOpen = !isDropdownOpen">Experience points</a>
+          <li class="clickable">
+            <a ng-click="setTypology('Experience points', $event)">Experience points</a>
           </li>
-          <li>
-            <a ng-click="setTypology('Karma points'); isDropdownOpen = !isDropdownOpen">Karma points</a>
+          <li class="clickable">
+            <a ng-click="setTypology('Karma points', $event)">Karma points</a>
           </li>
         </ul>
       </div>

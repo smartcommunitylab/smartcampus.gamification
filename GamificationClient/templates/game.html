@@ -22,7 +22,7 @@
 <div class="row vertical-spacing">
   <div class="col-md-12">
     <tabset>
-      <tab heading="{{'lbl_points' | i18next}}" select="setSelectedInstance('points')">
+      <tab class="clickable" heading="{{'lbl_points' | i18next}}" select="setSelectedInstance('points')">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="points in game.instances.points">
             <div class="panel panel-default panel-plugin">
@@ -49,7 +49,7 @@
           </li>
         </ul>
       </tab>
-      <tab heading="{{'lbl_badges_collections' | i18next}}" select="setSelectedInstance('badges_collections')">
+      <tab class="clickable" heading="{{'lbl_badges_collections' | i18next}}" select="setSelectedInstance('badges_collections')">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="badges_collection in game.instances.badges_collections">
             <div class="panel panel-default panel-plugin">
@@ -68,10 +68,10 @@
                     <span class="glyphicon glyphicon-cog"></span>
                   </button>
                   <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
-                    <span class="glyphicon glyphicon-bullhorn"></span>
+                    <span class="glyphicon glyphicon-star"></span>
                   </button>
                   <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
-                    <span class="glyphicon glyphicon-star"></span>
+                    <span class="glyphicon glyphicon-bullhorn"></span>
                   </button>
                 </div>
                 <div class="pull-right">
@@ -83,7 +83,7 @@
           </li>
         </ul>
       </tab>
-      <tab heading="{{'lbl_leaderboards' | i18next}}" select="setSelectedInstance('leaderboards')">
+      <tab class="clickable" heading="{{'lbl_leaderboards' | i18next}}" select="setSelectedInstance('leaderboards')">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="leaderboard in game.instances.leaderboards">
             <div class="panel panel-default panel-plugin">
@@ -100,9 +100,6 @@
                   </button>
                   <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
                     <span class="glyphicon glyphicon-bullhorn"></span>
-                  </button>
-                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
-                    <span class="glyphicon glyphicon-star"></span>
                   </button>
                 </div>
                 <div class="pull-right">

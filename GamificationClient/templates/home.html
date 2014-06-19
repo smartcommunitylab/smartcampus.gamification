@@ -10,9 +10,6 @@
 
 Text will be soon placed in the middle of the panel-body
 
-Text in the panel-heading MUST be no longer than 1 line!!!
-Text in the panel body MUST be no longer than 7 lines!!!
-
 -->
 <div class="row vertical-spacing">
   <ul class="list-unstyled list-inline">
@@ -23,9 +20,9 @@ Text in the panel body MUST be no longer than 7 lines!!!
         </div>
         <div class="panel-body">
           <p>
-            Points: <span ng-i18next="[i18next]({active: {{countActive(game, 'points')}}, total: {{getLength(game, 'points')}}})game_info"></span>
-            <br/>Badges collections: <span ng-i18next="[i18next]({active: {{countActive(game, 'badges_collections')}}, total: {{getLength(game, 'badges_collections')}}})game_info"></span>
-            <br/>Leaderboards: <span ng-i18next="[i18next]({active: {{countActive(game, 'leaderboards')}}, total: {{getLength(game, 'leaderboards')}}})game_info"></span>
+            {{'lbl_points' | i18next}}: <span ng-i18next="[i18next]({active: {{countActive(game, 'points')}}, total: {{getLength(game, 'points')}}})game_info"></span>
+            <br/>{{'lbl_badges_collections' | i18next}}: <span ng-i18next="[i18next]({active: {{countActive(game, 'badges_collections')}}, total: {{getLength(game, 'badges_collections')}}})game_info"></span>
+            <br/>{{'lbl_leaderboards' | i18next}}: <span ng-i18next="[i18next]({active: {{countActive(game, 'leaderboards')}}, total: {{getLength(game, 'leaderboards')}}})game_info"></span>
           </p>
         </div>
         <div class="panel-footer">

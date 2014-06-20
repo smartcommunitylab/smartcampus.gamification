@@ -27,6 +27,11 @@ app.config(
       controller: 'GameCtrl'
     })
 
+    .when('/game/:id/points/:idPoints', {
+      templateUrl: 'templates/game_points.html',
+      controller: 'GamePointsCtrl'
+    })
+
     .when('/game/:id/actions', {
       templateUrl: 'templates/actions.html',
       controller: 'ActionsCtrl'

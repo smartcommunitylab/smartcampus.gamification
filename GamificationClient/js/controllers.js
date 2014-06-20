@@ -3,12 +3,12 @@ function LoginCtrl($scope, $rootScope) {
   $rootScope.currentNav = 'login';
 }
 
-function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
+function HomeCtrl($scope, $rootScope, $window, $modal, initFactory) {
   $rootScope.games = null;
   $rootScope.currentNav = 'home';
   $rootScope.currentGameId = 1;
 
-  // Error alerts array
+  // Error alerts object
   $scope.alerts = {
     'loadGameError': false
   };
@@ -69,7 +69,7 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
 
   $scope.goto = function (path) {
     $window.location.href = path;
-  }
+  };
 }
 
 function countActive(game, type) {
@@ -149,6 +149,22 @@ function getGameById(id, games) {
   return obj;
 }
 
+function getPointsById(id, game) {
+  var found = false;
+  var obj = null;
+
+  angular.forEach(game.instances.points, function (points) {
+    if (!found) {
+      if (points.points_id == id) {
+        obj = points;
+        found = true;
+      }
+    }
+  });
+
+  return obj;
+}
+
 function getNewGameId(games) {
   var higher = -1;
 
@@ -201,11 +217,19 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $routeParams.id;
 
-  // Error alerts array
+  // Error alerts object
   $scope.alerts = {
     'cantCreateLeaderboards': false,
     'loadGameError': false
   };
+
+  // Navbar names array
+  $scope.pluginNames = {
+    'points': 'points',
+    'badges_collections': 'badges collections',
+    'leaderboards': 'leaderboards'
+  };
+
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
@@ -229,6 +253,10 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory
 
   $scope.getLength = function (game, type) {
     return getLength(game, type);
+  };
+
+  $scope.goto = function (path) {
+    $window.location.href = path;
   };
 
   $scope.openAddInstanceModal = function () {
@@ -402,11 +430,34 @@ function AddLeaderboardInstanceModalInstanceCtrl($scope, $window, $modalInstance
   };
 }
 
+function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
+  $rootScope.currentNav = 'configure';
+  $rootScope.currentGameId = $routeParams.id;
+
+  // Error alerts object
+  $scope.alerts = {
+    'loadGameError': false
+  };
+
+  initFactory.getGames().then(function (games) {
+    $rootScope.games = games;
+    $scope.game = getGameById($routeParams.id, games);
+    $scope.points = getPointsById($routeParams.idPoints, $scope.game);
+  }, function () {
+    // Show error alert
+    $scope.alerts.loadGameError = true;
+  });
+
+  $scope.closeAlert = function (alertName) {
+    $scope.alerts[alertName] = false;
+  }
+}
+
 function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
   $rootScope.currentNav = 'actions';
   $rootScope.currentGameId = $routeParams.id;
 
-  // Error alerts array
+  // Error alerts object
   $scope.alerts = {
     'loadGameError': false
   };

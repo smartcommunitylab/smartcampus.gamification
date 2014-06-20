@@ -5,7 +5,9 @@
       </li>
       <li><a ng-href="#/game/{{game.id}}">{{game.name}}</a>
       </li>
-      <li class="active">Configure gamification plugin</li>
+      <li><a ng-href="#/game/{{game.id}}">Configure gamification plugin</a>
+      </li>
+      <li class="active">{{pluginNames[selectedInstance]}}</li>
     </ol>
   </div>
 </div>
@@ -43,7 +45,7 @@
               </div>
               <div class="panel-footer">
                 <div class="pull-left">
-                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/points/' + points.points_id)">
                     <span class="glyphicon glyphicon-cog"></span>
                   </button>
                   <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">

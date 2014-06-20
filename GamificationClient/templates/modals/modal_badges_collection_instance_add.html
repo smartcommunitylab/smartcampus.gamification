@@ -1,0 +1,16 @@
+<div class="modal-header text-center">
+  <h4 class="modal-title">{{'lbl_badges_collection_configuration' | i18next}}</h4>
+</div>
+<form role="form">
+  <div class="modal-body text-center">
+    <div class="form-group form-inline">
+      <label for="newBadgesCollectionInstanceName">{{'lbl_name' | i18next}}</label>
+      &nbsp;&nbsp;
+      <input type="text" class="form-control" id="newBadgesCollectionInstanceName" ng-model="newBadgesCollectionInstance.name" placeholder="{{'lbl_enter_name' | i18next}}" required />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="reset" class="btn btn-default" ng-click="cancel()">{{'btn_cancel' | i18next}}</button>
+    <button type="submit" class="btn btn-primary" ng-click="save()">{{'btn_save' | i18next}}</button>
+  </div>
+</form>

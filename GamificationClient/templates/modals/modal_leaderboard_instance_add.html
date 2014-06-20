@@ -1,0 +1,50 @@
+<div class="modal-header text-center">
+  <h4 class="modal-title">{{'lbl_leaderboard_configuration' | i18next}}</h4>
+</div>
+<form role="form">
+  <div class="modal-body text-center">
+    <div class="form-group form-inline">
+      <label for="newLeaderboardInstanceName">{{'lbl_name' | i18next}}</label>
+      &nbsp;&nbsp;
+      <input type="text" class="form-control" id="newLeaderboardInstanceName" ng-model="newLeaderboardInstance.name" placeholder="{{'lbl_enter_name' | i18next}}" required />
+    </div>
+    <div class="form-group form-inline">
+      <label for="newLeaderboardInstancePointsDependency">{{'lbl_points_dependency' | i18next}}</label>
+      &nbsp;&nbsp;
+      <div class="btn-group" dropdown is-open="dropdownPointsDependency.isOpen">
+        <button type="button" class="btn btn-default dropdown-toggle">
+          {{newLeaderboardInstance.points_dependency}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li class="clickable" ng-repeat="points in gamePoints">
+            <a ng-click="setPointsDependency(points.name, $event)">{{points.name}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group form-inline">
+      <label for="newLeaderboardInstanceUpdateRate">{{'lbl_update_rate' | i18next}}</label>
+      &nbsp;&nbsp;
+      <div class="btn-group" dropdown is-open="dropdownUpdateRate.isOpen">
+        <button type="button" class="btn btn-default dropdown-toggle">
+          {{newLeaderboardInstance.update_rate}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li class="clickable">
+            <a ng-click="setUpdateRate('Daily', $event)">Daily</a>
+          </li>
+          <li class="clickable">
+            <a ng-click="setUpdateRate('Weekly', $event)">Weekly</a>
+          </li>
+          <li class="clickable">
+            <a ng-click="setUpdateRate('Monthly', $event)">Monthly</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="reset" class="btn btn-default" ng-click="cancel()">{{'btn_cancel' | i18next}}</button>
+    <button type="submit" class="btn btn-primary" ng-click="save()">{{'btn_save' | i18next}}</button>
+  </div>
+</form>

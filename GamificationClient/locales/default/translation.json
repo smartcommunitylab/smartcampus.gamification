@@ -26,5 +26,9 @@
   "lbl_points_configuration": "Points configuration",
   "btn_save": "Save",
   "lbl_typology": "Typology",
-  "btn_choose": "Choose"
+  "btn_choose": "Choose",
+  "lbl_badges_collection_configuration": "Badges collection configuration",
+  "lbl_leaderboard_configuration": "Leaderboard configuration",
+  "lbl_points_dependency": "Points dependency",
+  "lbl_update_rate": "Update rate"
 }

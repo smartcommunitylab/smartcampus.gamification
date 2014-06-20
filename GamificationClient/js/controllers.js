@@ -141,9 +141,11 @@ function getGameById(id, games) {
 
 function getNewGameId(games) {
   var higher = -1;
+
   angular.forEach(games, function (game) {
-    if (game.id > higher)
+    if (game.id > higher) {
       higher = game.id;
+    }
   });
 
   return higher + 1;
@@ -151,15 +153,41 @@ function getNewGameId(games) {
 
 function getNewPointsId(game) {
   var higher = -1;
+
   angular.forEach(game.instances.points, function (points) {
-    if (points.id > higher)
-      higher = points.id;
+    if (points.points_id > higher) {
+      higher = points.points_id;
+    }
   });
 
   return higher + 1;
 }
 
-function GameCtrl($scope, $rootScope, $routeParams, $modal, initFactory) {
+function getNewBadgesCollectionId(game) {
+  var higher = -1;
+
+  angular.forEach(game.instances.badges_collections, function (badges_collection) {
+    if (badges_collection.badges_collection_id > higher) {
+      higher = badges_collection.badges_collection_id;
+    }
+  });
+
+  return higher + 1;
+}
+
+function getNewLeaderboardId(game) {
+  var higher = -1;
+
+  angular.forEach(game.instances.leaderboards, function (leaderboard) {
+    if (leaderboard.leaderboard_id > higher) {
+      higher = leaderboard.leaderboard_id;
+    }
+  });
+
+  return higher + 1;
+}
+
+function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory) {
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
@@ -204,25 +232,45 @@ function GameCtrl($scope, $rootScope, $routeParams, $modal, initFactory) {
     });
 
     modalInstance.result.then(function (newPointsInstance) {
-      newPointsInstance.id = getNewPointsId($scope.game);
+      newPointsInstance.points_id = getNewPointsId($scope.game);
       $scope.game.instances.points.push(newPointsInstance);
     });
   };
 
   $scope.openAddBadgesCollectionsInstanceModal = function () {
-    /* TODO */
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_badges_collection_instance_add.html',
+      controller: AddBadgesCollectionInstanceModalInstanceCtrl
+    });
+
+    modalInstance.result.then(function (newBadgesCollectionInstance) {
+      newBadgesCollectionInstance.badges_collection_id = getNewBadgesCollectionId($scope.game);
+      $scope.game.instances.badges_collections.push(newBadgesCollectionInstance);
+    });
   };
 
   $scope.openAddLeaderboardsInstanceModal = function () {
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_points_instance_add.html',
-      controller: AddPointsInstanceModalInstanceCtrl
-    });
+    if ($scope.game.instances.points.length == 0) {
 
-    modalInstance.result.then(function (newPointsInstance) {
-      newPointsInstance.id = getNewPointsId($scope.game);
-      $scope.game.instances.points.push(newPointsInstance);
-    });
+//      THIS HAS TO BE WRITTEN IN ALL LANGUAGES BY THE LIBRARY !!!
+
+      $window.alert("No points instances found. It's not possible to create leaderboards!");
+    } else {
+      var modalInstance = $modal.open({
+        templateUrl: 'templates/modals/modal_leaderboard_instance_add.html',
+        controller: AddLeaderboardInstanceModalInstanceCtrl,
+        resolve: {
+          gamePoints: function () {
+            return $scope.game.instances.points;
+          }
+        }
+      });
+
+      modalInstance.result.then(function (newLeaderboardInstance) {
+        newLeaderboardInstance.leaderboard_id = getNewLeaderboardId($scope.game);
+        $scope.game.instances.leaderboards.push(newLeaderboardInstance);
+      });
+    }
   };
 }
 
@@ -255,6 +303,79 @@ function AddPointsInstanceModalInstanceCtrl($scope, $modalInstance) {
   $scope.save = function () {
     if (!!$scope.newPointsInstance.name) {
       $modalInstance.close($scope.newPointsInstance);
+    }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+function AddBadgesCollectionInstanceModalInstanceCtrl($scope, $modalInstance) {
+  $scope.newBadgesCollectionInstance = {
+    'badges_collection_id': 0,
+    'name': '',
+    'badges': [],
+    'is_active': true
+  };
+
+  $scope.save = function () {
+    if (!!$scope.newBadgesCollectionInstance.name) {
+      $modalInstance.close($scope.newBadgesCollectionInstance);
+    }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+function AddLeaderboardInstanceModalInstanceCtrl($scope, $window, $modalInstance, gamePoints) {
+  $scope.newLeaderboardInstance = {
+    'leaderboard_id': 0,
+    'name': '',
+    'points_dependency': gamePoints[0].name,
+    'update_rate': 'Daily',
+    'is_active': true
+  };
+
+  $scope.gamePoints = gamePoints;
+
+  $scope.dropdownPointsDependency = {
+    isOpen: false
+  };
+
+  $scope.toggleDropdownPointsDependency = function ($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.dropdownPointsDependency.isOpen = !$scope.dropdownPointsDependency.isOpen;
+
+  }
+
+  $scope.setPointsDependency = function (pointsDependency, $event) {
+    $scope.newLeaderboardInstance.points_dependency = pointsDependency;
+    $scope.toggleDropdownPointsDependency($event);
+  };
+
+  $scope.dropdownUpdateRate = {
+    isOpen: false
+  };
+
+  $scope.toggleDropdownUpdateRate = function ($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.dropdownUpdateRate.isOpen = !$scope.dropdownUpdateRate.isOpen;
+
+  }
+
+  $scope.setUpdateRate = function (updateRate, $event) {
+    $scope.newLeaderboardInstance.update_rate = updateRate;
+    $scope.toggleDropdownUpdateRate($event);
+  };
+
+  $scope.save = function () {
+    if (!!$scope.newLeaderboardInstance.name) {
+      $modalInstance.close($scope.newLeaderboardInstance);
     }
   };
 

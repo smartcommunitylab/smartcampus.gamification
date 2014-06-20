@@ -27,7 +27,7 @@
           <li class="col-md-4" ng-repeat="points in game.instances.points">
             <div class="panel panel-default panel-plugin">
               <div class="panel-body text-center bg-primary">
-                <h4>{{points.name}}</h4>
+                <h4 class="ellipsis">{{points.name}}</h4>
                 <h6>Points</h6>
                 <h5>{{points.typology}}</h5>
               </div>
@@ -54,7 +54,7 @@
           <li class="col-md-4" ng-repeat="badges_collection in game.instances.badges_collections">
             <div class="panel panel-default panel-plugin">
               <div class="panel-body text-center bg-success">
-                <h4>{{badges_collection.name}}</h4>
+                <h4 class="ellipsis">{{badges_collection.name}}</h4>
                 <h6>Badges collection</h6>
                 <div class="text-center">
                   <div ng-repeat="path in badges_collection.badges">
@@ -88,9 +88,9 @@
           <li class="col-md-4" ng-repeat="leaderboard in game.instances.leaderboards">
             <div class="panel panel-default panel-plugin">
               <div class="panel-body text-center bg-warning">
-                <h4>{{leaderboard.name}}</h4>
+                <h4 class="ellipsis">{{leaderboard.name}}</h4>
                 <h6>Leaderboard</h6>
-                <h6>Point dependency: <strong>{{leaderboard.point_dependency}}</strong></h6>
+                <h6 class="ellipsis">Points dependency: <strong>{{leaderboard.points_dependency}}</strong></h6>
                 <h6>Update rate: <strong>{{leaderboard.update_rate}}</strong></h6>
               </div>
               <div class="panel-footer">

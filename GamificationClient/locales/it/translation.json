@@ -26,5 +26,9 @@
   "lbl_points_configuration": "Configurazione punti",
   "btn_save": "Salva",
   "lbl_typology": "Tipo",
-  "btn_choose": "Scegli"
+  "btn_choose": "Scegli",
+  "lbl_badges_collection_configuration": "Configurazione collezione di medaglie",
+  "lbl_leaderboard_configuration": "Configurazione classifiche",
+  "lbl_points_dependency": "Punti di dipendenza",
+  "lbl_update_rate": "Frequenza di aggiornamento"
 }

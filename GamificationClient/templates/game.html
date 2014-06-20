@@ -9,6 +9,16 @@
     </ol>
   </div>
 </div>
+<div class="row">
+  <div class="col-md-4 col-md-offset-4">
+    <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'msg_load_games_error' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4 col-md-offset-4">
+    <alert ng-if="alerts.cantCreateLeaderboards" type="danger" close="closeAlert('cantCreateLeaderboards')">{{'msg_leaderboards_error' | i18next}}</alert>
+  </div>
+</div>
 <div class="row row-spacing">
   <div class="col-md-8">
     <h4 ng-i18next="[i18next]({active: {{countActive(game, selectedInstance)}}, total: {{getLength(game, selectedInstance)}}})game_info"></h4>

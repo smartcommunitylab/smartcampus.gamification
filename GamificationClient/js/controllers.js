@@ -8,11 +8,21 @@ function HomeCtrl($scope, $rootScope, $modal, $window, initFactory) {
   $rootScope.currentNav = 'home';
   $rootScope.currentGameId = 1;
 
+  // Error alerts array
+  $scope.alerts = {
+    'loadGameError': false
+  };
+
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
   }, function () {
-    alert('Errore nel caricamento dei giochi da file');
+    // Show error alert
+    $scope.alerts.loadGameError = true;
   });
+
+  $scope.closeAlert = function (alertName) {
+    $scope.alerts[alertName] = false;
+  }
 
   $scope.openGameModal = function () {
     var modalInstance = $modal.open({
@@ -188,16 +198,26 @@ function getNewLeaderboardId(game) {
 }
 
 function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory) {
+  $rootScope.currentNav = 'configure';
+  $rootScope.currentGameId = $routeParams.id;
+
+  // Error alerts array
+  $scope.alerts = {
+    'cantCreateLeaderboards': false,
+    'loadGameError': false
+  };
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
     $scope.game = getGameById($routeParams.id, $rootScope.games);
   }, function () {
-    alert('Errore nel caricamento dei giochi da file');
+    // Show error alert
+    $scope.alerts.loadGameError = true;
   });
 
-  $rootScope.currentNav = 'configure'
-  $rootScope.currentGameId = $routeParams.id;
+  $scope.closeAlert = function (alertName) {
+    $scope.alerts[alertName] = false;
+  }
 
   $scope.setSelectedInstance = function (type) {
     $scope.selectedInstance = type;
@@ -251,10 +271,8 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory
 
   $scope.openAddLeaderboardsInstanceModal = function () {
     if ($scope.game.instances.points.length == 0) {
-
-//      THIS HAS TO BE WRITTEN IN ALL LANGUAGES BY THE LIBRARY !!!
-
-      $window.alert("No points instances found. It's not possible to create leaderboards!");
+      // Show error alert
+      $scope.alerts.cantCreateLeaderboards = true;
     } else {
       var modalInstance = $modal.open({
         templateUrl: 'templates/modals/modal_leaderboard_instance_add.html',
@@ -385,16 +403,25 @@ function AddLeaderboardInstanceModalInstanceCtrl($scope, $window, $modalInstance
 }
 
 function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
+  $rootScope.currentNav = 'actions';
+  $rootScope.currentGameId = $routeParams.id;
+
+  // Error alerts array
+  $scope.alerts = {
+    'loadGameError': false
+  };
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
     $scope.game = getGameById($routeParams.id, $rootScope.games);
   }, function () {
-    alert('Errore nel caricamento dei giochi da file');
+    // Show error alert
+    $scope.alerts.loadGameError = true;
   });
 
-  $rootScope.currentNav = 'actions';
-  $rootScope.currentGameId = $routeParams.id;
+  $scope.closeAlert = function (alertName) {
+    $scope.alerts[alertName] = false;
+  }
 
   $scope.choose = function () {
     $scope.path = "OK";

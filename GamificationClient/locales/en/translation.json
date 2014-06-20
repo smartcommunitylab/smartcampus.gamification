@@ -30,5 +30,7 @@
   "lbl_badges_collection_configuration": "Badges collection configuration",
   "lbl_leaderboard_configuration": "Leaderboard configuration",
   "lbl_points_dependency": "Points dependency",
-  "lbl_update_rate": "Update rate"
+  "lbl_update_rate": "Update rate",
+  "msg_load_games_error": "There has benn an error during the game loading process!",
+  "msg_leaderboards_error": "It's not possible to create leaderboards without any points collection to refer to!"
 }

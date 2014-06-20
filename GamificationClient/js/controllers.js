@@ -436,13 +436,30 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
 
   // Error alerts object
   $scope.alerts = {
-    'loadGameError': false
+    'loadGameError': false,
+    'settingsEdited': false
+  };
+
+  // Backup variables for settings editing
+  $scope.editPoints = {
+    'name': '',
+    'typology': ''
+  };
+
+  $scope.activeTab = 'edit';
+  $scope.tabActive = {
+    'edit': true,
+    'rules': false
   };
 
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
+
     $scope.game = getGameById($routeParams.id, games);
     $scope.points = getPointsById($routeParams.idPoints, $scope.game);
+
+    $scope.editPoints.name = $scope.points.name;
+    $scope.editPoints.typology = $scope.points.typology;
   }, function () {
     // Show error alert
     $scope.alerts.loadGameError = true;
@@ -450,6 +467,37 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
 
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
+  };
+
+  $scope.changeTab = function (tab) {
+    angular.forEach($scope.tabs, function (tab) {
+      tab = false;
+    });
+
+    $scope.tabActive[tab] = true;
+  };
+
+  $scope.dropdown = {
+    isOpen: false
+  };
+
+  $scope.toggleDropdown = function ($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.dropdown.isOpen = !$scope.dropdown.isOpen;
+
+  }
+
+  $scope.setTypology = function (type, $event) {
+    $scope.editPoints.typology = type;
+    $scope.toggleDropdown($event);
+  };
+
+  $scope.save = function () {
+    if (!!$scope.editPoints.name) {
+      $scope.points.name = $scope.editPoints.name;
+      $scope.alerts.settingsEdited = true;
+    }
   }
 }
 

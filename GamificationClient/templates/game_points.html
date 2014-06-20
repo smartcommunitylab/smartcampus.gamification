@@ -1,4 +1,4 @@
-<div class="row vertical-spacing">
+<div class="row">
   <div class="col-md-8">
     <ol class="breadcrumb">
       <li><a href="#/home">Home</a>
@@ -14,12 +14,80 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-4 col-md-offset-4">
+  <div class="col-md-12 text-center">
     <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'msg_load_games_error' | i18next}}</alert>
   </div>
 </div>
 <div class="row">
-  <div class="col-md-4 col-md-offset-4">
-    <alert ng-if="alerts.cantCreateLeaderboards" type="danger" close="closeAlert('cantCreateLeaderboards')">{{'msg_leaderboards_error' | i18next}}</alert>
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_settings_edited_error' | i18next}}</alert>
+  </div>
+</div>
+<div class="row vertical-spacing">
+  <div class="col-md-12">
+    <h2>{{game.name}}</h2>
+  </div>
+</div>
+<div class="row vertical-spacing">
+  <div class="col-md-4">
+    <a href="#/game/{{game.id}}"><span class="glyphicon glyphicon-chevron-left"></span> {{'btn_back' | i18next}}</a>
+  </div>
+</div>
+<div class="row vertical-spacing">
+  <div class="col-md-12">
+    <tabset>
+      <tab class="clickable" heading="{{'lbl_edit_settings' | i18next}}" ng-click="changeTab('edit')" active="tabs.edit">
+        <h3 class="text-center">{{'lbl_points_configuration' | i18next}}</h3>
+        <div class="col-md-6 col-md-offset-3">
+          <form role="form">
+            <div class="row vertical-spacing vertical-aligned">
+              <div class="form-group">
+                <div class="col-md-4">
+                  <label for="newPointsInstanceName">{{'lbl_name' | i18next}}</label>
+                </div>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="newPointsInstanceName" ng-model="editPoints.name" required />
+                </div>
+              </div>
+            </div>
+            <div class="row vertical-spacing">
+              <div class="form-group">
+                <div class="col-md-4">
+                  <label for="pointsType">{{'lbl_typology' | i18next}}</label>
+                </div>
+                <div class="col-md-8 text-center">
+                  <div class="btn-group" dropdown is-open="dropdown.isOpen">
+                    <button type="button" class="btn btn-default dropdown-toggle">
+                      {{editPoints.typology}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li class="clickable">
+                        <a ng-click="setTypology('Skill points', $event)">Skill points</a>
+                      </li>
+                      <li class="clickable">
+                        <a ng-click="setTypology('Experience points', $event)">Experience points</a>
+                      </li>
+                      <li class="clickable">
+                        <a ng-click="setTypology('Karma points', $event)">Karma points</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <br />
+            <div class="row vertical-spacing">
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-block" ng-click="save()">{{'btn_save' | i18next}}</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </tab>
+      <tab class="clickable" heading="{{'lbl_rules' | i18next}}" ng-click="changeTab('rules')" active="tabs.rules">
+
+      </tab>
+    </tabset>
   </div>
 </div>

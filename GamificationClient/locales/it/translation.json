@@ -32,5 +32,9 @@
   "lbl_points_dependency": "Punti di dipendenza",
   "lbl_update_rate": "Frequenza di aggiornamento",
   "msg_load_games_error": "Errore durante il caricamento dei giochi!",
-  "msg_leaderboards_error": "Non é possibile creare classifiche senxza collezioni di punti a cui riferirsi!"
+  "msg_leaderboards_error": "Non é possibile creare classifiche senxza collezioni di punti a cui riferirsi!",
+  "lbl_edit_settings": "Modifica impostazioni",
+  "lbl_rules": "Regole",
+  "msg_settings_edited_error": "Le ipostazioni di questa istanza di punti sono state modificate con successo",
+  "btn_back": "INDIETRO"
 }

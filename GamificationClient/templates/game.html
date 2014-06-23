@@ -22,17 +22,28 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-8">
     <h2>{{game.name}}</h2>
   </div>
+  <div class="col-md-4 top-margined">
+    <div class="pull-right">
+      <button type="button" class="btn btn-danger btn-circle right-spaced" ng-click="deleteGame()">
+        <span class="glyphicon glyphicon-remove"></span>
+      </button>
+      <button type="button" class="btn btn-default btn-circle" ng-click="openEditModal()">
+        <span class="glyphicon glyphicon-cog"></span>
+      </button>
+    </div>
+  </div>
 </div>
+<hr />
 <div class="row row-spacing">
   <div class="col-md-5 col-md-offset-2">
     <h4 ng-i18next="[i18next]({active: {{countActive(game, selectedInstance)}}, total: {{getLength(game, selectedInstance)}}})game_info"></h4>
   </div>
-  <div class="col-md-4">
-    <button type="button" class="btn btn-success pull-right" ng-click="openAddInstanceModal()">
-      <span class="glyphicon glyphicon-plus-sign"></span>
+  <div class="col-md-5">
+    <button type="button" class="btn btn-success btn-circle pull-right" ng-click="openAddInstanceModal()">
+      <span class="glyphicon glyphicon-plus"></span>
     </button>
   </div>
 </div>
@@ -51,9 +62,6 @@
               <div class="panel-footer">
                 <div class="pull-left">
                   <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/points/' + points.points_id)">
-                    <span class="glyphicon glyphicon-cog"></span>
-                  </button>
-                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
                     <span class="glyphicon glyphicon-bullhorn"></span>
                   </button>
                 </div>
@@ -74,17 +82,14 @@
                 <h4 class="ellipsis">{{badges_collection.name}}</h4>
                 <h6>Badges collection</h6>
                 <div class="text-center">
-                  <div ng-repeat="path in badges_collection.badges">
+                  <div class="badge-bock" ng-repeat="path in badges_collection.badges | limitTo:3">
                     <img ng-src="{{path}}" class="badge-preview" height="100%" />
                   </div>
                 </div>
               </div>
               <div class="panel-footer">
                 <div class="pull-left">
-                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
-                    <span class="glyphicon glyphicon-cog"></span>
-                  </button>
-                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/badges_collections/' + badges_collection.badges_collection_id)">
                     <span class="glyphicon glyphicon-star"></span>
                   </button>
                   <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
@@ -112,10 +117,7 @@
               </div>
               <div class="panel-footer">
                 <div class="pull-left">
-                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
-                    <span class="glyphicon glyphicon-cog"></span>
-                  </button>
-                  <button type="button" class="btn btn-default btn-edit btn-circle" onClick="alert('Not implemented, yet!')">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/leaderboards/' + leaderboard.leaderboard_id)">
                     <span class="glyphicon glyphicon-bullhorn"></span>
                   </button>
                 </div>

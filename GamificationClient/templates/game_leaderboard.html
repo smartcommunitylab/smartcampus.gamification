@@ -7,9 +7,9 @@
       </li>
       <li><a ng-href="#/game/{{game.id}}">Configure gamification plugin</a>
       </li>
-      <li><a ng-href="#/game/{{game.id}}">points</a>
+      <li><a ng-href="#/game/{{game.id}}">leaderboards</a>
       </li>
-      <li class="active">{{points.name}}</li>
+      <li class="active">{{leaderboard.name}}</li>
     </ol>
   </div>
 </div>
@@ -20,13 +20,14 @@
 </div>
 <div class="row">
   <div class="col-md-12 text-center">
-    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_points_settings_edited' | i18next}}</alert>
+    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_leaderboard_settings_edited' | i18next}}</alert>
   </div>
 </div>
 <div class="row vertical-spacing">
   <div class="col-md-8">
-    <h2>{{points.name}}</h2>
-    <h4>{{points.typology}}</h4>
+    <h2>{{leaderboard.name}}</h2>
+    <h4>Points dependency: {{leaderboard.points_dependency}}</h4>
+    <h4>Update rate: {{leaderboard.update_rate}}</h4>
   </div>
   <div class="col-md-4 top-margined">
     <div class="pull-right">
@@ -48,11 +49,9 @@
   <div class="col-md-12">
     <tabset>
       <tab class="clickable" heading="{{'lbl_rules' | i18next}}">
-        <h3>{{'lbl_basic_action_points' | i18next}}</h3>
-        <h5>Description lorem ipsum dolor sit amet.</h5>
-        <br /><br /><br /><br /><br /><br />
-        <h3>{{'lbl_parametric_action_points' | i18next}}</h3>
-        <h5>Description lorem ipsum dolor sit amet.</h5>
+        This has to be implemented.
+        <br />
+        Lorem ipsum dolor sit amet.
       </tab>
     </tabset>
   </div>

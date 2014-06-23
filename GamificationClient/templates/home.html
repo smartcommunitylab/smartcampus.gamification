@@ -30,12 +30,6 @@ Text will be soon placed in the middle of the panel-body
             <br/>{{'lbl_leaderboards' | i18next}}: <span ng-i18next="[i18next]({active: {{countActive(game, 'leaderboards')}}, total: {{getLength(game, 'leaderboards')}}})game_info"></span>
           </p>
         </div>
-        <div class="panel-footer">
-          <button type="button" class="btn btn-default btn-edit btn-circle pull-right" ng-click="openEditModal(game.id)">
-            <span class="glyphicon glyphicon-cog"></span>
-          </button>
-          <div class="clearfix" />
-        </div>
       </div>
     </li>
   </ul>

@@ -50,7 +50,7 @@ app.factory('utilsFactory',
   function () {
     var countActive = function (game, type) {
       var count = 0;
-      if (!!game && !!game.instances) {
+      if (!!game && !!game.instances && !!game.instances[type]) {
         angular.forEach(game.instances[type], function (value) {
           if (value.is_active) {
             count++;
@@ -62,7 +62,7 @@ app.factory('utilsFactory',
 
     var getLength = function (game, type) {
       var len = 0;
-      if (!!game && !!game.instances) {
+      if (!!game && !!game.instances && !!game.instances[type]) {
         len = game.instances[type].length;
       }
       return len;

@@ -32,6 +32,16 @@ app.config(
       controller: 'GamePointsCtrl'
     })
 
+    .when('/game/:id/badges_collections/:idBadgesCollection', {
+      templateUrl: 'templates/game_badges_collection.html',
+      controller: 'GameBadgesCollectionCtrl'
+    })
+
+    .when('/game/:id/leaderboards/:idLeaderboard', {
+      templateUrl: 'templates/game_leaderboard.html',
+      controller: 'GameLeaderboardCtrl'
+    })
+
     .when('/game/:id/actions', {
       templateUrl: 'templates/actions.html',
       controller: 'ActionsCtrl'

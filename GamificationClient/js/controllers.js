@@ -38,27 +38,6 @@ function HomeCtrl($scope, $rootScope, $window, $modal, initFactory) {
     });
   };
 
-  $scope.openEditModal = function (id) {
-
-    var gameEdited = getGameById(id, $rootScope.games);
-
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_game_edit.html',
-      controller: EditGameModalInstanceCtrl,
-      resolve: {
-        oldGameName: function () {
-          return gameEdited.name;
-        }
-      }
-    });
-
-    modalInstance.result.then(function (newGameName) {
-      //    TODO: Change game name!
-      //    Soluzione provvisoria...
-      gameEdited.name = newGameName;
-    });
-  };
-
   $scope.countActive = function (game, type) {
     return countActive(game, type);
   };
@@ -165,6 +144,38 @@ function getPointsById(id, game) {
   return obj;
 }
 
+function getBadgesCollectionById(id, game) {
+  var found = false;
+  var obj = null;
+
+  angular.forEach(game.instances.badges_collections, function (badges_collection) {
+    if (!found) {
+      if (badges_collection.badges_collection_id == id) {
+        obj = badges_collection;
+        found = true;
+      }
+    }
+  });
+
+  return obj;
+}
+
+function getLeaderboardById(id, game) {
+  var found = false;
+  var obj = null;
+
+  angular.forEach(game.instances.leaderboards, function (leaderboard) {
+    if (!found) {
+      if (leaderboard.leaderboard_id == id) {
+        obj = leaderboard;
+        found = true;
+      }
+    }
+  });
+
+  return obj;
+}
+
 function getNewGameId(games) {
   var higher = -1;
 
@@ -259,6 +270,24 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory
     $window.location.href = path;
   };
 
+  $scope.openEditModal = function (id) {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_game_edit.html',
+      controller: EditGameModalInstanceCtrl,
+      resolve: {
+        oldGameName: function () {
+          return $scope.game.name;
+        }
+      }
+    });
+
+    modalInstance.result.then(function (newGameName) {
+      //    TODO: Change game name!
+      //    Soluzione provvisoria...
+      $scope.game.name = newGameName;
+    });
+  };
+
   $scope.openAddInstanceModal = function () {
     switch ($scope.selectedInstance) {
     case 'points':
@@ -318,6 +347,39 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory
       });
     }
   };
+
+  $scope.deleteGame = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_delete_confirm.html',
+      controller: DeleteConfirmCtrl,
+      resolve: {
+        argument: function () {
+          return $scope.game.name;
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      angular.forEach($rootScope.games, function (game, index) {
+        if (game.id == $scope.game.id)
+          $rootScope.games.splice(index, 1);
+      });
+
+      $window.location.href = '#/home';
+    });
+  }
+}
+
+function DeleteConfirmCtrl($scope, $modalInstance, argument) {
+  $scope.argument = argument;
+
+  $scope.delete = function () {
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  }
 }
 
 function AddPointsInstanceModalInstanceCtrl($scope, $modalInstance) {
@@ -430,7 +492,7 @@ function AddLeaderboardInstanceModalInstanceCtrl($scope, $window, $modalInstance
   };
 }
 
-function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
+function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, initFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $routeParams.id;
 
@@ -440,26 +502,11 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
     'settingsEdited': false
   };
 
-  // Backup variables for settings editing
-  $scope.editPoints = {
-    'name': '',
-    'typology': ''
-  };
-
-  $scope.activeTab = 'edit';
-  $scope.tabActive = {
-    'edit': true,
-    'rules': false
-  };
-
   initFactory.getGames().then(function (games) {
     $rootScope.games = games;
 
     $scope.game = getGameById($routeParams.id, games);
     $scope.points = getPointsById($routeParams.idPoints, $scope.game);
-
-    $scope.editPoints.name = $scope.points.name;
-    $scope.editPoints.typology = $scope.points.typology;
   }, function () {
     // Show error alert
     $scope.alerts.loadGameError = true;
@@ -469,13 +516,52 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
     $scope.alerts[alertName] = false;
   };
 
-  $scope.changeTab = function (tab) {
-    angular.forEach($scope.tabs, function (tab) {
-      tab = false;
+  $scope.openEditInstanceModal = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_points_instance_edit.html',
+      controller: EditPointsInstanceModalInstanceCtrl,
+      resolve: {
+        oldPointsName: function () {
+          return $scope.points.name;
+        },
+        oldPointsTypology: function () {
+          return $scope.points.typology;
+        }
+      }
     });
 
-    $scope.tabActive[tab] = true;
+    modalInstance.result.then(function (newPointsInstance) {
+      $scope.points = newPointsInstance;
+      $scope.alerts.settingsEdited = true;
+    });
   };
+
+  $scope.deleteInstance = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_delete_confirm.html',
+      controller: DeleteConfirmCtrl,
+      resolve: {
+        argument: function () {
+          return $scope.points.name;
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      angular.forEach($scope.game.instances.points, function (points, index) {
+        if (points.points_id == $scope.points.points_id)
+          $scope.game.instances.points.splice(index, 1);
+      });
+
+      $window.location.href = '#/game/' + $scope.game.id;
+    });
+  };
+}
+
+function EditPointsInstanceModalInstanceCtrl($scope, $modalInstance, oldPointsName, oldPointsTypology) {
+  $scope.points = {};
+  $scope.points.name = oldPointsName;
+  $scope.points.typology = oldPointsTypology;
 
   $scope.dropdown = {
     isOpen: false
@@ -489,16 +575,230 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
   }
 
   $scope.setTypology = function (type, $event) {
-    $scope.editPoints.typology = type;
+    $scope.points.typology = type;
     $scope.toggleDropdown($event);
   };
 
   $scope.save = function () {
-    if (!!$scope.editPoints.name) {
-      $scope.points.name = $scope.editPoints.name;
-      $scope.alerts.settingsEdited = true;
+    var newPointsName = $scope.points.name;
+    var newPointsTypology = $scope.points.typology;
+
+    if ((newPointsName != oldPointsName || newPointsTypology != oldPointsTypology) && !!newPointsName) {
+      $modalInstance.close($scope.points);
     }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $window, initFactory) {
+  $rootScope.currentNav = 'configure';
+  $rootScope.currentGameId = $routeParams.id;
+
+  // Error alerts object
+  $scope.alerts = {
+    'loadGameError': false,
+    'settingsEdited': false
+  };
+
+  initFactory.getGames().then(function (games) {
+    $rootScope.games = games;
+
+    $scope.game = getGameById($routeParams.id, games);
+    $scope.badges_collection = getBadgesCollectionById($routeParams.idBadgesCollection, $scope.game);
+  }, function () {
+    // Show error alert
+    $scope.alerts.loadGameError = true;
+  });
+
+  $scope.closeAlert = function (alertName) {
+    $scope.alerts[alertName] = false;
+  };
+
+  $scope.openEditInstanceModal = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_badges_collection_instance_edit.html',
+      controller: EditBadgesCollectionInstanceModalInstanceCtrl,
+      resolve: {
+        oldBadgesCollectionName: function () {
+          return $scope.badges_collection.name;
+        }
+      }
+    });
+
+    modalInstance.result.then(function (newBadgesCollectionInstance) {
+      $scope.badges_collection = newBadgesCollectionInstance;
+      $scope.alerts.settingsEdited = true;
+    });
+  };
+
+  $scope.deleteInstance = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_delete_confirm.html',
+      controller: DeleteConfirmCtrl,
+      resolve: {
+        argument: function () {
+          return $scope.badges_collection.name;
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      angular.forEach($scope.game.instances.badges_collections, function (badges_collection, index) {
+        if (badges_collection.badges_collection_id == $scope.badges_collection.badges_collection_id)
+          $scope.game.instances.badges_collections.splice(index, 1);
+      });
+
+      $window.location.href = '#/game/' + $scope.game.id;
+    });
+  };
+}
+
+function EditBadgesCollectionInstanceModalInstanceCtrl($scope, $modalInstance, oldBadgesCollectionName) {
+  $scope.badges_collection = {};
+  $scope.badges_collection.name = oldBadgesCollectionName;
+
+  $scope.save = function () {
+    var newBadgesCollectionName = $scope.badges_collection.name;
+
+    if (newBadgesCollectionName != oldBadgesCollectionName && !!newBadgesCollectionName) {
+      $modalInstance.close($scope.badges_collection);
+    }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, initFactory) {
+  $rootScope.currentNav = 'configure';
+  $rootScope.currentGameId = $routeParams.id;
+
+  // Error alerts object
+  $scope.alerts = {
+    'loadGameError': false,
+    'settingsEdited': false
+  };
+
+  initFactory.getGames().then(function (games) {
+    $rootScope.games = games;
+
+    $scope.game = getGameById($routeParams.id, games);
+    $scope.leaderboard = getLeaderboardById($routeParams.idLeaderboard, $scope.game);
+  }, function () {
+    // Show error alert
+    $scope.alerts.loadGameError = true;
+  });
+
+  $scope.closeAlert = function (alertName) {
+    $scope.alerts[alertName] = false;
+  };
+
+  $scope.openEditInstanceModal = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_leaderboard_instance_edit.html',
+      controller: EditLeaderboardInstanceModalInstanceCtrl,
+      resolve: {
+        oldLeaderboardName: function () {
+          return $scope.leaderboard.name;
+        },
+        oldLeaderboardPointsDependency: function () {
+          return $scope.leaderboard.points_dependency;
+        },
+        oldLeaderboardUpdateRate: function () {
+          return $scope.leaderboard.update_rate;
+        },
+        gamePoints: function () {
+          return $scope.game.instances.points;
+        }
+      }
+    });
+
+    modalInstance.result.then(function (newLeaderboardInstance) {
+      $scope.leaderboard = newLeaderboardInstance;
+      $scope.alerts.settingsEdited = true;
+    });
+  };
+
+  $scope.deleteInstance = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_delete_confirm.html',
+      controller: DeleteConfirmCtrl,
+      resolve: {
+        argument: function () {
+          return $scope.leaderboard.name;
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      angular.forEach($scope.game.instances.leaderboards, function (leaderboard, index) {
+        if (leaderboard.leaderboard_id == $scope.leaderboard.leaderboard_id)
+          $scope.game.instances.leaderboards.splice(index, 1);
+      });
+
+      $window.location.href = '#/game/' + $scope.game.id;
+    });
+  };
+}
+
+function EditLeaderboardInstanceModalInstanceCtrl($scope, $modalInstance, oldLeaderboardName, oldLeaderboardPointsDependency, oldLeaderboardUpdateRate, gamePoints) {
+
+  $scope.leaderboard = {};
+  $scope.leaderboard.name = oldLeaderboardName;
+  $scope.leaderboard.points_dependency = oldLeaderboardPointsDependency;
+  $scope.leaderboard.update_rate = oldLeaderboardUpdateRate;
+
+  $scope.gamePoints = gamePoints;
+
+  $scope.dropdownPointsDependency = {
+    isOpen: false
+  };
+
+  $scope.toggleDropdownPointsDependency = function ($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.dropdownPointsDependency.isOpen = !$scope.dropdownPointsDependency.isOpen;
+
   }
+
+  $scope.setPointsDependency = function (pointsDependency, $event) {
+    $scope.leaderboard.points_dependency = pointsDependency;
+    $scope.toggleDropdownPointsDependency($event);
+  };
+
+  $scope.dropdownUpdateRate = {
+    isOpen: false
+  };
+
+  $scope.toggleDropdownUpdateRate = function ($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $scope.dropdownUpdateRate.isOpen = !$scope.dropdownUpdateRate.isOpen;
+
+  }
+
+  $scope.setUpdateRate = function (updateRate, $event) {
+    $scope.leaderboard.update_rate = updateRate;
+    $scope.toggleDropdownUpdateRate($event);
+  };
+
+  $scope.save = function () {
+    var newLeaderboardName = $scope.leaderboard.name;
+    var newLeaderboardPointsDependency = $scope.leaderboard.points_dependency;
+    var newLeaderboardUpdateRate = $scope.leaderboard.update_rate;
+
+    if ((newLeaderboardName != oldLeaderboardName || newLeaderboardPointsDependency != oldLeaderboardPointsDependency || newLeaderboardUpdateRate != oldLeaderboardUpdateRate) && !!newLeaderboardName) {
+      $modalInstance.close($scope.leaderboard);
+    }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
 }
 
 function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {

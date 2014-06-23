@@ -18,6 +18,9 @@ body {
 .pull-center {
   margin-top: 50%;
 }
+.top-margined {
+  margin-top: 20px;
+}
 .panel.panel-games {
   margin-left: 10px;
   margin-right: 10px;
@@ -93,7 +96,20 @@ button.btn-default.btn-edit:focus {
 .switch .switch-left {
   background: #428bca;
 }
+.badges-bock {
+  display: block;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-rigth: 10px;
+}
 .badge-preview {
   float: left;
   height: 40px;
+}
+.badge-item {
+  float: left;
+  height: 100px;
+}
+.right-spaced {
+  margin-right: 10px;
 }

@@ -1,10 +1,13 @@
+function MainCtrl($scope, $rootScope) {
+  $rootScope.games = [];
+}
+
 function LoginCtrl($scope, $rootScope) {
   // TODO
   $rootScope.currentNav = 'login';
 }
 
-function HomeCtrl($scope, $rootScope, $window, $modal, initFactory) {
-  $rootScope.games = null;
+function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactory) {
   $rootScope.currentNav = 'home';
   $rootScope.currentGameId = 1;
 
@@ -13,12 +16,7 @@ function HomeCtrl($scope, $rootScope, $window, $modal, initFactory) {
     'loadGameError': false
   };
 
-  initFactory.getGames().then(function (games) {
-    $rootScope.games = games;
-  }, function () {
-    // Show error alert
-    $scope.alerts.loadGameError = true;
-  });
+  gamesFactory.getGames().then();
 
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
@@ -60,38 +58,16 @@ function HomeCtrl($scope, $rootScope, $window, $modal, initFactory) {
   };
 
   $scope.countActive = function (game, type) {
-    return countActive(game, type);
+    return utilsFactory.countActive(game, type);
   };
 
   $scope.getLength = function (game, type) {
-    return getLength(game, type);
+    return utilsFactory.getLength(game, type);
   };
 
   $scope.goto = function (path) {
     $window.location.href = path;
   };
-}
-
-function countActive(game, type) {
-  var count = 0;
-  if (!!game) {
-    angular.forEach(game.instances[type], function (value) {
-      if (value.is_active) {
-        count++;
-      }
-    });
-  }
-  return count;
-}
-
-function getLength(game, type) {
-  var len = 0;
-
-  if (!!game) {
-    len = game.instances[type].length;
-  }
-
-  return len;
 }
 
 function AddGameModalInstanceCtrl($scope, $modalInstance) {
@@ -213,7 +189,7 @@ function getNewLeaderboardId(game) {
   return higher + 1;
 }
 
-function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory) {
+function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactory, utilsFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $routeParams.id;
 
@@ -230,13 +206,9 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory
     'leaderboards': 'leaderboards'
   };
 
-
-  initFactory.getGames().then(function (games) {
-    $rootScope.games = games;
-    $scope.game = getGameById($routeParams.id, $rootScope.games);
-  }, function () {
-    // Show error alert
-    $scope.alerts.loadGameError = true;
+  $scope.game = {};
+  gamesFactory.getGameById($routeParams.id).then(function (game) {
+    $scope.game = game;
   });
 
   $scope.closeAlert = function (alertName) {
@@ -248,11 +220,11 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, initFactory
   }
 
   $scope.countActive = function (game, type) {
-    return countActive(game, type);
+    return utilsFactory.countActive(game, type);
   };
 
   $scope.getLength = function (game, type) {
-    return getLength(game, type);
+    return utilsFactory.getLength(game, type);
   };
 
   $scope.goto = function (path) {
@@ -430,7 +402,7 @@ function AddLeaderboardInstanceModalInstanceCtrl($scope, $window, $modalInstance
   };
 }
 
-function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
+function GamePointsCtrl($scope, $rootScope, $routeParams, gamesFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $routeParams.id;
 
@@ -452,7 +424,7 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
     'rules': false
   };
 
-  initFactory.getGames().then(function (games) {
+  gamesFactory.getGames().then(function (games) {
     $rootScope.games = games;
 
     $scope.game = getGameById($routeParams.id, games);
@@ -501,7 +473,7 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, initFactory) {
   }
 }
 
-function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
+function ActionsCtrl($scope, $rootScope, $routeParams, gamesFactory) {
   $rootScope.currentNav = 'actions';
   $rootScope.currentGameId = $routeParams.id;
 
@@ -510,7 +482,7 @@ function ActionsCtrl($scope, $rootScope, $routeParams, initFactory) {
     'loadGameError': false
   };
 
-  initFactory.getGames().then(function (games) {
+  gamesFactory.getGames().then(function (games) {
     $rootScope.games = games;
     $scope.game = getGameById($routeParams.id, $rootScope.games);
   }, function () {

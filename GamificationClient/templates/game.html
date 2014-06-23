@@ -82,7 +82,7 @@
                 <h4 class="ellipsis">{{badges_collection.name}}</h4>
                 <h6>Badges collection</h6>
                 <div class="text-center">
-                  <div ng-repeat="path in badges_collection.badges">
+                  <div class="badge-bock" ng-repeat="path in badges_collection.badges | limitTo:3">
                     <img ng-src="{{path}}" class="badge-preview" height="100%" />
                   </div>
                 </div>

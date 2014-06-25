@@ -1,9 +1,11 @@
 app.factory('gamesFactory',
   function ($rootScope, $http, $q, $timeout) {
+
+    // get games
     var getGames = function () {
       var deferred = $q.defer();
 
-      if (!$rootScope.games || $rootScope.games.length == 0) {
+      if (!$rootScope.games || $rootScope.games.length === 0) {
         $http.get('data/games.json').success(function (data) {
           $rootScope.games = data;
           deferred.resolve();
@@ -14,8 +16,9 @@ app.factory('gamesFactory',
         deferred.resolve();
       }
       return deferred.promise;
-    }
+    };
 
+    // get game by id
     var getGameById = function (id) {
       var deferred = $q.defer();
 
@@ -23,7 +26,7 @@ app.factory('gamesFactory',
       getGames().then(function () {
         var found = false;
         angular.forEach($rootScope.games, function (g) {
-          if (!found && g.id == id) {
+          if (!found && g.id === id) {
             game = g;
             found = true;
           }
@@ -37,11 +40,55 @@ app.factory('gamesFactory',
       });
 
       return deferred.promise;
+    };
+
+    // get game by name
+    var getGameByName = function (name) {
+      var found = false;
+      angular.forEach($rootScope.games, function (g) {
+        if (!found && g.name === name) {
+          found = true;
+        }
+      });
+      return found;
+    };
+
+    // add new game
+    var addGame = function (name) {
+      var deferred = $q.defer();
+
+      if (!name || getGameByName(name)) {
+        deferred.reject();
+      } else {
+        var id = -1;
+        angular.forEach($rootScope.games, function (game) {
+          if (game.id > id) {
+            id = game.id;
+          }
+        });
+
+        var game = {
+          'id': id + 1,
+          'name': name,
+          'instances': {
+            'points': [],
+            'badges_collections': [],
+            'leaderboards': []
+          }
+        };
+
+        $rootScope.games.push(game);
+        deferred.resolve(game);
+      }
+
+      return deferred.promise;
     }
 
     return {
       'getGames': getGames,
-      'getGameById': getGameById
+      'getGameById': getGameById,
+      'getGameByName': getGameByName,
+      'addGame': addGame
     };
   }
 );
@@ -58,7 +105,7 @@ app.factory('utilsFactory',
         });
       }
       return count;
-    }
+    };
 
     var getLength = function (game, type) {
       var len = 0;
@@ -66,7 +113,7 @@ app.factory('utilsFactory',
         len = game.instances[type].length;
       }
       return len;
-    }
+    };
 
     return {
       'getLength': getLength,

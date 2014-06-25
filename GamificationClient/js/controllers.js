@@ -3,7 +3,6 @@ function MainCtrl($scope, $rootScope) {
 }
 
 function LoginCtrl($scope, $rootScope) {
-  // TODO
   $rootScope.currentNav = 'login';
 }
 
@@ -11,12 +10,13 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
   $rootScope.currentNav = 'home';
   $rootScope.currentGameId = 1;
 
+  /* LOADS GAMES */
+  gamesFactory.getGames().then();
+
   // Error alerts object
   $scope.alerts = {
     'loadGameError': false
   };
-
-  gamesFactory.getGames().then();
 
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
@@ -26,13 +26,6 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_game_add.html',
       controller: AddGameModalInstanceCtrl
-    });
-
-    modalInstance.result.then(function (game) {
-      //    TODO: Add new game!
-      //    Soluzione provvisoria...
-      game.id = getNewGameId($rootScope.games);
-      $rootScope.games.push(game);
     });
   };
 
@@ -49,21 +42,21 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
   };
 }
 
-function AddGameModalInstanceCtrl($scope, $modalInstance) {
-  var game = $scope.game = {
-    'id': 0,
-    'name': '',
-    'instances': {
-      'points': [],
-      'badges_collections': [],
-      'leaderboards': []
-    }
+function AddGameModalInstanceCtrl($scope, $modalInstance, gamesFactory) {
+  $scope.game = {
+    'name': null
   };
 
   $scope.ok = function () {
-    if (!!game.name) {
-      $modalInstance.close(game);
-    }
+    gamesFactory.addGame($scope.game.name).then(
+      function () {
+        $modalInstance.close();
+      },
+      function () {
+        // TODO: alert inside the modal
+        alert('ARGH');
+      }
+    );
   };
 
   $scope.cancel = function () {
@@ -77,7 +70,6 @@ function EditGameModalInstanceCtrl($scope, $modalInstance, oldGameName) {
 
   $scope.ok = function () {
     var newGameName = $scope.game.newGameName;
-
     if (newGameName != oldGameName && !!newGameName) {
       $modalInstance.close(newGameName);
     }
@@ -86,22 +78,6 @@ function EditGameModalInstanceCtrl($scope, $modalInstance, oldGameName) {
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-}
-
-function getGameById(id, games) {
-  var found = false;
-  var obj = null;
-
-  angular.forEach(games, function (game) {
-    if (!found) {
-      if (game.id == id) {
-        obj = game;
-        found = true;
-      }
-    }
-  });
-
-  return obj;
 }
 
 function getPointsById(id, game) {
@@ -575,7 +551,7 @@ function EditPointsInstanceModalInstanceCtrl($scope, $modalInstance, oldPointsNa
   };
 }
 
-function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $window, initFactory) {
+function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $routeParams.id;
 
@@ -585,10 +561,10 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $win
     'settingsEdited': false
   };
 
-  initFactory.getGames().then(function (games) {
+  gamesFactory.getGames().then(function (games) {
     $rootScope.games = games;
 
-    $scope.game = getGameById($routeParams.id, games);
+    $scope.game = gamesFactory.getGameById($routeParams.id);
     $scope.badges_collection = getBadgesCollectionById($routeParams.idBadgesCollection, $scope.game);
   }, function () {
     // Show error alert
@@ -655,7 +631,7 @@ function EditBadgesCollectionInstanceModalInstanceCtrl($scope, $modalInstance, o
   };
 }
 
-function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, initFactory) {
+function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $routeParams.id;
 
@@ -665,10 +641,10 @@ function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, 
     'settingsEdited': false
   };
 
-  initFactory.getGames().then(function (games) {
+  gamesFactory.getGames().then(function (games) {
     $rootScope.games = games;
 
-    $scope.game = getGameById($routeParams.id, games);
+    $scope.game = gamesFactory.getGameById($routeParams.id);
     $scope.leaderboard = getLeaderboardById($routeParams.idLeaderboard, $scope.game);
   }, function () {
     // Show error alert
@@ -794,7 +770,7 @@ function ActionsCtrl($scope, $rootScope, $routeParams, gamesFactory) {
 
   gamesFactory.getGames().then(function (games) {
     $rootScope.games = games;
-    $scope.game = getGameById($routeParams.id, $rootScope.games);
+    $scope.game = gamesFactory.getGameById($routeParams.id, $rootScope.games);
   }, function () {
     // Show error alert
     $scope.alerts.loadGameError = true;

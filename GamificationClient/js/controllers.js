@@ -18,6 +18,11 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
     'loadGameError': false
   };
 
+  gamesFactory.getGames().then(function () {}, function () {
+    // Show error alert
+    $scope.alerts.loadGameError = true;
+  });
+
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
   }
@@ -80,72 +85,12 @@ function EditGameModalInstanceCtrl($scope, $modalInstance, oldGameName) {
   };
 }
 
-function getPointsById(id, game) {
-  var found = false;
-  var obj = null;
-
-  angular.forEach(game.instances.points, function (points) {
-    if (!found) {
-      if (points.points_id == id) {
-        obj = points;
-        found = true;
-      }
-    }
-  });
-
-  return obj;
-}
-
-function getBadgesCollectionById(id, game) {
-  var found = false;
-  var obj = null;
-
-  angular.forEach(game.instances.badges_collections, function (badges_collection) {
-    if (!found) {
-      if (badges_collection.badges_collection_id == id) {
-        obj = badges_collection;
-        found = true;
-      }
-    }
-  });
-
-  return obj;
-}
-
-function getLeaderboardById(id, game) {
-  var found = false;
-  var obj = null;
-
-  angular.forEach(game.instances.leaderboards, function (leaderboard) {
-    if (!found) {
-      if (leaderboard.leaderboard_id == id) {
-        obj = leaderboard;
-        found = true;
-      }
-    }
-  });
-
-  return obj;
-}
-
-function getNewGameId(games) {
-  var higher = -1;
-
-  angular.forEach(games, function (game) {
-    if (game.id > higher) {
-      higher = game.id;
-    }
-  });
-
-  return higher + 1;
-}
-
 function getNewPointsId(game) {
   var higher = -1;
 
   angular.forEach(game.instances.points, function (points) {
-    if (points.points_id > higher) {
-      higher = points.points_id;
+    if (points.id > higher) {
+      higher = points.id;
     }
   });
 
@@ -156,8 +101,8 @@ function getNewBadgesCollectionId(game) {
   var higher = -1;
 
   angular.forEach(game.instances.badges_collections, function (badges_collection) {
-    if (badges_collection.badges_collection_id > higher) {
-      higher = badges_collection.badges_collection_id;
+    if (badges_collection.id > higher) {
+      higher = badges_collection.id;
     }
   });
 
@@ -168,8 +113,8 @@ function getNewLeaderboardId(game) {
   var higher = -1;
 
   angular.forEach(game.instances.leaderboards, function (leaderboard) {
-    if (leaderboard.leaderboard_id > higher) {
-      higher = leaderboard.leaderboard_id;
+    if (leaderboard.id > higher) {
+      higher = leaderboard.id;
     }
   });
 
@@ -194,8 +139,12 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
   };
 
   $scope.game = {};
+
   gamesFactory.getGameById($routeParams.id).then(function (game) {
     $scope.game = game;
+  }, function () {
+    // Show error alert
+    $scope.alerts.loadGameError = true;
   });
 
   $scope.closeAlert = function (alertName) {
@@ -462,9 +411,10 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, games
     'rules': false
   };
 
-  gamesFactory.getGameById($routeParams.id).then(function (game) {
-    $scope.game = game;
-    $scope.points = getPointsById($routeParams.idPoints, $scope.game);
+  gamesFactory.getInstanceById($routeParams.id, 'points', $routeParams.idPoints).then(function (response) {
+    $scope.game = response.game;
+    $scope.points = response.inst;
+
   }, function () {
     // Show error alert
     $scope.alerts.loadGameError = true;
@@ -507,7 +457,7 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, games
 
     modalInstance.result.then(function () {
       angular.forEach($scope.game.instances.points, function (points, index) {
-        if (points.points_id == $scope.points.points_id)
+        if (points.id == $scope.points.id)
           $scope.game.instances.points.splice(index, 1);
       });
 
@@ -561,11 +511,9 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $win
     'settingsEdited': false
   };
 
-  gamesFactory.getGames().then(function (games) {
-    $rootScope.games = games;
-
-    $scope.game = gamesFactory.getGameById($routeParams.id);
-    $scope.badges_collection = getBadgesCollectionById($routeParams.idBadgesCollection, $scope.game);
+  gamesFactory.getInstanceById($routeParams.id, 'badges_collections', $routeParams.idBadgesCollection).then(function (response) {
+    $scope.game = response.game;
+    $scope.badges_collection = response.inst;
   }, function () {
     // Show error alert
     $scope.alerts.loadGameError = true;
@@ -605,7 +553,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $win
 
     modalInstance.result.then(function () {
       angular.forEach($scope.game.instances.badges_collections, function (badges_collection, index) {
-        if (badges_collection.badges_collection_id == $scope.badges_collection.badges_collection_id)
+        if (badges_collection.id == $scope.badges_collection.id)
           $scope.game.instances.badges_collections.splice(index, 1);
       });
 
@@ -641,11 +589,9 @@ function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, 
     'settingsEdited': false
   };
 
-  gamesFactory.getGames().then(function (games) {
-    $rootScope.games = games;
-
-    $scope.game = gamesFactory.getGameById($routeParams.id);
-    $scope.leaderboard = getLeaderboardById($routeParams.idLeaderboard, $scope.game);
+  gamesFactory.getInstanceById($routeParams.id, 'leaderboards', $routeParams.idLeaderboard).then(function (response) {
+    $scope.game = response.game;
+    $scope.leaderboard = response.inst;
   }, function () {
     // Show error alert
     $scope.alerts.loadGameError = true;
@@ -694,7 +640,7 @@ function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, 
 
     modalInstance.result.then(function () {
       angular.forEach($scope.game.instances.leaderboards, function (leaderboard, index) {
-        if (leaderboard.leaderboard_id == $scope.leaderboard.leaderboard_id)
+        if (leaderboard.id == $scope.leaderboard.id)
           $scope.game.instances.leaderboards.splice(index, 1);
       });
 
@@ -768,9 +714,8 @@ function ActionsCtrl($scope, $rootScope, $routeParams, gamesFactory) {
     'loadGameError': false
   };
 
-  gamesFactory.getGames().then(function (games) {
-    $rootScope.games = games;
-    $scope.game = gamesFactory.getGameById($routeParams.id, $rootScope.games);
+  gamesFactory.getGameById($routeParams.id).then(function (game) {
+    $scope.game = game;
   }, function () {
     // Show error alert
     $scope.alerts.loadGameError = true;

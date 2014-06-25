@@ -37,6 +37,8 @@ app.factory('gamesFactory',
         } else {
           deferred.reject();
         }
+      }, function () {
+        deferred.reject();
       });
 
       return deferred.promise;
@@ -84,11 +86,41 @@ app.factory('gamesFactory',
       return deferred.promise;
     }
 
+    // Gets an instance (points / basdges_collection / leaderboard) by its id
+    var getInstanceById = function (gameId, instanceType, instanceId) {
+      var deferred = $q.defer();
+
+      var inst = {};
+      getGameById(gameId).then(function (game) {
+        var found = false;
+        angular.forEach(game.instances[instanceType], function (i) {
+          if (!found && i.id == instanceId) {
+            inst = i;
+            found = true;
+          }
+        });
+
+        if (!!inst) {
+          deferred.resolve({
+            'game': game,
+            'inst': inst
+          });
+        } else {
+          deferred.reject();
+        }
+
+      }, function () {
+        deferred.reject();
+      });
+
+      return deferred.promise;
+    };
+
     return {
       'getGames': getGames,
       'getGameById': getGameById,
-      'getGameByName': getGameByName,
-      'addGame': addGame
+      'addGame': addGame,
+      'getInstanceById': getInstanceById
     };
   }
 );

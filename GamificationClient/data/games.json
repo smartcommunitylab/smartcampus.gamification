@@ -5,19 +5,19 @@
     "instances": {
       "points": [
         {
-          "points_id": 1,
+          "id": 1,
           "name": "Green leaves",
           "typology": "Skill points",
           "is_active": true
         },
         {
-          "points_id": 2,
+          "id": 2,
           "name": "Hearts",
           "typology": "Skill points",
           "is_active": false
         },
         {
-          "points_id": 3,
+          "id": 3,
           "name": "Usage points",
           "typology": "Experience points",
           "is_active": true
@@ -25,7 +25,7 @@
       ],
       "badges_collections": [
         {
-          "badges_collection_id": 1,
+          "id": 1,
           "name": "BG 1",
           "badges": [
             "data/uploads/badges/gold_badge.png",
@@ -35,7 +35,7 @@
           "is_active": true
         },
         {
-          "badges_collection_id": 2,
+          "id": 2,
           "name": "BG 2",
           "badges": [
             "data/uploads/badges/green_hero_2.png",
@@ -45,7 +45,7 @@
           "is_active": false
         },
         {
-          "badges_collection_id": 3,
+          "id": 3,
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
@@ -57,28 +57,28 @@
       ],
       "leaderboards": [
         {
-          "leaderboard_id": 1,
+          "id": 1,
           "name": "Hearts every month",
           "points_dependency": "Hearts",
           "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboard_id": 2,
+          "id": 2,
           "name": "Green leaves frequently",
           "points_dependency": "Green leaves",
           "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboard_id": 3,
+          "id": 3,
           "name": "Fastest leaderboard ever",
           "points_dependency": "Usage points",
           "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboard_id": 4,
+          "id": 4,
           "name": "Users usage week by week",
           "points_dependency": "Usage points",
           "update_rate": "Weekly",
@@ -93,19 +93,19 @@
     "instances": {
       "points": [
         {
-          "points_id": 1,
+          "id": 1,
           "name": "Green leaves",
           "typology": "Skill points",
           "is_active": true
         },
         {
-          "points_id": 2,
+          "id": 2,
           "name": "Hearts",
           "typology": "Skill points",
           "is_active": false
         },
         {
-          "points_id": 3,
+          "id": 3,
           "name": "Usage points",
           "typology": "Experience points",
           "is_active": true
@@ -113,7 +113,7 @@
       ],
       "badges_collections": [
         {
-          "badges_collection_id": 1,
+          "id": 1,
           "name": "BG 1",
           "badges": [
             "data/uploads/badges/gold_badge.png",
@@ -123,7 +123,7 @@
           "is_active": true
         },
         {
-          "badges_collection_id": 2,
+          "id": 2,
           "name": "BG 2",
           "badges": [
             "data/uploads/badges/green_hero_2.png",
@@ -133,7 +133,7 @@
           "is_active": false
         },
         {
-          "badges_collection_id": 3,
+          "id": 3,
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
@@ -145,28 +145,28 @@
       ],
       "leaderboards": [
         {
-          "leaderboard_id": 1,
+          "id": 1,
           "name": "Hearts every month",
           "points_dependency": "Hearts",
           "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboard_id": 2,
+          "id": 2,
           "name": "Green leaves frequently",
           "points_dependency": "Green leaves",
           "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboard_id": 3,
+          "id": 3,
           "name": "Fastest leaderboard ever",
           "points_dependency": "Usage points",
           "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboard_id": 4,
+          "id": 4,
           "name": "Users usage week by week",
           "points_dependency": "Usage points",
           "update_rate": "Weekly",
@@ -181,19 +181,19 @@
     "instances": {
       "points": [
         {
-          "points_id": 1,
+          "id": 1,
           "name": "Green leaves",
           "typology": "Skill points",
           "is_active": true
         },
         {
-          "points_id": 2,
+          "id": 2,
           "name": "Hearts",
           "typology": "Skill points",
           "is_active": false
         },
         {
-          "points_id": 3,
+          "id": 3,
           "name": "Usage points",
           "typology": "Experience points",
           "is_active": true
@@ -201,7 +201,7 @@
       ],
       "badges_collections": [
         {
-          "badges_collection_id": 1,
+          "id": 1,
           "name": "BG 1",
           "badges": [
             "data/uploads/badges/gold_badge.png",
@@ -211,7 +211,7 @@
           "is_active": true
         },
         {
-          "badges_collection_id": 2,
+          "id": 2,
           "name": "BG 2",
           "badges": [
             "data/uploads/badges/green_hero_2.png",
@@ -221,7 +221,7 @@
           "is_active": false
         },
         {
-          "badges_collection_id": 3,
+          "id": 3,
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
@@ -233,28 +233,28 @@
       ],
       "leaderboards": [
         {
-          "leaderboard_id": 1,
+          "id": 1,
           "name": "Hearts every month",
           "points_dependency": "Hearts",
           "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboard_id": 2,
+          "id": 2,
           "name": "Green leaves frequently",
           "points_dependency": "Green leaves",
           "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboard_id": 3,
+          "id": 3,
           "name": "Fastest leaderboard ever",
           "points_dependency": "Usage points",
           "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboard_id": 4,
+          "id": 4,
           "name": "Users usage week by week",
           "points_dependency": "Usage points",
           "update_rate": "Weekly",
@@ -269,19 +269,19 @@
     "instances": {
       "points": [
         {
-          "points_id": 1,
+          "id": 1,
           "name": "Green leaves",
           "typology": "Skill points",
           "is_active": true
         },
         {
-          "points_id": 2,
+          "id": 2,
           "name": "Hearts",
           "typology": "Skill points",
           "is_active": false
         },
         {
-          "points_id": 3,
+          "id": 3,
           "name": "Usage points",
           "typology": "Experience points",
           "is_active": true
@@ -289,7 +289,7 @@
       ],
       "badges_collections": [
         {
-          "badges_collection_id": 1,
+          "id": 1,
           "name": "BG 1",
           "badges": [
             "data/uploads/badges/gold_badge.png",
@@ -299,7 +299,7 @@
           "is_active": true
         },
         {
-          "badges_collection_id": 2,
+          "id": 2,
           "name": "BG 2",
           "badges": [
             "data/uploads/badges/green_hero_2.png",
@@ -309,7 +309,7 @@
           "is_active": false
         },
         {
-          "badges_collection_id": 3,
+          "id": 3,
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
@@ -321,28 +321,28 @@
       ],
       "leaderboards": [
         {
-          "leaderboard_id": 1,
+          "id": 1,
           "name": "Hearts every month",
           "points_dependency": "Hearts",
           "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboard_id": 2,
+          "id": 2,
           "name": "Green leaves frequently",
           "points_dependency": "Green leaves",
           "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboard_id": 3,
+          "id": 3,
           "name": "Fastest leaderboard ever",
           "points_dependency": "Usage points",
           "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboard_id": 4,
+          "id": 4,
           "name": "Users usage week by week",
           "points_dependency": "Usage points",
           "update_rate": "Weekly",
@@ -357,19 +357,19 @@
     "instances": {
       "points": [
         {
-          "points_id": 1,
+          "id": 1,
           "name": "Green leaves",
           "typology": "Skill points",
           "is_active": true
         },
         {
-          "points_id": 2,
+          "id": 2,
           "name": "Hearts",
           "typology": "Skill points",
           "is_active": false
         },
         {
-          "points_id": 3,
+          "id": 3,
           "name": "Usage points",
           "typology": "Experience points",
           "is_active": true
@@ -377,7 +377,7 @@
       ],
       "badges_collections": [
         {
-          "badges_collection_id": 1,
+          "id": 1,
           "name": "BG 1",
           "badges": [
             "data/uploads/badges/gold_badge.png",
@@ -387,7 +387,7 @@
           "is_active": true
         },
         {
-          "badges_collection_id": 2,
+          "id": 2,
           "name": "BG 2",
           "badges": [
             "data/uploads/badges/green_hero_2.png",
@@ -397,7 +397,7 @@
           "is_active": false
         },
         {
-          "badges_collection_id": 3,
+          "id": 3,
           "name": "BG 3",
           "badges": [
             "data/uploads/badges/eco_captain.jpg",
@@ -409,28 +409,28 @@
       ],
       "leaderboards": [
         {
-          "leaderboard_id": 1,
+          "id": 1,
           "name": "Hearts every month",
           "points_dependency": "Hearts",
           "update_rate": "Monthly",
           "is_active": false
         },
         {
-          "leaderboard_id": 2,
+          "id": 2,
           "name": "Green leaves frequently",
           "points_dependency": "Green leaves",
           "update_rate": "Weekly",
           "is_active": false
         },
         {
-          "leaderboard_id": 3,
+          "id": 3,
           "name": "Fastest leaderboard ever",
           "points_dependency": "Usage points",
           "update_rate": "Daily",
           "is_active": false
         },
         {
-          "leaderboard_id": 4,
+          "id": 4,
           "name": "Users usage week by week",
           "points_dependency": "Usage points",
           "update_rate": "Weekly",

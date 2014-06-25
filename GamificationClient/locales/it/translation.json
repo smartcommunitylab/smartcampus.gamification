@@ -45,5 +45,11 @@
   "lbl_parametric_first_time_action_badges": "Parametric first time action badges",
   "lbl_parametric_point_total_badges": "Parametric point total badges",
   "lbl_badges": "Medaglie",
-  "lbl_delete_confirm": "Conferma eliminazione"
+  "lbl_delete_confirm": "Conferma eliminazione",
+  "msg_game_name_error": "Inserisci un nome di gioco valido!",
+  "msg_game_name_exists_error": "Esiste gia' un gioco con lo stesso nome!",
+  "msg_same_name_error": "Inserisci un nome diverso!",
+  "msg_instance_name_error": "Inserisci un nome di istanza valido!",
+  "msg_instance_name_exists_error": "Esiste gia' un'istanza con lo stesso nome!",
+  "msg_instance_unchanged_error": "Cambia almeno una proprieta'"
 }

@@ -1,7 +1,7 @@
 app.factory('gamesFactory',
   function ($rootScope, $http, $q, $timeout) {
 
-    // get games
+    // Get games
     var getGames = function () {
       var deferred = $q.defer();
 
@@ -18,7 +18,7 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
-    // get game by id
+    // Get game by id
     var getGameById = function (id) {
       var deferred = $q.defer();
 
@@ -26,7 +26,7 @@ app.factory('gamesFactory',
       getGames().then(function () {
         var found = false;
         angular.forEach($rootScope.games, function (g) {
-          if (!found && g.id === id) {
+          if (!found && g.id == id) {
             game = g;
             found = true;
           }
@@ -44,7 +44,7 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
-    // get game by name
+    // Get game by name
     var getGameByName = function (name) {
       var found = false;
       angular.forEach($rootScope.games, function (g) {
@@ -54,37 +54,6 @@ app.factory('gamesFactory',
       });
       return found;
     };
-
-    // add new game
-    var addGame = function (name) {
-      var deferred = $q.defer();
-
-      if (!name || getGameByName(name)) {
-        deferred.reject();
-      } else {
-        var id = -1;
-        angular.forEach($rootScope.games, function (game) {
-          if (game.id > id) {
-            id = game.id;
-          }
-        });
-
-        var game = {
-          'id': id + 1,
-          'name': name,
-          'instances': {
-            'points': [],
-            'badges_collections': [],
-            'leaderboards': []
-          }
-        };
-
-        $rootScope.games.push(game);
-        deferred.resolve(game);
-      }
-
-      return deferred.promise;
-    }
 
     // Gets an instance (points / basdges_collection / leaderboard) by its id
     var getInstanceById = function (gameId, instanceType, instanceId) {
@@ -116,14 +85,185 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
+    var getInstanceByName = function (game, instanceName, instanceType) {
+      var found = false;
+      angular.forEach(game.instances[instanceType], function (i) {
+        if (!found && i.name === instanceName) {
+          found = true;
+        }
+      });
+      return found;
+    };
+
+    // Add or edit game
+    var editGame = function (game, name) {
+      var deferred = $q.defer();
+
+      if (!name) {
+        deferred.reject('msg_game_name_error');
+      } else if (!game.id) {
+        // New game
+        if (!!getGameByName(name)) {
+          // Game with same name alredy exists
+          deferred.reject('msg_game_name_exists_error');
+        } else {
+          // Create new game
+          var id = -1;
+          angular.forEach($rootScope.games, function (g) {
+            if (g.id > id) {
+              id = g.id;
+            }
+          });
+
+          game = {
+            'id': id + 1,
+            'name': name,
+            'instances': {
+              'points': [],
+              'badges_collections': [],
+              'leaderboards': []
+            }
+          };
+
+          $rootScope.games.push(game);
+          deferred.resolve(game);
+        }
+      } else if (!!getGameByName(name)) {
+        // User has entered the same name
+        deferred.reject('msg_same_name_error');
+      } else {
+        // Edit game
+        game.name = name;
+        deferred.resolve();
+      }
+
+      return deferred.promise;
+    };
+
+    // Add or edit instance
+    var editInstance = function (game, instance, instanceType, instanceProperties) {
+      var deferred = $q.defer();
+
+      if (!instanceProperties.name) {
+        deferred.reject('msg_instance_name_error');
+      } else if (!instance.id) {
+        // New instance
+        if (!!getInstanceByName(game, instanceProperties.name, instanceType)) {
+          // Instance with same name alredy exists
+          deferred.reject('msg_instance_name_exists_error');
+        } else {
+          // Create new instance
+          var id = -1;
+          angular.forEach(game.instances[instanceType], function (i) {
+            if (i.id > id) {
+              id = i.id;
+            }
+          });
+
+          // Choose instance object structure
+          if (instanceType == 'points') {
+            instance = {
+              'id': id + 1,
+              'name': instanceProperties.name,
+              'typology': instanceProperties.typology,
+              'is_active': true
+            };
+          } else if (instanceType == 'badges_collections') {
+            instance = {
+              'id': id + 1,
+              'name': instanceProperties.name,
+              'badges': [],
+              'is_active': true
+            };
+          } else {
+            // instanceType = 'leaderboards'
+            instance = {
+              'id': id + 1,
+              'name': instanceProperties.name,
+              'points_dependency': instanceProperties.points_dependency,
+              'update_rate': instanceProperties.update_rate,
+              'is_active': true
+            };
+          }
+
+          game.instances[instanceType].push(instance);
+          deferred.resolve(instance);
+        }
+      } else if (!!getInstanceByName(game, instanceProperties.name, instanceType) && instance.name != instanceProperties.name) {
+        // Instance with same name alredy exists
+        deferred.reject('msg_instance_name_exists_error');
+      } else {
+        // Edit instance
+
+        // Choose other instance properties to be modified
+        if (instanceType == 'points') {
+          if (instance.name == instanceProperties.name && instance.typology == instanceProperties.typology) {
+            deferred.reject('msg_instance_unchanged_error');
+          }
+
+          instance.name = instanceProperties.name;
+          instance.typology = instanceProperties.typology;
+        } else if (instanceType == 'badges_cellections') {
+          if (instance.name == instanceProperties.name) {
+            deferred.reject('msg_instance_unchanged_error');
+          }
+
+          instance.name = instanceProperties.name;
+        } else {
+          // instanceType = 'leaderboards'
+          if (instance.name == instanceProperties.name && instance.points_dependency == instanceProperties.points_dependency && instance.update_rate == instanceProperties.update_rate) {
+            deferred.reject('msg_instance_unchanged_error');
+          }
+
+          instance.name = instanceProperties.name;
+          instance.points_dependency = instanceProperties.points_dependency;
+          instance.update_rate = instanceProperties.update_rate;
+        }
+
+        deferred.resolve();
+      }
+
+      return deferred.promise;
+    };
+
+    // Delete game
+    var deleteGame = function (game) {
+      var deferred = $q.defer();
+
+      angular.forEach($rootScope.games, function (g, index) {
+        if (g.id == game.id) {
+          $rootScope.games.splice(index, 1);
+          deferred.resolve();
+        }
+      });
+
+      return deferred.promise;
+    };
+
+    // Delete instance
+    var deleteInstance = function (game, instance, instanceType) {
+      var deferred = $q.defer();
+
+      angular.forEach(game.instances[instanceType], function (i, index) {
+        if (i.id == instance.id) {
+          game.instances[instanceType].splice(index, 1);
+          deferred.resolve();
+        }
+      });
+
+      return deferred.promise;
+    };
+
     return {
       'getGames': getGames,
       'getGameById': getGameById,
-      'addGame': addGame,
-      'getInstanceById': getInstanceById
+      'getInstanceById': getInstanceById,
+      'editGame': editGame,
+      'editInstance': editInstance,
+      'deleteGame': deleteGame,
+      'deleteInstance': deleteInstance
     };
-  }
-);
+  });
 
 app.factory('utilsFactory',
   function () {

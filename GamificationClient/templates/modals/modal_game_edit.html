@@ -3,9 +3,14 @@
 </div>
 <form role="form">
   <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <alert ng-if="!!alerts.editGameError" type="danger" close="closeAlert('editGameError')">{{alerts.editGameError | i18next}}</alert>
+      </div>
+    </div>
     <div class="form-group">
-      <label for="newGameName">{{'lbl_new_name' | i18next}}</label>
-      <input type="text" class="form-control" id="newGameName" ng-model="game.newGameName" placeholder="{{'lbl_enter_new_name' | i18next}}" required />
+      <label for="gameName">{{'lbl_new_name' | i18next}}</label>
+      <input type="text" class="form-control" id="gameName" ng-model="newGame.name" placeholder="{{'lbl_enter_new_name' | i18next}}" required />
     </div>
   </div>
   <div class="modal-footer clearfix">

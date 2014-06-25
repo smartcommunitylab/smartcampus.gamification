@@ -29,8 +29,6 @@
   "btn_save": "Save",
   "lbl_typology": "Typology",
   "btn_choose": "Choose",
-  "lbl_badges_collection_configuration": "Badges collection configuration",
-  "lbl_leaderboard_configuration": "Leaderboard configuration",
   "lbl_points_dependency": "Points dependency",
   "lbl_update_rate": "Update rate",
   "msg_load_games_error": "There has been an error during the game loading process!",
@@ -47,5 +45,11 @@
   "lbl_parametric_first_time_action_badges": "Parametric first time action badges",
   "lbl_parametric_point_total_badges": "Parametric point total badges",
   "lbl_badges": "Badges",
-  "lbl_delete_confirm": "Delete confirm"
+  "lbl_delete_confirm": "Delete confirm",
+  "msg_game_name_error": "Insert a valid game name!",
+  "msg_game_name_exists_error": "A game with this name alredy exists!",
+  "msg_same_name_error": "Enter a different name!",
+  "msg_instance_name_error": "Insert a valid instance name!",
+  "msg_instance_name_exists_error": "An instance with this name alredy exists!",
+  "msg_instance_unchanged_error": "Change at least one property"
 }

@@ -282,6 +282,17 @@ app.factory('gamesFactory',
     var pointsDeactivationCheck = function (game, points) {
       var leaderboards = [];
       angular.forEach(game.instances.leaderboards, function (leaderboard) {
+        if (leaderboard.points_dependency == points.name && leaderboard.is_active) {
+          leaderboards.push(leaderboard);
+        }
+      });
+
+      return leaderboards;
+    };
+
+    var pointsDeleteCheck = function (game, points) {
+      var leaderboards = [];
+      angular.forEach(game.instances.leaderboards, function (leaderboard) {
         if (leaderboard.points_dependency == points.name) {
           leaderboards.push(leaderboard);
         }
@@ -316,6 +327,7 @@ app.factory('gamesFactory',
       'deleteInstance': deleteInstance,
       'leaderboardActivationCheck': leaderboardActivationCheck,
       'pointsDeactivationCheck': pointsDeactivationCheck,
+      'pointsDeleteCheck': pointsDeleteCheck,
       'deactiveLeaderboards': deactiveLeaderboards,
       'deleteLeaderboards': deleteLeaderboards
     };

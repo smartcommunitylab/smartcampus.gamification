@@ -232,7 +232,7 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
   };
 
   $scope.pointsDeactivationCheck = function (points) {
-    if (!points.is_active) {
+    if (points.is_active) {
       var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, points);
 
       if (leaderboards.length != 0) {
@@ -246,16 +246,22 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
           }
         });
 
-        modalInstance.result.then(function () {}, function () {
-          points.is_active = true;
+        modalInstance.result.then(function () {
+          points.is_active = !points.is_active;
         });
+      } else {
+        points.is_active = !points.is_active;
       }
+    } else {
+      points.is_active = !points.is_active;
     }
   };
 
   $scope.leaderboardActivationCheck = function (leaderboard) {
-    if (leaderboard.is_active) {
-      gamesFactory.leaderboardActivationCheck($scope.game, leaderboard).then(function () {}, function (points) {
+    if (!leaderboard.is_active) {
+      gamesFactory.leaderboardActivationCheck($scope.game, leaderboard).then(function () {
+        leaderboard.is_active = !leaderboard.is_active;
+      }, function (points) {
         var modalInstance = $modal.open({
           templateUrl: 'templates/modals/modal_active_points_confirm.html',
           controller: ActivePointsConfirmModalInstanceCtrl,
@@ -266,10 +272,12 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
           }
         });
 
-        modalInstance.result.then(function () {}, function () {
-          leaderboard.is_active = false;
+        modalInstance.result.then(function () {
+          leaderboard.is_active = !leaderboard.is_active;
         });
       });
+    } else {
+      leaderboard.is_active = !leaderboard.is_active;
     }
   };
 }
@@ -330,7 +338,7 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, games
   };
 
   $scope.deleteInstance = function () {
-    var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, $scope.points);
+    var leaderboards = gamesFactory.pointsDeleteCheck($scope.game, $scope.points);
 
     if (leaderboards.length != 0) {
       var modalInstance = $modal.open({

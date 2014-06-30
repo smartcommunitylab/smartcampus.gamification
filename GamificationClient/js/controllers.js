@@ -96,7 +96,8 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
   // Error alerts object
   $scope.alerts = {
     'cantCreateLeaderboards': false,
-    'loadGameError': false
+    'loadGameError': false,
+    'settingsEdited': false
   };
 
   // Navbar names array
@@ -144,6 +145,10 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
           return $scope.game;
         }
       }
+    });
+
+    modalInstance.result.then(function () {
+      $scope.alerts.settingsEdited = true;
     });
   };
 

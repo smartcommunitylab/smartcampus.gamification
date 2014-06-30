@@ -22,6 +22,11 @@
   </div>
 </div>
 <div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_game_settings_edited' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
   <div class="col-md-8">
     <h2>{{game.name}}</h2>
   </div>

@@ -35,6 +35,7 @@
   "msg_leaderboards_error": "Non é possibile creare classifiche senza collezioni di punti a cui riferirsi!",
   "lbl_edit_settings": "Modifica impostazioni",
   "lbl_rules": "Regole",
+  "msg_game_settings_edited": "Le impostazioni del gioco sono state modificate con successo",
   "msg_points_settings_edited": "Le ipostazioni di questa istanza di punti sono state modificate con successo",
   "msg_badges_collection_settings_edited": "Le ipostazioni di questa collezione di distintivi sono state modificate con successo",
   "msg_leaderboard_settings_edited": "Le ipostazioni di questa classifica sono state modificate con successo",

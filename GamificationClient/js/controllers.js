@@ -107,6 +107,13 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
     'leaderboards': 'leaderboards'
   };
 
+  // TODO: Nested routing
+  $scope.active = {
+    'points': true,
+    'badges_collections': false,
+    'leaderboards': false
+  }
+
   $scope.game = {};
 
   gamesFactory.getGameById($routeParams.id).then(function (game) {

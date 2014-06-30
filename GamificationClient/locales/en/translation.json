@@ -52,5 +52,10 @@
   "msg_same_name_error": "Enter a different name!",
   "msg_instance_name_error": "Insert a valid instance name!",
   "msg_instance_name_exists_error": "An instance with this name alredy exists!",
-  "msg_instance_unchanged_error": "Change at least one property"
+  "msg_instance_unchanged_error": "Change at least one property",
+  "lbl_active_point": "Active points",
+  "btn_active": "Active",
+  "lbl_deactive_leaderboards": "Deactive leaderboards",
+  "btn_deactive": "Deactive",
+  "lbl_delete_leaderboards": "Delete leaderboards"
 }

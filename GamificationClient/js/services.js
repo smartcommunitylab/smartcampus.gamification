@@ -85,7 +85,7 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
-    var getInstanceByName = function (game, instanceName, instanceType) {
+    var existsInstanceByName = function (game, instanceName, instanceType) {
       var found = false;
       angular.forEach(game.instances[instanceType], function (i) {
         if (!found && i.name === instanceName) {
@@ -93,6 +93,18 @@ app.factory('gamesFactory',
         }
       });
       return found;
+    };
+
+    var getInstanceByName = function (game, instanceName, instanceType) {
+      var found = false;
+      var obj = {};
+      angular.forEach(game.instances[instanceType], function (i) {
+        if (!found && i.name === instanceName) {
+          found = true;
+          obj = i;
+        }
+      });
+      return obj;
     };
 
     // Add or edit game
@@ -148,7 +160,7 @@ app.factory('gamesFactory',
         deferred.reject('msg_instance_name_error');
       } else if (!instance.id) {
         // New instance
-        if (!!getInstanceByName(game, instanceProperties.name, instanceType)) {
+        if (!!existsInstanceByName(game, instanceProperties.name, instanceType)) {
           // Instance with same name alredy exists
           deferred.reject('msg_instance_name_exists_error');
         } else {
@@ -189,7 +201,7 @@ app.factory('gamesFactory',
           game.instances[instanceType].push(instance);
           deferred.resolve(instance);
         }
-      } else if (!!getInstanceByName(game, instanceProperties.name, instanceType) && instance.name != instanceProperties.name) {
+      } else if (!!existsInstanceByName(game, instanceProperties.name, instanceType) && instance.name != instanceProperties.name) {
         // Instance with same name alredy exists
         deferred.reject('msg_instance_name_exists_error');
       } else {
@@ -254,6 +266,46 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
+    var leaderboardActivationCheck = function (game, leaderboard) {
+      var deferred = $q.defer();
+      var points = getInstanceByName(game, leaderboard.points_dependency, 'points');
+
+      if (points.is_active) {
+        deferred.resolve();
+      } else {
+        deferred.reject(points);
+      }
+
+      return deferred.promise;
+    };
+
+    var pointsDeactivationCheck = function (game, points) {
+      var leaderboards = [];
+      angular.forEach(game.instances.leaderboards, function (leaderboard) {
+        if (leaderboard.points_dependency == points.name) {
+          leaderboards.push(leaderboard);
+        }
+      });
+
+      return leaderboards;
+    };
+
+    var deactiveLeaderboards = function (leaderboards) {
+      angular.forEach(leaderboards, function (leaderboard) {
+        leaderboard.is_active = false;
+      });
+    };
+
+    var deleteLeaderboards = function (game, leaderboards) {
+      // Using pure JS 'for' instead of 'angular.forEach' due to index trouble in splice operations
+      for (var i = 0; i < game.instances.leaderboards.length; i++) {
+        for (var j = 0; j < leaderboards.length; j++) {
+          if (game.instances.leaderboards[i].id == leaderboards[j].id)
+            game.instances.leaderboards.splice(i, 1);
+        }
+      }
+    };
+
     return {
       'getGames': getGames,
       'getGameById': getGameById,
@@ -261,7 +313,11 @@ app.factory('gamesFactory',
       'editGame': editGame,
       'editInstance': editInstance,
       'deleteGame': deleteGame,
-      'deleteInstance': deleteInstance
+      'deleteInstance': deleteInstance,
+      'leaderboardActivationCheck': leaderboardActivationCheck,
+      'pointsDeactivationCheck': pointsDeactivationCheck,
+      'deactiveLeaderboards': deactiveLeaderboards,
+      'deleteLeaderboards': deleteLeaderboards
     };
   });
 

@@ -71,7 +71,7 @@
                   </button>
                 </div>
                 <div class="pull-right">
-                  <toggle-switch model="points.is_active" />
+                  <toggle-switch ng-click="pointsDeactivationCheck(points);" model="points.is_active" />
                 </div>
                 <div class="clearfix" />
               </div>
@@ -127,7 +127,7 @@
                   </button>
                 </div>
                 <div class="pull-right">
-                  <toggle-switch model="leaderboard.is_active" />
+                  <toggle-switch ng-click="leaderboardActivationCheck(leaderboard);" model="leaderboard.is_active" />
                 </div>
                 <div class="clearfix" />
               </div>

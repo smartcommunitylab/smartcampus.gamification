@@ -229,7 +229,49 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
         }
       }
     });
-  }
+  };
+
+  $scope.pointsDeactivationCheck = function (points) {
+    if (!points.is_active) {
+      var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, points);
+
+      if (leaderboards.length != 0) {
+        var modalInstance = $modal.open({
+          templateUrl: 'templates/modals/modal_deactive_leaderboards_confirm.html',
+          controller: DeactiveLeaderboardsConfirmModalInstanceCtrl,
+          resolve: {
+            leaderboards: function () {
+              return leaderboards;
+            }
+          }
+        });
+
+        modalInstance.result.then(function () {}, function () {
+          points.is_active = true;
+        });
+      }
+    }
+  };
+
+  $scope.leaderboardActivationCheck = function (leaderboard) {
+    if (leaderboard.is_active) {
+      gamesFactory.leaderboardActivationCheck($scope.game, leaderboard).then(function () {}, function (points) {
+        var modalInstance = $modal.open({
+          templateUrl: 'templates/modals/modal_active_points_confirm.html',
+          controller: ActivePointsConfirmModalInstanceCtrl,
+          resolve: {
+            points: function () {
+              return points;
+            }
+          }
+        });
+
+        modalInstance.result.then(function () {}, function () {
+          leaderboard.is_active = false;
+        });
+      });
+    }
+  };
 }
 
 function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, gamesFactory) {
@@ -288,21 +330,57 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, games
   };
 
   $scope.deleteInstance = function () {
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_delete_confirm.html',
-      controller: DeleteInstanceConfirmModalInstanceCtrl,
-      resolve: {
-        game: function () {
-          return $scope.game;
-        },
-        instance: function () {
-          return $scope.points;
-        },
-        instanceType: function () {
-          return 'points';
+    var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, $scope.points);
+
+    if (leaderboards.length != 0) {
+      var modalInstance = $modal.open({
+        templateUrl: 'templates/modals/modal_delete_leaderboards_confirm.html',
+        controller: DeleteLeaderboardsConfirmModalInstanceCtrl,
+        resolve: {
+          game: function () {
+            return $scope.game;
+          },
+          leaderboards: function () {
+            return leaderboards;
+          }
         }
-      }
-    });
+      });
+
+      modalInstance.result.then(function () {
+        var secondModalInstance = $modal.open({
+          templateUrl: 'templates/modals/modal_delete_confirm.html',
+          controller: DeleteInstanceConfirmModalInstanceCtrl,
+          resolve: {
+            game: function () {
+              return $scope.game;
+            },
+            instance: function () {
+              return $scope.points;
+            },
+            instanceType: function () {
+              return 'points';
+            }
+          }
+        });
+      });
+    } else {
+      var secondModalInstance = $modal.open({
+        templateUrl: 'templates/modals/modal_delete_confirm.html',
+        controller: DeleteInstanceConfirmModalInstanceCtrl,
+        resolve: {
+          game: function () {
+            return $scope.game;
+          },
+          instance: function () {
+            return $scope.points;
+          },
+          instanceType: function () {
+            return 'points';
+          }
+        }
+      });
+    }
+
   };
 }
 

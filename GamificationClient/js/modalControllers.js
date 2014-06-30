@@ -198,3 +198,42 @@ function EditLeaderboardInstanceModalInstanceCtrl($scope, $modalInstance, game, 
     $modalInstance.dismiss('cancel');
   };
 }
+
+function ActivePointsConfirmModalInstanceCtrl($scope, $modalInstance, points) {
+  $scope.argument = points.name;
+
+  $scope.active = function () {
+    points.is_active = true;
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+function DeactiveLeaderboardsConfirmModalInstanceCtrl($scope, $modalInstance, leaderboards, gamesFactory) {
+  $scope.leaderboards = leaderboards;
+
+  $scope.deactive = function () {
+    gamesFactory.deactiveLeaderboards(leaderboards);
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+function DeleteLeaderboardsConfirmModalInstanceCtrl($scope, $modalInstance, game, leaderboards, gamesFactory) {
+  $scope.leaderboards = leaderboards;
+
+  $scope.delete = function () {
+    gamesFactory.deleteLeaderboards(game, leaderboards);
+    $modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}

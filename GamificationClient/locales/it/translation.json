@@ -52,5 +52,10 @@
   "msg_same_name_error": "Inserisci un nome diverso!",
   "msg_instance_name_error": "Inserisci un nome di istanza valido!",
   "msg_instance_name_exists_error": "Esiste gia' un'istanza con lo stesso nome!",
-  "msg_instance_unchanged_error": "Cambia almeno una proprieta'"
+  "msg_instance_unchanged_error": "Cambia almeno una proprieta'",
+  "lbl_active_point": "Attiva punti",
+  "btn_active": "Attiva",
+  "lbl_deactive_leaderboards": "Disattiva classifiche",
+  "btn_deactive": "Disattiva",
+  "lbl_delete_leaderboards": "Elimina classifiche"
 }

@@ -7,7 +7,7 @@
       </li>
       <li><a ng-href="#/game/{{game.id}}">Configure gamification plugin</a>
       </li>
-      <li><a ng-href="#/game/{{game.id}}">leaderboards</a>
+      <li><a ng-href="#/game/{{game.id}}?tab=leaderboards">leaderboards</a>
       </li>
       <li class="active">{{leaderboard.name}}</li>
     </ol>
@@ -42,7 +42,7 @@
 </div>
 <div class="row vertical-spacing">
   <div class="col-md-4">
-    <a href="#/game/{{game.id}}"><span class="glyphicon glyphicon-chevron-left"></span> {{'btn_back' | i18next}}</a>
+    <a href="#/game/{{game.id}}?tab=leaderboards"><span class="glyphicon glyphicon-chevron-left"></span> {{'btn_back' | i18next}}</a>
   </div>
 </div>
 <div class="row vertical-spacing">

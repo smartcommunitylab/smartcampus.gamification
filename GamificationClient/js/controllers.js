@@ -107,11 +107,16 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     'leaderboards': 'leaderboards'
   };
 
-  // TODO: Nested routing
+  // Tab switching
   $scope.active = {
-    'points': true,
+    'points': false,
     'badges_collections': false,
     'leaderboards': false
+  }
+  var tab = $stateParams.tab;
+  if (!!tab && (tab == 'points' || tab == 'badges_collections' || tab == 'leaderboards')) {
+    $scope.active[tab] = true;
+    $scope.selectedInstance = tab;
   }
 
   $scope.game = {};
@@ -127,8 +132,8 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     $scope.alerts[alertName] = false;
   }
 
-  $scope.setSelectedInstance = function (type) {
-    $scope.selectedInstance = type;
+  $scope.goToTab = function (tab) {
+    $window.location.href = '#/game/' + $scope.game.id + '?tab=' + tab;
   }
 
   $scope.countActive = function (game, type) {

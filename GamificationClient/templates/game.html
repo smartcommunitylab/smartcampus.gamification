@@ -55,7 +55,7 @@
 <div class="row vertical-spacing">
   <div class="tabs-vertical-left">
     <tabset>
-      <tab class="clickable" heading="{{'lbl_points' | i18next}}" select="setSelectedInstance('points')" active="active.points">
+      <tab class="clickable" heading="{{'lbl_points' | i18next}}" ng-click="goToTab('points')" active="active.points">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="points in game.instances.points">
             <div class="panel panel-default panel-plugin">
@@ -79,7 +79,7 @@
           </li>
         </ul>
       </tab>
-      <tab class="clickable" heading="{{'lbl_badges_collections' | i18next}}" select="setSelectedInstance('badges_collections')" active="active.badges_collections">
+      <tab class="clickable" heading="{{'lbl_badges_collections' | i18next}}" ng-click="goToTab('badges_collections')" active="active.badges_collections">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="badges_collection in game.instances.badges_collections">
             <div class="panel panel-default panel-plugin">
@@ -110,7 +110,7 @@
           </li>
         </ul>
       </tab>
-      <tab class="clickable" heading="{{'lbl_leaderboards' | i18next}}" select="setSelectedInstance('leaderboards')" active="active.leaderboards">
+      <tab class="clickable" heading="{{'lbl_leaderboards' | i18next}}" ng-click="goToTab('leaderboards')" active="active.leaderboards">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="leaderboard in game.instances.leaderboards">
             <div class="panel panel-default panel-plugin">

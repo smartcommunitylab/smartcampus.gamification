@@ -26,7 +26,7 @@ app.config(
     })
 
     .state('game', {
-      url: '/game/:id',
+      url: '/game/:id?tab',
       templateUrl: 'templates/game.html',
       controller: 'GameCtrl'
     })

@@ -89,9 +89,9 @@ function getNewLeaderboardId(game) {
   return higher + 1;
 }
 
-function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactory, utilsFactory) {
+function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactory, utilsFactory) {
   $rootScope.currentNav = 'configure';
-  $rootScope.currentGameId = $routeParams.id;
+  $rootScope.currentGameId = $stateParams.id;
 
   // Error alerts object
   $scope.alerts = {
@@ -116,7 +116,7 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
 
   $scope.game = {};
 
-  gamesFactory.getGameById($routeParams.id).then(function (game) {
+  gamesFactory.getGameById($stateParams.id).then(function (game) {
     $scope.game = game;
   }, function () {
     // Show error alert
@@ -289,9 +289,9 @@ function GameCtrl($scope, $rootScope, $window, $routeParams, $modal, gamesFactor
   };
 }
 
-function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, gamesFactory) {
+function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
-  $rootScope.currentGameId = $routeParams.id;
+  $rootScope.currentGameId = $stateParams.id;
 
   // Error alerts object
   $scope.alerts = {
@@ -311,7 +311,7 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, games
     'rules': false
   };
 
-  gamesFactory.getInstanceById($routeParams.id, 'points', $routeParams.idPoints).then(function (response) {
+  gamesFactory.getInstanceById($stateParams.id, 'points', $stateParams.idPoints).then(function (response) {
     $scope.game = response.game;
     $scope.points = response.inst;
 
@@ -399,9 +399,9 @@ function GamePointsCtrl($scope, $rootScope, $routeParams, $modal, $window, games
   };
 }
 
-function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $window, gamesFactory) {
+function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
-  $rootScope.currentGameId = $routeParams.id;
+  $rootScope.currentGameId = $stateParams.id;
 
   // Error alerts object
   $scope.alerts = {
@@ -409,7 +409,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $win
     'settingsEdited': false
   };
 
-  gamesFactory.getInstanceById($routeParams.id, 'badges_collections', $routeParams.idBadgesCollection).then(function (response) {
+  gamesFactory.getInstanceById($stateParams.id, 'badges_collections', $stateParams.idBadgesCollection).then(function (response) {
     $scope.game = response.game;
     $scope.badges_collection = response.inst;
   }, function () {
@@ -460,9 +460,9 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $routeParams, $modal, $win
   };
 }
 
-function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, gamesFactory) {
+function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
-  $rootScope.currentGameId = $routeParams.id;
+  $rootScope.currentGameId = $stateParams.id;
 
   // Error alerts object
   $scope.alerts = {
@@ -470,7 +470,7 @@ function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, 
     'settingsEdited': false
   };
 
-  gamesFactory.getInstanceById($routeParams.id, 'leaderboards', $routeParams.idLeaderboard).then(function (response) {
+  gamesFactory.getInstanceById($stateParams.id, 'leaderboards', $stateParams.idLeaderboard).then(function (response) {
     $scope.game = response.game;
     $scope.leaderboard = response.inst;
   }, function () {
@@ -524,16 +524,16 @@ function GameLeaderboardCtrl($scope, $rootScope, $routeParams, $modal, $window, 
   };
 }
 
-function ActionsCtrl($scope, $rootScope, $routeParams, gamesFactory) {
+function ActionsCtrl($scope, $rootScope, $stateParams, gamesFactory) {
   $rootScope.currentNav = 'actions';
-  $rootScope.currentGameId = $routeParams.id;
+  $rootScope.currentGameId = $stateParams.id;
 
   // Error alerts object
   $scope.alerts = {
     'loadGameError': false
   };
 
-  gamesFactory.getGameById($routeParams.id).then(function (game) {
+  gamesFactory.getGameById($stateParams.id).then(function (game) {
     $scope.game = game;
   }, function () {
     // Show error alert

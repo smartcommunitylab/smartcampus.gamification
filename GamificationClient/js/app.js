@@ -1,4 +1,4 @@
-var app = angular.module('gamificationEngine', ['ngRoute', 'ui.bootstrap', 'jm.i18next', 'toggle-switch']);
+var app = angular.module('gamificationEngine', ['ui.router', 'ui.bootstrap', 'jm.i18next', 'toggle-switch']);
 
 app.config(function ($i18nextProvider) {
   'use strict';
@@ -11,44 +11,50 @@ app.config(function ($i18nextProvider) {
 });
 
 app.config(
-  function ($routeProvider) {
-    $routeProvider.when('/login', {
-      templateUrl: 'templates/login.html',
-      controller: 'LoginCtrl'
-    })
+  function ($stateProvider, $urlRouterProvider) {
+    $stateProvider
+      .state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html',
+        controller: 'LoginCtrl'
+      })
 
-    .when('/home', {
+    .state('home', {
+      url: '/home',
       templateUrl: 'templates/home.html',
       controller: 'HomeCtrl'
     })
 
-    .when('/game/:id', {
+    .state('game', {
+      url: '/game/:id',
       templateUrl: 'templates/game.html',
       controller: 'GameCtrl'
     })
 
-    .when('/game/:id/points/:idPoints', {
+    .state('points', {
+      url: '/game/:id/points/:idPoints',
       templateUrl: 'templates/game_points.html',
       controller: 'GamePointsCtrl'
     })
 
-    .when('/game/:id/badges_collections/:idBadgesCollection', {
+    .state('badges_collection', {
+      url: '/game/:id/badges_collections/:idBadgesCollection',
       templateUrl: 'templates/game_badges_collection.html',
       controller: 'GameBadgesCollectionCtrl'
     })
 
-    .when('/game/:id/leaderboards/:idLeaderboard', {
+    .state('leaderboard', {
+      url: '/game/:id/leaderboards/:idLeaderboard',
       templateUrl: 'templates/game_leaderboard.html',
       controller: 'GameLeaderboardCtrl'
     })
 
-    .when('/game/:id/actions', {
+    .state('actions', {
+      url: '/game/:id/actions',
       templateUrl: 'templates/actions.html',
       controller: 'ActionsCtrl'
     })
 
-    .otherwise({
-      redirectTo: '/login'
-    });
+    $urlRouterProvider.otherwise("/login");
   }
 );

@@ -1,31 +1,32 @@
+// Main controller (index.html)
 function MainCtrl($scope, $rootScope) {
   $rootScope.games = [];
 }
 
+// Login controller (login.html)
 function LoginCtrl($scope, $rootScope) {
   $rootScope.currentNav = 'login';
 }
 
+// Home controller (home.html)
 function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactory) {
   $rootScope.currentNav = 'home';
   $rootScope.currentGameId = 1;
-
-  // LOADS GAMES
-  gamesFactory.getGames().then();
 
   // Error alerts object
   $scope.alerts = {
     'loadGameError': false
   };
 
+  // Load games
   gamesFactory.getGames().then(function () {}, function () {
-    // Show error alert
+    // Reject: show error alert
     $scope.alerts.loadGameError = true;
   });
 
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
-  }
+  };
 
   $scope.openGameModal = function () {
     // Add new game
@@ -52,43 +53,7 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
     $window.location.href = path;
   };
 }
-
-function getNewPointsId(game) {
-  var higher = -1;
-
-  angular.forEach(game.instances.points, function (points) {
-    if (points.id > higher) {
-      higher = points.id;
-    }
-  });
-
-  return higher + 1;
-}
-
-function getNewBadgesCollectionId(game) {
-  var higher = -1;
-
-  angular.forEach(game.instances.badges_collections, function (badges_collection) {
-    if (badges_collection.id > higher) {
-      higher = badges_collection.id;
-    }
-  });
-
-  return higher + 1;
-}
-
-function getNewLeaderboardId(game) {
-  var higher = -1;
-
-  angular.forEach(game.instances.leaderboards, function (leaderboard) {
-    if (leaderboard.id > higher) {
-      higher = leaderboard.id;
-    }
-  });
-
-  return higher + 1;
-}
-
+// Game controller (game.html)
 function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactory, utilsFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $stateParams.id;
@@ -112,9 +77,13 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     'points': false,
     'badges_collections': false,
     'leaderboards': false
-  }
+  };
+
+  // Read the tab param to select the right tab. If it isn't given, choose the dafualt tab
   var tab = $stateParams.tab;
+
   if (!!tab && (tab == 'points' || tab == 'badges_collections' || tab == 'leaderboards')) {
+    // User choice (tab)
     $scope.active[tab] = true;
     $scope.selectedInstance = tab;
   } else {
@@ -124,6 +93,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
 
   $scope.game = {};
 
+  // Load games
   gamesFactory.getGameById($stateParams.id).then(function (game) {
     $scope.game = game;
   }, function () {
@@ -133,11 +103,15 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
 
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
-  }
+  };
+
+  $scope.goto = function (path) {
+    $window.location.href = path;
+  };
 
   $scope.goToTab = function (tab) {
     $window.location.href = '#/game/' + $scope.game.id + '?tab=' + tab;
-  }
+  };
 
   $scope.countActive = function (game, type) {
     return utilsFactory.countActive(game, type);
@@ -147,11 +121,8 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     return utilsFactory.getLength(game, type);
   };
 
-  $scope.goto = function (path) {
-    $window.location.href = path;
-  };
-
   $scope.openEditModal = function (id) {
+    // Edit a game
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_game_edit.html',
       controller: EditGameModalInstanceCtrl,
@@ -163,11 +134,13 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     });
 
     modalInstance.result.then(function () {
+      // Show 'settings successfully edited' alert
       $scope.alerts.settingsEdited = true;
     });
   };
 
   $scope.openAddInstanceModal = function () {
+    // Add new plugin instance
     switch ($scope.selectedInstance) {
     case 'points':
       $scope.openAddPointsInstanceModal();
@@ -182,6 +155,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.openAddPointsInstanceModal = function () {
+    // Add a new points instance
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_points_instance_edit.html',
       controller: EditPointsInstanceModalInstanceCtrl,
@@ -197,6 +171,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.openAddBadgesCollectionsInstanceModal = function () {
+    // Add a new badges collection instance
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_badges_collection_instance_edit.html',
       controller: EditBadgesCollectionInstanceModalInstanceCtrl,
@@ -212,10 +187,12 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.openAddLeaderboardsInstanceModal = function () {
+    // Add a new leaderboard instance, after have checked for points instances to refer to
     if ($scope.game.instances.points.length == 0) {
       // Show error alert
       $scope.alerts.cantCreateLeaderboards = true;
     } else {
+      // Add instance
       var modalInstance = $modal.open({
         templateUrl: 'templates/modals/modal_leaderboard_instance_edit.html',
         controller: EditLeaderboardInstanceModalInstanceCtrl,
@@ -225,9 +202,6 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
           },
           instance: function () {
             return {};
-          },
-          gamePoints: function () {
-            return $scope.game.instances.points;
           }
         }
       });
@@ -235,6 +209,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.deleteGame = function () {
+    // Delete a game
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_delete_confirm.html',
       controller: DeleteGameConfirmModalInstanceCtrl,
@@ -247,10 +222,13 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.pointsDeactivationCheck = function (points) {
+    // Before points deactivation, tell the user that linked leaderboard will be deactived too
     if (points.is_active) {
+      // Check for linked leaderboards
       var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, points);
 
       if (leaderboards.length != 0) {
+        // There are some linked leaderboards
         var modalInstance = $modal.open({
           templateUrl: 'templates/modals/modal_deactive_leaderboards_confirm.html',
           controller: DeactiveLeaderboardsConfirmModalInstanceCtrl,
@@ -265,6 +243,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
           points.is_active = !points.is_active;
         });
       } else {
+        // There are no linked leaderboards
         points.is_active = !points.is_active;
       }
     } else {
@@ -273,10 +252,13 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.leaderboardActivationCheck = function (leaderboard) {
+    // Before leaderboard activation, check its dependency. Points dependency MUST be active too
     if (!leaderboard.is_active) {
       gamesFactory.leaderboardActivationCheck($scope.game, leaderboard).then(function () {
+        // Points dependency is alredy active
         leaderboard.is_active = !leaderboard.is_active;
       }, function (points) {
+        // Ask for dependency activation
         var modalInstance = $modal.open({
           templateUrl: 'templates/modals/modal_active_points_confirm.html',
           controller: ActivePointsConfirmModalInstanceCtrl,
@@ -297,6 +279,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 }
 
+// Points instance controller (game_points.html)
 function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $stateParams.id;
@@ -307,18 +290,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
     'settingsEdited': false
   };
 
-  // Backup variables for settings editing
-  $scope.editPoints = {
-    'name': '',
-    'typology': ''
-  };
-
-  $scope.activeTab = 'edit';
-  $scope.tabActive = {
-    'edit': true,
-    'rules': false
-  };
-
+  // Load game and points instance
   gamesFactory.getInstanceById($stateParams.id, 'points', $stateParams.idPoints).then(function (response) {
     $scope.game = response.game;
     $scope.points = response.inst;
@@ -333,6 +305,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
   };
 
   $scope.openEditInstanceModal = function () {
+    // Edit points instance
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_points_instance_edit.html',
       controller: EditPointsInstanceModalInstanceCtrl,
@@ -347,15 +320,18 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
     });
 
     modalInstance.result.then(function () {
-      // Show success alert
+      // Show 'settings successfully edited' alert
       $scope.alerts.settingsEdited = true;
     });
   };
 
   $scope.deleteInstance = function () {
+    // Delete points instance
+    // Before points removal, tell the user that linked leaderboard will be deleted too
     var leaderboards = gamesFactory.pointsDeleteCheck($scope.game, $scope.points);
 
     if (leaderboards.length != 0) {
+      // There are linked leaderboards
       var modalInstance = $modal.open({
         templateUrl: 'templates/modals/modal_delete_leaderboards_confirm.html',
         controller: DeleteLeaderboardsConfirmModalInstanceCtrl,
@@ -387,6 +363,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
         });
       });
     } else {
+      // There are no linked leaderboards
       var secondModalInstance = $modal.open({
         templateUrl: 'templates/modals/modal_delete_confirm.html',
         controller: DeleteInstanceConfirmModalInstanceCtrl,
@@ -403,10 +380,10 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
         }
       });
     }
-
   };
 }
 
+// Badges collection instance controller (game_badges_collection.html)
 function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $stateParams.id;
@@ -417,18 +394,24 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     'settingsEdited': false
   };
 
+  // Tab switching
   $scope.active = {
     'rules': false,
     'badges': false
   };
 
+  // Read the tab param to select the right tab. If it isn't given, choose the dafualt tab
   var tab = $stateParams.tab;
+
   if (!!tab && (tab == 'rules' || tab == 'badges')) {
+    // User choice (tab)
     $scope.active[tab] = true;
   } else {
+    // Default choice = 'points'
     $scope.active.rules = true;
   }
 
+  // Load game and badges collection instance
   gamesFactory.getInstanceById($stateParams.id, 'badges_collections', $stateParams.idBadgesCollection).then(function (response) {
     $scope.game = response.game;
     $scope.badges_collection = response.inst;
@@ -446,6 +429,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
   };
 
   $scope.openEditInstanceModal = function () {
+    // Edit badges collection instance
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_badges_collection_instance_edit.html',
       controller: EditBadgesCollectionInstanceModalInstanceCtrl,
@@ -460,12 +444,13 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     });
 
     modalInstance.result.then(function () {
-      // Show success alert
+      // Show 'settings successfully edited' alert
       $scope.alerts.settingsEdited = true;
     });
   };
 
   $scope.deleteInstance = function () {
+    // Delete badges collection instance
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_delete_confirm.html',
       controller: DeleteInstanceConfirmModalInstanceCtrl,
@@ -484,6 +469,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
   };
 }
 
+// Leaderboard instance controller (game_leaderboard.html)
 function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $stateParams.id;
@@ -494,6 +480,7 @@ function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, 
     'settingsEdited': false
   };
 
+  // Load game and leaderboard instance
   gamesFactory.getInstanceById($stateParams.id, 'leaderboards', $stateParams.idLeaderboard).then(function (response) {
     $scope.game = response.game;
     $scope.leaderboard = response.inst;
@@ -507,6 +494,7 @@ function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, 
   };
 
   $scope.openEditInstanceModal = function () {
+    // Edit leaderboard instance
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_leaderboard_instance_edit.html',
       controller: EditLeaderboardInstanceModalInstanceCtrl,
@@ -516,20 +504,18 @@ function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, 
         },
         instance: function () {
           return $scope.leaderboard;
-        },
-        gamePoints: function () {
-          return $scope.game.instances.points;
         }
       }
     });
 
     modalInstance.result.then(function () {
-      // Show success alert
+      // Show 'settings successfully edited' alert
       $scope.alerts.settingsEdited = true;
     });
   };
 
   $scope.deleteInstance = function () {
+    // Delete leaderboard instance
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_delete_confirm.html',
       controller: DeleteInstanceConfirmModalInstanceCtrl,
@@ -548,7 +534,11 @@ function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, 
   };
 }
 
+// Actions controller (actions.html)
 function ActionsCtrl($scope, $rootScope, $stateParams, gamesFactory) {
+
+  // TODO: load XML file and then add imported actions to the game actions collection
+
   $rootScope.currentNav = 'actions';
   $rootScope.currentGameId = $stateParams.id;
 
@@ -557,6 +547,7 @@ function ActionsCtrl($scope, $rootScope, $stateParams, gamesFactory) {
     'loadGameError': false
   };
 
+  // Load game
   gamesFactory.getGameById($stateParams.id).then(function (game) {
     $scope.game = game;
   }, function () {

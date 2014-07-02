@@ -1,5 +1,6 @@
 var app = angular.module('gamificationEngine', ['ui.router', 'ui.bootstrap', 'jm.i18next', 'toggle-switch']);
 
+// Load and set up the translation library i18next
 app.config(function ($i18nextProvider) {
   'use strict';
   $i18nextProvider.options = {
@@ -10,7 +11,7 @@ app.config(function ($i18nextProvider) {
   };
 });
 
-// Switch through application views and states
+// Switch application views and states
 app.config(
   function ($stateProvider, $urlRouterProvider) {
     $stateProvider

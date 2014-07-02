@@ -1,11 +1,14 @@
 app.factory('gamesFactory',
   function ($rootScope, $http, $q, $timeout) {
+    // Games data operations factory
 
     // Get games
     var getGames = function () {
       var deferred = $q.defer();
 
+      // If games haven't been already loaded
       if (!$rootScope.games || $rootScope.games.length === 0) {
+        // Load games
         $http.get('data/games.json').success(function (data) {
           $rootScope.games = data;
           deferred.resolve();
@@ -18,11 +21,13 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
-    // Get game by id
+    // Get game by ID
     var getGameById = function (id) {
       var deferred = $q.defer();
 
       var game = {};
+
+      // Load games
       getGames().then(function () {
         var found = false;
         angular.forEach($rootScope.games, function (g) {
@@ -32,6 +37,7 @@ app.factory('gamesFactory',
           }
         });
 
+        // If i've found the requested game
         if (!!game) {
           deferred.resolve(game);
         } else {
@@ -55,11 +61,13 @@ app.factory('gamesFactory',
       return found;
     };
 
-    // Gets an instance (points / basdges_collection / leaderboard) by its id
+    // Get an instance (points / basdges_collection / leaderboard) by its ID
     var getInstanceById = function (gameId, instanceType, instanceId) {
       var deferred = $q.defer();
 
       var inst = {};
+
+      // Load game
       getGameById(gameId).then(function (game) {
         var found = false;
         angular.forEach(game.instances[instanceType], function (i) {
@@ -69,6 +77,7 @@ app.factory('gamesFactory',
           }
         });
 
+        // If i've found the requested instance
         if (!!inst) {
           deferred.resolve({
             'game': game,
@@ -85,6 +94,7 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
+    // Boolean. Returns whether exists or not an instance by its name
     var existsInstanceByName = function (game, instanceName, instanceType) {
       var found = false;
       angular.forEach(game.instances[instanceType], function (i) {
@@ -95,6 +105,7 @@ app.factory('gamesFactory',
       return found;
     };
 
+    // Get an instance (points / basdges_collection / leaderboard) by its name
     var getInstanceByName = function (game, instanceName, instanceType) {
       var found = false;
       var obj = {};
@@ -266,6 +277,7 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
+    // Check if leaderboard points dependency is actived befoer allow leaderboard activation
     var leaderboardActivationCheck = function (game, leaderboard) {
       var deferred = $q.defer();
       var points = getInstanceByName(game, leaderboard.points_dependency, 'points');
@@ -279,6 +291,7 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
+    // Check if there are any ACTIVE leaderboards linked to the given points instance, and then return them
     var pointsDeactivationCheck = function (game, points) {
       var leaderboards = [];
       angular.forEach(game.instances.leaderboards, function (leaderboard) {
@@ -290,6 +303,7 @@ app.factory('gamesFactory',
       return leaderboards;
     };
 
+    // Check if there are any leaderboards linked to the given points instance, and then return them
     var pointsDeleteCheck = function (game, points) {
       var leaderboards = [];
       angular.forEach(game.instances.leaderboards, function (leaderboard) {
@@ -301,12 +315,14 @@ app.factory('gamesFactory',
       return leaderboards;
     };
 
+    // Deactive the given leaderboards
     var deactiveLeaderboards = function (leaderboards) {
       angular.forEach(leaderboards, function (leaderboard) {
         leaderboard.is_active = false;
       });
     };
 
+    // Delete the given leaderboards
     var deleteLeaderboards = function (game, leaderboards) {
       // Using pure JS 'for' instead of 'angular.forEach' due to index trouble in splice operations
       for (var i = 0; i < game.instances.leaderboards.length; i++) {
@@ -331,10 +347,14 @@ app.factory('gamesFactory',
       'deactiveLeaderboards': deactiveLeaderboards,
       'deleteLeaderboards': deleteLeaderboards
     };
-  });
+  }
+);
 
 app.factory('utilsFactory',
   function () {
+    // Utils factory
+
+    // Count active instances
     var countActive = function (game, type) {
       var count = 0;
       if (!!game && !!game.instances && !!game.instances[type]) {
@@ -347,6 +367,7 @@ app.factory('utilsFactory',
       return count;
     };
 
+    // Get given instances lenght
     var getLength = function (game, type) {
       var len = 0;
       if (!!game && !!game.instances && !!game.instances[type]) {

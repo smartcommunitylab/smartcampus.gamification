@@ -106,8 +106,6 @@ function EditPointsInstanceModalInstanceCtrl($scope, $modalInstance, game, insta
   };
 }
 
-//game, instance, instanceType, instanceProperties
-
 function EditBadgesCollectionInstanceModalInstanceCtrl($scope, $modalInstance, game, instance, gamesFactory) {
   $scope.badges_collection = {};
   $scope.badges_collection.name = instance.name;
@@ -139,7 +137,7 @@ function EditLeaderboardInstanceModalInstanceCtrl($scope, $modalInstance, game, 
 
   $scope.leaderboard = {};
   $scope.leaderboard.name = instance.name;
-  $scope.leaderboard.points_dependency = instance.points_dependency || 'Green leaves';
+  $scope.leaderboard.points_dependency = instance.points_dependency || game.instances.points[0].name;
   $scope.leaderboard.update_rate = instance.update_rate || 'Weekly';
 
   $scope.gamePoints = gamePoints;

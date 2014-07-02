@@ -158,7 +158,7 @@ app.factory('gamesFactory',
 
       if (!instanceProperties.name) {
         deferred.reject('msg_instance_name_error');
-      } else if (!instance.id) {
+      } else if (instance.id == null) {
         // New instance
         if (!!existsInstanceByName(game, instanceProperties.name, instanceType)) {
           // Instance with same name alredy exists

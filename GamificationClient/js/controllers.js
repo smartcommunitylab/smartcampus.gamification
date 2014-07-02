@@ -117,6 +117,9 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   if (!!tab && (tab == 'points' || tab == 'badges_collections' || tab == 'leaderboards')) {
     $scope.active[tab] = true;
     $scope.selectedInstance = tab;
+  } else {
+    // Default choice = 'points'
+    $scope.selectedInstance = 'points';
   }
 
   $scope.game = {};
@@ -414,6 +417,18 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     'settingsEdited': false
   };
 
+  $scope.active = {
+    'rules': false,
+    'badges': false
+  };
+
+  var tab = $stateParams.tab;
+  if (!!tab && (tab == 'rules' || tab == 'badges')) {
+    $scope.active[tab] = true;
+  } else {
+    $scope.active.rules = true;
+  }
+
   gamesFactory.getInstanceById($stateParams.id, 'badges_collections', $stateParams.idBadgesCollection).then(function (response) {
     $scope.game = response.game;
     $scope.badges_collection = response.inst;
@@ -424,6 +439,10 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
 
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
+  };
+
+  $scope.goToTab = function (tab) {
+    $window.location.href = '#/game/' + $scope.game.id + '/badges_collections/' + $scope.badges_collection.id + '?tab=' + tab;
   };
 
   $scope.openEditInstanceModal = function () {

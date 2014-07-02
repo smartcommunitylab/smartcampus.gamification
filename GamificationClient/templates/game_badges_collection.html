@@ -46,7 +46,7 @@
 <div class="row vertical-spacing">
   <div class="col-md-12">
     <tabset>
-      <tab class="clickable" heading="{{'lbl_rules' | i18next}}">
+      <tab class="clickable" heading="{{'lbl_rules' | i18next}}" active="active.rules" ng-click="goToTab('rules')">
         <h3>{{'lbl_basic_first_time_action_badges' | i18next}}</h3>
         <h5>Description lorem ipsum dolor sit amet.</h5>
         <br />
@@ -66,7 +66,7 @@
         <h3>{{'lbl_parametric_point_total_badges' | i18next}}</h3>
         <h5>Description lorem ipsum dolor sit amet.</h5>
       </tab>
-      <tab class="clickable" heading="{{'lbl_badges' | i18next}}">
+      <tab class="clickable" heading="{{'lbl_badges' | i18next}}" active="active.badges" ng-click="goToTab('badges')">
         <div class="text-center top-margined">
           <div class="col-md-2" ng-repeat="path in badges_collection.badges">
             <img ng-src="{{path}}" class="badge-item" height="100%" />

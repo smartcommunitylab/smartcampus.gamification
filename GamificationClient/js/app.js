@@ -10,6 +10,7 @@ app.config(function ($i18nextProvider) {
   };
 });
 
+// Switch through application views and states
 app.config(
   function ($stateProvider, $urlRouterProvider) {
     $stateProvider
@@ -38,7 +39,7 @@ app.config(
     })
 
     .state('badges_collection', {
-      url: '/game/:id/badges_collections/:idBadgesCollection',
+      url: '/game/:id/badges_collections/:idBadgesCollection?tab',
       templateUrl: 'templates/game_badges_collection.html',
       controller: 'GameBadgesCollectionCtrl'
     })

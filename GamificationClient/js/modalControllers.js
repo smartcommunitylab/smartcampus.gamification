@@ -225,7 +225,7 @@ function EditLeaderboardInstanceModalInstanceCtrl($scope, $modalInstance, game, 
 }
 
 // Poins activation confirmation modal
-function ActivePointsConfirmModalInstanceCtrl($scope, $modalInstance, points) {
+function ActivatePointsConfirmModalInstanceCtrl($scope, $modalInstance, points) {
   $scope.argument = points.name;
 
   // ACTIVE button click event-handler
@@ -241,13 +241,13 @@ function ActivePointsConfirmModalInstanceCtrl($scope, $modalInstance, points) {
 }
 
 // Linked leaderboards deactivation confirmation modal
-function DeactiveLeaderboardsConfirmModalInstanceCtrl($scope, $modalInstance, leaderboards, gamesFactory) {
+function DeactivateLeaderboardsConfirmModalInstanceCtrl($scope, $modalInstance, leaderboards, gamesFactory) {
   $scope.leaderboards = leaderboards;
 
   // DEACTIVE button click event-handler
   $scope.deactive = function () {
     // Call the function to deactive all the linked leaderboards
-    gamesFactory.deactiveLeaderboards(leaderboards);
+    gamesFactory.deactivateLeaderboards(leaderboards);
     $modalInstance.close();
   };
 

@@ -41,19 +41,19 @@
       </div>
       <div class="pull-right">
         <ul class="nav navbar-nav">
-          <li ng-class="{'active':currentNav == 'login'}">
+          <li ng-if="currentNav == 'login'" ng-class="{'active':currentNav == 'login'}">
             <a href="#/login">{{'btn_login' | i18next}}</a>
           </li>
-          <li ng-class="{'active':currentNav == 'home'}">
+          <li ng-if="currentNav == 'home' || currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'home'}">
             <a ng-href="#/home">{{'btn_home' | i18next}}</a>
           </li>
-          <li ng-class="{'active':currentNav == 'configure'}">
+          <li ng-if="currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'configure'}">
             <a ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
           </li>
-          <li ng-class="{'active':currentNav == 'actions'}">
+          <li ng-if="currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'actions'}">
             <a ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18next}}</a>
           </li>
-          <li ng-class="{'active':currentNav == 'logout'}">
+          <li ng-if="currentNav == 'home' || currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'logout'}">
             <a ng-href="#">{{'btn_logout' | i18next}}</a>
           </li>
         </ul>

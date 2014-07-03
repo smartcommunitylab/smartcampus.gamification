@@ -315,8 +315,8 @@ app.factory('gamesFactory',
       return leaderboards;
     };
 
-    // Deactive the given leaderboards
-    var deactiveLeaderboards = function (leaderboards) {
+    // Deactivate the given leaderboards
+    var deactivateLeaderboards = function (leaderboards) {
       angular.forEach(leaderboards, function (leaderboard) {
         leaderboard.is_active = false;
       });
@@ -344,7 +344,7 @@ app.factory('gamesFactory',
       'leaderboardActivationCheck': leaderboardActivationCheck,
       'pointsDeactivationCheck': pointsDeactivationCheck,
       'pointsDeleteCheck': pointsDeleteCheck,
-      'deactiveLeaderboards': deactiveLeaderboards,
+      'deactivateLeaderboards': deactivateLeaderboards,
       'deleteLeaderboards': deleteLeaderboards
     };
   }

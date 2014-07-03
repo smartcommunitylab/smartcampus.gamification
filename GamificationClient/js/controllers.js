@@ -222,7 +222,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.pointsDeactivationCheck = function (points) {
-    // Before points deactivation, tell the user that linked leaderboard will be deactived too
+    // Before points deactivation, tell the user that linked leaderboard will be deactivated too
     if (points.is_active) {
       // Check for linked leaderboards
       var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, points);
@@ -230,8 +230,8 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
       if (leaderboards.length != 0) {
         // There are some linked leaderboards
         var modalInstance = $modal.open({
-          templateUrl: 'templates/modals/modal_deactive_leaderboards_confirm.html',
-          controller: DeactiveLeaderboardsConfirmModalInstanceCtrl,
+          templateUrl: 'templates/modals/modal_deactivate_leaderboards_confirm.html',
+          controller: DeactivateLeaderboardsConfirmModalInstanceCtrl,
           resolve: {
             leaderboards: function () {
               return leaderboards;
@@ -260,8 +260,8 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
       }, function (points) {
         // Ask for dependency activation
         var modalInstance = $modal.open({
-          templateUrl: 'templates/modals/modal_active_points_confirm.html',
-          controller: ActivePointsConfirmModalInstanceCtrl,
+          templateUrl: 'templates/modals/modal_activate_points_confirm.html',
+          controller: ActivatePointsConfirmModalInstanceCtrl,
           resolve: {
             points: function () {
               return points;

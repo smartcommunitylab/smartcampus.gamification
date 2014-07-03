@@ -381,6 +381,37 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
       });
     }
   };
+
+  $scope.deleteRule = function () {
+    // Delete rule
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_delete_confirm.html',
+      controller: DeleteRuleConfirmModalInstanceCtrl,
+      resolve: {
+        argument: function () {
+          return "TODO";
+        }
+      }
+    });
+  };
+
+  // Edit rule
+  $scope.openEditRuleModal = function () {
+    // TODO: adjust to pass parameters
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_rule_edit.html',
+      controller: EditRuleModalInstanceCtrl,
+    });
+  };
+
+  // Add rule
+  $scope.openAddRuleModal = function () {
+    // TODO: adjust to pass parameters
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_rule_edit.html',
+      controller: EditRuleModalInstanceCtrl,
+    });
+  };
 }
 
 // Badges collection instance controller (game_badges_collection.html)
@@ -467,6 +498,45 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
       }
     });
   };
+
+  $scope.openAddBadgeModal = function () {
+    // Add badge
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_badges_edit.html',
+      controller: EditBadgesModalInstanceCtrl
+    });
+  };
+
+  $scope.deleteRule = function () {
+    // Delete rule
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_delete_confirm.html',
+      controller: DeleteRuleConfirmModalInstanceCtrl,
+      resolve: {
+        argument: function () {
+          return "TODO";
+        }
+      }
+    });
+  };
+
+  // Edit rule
+  $scope.openEditRuleModal = function () {
+    // TODO: adjust to pass parameters
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_rule_edit.html',
+      controller: EditRuleModalInstanceCtrl,
+    });
+  };
+
+  // Add rule
+  $scope.openAddRuleModal = function () {
+    // TODO: adjust to pass parameters
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_rule_edit.html',
+      controller: EditRuleModalInstanceCtrl,
+    });
+  };
 }
 
 // Leaderboard instance controller (game_leaderboard.html)
@@ -530,6 +600,37 @@ function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, 
           return 'leaderboards';
         }
       }
+    });
+  };
+
+  $scope.deleteRule = function () {
+    // Delete rule
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_delete_confirm.html',
+      controller: DeleteRuleConfirmModalInstanceCtrl,
+      resolve: {
+        argument: function () {
+          return "TODO";
+        }
+      }
+    });
+  };
+
+  // Edit rule
+  $scope.openEditRuleModal = function () {
+    // TODO: adjust to pass parameters
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_rule_edit.html',
+      controller: EditRuleModalInstanceCtrl,
+    });
+  };
+
+  // Add rule
+  $scope.openAddRuleModal = function () {
+    // TODO: adjust to pass parameters
+    var modalInstance = $modal.open({
+      templateUrl: 'templates/modals/modal_rule_edit.html',
+      controller: EditRuleModalInstanceCtrl,
     });
   };
 }

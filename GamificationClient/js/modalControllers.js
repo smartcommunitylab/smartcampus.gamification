@@ -71,7 +71,7 @@ function DeleteInstanceConfirmModalInstanceCtrl($scope, $modalInstance, $window,
   // CANCEL button click event-handler
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
-  }
+  };
 }
 
 // Edit points instance modal
@@ -265,6 +265,53 @@ function DeleteLeaderboardsConfirmModalInstanceCtrl($scope, $modalInstance, game
   $scope.delete = function () {
     // Call the function to delete all the linked leaderboards
     gamesFactory.deleteLeaderboards(game, leaderboards);
+    $modalInstance.close();
+  };
+
+  // CANCEL button click event-handler
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+// Edit badges modal
+function EditBadgesModalInstanceCtrl($scope, $modalInstance, gamesFactory) {
+  // TODO: complete add / edit badges operations!
+
+  // SAVE button click event-handler
+  $scope.save = function () {
+    $modalInstance.close();
+  };
+
+  // CANCEL button click event-handler
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+// Edit rule modal
+function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory) {
+  // TODO: complete add / edit rule operations!
+
+  // DELETE button click event-handler
+  $scope.save = function () {
+    // TODO: edit rule!
+    $modalInstance.close();
+  };
+
+  // CANCEL button click event-handler
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+// Delete rule modal
+function DeleteRuleConfirmModalInstanceCtrl($scope, $modalInstance, argument, gamesFactory) {
+  $scope.argument = argument;
+
+  // DELETE button click event-handler
+  $scope.delete = function () {
+    // TODO: delete rule!
     $modalInstance.close();
   };
 

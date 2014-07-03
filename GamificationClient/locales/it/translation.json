@@ -57,5 +57,7 @@
   "btn_active": "Attiva",
   "lbl_deactive_leaderboards": "Disattiva classifiche",
   "btn_deactive": "Disattiva",
-  "lbl_delete_leaderboards": "Elimina classifiche"
+  "lbl_delete_leaderboards": "Elimina classifiche",
+  "lbl_badges_configuration": "Configurazione distintivi",
+  "lbl_rules_configuration": "Configurazione regole"
 }

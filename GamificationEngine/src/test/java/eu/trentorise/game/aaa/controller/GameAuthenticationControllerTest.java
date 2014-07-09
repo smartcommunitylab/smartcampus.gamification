@@ -43,7 +43,7 @@ public class GameAuthenticationControllerTest {
      */
     @Test
     public void testAuthenticate() throws Exception {
-        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>();
+        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
         GameResponse response = helper.executeTest("authenticate", 
                                                    IGameConstants.SERVICE_GAME_AAA_PATH + "/login" + FINAL_PART_RELATIVE_URL,

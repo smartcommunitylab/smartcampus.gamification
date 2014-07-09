@@ -1,9 +1,13 @@
 package eu.trentorise.game.plugin.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  *
  * @author Luca Piras
  */
+//Necessary for the getCustomizedPluginListService Test
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GamificationPlugin {
     
     //TODO: this is the key

@@ -48,7 +48,7 @@ public class GameProfileControllerTest {
      */
     @Test
     public void testNewGame() throws Exception {
-        RestTemplateJsonServiceTestHelper<NewGameResponse> helper = new RestTemplateJsonServiceTestHelper<>();
+        RestTemplateJsonServiceTestHelper<NewGameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
         NewGameResponse response = helper.executeTest("newGame", 
                                                       BASE_RELATIVE_URL + "/newGame" + FINAL_PART_RELATIVE_URL,

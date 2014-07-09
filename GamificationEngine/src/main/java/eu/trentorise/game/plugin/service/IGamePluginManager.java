@@ -1,6 +1,7 @@
 package eu.trentorise.game.plugin.service;
 
-import eu.trentorise.game.plugin.response.GamificationPluginsListResponse;
+import eu.trentorise.game.plugin.controller.container.ICustomizedPluginContainer;
+import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
 
 /**
  *
@@ -8,5 +9,7 @@ import eu.trentorise.game.plugin.response.GamificationPluginsListResponse;
  */
 public interface IGamePluginManager {
     
-    public GamificationPluginsListResponse getGamificationPluginList();
+    public GamificationPluginListResponse getGamificationPluginList();
+
+    public GamificationPluginListResponse getCustomizedGamificationPluginList(ICustomizedPluginContainer container);
 }

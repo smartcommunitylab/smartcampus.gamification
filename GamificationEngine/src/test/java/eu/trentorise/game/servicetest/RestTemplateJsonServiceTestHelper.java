@@ -14,13 +14,19 @@ public class RestTemplateJsonServiceTestHelper<R> {
     
     public static final boolean ACTIVE = true;
     public static final String URL_ABSOLUTE = "http://localhost:8080/GamificationEngine";
+
+    protected boolean active;
+    
+    public RestTemplateJsonServiceTestHelper(boolean active) {
+        this.active = active;
+    }
     
     public R executeTest(String testName, String relativeUrl, 
                          Class<R> responseEntityClass, String requestContent) throws Exception {
         
         R responseContent = null;
         
-        if (this.ACTIVE) {
+        if (this.ACTIVE && this.active) {
             System.out.println(testName);
 
             RestTemplateJsonCaller<R> caller = new RestTemplateJsonCaller<>();

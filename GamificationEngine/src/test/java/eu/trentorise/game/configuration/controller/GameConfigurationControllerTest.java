@@ -47,7 +47,7 @@ public class GameConfigurationControllerTest {
      */
     /*@Test
     public void importGamifiableActions() throws Exception {
-        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>();
+        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
         GameResponse response = helper.executeTest("activateDeactivatePlugin", 
                                                    BASE_RELATIVE_URL + "/activateDeactivatePlugin" + FINAL_PART_RELATIVE_URL,
@@ -85,7 +85,7 @@ public class GameConfigurationControllerTest {
      */
     @Test
     public void testActivateDeactivatePlugin() throws Exception {
-        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>();
+        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
         GameResponse response = helper.executeTest("activateDeactivatePlugin", 
                                                    BASE_RELATIVE_URL + "/activateDeactivatePlugin" + FINAL_PART_RELATIVE_URL,

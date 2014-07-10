@@ -2,6 +2,8 @@ package eu.trentorise.game.profile.game.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.profile.game.co.NewGameCO;
+import eu.trentorise.game.profile.game.container.INewGameContainer;
+import eu.trentorise.game.profile.game.container.NewGameContainer;
 import eu.trentorise.game.profile.game.response.NewGameResponse;
 import eu.trentorise.game.profile.game.service.IGameProfileManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,10 @@ public class GameProfileController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/newGame" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
     public @ResponseBody NewGameResponse newGame(@RequestBody NewGameCO co) {
+        INewGameContainer container = new NewGameContainer();
+        container.setGame(co.getGame());
         
-        return manager.newGame(null);
+        return manager.newGame(container);
     }
     
     @Qualifier("mockGameProfileManager")

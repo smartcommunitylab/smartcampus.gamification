@@ -1,26 +1,18 @@
 package eu.trentorise.game.plugin.co;
 
+
 import eu.trentorise.game.plugin.model.GamificationPlugin;
-import eu.trentorise.game.profile.game.model.Game;
 
 /**
  *
  * @author Luca Piras
  */
-public class CustomizedPluginListRequest {
+public class CustomizedPluginRequest {
     
-    protected Game game;
+    //protected Game
     
     protected GamificationPlugin gamificationPlugin;
 
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-    
     public GamificationPlugin getGamificationPlugin() {
         return gamificationPlugin;
     }
@@ -31,6 +23,6 @@ public class CustomizedPluginListRequest {
 
     @Override
     public String toString() {
-        return "CustomizedPluginListRequest{" + "game=" + game + ", gamificationPlugin=" + gamificationPlugin + '}';
+        return "CustomizedPluginRequest{" + "gamificationPlugin=" + gamificationPlugin + '}';
     }
 }

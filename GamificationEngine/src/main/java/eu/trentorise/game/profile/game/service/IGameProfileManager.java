@@ -1,5 +1,6 @@
 package eu.trentorise.game.profile.game.service;
 
+import eu.trentorise.game.profile.game.container.INewGameContainer;
 import eu.trentorise.game.profile.game.response.NewGameResponse;
 
 /**
@@ -8,5 +9,5 @@ import eu.trentorise.game.profile.game.response.NewGameResponse;
  */
 public interface IGameProfileManager {
     
-    public NewGameResponse newGame(Object object);
+    public NewGameResponse newGame(INewGameContainer container);
 }

@@ -1,13 +1,13 @@
 package eu.trentorise.game.plugin.leaderboard.point.model;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 
 /**
  *
  * @author Luca Piras
  */
-public class PointLeaderboardPlugin extends GamificationPlugin {
+public class PointLeaderboardPlugin extends CustomizedGamificationPlugin {
     
     protected PointPlugin pointPlugin;
     

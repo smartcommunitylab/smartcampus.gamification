@@ -53,11 +53,11 @@ public class GameProfileControllerTest {
         NewGameResponse response = helper.executeTest("newGame", 
                                                       BASE_RELATIVE_URL + "/newGame" + FINAL_PART_RELATIVE_URL,
                                                       NewGameResponse.class,
-                                                      "{\"gameName\":\"VIAGGIA ROVERETO\"}");
+                                                      "{\"game\": {\"name\": \"VIAGGIA ROVERETO\"}}");
         
         if (null != response) {
             assertTrue(response.isSuccess());
-            assertEquals(new Integer(135), response.getNewGameId());
+            assertEquals(new Integer(135), response.getGame().getId());
         }
     }
 }

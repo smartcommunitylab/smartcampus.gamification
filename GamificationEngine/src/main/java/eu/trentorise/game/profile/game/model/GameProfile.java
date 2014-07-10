@@ -8,6 +8,7 @@ public class GameProfile {
     
     protected Integer id;
     
+    //TODO: the game will not tied to an application in the future
     protected Application application;
 
     public Integer getId() {

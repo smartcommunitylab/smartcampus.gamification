@@ -1,12 +1,12 @@
 package eu.trentorise.game.plugin.point.model;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
 
 /**
  *
  * @author Luca Piras
  */
-public class PointPlugin extends GamificationPlugin {
+public class PointPlugin extends CustomizedGamificationPlugin {
     
     protected Typology typology;
 

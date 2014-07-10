@@ -2,8 +2,9 @@ package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.co.CustomizedPluginListRequest;
-import eu.trentorise.game.plugin.controller.container.CustomizedPluginContainer;
-import eu.trentorise.game.plugin.controller.container.ICustomizedPluginContainer;
+import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
+import eu.trentorise.game.plugin.container.ICustomizedPluginContainer;
+import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
 import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
 import eu.trentorise.game.plugin.service.IGamePluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,21 @@ public class GamePluginController {
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody GamificationPluginListResponse getCustomizedGamificationPluginList(@RequestBody CustomizedPluginListRequest co) {
+    public @ResponseBody CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(@RequestBody CustomizedPluginListRequest co) {
         ICustomizedPluginContainer container = new CustomizedPluginContainer();
+        container.setGame(co.getGame());
         container.setGamificationPlugin(co.getGamificationPlugin());
         
         return manager.getCustomizedGamificationPluginList(container);
     }
+    
+    /*@RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody GamificationPluginListResponse setCustomizedGamificationPlugin(@RequestBody CustomizedPluginListRequest co) {
+        ICustomizedPluginContainer container = new CustomizedPluginContainer();
+        container.setGamificationPlugin(co.getGamificationPlugin());
+        
+        return manager.getCustomizedGamificationPluginList(container);
+    }*/
     
     @Qualifier("mockGamePluginManager")
     @Autowired

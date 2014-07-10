@@ -11,12 +11,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class GamificationPlugin {
     
     //TODO: this is the key
+    protected Integer id;
+    
     protected String name;
     
     protected String version;
     
     protected String description;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
     public String getName() {
         return name;
     }
@@ -43,6 +53,6 @@ public class GamificationPlugin {
 
     @Override
     public String toString() {
-        return "GamificationPlugin{" + "name=" + name + ", version=" + version + ", description=" + description + '}';
+        return "GamificationPlugin{" + "id=" + id + ", name=" + name + ", version=" + version + ", description=" + description + '}';
     }
 }

@@ -1,7 +1,9 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
 import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
@@ -72,13 +74,13 @@ public class GamePluginControllerTest {
      */
     @Test
     public void testGetCustomizedGamificationPluginList() throws Exception {
-        RestTemplateJsonServiceTestHelper<GamificationPluginListResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        RestTemplateJsonServiceTestHelper<CustomizedGamificationPluginListResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
         MockGamePluginManager mock = new MockGamePluginManager();
         
         
-        GamificationPluginListResponse response = this.executeTest(helper, new GamificationPlugin());
-        List<GamificationPlugin> list = new ArrayList<>();
+        CustomizedGamificationPluginListResponse response = this.executeTest(helper, new GamificationPlugin());
+        List<CustomizedGamificationPlugin> list = new ArrayList<>();
         this.testCustomizedPlugins(response, list);
         
         response = this.executeTest(helper, mock.createPointsPlugin());
@@ -106,8 +108,12 @@ public class GamePluginControllerTest {
     protected String makeRequest(GamificationPlugin plugin) {
         StringBuilder sb = new StringBuilder();
         
-        sb.append("{\"gamificationPlugin\": {");
-        sb.append("                          \"name\": \"").append(plugin.getName()).append("\",");
+        sb.append("{\"game\": {");
+        sb.append("            \"id\": 135");
+        sb.append("           },");
+        sb.append(" \"gamificationPlugin\": {");
+        sb.append("                          \"id\": ").append(plugin.getId()).append(",");
+        sb.append("                          \"name\": \"\",");
         sb.append("                          \"version\": \"\"");
         sb.append("                          }");
         sb.append("}");
@@ -115,30 +121,33 @@ public class GamePluginControllerTest {
         return sb.toString();
     }
 
-    protected GamificationPluginListResponse executeTest(RestTemplateJsonServiceTestHelper<GamificationPluginListResponse> helper, 
+    protected CustomizedGamificationPluginListResponse executeTest(RestTemplateJsonServiceTestHelper<CustomizedGamificationPluginListResponse> helper, 
                                                          GamificationPlugin gamificationPlugin) throws Exception {
         
         return helper.executeTest("testGetCustomizedGamificationPluginList", 
                                   BASE_RELATIVE_URL + "/getCustomizedGamificationPluginList" + FINAL_PART_RELATIVE_URL,
-                                  GamificationPluginListResponse.class, 
+                                  CustomizedGamificationPluginListResponse.class, 
                                   this.makeRequest(gamificationPlugin));
     }
 
-    protected void testCustomizedPlugins(GamificationPluginListResponse response, 
-                                         List<GamificationPlugin> elements) {
+    protected void testCustomizedPlugins(CustomizedGamificationPluginListResponse response, 
+                                         List<CustomizedGamificationPlugin> elements) {
         
         if (null != response) {
             assertTrue(response.isSuccess());
             
-            List<GamificationPlugin> responsePlugins = response.getGamificationPlugins();
+            List<CustomizedGamificationPlugin> responsePlugins = response.getCustomizedGamificationPlugins();
             assertNotNull(responsePlugins);
             assertEquals(elements.size(), responsePlugins.size());
             
             for (int i = 0; i < responsePlugins.size(); i++) {
-                GamificationPlugin responsePlugin = responsePlugins.get(i);
-                GamificationPlugin element = elements.get(i);
+                CustomizedGamificationPlugin responsePlugin = responsePlugins.get(i);
+                CustomizedGamificationPlugin element = elements.get(i);
                 
+                assertEquals(responsePlugin.getId(), element.getId());
+                assertEquals(responsePlugin.getGamificationPlugin().getId(), element.getGamificationPlugin().getId());
                 assertEquals(responsePlugin.getName(), element.getName());
+                assertEquals(responsePlugin.getGamificationPlugin().getName(), element.getGamificationPlugin().getName());
             }
         }
     }

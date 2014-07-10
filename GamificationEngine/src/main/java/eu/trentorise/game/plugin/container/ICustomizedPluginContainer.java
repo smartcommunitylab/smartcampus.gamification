@@ -1,6 +1,7 @@
-package eu.trentorise.game.plugin.controller.container;
+package eu.trentorise.game.plugin.container;
 
 import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.profile.game.model.Game;
 
 /**
  *
@@ -8,7 +9,9 @@ import eu.trentorise.game.plugin.model.GamificationPlugin;
  */
 public interface ICustomizedPluginContainer {
     
-    public GamificationPlugin getGamificationPlugin();
+    public Game getGame();
+    public void setGame(Game game);
     
+    public GamificationPlugin getGamificationPlugin();
     public void setGamificationPlugin(GamificationPlugin plugin);
 }

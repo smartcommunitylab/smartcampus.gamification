@@ -1,5 +1,6 @@
 package eu.trentorise.game.profile.game.response;
 
+import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.*;
 
 /**
@@ -8,18 +9,18 @@ import eu.trentorise.game.response.*;
  */
 public class NewGameResponse extends GameResponse {
     
-    protected Integer newGameId;
+    protected Game game;
 
-    public Integer getNewGameId() {
-        return newGameId;
+    public Game getGame() {
+        return game;
     }
 
-    public void setNewGameId(Integer newGameId) {
-        this.newGameId = newGameId;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     @Override
     public String toString() {
-        return "NewGameResponse{" + "newGameId=" + newGameId + '}';
+        return "NewGameResponse{" + "game=" + game + '}';
     }
 }

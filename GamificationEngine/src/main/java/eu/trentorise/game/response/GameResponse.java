@@ -1,9 +1,13 @@
 package eu.trentorise.game.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  *
  * @author Luca Piras
  */
+//Necessary for the getCustomizedPluginListService Test
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GameResponse {
     
     protected Boolean success;

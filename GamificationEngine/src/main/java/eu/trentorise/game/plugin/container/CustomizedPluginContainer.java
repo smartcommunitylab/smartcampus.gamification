@@ -1,37 +1,29 @@
 package eu.trentorise.game.plugin.container;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.profile.game.model.Game;
 
-
-public class CustomizedPluginContainer implements ICustomizedPluginContainer {
-
+/**
+ *
+ * @author Luca Piras
+ * @param <P>
+ */
+public class CustomizedPluginContainer<P> {
     protected Game game;
-    
-    protected GamificationPlugin gamificationPlugin;
-    
-    @Override
+    protected P plugin;
+
     public Game getGame() {
         return game;
     }
 
-    @Override
     public void setGame(Game game) {
         this.game = game;
     }
-    
-    @Override
-    public GamificationPlugin getGamificationPlugin() {
-        return gamificationPlugin;
+
+    public P getPlugin() {
+        return plugin;
     }
 
-    @Override
-    public void setGamificationPlugin(GamificationPlugin plugin) {
-        this.gamificationPlugin = plugin;
-    }
-
-    @Override
-    public String toString() {
-        return "CustomizedPluginContainer{" + "gamificationPlugin=" + gamificationPlugin + '}';
+    public void setPlugin(P plugin) {
+        this.plugin = plugin;
     }
 }

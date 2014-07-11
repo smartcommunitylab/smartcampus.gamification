@@ -31,6 +31,8 @@ public interface IGameConstants {
     /*views and services - services - plugins*/
     public static final String SERVICE_PLUGINS_PATH = SERVICE_PATH + "/plugins";
     public static final String SERVICE_PLUGINS_POINT_PATH = SERVICE_PLUGINS_PATH + "/point";
+    public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PLUGINS_PATH + "/badgeCollection";
+    public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PLUGINS_PATH + "/leaderboardPoint";
     /*views and services - services - events*/
     public static final String SERVICE_EVENTS_PATH = SERVICE_PATH + "/events";
     public static final String SERVICE_EVENTS_START_EVENT_PATH = SERVICE_EVENTS_PATH + "/startEvent";

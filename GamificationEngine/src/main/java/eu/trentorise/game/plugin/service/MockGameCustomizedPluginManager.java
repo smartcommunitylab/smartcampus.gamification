@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.service;
 
 import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.point.controller.CustomizedPluginContainer;
+import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.response.MockResponder;
 import org.springframework.stereotype.Service;

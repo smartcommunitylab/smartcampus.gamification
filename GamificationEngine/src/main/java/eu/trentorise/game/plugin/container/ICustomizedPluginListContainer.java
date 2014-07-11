@@ -7,7 +7,7 @@ import eu.trentorise.game.profile.game.model.Game;
  *
  * @author Luca Piras
  */
-public interface ICustomizedPluginContainer {
+public interface ICustomizedPluginListContainer {
     
     public Game getGame();
     public void setGame(Game game);

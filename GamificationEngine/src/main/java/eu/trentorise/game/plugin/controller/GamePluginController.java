@@ -2,8 +2,8 @@ package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.request.CustomizedPluginListRequest;
-import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
-import eu.trentorise.game.plugin.container.ICustomizedPluginContainer;
+import eu.trentorise.game.plugin.container.CustomizedPluginListContainer;
+import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
 import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
 import eu.trentorise.game.plugin.service.IGamePluginManager;
@@ -31,7 +31,7 @@ public class GamePluginController {
     
     @RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
     public @ResponseBody CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(@RequestBody CustomizedPluginListRequest co) {
-        ICustomizedPluginContainer container = new CustomizedPluginContainer();
+        ICustomizedPluginListContainer container = new CustomizedPluginListContainer();
         container.setGame(co.getGame());
         container.setGamificationPlugin(co.getGamificationPlugin());
         

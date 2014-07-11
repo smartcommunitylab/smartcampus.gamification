@@ -7,7 +7,7 @@ import eu.trentorise.game.plugin.point.model.PointPlugin;
  *
  * @author Luca Piras
  */
-public class PointLeaderboardPlugin extends CustomizedGamificationPlugin {
+public class LeaderboardPointPlugin extends CustomizedGamificationPlugin {
     
     protected PointPlugin pointPlugin;
     

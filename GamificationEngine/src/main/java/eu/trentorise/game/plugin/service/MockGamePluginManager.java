@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.service;
 
-import eu.trentorise.game.plugin.container.ICustomizedPluginContainer;
-import eu.trentorise.game.plugin.leaderboard.point.model.PointLeaderboardPlugin;
+import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
+import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.leaderboard.point.model.UpdateRate;
 import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
@@ -33,7 +33,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
     }
 
     @Override
-    public CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(ICustomizedPluginContainer container) {
+    public CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(ICustomizedPluginListContainer container) {
         List<CustomizedGamificationPlugin> list = new ArrayList<>();
         
         //TODO: refactoring of this part changing it with a dynamic mechanism
@@ -205,8 +205,8 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
                                                               PointPlugin dependency,
                                                               UpdateRate updateRate) {
         
-        PointLeaderboardPlugin plugin = new PointLeaderboardPlugin();
-        plugin = (PointLeaderboardPlugin) this.createNewCustomizedPlugin(plugin,
+        LeaderboardPointPlugin plugin = new LeaderboardPointPlugin();
+        plugin = (LeaderboardPointPlugin) this.createNewCustomizedPlugin(plugin,
                                                                          fatherId,
                                                                          id,
                                                                          name, 

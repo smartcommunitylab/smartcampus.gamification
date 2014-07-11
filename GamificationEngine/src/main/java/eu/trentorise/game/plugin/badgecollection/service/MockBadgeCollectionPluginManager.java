@@ -1,7 +1,8 @@
-package eu.trentorise.game.plugin.point.service;
+package eu.trentorise.game.plugin.badgecollection.service;
 
+import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
-import eu.trentorise.game.plugin.point.model.PointPlugin;
+import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.plugin.service.IGameCustomizedPluginManager;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
@@ -11,15 +12,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 
-@Service("mockPointPluginManager")
-public class MockPointPluginManager extends MockResponder implements IGameCustomizedPluginManager<PointPlugin> {
+@Service("mockBadgeCollectionPluginManager")
+public class MockBadgeCollectionPluginManager extends MockResponder implements IGameCustomizedPluginManager<BadgeCollectionPlugin> {
 
     @Override
-    public CustomizedGamificationPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<PointPlugin> container) {
+    public CustomizedGamificationPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<BadgeCollectionPlugin> container) {
         //TODO: create new customizedGamificationPlugin, obtain an id, then
         //create a customizedPluginGame using the new 
         //customizedGamificationPlugin with its id and the provided game
-        PointPlugin plugin = manager.createGreenLeavesPointPlugin();
+        CustomizedGamificationPlugin plugin = manager.createEcologicalBadgesPlugin();
         
         CustomizedGamificationPluginResponse response = new CustomizedGamificationPluginResponse();
         response.setCustomizedGamificationPlugin(plugin);

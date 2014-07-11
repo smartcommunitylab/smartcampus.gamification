@@ -1,6 +1,6 @@
 package eu.trentorise.game.plugin.controller;
 
-import eu.trentorise.game.plugin.point.controller.CustomizedPluginContainer;
+import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.request.AbstractCustomizedPluginRequest;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.plugin.service.IGameCustomizedPluginManager;

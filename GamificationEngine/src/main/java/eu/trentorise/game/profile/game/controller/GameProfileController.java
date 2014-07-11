@@ -1,7 +1,7 @@
 package eu.trentorise.game.profile.game.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.profile.game.co.NewGameCO;
+import eu.trentorise.game.profile.game.request.NewGameRequest;
 import eu.trentorise.game.profile.game.container.INewGameContainer;
 import eu.trentorise.game.profile.game.container.NewGameContainer;
 import eu.trentorise.game.profile.game.response.NewGameResponse;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GameProfileController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/newGame" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody NewGameResponse newGame(@RequestBody NewGameCO co) {
+    public @ResponseBody NewGameResponse newGame(@RequestBody NewGameRequest co) {
         INewGameContainer container = new NewGameContainer();
         container.setGame(co.getGame());
         

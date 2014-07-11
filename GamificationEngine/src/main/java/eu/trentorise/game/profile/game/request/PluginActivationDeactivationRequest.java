@@ -1,10 +1,10 @@
-package eu.trentorise.game.profile.game.co;
+package eu.trentorise.game.profile.game.request;
 
 /**
  *
  * @author Luca Piras
  */
-public class PluginActivationDeactivationCO {
+public class PluginActivationDeactivationRequest {
     
     protected Integer gameProfileId;
     protected Integer gamificationPluginId;

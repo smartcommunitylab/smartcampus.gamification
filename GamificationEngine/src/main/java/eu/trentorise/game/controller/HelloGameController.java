@@ -1,6 +1,6 @@
 package eu.trentorise.game.controller;
 
-import eu.trentorise.game.co.HelloGameCO;
+import eu.trentorise.game.request.HelloGameRequest;
 import eu.trentorise.game.model.backpack.Badge;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.ruleengine.service.IRulesEngineManager;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @Controller("helloGameController")
 @SessionAttributes(value = HelloGameController.CO)
 @RequestMapping(value = HelloGameController.VIEW_ABSOLUTE)
-public class HelloGameController extends AbstractController<HelloGameCO> {
+public class HelloGameController extends AbstractController<HelloGameRequest> {
     
     public static final String VIEW_WITHOUT_PATH = "helloGame";
     public static final String VIEW = IGameConstants.VIEW_PATH + VIEW_WITHOUT_PATH;
@@ -53,19 +53,19 @@ public class HelloGameController extends AbstractController<HelloGameCO> {
     }
     
     @Override
-    protected HelloGameCO initializeNotExistentCommandObject() {
+    protected HelloGameRequest initializeNotExistentCommandObject() {
         Badge badge = new Badge("Welcome Badge", new Integer(10000));
         
         badge.setTitle("Welcome to the Gamification Engine!");
         
-        HelloGameCO co = new HelloGameCO();
+        HelloGameRequest co = new HelloGameRequest();
         co.setBadge(badge);
         
         return co;
     }
     
     @Override
-    protected void initializeExistentCommandObject(HelloGameCO co) {}
+    protected void initializeExistentCommandObject(HelloGameRequest co) {}
     
     
     @Qualifier("badgeRulesEngineManager")

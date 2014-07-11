@@ -3,7 +3,7 @@ package eu.trentorise.game.configuration.controller;
 import eu.trentorise.game.configuration.response.ImportGamifiableActionsResponse;
 import eu.trentorise.game.configuration.service.IGameConfigurationManager;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.profile.game.co.PluginActivationDeactivationCO;
+import eu.trentorise.game.profile.game.request.PluginActivationDeactivationRequest;
 import eu.trentorise.game.response.GameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,7 +32,7 @@ public class GameConfigurationController {
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/activateDeactivatePlugin" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody GameResponse activateDeactivatePlugin(@RequestBody PluginActivationDeactivationCO co) {
+    public @ResponseBody GameResponse activateDeactivatePlugin(@RequestBody PluginActivationDeactivationRequest co) {
         
         return manager.activateDeactivatePlugin(null);
     }

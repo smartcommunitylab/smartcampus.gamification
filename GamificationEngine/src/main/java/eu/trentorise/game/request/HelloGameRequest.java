@@ -1,4 +1,4 @@
-package eu.trentorise.game.co;
+package eu.trentorise.game.request;
 
 import eu.trentorise.game.model.backpack.Badge;
 
@@ -6,7 +6,7 @@ import eu.trentorise.game.model.backpack.Badge;
  *
  * @author Luca Piras
  */
-public class HelloGameCO {    
+public class HelloGameRequest {    
     
     protected Badge badge;
 

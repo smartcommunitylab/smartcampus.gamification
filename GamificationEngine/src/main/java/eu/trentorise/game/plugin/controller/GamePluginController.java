@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.co.CustomizedPluginListRequest;
+import eu.trentorise.game.plugin.request.CustomizedPluginListRequest;
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.container.ICustomizedPluginContainer;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
@@ -37,14 +37,6 @@ public class GamePluginController {
         
         return manager.getCustomizedGamificationPluginList(container);
     }
-    
-    /*@RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody GamificationPluginListResponse setCustomizedGamificationPlugin(@RequestBody CustomizedPluginListRequest co) {
-        ICustomizedPluginContainer container = new CustomizedPluginContainer();
-        container.setGamificationPlugin(co.getGamificationPlugin());
-        
-        return manager.getCustomizedGamificationPluginList(container);
-    }*/
     
     @Qualifier("mockGamePluginManager")
     @Autowired

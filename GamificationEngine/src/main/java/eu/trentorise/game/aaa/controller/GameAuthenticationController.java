@@ -1,6 +1,6 @@
 package eu.trentorise.game.aaa.controller;
 
-import eu.trentorise.game.aaa.co.GameAuthenticationCO;
+import eu.trentorise.game.aaa.request.GameAuthenticationRequest;
 import eu.trentorise.game.aaa.service.IGameAuthenticationManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.response.GameResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GameAuthenticationController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/login" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody GameResponse authenticate(@RequestBody GameAuthenticationCO co) {
+    public @ResponseBody GameResponse authenticate(@RequestBody GameAuthenticationRequest co) {
         
         return manager.authenticate(null);
     }

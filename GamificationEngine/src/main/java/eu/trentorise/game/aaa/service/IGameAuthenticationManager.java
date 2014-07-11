@@ -1,6 +1,6 @@
 package eu.trentorise.game.aaa.service;
 
-import eu.trentorise.game.aaa.co.GameAuthenticationCO;
+import eu.trentorise.game.aaa.request.GameAuthenticationRequest;
 import eu.trentorise.game.response.GameResponse;
 
 /**
@@ -9,5 +9,5 @@ import eu.trentorise.game.response.GameResponse;
  */
 public interface IGameAuthenticationManager {
     
-    public GameResponse authenticate(GameAuthenticationCO gameAuthentication);
+    public GameResponse authenticate(GameAuthenticationRequest gameAuthentication);
 }

@@ -1,10 +1,10 @@
-package eu.trentorise.game.aaa.co;
+package eu.trentorise.game.aaa.request;
 
 /**
  *
  * @author Luca Piras
  */
-public class GameAuthenticationCO {
+public class GameAuthenticationRequest {
     
     protected String username;
     protected String password;

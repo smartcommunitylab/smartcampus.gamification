@@ -1,4 +1,4 @@
-package eu.trentorise.game.profile.game.co;
+package eu.trentorise.game.profile.game.request;
 
 import eu.trentorise.game.profile.game.model.Game;
 
@@ -6,7 +6,7 @@ import eu.trentorise.game.profile.game.model.Game;
  *
  * @author Luca Piras
  */
-public class NewGameCO {
+public class NewGameRequest {
     
     protected Game game;
 

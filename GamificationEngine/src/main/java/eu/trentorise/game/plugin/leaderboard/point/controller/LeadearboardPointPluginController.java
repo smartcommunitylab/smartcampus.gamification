@@ -1,7 +1,8 @@
-package eu.trentorise.game.plugin.leaderboard.point.request;
+package eu.trentorise.game.plugin.leaderboard.point.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.controller.AbstractCustomizedPluginController;
+import eu.trentorise.game.plugin.leaderboard.point.request.LeaderboardPointPluginRequest;
 import eu.trentorise.game.plugin.request.AbstractCustomizedPluginRequest;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.plugin.service.IGameCustomizedPluginManager;

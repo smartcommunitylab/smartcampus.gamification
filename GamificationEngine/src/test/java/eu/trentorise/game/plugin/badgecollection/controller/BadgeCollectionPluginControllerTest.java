@@ -1,10 +1,10 @@
-package eu.trentorise.game.plugin.point.controller;
+package eu.trentorise.game.plugin.badgecollection.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
+import eu.trentorise.game.plugin.badgecollection.request.BadgeCollectionPluginRequest;
 import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.point.model.PointPlugin;
-import eu.trentorise.game.plugin.point.request.PointPluginRequest;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.profile.game.model.Game;
@@ -20,12 +20,12 @@ import org.junit.Test;
  *
  * @author Luca Piras
  */
-public class PointPluginControllerTest {
+public class BadgeCollectionPluginControllerTest {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_POINT_PATH;
+    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_BADGECOLLECTION_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
     
-    public PointPluginControllerTest() {
+    public BadgeCollectionPluginControllerTest() {
     }
     
     @BeforeClass
@@ -45,7 +45,7 @@ public class PointPluginControllerTest {
     }
 
     /**
-     * Test of setCustomizedGamificationPlugin method, of class PointPluginController.
+     * Test of setCustomizedGamificationPlugin method, of class BadgeCollectionPluginController.
      * @throws java.lang.Exception
      */
     @Test
@@ -57,16 +57,16 @@ public class PointPluginControllerTest {
         Game game = new Game();
         game.setId(135);
         
-        PointPluginRequest request = new PointPluginRequest();
+        BadgeCollectionPluginRequest request = new BadgeCollectionPluginRequest();
         request.setGame(game);
-        PointPlugin plugin = mock.createGreenLeavesPointPlugin();
+        BadgeCollectionPlugin plugin = mock.createEcologicalBadgesPlugin();
         plugin.setId(null);
         request.setPlugin(plugin);
         
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
-        CustomizedGamificationPluginResponse response = helper.executeTest("testPointSetCustomizedGamificationPlugin", 
+        CustomizedGamificationPluginResponse response = helper.executeTest("testBadgeCollectionSetCustomizedGamificationPlugin", 
                                                                            BASE_RELATIVE_URL + "/setCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
                                                                            CustomizedGamificationPluginResponse.class, 
                                                                            jsonRequest);

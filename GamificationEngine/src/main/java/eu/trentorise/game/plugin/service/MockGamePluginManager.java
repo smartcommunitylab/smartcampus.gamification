@@ -1,5 +1,6 @@
 package eu.trentorise.game.plugin.service;
 
+import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
 import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.leaderboard.point.model.UpdateRate;
@@ -148,62 +149,69 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
                                                        Typology.SKILL_POINTS);
     }
     
-    public CustomizedGamificationPlugin createUsageBadgesPlugin() {
+    public BadgeCollectionPlugin createNewBadgeCollectionPlugin(Integer id,
+                                                                Integer fatherId,
+                                                                String name, 
+                                                                String version,
+                                                                String description) {
         
-        CustomizedGamificationPlugin plugin = this.createNewCustomizedPlugin(null, 0, 1, "Usage badges", "0.1", 
-                                                                             "Description of Usage badges");
-        
-        plugin.setGamificationPlugin(this.createBadgeCollectionPlugin());
-        
-        return plugin;
-    }
-    
-    public CustomizedGamificationPlugin createHealthBadgesPlugin() {
-        CustomizedGamificationPlugin plugin = this.createNewCustomizedPlugin(null, 1, 1, "Health badges", "0.1", 
-                                                                             "Description of Health badges");
-        
-        plugin.setGamificationPlugin(this.createBadgeCollectionPlugin());
-        
-        return plugin;
-    }
-    
-    public CustomizedGamificationPlugin createEcologicalBadgesPlugin() {
-        CustomizedGamificationPlugin plugin = this.createNewCustomizedPlugin(null, 2, 1, "Ecological badges", "0.1", 
-                                                                             "Description of Ecological badges");
+        BadgeCollectionPlugin plugin = new BadgeCollectionPlugin();
+        plugin = (BadgeCollectionPlugin) this.createNewCustomizedPlugin(plugin,
+                                                                        id,
+                                                                        fatherId,
+                                                                        name, 
+                                                                        version,
+                                                                        description);
         
         plugin.setGamificationPlugin(this.createBadgeCollectionPlugin());
         
         return plugin;
     }
     
-    public CustomizedGamificationPlugin createGreenWeeklyLeadearboardPlugin() {
-        return (CustomizedGamificationPlugin) this.createNewPointLeaderboardPlugin(0, 2, "Green weekly leaderboard", "0.1", 
+    public BadgeCollectionPlugin createUsageBadgesPlugin() {
+        return this.createNewBadgeCollectionPlugin(0, 1, "Usage badges", "0.1", 
+                                                   "Description of Usage badges");
+    }
+    
+    public BadgeCollectionPlugin createHealthBadgesPlugin() {
+        return this.createNewBadgeCollectionPlugin(1, 1, "Health badges", "0.1", 
+                                                   "Description of Health badges");
+    }
+    
+    public BadgeCollectionPlugin createEcologicalBadgesPlugin() {
+        return this.createNewBadgeCollectionPlugin(2, 1, 
+                                                   "Ecological badges", "0.1",
+                                                   "Description of Ecological badges");
+    }
+    
+    public LeaderboardPointPlugin createGreenWeeklyLeadearboardPlugin() {
+        return this.createNewPointLeaderboardPlugin(0, 2, "Green weekly leaderboard", "0.1", 
                                                     "Description of Green weekly leaderboard", 
                                                     this.createGreenLeavesPointPlugin(),
                                                     UpdateRate.WEEKLY);
     }
     
-    public CustomizedGamificationPlugin createGreenMonthlyLeadearboardPlugin() {
-        return (CustomizedGamificationPlugin) this.createNewPointLeaderboardPlugin(1, 2, "Green monthly leaderboard", "0.1", 
+    public LeaderboardPointPlugin createGreenMonthlyLeadearboardPlugin() {
+        return this.createNewPointLeaderboardPlugin(1, 2, "Green monthly leaderboard", "0.1", 
                                                     "Description of Green monthly leaderboard", 
                                                     this.createGreenLeavesPointPlugin(),
                                                     UpdateRate.MONTHLY);
     }
     
-    public CustomizedGamificationPlugin createUsageCumulativeLeadearboardPlugin() {
-        return (CustomizedGamificationPlugin) this.createNewPointLeaderboardPlugin(2, 2, "Usage cumulative leaderboard", "0.1", 
+    public LeaderboardPointPlugin createUsageCumulativeLeadearboardPlugin() {
+        return this.createNewPointLeaderboardPlugin(2, 2, "Usage cumulative leaderboard", "0.1", 
                                                     "Description of Usage cumulative leaderboard", 
                                                     this.createUsagePointsPointPlugin(),
                                                     UpdateRate.CUMULATIVE);
     }
     
-    public GamificationPlugin createNewPointLeaderboardPlugin(Integer id,
-                                                              Integer fatherId,
-                                                              String name, 
-                                                              String version,
-                                                              String description, 
-                                                              PointPlugin dependency,
-                                                              UpdateRate updateRate) {
+    public LeaderboardPointPlugin createNewPointLeaderboardPlugin(Integer id,
+                                                                  Integer fatherId,
+                                                                  String name, 
+                                                                  String version,
+                                                                  String description, 
+                                                                  PointPlugin dependency,
+                                                                  UpdateRate updateRate) {
         
         LeaderboardPointPlugin plugin = new LeaderboardPointPlugin();
         plugin = (LeaderboardPointPlugin) this.createNewCustomizedPlugin(plugin,

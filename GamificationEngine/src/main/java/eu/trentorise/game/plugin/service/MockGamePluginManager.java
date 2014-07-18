@@ -1,6 +1,7 @@
 package eu.trentorise.game.plugin.service;
 
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
+import eu.trentorise.game.plugin.container.ICustomizedPluginActivationDeactivationContainer;
 import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.leaderboard.point.model.UpdateRate;
@@ -10,6 +11,7 @@ import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.model.Typology;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
 import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
+import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.response.MockResponder;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,11 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
         }
         
         return this.makeCustomizedResponse(list);
+    }
+    
+    @Override
+    public GameResponse activateDeactivateCustomizedGamificationPlugin(ICustomizedPluginActivationDeactivationContainer container) {
+        return this.buildPositiveResponse(new GameResponse());
     }
     
     protected GamificationPlugin createNewPlugin(GamificationPlugin emptyPlugin,

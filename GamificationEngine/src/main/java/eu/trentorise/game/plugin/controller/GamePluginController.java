@@ -1,12 +1,16 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.request.CustomizedPluginListRequest;
+import eu.trentorise.game.plugin.container.CustomizedPluginActivationDeactivationContainer;
 import eu.trentorise.game.plugin.container.CustomizedPluginListContainer;
+import eu.trentorise.game.plugin.container.ICustomizedPluginActivationDeactivationContainer;
 import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
+import eu.trentorise.game.plugin.request.CustomizedPluginActivationDeactivationRequest;
+import eu.trentorise.game.plugin.request.CustomizedPluginListRequest;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
 import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
 import eu.trentorise.game.plugin.service.IGamePluginManager;
+import eu.trentorise.game.response.GameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -36,6 +40,16 @@ public class GamePluginController {
         container.setGamificationPlugin(request.getGamificationPlugin());
         
         return gamePluginManager.getCustomizedGamificationPluginList(container);
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/activateDeactivateCustomizedGamificationPlugin" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody GameResponse activateDeactivateCustomizedGamificationPlugin(@RequestBody CustomizedPluginActivationDeactivationRequest request) {
+        ICustomizedPluginActivationDeactivationContainer container = new CustomizedPluginActivationDeactivationContainer();
+        container.setGame(request.getGame());
+        container.setCustomizedGamificationPlugin(request.getCustomizedGamificationPlugin());
+        container.setActivated(request.isActivated());
+        
+        return gamePluginManager.activateDeactivateCustomizedGamificationPlugin(container);
     }
     
     @Qualifier("mockGamePluginManager")

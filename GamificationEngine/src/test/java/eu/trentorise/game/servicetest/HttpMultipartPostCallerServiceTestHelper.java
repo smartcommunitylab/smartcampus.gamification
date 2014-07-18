@@ -11,6 +11,8 @@ import org.apache.http.message.BasicNameValuePair;
  */
 public class HttpMultipartPostCallerServiceTestHelper {
     
+    //TODO: improve this one, maybe creating a common configuration interface
+    //where to centralize the ACTIVE parameter
     public static final boolean ACTIVE = RestTemplateJsonServiceTestHelper.ACTIVE;
     public static final String URL_ABSOLUTE = RestTemplateJsonServiceTestHelper.URL_ABSOLUTE;
 

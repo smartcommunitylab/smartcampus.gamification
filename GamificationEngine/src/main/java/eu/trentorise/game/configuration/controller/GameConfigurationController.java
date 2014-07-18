@@ -3,12 +3,9 @@ package eu.trentorise.game.configuration.controller;
 import eu.trentorise.game.configuration.response.ImportGamifiableActionsResponse;
 import eu.trentorise.game.configuration.service.IGameConfigurationManager;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.profile.game.request.PluginActivationDeactivationRequest;
-import eu.trentorise.game.response.GameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,11 +28,14 @@ public class GameConfigurationController {
         return manager.importGamifiableActions(null);
     }
     
-    @RequestMapping(method = RequestMethod.POST, value = "/activateDeactivatePlugin" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    //TODO: replaced by activateDeactivatePlugin in GamePluginController,
+    //decide what to do, probably this one is to be deleted (in a recursive way,
+    //by looking for the other mvc components involved)
+    /*@RequestMapping(method = RequestMethod.POST, value = "/activateDeactivatePlugin" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
     public @ResponseBody GameResponse activateDeactivatePlugin(@RequestBody PluginActivationDeactivationRequest co) {
         
         return manager.activateDeactivatePlugin(null);
-    }
+    }*/
     
     @Qualifier("mockGameConfigurationManager")
     @Autowired

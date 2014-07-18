@@ -83,7 +83,7 @@ public class GameConfigurationControllerTest {
      * Test of activateDeactivatePlugin method, of class GameProfileController.
      * @throws java.lang.Exception
      */
-    @Test
+    /*@Test
     public void testActivateDeactivatePlugin() throws Exception {
         RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
@@ -95,5 +95,5 @@ public class GameConfigurationControllerTest {
         if (null != response) {
             assertTrue(response.isSuccess());
         }
-    }
+    }*/
 }

@@ -6,6 +6,7 @@ import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 /**
  *
  * @author Luca Piras
+ * @param <P>
  */
 public interface IGameCustomizedPluginManager<P> {
     

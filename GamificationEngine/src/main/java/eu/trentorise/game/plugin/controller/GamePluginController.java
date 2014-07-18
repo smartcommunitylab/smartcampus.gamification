@@ -26,19 +26,19 @@ public class GamePluginController {
     @RequestMapping(method = RequestMethod.POST, value = "/getGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
     public @ResponseBody GamificationPluginListResponse getGamificationPluginList() {
         
-        return manager.getGamificationPluginList();
+        return gamePluginManager.getGamificationPluginList();
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(@RequestBody CustomizedPluginListRequest co) {
+    public @ResponseBody CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(@RequestBody CustomizedPluginListRequest request) {
         ICustomizedPluginListContainer container = new CustomizedPluginListContainer();
-        container.setGame(co.getGame());
-        container.setGamificationPlugin(co.getGamificationPlugin());
+        container.setGame(request.getGame());
+        container.setGamificationPlugin(request.getGamificationPlugin());
         
-        return manager.getCustomizedGamificationPluginList(container);
+        return gamePluginManager.getCustomizedGamificationPluginList(container);
     }
     
     @Qualifier("mockGamePluginManager")
     @Autowired
-    protected IGamePluginManager manager;
+    protected IGamePluginManager gamePluginManager;
 }

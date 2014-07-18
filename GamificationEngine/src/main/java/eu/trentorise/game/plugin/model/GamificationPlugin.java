@@ -50,7 +50,7 @@ public class GamificationPlugin {
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
     @Override
     public String toString() {
         return "GamificationPlugin{" + "id=" + id + ", name=" + name + ", version=" + version + ", description=" + description + '}';

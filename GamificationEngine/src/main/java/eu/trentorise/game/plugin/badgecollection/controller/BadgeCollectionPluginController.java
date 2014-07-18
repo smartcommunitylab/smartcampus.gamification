@@ -1,7 +1,12 @@
 package eu.trentorise.game.plugin.badgecollection.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.game.plugin.badgecollection.container.BadgeContainer;
+import eu.trentorise.game.plugin.badgecollection.container.IBadgeContainer;
 import eu.trentorise.game.plugin.badgecollection.request.BadgeCollectionPluginRequest;
+import eu.trentorise.game.plugin.badgecollection.request.BadgeRequest;
+import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
+import eu.trentorise.game.plugin.badgecollection.service.IBadgeCollectionPluginManager;
 import eu.trentorise.game.plugin.controller.AbstractCustomizedPluginController;
 import eu.trentorise.game.plugin.request.AbstractCustomizedPluginRequest;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
@@ -27,9 +32,22 @@ public class BadgeCollectionPluginController extends AbstractCustomizedPluginCon
         return super.setCustomizedGamificationPlugin((AbstractCustomizedPluginRequest) request);
     }
     
+    @RequestMapping(method = RequestMethod.POST, value = "/getBadgeList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody BadgeListResponse getBadgeList(@RequestBody BadgeRequest request) throws Exception {
+        IBadgeContainer container = new BadgeContainer();
+        container.setBadgeCollection(request.getBadgeCollection());
+        
+        return badgeCollectionPluginManager.getBadgeList(container);
+    }
+    
+    
     @Qualifier("mockBadgeCollectionPluginManager")
     @Autowired
     public void setManager(IGameCustomizedPluginManager manager) {
         this.manager = manager;
     }
+            
+    @Qualifier("mockBadgeCollectionPluginManager")
+    @Autowired
+    protected IBadgeCollectionPluginManager badgeCollectionPluginManager;
 }

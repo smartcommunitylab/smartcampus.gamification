@@ -12,6 +12,7 @@ import javax.persistence.ManyToMany;
  * @author Luca Piras
  */
 @Entity
+@Deprecated
 public class Badge implements Serializable {
     
     @Id

@@ -19,7 +19,7 @@ public class CustomizedGamificationPlugin extends GamificationPlugin {
     public void setGamificationPlugin(GamificationPlugin gamificationPlugin) {
         this.gamificationPlugin = gamificationPlugin;
     }
-
+    
     @Override
     public String toString() {
         return "CustomizedGamificationPlugin{" + "gamificationPlugin=" + gamificationPlugin + '}';

@@ -3,6 +3,7 @@ package eu.trentorise.game.plugin.badgecollection.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.badgecollection.model.Badge;
+import eu.trentorise.game.plugin.badgecollection.response.BadgeResponse;
 import eu.trentorise.game.plugin.badgecollection.service.MockBadgeCollectionPluginManager;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.servicetest.HttpMultipartPostCallerServiceTestHelper;
@@ -11,6 +12,9 @@ import java.util.List;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -91,7 +95,8 @@ public class BadgeControllerTest {
                                                    nameValuePairs,
                                                    null);
         
-        /*if (null != stringResponse) {
+        if (null != stringResponse) {
+            System.out.println(stringResponse);
             BadgeResponse response = mapper.readValue(stringResponse, 
                                                       BadgeResponse.class);
             
@@ -103,6 +108,6 @@ public class BadgeControllerTest {
             assertEquals(badgeResponse.getId(), expectedBadge.getId());
             assertEquals(badgeResponse.getBadgeCollection().getId(), expectedBadge.getBadgeCollection().getId());
             assertEquals(badgeResponse.getBadgeCollection().getGamificationPlugin().getId(), expectedBadge.getBadgeCollection().getGamificationPlugin().getId());
-        }*/
+        }
     }
 }

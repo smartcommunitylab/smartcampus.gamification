@@ -216,6 +216,13 @@
         <artifactId>postgresql</artifactId>
         <version>9.1-901-1.jdbc4</version>
     </dependency>
+    <!-- HTTP Client API -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.3.4</version>
+      <type>jar</type>
+    </dependency>
     <!-- client API per chiamare i servizi rest utilizzando inoltre jaxb -->
     <dependency>
         <groupId>com.sun.jersey</groupId>

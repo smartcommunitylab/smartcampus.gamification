@@ -6,7 +6,7 @@
 <%-- expected beans in model or in request scope: enableLayout (optional) --%>
 
 <tiles:useAttribute id="errorMessageTitleKey" name="errorMessageTitleKey" classname="java.lang.String" />
-<h1 id="titleCalcolaPercorso"><spring:message code="${errorMessageTitleKey}" /></h1>
+<h1 id="titleError"><spring:message code="${errorMessageTitleKey}" /></h1>
 <%--h2>${exception}</h2--%>
 
 <c:set var="errorsLink" value="${game_main_page_absolute}" />

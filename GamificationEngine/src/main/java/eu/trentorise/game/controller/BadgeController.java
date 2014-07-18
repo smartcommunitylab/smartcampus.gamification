@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Luca Piras
  */
-@Controller("badgeController")
+@Controller("DEPRECATEDbadgeController")
 @RequestMapping(IGameConstants.SERVICE_PATH)
+@Deprecated
 public class BadgeController {
     
     //TODO: rethink about this service

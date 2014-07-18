@@ -58,8 +58,8 @@ public class GameConfigurationControllerTest {
             assertTrue(response.isSuccess());
         }
     }
-        TODO: implement the related test
-        At the moment you can test it with the following html:
+        //TODO: implement the related test
+        //At the moment you can test it with the following html:
     
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">

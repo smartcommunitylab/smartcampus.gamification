@@ -12,8 +12,13 @@ public interface IGameConstants {
     
     
     /*parameters*/
+    /*game configuration*/
     public static final String PARAM_GAME_ID = "gameId";
     public static final String PARAM_GAMIFIABLE_ACTIONS_FILE = "gamifiableActionsFile";
+    /*badgeCollection - badge*/
+    public static final String PARAM_BADGECOLLECTION_ID = "badgeCollectionId";
+    public static final String PARAM_BADGECOLLECTION_PLUGIN_ID = "badgeCollectionPluginId";
+    public static final String PARAM_BADGECOLLECTION_BADGE_FILE = "badgeCollectionBadgeFile";
     
     
     /*views and services - services -*/

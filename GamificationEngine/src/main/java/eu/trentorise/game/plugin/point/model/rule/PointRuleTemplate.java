@@ -1,13 +1,13 @@
 package eu.trentorise.game.plugin.point.model.rule;
 
 import eu.trentorise.game.rule.model.Action;
-import eu.trentorise.game.rule.model.TemplateRule;
+import eu.trentorise.game.rule.model.RuleTemplate;
 
 /**
  *
  * @author Luca Piras
  */
-public class PointTemplateRule extends TemplateRule {
+public class PointRuleTemplate extends RuleTemplate {
     
     protected Action action;
     

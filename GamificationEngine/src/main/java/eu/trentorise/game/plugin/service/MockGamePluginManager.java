@@ -30,7 +30,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
         
         list.add(this.createPointsPlugin());
         list.add(this.createBadgeCollectionPlugin());
-        list.add(this.createPointLeadearboardPlugin());
+        list.add(this.createLeadearboardPointPlugin());
         
         return this.makeResponse(list);
     }
@@ -54,7 +54,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
                 list.add(this.createUsageBadgesPlugin());
                 list.add(this.createHealthBadgesPlugin());
                 list.add(this.createEcologicalBadgesPlugin());
-            } else if (0 == id.compareTo(this.createPointLeadearboardPlugin().getId())) {
+            } else if (0 == id.compareTo(this.createLeadearboardPointPlugin().getId())) {
                 list.add(this.createGreenWeeklyLeadearboardPlugin());
                 list.add(this.createGreenMonthlyLeadearboardPlugin());
                 list.add(this.createUsageCumulativeLeadearboardPlugin());
@@ -114,7 +114,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
                           "Badge collection plugin description...");
     }
     
-    public GamificationPlugin createPointLeadearboardPlugin() {
+    public GamificationPlugin createLeadearboardPointPlugin() {
         return this.createNewPlugin(null, 2, "Point Leaderboard", "0.1", 
                                     "Point Leaderboard plugin description...");
     }
@@ -228,7 +228,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
                                                                          version,
                                                                          description);
         
-        plugin.setGamificationPlugin(this.createPointLeadearboardPlugin());
+        plugin.setGamificationPlugin(this.createLeadearboardPointPlugin());
         plugin.setPointPlugin(dependency);
         plugin.setUpdateRate(updateRate);
         

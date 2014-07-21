@@ -12,7 +12,7 @@ public class Rule {
     
     protected Integer id;
     //TODO: templateRule and gamificationPlugin together have to be unique
-    protected TemplateRule templateRule;
+    protected RuleTemplate ruleTemplate;
     protected GamificationPlugin gamificationPlugin;
     protected GameProfile gameProfile;
     
@@ -22,8 +22,7 @@ public class Rule {
 
     protected List<Action> actions;
     protected List<Event> events;
-    
-    
+
     public Integer getId() {
         return id;
     }
@@ -32,12 +31,12 @@ public class Rule {
         this.id = id;
     }
 
-    public TemplateRule getTemplateRule() {
-        return templateRule;
+    public RuleTemplate getRuleTemplate() {
+        return ruleTemplate;
     }
 
-    public void setTemplateRule(TemplateRule templateRule) {
-        this.templateRule = templateRule;
+    public void setRuleTemplate(RuleTemplate ruleTemplate) {
+        this.ruleTemplate = ruleTemplate;
     }
 
     public GamificationPlugin getGamificationPlugin() {
@@ -90,6 +89,6 @@ public class Rule {
 
     @Override
     public String toString() {
-        return "Rule{" + "id=" + id + ", templateRule=" + templateRule + ", gamificationPlugin=" + gamificationPlugin + ", gameProfile=" + gameProfile + ", description=" + description + ", content=" + content + ", actions=" + actions + ", events=" + events + '}';
+        return "Rule{" + "id=" + id + ", ruleTemplate=" + ruleTemplate + ", gamificationPlugin=" + gamificationPlugin + ", gameProfile=" + gameProfile + ", description=" + description + ", content=" + content + ", actions=" + actions + ", events=" + events + '}';
     }
 }

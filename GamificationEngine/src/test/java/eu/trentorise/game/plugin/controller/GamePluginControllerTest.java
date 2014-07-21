@@ -101,7 +101,7 @@ public class GamePluginControllerTest {
         list.add(mock.createEcologicalBadgesPlugin());
         this.testCustomizedPlugins(response, list);
         
-        response = this.executeTest(helper, mock.createPointLeadearboardPlugin());
+        response = this.executeTest(helper, mock.createLeadearboardPointPlugin());
         list = new ArrayList<>();
         list.add(mock.createGreenWeeklyLeadearboardPlugin());
         list.add(mock.createGreenMonthlyLeadearboardPlugin());

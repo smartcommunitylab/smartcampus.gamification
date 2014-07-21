@@ -2,7 +2,7 @@ package eu.trentorise.game.plugin.point.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
-import eu.trentorise.game.plugin.point.model.rule.PointTemplateRule;
+import eu.trentorise.game.plugin.point.model.rule.PointRuleTemplate;
 import eu.trentorise.game.plugin.point.service.IPointRuleManager;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.response.GameResponse;
@@ -31,7 +31,7 @@ public class PointRuleController {
         Action action = new Action();
         action.setId(actionId);
         
-        PointTemplateRule rule = new PointTemplateRule();
+        PointRuleTemplate rule = new PointRuleTemplate();
         
         //TODO: manage the id of the rule
         rule.setId(1);

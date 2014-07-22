@@ -7,12 +7,12 @@
     
     <action id="4">
         <params>
-            <composite-param name="itinerary" id="">
-                <composite-param name="KM" id="">
-                    <basic-param name="totalKM" id="" type="Integer">30</basic-param>
-                    <basic-param name="bikeKM" id="" type="Integer">10</basic-param>
-                    <basic-param name="carKM" id="" type="Integer">0</basic-param>
-                    <basic-param name="busKM" id="" type="Integer">20</basic-param>
+            <composite-param name="itinerary">
+                <composite-param name="KM">
+                    <basic-param name="totalKM" type="Integer">30</basic-param>
+                    <basic-param name="bikeKM" type="Integer">10</basic-param>
+                    <basic-param name="carKM" type="Integer">0</basic-param>
+                    <basic-param name="busKM" type="Integer">20</basic-param>
                 </composite-param>
             </composite-param>
         </params>

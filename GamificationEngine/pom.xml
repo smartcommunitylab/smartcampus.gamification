@@ -239,7 +239,7 @@
         <artifactId>jaxb-impl</artifactId>
         <version>2.2.6</version>
     </dependency>
-    <!-- CXF SOAP WSDL, SERVIZI SOAP -->
+    <!-- CXF SOAP WSDL, SOAP SERVICES -->
     <!--dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-common-utilities</artifactId>
@@ -409,7 +409,7 @@
     <console_logger></console_logger>
     <console_logger_layout></console_logger_layout>
     <console_logger_layout_conversionPattern></console_logger_layout_conversionPattern>
-    <!--icone ed immagini-->
+    <!--icons and images-->
     <images_path_webapp_absolute>${webapp_imagesPath_absolute}</images_path_webapp_absolute>
     <!--shared icons-->
     <okIcon>${images_path_webapp_absolute}pos.png</okIcon>
@@ -427,6 +427,14 @@
     <!-- commands (command is generic, actually they could be attributes too) -->
     <co_default_other_model_name>command</co_default_other_model_name>
     <co_returnedFromThisOperation>returnedFromThisOperation</co_returnedFromThisOperation>
+    <!-- GAME SPECIFICATIONS -->
+    <specifications_path_base>/src/main/webapp/WEB-INF/specifications</specifications_path_base>
+    <specifications_path_absolute>${basedir}${specifications_path_base}</specifications_path_absolute>
+    <!-- GAME SPECIFICATIONS - GAMIFIABLEACTIONS -->
+    <gamifiable_actions_path_absolute>${specifications_path_absolute}/gamifiableActions/</gamifiable_actions_path_absolute>
+    <gamifiable_actions_xsd_absolute>${gamifiable_actions_path_absolute}gamifiableActions.xsd</gamifiable_actions_xsd_absolute>
+    <gamifiable_actions_generated_package>eu.trentorise.game.rule.model.generated.gamifiableactions</gamifiable_actions_generated_package>
+    <!--netbeans-->
     <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
   </properties>
   <profiles>
@@ -520,7 +528,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!-- plugin per usare JAXB con CXF XJC Maven Plugin, USATO PER I REST WEB SERVICES -->
+            <!-- Plugin for using JAXB in combination with CXF XJC Maven Plugin, USED FOR THE REST WEB SERVICES -->
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-xjc-plugin</artifactId>
@@ -533,7 +541,7 @@
                 <executions>
                     <execution>
                         <id>generate-sources</id>
-                        <!--<phase>generate-sources</phase>-->
+                        <!--phase>generate-sources</phase-->
                         <phase>none</phase>
                         <goals>
                             <goal>xsdtojava</goal>
@@ -541,20 +549,16 @@
                         <configuration>
                             <sourceRoot>${basedir}/src/main/java</sourceRoot>
                             <xsdOptions>
-<!--                                <xsdOption>
-                                    <xsd>${game_xsd_absolute}gameResponse.xsd</xsd>
-                                    <packagename>${game_generated_package}.gameresponse</packagename>
-                                </xsdOption>
-                                <xsdOption>
-                                    <xsd>${game_xsd_absolute}gameRequest.xsd</xsd>
-                                    <packagename>${game_generated_package}.gamerequest</packagename>
-                                </xsdOption>-->
+                                <!--xsdOption>
+                                    <xsd>${gamifiable_actions_xsd_absolute}</xsd>
+                                    <packagename>${gamifiable_actions_generated_package}</packagename>
+                                </xsdOption-->
                             </xsdOptions>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!-- plugin per usare CXF con cxf-codegen-plugin Maven Plugin, USATO PER I SOAP WEB SERVICES -->
+            <!-- Plugin for using CXF in combination with cxf-codegen-plugin Maven Plugin, READY TO USE FOR SOAP WEB SERVICES -->
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>

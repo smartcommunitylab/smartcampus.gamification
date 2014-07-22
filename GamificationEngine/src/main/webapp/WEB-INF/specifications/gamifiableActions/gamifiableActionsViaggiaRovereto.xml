@@ -23,20 +23,20 @@
         <description>The user has saved an interary</description>
         
         <params>
-            <composite-param name="itinerary" id="">
-                <basic-param name="numberOfMeans" id="" type="Integer"/>
+            <composite-param name="itinerary">
+                <basic-param name="numberOfMeans" type="Integer"/>
                 
-                <enumeration-param name="means" id="">
+                <enumeration-param name="means">
                     <enum-entry name="BIKE"/>
                     <enum-entry name="CAR"/>
                     <enum-entry name="BUS"/>
                 </enumeration-param>
                 
-                <composite-param name="KM" id="">
-                    <basic-param name="totalKM" id="" type="Integer" />
-                    <basic-param name="bikeKM" id="" type="Integer"/>
-                    <basic-param name="carKM" id="" type="Integer"/>
-                    <basic-param name="busKM" id="" type="Integer"/>
+                <composite-param name="KM">
+                    <basic-param name="totalKM" type="Integer" />
+                    <basic-param name="bikeKM" type="Integer"/>
+                    <basic-param name="carKM" type="Integer"/>
+                    <basic-param name="busKM" type="Integer"/>
                 </composite-param>
             </composite-param>
         </params>
@@ -47,7 +47,7 @@
         <description>The user has used a bike</description>
         
         <params>
-            <basic-param name="bikeKM" id="" type="Integer"/>
+            <basic-param name="bikeKM" type="Integer"/>
         </params>
     </action>
     
@@ -56,7 +56,7 @@
         <description>The user has used a car</description>
         
         <params>
-            <basic-param name="carKM" id="" type="Integer"/>
+            <basic-param name="carKM" type="Integer"/>
         </params>
     </action>
     
@@ -65,7 +65,7 @@
         <description>The user has used a bus</description>
         
         <params>
-            <basic-param name="busKM" id="" type="Integer"/>
+            <basic-param name="busKM" type="Integer"/>
         </params>
     </action>
 </gamifiable-actions>

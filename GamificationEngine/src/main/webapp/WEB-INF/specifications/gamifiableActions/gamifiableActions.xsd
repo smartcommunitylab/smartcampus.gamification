@@ -49,7 +49,6 @@
     <xs:element name="basic-param">
         <xs:complexType>
             <xs:attribute type="xs:string" name="name" use="required"/>
-            <xs:attribute type="xs:string" name="id" use="optional"/>
             <xs:attribute type="param-type" name="type" use="required"/>
         </xs:complexType>
     </xs:element>
@@ -63,7 +62,6 @@
             </xs:sequence>
             
             <xs:attribute type="xs:string" name="name" use="required"/>
-            <xs:attribute type="xs:string" name="id" use="optional"/>
         </xs:complexType>
     </xs:element>
   
@@ -74,7 +72,6 @@
             </xs:sequence>
             
             <xs:attribute type="xs:string" name="name"/>
-            <xs:attribute type="xs:string" name="id"/>
         </xs:complexType>
     </xs:element>
   

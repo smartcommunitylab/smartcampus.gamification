@@ -1,5 +1,7 @@
 package eu.trentorise.game.profile.game.model;
 
+import eu.trentorise.game.application.model.Application;
+
 /**
  *
  * @author Luca Piras

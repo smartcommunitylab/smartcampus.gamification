@@ -1,4 +1,4 @@
-package eu.trentorise.game.profile.game.model;
+package eu.trentorise.game.application.model;
 
 /**
  *

@@ -2,7 +2,7 @@ package eu.trentorise.game.plugin.point.data;
 
 import eu.trentorise.game.event.model.StartEvent;
 import eu.trentorise.game.model.player.Player;
-import eu.trentorise.game.rule.model.Action;
+import eu.trentorise.game.application.model.Action;
 import eu.trentorise.game.ruleengine.data.IFactsDAO;
 import java.util.ArrayList;
 import java.util.Collection;

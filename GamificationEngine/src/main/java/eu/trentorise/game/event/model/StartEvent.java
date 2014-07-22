@@ -1,7 +1,7 @@
 package eu.trentorise.game.event.model;
 
 import eu.trentorise.game.model.player.Player;
-import eu.trentorise.game.rule.model.Action;
+import eu.trentorise.game.application.model.Action;
 
 /**
  *

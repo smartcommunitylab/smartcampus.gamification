@@ -1,9 +1,13 @@
 package eu.trentorise.game.application.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  *
  * @author Luca Piras
  */
+//Necessary for the Test
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Param {
     
     protected String name;

@@ -121,7 +121,7 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
     }
     
     protected Badge createBadge(BadgeCollectionPlugin badgeCollection, 
-                               Integer badgeId, String badgeFileName) throws MalformedURLException {
+                                Integer badgeId, String badgeFileName) throws MalformedURLException {
         
         Badge badge = new Badge();
         badge.setId(badgeId);

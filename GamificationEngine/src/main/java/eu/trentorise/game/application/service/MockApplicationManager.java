@@ -29,7 +29,7 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
         list.add(this.createAction(application, 1, "BusDelayReporting", "The user has reported the delay of a bus"));
         list.add(this.createAction(application, 2, "BusServiceRating", "The user has rated the bus service quality"));
         list.add(this.createAction(application, 3, "BusCommentAdding", "The user has commented the bus service"));
-        list.add(this.createAction(application, 4, "ItenerarySaving", "The user has saved an interary"));
+        list.add(this.createItineratySavingAction());
         list.add(this.createAction(application, 5, "BikeUsage", "The user has used a bike"));
         list.add(this.createAction(application, 6, "CarUsage", "The user has used a car"));
         list.add(this.createAction(application, 7, "BusUsage", "The user has used a bus"));
@@ -54,6 +54,10 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
         element.setDescription(description);
         
         return element;
+    }
+    
+    protected Action createItineratySavingAction() {
+        return this.createAction(this.createApplication(), 4, "ItenerarySaving", "The user has saved an interary");
     }
     
     protected ActionResponse makeResponse(List<Action> list) {

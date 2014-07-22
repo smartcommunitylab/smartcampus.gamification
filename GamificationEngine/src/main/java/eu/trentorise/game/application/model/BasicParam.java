@@ -4,28 +4,9 @@ package eu.trentorise.game.application.model;
  *
  * @author Luca Piras
  */
-public class BasicParam {
-    
-    protected String name;
-    protected Action action;
+public class BasicParam extends Param {
     
     protected ParamType type;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
-    }
 
     public ParamType getType() {
         return type;
@@ -37,6 +18,6 @@ public class BasicParam {
 
     @Override
     public String toString() {
-        return "BasicParam{" + "name=" + name + ", action=" + action + ", type=" + type + '}';
+        return "BasicParam{" + "type=" + type + " " + super.toString() + " " + '}';
     }
 }

@@ -30,7 +30,7 @@ public class MockGamifiableActionManager extends MockResponder implements IGamif
         
         Action action = this.createAction();
         
-        list.add(this.createElement(action, "bikeKM", ParamType.INTEGER));
+        list.add(this.createBikeKmParam());
         list.add(this.createElement(action, "carKM", ParamType.INTEGER));
         list.add(this.createElement(action, "busKM", ParamType.INTEGER));
         list.add(this.createElement(action, "means", ParamType.INTEGER));
@@ -42,13 +42,17 @@ public class MockGamifiableActionManager extends MockResponder implements IGamif
         return manager.createItineratySavingAction();
     }
     
-    protected Param createElement(Action action, String name, ParamType type) {
+    protected BasicParam createElement(Action action, String name, ParamType type) {
         BasicParam element = new BasicParam();
         element.setAction(action);
         element.setName(name);
         element.setType(ParamType.INTEGER);
         
         return element;
+    }
+    
+    public BasicParam createBikeKmParam() {
+        return this.createElement(this.createAction(), "bikeKM", ParamType.INTEGER);
     }
     
     protected ParamResponse makeResponse(List<Param> list) {

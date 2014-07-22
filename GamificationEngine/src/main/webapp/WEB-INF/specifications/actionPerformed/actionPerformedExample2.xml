@@ -5,7 +5,7 @@
         <player id="111"/>
     </performer>
     
-    <action id="4">
+    <action id="4" application_id="0">
         <params>
             <composite-param name="itinerary">
                 <composite-param name="KM">

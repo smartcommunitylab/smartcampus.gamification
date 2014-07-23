@@ -9,5 +9,5 @@ import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
  */
 public interface IBadgeCollectionPluginManager {
     
-    public BadgeListResponse getBadgeList(IBadgeContainer container) throws Exception;
+    public BadgeListResponse getBadges(IBadgeContainer container) throws Exception;
 }

@@ -9,5 +9,5 @@ import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
  */
 public interface IRuleTemplateManager {
 
-    public RuleTemplateResponse getRuleTemplateList(IRuleTemplateContainer container) throws Exception;
+    public RuleTemplateResponse getRuleTemplates(IRuleTemplateContainer container) throws Exception;
 }

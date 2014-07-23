@@ -8,7 +8,7 @@ import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
 import eu.trentorise.game.plugin.request.CustomizedPluginActivationDeactivationRequest;
 import eu.trentorise.game.plugin.request.CustomizedPluginListRequest;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
-import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
+import eu.trentorise.game.plugin.response.GamificationPluginResponse;
 import eu.trentorise.game.plugin.service.IGamePluginManager;
 import eu.trentorise.game.response.GameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +27,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(IGameConstants.SERVICE_PLUGINS_PATH)
 public class GamePluginController {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody GamificationPluginListResponse getGamificationPluginList() {
+    @RequestMapping(method = RequestMethod.POST, value = "/getGamificationPlugins" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody GamificationPluginResponse getGamificationPlugins() {
         
-        return gamePluginManager.getGamificationPluginList();
+        return gamePluginManager.getGamificationPlugins();
     }
     
-    @RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPluginList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(@RequestBody CustomizedPluginListRequest request) {
+    @RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPlugins" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody CustomizedGamificationPluginListResponse getCustomizedGamificationPlugins(@RequestBody CustomizedPluginListRequest request) {
         ICustomizedPluginListContainer container = new CustomizedPluginListContainer();
         container.setGame(request.getGame());
         container.setGamificationPlugin(request.getGamificationPlugin());
         
-        return gamePluginManager.getCustomizedGamificationPluginList(container);
+        return gamePluginManager.getCustomizedGamificationPlugins(container);
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/activateDeactivateCustomizedGamificationPlugin" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)

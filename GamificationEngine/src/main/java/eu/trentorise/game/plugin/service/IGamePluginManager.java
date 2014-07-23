@@ -3,7 +3,7 @@ package eu.trentorise.game.plugin.service;
 import eu.trentorise.game.plugin.container.ICustomizedPluginActivationDeactivationContainer;
 import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
-import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
+import eu.trentorise.game.plugin.response.GamificationPluginResponse;
 import eu.trentorise.game.response.GameResponse;
 
 /**
@@ -12,9 +12,9 @@ import eu.trentorise.game.response.GameResponse;
  */
 public interface IGamePluginManager {
     
-    public GamificationPluginListResponse getGamificationPluginList();
+    public GamificationPluginResponse getGamificationPlugins();
 
-    public CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(ICustomizedPluginListContainer container);
+    public CustomizedGamificationPluginListResponse getCustomizedGamificationPlugins(ICustomizedPluginListContainer container);
 
     public GameResponse activateDeactivateCustomizedGamificationPlugin(ICustomizedPluginActivationDeactivationContainer container);
 }

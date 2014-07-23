@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class MockRuleTemplateManager extends MockResponder implements IRuleTemplateManager {
 
     @Override
-    public RuleTemplateResponse getRuleTemplateList(IRuleTemplateContainer container) throws Exception {
+    public RuleTemplateResponse getRuleTemplates(IRuleTemplateContainer container) throws Exception {
         List<RuleTemplate> list = new ArrayList<>();
         
         GamificationPlugin plugin = container.getRuleTemplate().getPlugin();

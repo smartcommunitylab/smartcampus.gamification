@@ -90,11 +90,11 @@ public class BadgeCollectionPluginControllerTest {
     }
     
     /**
-     * Test of getBadgeList method, of class BadgeCollectionPluginController.
+     * Test of getBadges method, of class BadgeCollectionPluginController.
      * @throws java.lang.Exception
      */
     @Test
-    public void testGetBadgeList() throws Exception {
+    public void testGetBadges() throws Exception {
         MockGamePluginManager mock = new MockGamePluginManager();
         MockBadgeCollectionPluginManager badgeMock = new MockBadgeCollectionPluginManager();
         badgeMock.setManager(mock);
@@ -124,8 +124,8 @@ public class BadgeCollectionPluginControllerTest {
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
-        BadgeListResponse response = helper.executeTest("testGetBadgeList",
-                                                        BASE_RELATIVE_URL + "/getBadgeList" + FINAL_PART_RELATIVE_URL,
+        BadgeListResponse response = helper.executeTest("testGetBadges",
+                                                        BASE_RELATIVE_URL + "/getBadges" + FINAL_PART_RELATIVE_URL,
                                                         BadgeListResponse.class, 
                                                         jsonRequest);
         

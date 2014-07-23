@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Luca Piras
  */
-public class GamificationPluginListResponse extends GameResponse {
+public class GamificationPluginResponse extends GameResponse {
     
     protected List<GamificationPlugin> gamificationPlugins;
 

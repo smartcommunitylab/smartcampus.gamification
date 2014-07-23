@@ -47,11 +47,11 @@ public class RuleTemplateControllerTest {
     
     
     /**
-     * Test of getRuleTemplateList method, of class RuleTemplateController.
+     * Test of getRuleTemplates method, of class RuleTemplateController.
      * @throws java.lang.Exception
      */
     @Test
-    public void testGetRuleTemplateList() throws Exception {
+    public void testGetRuleTemplates() throws Exception {
         MockGamePluginManager mock = new MockGamePluginManager();
         MockRuleTemplateManager ruleTemplateMock = new MockRuleTemplateManager();
         ruleTemplateMock.setManager(mock);
@@ -84,8 +84,8 @@ public class RuleTemplateControllerTest {
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
-        RuleTemplateResponse response = helper.executeTest("testGetRuleTemplateList",
-                                                           BASE_RELATIVE_URL + "/getRuleTemplateList" + FINAL_PART_RELATIVE_URL,
+        RuleTemplateResponse response = helper.executeTest("testGetRuleTemplates",
+                                                           BASE_RELATIVE_URL + "/getRuleTemplates" + FINAL_PART_RELATIVE_URL,
                                                            RuleTemplateResponse.class, 
                                                            jsonRequest);
         

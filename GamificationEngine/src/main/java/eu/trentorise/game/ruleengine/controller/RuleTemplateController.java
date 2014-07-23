@@ -25,14 +25,14 @@ public class RuleTemplateController {
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
     
-    @RequestMapping(method = RequestMethod.POST, value = "/getRuleTemplateList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody RuleTemplateResponse getRuleTemplateList(@RequestBody RuleTemplateRequest request) throws Exception {
+    @RequestMapping(method = RequestMethod.POST, value = "/getRuleTemplates" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody RuleTemplateResponse getRuleTemplates(@RequestBody RuleTemplateRequest request) throws Exception {
         //TODO: this service will provide a list of ruleTemplates related to the
         //gamificationPlugin specified in the request
         IRuleTemplateContainer container = new RuleTemplateContainer();
         container.setRuleTemplate(request.getRuleTemplate());
         
-        return manager.getRuleTemplateList(container);
+        return manager.getRuleTemplates(container);
     }
     
     @Qualifier("mockRuleTemplateManager")

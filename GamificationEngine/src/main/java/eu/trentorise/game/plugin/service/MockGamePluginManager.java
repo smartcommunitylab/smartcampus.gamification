@@ -10,7 +10,7 @@ import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.model.Typology;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
-import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
+import eu.trentorise.game.plugin.response.GamificationPluginResponse;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.response.MockResponder;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 public class MockGamePluginManager extends MockResponder implements IGamePluginManager {
 
     @Override
-    public GamificationPluginListResponse getGamificationPluginList() {
+    public GamificationPluginResponse getGamificationPlugins() {
         List<GamificationPlugin> list = new ArrayList<>();
         
         list.add(this.createPointsPlugin());
@@ -36,7 +36,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
     }
 
     @Override
-    public CustomizedGamificationPluginListResponse getCustomizedGamificationPluginList(ICustomizedPluginListContainer container) {
+    public CustomizedGamificationPluginListResponse getCustomizedGamificationPlugins(ICustomizedPluginListContainer container) {
         List<CustomizedGamificationPlugin> list = new ArrayList<>();
         
         //TODO: refactoring of this part changing it with a dynamic mechanism
@@ -242,11 +242,11 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
         list.add(this.createNewPlugin(null, id, name, version, description));
     }
 
-    protected GamificationPluginListResponse makeResponse(List<GamificationPlugin> list) {
-        GamificationPluginListResponse response = new GamificationPluginListResponse();
+    protected GamificationPluginResponse makeResponse(List<GamificationPlugin> list) {
+        GamificationPluginResponse response = new GamificationPluginResponse();
         response.setGamificationPlugins(list);
         
-        return ((GamificationPluginListResponse) this.buildPositiveResponse(response));
+        return ((GamificationPluginResponse) this.buildPositiveResponse(response));
     }
     
     protected CustomizedGamificationPluginListResponse makeCustomizedResponse(List<CustomizedGamificationPlugin> list) {

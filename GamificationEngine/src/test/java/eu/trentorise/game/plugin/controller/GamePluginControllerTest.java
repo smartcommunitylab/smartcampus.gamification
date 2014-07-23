@@ -6,7 +6,7 @@ import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.request.CustomizedPluginActivationDeactivationRequest;
 import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
-import eu.trentorise.game.plugin.response.GamificationPluginListResponse;
+import eu.trentorise.game.plugin.response.GamificationPluginResponse;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.GameResponse;
@@ -53,15 +53,16 @@ public class GamePluginControllerTest {
     }
 
     /**
-     * Test of getGamificationPluginList method, of class GamePluginController.
+     * Test of getGamificationPlugins method, of class GamePluginController.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetGamificationPluginList() throws Exception {
-        RestTemplateJsonServiceTestHelper<GamificationPluginListResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+    public void testGetGamificationPlugins() throws Exception {
+        RestTemplateJsonServiceTestHelper<GamificationPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
-        GamificationPluginListResponse response = helper.executeTest("testGetGamificationPluginList", 
-                                                  BASE_RELATIVE_URL + "/getGamificationPluginList" + FINAL_PART_RELATIVE_URL,
-                                                  GamificationPluginListResponse.class, 
+        GamificationPluginResponse response = helper.executeTest("testGetGamificationPlugins", 
+                                                  BASE_RELATIVE_URL + "/getGamificationPlugins" + FINAL_PART_RELATIVE_URL,
+                                                  GamificationPluginResponse.class, 
                                                   "");
         
         if (null != response) {
@@ -74,10 +75,11 @@ public class GamePluginControllerTest {
     }
     
     /**
-     * Test of getCustomizedGamificationPluginList method, of class GamePluginController.
+     * Test of getCustomizedGamificationPlugins method, of class GamePluginController.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetCustomizedGamificationPluginList() throws Exception {
+    public void testGetCustomizedGamificationPlugins() throws Exception {
         RestTemplateJsonServiceTestHelper<CustomizedGamificationPluginListResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
         MockGamePluginManager mock = new MockGamePluginManager();
@@ -159,8 +161,8 @@ public class GamePluginControllerTest {
     protected CustomizedGamificationPluginListResponse executeTest(RestTemplateJsonServiceTestHelper<CustomizedGamificationPluginListResponse> helper, 
                                                          GamificationPlugin gamificationPlugin) throws Exception {
         
-        return helper.executeTest("testGetCustomizedGamificationPluginList", 
-                                  BASE_RELATIVE_URL + "/getCustomizedGamificationPluginList" + FINAL_PART_RELATIVE_URL,
+        return helper.executeTest("testGetCustomizedGamificationPlugins", 
+                                  BASE_RELATIVE_URL + "/getCustomizedGamificationPlugins" + FINAL_PART_RELATIVE_URL,
                                   CustomizedGamificationPluginListResponse.class, 
                                   this.makeRequest(gamificationPlugin));
     }

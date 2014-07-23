@@ -32,12 +32,12 @@ public class BadgeCollectionPluginController extends AbstractCustomizedPluginCon
         return super.setCustomizedGamificationPlugin((AbstractCustomizedPluginRequest) request);
     }
     
-    @RequestMapping(method = RequestMethod.POST, value = "/getBadgeList" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody BadgeListResponse getBadgeList(@RequestBody BadgeRequest request) throws Exception {
+    @RequestMapping(method = RequestMethod.POST, value = "/getBadges" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody BadgeListResponse getBadges(@RequestBody BadgeRequest request) throws Exception {
         IBadgeContainer container = new BadgeContainer();
         container.setBadgeCollection(request.getBadgeCollection());
         
-        return badgeCollectionPluginManager.getBadgeList(container);
+        return badgeCollectionPluginManager.getBadges(container);
     }
     
     

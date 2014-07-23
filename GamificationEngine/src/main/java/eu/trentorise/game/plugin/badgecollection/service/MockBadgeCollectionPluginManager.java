@@ -50,7 +50,7 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
     }
     
     @Override
-    public BadgeListResponse getBadgeList(IBadgeContainer container) throws Exception {
+    public BadgeListResponse getBadges(IBadgeContainer container) throws Exception {
         List<Badge> list = new ArrayList<>();
         
         BadgeCollectionPlugin collection = container.getBadgeCollection();

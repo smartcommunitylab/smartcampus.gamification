@@ -1,12 +1,11 @@
 package eu.trentorise.game.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.game.application.model.BasicParam;
-import eu.trentorise.game.application.request.BasicParamRequest;
-import eu.trentorise.game.application.response.OperatorsResponse;
-import eu.trentorise.game.application.service.MockApplicationManager;
-import eu.trentorise.game.application.service.MockGamifiableActionManager;
-import eu.trentorise.game.application.service.MockParamManager;
+import eu.trentorise.game.action.model.BasicParam;
+import eu.trentorise.game.action.request.BasicParamRequest;
+import eu.trentorise.game.action.response.OperatorsResponse;
+import eu.trentorise.game.action.service.MockActionManager;
+import eu.trentorise.game.action.service.MockParamManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import java.util.List;
@@ -23,7 +22,7 @@ import org.junit.Test;
  */
 public class ParamControllerTest {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_APPLICATION_PARAM_PATH;
+    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_ACTION_PARAM_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
     
     public ParamControllerTest() {
@@ -52,13 +51,11 @@ public class ParamControllerTest {
      */
     @Test
     public void testGetOperatorsSupported() throws Exception {
-        MockApplicationManager mock = new MockApplicationManager();
-        MockGamifiableActionManager gamifiableActionMock = new MockGamifiableActionManager();
-        gamifiableActionMock.setManager(mock);
+        MockActionManager mock = new MockActionManager();
         MockParamManager paramManagerMock = new MockParamManager();
         
         
-        BasicParam param = gamifiableActionMock.createBikeKmParam();
+        BasicParam param = mock.createBikeKmParam();
         List<String> expectedElements = paramManagerMock.createElements();
         this.executeTest(param, expectedElements);
     }

@@ -433,7 +433,7 @@
     <!-- GAME SPECIFICATIONS - GAMIFIABLEACTIONS -->
     <gamifiable_actions_path_absolute>${specifications_path_absolute}/gamifiableActions/</gamifiable_actions_path_absolute>
     <gamifiable_actions_xsd_absolute>${gamifiable_actions_path_absolute}gamifiableActions.xsd</gamifiable_actions_xsd_absolute>
-    <gamifiable_actions_generated_package>eu.trentorise.game.application.model.generated.gamifiableactions</gamifiable_actions_generated_package>
+    <gamifiable_actions_generated_package>eu.trentorise.game.action.model.generated.gamifiableactions</gamifiable_actions_generated_package>
     <!--netbeans-->
     <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
   </properties>

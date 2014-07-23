@@ -1,6 +1,6 @@
 package eu.trentorise.game.profile.game.model;
 
-import eu.trentorise.game.application.model.Application;
+import eu.trentorise.game.action.model.Application;
 
 /**
  *

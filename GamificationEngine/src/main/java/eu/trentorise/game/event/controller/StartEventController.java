@@ -5,7 +5,7 @@ import eu.trentorise.game.event.service.IStartEventManager;
 import eu.trentorise.game.event.model.StartEvent;
 import eu.trentorise.game.model.player.Player;
 import eu.trentorise.game.response.GameResponse;
-import eu.trentorise.game.application.model.Action;
+import eu.trentorise.game.action.model.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

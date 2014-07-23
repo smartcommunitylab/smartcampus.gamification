@@ -6,7 +6,7 @@ import eu.trentorise.game.plugin.point.model.rule.PointRuleTemplate;
 import eu.trentorise.game.plugin.point.service.IPointRuleManager;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.response.GameResponse;
-import eu.trentorise.game.application.model.Action;
+import eu.trentorise.game.action.model.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

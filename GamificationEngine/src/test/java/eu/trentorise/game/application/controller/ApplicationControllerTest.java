@@ -1,10 +1,10 @@
 package eu.trentorise.game.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.game.application.model.Action;
 import eu.trentorise.game.application.model.Application;
-import eu.trentorise.game.application.request.ActionRequest;
-import eu.trentorise.game.application.response.ActionResponse;
+import eu.trentorise.game.application.model.ExternalAction;
+import eu.trentorise.game.application.request.ExternalActionRequest;
+import eu.trentorise.game.application.response.ExternalActionResponse;
 import eu.trentorise.game.application.service.MockApplicationManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
@@ -55,40 +55,40 @@ public class ApplicationControllerTest {
         
         
         Application app = mock.createApplication();
-        List<Action> expectedElements = mock.createActions();
+        List<ExternalAction> expectedElements = mock.createActions();
         this.executeTest(app, expectedElements);
     }
     
     protected void executeTest(Application application,
-                               List<Action> expectedElements) throws Exception {
+                               List<ExternalAction> expectedElements) throws Exception {
         
-        RestTemplateJsonServiceTestHelper<ActionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        RestTemplateJsonServiceTestHelper<ExternalActionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         ObjectMapper mapper = new ObjectMapper();
         
-        ActionRequest request = new ActionRequest();
-        Action action = new Action();
+        ExternalActionRequest request = new ExternalActionRequest();
+        ExternalAction action = new ExternalAction();
         action.setApplication(application);
         request.setAction(action);
         
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
-        ActionResponse response = helper.executeTest("testGetActions",
-                                                     BASE_RELATIVE_URL + "/getActions" + FINAL_PART_RELATIVE_URL,
-                                                     ActionResponse.class, 
+        ExternalActionResponse response = helper.executeTest("testGetActions",
+                                                     BASE_RELATIVE_URL + "/getExternalActions" + FINAL_PART_RELATIVE_URL,
+                                                     ExternalActionResponse.class, 
                                                      jsonRequest);
         
         if (null != response) {
             assertTrue(response.isSuccess());
             
-            List<Action> responseElements = response.getActions();
+            List<ExternalAction> responseElements = response.getActions();
             
             assertNotNull(responseElements);
             assertEquals(responseElements.size(), expectedElements.size());
             
             for (int i = 0; i < responseElements.size(); i++) {
-                Action responseElement = responseElements.get(i);
-                Action expectedElement = expectedElements.get(i);
+                ExternalAction responseElement = responseElements.get(i);
+                ExternalAction expectedElement = expectedElements.get(i);
                 
                 assertEquals(responseElement.getId(), expectedElement.getId());
                 assertEquals(responseElement.getApplication().getId(), 

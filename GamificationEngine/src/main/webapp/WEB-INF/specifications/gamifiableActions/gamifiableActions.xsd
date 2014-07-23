@@ -32,7 +32,7 @@
                 <xs:element ref="params" maxOccurs="1" minOccurs="0"/>
             </xs:sequence>
             
-            <xs:attribute type="xs:integer" name="id" use="required" />
+            <xs:attribute type="xs:integer" name="id" use="optional" />
             <xs:attribute type="xs:integer" name="application_id" use="required" />
         </xs:complexType>
     </xs:element>

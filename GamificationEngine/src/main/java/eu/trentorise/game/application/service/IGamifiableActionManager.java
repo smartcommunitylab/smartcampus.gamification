@@ -1,6 +1,6 @@
 package eu.trentorise.game.application.service;
 
-import eu.trentorise.game.application.container.IActionContainer;
+import eu.trentorise.game.application.container.IExternalActionContainer;
 import eu.trentorise.game.application.response.ParamResponse;
 
 /**
@@ -9,5 +9,5 @@ import eu.trentorise.game.application.response.ParamResponse;
  */
 public interface IGamifiableActionManager {
 
-    ParamResponse getParams(IActionContainer container);
+    ParamResponse getParams(IExternalActionContainer container);
 }

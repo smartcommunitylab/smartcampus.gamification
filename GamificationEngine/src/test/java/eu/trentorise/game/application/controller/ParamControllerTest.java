@@ -1,13 +1,9 @@
 package eu.trentorise.game.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.game.application.model.Action;
 import eu.trentorise.game.application.model.BasicParam;
-import eu.trentorise.game.application.model.Param;
-import eu.trentorise.game.application.request.ActionRequest;
 import eu.trentorise.game.application.request.BasicParamRequest;
 import eu.trentorise.game.application.response.OperatorsResponse;
-import eu.trentorise.game.application.response.ParamResponse;
 import eu.trentorise.game.application.service.MockApplicationManager;
 import eu.trentorise.game.application.service.MockGamifiableActionManager;
 import eu.trentorise.game.application.service.MockParamManager;

@@ -3,22 +3,22 @@
 <gamifiable-actions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:noNamespaceSchemaLocation="gamifiableActions.xsd">
     
-    <action id="1" application_id="0">
+    <action application_id="0">
         <name>BusDelayReporting</name>
         <description>The user has reported the delay of a bus</description>
     </action>
     
-    <action id="2" application_id="0">
+    <action application_id="0">
         <name>BusServiceRating</name>
         <description>The user has rated the bus service quality</description>
     </action>
     
-    <action id="3" application_id="0">
+    <action application_id="0">
         <name>BusCommentAdding</name>
         <description>The user has commented the bus service</description>
     </action>
     
-    <action id="4" application_id="0">
+    <action application_id="0">
         <name>ItenerarySaving</name>
         <description>The user has saved an interary</description>
         
@@ -42,7 +42,7 @@
         </params>
     </action>
     
-    <action id="5" application_id="0">
+    <action application_id="0">
         <name>BikeUsage</name>
         <description>The user has used a bike</description>
         
@@ -51,7 +51,7 @@
         </params>
     </action>
     
-    <action id="6" application_id="0">
+    <action application_id="0">
         <name>CarUsage</name>
         <description>The user has used a car</description>
         
@@ -60,7 +60,7 @@
         </params>
     </action>
     
-    <action id="7" application_id="0">
+    <action application_id="0">
         <name>BusUsage</name>
         <description>The user has used a bus</description>
         

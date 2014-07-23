@@ -1,13 +1,14 @@
 package eu.trentorise.game.application.container;
 
 import eu.trentorise.game.application.model.Action;
+import eu.trentorise.game.application.model.ExternalAction;
 
 /**
  *
  * @author Luca Piras
  */
-public interface IActionContainer {
+public interface IExternalActionContainer {
     
     public Action getAction();
-    public void setAction(Action action);
+    public void setAction(ExternalAction action);
 }

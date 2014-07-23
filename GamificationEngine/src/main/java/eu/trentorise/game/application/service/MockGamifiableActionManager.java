@@ -1,8 +1,9 @@
 package eu.trentorise.game.application.service;
 
-import eu.trentorise.game.application.container.IActionContainer;
+import eu.trentorise.game.application.container.IExternalActionContainer;
 import eu.trentorise.game.application.model.Action;
 import eu.trentorise.game.application.model.BasicParam;
+import eu.trentorise.game.application.model.ExternalAction;
 import eu.trentorise.game.application.model.Param;
 import eu.trentorise.game.application.model.ParamType;
 import eu.trentorise.game.application.response.ParamResponse;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class MockGamifiableActionManager extends MockResponder implements IGamifiableActionManager {
     
     @Override
-    public ParamResponse getParams(IActionContainer container) {
+    public ParamResponse getParams(IExternalActionContainer container) {
         return this.makeResponse(this.createElements());
     }
     
@@ -38,7 +39,7 @@ public class MockGamifiableActionManager extends MockResponder implements IGamif
         return list;
     }
     
-    public Action createAction() {
+    public ExternalAction createAction() {
         return manager.createItineratySavingAction();
     }
     

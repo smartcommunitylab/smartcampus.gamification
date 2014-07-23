@@ -1,12 +1,13 @@
 package eu.trentorise.game.application.container;
 
 import eu.trentorise.game.application.model.Action;
+import eu.trentorise.game.application.model.ExternalAction;
 
 /**
  *
  * @author Luca Piras
  */
-public class ActionContainer implements IActionContainer {
+public class ExternalActionContainer implements IExternalActionContainer {
     
     protected Action action;
 
@@ -16,12 +17,12 @@ public class ActionContainer implements IActionContainer {
     }
 
     @Override
-    public void setAction(Action action) {
+    public void setAction(ExternalAction action) {
         this.action = action;
     }
 
     @Override
     public String toString() {
-        return "ActionContainer{" + "action=" + action + '}';
+        return "ExternalActionContainer{" + "action=" + action + '}';
     }
 }

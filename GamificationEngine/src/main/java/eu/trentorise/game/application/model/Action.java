@@ -1,16 +1,16 @@
 package eu.trentorise.game.application.model;
 
-import eu.trentorise.game.application.model.Application;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  *
  * @author Luca Piras
  */
+//Necessary for the Test
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Action {
     
     protected Integer id;
-    
-    protected Application application;
     
     protected String name;
     protected String description;
@@ -21,14 +21,6 @@ public class Action {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Application getApplication() {
-        return application;
-    }
-
-    public void setApplication(Application application) {
-        this.application = application;
     }
 
     public String getName() {
@@ -49,6 +41,6 @@ public class Action {
 
     @Override
     public String toString() {
-        return "Action{" + "id=" + id + ", application=" + application + ", name=" + name + ", description=" + description + '}';
+        return "Action{" + "id=" + id + ", name=" + name + ", description=" + description + '}';
     }
 }

@@ -1,7 +1,7 @@
 package eu.trentorise.game.application.service;
 
-import eu.trentorise.game.application.container.IActionContainer;
-import eu.trentorise.game.application.response.ActionResponse;
+import eu.trentorise.game.application.container.IExternalActionContainer;
+import eu.trentorise.game.application.response.ExternalActionResponse;
 
 /**
  *
@@ -9,5 +9,5 @@ import eu.trentorise.game.application.response.ActionResponse;
  */
 public interface IApplicationManager {
 
-    public ActionResponse getActions(IActionContainer container) throws Exception;
+    public ExternalActionResponse getExternalActions(IExternalActionContainer container) throws Exception;
 }

@@ -1,9 +1,9 @@
 package eu.trentorise.game.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.game.application.model.Action;
+import eu.trentorise.game.application.model.ExternalAction;
 import eu.trentorise.game.application.model.Param;
-import eu.trentorise.game.application.request.ActionRequest;
+import eu.trentorise.game.application.request.ExternalActionRequest;
 import eu.trentorise.game.application.response.ParamResponse;
 import eu.trentorise.game.application.service.MockApplicationManager;
 import eu.trentorise.game.application.service.MockGamifiableActionManager;
@@ -57,18 +57,18 @@ public class GamifiableActionControllerTest {
         gamifiableActionMock.setManager(mock);
         
         
-        Action action = gamifiableActionMock.createAction();
+        ExternalAction action = gamifiableActionMock.createAction();
         List<Param> expectedElements = gamifiableActionMock.createElements();
         this.executeTest(action, expectedElements);
     }
     
-    protected void executeTest(Action action,
+    protected void executeTest(ExternalAction action,
                                List<Param> expectedElements) throws Exception {
         
         RestTemplateJsonServiceTestHelper<ParamResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         ObjectMapper mapper = new ObjectMapper();
         
-        ActionRequest request = new ActionRequest();
+        ExternalActionRequest request = new ExternalActionRequest();
         request.setAction(action);
         
         String jsonRequest = mapper.writeValueAsString(request);

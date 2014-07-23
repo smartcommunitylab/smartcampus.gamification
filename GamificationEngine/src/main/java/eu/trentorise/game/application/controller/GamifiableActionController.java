@@ -1,9 +1,9 @@
 package eu.trentorise.game.application.controller;
 
 import eu.trentorise.game.application.service.IGamifiableActionManager;
-import eu.trentorise.game.application.container.ActionContainer;
-import eu.trentorise.game.application.request.ActionRequest;
-import eu.trentorise.game.application.container.IActionContainer;
+import eu.trentorise.game.application.container.ExternalActionContainer;
+import eu.trentorise.game.application.request.ExternalActionRequest;
+import eu.trentorise.game.application.container.IExternalActionContainer;
 import eu.trentorise.game.application.response.ParamResponse;
 import eu.trentorise.game.controller.IGameConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +26,10 @@ public class GamifiableActionController {
     //controllers
     
     @RequestMapping(method = RequestMethod.POST, value = "/getParams" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody ParamResponse getParams(@RequestBody ActionRequest request) throws Exception {
+    public @ResponseBody ParamResponse getParams(@RequestBody ExternalActionRequest request) throws Exception {
         //TODO: this service will provide a list of params related to
         //the action specified in the request
-        IActionContainer container = new ActionContainer();
+        IExternalActionContainer container = new ExternalActionContainer();
         container.setAction(request.getAction());
         
         return manager.getParams(container);

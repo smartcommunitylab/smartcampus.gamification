@@ -1,10 +1,10 @@
 package eu.trentorise.game.application.controller;
 
 import eu.trentorise.game.application.service.IApplicationManager;
-import eu.trentorise.game.application.container.ActionContainer;
-import eu.trentorise.game.application.request.ActionRequest;
-import eu.trentorise.game.application.container.IActionContainer;
-import eu.trentorise.game.application.response.ActionResponse;
+import eu.trentorise.game.application.container.ExternalActionContainer;
+import eu.trentorise.game.application.request.ExternalActionRequest;
+import eu.trentorise.game.application.container.IExternalActionContainer;
+import eu.trentorise.game.application.response.ExternalActionResponse;
 import eu.trentorise.game.controller.IGameConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,14 +25,14 @@ public class ApplicationController {
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
     
-    @RequestMapping(method = RequestMethod.POST, value = "/getActions" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody ActionResponse getActions(@RequestBody ActionRequest request) throws Exception {
+    @RequestMapping(method = RequestMethod.POST, value = "/getExternalActions" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody ExternalActionResponse getActions(@RequestBody ExternalActionRequest request) throws Exception {
         //TODO: this service will provide a list of gamifiableActions related to
         //the application specified in the request
-        IActionContainer container = new ActionContainer();
+        IExternalActionContainer container = new ExternalActionContainer();
         container.setAction(request.getAction());
         
-        return manager.getActions(container);
+        return manager.getExternalActions(container);
     }
     
     @Qualifier("mockApplicationManager")

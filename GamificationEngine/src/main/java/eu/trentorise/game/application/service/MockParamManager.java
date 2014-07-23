@@ -1,6 +1,6 @@
 package eu.trentorise.game.application.service;
 
-import eu.trentorise.game.application.container.IActionContainer;
+import eu.trentorise.game.application.container.IExternalActionContainer;
 import eu.trentorise.game.application.container.IBasicParamContainer;
 import eu.trentorise.game.application.model.Action;
 import eu.trentorise.game.application.model.BasicParam;

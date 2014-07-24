@@ -2,7 +2,6 @@ package eu.trentorise.game.ruleengine.service;
 
 import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.model.ParamType;
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.response.MockResponder;
@@ -15,7 +14,6 @@ import eu.trentorise.game.ruleengine.model.RuleTemplateType;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +24,8 @@ import org.springframework.stereotype.Service;
  *
  * @author Luca Piras
  */
-@Service("mockRuleEngineManager")
-public class MockRuleEngineManager extends MockResponder implements IRuleEngineManager {
-
-    @Override
-    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+@Service("mockRuleTemplateManager")
+public class MockRuleTemplateManager extends MockResponder implements IRuleTemplateManager {
     
     @Override
     public RuleTemplateResponse getRuleTemplates(IRuleTemplateContainer container) throws Exception {

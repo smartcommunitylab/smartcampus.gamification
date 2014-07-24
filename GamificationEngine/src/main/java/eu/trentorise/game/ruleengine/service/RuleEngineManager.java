@@ -4,15 +4,11 @@ import eu.trentorise.game.annotation.TransactionalGame;
 import eu.trentorise.game.data.PlayerRepository;
 import eu.trentorise.game.model.player.Player;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
-import eu.trentorise.game.ruleengine.container.IOperatorContainer;
-import eu.trentorise.game.ruleengine.container.IRuleTemplateContainer;
 import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
 import eu.trentorise.game.ruleengine.service.executor.IRulesExecutionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.trentorise.game.ruleengine.data.IFactsDAO;
-import eu.trentorise.game.ruleengine.response.OperatorResponse;
-import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +30,6 @@ public class RuleEngineManager implements IRuleEngineManager {
     
     protected IRulesPreparerManager rulesPreparerManager;
     protected IRulesPreparerManager addNewRulePreparerManager;
-    
-    
-    @Override
-    public RuleTemplateResponse getRuleTemplates(IRuleTemplateContainer container) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public OperatorResponse getOperatorsSupported(IOperatorContainer container) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     //TODO: delete this method
     protected void dataJpaTry() throws Exception {

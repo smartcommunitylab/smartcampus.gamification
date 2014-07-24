@@ -9,7 +9,7 @@ import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
-import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
+import eu.trentorise.game.ruleengine.service.IRuleTemplateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Luca Piras
  */
-@Controller("ruleEngineController")
-@RequestMapping(IGameConstants.SERVICE_RULEENGINE_PATH)
-public class RuleEngineController {
+@Controller("ruleTemplateController")
+@RequestMapping(IGameConstants.SERVICE_RULEENGINE_RULETEMPLATE_PATH)
+public class RuleTemplateController {
     
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
@@ -48,7 +48,7 @@ public class RuleEngineController {
         return manager.getOperatorsSupported(container);
     }
     
-    @Qualifier("mockRuleEngineManager")
+    @Qualifier("mockRuleTemplateManager")
     @Autowired
-    protected IRuleEngineManager manager;
+    protected IRuleTemplateManager manager;
 }

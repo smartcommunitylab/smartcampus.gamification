@@ -13,7 +13,7 @@ import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
-import eu.trentorise.game.ruleengine.service.MockRuleEngineManager;
+import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import java.util.List;
 import org.junit.After;
@@ -27,12 +27,12 @@ import org.junit.Test;
  *
  * @author Luca Piras
  */
-public class RuleEngineControllerTest {
+public class RuleTemplateControllerTest {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_RULEENGINE_PATH;
+    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_RULEENGINE_RULETEMPLATE_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
     
-    public RuleEngineControllerTest() {
+    public RuleTemplateControllerTest() {
     }
     
     @BeforeClass
@@ -59,7 +59,7 @@ public class RuleEngineControllerTest {
     @Test
     public void testGetRuleTemplates() throws Exception {
         MockGamePluginManager mock = new MockGamePluginManager();
-        MockRuleEngineManager ruleTemplateMock = new MockRuleEngineManager();
+        MockRuleTemplateManager ruleTemplateMock = new MockRuleTemplateManager();
         ruleTemplateMock.setManager(mock);
         
         
@@ -126,7 +126,7 @@ public class RuleEngineControllerTest {
      */
     @Test
     public void testGetOperatorsSupported() throws Exception {
-        MockRuleEngineManager mock = new MockRuleEngineManager();
+        MockRuleTemplateManager mock = new MockRuleTemplateManager();
         MockActionManager actionManagerMock = new MockActionManager();
         
         BasicParam createBikeKmParam = actionManagerMock.createBikeKmParam();

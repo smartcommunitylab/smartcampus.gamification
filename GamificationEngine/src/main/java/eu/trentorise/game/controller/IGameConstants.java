@@ -44,6 +44,8 @@ public interface IGameConstants {
     public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_ACTION_PATH + "/param";
     /*views and services - services - ruleengine*/
     public static final String SERVICE_RULEENGINE_PATH = SERVICE_PATH + "/ruleEngine";
+     /*views and services - services - ruleengine - ruletemplates*/
+    public static final String SERVICE_RULEENGINE_RULETEMPLATE_PATH = SERVICE_RULEENGINE_PATH + "/ruleTemplate";
     /*views and services - services - events*/
     public static final String SERVICE_EVENTS_PATH = SERVICE_PATH + "/events";
     public static final String SERVICE_EVENTS_START_EVENT_PATH = SERVICE_EVENTS_PATH + "/startEvent";

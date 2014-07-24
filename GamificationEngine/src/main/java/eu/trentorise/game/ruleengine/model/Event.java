@@ -1,4 +1,4 @@
-package eu.trentorise.game.rule.model;
+package eu.trentorise.game.ruleengine.model;
 
 /**
  *

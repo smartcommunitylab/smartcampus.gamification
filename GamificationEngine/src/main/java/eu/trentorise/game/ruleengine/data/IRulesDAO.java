@@ -1,7 +1,7 @@
 package eu.trentorise.game.ruleengine.data;
 
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
-import eu.trentorise.game.rule.model.Rule;
+import eu.trentorise.game.ruleengine.model.Rule;
 import java.util.List;
 
 /**

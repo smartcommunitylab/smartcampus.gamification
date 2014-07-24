@@ -1,6 +1,6 @@
 package eu.trentorise.game.ruleengine.request;
 
-import eu.trentorise.game.rule.model.RuleTemplate;
+import eu.trentorise.game.ruleengine.model.RuleTemplate;
 
 /**
  *

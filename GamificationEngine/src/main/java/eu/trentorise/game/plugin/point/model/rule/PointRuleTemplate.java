@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.point.model.rule;
 
 import eu.trentorise.game.action.model.Action;
-import eu.trentorise.game.rule.model.RuleTemplate;
+import eu.trentorise.game.ruleengine.model.RuleTemplate;
 
 /**
  *

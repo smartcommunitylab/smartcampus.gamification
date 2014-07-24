@@ -1,4 +1,4 @@
-package eu.trentorise.game.rule.model;
+package eu.trentorise.game.ruleengine.model;
 
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 
@@ -14,7 +14,7 @@ public class RuleTemplate {
     //TODO: this one has to be unique
     protected String name;
     
-    protected Type type;
+    protected RuleTemplateType type;
     
     protected String description;
 
@@ -42,11 +42,11 @@ public class RuleTemplate {
         this.name = name;
     }
 
-    public Type getType() {
+    public RuleTemplateType getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(RuleTemplateType type) {
         this.type = type;
     }
 
@@ -60,6 +60,6 @@ public class RuleTemplate {
 
     @Override
     public String toString() {
-        return "TemplateRule{" + "id=" + id + ", plugin=" + plugin + ", name=" + name + ", type=" + type + ", description=" + description + '}';
+        return "RuleTemplate{" + "id=" + id + ", plugin=" + plugin + ", name=" + name + ", type=" + type + ", description=" + description + '}';
     }
 }

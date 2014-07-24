@@ -1,11 +1,17 @@
 package eu.trentorise.game.ruleengine.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.trentorise.game.action.model.BasicParam;
+import eu.trentorise.game.action.service.MockActionManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
-import eu.trentorise.game.rule.model.RuleTemplate;
+import eu.trentorise.game.ruleengine.model.HandSideType;
+import eu.trentorise.game.ruleengine.model.Operator;
+import eu.trentorise.game.ruleengine.model.RuleTemplate;
+import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
+import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
@@ -21,12 +27,12 @@ import org.junit.Test;
  *
  * @author Luca Piras
  */
-public class RuleTemplateControllerTest {
+public class RuleEngineControllerTest {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_RULEENGINE_TEMPLATERULE_PATH;
+    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_RULEENGINE_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
     
-    public RuleTemplateControllerTest() {
+    public RuleEngineControllerTest() {
     }
     
     @BeforeClass
@@ -47,7 +53,7 @@ public class RuleTemplateControllerTest {
     
     
     /**
-     * Test of getRuleTemplates method, of class RuleTemplateController.
+     * Test of getRuleTemplates method, of class RuleEngineController.
      * @throws java.lang.Exception
      */
     @Test
@@ -59,19 +65,19 @@ public class RuleTemplateControllerTest {
         
         GamificationPlugin plugin = mock.createPointsPlugin();
         List<RuleTemplate> expectedElements = ruleTemplateMock.createPointPluginRuleTemplateList();
-        this.executeTest(plugin, expectedElements);
+        this.executeTestGetRuleTemplates(plugin, expectedElements);
         
         plugin = mock.createBadgeCollectionPlugin();
         expectedElements = ruleTemplateMock.createBadgeCollectionPluginRuleTemplateList();
-        this.executeTest(plugin, expectedElements);
+        this.executeTestGetRuleTemplates(plugin, expectedElements);
         
         plugin = mock.createLeadearboardPointPlugin();
         expectedElements = ruleTemplateMock.createLeaderboardPointPluginRuleTemplateList();
-        this.executeTest(plugin, expectedElements);
+        this.executeTestGetRuleTemplates(plugin, expectedElements);
     }
     
-    protected void executeTest(GamificationPlugin plugin,
-                               List<RuleTemplate> expectedElements) throws Exception {
+    protected void executeTestGetRuleTemplates(GamificationPlugin plugin,
+                                               List<RuleTemplate> expectedElements) throws Exception {
         
         RestTemplateJsonServiceTestHelper<RuleTemplateResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         ObjectMapper mapper = new ObjectMapper();
@@ -110,6 +116,62 @@ public class RuleTemplateControllerTest {
                              expectedElement.getType());
                 assertEquals(responseElement.getDescription(), 
                              expectedElement.getDescription());
+            }
+        }
+    }
+    
+    /**
+     * Test of testGetOperatorsSupported method, of class RuleEngineController.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testGetOperatorsSupported() throws Exception {
+        MockRuleTemplateManager mock = new MockRuleTemplateManager();
+        MockActionManager actionManagerMock = new MockActionManager();
+        
+        BasicParam createBikeKmParam = actionManagerMock.createBikeKmParam();
+        
+        this.executeTestGetOperatorsSupported(createBikeKmParam,
+                                              HandSideType.LEFT, 
+                                              mock.createIntegerLeftHandSideOperators());
+        
+        this.executeTestGetOperatorsSupported(createBikeKmParam,
+                                              HandSideType.RIGHT, 
+                                              mock.createIntegerRightHandSideOperators());
+    }
+    
+    protected void executeTestGetOperatorsSupported(BasicParam param,
+                                                    HandSideType handSideType,
+                                                    List<Operator> expectedElements) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<OperatorResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        ObjectMapper mapper = new ObjectMapper();
+        
+        OperatorRequest request = new OperatorRequest();
+        request.setParam(param);
+        request.setHandSideType(handSideType);
+        
+        String jsonRequest = mapper.writeValueAsString(request);
+        System.out.println(jsonRequest);
+        
+        OperatorResponse response = helper.executeTest("testGetOperatorsSupported",
+                                                       BASE_RELATIVE_URL + "/getOperatorsSupported" + FINAL_PART_RELATIVE_URL,
+                                                       OperatorResponse.class, 
+                                                       jsonRequest);
+        
+        if (null != response) {
+            assertTrue(response.isSuccess());
+            
+            List<Operator> responseElements = response.getOperators();
+            
+            assertNotNull(responseElements);
+            assertEquals(responseElements.size(), expectedElements.size());
+            
+            for (int i = 0; i < responseElements.size(); i++) {
+                Operator responseElement = responseElements.get(i);
+                Operator expectedElement = expectedElements.get(i);
+                
+                assertEquals(responseElement.getSymbol(), expectedElement.getSymbol());
             }
         }
     }

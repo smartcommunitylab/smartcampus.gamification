@@ -1,4 +1,4 @@
-package eu.trentorise.game.application.controller;
+package eu.trentorise.game.action.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.action.model.Action;

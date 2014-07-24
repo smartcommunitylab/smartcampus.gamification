@@ -1,7 +1,7 @@
 package eu.trentorise.game.ruleengine.response;
 
 import eu.trentorise.game.response.GameResponse;
-import eu.trentorise.game.rule.model.RuleTemplate;
+import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import java.util.List;
 
 /**

@@ -7,8 +7,8 @@ import eu.trentorise.game.ruleengine.data.ISpreadSheetDAO;
 import eu.trentorise.game.ruleengine.data.MockSpreadSheetDAO;
 import eu.trentorise.game.ruleengine.data.drools.DroolsRulesStreamDAO;
 import eu.trentorise.game.ruleengine.data.drools.DroolsTemplateRulesDAO;
-import eu.trentorise.game.ruleengine.service.IRulesEngineManager;
-import eu.trentorise.game.ruleengine.service.RulesEngineManager;
+import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
+import eu.trentorise.game.ruleengine.service.RuleEngineManager;
 import eu.trentorise.game.ruleengine.service.drools.DroolsKnowledgeBuilder;
 import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
 import eu.trentorise.game.ruleengine.service.preparer.RulesPreparerManager;
@@ -28,8 +28,8 @@ public class GameConfig {
     
     ///////IRulesEngineManager///////
     @Bean(name="badgeRulesEngineManager")
-    public IRulesEngineManager rulesEngineManager() {
-        RulesEngineManager manager = new RulesEngineManager();
+    public IRuleEngineManager rulesEngineManager() {
+        RuleEngineManager manager = new RuleEngineManager();
         
         manager.setKnowledgeBuilder(new DroolsKnowledgeBuilder());
         manager.setFactsDAO(factsDAO);
@@ -40,8 +40,8 @@ public class GameConfig {
     }
     
     @Bean(name="pointRulesEngineManager")
-    public IRulesEngineManager pointRulesEngineManager() {
-        RulesEngineManager manager = new RulesEngineManager();
+    public IRuleEngineManager pointRulesEngineManager() {
+        RuleEngineManager manager = new RuleEngineManager();
         
         manager.setKnowledgeBuilder(new DroolsKnowledgeBuilder());
         manager.setFactsDAO(pointFactsDAO);

@@ -9,7 +9,7 @@ import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
-import eu.trentorise.game.ruleengine.service.IRuleTemplateManager;
+import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -48,7 +48,7 @@ public class RuleEngineController {
         return manager.getOperatorsSupported(container);
     }
     
-    @Qualifier("mockRuleTemplateManager")
+    @Qualifier("mockRuleEngineManager")
     @Autowired
-    protected IRuleTemplateManager manager;
+    protected IRuleEngineManager manager;
 }

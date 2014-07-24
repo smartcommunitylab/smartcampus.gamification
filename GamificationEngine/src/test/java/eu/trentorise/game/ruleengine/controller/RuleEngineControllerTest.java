@@ -13,7 +13,7 @@ import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
-import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
+import eu.trentorise.game.ruleengine.service.MockRuleEngineManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import java.util.List;
 import org.junit.After;
@@ -59,7 +59,7 @@ public class RuleEngineControllerTest {
     @Test
     public void testGetRuleTemplates() throws Exception {
         MockGamePluginManager mock = new MockGamePluginManager();
-        MockRuleTemplateManager ruleTemplateMock = new MockRuleTemplateManager();
+        MockRuleEngineManager ruleTemplateMock = new MockRuleEngineManager();
         ruleTemplateMock.setManager(mock);
         
         
@@ -126,7 +126,7 @@ public class RuleEngineControllerTest {
      */
     @Test
     public void testGetOperatorsSupported() throws Exception {
-        MockRuleTemplateManager mock = new MockRuleTemplateManager();
+        MockRuleEngineManager mock = new MockRuleEngineManager();
         MockActionManager actionManagerMock = new MockActionManager();
         
         BasicParam createBikeKmParam = actionManagerMock.createBikeKmParam();

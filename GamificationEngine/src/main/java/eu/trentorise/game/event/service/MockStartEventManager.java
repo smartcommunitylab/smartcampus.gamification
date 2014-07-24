@@ -4,7 +4,7 @@ import eu.trentorise.game.event.model.StartEvent;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.game.response.GameResponse;
-import eu.trentorise.game.ruleengine.service.IRulesEngineManager;
+import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -37,5 +37,5 @@ public class MockStartEventManager extends MockResponder implements IStartEventM
     
     @Qualifier("pointRulesEngineManager")
     @Autowired
-    protected IRulesEngineManager rulesEngineManager;
+    protected IRuleEngineManager rulesEngineManager;
 }

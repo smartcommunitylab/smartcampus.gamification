@@ -3,7 +3,7 @@ package eu.trentorise.game.controller;
 import eu.trentorise.game.request.HelloGameRequest;
 import eu.trentorise.game.model.backpack.Badge;
 import eu.trentorise.game.plugin.GamificationPluginIdentifier;
-import eu.trentorise.game.ruleengine.service.IRulesEngineManager;
+import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
 import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,7 @@ public class HelloGameController extends AbstractController<HelloGameRequest> {
     
     @Qualifier("badgeRulesEngineManager")
     @Autowired
-    protected IRulesEngineManager rulesEngineManager;
+    protected IRuleEngineManager rulesEngineManager;
     
     
     //@Autowired

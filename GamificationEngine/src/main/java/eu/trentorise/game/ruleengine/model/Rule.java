@@ -1,6 +1,8 @@
 package eu.trentorise.game.ruleengine.model;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.action.model.Action;
+import eu.trentorise.game.action.model.BasicParam;
+import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
 
 /**
  *
@@ -8,12 +10,27 @@ import eu.trentorise.game.plugin.model.GamificationPlugin;
  */
 public class Rule {
     
+    //ids and/or foreignkeys
     protected Integer id;
     protected RuleTemplate ruleTemplate;
-    protected GamificationPlugin gamificationPlugin;
     
+    //trigger
+    protected Action action;
+    
+    //leftHandSide
+    protected BasicParam lhsBasicParam;
     protected Operator lhsOperator;
+    protected String lhsOperand;
+    
+    //customizedPluginInvolved
+    protected CustomizedGamificationPlugin customizedGamificationPlugin;
+    
+    //rightHandSide
+    protected Operator rhsPluginOperator;
+    protected String rhsValue;
+    protected BasicParam rhsBasicParam;
     protected Operator rhsOperator;
+    protected String rhsOperand;
     
     protected String content;
 
@@ -33,12 +50,20 @@ public class Rule {
         this.ruleTemplate = ruleTemplate;
     }
 
-    public GamificationPlugin getGamificationPlugin() {
-        return gamificationPlugin;
+    public Action getAction() {
+        return action;
     }
 
-    public void setGamificationPlugin(GamificationPlugin gamificationPlugin) {
-        this.gamificationPlugin = gamificationPlugin;
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public BasicParam getLhsBasicParam() {
+        return lhsBasicParam;
+    }
+
+    public void setLhsBasicParam(BasicParam lhsBasicParam) {
+        this.lhsBasicParam = lhsBasicParam;
     }
 
     public Operator getLhsOperator() {
@@ -49,12 +74,60 @@ public class Rule {
         this.lhsOperator = lhsOperator;
     }
 
+    public String getLhsOperand() {
+        return lhsOperand;
+    }
+
+    public void setLhsOperand(String lhsOperand) {
+        this.lhsOperand = lhsOperand;
+    }
+
+    public CustomizedGamificationPlugin getCustomizedGamificationPlugin() {
+        return customizedGamificationPlugin;
+    }
+
+    public void setCustomizedGamificationPlugin(CustomizedGamificationPlugin customizedGamificationPlugin) {
+        this.customizedGamificationPlugin = customizedGamificationPlugin;
+    }
+
+    public Operator getRhsPluginOperator() {
+        return rhsPluginOperator;
+    }
+
+    public void setRhsPluginOperator(Operator rhsPluginOperator) {
+        this.rhsPluginOperator = rhsPluginOperator;
+    }
+
+    public String getRhsValue() {
+        return rhsValue;
+    }
+
+    public void setRhsValue(String rhsValue) {
+        this.rhsValue = rhsValue;
+    }
+
+    public BasicParam getRhsBasicParam() {
+        return rhsBasicParam;
+    }
+
+    public void setRhsBasicParam(BasicParam rhsBasicParam) {
+        this.rhsBasicParam = rhsBasicParam;
+    }
+
     public Operator getRhsOperator() {
         return rhsOperator;
     }
 
     public void setRhsOperator(Operator rhsOperator) {
         this.rhsOperator = rhsOperator;
+    }
+
+    public String getRhsOperand() {
+        return rhsOperand;
+    }
+
+    public void setRhsOperand(String rhsOperand) {
+        this.rhsOperand = rhsOperand;
     }
 
     public String getContent() {
@@ -67,6 +140,6 @@ public class Rule {
 
     @Override
     public String toString() {
-        return "Rule{" + "id=" + id + ", ruleTemplate=" + ruleTemplate + ", gamificationPlugin=" + gamificationPlugin + ", lhsOperator=" + lhsOperator + ", rhsOperator=" + rhsOperator + ", content=" + content + '}';
+        return "Rule{" + "id=" + id + ", ruleTemplate=" + ruleTemplate + ", action=" + action + ", lhsBasicParam=" + lhsBasicParam + ", lhsOperator=" + lhsOperator + ", lhsOperand=" + lhsOperand + ", customizedGamificationPlugin=" + customizedGamificationPlugin + ", rhsPluginOperator=" + rhsPluginOperator + ", rhsValue=" + rhsValue + ", rhsBasicParam=" + rhsBasicParam + ", rhsOperator=" + rhsOperator + ", rhsOperand=" + rhsOperand + ", content=" + content + '}';
     }
 }

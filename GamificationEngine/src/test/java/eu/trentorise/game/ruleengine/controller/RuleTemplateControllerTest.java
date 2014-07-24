@@ -6,13 +6,17 @@ import eu.trentorise.game.action.service.MockActionManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
+import eu.trentorise.game.ruleengine.model.Rule;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
+import eu.trentorise.game.ruleengine.request.RuleRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
+import eu.trentorise.game.ruleengine.response.RuleResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
@@ -216,6 +220,45 @@ public class RuleTemplateControllerTest {
                 
                 assertEquals(responseElement.getSymbol(), expectedElement.getSymbol());
             }
+        }
+    }
+    
+    /**
+     * Test of testSetRule method, of class RuleTemplateController.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testSetRule() throws Exception {
+        MockRuleTemplateManager mock = new MockRuleTemplateManager();
+        MockGamePluginManager gamePluginManagerMock = new MockGamePluginManager();
+        
+        Game game = new Game();
+        game.setId(135);
+        
+        
+        //TODO: to be completed
+        this.executeTestSetRule(game, null);
+    }
+    
+    protected void executeTestSetRule(Game game, Rule rule) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<RuleResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        ObjectMapper mapper = new ObjectMapper();
+        
+        RuleRequest request = new RuleRequest();
+        request.setGame(game);
+        request.setRule(rule);
+        
+        String jsonRequest = mapper.writeValueAsString(request);
+        System.out.println(jsonRequest);
+        
+        RuleResponse response = helper.executeTest("testSetRule",
+                                                   BASE_RELATIVE_URL + "/setRule" + FINAL_PART_RELATIVE_URL,
+                                                   RuleResponse.class, 
+                                                   jsonRequest);
+        
+        if (null != response) {
+            assertTrue(response.isSuccess());
         }
     }
 }

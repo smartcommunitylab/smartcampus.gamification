@@ -3,14 +3,18 @@ package eu.trentorise.game.ruleengine.controller;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
 import eu.trentorise.game.ruleengine.container.IPluginOperatorContainer;
+import eu.trentorise.game.ruleengine.container.IRuleContainer;
 import eu.trentorise.game.ruleengine.container.IRuleTemplateContainer;
 import eu.trentorise.game.ruleengine.container.OperatorContainer;
 import eu.trentorise.game.ruleengine.container.PluginOperatorContainer;
+import eu.trentorise.game.ruleengine.container.RuleContainer;
 import eu.trentorise.game.ruleengine.container.RuleTemplateContainer;
 import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
+import eu.trentorise.game.ruleengine.request.RuleRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
+import eu.trentorise.game.ruleengine.response.RuleResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.IRuleTemplateManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +67,20 @@ public class RuleTemplateController {
         container.setGamificationPlugin(request.getGamificationPlugin());
         
         return manager.getPluginOperatorsSupported(container);
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/setRule" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody RuleResponse setRule(@RequestBody RuleRequest request) throws Exception {
+        //TODO: set the rule, its relation with a game, and other internal 
+        //relation (action, param, operator, ruleTemplate, etc. Furthermore,
+        //create generate the content string, the rule in drools language and 
+        //evaluate if it is possible to validate/verify the rule with drools
+        //(compile, etc.), if it is sustainable and so on
+        IRuleContainer container = new RuleContainer();
+        container.setGame(request.getGame());
+        container.setRule(request.getRule());
+        
+        return manager.setRule(container);
     }
     
     @Qualifier("mockRuleTemplateManager")

@@ -2,10 +2,13 @@ package eu.trentorise.game.ruleengine.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
+import eu.trentorise.game.ruleengine.container.IPluginOperatorContainer;
 import eu.trentorise.game.ruleengine.container.IRuleTemplateContainer;
 import eu.trentorise.game.ruleengine.container.OperatorContainer;
+import eu.trentorise.game.ruleengine.container.PluginOperatorContainer;
 import eu.trentorise.game.ruleengine.container.RuleTemplateContainer;
 import eu.trentorise.game.ruleengine.request.OperatorRequest;
+import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
@@ -46,6 +49,20 @@ public class RuleTemplateController {
         container.setHandSideType(request.getHandSideType());
         
         return manager.getOperatorsSupported(container);
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/getPluginOperatorsSupported" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody OperatorResponse getPluginOperatorsSupported(@RequestBody PluginOperatorRequest request) throws Exception {
+        //TODO: there are two ways to define operators. One is operators 
+        //supported by the plugin to act in relation to the gamification concept
+        //(for instance Points, operators for points) and the other one is
+        //operators supported by the ruleTemplate of a plugin. Here we provide
+        //at the moment only the first choice. If necessary will be implemented
+        //also the other one
+        IPluginOperatorContainer container = new PluginOperatorContainer();
+        container.setGamificationPlugin(request.getGamificationPlugin());
+        
+        return manager.getPluginOperatorsSupported(container);
     }
     
     @Qualifier("mockRuleTemplateManager")

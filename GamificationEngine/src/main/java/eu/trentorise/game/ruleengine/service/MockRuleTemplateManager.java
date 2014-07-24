@@ -6,6 +6,7 @@ import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
+import eu.trentorise.game.ruleengine.container.IPluginOperatorContainer;
 import eu.trentorise.game.ruleengine.container.IRuleTemplateContainer;
 import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
@@ -45,8 +46,13 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     
     @Override
     public OperatorResponse getOperatorsSupported(IOperatorContainer container) {
-        return this.makeResponse(this.createElements(container.getParam(), 
+        return this.makeResponse(this.createOperators(container.getParam(), 
                                                      container.getHandSideType()));
+    }
+    
+    @Override
+    public OperatorResponse getPluginOperatorsSupported(IPluginOperatorContainer container) {
+        return this.makeResponse(this.createPluginOperators(container.getGamificationPlugin()));
     }
     
     public List<RuleTemplate> createPointPluginRuleTemplateList() throws Exception {
@@ -93,8 +99,8 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return ruleTemplate;
     }
     
-    public List<Operator> createElements(BasicParam param, 
-                                       HandSideType handSideType) {
+    public List<Operator> createOperators(BasicParam param, 
+                                          HandSideType handSideType) {
         
         List<Operator> list = new ArrayList<>();
         
@@ -110,6 +116,21 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return list;
     }
     
+    public List<Operator> createPluginOperators(GamificationPlugin plugin) {
+        List<Operator> list = new ArrayList<>();
+        
+        if (null != plugin) {
+            if (0 == comparator.compare(plugin, manager.createPointsPlugin())) {
+                list = this.createPointPluginOperators();
+            }
+        }
+        
+        return list;
+        
+        
+        
+    }
+    
     public List<Operator> createIntegerLeftHandSideOperators() {
         List<Operator> list = new ArrayList<>();
         
@@ -117,7 +138,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         list.add(this.createOperator(">="));
         list.add(this.createOperator("<"));
         list.add(this.createOperator("<="));
-        list.add(this.createOperator("="));
+        list.add(this.createOperator("=="));
         list.add(this.createOperator("!="));
         
         return list;
@@ -126,10 +147,24 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     public List<Operator> createIntegerRightHandSideOperators() {
         List<Operator> list = new ArrayList<>();
         
-        list.add(this.createOperator("*"));
-        list.add(this.createOperator("/"));
         list.add(this.createOperator("+"));
         list.add(this.createOperator("-"));
+        list.add(this.createOperator("*"));
+        list.add(this.createOperator("/"));
+        list.add(this.createOperator("^"));
+        
+        return list;
+    }
+    
+    public List<Operator> createPointPluginOperators() {
+        List<Operator> list = new ArrayList<>();
+        
+        list.add(this.createOperator("="));
+        list.add(this.createOperator("+="));
+        list.add(this.createOperator("-="));
+        list.add(this.createOperator("*="));
+        list.add(this.createOperator("/="));
+        list.add(this.createOperator("^="));
         
         return list;
     }

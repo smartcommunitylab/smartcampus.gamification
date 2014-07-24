@@ -10,6 +10,7 @@ import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import eu.trentorise.game.ruleengine.request.OperatorRequest;
+import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
@@ -90,6 +91,9 @@ public class RuleTemplateControllerTest {
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
+        //TODO: change restTemplate in order not to execute all this part even
+        //though it is not necessary (when this kinds of tests are not 
+        //activated)
         RuleTemplateResponse response = helper.executeTest("testGetRuleTemplates",
                                                            BASE_RELATIVE_URL + "/getRuleTemplates" + FINAL_PART_RELATIVE_URL,
                                                            RuleTemplateResponse.class, 
@@ -121,7 +125,7 @@ public class RuleTemplateControllerTest {
     }
     
     /**
-     * Test of testGetOperatorsSupported method, of class RuleEngineController.
+     * Test of testGetOperatorsSupported method, of class RuleTemplateController.
      * @throws java.lang.Exception
      */
     @Test
@@ -158,6 +162,45 @@ public class RuleTemplateControllerTest {
                                                        BASE_RELATIVE_URL + "/getOperatorsSupported" + FINAL_PART_RELATIVE_URL,
                                                        OperatorResponse.class, 
                                                        jsonRequest);
+        
+        this.evaluateResponse(response, expectedElements);
+    }
+    
+    /**
+     * Test of testGetPluginOperatorsSupported method, of class RuleTemplateController.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testGetPluginOperatorsSupported() throws Exception {
+        MockRuleTemplateManager mock = new MockRuleTemplateManager();
+        MockGamePluginManager gamePluginManagerMock = new MockGamePluginManager();
+        
+        this.executeTestGetPluginOperatorsSupported(gamePluginManagerMock.createPointsPlugin(), 
+                                                    mock.createPointPluginOperators());
+    }
+    
+    protected void executeTestGetPluginOperatorsSupported(GamificationPlugin plugin,
+                                                          List<Operator> expectedElements) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<OperatorResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        ObjectMapper mapper = new ObjectMapper();
+        
+        PluginOperatorRequest request = new PluginOperatorRequest();
+        request.setGamificationPlugin(plugin);
+        
+        String jsonRequest = mapper.writeValueAsString(request);
+        System.out.println(jsonRequest);
+        
+        OperatorResponse response = helper.executeTest("testGetPluginOperatorsSupported",
+                                                       BASE_RELATIVE_URL + "/getPluginOperatorsSupported" + FINAL_PART_RELATIVE_URL,
+                                                       OperatorResponse.class, 
+                                                       jsonRequest);
+        
+        this.evaluateResponse(response, expectedElements);
+    }
+
+    protected void evaluateResponse(OperatorResponse response,
+                                    List<Operator> expectedElements) {
         
         if (null != response) {
             assertTrue(response.isSuccess());

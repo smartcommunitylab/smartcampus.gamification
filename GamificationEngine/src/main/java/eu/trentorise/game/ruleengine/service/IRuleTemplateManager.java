@@ -6,6 +6,7 @@ import eu.trentorise.game.ruleengine.container.IRuleContainer;
 import eu.trentorise.game.ruleengine.container.IRuleTemplateContainer;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleResponse;
+import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 
 /**
@@ -20,5 +21,7 @@ public interface IRuleTemplateManager {
 
     public OperatorResponse getPluginOperatorsSupported(IPluginOperatorContainer container);
 
-    public RuleResponse setRule(IRuleContainer container);
+    public RuleSettingResponse setRule(IRuleContainer container);
+
+    public RuleResponse getRules(IRuleContainer container);
 }

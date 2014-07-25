@@ -16,7 +16,7 @@ import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
-import eu.trentorise.game.ruleengine.response.RuleResponse;
+import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
@@ -242,7 +242,7 @@ public class RuleTemplateControllerTest {
     
     protected void executeTestSetRule(Game game, Rule rule) throws Exception {
         
-        RestTemplateJsonServiceTestHelper<RuleResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        RestTemplateJsonServiceTestHelper<RuleSettingResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         ObjectMapper mapper = new ObjectMapper();
         
         RuleRequest request = new RuleRequest();
@@ -252,9 +252,9 @@ public class RuleTemplateControllerTest {
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
-        RuleResponse response = helper.executeTest("testSetRule",
+        RuleSettingResponse response = helper.executeTest("testSetRule",
                                                    BASE_RELATIVE_URL + "/setRule" + FINAL_PART_RELATIVE_URL,
-                                                   RuleResponse.class, 
+                                                   RuleSettingResponse.class, 
                                                    jsonRequest);
         
         if (null != response) {

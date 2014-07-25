@@ -4,6 +4,7 @@ import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.model.ParamType;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
 import eu.trentorise.game.ruleengine.container.IPluginOperatorContainer;
@@ -11,10 +12,12 @@ import eu.trentorise.game.ruleengine.container.IRuleContainer;
 import eu.trentorise.game.ruleengine.container.IRuleTemplateContainer;
 import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
+import eu.trentorise.game.ruleengine.model.Rule;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import eu.trentorise.game.ruleengine.model.RuleTemplateType;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleResponse;
+import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -47,6 +50,26 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     }
     
     @Override
+    public RuleResponse getRules(IRuleContainer container) {
+        List<Rule> list = new ArrayList<>();
+        
+        Game game = container.getGame();
+        /*if (135 == game.getId()) {this.cr
+            if (0 == comparator.compare(plugin, manager.createPointsPlugin())) {
+                list = this.createPointPluginRuleTemplateList();
+            } else if (0 == comparator.compare(plugin, manager.createBadgeCollectionPlugin())) {
+                list = this.createBadgeCollectionPluginRuleTemplateList();
+            } else if (0 == comparator.compare(plugin, manager.createLeadearboardPointPlugin())) {
+                list = this.createLeaderboardPointPluginRuleTemplateList();
+            }
+        }
+        
+        return this.makeCustomizedResponse(list);*/
+        
+        return null;
+    }
+    
+    @Override
     public OperatorResponse getOperatorsSupported(IOperatorContainer container) {
         return this.makeResponse(this.createOperators(container.getParam(), 
                                                      container.getHandSideType()));
@@ -58,7 +81,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     }
     
     @Override
-    public RuleResponse setRule(IRuleContainer container) {
+    public RuleSettingResponse setRule(IRuleContainer container) {
         //TODO: set the rule, its relation with a game, and other internal 
         //relation (action, param, operator, ruleTemplate, etc. Furthermore,
         //create generate the content string, the rule in drools language and 
@@ -203,10 +226,10 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return ((RuleTemplateResponse) this.buildPositiveResponse(response));
     }
     
-    protected RuleResponse makeResponse() {
-        RuleResponse response = new RuleResponse();
+    protected RuleSettingResponse makeResponse() {
+        RuleSettingResponse response = new RuleSettingResponse();
         
-        return ((RuleResponse) this.buildPositiveResponse(response));
+        return ((RuleSettingResponse) this.buildPositiveResponse(response));
     }
     
     public void setManager(MockGamePluginManager manager) {

@@ -459,6 +459,26 @@
         </properties>
     </profile>
     <profile>
+        <id>localOscar</id>
+        <activation>
+        </activation>
+        <properties>
+            <messageSource_cacheSeconds>0</messageSource_cacheSeconds>
+            <!--webapp.context>/gamificationengine</webapp.context-->
+            <!--recallAddressWithContext>localhost</recallAddressWithContext-->
+            <webapp_domain_absolute>${protocol}localhost:8080${webapp_domain}</webapp_domain_absolute>
+            <!--log-->
+            <log_dir>/home/oscar/development/tomcat/logs</log_dir>
+            <log_level>DEBUG</log_level>
+            <loggers>CONSOLE_LOGGER, DAILY_ROLLING_FILE_LOGGER</loggers>
+            <console_logger>org.apache.log4j.ConsoleAppender</console_logger>
+            <console_logger_layout>org.apache.log4j.PatternLayout</console_logger_layout>
+            <console_logger_layout_conversionPattern>%d [%t] %-5p %c - %m%n</console_logger_layout_conversionPattern>
+            <!--db-->
+            <!--db_host>localhost</db_host-->
+        </properties>
+    </profile>
+    <profile>
         <id>staging</id>
         <activation>
         </activation>

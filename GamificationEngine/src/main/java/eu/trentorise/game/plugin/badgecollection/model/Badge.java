@@ -1,26 +1,17 @@
 package eu.trentorise.game.plugin.badgecollection.model;
 
+import eu.trentorise.game.plugin.model.Reward;
 import eu.trentorise.utils.web.WebFile;
 
 /**
  *
  * @author Luca Piras
  */
-public class Badge {
-    
-    protected Integer id;
+public class Badge extends Reward {
     
     protected BadgeCollectionPlugin badgeCollection;
     
     protected WebFile image;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public BadgeCollectionPlugin getBadgeCollection() {
         return badgeCollection;
@@ -40,6 +31,6 @@ public class Badge {
 
     @Override
     public String toString() {
-        return "Badge{" + "id=" + id + ", badgeCollection=" + badgeCollection + ", image=" + image + '}';
+        return "Badge{" + "badgeCollection=" + badgeCollection + ", image=" + image + " " + super.toString() + " " + '}';
     }
 }

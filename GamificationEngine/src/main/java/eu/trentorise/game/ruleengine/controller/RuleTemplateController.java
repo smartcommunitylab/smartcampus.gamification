@@ -15,6 +15,7 @@ import eu.trentorise.game.ruleengine.request.RuleRequest;
 import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleResponse;
+import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.IRuleTemplateManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,19 @@ public class RuleTemplateController {
         return manager.getRuleTemplates(container);
     }
     
+    @RequestMapping(method = RequestMethod.POST, value = "/getRules" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody RuleResponse getRules(@RequestBody RuleRequest request) throws Exception {
+        //TODO: this service will provide a list of rules related to a game 
+        //(activated or deactivated, this is not important), to a ruleTemplate
+        //and to a customizedPlugin (ruleTemplate and customizedPlugin are
+        //inside the rule)
+        IRuleContainer container = new RuleContainer();
+        container.setGame(request.getGame());
+        container.setRule(request.getRule());
+        
+        return manager.getRules(container);
+    }
+    
     @RequestMapping(method = RequestMethod.POST, value = "/getOperatorsSupported" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
     public @ResponseBody OperatorResponse getOperatorsSupported(@RequestBody OperatorRequest request) throws Exception {
         IOperatorContainer container = new OperatorContainer();
@@ -70,7 +84,7 @@ public class RuleTemplateController {
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/setRule" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody RuleResponse setRule(@RequestBody RuleRequest request) throws Exception {
+    public @ResponseBody RuleSettingResponse setRule(@RequestBody RuleRequest request) throws Exception {
         //TODO: set the rule, its relation with a game, and other internal 
         //relation (action, param, operator, ruleTemplate, etc. Furthermore,
         //create generate the content string, the rule in drools language and 

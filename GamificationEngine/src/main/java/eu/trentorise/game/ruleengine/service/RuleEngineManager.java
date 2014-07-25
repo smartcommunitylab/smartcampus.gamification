@@ -165,6 +165,7 @@ public class RuleEngineManager implements IRuleEngineManager {
     protected IRulesExecutionManager rulesExecutionManager;
     
     //TODO: DELETE
-    @Autowired
+    //CDBFFFO deactivated to disable connection with the db
+    //@Autowired
     protected PlayerRepository repository;
 }

@@ -3,6 +3,7 @@ package eu.trentorise.game.ruleengine.model;
 import eu.trentorise.game.action.model.Action;
 import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
+import eu.trentorise.game.plugin.model.Reward;
 
 /**
  *
@@ -31,6 +32,7 @@ public class Rule {
     protected BasicParam rhsBasicParam;
     protected Operator rhsOperator;
     protected String rhsOperand;
+    protected Reward reward;
     
     protected String content;
 
@@ -138,8 +140,16 @@ public class Rule {
         this.content = content;
     }
 
+    public Reward getReward() {
+        return reward;
+    }
+
+    public void setReward(Reward reward) {
+        this.reward = reward;
+    }
+
     @Override
     public String toString() {
-        return "Rule{" + "id=" + id + ", ruleTemplate=" + ruleTemplate + ", action=" + action + ", lhsBasicParam=" + lhsBasicParam + ", lhsOperator=" + lhsOperator + ", lhsOperand=" + lhsOperand + ", customizedGamificationPlugin=" + customizedGamificationPlugin + ", rhsPluginOperator=" + rhsPluginOperator + ", rhsValue=" + rhsValue + ", rhsBasicParam=" + rhsBasicParam + ", rhsOperator=" + rhsOperator + ", rhsOperand=" + rhsOperand + ", content=" + content + '}';
+        return "Rule{" + "id=" + id + ", ruleTemplate=" + ruleTemplate + ", action=" + action + ", lhsBasicParam=" + lhsBasicParam + ", lhsOperator=" + lhsOperator + ", lhsOperand=" + lhsOperand + ", customizedGamificationPlugin=" + customizedGamificationPlugin + ", rhsPluginOperator=" + rhsPluginOperator + ", rhsValue=" + rhsValue + ", rhsBasicParam=" + rhsBasicParam + ", rhsOperator=" + rhsOperator + ", rhsOperand=" + rhsOperand + ", reward=" + reward + ", content=" + content + '}';
     }
 }

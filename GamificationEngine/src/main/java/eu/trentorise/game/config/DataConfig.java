@@ -22,9 +22,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *
  * @author Luca Piras
  */
-@Configuration
-@EnableJpaRepositories(basePackages = "eu.trentorise.game")
-@EnableTransactionManagement //this one activates transaction management for method annotated by the transactional annotation, the same of <tx:annotation-driven />
+//CDBFFFO all commented to disable connection with the db
+//@Configuration
+//@EnableJpaRepositories(basePackages = "eu.trentorise.game")
+//@EnableTransactionManagement //this one activates transaction management for method annotated by the transactional annotation, the same of <tx:annotation-driven />
 public class DataConfig {
     
     @Bean(destroyMethod = "close")

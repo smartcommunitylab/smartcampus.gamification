@@ -18,7 +18,7 @@
         </property>
     </bean>
 
-    <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
         <property name="attributes" ref="properties"/>
     </bean>

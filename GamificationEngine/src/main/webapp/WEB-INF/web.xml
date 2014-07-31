@@ -30,7 +30,7 @@
 	-->
     <context-param>
         <param-name>webAppRootKey</param-name>
-        <param-value>GamificationEngine.root</param-value>
+        <param-value>gamificationengine.root</param-value>
     </context-param>
 
     <context-param>
@@ -88,17 +88,11 @@
 
     <servlet-mapping>
         <servlet-name>gamificationengine</servlet-name>
-        <url-pattern>*.htm</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>gamificationengine</servlet-name>
-        <url-pattern>*.service</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>
-      index.jsp
-        </welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>

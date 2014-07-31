@@ -68,7 +68,7 @@ public class GameConfigurationControllerTest {
         </head>
             <body>
                 <div class="container">
-                        <form action="http://localhost:8080/GamificationEngine/game/services/configuration/importGamifiableActions.service" method="post" enctype="multipart/form-data">
+                        <form action="http://localhost:8080/gamificationengine/game/services/configuration/importGamifiableActions.service" method="post" enctype="multipart/form-data">
                                 <input type="text" name="gameId" size="50" />		    
                                 <p>Select a file : <input type="file" name="gamifiableActionsFile" size="50" /></p>
 

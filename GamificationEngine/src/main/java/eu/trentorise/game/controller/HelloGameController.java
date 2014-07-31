@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @RequestMapping(value = HelloGameController.VIEW_ABSOLUTE)
 public class HelloGameController extends AbstractController<HelloGameRequest> {
     
-    public static final String VIEW_WITHOUT_PATH = "helloGame";
+    public static final String VIEW_WITHOUT_PATH = "hellogame";
     public static final String VIEW = IGameConstants.VIEW_PATH + VIEW_WITHOUT_PATH;
     public static final String VIEW_ABSOLUTE = VIEW + IGameConstants.VIEW_PAGE_EXTENSION_SEPARATOR + IGameConstants.VIEW_PAGE_EXTENSION;    
     

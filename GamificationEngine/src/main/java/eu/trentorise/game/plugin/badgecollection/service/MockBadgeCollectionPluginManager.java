@@ -112,7 +112,7 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
     }
     
     protected String makeUrl(Integer gamificationPluginId, Integer badgeCollectionId, String badgeFileName) {
-        StringBuilder sb = new StringBuilder("http://localhost:8080/GamificationEngine/img/plugins/");
+        StringBuilder sb = new StringBuilder("http://localhost:8080/gamificationengine/img/plugins/");
         sb.append(gamificationPluginId).append("/");
         sb.append(badgeCollectionId).append("/badges/");
         sb.append(badgeFileName);

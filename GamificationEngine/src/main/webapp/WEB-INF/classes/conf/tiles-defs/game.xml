@@ -72,7 +72,7 @@
     
 
     <!-- Game -->
-    <definition name="game.helloGame" extends="game.main">        
+    <definition name="game.hellogame" extends="game.main">        
         <put-attribute name="head" value="game.helloGameHead" />
         
         <put-attribute name="content" value="/WEB-INF/jsp/game/helloGame.jsp" />

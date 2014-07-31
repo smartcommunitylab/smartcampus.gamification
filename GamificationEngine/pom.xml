@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.trentorise</groupId>
-  <artifactId>GamificationEngine</artifactId>
+  <artifactId>gamificationengine</artifactId>
   <packaging>war</packaging>
   <version>0.1</version>
-  <name>GamificationEngine</name>
+  <name>gamificationengine</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <!-- SPRING -->
@@ -415,7 +415,7 @@
     <okIcon>${images_path_webapp_absolute}pos.png</okIcon>
     <koIcon>${images_path_webapp_absolute}neg.png</koIcon>
     <!--webapp-->
-    <webapp_domain>/GamificationEngine</webapp_domain>
+    <webapp_domain>/gamificationengine</webapp_domain>
     <webapp_jsPath_relative>/js/</webapp_jsPath_relative>
     <webapp_jsPath_absolute>${webapp_domain_absolute}${webapp_jsPath_relative}</webapp_jsPath_absolute>
     <webapp_cssPath_relative>/css/</webapp_cssPath_relative>
@@ -511,7 +511,7 @@
     </profile>
   </profiles>
   <build>
-    <finalName>GamificationEngine</finalName>
+    <finalName>gamificationengine</finalName>
     <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

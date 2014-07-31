@@ -59,7 +59,7 @@ public class BadgeControllerTest {
         </head>
             <body>
                 <div class="container">
-                        <form action="http://localhost:8080/GamificationEngine/game/services/plugins/badgeCollection/badge/setBadge.service" method="post" enctype="multipart/form-data">
+                        <form action="http://localhost:8080/gamificationengine/game/services/plugins/badgeCollection/badge/setBadge.service" method="post" enctype="multipart/form-data">
                                 <input type="text" name="badgeCollectionId" value="2" size="50" />
                                 <input type="text" name="badgeCollectionPluginId" value="1" size="50" />		    
                                 <p>Select a file : <input type="file" name="badgeCollectionBadgeFile" size="50" /></p>

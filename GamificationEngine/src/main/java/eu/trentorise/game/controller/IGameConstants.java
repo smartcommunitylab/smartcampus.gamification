@@ -14,11 +14,11 @@ public interface IGameConstants {
     /*parameters*/
     /*game configuration*/
     public static final String PARAM_GAME_ID = "gameId";
-    public static final String PARAM_GAMIFIABLE_ACTIONS_FILE = "gamifiableActionsFile";
+    public static final String PARAM_GAMIFIABLE_ACTIONS_FILE = "gamifiableactionsfile";
     /*badgeCollection - badge*/
-    public static final String PARAM_BADGECOLLECTION_ID = "badgeCollectionId";
-    public static final String PARAM_BADGECOLLECTION_PLUGIN_ID = "badgeCollectionPluginId";
-    public static final String PARAM_BADGECOLLECTION_BADGE_FILE = "badgeCollectionBadgeFile";
+    public static final String PARAM_BADGECOLLECTION_ID = "badgecollectionId";
+    public static final String PARAM_BADGECOLLECTION_PLUGIN_ID = "badgecollectionpluginId";
+    public static final String PARAM_BADGECOLLECTION_BADGE_FILE = "badgecollectionbadgefile";
     
     
     /*views and services - services -*/
@@ -36,19 +36,21 @@ public interface IGameConstants {
     /*views and services - services - plugins*/
     public static final String SERVICE_PLUGINS_PATH = SERVICE_PATH + "/plugins";
     public static final String SERVICE_PLUGINS_POINT_PATH = SERVICE_PLUGINS_PATH + "/point";
-    public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PLUGINS_PATH + "/badgeCollection";
+    public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PLUGINS_PATH + "/badge-collection";
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_PATH + "/badge";
-    public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PLUGINS_PATH + "/leaderboardPoint";
+    public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PLUGINS_PATH + "/leaderboard-point";
+    /*views and services - services - applications*/
+    public static final String SERVICE_APPLICATIONS_PATH = SERVICE_PATH + "/applications";
     /*views and services - services - actions*/
     public static final String SERVICE_ACTION_PATH = SERVICE_PATH + "/action";
     public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_ACTION_PATH + "/param";
     /*views and services - services - ruleengine*/
-    public static final String SERVICE_RULEENGINE_PATH = SERVICE_PATH + "/ruleEngine";
+    public static final String SERVICE_RULEENGINE_PATH = SERVICE_PATH + "/rule-engine";
      /*views and services - services - ruleengine - ruletemplates*/
-    public static final String SERVICE_RULEENGINE_RULETEMPLATE_PATH = SERVICE_RULEENGINE_PATH + "/ruleTemplate";
+    public static final String SERVICE_RULEENGINE_RULETEMPLATE_PATH = SERVICE_RULEENGINE_PATH + "/rule-template";
     /*views and services - services - events*/
     public static final String SERVICE_EVENTS_PATH = SERVICE_PATH + "/events";
-    public static final String SERVICE_EVENTS_START_EVENT_PATH = SERVICE_EVENTS_PATH + "/startEvent";
+    public static final String SERVICE_EVENTS_START_EVENT_PATH = SERVICE_EVENTS_PATH + "/start-event";
     
     
     public static final String VIEW_PAGE_EXTENSION = "htm";

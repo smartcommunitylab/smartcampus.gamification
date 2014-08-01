@@ -12,41 +12,20 @@ import eu.trentorise.game.action.response.ParamResponse;
 import eu.trentorise.game.action.service.MockActionManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 
 /**
  *
  * @author Luca Piras
  */
-public class ActionControllerTest {
+public class ActionControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_ACTION_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-    
-    public ActionControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
     
     /**
      * Test of testGetExternalActions method, of class ActionController.
@@ -54,10 +33,9 @@ public class ActionControllerTest {
      */
     @Test
     public void testGetExternalActions() throws Exception {
-        MockActionManager mock = new MockActionManager();
+        MockActionManager mock = MockActionManager.createInstance();
         
-        
-        Application app = mock.createApplication();
+        Application app = mock.getManager().createViaggiaRovereto();
         List<ExternalAction> expectedElements = mock.createActions();
         this.executeTestGetExternalActions(app, expectedElements);
     }
@@ -78,6 +56,7 @@ public class ActionControllerTest {
         
         ExternalActionResponse response = helper.executeTest("testGetExternalActions",
                                                      BASE_RELATIVE_URL + "/getExternalActions" + FINAL_PART_RELATIVE_URL,
+                                                     HttpMethod.POST,
                                                      ExternalActionResponse.class, 
                                                      jsonRequest);
         
@@ -110,8 +89,7 @@ public class ActionControllerTest {
      */
     @Test
     public void testGetActionParams() throws Exception {
-        MockActionManager mock = new MockActionManager();
-        
+        MockActionManager mock = MockActionManager.createInstance();
         
         Action action = mock.createExternalAction();
         List<Param> expectedElements = mock.createElements();
@@ -132,6 +110,7 @@ public class ActionControllerTest {
         
         ParamResponse response = helper.executeTest("testGetActionParams",
                                                     BASE_RELATIVE_URL + "/getActionParams" + FINAL_PART_RELATIVE_URL,
+                                                    HttpMethod.POST,
                                                     ParamResponse.class, 
                                                     jsonRequest);
         

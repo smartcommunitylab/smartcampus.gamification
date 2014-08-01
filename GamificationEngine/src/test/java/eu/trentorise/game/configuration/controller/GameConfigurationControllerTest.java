@@ -1,23 +1,20 @@
 package eu.trentorise.game.configuration.controller;;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.response.GameResponse;
-import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 
-import static junit.framework.TestCase.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 
 /**
  *
  * @author Luca Piras
  */
-public class GameConfigurationControllerTest {
+public class GameConfigurationControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAME_CONFIGURATION;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;

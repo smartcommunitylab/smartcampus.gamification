@@ -10,9 +10,12 @@ import eu.trentorise.game.action.model.Param;
 import eu.trentorise.game.action.model.ParamType;
 import eu.trentorise.game.action.response.ExternalActionResponse;
 import eu.trentorise.game.action.response.ParamResponse;
+import eu.trentorise.game.application.service.MockApplicationManager;
 import eu.trentorise.game.response.MockResponder;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,6 +25,14 @@ import org.springframework.stereotype.Service;
 @Service("mockActionManager")
 public class MockActionManager extends MockResponder implements IActionManager {
 
+    public static MockActionManager createInstance() {
+        MockApplicationManager mockApplicationManager = MockApplicationManager.createInstance();
+        MockActionManager mock = new MockActionManager();
+        mock.setManager(mockApplicationManager);
+        
+        return mock;
+    }
+    
     @Override
     public ExternalActionResponse getExternalActions(IExternalActionContainer container) throws Exception {
         return this.makeExternalActionResponse(this.createActions());
@@ -48,7 +59,7 @@ public class MockActionManager extends MockResponder implements IActionManager {
     public List<ExternalAction> createActions() {
         List<ExternalAction> list = new ArrayList<>();
         
-        Application application = this.createApplication();
+        Application application = manager.createViaggiaRovereto();
         
         list.add(this.createAction(application, 1, "BusDelayReporting", "The user has reported the delay of a bus"));
         list.add(this.createAction(application, 2, "BusServiceRating", "The user has rated the bus service quality"));
@@ -59,12 +70,6 @@ public class MockActionManager extends MockResponder implements IActionManager {
         list.add(this.createAction(application, 7, "BusUsage", "The user has used a bus"));
         
         return list;
-    }
-    
-    public Application createApplication() {
-        Application app = new Application();
-        app.setId(0);
-        return app;
     }
     
     protected ExternalAction createAction(Application application, Integer id, 
@@ -90,7 +95,7 @@ public class MockActionManager extends MockResponder implements IActionManager {
     }
     
     protected ExternalAction createItineratySavingExternalAction() {
-        return this.createAction(this.createApplication(), 4, "ItenerarySaving", "The user has saved an interary");
+        return this.createAction(manager.createViaggiaRovereto(), 4, "ItenerarySaving", "The user has saved an interary");
     }
     
     public Action createItineratySavingAction() {
@@ -131,5 +136,17 @@ public class MockActionManager extends MockResponder implements IActionManager {
         response.setActions(list);
         
         return ((ExternalActionResponse) this.buildPositiveResponse(response));
-    }   
+    }
+
+    public MockApplicationManager getManager() {
+        return manager;
+    }
+    
+    public void setManager(MockApplicationManager manager) {
+        this.manager = manager;
+    }
+    
+    @Qualifier("mockApplicationManager")
+    @Autowired
+    protected MockApplicationManager manager;
 }

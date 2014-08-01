@@ -9,33 +9,34 @@ import static junit.framework.TestCase.assertEquals;
 /**
  *
  * @author Luca Piras
+ * @param <R>
  */
-public class RestTemplateJsonServiceTestHelper<R> {
+public class RestTemplateJsonServiceTestHelper<R> implements IServiceTestConfiguration {
     
-    public static final boolean ACTIVE = true;
-    public static final String URL_ABSOLUTE = "http://localhost:8080/GamificationEngine";
-
     protected boolean active;
     
     public RestTemplateJsonServiceTestHelper(boolean active) {
         this.active = active;
     }
     
-    public R executeTest(String testName, String relativeUrl, 
+    public R executeTest(String testName, String relativeUrl, HttpMethod method, 
                          Class<R> responseEntityClass, String requestContent) throws Exception {
         
         R responseContent = null;
         
-        if (this.ACTIVE && this.active) {
+        if (RestTemplateJsonServiceTestHelper.SERVICE_TEST_ACTIVATED && 
+            this.active) {
+            
             System.out.println(testName);
 
             RestTemplateJsonCaller<R> caller = new RestTemplateJsonCaller<>();
-            ResponseEntity<R> entity = caller.call(URL_ABSOLUTE + relativeUrl,
+            ResponseEntity<R> entity = caller.call(RestTemplateJsonServiceTestHelper.URL_ABSOLUTE + relativeUrl,
+                                                   method,
                                                    requestContent, 
                                                    responseEntityClass);
 
             assertEquals(HttpStatus.OK, entity.getStatusCode());
-            //assertTrue(path.startsWith("/GamificationEngine/game/services/gameProfile/activateDeactivatePlugin.service"));
+            //assertTrue(path.startsWith("/gamificationengine/game/services/gameProfile/activateDeactivatePlugin.service"));
             responseContent = entity.getBody();
 
             System.out.println ("The result is: " + responseContent.toString());

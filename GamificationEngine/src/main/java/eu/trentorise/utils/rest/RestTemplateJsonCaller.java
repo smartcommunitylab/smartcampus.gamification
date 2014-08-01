@@ -12,7 +12,8 @@ import java.util.Arrays;
  */
 public class RestTemplateJsonCaller<R> {
     
-    public ResponseEntity<R> call(String url, String requestContent, 
+    public ResponseEntity<R> call(String url, HttpMethod method, 
+                                  String requestContent, 
                                   Class<R> responseEntityClass) throws Exception {
         
         HttpHeaders headers = new HttpHeaders();
@@ -23,7 +24,14 @@ public class RestTemplateJsonCaller<R> {
 
         HttpEntity<String> requestEntity = new HttpEntity<>(requestContent,
                                                             headers);
-
-        return template.postForEntity(url, requestEntity, responseEntityClass);
+        
+        ResponseEntity<R> responseEntity;
+        if (0 == HttpMethod.POST.compareTo(method)) {
+            responseEntity = template.postForEntity(url, requestEntity, responseEntityClass);
+        } else {
+            responseEntity = template.getForEntity(url, responseEntityClass);
+        }
+        
+        return responseEntity;
     }
 }

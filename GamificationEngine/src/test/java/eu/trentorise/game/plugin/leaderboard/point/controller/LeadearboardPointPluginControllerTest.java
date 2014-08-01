@@ -9,40 +9,19 @@ import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 
 /**
  *
  * @author Luca Piras
  */
-public class LeadearboardPointPluginControllerTest {
+public class LeadearboardPointPluginControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_LEADERBOARDPOINT_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-    
-    public LeadearboardPointPluginControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of setCustomizedGamificationPlugin method, of class LeaderboardPointPluginController.
@@ -68,6 +47,7 @@ public class LeadearboardPointPluginControllerTest {
         
         CustomizedGamificationPluginResponse response = helper.executeTest("testLeaderboardPointSetCustomizedGamificationPlugin", 
                                                                            BASE_RELATIVE_URL + "/setCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
+                                                                           HttpMethod.POST,
                                                                            CustomizedGamificationPluginResponse.class, 
                                                                            jsonRequest);
         

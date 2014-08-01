@@ -9,9 +9,6 @@ import static org.junit.Assert.*;
  */
 public class BadgeTest {
     
-    public BadgeTest() {
-    }
-    
     /**
      * Test of getNecessaryPoints method, of class Badge.
      */

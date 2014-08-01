@@ -9,18 +9,20 @@ import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 
 /**
  *
  * @author Luca Piras
  */
-public class PointPluginControllerTest {
+public class PointPluginControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_POINT_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
@@ -68,6 +70,7 @@ public class PointPluginControllerTest {
         
         CustomizedGamificationPluginResponse response = helper.executeTest("testPointSetCustomizedGamificationPlugin", 
                                                                            BASE_RELATIVE_URL + "/setCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
+                                                                           HttpMethod.POST,
                                                                            CustomizedGamificationPluginResponse.class, 
                                                                            jsonRequest);
         

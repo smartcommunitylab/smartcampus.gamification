@@ -13,41 +13,20 @@ import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 
 /**
  *
  * @author Luca Piras
  */
-public class BadgeCollectionPluginControllerTest {
+public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_BADGECOLLECTION_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-    
-    public BadgeCollectionPluginControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of setCustomizedGamificationPlugin method, of class BadgeCollectionPluginController.
@@ -73,6 +52,7 @@ public class BadgeCollectionPluginControllerTest {
         
         CustomizedGamificationPluginResponse response = helper.executeTest("testBadgeCollectionSetCustomizedGamificationPlugin", 
                                                                            BASE_RELATIVE_URL + "/setCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
+                                                                           HttpMethod.POST,
                                                                            CustomizedGamificationPluginResponse.class, 
                                                                            jsonRequest);
         
@@ -126,6 +106,7 @@ public class BadgeCollectionPluginControllerTest {
         
         BadgeListResponse response = helper.executeTest("testGetBadges",
                                                         BASE_RELATIVE_URL + "/getBadges" + FINAL_PART_RELATIVE_URL,
+                                                        HttpMethod.POST,
                                                         BadgeListResponse.class, 
                                                         jsonRequest);
         

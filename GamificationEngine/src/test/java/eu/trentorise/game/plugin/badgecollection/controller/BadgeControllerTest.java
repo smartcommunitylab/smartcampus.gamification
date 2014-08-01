@@ -7,6 +7,7 @@ import eu.trentorise.game.plugin.badgecollection.response.BadgeResponse;
 import eu.trentorise.game.plugin.badgecollection.service.MockBadgeCollectionPluginManager;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.servicetest.HttpMultipartPostCallerServiceTestHelper;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.message.BasicNameValuePair;
@@ -23,30 +24,10 @@ import org.junit.Test;
  *
  * @author Luca Piras
  */
-public class BadgeControllerTest {
+public class BadgeControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-    
-    public BadgeControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
-
     
     //TODO: nel seguente test viene testato tutto tranne l'upload effettivo del
     //file; da implementare anche quel test. Col codice html di seguito, al

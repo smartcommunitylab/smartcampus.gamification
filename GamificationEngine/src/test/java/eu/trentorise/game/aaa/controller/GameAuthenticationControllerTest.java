@@ -3,39 +3,18 @@ package eu.trentorise.game.aaa.controller;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import org.junit.Test;
 import static junit.framework.TestCase.assertTrue;
+import org.springframework.http.HttpMethod;
 
 /**
  *
  * @author Luca Piras
  */
-public class GameAuthenticationControllerTest {
+public class GameAuthenticationControllerTest extends SkipServiceTestHelper {
     
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-    
-    public GameAuthenticationControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of authenticate method, of class GameAuthenticationController.
@@ -47,6 +26,7 @@ public class GameAuthenticationControllerTest {
         
         GameResponse response = helper.executeTest("authenticate", 
                                                    IGameConstants.SERVICE_GAME_AAA_PATH + "/login" + FINAL_PART_RELATIVE_URL,
+                                                   HttpMethod.POST,
                                                    GameResponse.class,
                                                    "{\"username\":\"username\",\"password\":\"password\"}");
         

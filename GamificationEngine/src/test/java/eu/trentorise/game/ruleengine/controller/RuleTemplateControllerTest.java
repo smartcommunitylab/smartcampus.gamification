@@ -3,6 +3,7 @@ package eu.trentorise.game.ruleengine.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.service.MockActionManager;
+import eu.trentorise.game.application.service.MockApplicationManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.GamificationPlugin;
 import eu.trentorise.game.plugin.service.MockGamePluginManager;
@@ -20,41 +21,20 @@ import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 
 /**
  *
  * @author Luca Piras
  */
-public class RuleTemplateControllerTest {
+public class RuleTemplateControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_RULEENGINE_RULETEMPLATE_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-    
-    public RuleTemplateControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
     
     
     /**
@@ -100,6 +80,7 @@ public class RuleTemplateControllerTest {
         //activated)
         RuleTemplateResponse response = helper.executeTest("testGetRuleTemplates",
                                                            BASE_RELATIVE_URL + "/getRuleTemplates" + FINAL_PART_RELATIVE_URL,
+                                                           HttpMethod.POST,
                                                            RuleTemplateResponse.class, 
                                                            jsonRequest);
         
@@ -135,7 +116,9 @@ public class RuleTemplateControllerTest {
     @Test
     public void testGetOperatorsSupported() throws Exception {
         MockRuleTemplateManager mock = new MockRuleTemplateManager();
+        MockApplicationManager applicationManagerMock = new MockApplicationManager();
         MockActionManager actionManagerMock = new MockActionManager();
+        actionManagerMock.setManager(applicationManagerMock);
         
         BasicParam createBikeKmParam = actionManagerMock.createBikeKmParam();
         
@@ -164,6 +147,7 @@ public class RuleTemplateControllerTest {
         
         OperatorResponse response = helper.executeTest("testGetOperatorsSupported",
                                                        BASE_RELATIVE_URL + "/getOperatorsSupported" + FINAL_PART_RELATIVE_URL,
+                                                       HttpMethod.POST,
                                                        OperatorResponse.class, 
                                                        jsonRequest);
         
@@ -197,6 +181,7 @@ public class RuleTemplateControllerTest {
         
         OperatorResponse response = helper.executeTest("testGetPluginOperatorsSupported",
                                                        BASE_RELATIVE_URL + "/getPluginOperatorsSupported" + FINAL_PART_RELATIVE_URL,
+                                                       HttpMethod.POST,
                                                        OperatorResponse.class, 
                                                        jsonRequest);
         
@@ -254,6 +239,7 @@ public class RuleTemplateControllerTest {
         
         RuleSettingResponse response = helper.executeTest("testSetRule",
                                                    BASE_RELATIVE_URL + "/setRule" + FINAL_PART_RELATIVE_URL,
+                                                   HttpMethod.POST,
                                                    RuleSettingResponse.class, 
                                                    jsonRequest);
         

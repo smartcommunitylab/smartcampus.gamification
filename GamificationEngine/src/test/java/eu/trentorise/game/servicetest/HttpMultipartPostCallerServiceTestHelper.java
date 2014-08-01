@@ -9,12 +9,7 @@ import org.apache.http.message.BasicNameValuePair;
  *
  * @author Luca Piras
  */
-public class HttpMultipartPostCallerServiceTestHelper {
-    
-    //TODO: improve this one, maybe creating a common configuration interface
-    //where to centralize the ACTIVE parameter
-    public static final boolean ACTIVE = RestTemplateJsonServiceTestHelper.ACTIVE;
-    public static final String URL_ABSOLUTE = RestTemplateJsonServiceTestHelper.URL_ABSOLUTE;
+public class HttpMultipartPostCallerServiceTestHelper implements IServiceTestConfiguration {
 
     protected boolean active;
     
@@ -28,7 +23,7 @@ public class HttpMultipartPostCallerServiceTestHelper {
         
         String response = null;
         
-        if (this.ACTIVE && this.active) {
+        if (SERVICE_TEST_ACTIVATED && this.active) {
             System.out.println(testName);
 
             HttpMultipartPostCaller caller = new HttpMultipartPostCaller();

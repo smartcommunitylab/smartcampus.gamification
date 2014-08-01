@@ -11,46 +11,25 @@ import eu.trentorise.game.plugin.service.MockGamePluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
+import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 
 
 /**
  *
  * @author Luca Piras
  */
-public class GamePluginControllerTest {
+public class GamePluginControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-    
-    public GamePluginControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of getGamificationPlugins method, of class GamePluginController.
@@ -62,6 +41,7 @@ public class GamePluginControllerTest {
         
         GamificationPluginResponse response = helper.executeTest("testGetGamificationPlugins", 
                                                   BASE_RELATIVE_URL + "/getGamificationPlugins" + FINAL_PART_RELATIVE_URL,
+                                                  HttpMethod.POST,
                                                   GamificationPluginResponse.class, 
                                                   "");
         
@@ -134,6 +114,7 @@ public class GamePluginControllerTest {
         
         GameResponse response = helper.executeTest("testActivateDeactivateCustomizedGamificationPlugin", 
                                                    BASE_RELATIVE_URL + "/activateDeactivateCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
+                                                   HttpMethod.POST,
                                                    GameResponse.class, 
                                                    jsonRequest);
         
@@ -163,6 +144,7 @@ public class GamePluginControllerTest {
         
         return helper.executeTest("testGetCustomizedGamificationPlugins", 
                                   BASE_RELATIVE_URL + "/getCustomizedGamificationPlugins" + FINAL_PART_RELATIVE_URL,
+                                  HttpMethod.POST,
                                   CustomizedGamificationPluginListResponse.class, 
                                   this.makeRequest(gamificationPlugin));
     }

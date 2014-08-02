@@ -1,6 +1,7 @@
 package eu.trentorise.game.application.service;
 
-import eu.trentorise.game.application.response.ApplicationResponse;
+import eu.trentorise.game.action.model.Application;
+import java.util.Collection;
 
 /**
  *
@@ -8,5 +9,7 @@ import eu.trentorise.game.application.response.ApplicationResponse;
  */
 public interface IApplicationManager {
 
-    public ApplicationResponse getApplications();
+    public Collection<Application> findApplications() throws Exception;
+
+    public Application findApplicationById(Integer appId) throws Exception;
 }

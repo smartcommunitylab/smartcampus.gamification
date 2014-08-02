@@ -2,9 +2,10 @@ package eu.trentorise.game.servicetest;
 
 
 import eu.trentorise.utils.rest.RestTemplateJsonCaller;
-import org.springframework.http.*;
 
 import static junit.framework.TestCase.assertEquals;
+import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  *
@@ -22,6 +23,17 @@ public class RestTemplateJsonServiceTestHelper<R> implements IServiceTestConfigu
     public R executeTest(String testName, String relativeUrl, HttpMethod method, 
                          Class<R> responseEntityClass, String requestContent) throws Exception {
         
+        return this.executeTest(testName, relativeUrl, method, responseEntityClass, requestContent, null);
+    }
+    
+    public R executeTest(String testName, String relativeUrl, HttpMethod method, 
+                         Class<R> responseEntityClass, String requestContent, 
+                         HttpStatus expectedHttpStatus) throws Exception {
+        
+        if (null == expectedHttpStatus) {
+            expectedHttpStatus = HttpStatus.OK;
+        }
+        
         R responseContent = null;
         
         if (RestTemplateJsonServiceTestHelper.SERVICE_TEST_ACTIVATED && 
@@ -30,17 +42,24 @@ public class RestTemplateJsonServiceTestHelper<R> implements IServiceTestConfigu
             System.out.println(testName);
 
             RestTemplateJsonCaller<R> caller = new RestTemplateJsonCaller<>();
-            ResponseEntity<R> entity = caller.call(RestTemplateJsonServiceTestHelper.URL_ABSOLUTE + relativeUrl,
-                                                   method,
-                                                   requestContent, 
-                                                   responseEntityClass);
+            try {
+                ResponseEntity<R> entity = caller.call(RestTemplateJsonServiceTestHelper.URL_ABSOLUTE + relativeUrl,
+                                                       method,
+                                                       requestContent, 
+                                                       responseEntityClass);
 
-            assertEquals(HttpStatus.OK, entity.getStatusCode());
-            //assertTrue(path.startsWith("/gamificationengine/game/services/gameProfile/activateDeactivatePlugin.service"));
-            responseContent = entity.getBody();
+                HttpStatus actualStatusCode = entity.getStatusCode();
+                assertEquals(expectedHttpStatus, actualStatusCode);
+                //assertTrue(path.startsWith("/gamificationengine/game/services/gameProfile/activateDeactivatePlugin.service"));
+                if (0 == actualStatusCode.compareTo(HttpStatus.OK)) {
+                    responseContent = entity.getBody();
 
-            System.out.println ("The result is: " + responseContent.toString());
-            System.out.println ("The Location is " + entity.getHeaders().getLocation());
+                    System.out.println ("The result is: " + responseContent.toString());
+                    System.out.println ("The Location is " + entity.getHeaders().getLocation());
+                }
+            } catch(HttpClientErrorException ex) {
+                assertEquals(expectedHttpStatus, ex.getStatusCode());
+            }
         }
         
         return responseContent;

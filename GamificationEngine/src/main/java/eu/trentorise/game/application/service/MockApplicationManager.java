@@ -1,10 +1,13 @@
 package eu.trentorise.game.application.service;
 
 import eu.trentorise.game.action.model.Application;
-import eu.trentorise.game.application.response.ApplicationResponse;
 import eu.trentorise.game.response.MockResponder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("mockApplicationManager")
@@ -15,11 +18,27 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
     }
 
     @Override
-    public ApplicationResponse getApplications() {
-        return this.makeResponse(this.createElements());
+    public Collection<Application> findApplications() throws Exception {
+        return this.createElements();
     }
     
-    public List<Application> createElements() {
+    @Override
+    public Application findApplicationById(Integer appId) throws Exception {
+        Application returnValue = null;
+        
+        Application app = new Application();
+        app.setId(appId);
+        
+        Application expectedApp = this.createViaggiaRovereto();
+        
+        if (0 == comparator.compare(app, expectedApp)) {
+            returnValue = expectedApp;
+        }
+        
+        return returnValue;
+    }
+    
+    public Collection<Application> createElements() {
         List<Application> elements = new ArrayList<>();
         
         elements.add(this.createViaggiaRovereto());
@@ -44,10 +63,7 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
         return application;
     }
     
-    protected ApplicationResponse makeResponse(List<Application> list) {
-        ApplicationResponse response = new ApplicationResponse();
-        response.setApplications(list);
-        
-        return ((ApplicationResponse) this.buildPositiveResponse(response));
-    }
+    @Qualifier("applicationKeyComparator")
+    @Autowired
+    protected Comparator<Application> comparator;
 }

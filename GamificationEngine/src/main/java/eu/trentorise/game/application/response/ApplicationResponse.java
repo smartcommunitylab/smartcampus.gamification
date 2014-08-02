@@ -1,27 +1,25 @@
 package eu.trentorise.game.application.response;
 
 import eu.trentorise.game.action.model.Application;
-import eu.trentorise.game.response.GameResponse;
-import java.util.List;
 
 /**
  *
  * @author Luca Piras
  */
-public class ApplicationResponse extends GameResponse {
+public class ApplicationResponse {
     
-    protected List<Application> applications;
+    protected Application application;
 
-    public List<Application> getApplications() {
-        return applications;
+    public Application getApplication() {
+        return application;
     }
 
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
+    public void setApplication(Application application) {
+        this.application = application;
     }
 
     @Override
     public String toString() {
-        return "ApplicationResponse{" + "applications=" + applications + '}';
+        return "ApplicationResponse{" + "application=" + application + '}';
     }
 }

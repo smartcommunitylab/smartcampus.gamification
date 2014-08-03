@@ -1,7 +1,8 @@
 package eu.trentorise.game.application.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.action.model.Application;
-import eu.trentorise.game.application.controller.comparator.ApplicationKeyComparator;
+import eu.trentorise.game.application.comparator.ApplicationKeyComparator;
 import eu.trentorise.game.application.response.ApplicationCollectionResponse;
 import eu.trentorise.game.application.response.ApplicationResponse;
 import eu.trentorise.game.application.service.MockApplicationManager;
@@ -23,21 +24,44 @@ public class ApplicationControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_APPLICATIONS_PATH;
     
-    /**
-     * Test of findApplications method, of class ApplicationController.
-     * @throws java.lang.Exception
-     */
     @Test
-    public void testFindApplications() throws Exception {
-        Collection<Application> expectedElements = MockApplicationManager.createInstance().createElements();
-        this.executeTestFindApplications((List<Application>) expectedElements);
+    public void testCreateApplication() throws Exception {
+        Application expectedElement = MockApplicationManager.createInstance().createViaggiaRovereto();
+        Application requestElement = MockApplicationManager.createInstance().createViaggiaRovereto();
+        requestElement.setId(null);
+        this.executeTestCreateApplication(requestElement, expectedElement,
+                                          HttpStatus.CREATED);
     }
     
-    protected void executeTestFindApplications(List<Application> expectedElements) throws Exception {
+    protected void executeTestCreateApplication(Application requestElement,
+                                                Application expectedElement, 
+                                                HttpStatus expectedStatus) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        ObjectMapper mapper = new ObjectMapper();
+        
+        String jsonRequest = mapper.writeValueAsString(requestElement);
+        System.out.println(jsonRequest);
+        
+        helper.executeTest("ApplicationControllerTest - testCreateApplication",
+                           BASE_RELATIVE_URL,
+                           HttpMethod.POST,
+                           Void.class, 
+                           jsonRequest,
+                           expectedStatus);
+    }
+    
+    @Test
+    public void testReadApplications() throws Exception {
+        Collection<Application> expectedElements = MockApplicationManager.createInstance().createElements();
+        this.executeTestReadApplications((List<Application>) expectedElements);
+    }
+    
+    protected void executeTestReadApplications(List<Application> expectedElements) throws Exception {
         
         RestTemplateJsonServiceTestHelper<ApplicationCollectionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
-        ApplicationCollectionResponse response = helper.executeTest("ApplicationControllerTest - testFindApplications",
+        ApplicationCollectionResponse response = helper.executeTest("ApplicationControllerTest - testReadApplications",
                                                                     BASE_RELATIVE_URL,
                                                                     HttpMethod.GET,
                                                                     ApplicationCollectionResponse.class, 
@@ -59,26 +83,22 @@ public class ApplicationControllerTest extends SkipServiceTestHelper {
             }
         }
     }
-    
-    /**
-     * Test of findApplicationById method, of class ApplicationController.
-     * @throws java.lang.Exception
-     */
+   
     @Test
-    public void testFindApplicationById() throws Exception {
+    public void testReadApplicationById() throws Exception {
         Application expectedElement = MockApplicationManager.createInstance().createViaggiaRovereto();
-        this.executeTestFindApplicationById(expectedElement, HttpStatus.OK);
+        this.executeTestReadApplicationById(expectedElement, HttpStatus.OK);
         
         expectedElement.setId(-1);
-        this.executeTestFindApplicationById(expectedElement, HttpStatus.NOT_FOUND);
+        this.executeTestReadApplicationById(expectedElement, HttpStatus.NOT_FOUND);
     }
     
-    protected void executeTestFindApplicationById(Application expectedElement, 
+    protected void executeTestReadApplicationById(Application expectedElement, 
                                                   HttpStatus expectedStatus) throws Exception {
         
         RestTemplateJsonServiceTestHelper<ApplicationResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
-        ApplicationResponse response = helper.executeTest("ApplicationControllerTest - testFindApplicationById",
+        ApplicationResponse response = helper.executeTest("ApplicationControllerTest - testReadApplicationById",
                                                           BASE_RELATIVE_URL + "/" + expectedElement.getId(),
                                                           HttpMethod.GET,
                                                           ApplicationResponse.class, 

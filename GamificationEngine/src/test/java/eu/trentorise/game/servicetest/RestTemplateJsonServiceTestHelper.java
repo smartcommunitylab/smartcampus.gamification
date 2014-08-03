@@ -51,11 +51,11 @@ public class RestTemplateJsonServiceTestHelper<R> implements IServiceTestConfigu
                 HttpStatus actualStatusCode = entity.getStatusCode();
                 assertEquals(expectedHttpStatus, actualStatusCode);
                 //assertTrue(path.startsWith("/gamificationengine/game/services/gameProfile/activateDeactivatePlugin.service"));
+                System.out.println ("The Location is " + entity.getHeaders().getLocation());
                 if (0 == actualStatusCode.compareTo(HttpStatus.OK)) {
                     responseContent = entity.getBody();
 
                     System.out.println ("The result is: " + responseContent.toString());
-                    System.out.println ("The Location is " + entity.getHeaders().getLocation());
                 }
             } catch(HttpClientErrorException ex) {
                 assertEquals(expectedHttpStatus, ex.getStatusCode());

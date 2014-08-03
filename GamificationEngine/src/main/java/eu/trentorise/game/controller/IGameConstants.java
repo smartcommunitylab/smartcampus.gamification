@@ -41,6 +41,8 @@ public interface IGameConstants {
     public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PLUGINS_PATH + "/leaderboard-point";
     /*views and services - services - applications*/
     public static final String SERVICE_APPLICATIONS_PATH = SERVICE_PATH + "/applications";
+    public static final String SERVICE_APPLICATIONS_SINGLE_PATH_PARAM = "appId";
+    public static final String SERVICE_APPLICATIONS_SINGLE_PATH = SERVICE_APPLICATIONS_PATH + "/{" + SERVICE_APPLICATIONS_SINGLE_PATH_PARAM + "}";
     /*views and services - services - actions*/
     public static final String SERVICE_ACTION_PATH = SERVICE_PATH + "/action";
     public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_ACTION_PATH + "/param";

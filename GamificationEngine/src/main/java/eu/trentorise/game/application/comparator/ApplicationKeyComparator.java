@@ -1,4 +1,4 @@
-package eu.trentorise.game.application.controller.comparator;
+package eu.trentorise.game.application.comparator;
 
 import eu.trentorise.game.action.model.Application;
 import java.util.Comparator;

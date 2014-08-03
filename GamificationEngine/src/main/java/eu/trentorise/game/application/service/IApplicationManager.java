@@ -9,7 +9,7 @@ import java.util.Collection;
  */
 public interface IApplicationManager {
 
-    public Collection<Application> findApplications() throws Exception;
+    public Collection<Application> readApplications() throws Exception;
 
-    public Application findApplicationById(Integer appId) throws Exception;
+    public Application readApplicationById(Integer appId) throws Exception;
 }

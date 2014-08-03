@@ -2,7 +2,7 @@ package eu.trentorise.game.application.service;
 
 import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.response.MockResponder;
-import eu.trentorise.utils.rest.IResourceManager;
+import eu.trentorise.utils.rest.ICrudManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -12,29 +12,37 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("mockApplicationManager")
-public class MockApplicationManager extends MockResponder implements IApplicationManager, IResourceManager<Application, Object, Integer> {
+public class MockApplicationManager extends MockResponder implements IApplicationManager, ICrudManager<Application, Object, Application> {
 
     public static MockApplicationManager createInstance() {
         return new MockApplicationManager();
     }
 
     @Override
-    public Collection<Application> findCollection(Object container) throws Exception {
-        return this.findApplications();
-    }
-
-    @Override
-    public Application findSingleElement(Integer container) throws Exception {
-        return this.findApplicationById(container);
+    public Application createSingleElement(Application containerWithForeignIds) throws Exception {
+        //TODO: return null or throw Exception if it si not possible to create a
+        //new one
+        containerWithForeignIds.setId(0);
+        return containerWithForeignIds;
     }
     
     @Override
-    public Collection<Application> findApplications() throws Exception {
+    public Collection<Application> readCollection(Object container) throws Exception {
+        return this.readApplications();
+    }
+
+    @Override
+    public Application readSingleElement(Application container) throws Exception {
+        return this.readApplicationById(container.getId());
+    }
+    
+    @Override
+    public Collection<Application> readApplications() throws Exception {
         return this.createElements();
     }
     
     @Override
-    public Application findApplicationById(Integer appId) throws Exception {
+    public Application readApplicationById(Integer appId) throws Exception {
         Application returnValue = null;
         
         Application app = new Application();

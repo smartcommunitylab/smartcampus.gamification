@@ -2,6 +2,7 @@ package eu.trentorise.game.application.service;
 
 import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.response.MockResponder;
+import eu.trentorise.utils.rest.IResourceManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,12 +12,22 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("mockApplicationManager")
-public class MockApplicationManager extends MockResponder implements IApplicationManager {
+public class MockApplicationManager extends MockResponder implements IApplicationManager, IResourceManager<Application, Object, Integer> {
 
     public static MockApplicationManager createInstance() {
         return new MockApplicationManager();
     }
 
+    @Override
+    public Collection<Application> findCollection(Object container) throws Exception {
+        return this.findApplications();
+    }
+
+    @Override
+    public Application findSingleElement(Integer container) throws Exception {
+        return this.findApplicationById(container);
+    }
+    
     @Override
     public Collection<Application> findApplications() throws Exception {
         return this.createElements();

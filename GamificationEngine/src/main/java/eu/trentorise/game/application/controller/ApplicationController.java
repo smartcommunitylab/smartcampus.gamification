@@ -3,12 +3,11 @@ package eu.trentorise.game.application.controller;
 import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.application.response.ApplicationCollectionResponse;
 import eu.trentorise.game.application.response.ApplicationResponse;
-import eu.trentorise.game.application.service.IApplicationManager;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.utils.rest.AbstractRestResourceController;
-import java.util.ArrayList;
+import eu.trentorise.utils.rest.IResourceManager;
+import eu.trentorise.utils.rest.RestResourceHelper;
 import java.util.Collection;
-import java.util.List;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,36 +23,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller("applicationController")
 @RequestMapping(IGameConstants.SERVICE_APPLICATIONS_PATH)
-public class ApplicationController extends AbstractRestResourceController<Application> {
+public class ApplicationController {
     
-    public ApplicationController() {
-        super(LoggerFactory.getLogger(ApplicationController.class.getName()));
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationController.class.getName());
     
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
     
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody ApplicationCollectionResponse findApplications() {
-        Collection<Application> result = super.findCollection(null);
-        
+        Collection<Application> result = restResourceHelper.findCollection(null, 
+                                                                           manager,
+                                                                           logger);
+                                                
         ApplicationCollectionResponse response = new ApplicationCollectionResponse();
         response.setApplications(result);
         
         return response;
     }
     
-    @Override
-    protected Collection<Application> serviceFindCollection(List<String> ids) throws Exception {
-        return manager.findApplications();
-    }
-    
     @RequestMapping(value = "/{appId}", method = RequestMethod.GET)
     public @ResponseBody ApplicationResponse findApplicationById(@PathVariable Integer appId) {
-        List<String> ids = new ArrayList<>();
-        ids.add(appId.toString());
-        
-        Application result = super.findSingleElement(ids);
+        Application result = restResourceHelper.findSingleElement(appId, 
+                                                                  manager,
+                                                                  logger);
         
         ApplicationResponse response = new ApplicationResponse();
         response.setApplication(result);
@@ -61,13 +54,13 @@ public class ApplicationController extends AbstractRestResourceController<Applic
         return response;
     }
     
-    @Override
-    protected Application serviceFindSingleElement(List<String> ids) throws Exception {
-        return manager.findApplicationById(new Integer(ids.get(0)));
-    }
-    
     
     @Qualifier("mockApplicationManager")
     @Autowired
-    protected IApplicationManager manager;
+    protected IResourceManager<Application, Object, Integer> manager;
+    
+    
+    @Qualifier("applicationRestResourceHelper")
+    @Autowired
+    protected RestResourceHelper<Application, Object, Integer> restResourceHelper;
 }

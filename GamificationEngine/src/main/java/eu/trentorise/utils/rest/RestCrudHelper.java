@@ -39,22 +39,6 @@ public class RestCrudHelper<T, CC, C> {
         return result;
     }
     
-    //this one returns the entity
-    /*public ResponseEntity<T> makeCreationResponse(T result) {
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
-    }*/
-    
-    public ResponseEntity<Void> makeCreationResponse(UriComponentsBuilder builder, 
-                                                     String absolutePathWithIds, 
-                                                     Map<String, Object> uriVariables) {
-        
-        UriComponents uriComponents = builder.path(absolutePathWithIds).buildAndExpand(uriVariables);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(uriComponents.toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
-    
     
     //READ
     public Collection<T> readCollection(CC containerWithIds,
@@ -89,6 +73,60 @@ public class RestCrudHelper<T, CC, C> {
         }
         
         return result;
+    }
+    
+    
+    //UPDATE
+    public T updateSingleElement(C containerWithIds,
+                                 ICrudManager<T, CC, C> manager,
+                                 Logger logger) {
+        
+        T result = null;
+        Exception exception = null;
+        try {
+            result = manager.updateSingleElement(containerWithIds);
+        } catch (Exception ex) {
+            exception = ex;
+        } finally {
+            restResultHelper.handleUpdateResult(result, exception, logger);
+        }
+        
+        return result;
+    }
+    
+    
+    //RESPONSE
+    //this one returns the entity
+    /*public ResponseEntity<T> makeCreationResponse(T result) {
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }*/
+    
+    public ResponseEntity<Void> makeCreationResponse(UriComponentsBuilder builder, 
+                                                     String absolutePathWithIds, 
+                                                     Map<String, Object> uriVariables) {
+        
+        return this.makeResponse(builder, absolutePathWithIds, uriVariables, 
+                                 HttpStatus.CREATED);
+    }
+    
+    public ResponseEntity<Void> makeUpdateResponse(UriComponentsBuilder builder, 
+                                                   String absolutePathWithIds, 
+                                                   Map<String, Object> uriVariables) {
+        
+        return this.makeResponse(builder, absolutePathWithIds, uriVariables, 
+                                 HttpStatus.NO_CONTENT);
+    }
+    
+    protected ResponseEntity<Void> makeResponse(UriComponentsBuilder builder, 
+                                                String absolutePathWithIds, 
+                                                Map<String, Object> uriVariables,
+                                                HttpStatus httpStatus) {
+        
+        UriComponents uriComponents = builder.path(absolutePathWithIds).buildAndExpand(uriVariables);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(uriComponents.toUri());
+        return new ResponseEntity<>(headers, httpStatus);
     }
     
     

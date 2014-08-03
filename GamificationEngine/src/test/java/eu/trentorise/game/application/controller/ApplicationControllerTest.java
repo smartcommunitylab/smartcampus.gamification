@@ -26,15 +26,12 @@ public class ApplicationControllerTest extends SkipServiceTestHelper {
     
     @Test
     public void testCreateApplication() throws Exception {
-        Application expectedElement = MockApplicationManager.createInstance().createViaggiaRovereto();
         Application requestElement = MockApplicationManager.createInstance().createViaggiaRovereto();
         requestElement.setId(null);
-        this.executeTestCreateApplication(requestElement, expectedElement,
-                                          HttpStatus.CREATED);
+        this.executeTestCreateApplication(requestElement, HttpStatus.CREATED);
     }
     
-    protected void executeTestCreateApplication(Application requestElement,
-                                                Application expectedElement, 
+    protected void executeTestCreateApplication(Application requestElement, 
                                                 HttpStatus expectedStatus) throws Exception {
         
         RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
@@ -111,5 +108,32 @@ public class ApplicationControllerTest extends SkipServiceTestHelper {
             assertNotNull(responseElement);
             assertEquals(0, (new ApplicationKeyComparator()).compare(expectedElement, responseElement));
         }
+    }
+    
+    @Test
+    public void testUpdateApplication() throws Exception {
+        Application requestElement = MockApplicationManager.createInstance().createViaggiaRovereto();
+        requestElement.setName("VIAGGIAROVERETO22222");
+        this.executeTestUpdateApplication(requestElement, HttpStatus.NO_CONTENT);
+        
+        requestElement.setId(-1);
+        this.executeTestUpdateApplication(requestElement, HttpStatus.NOT_FOUND);
+    }
+    
+    protected void executeTestUpdateApplication(Application requestElement, 
+                                                HttpStatus expectedStatus) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        ObjectMapper mapper = new ObjectMapper();
+        
+        String jsonRequest = mapper.writeValueAsString(requestElement);
+        System.out.println(jsonRequest);
+        
+        helper.executeTest("ApplicationControllerTest - testUpdateApplication",
+                           BASE_RELATIVE_URL + "/" + requestElement.getId(),
+                           HttpMethod.PUT,
+                           Void.class, 
+                           jsonRequest,
+                           expectedStatus);
     }
 }

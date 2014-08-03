@@ -18,14 +18,18 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
         return new MockApplicationManager();
     }
 
+    
+    //CREATE
     @Override
     public Application createSingleElement(Application containerWithForeignIds) throws Exception {
-        //TODO: return null or throw Exception if it si not possible to create a
+        //TODO: return null or throw Exception if it is not possible to create a
         //new one
         containerWithForeignIds.setId(0);
         return containerWithForeignIds;
     }
     
+    
+    //READ
     @Override
     public Collection<Application> readCollection(Object container) throws Exception {
         return this.readApplications();
@@ -49,13 +53,30 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
         app.setId(appId);
         
         Application expectedApp = this.createViaggiaRovereto();
-        
         if (0 == comparator.compare(app, expectedApp)) {
             returnValue = expectedApp;
         }
         
         return returnValue;
     }
+    
+    
+    //UPDATE
+    @Override
+    public Application updateSingleElement(Application containerWithForeignIds) throws Exception {
+        //TODO: return null or throw Exception if it is not possible to update a
+        //new one
+        
+        Application returnValue = null;
+        
+        Application expectedApp = this.createViaggiaRovereto();
+        if (0 == comparator.compare(containerWithForeignIds, expectedApp)) {
+            returnValue = containerWithForeignIds;
+        }
+        
+        return returnValue;
+    }
+    
     
     public Collection<Application> createElements() {
         List<Application> elements = new ArrayList<>();

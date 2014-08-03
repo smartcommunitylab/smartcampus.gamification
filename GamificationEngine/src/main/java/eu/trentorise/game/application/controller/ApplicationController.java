@@ -42,17 +42,15 @@ public class ApplicationController {
         Application result = restCrudHelper.createSingleElement(application, 
                                                                 manager,
                                                                 logger);
-        
-        Map<String, Object> uriVariables = new HashMap<>();
-        uriVariables.put(IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM, result.getId());
     
         return restCrudHelper.makeCreationResponse(builder, 
                                                    IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH,
-                                                   uriVariables);
+                                                   this.makeUriVariables(result));
         //return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
     
     
+    //READ
     @RequestMapping(value=IGameConstants.SERVICE_APPLICATIONS_PATH, method = RequestMethod.GET)
     public @ResponseBody ApplicationCollectionResponse readApplications() {
         Collection<Application> result = restCrudHelper.readCollection(null, 
@@ -67,6 +65,7 @@ public class ApplicationController {
     
     @RequestMapping(value = IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH, method = RequestMethod.GET)
     public @ResponseBody ApplicationResponse readApplicationById(@PathVariable(value = IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM) Integer appId) {
+        
         Application app = new Application();
         app.setId(appId);
         Application result = restCrudHelper.readSingleElement(app, 
@@ -79,6 +78,30 @@ public class ApplicationController {
         return response;
     }
     
+    
+    //UPDATE
+    @RequestMapping(value = IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH, method = RequestMethod.PUT)
+    public @ResponseBody ResponseEntity<Void> updateApplication(@PathVariable(value = IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM) Integer appId, 
+                                                                @RequestBody Application application,
+                                                                UriComponentsBuilder builder) {
+        
+        application.setId(appId);
+        
+        Application result = restCrudHelper.updateSingleElement(application, 
+                                                                manager,
+                                                                logger);
+    
+        return restCrudHelper.makeUpdateResponse(builder, 
+                                                 IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH,
+                                                 this.makeUriVariables(result));
+        //return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+    
+    protected Map<String, Object> makeUriVariables(Application result) {
+        Map<String, Object> uriVariables = new HashMap<>();
+        uriVariables.put(IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM, result.getId());
+        return uriVariables;
+    }
     
     @Qualifier("mockApplicationManager")
     @Autowired

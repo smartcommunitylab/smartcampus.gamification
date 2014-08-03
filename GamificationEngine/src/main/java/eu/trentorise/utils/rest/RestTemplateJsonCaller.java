@@ -26,11 +26,8 @@ public class RestTemplateJsonCaller<R> {
                                                             headers);
         
         ResponseEntity<R> responseEntity;
-        if (0 == HttpMethod.POST.compareTo(method)) {
-            responseEntity = template.postForEntity(url, requestEntity, responseEntityClass);
-        } else {
-            responseEntity = template.getForEntity(url, responseEntityClass);
-        }
+        responseEntity = template.exchange(url, method, requestEntity,
+                                           responseEntityClass);
         
         return responseEntity;
     }

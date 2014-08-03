@@ -34,6 +34,18 @@ public class RestResultHelper<T> {
     }
     
     
+    //CREATE
+    public Boolean handleUpdateResult(T result, Exception ex, Logger logger) {
+        return handleResult(result, ex, logger);
+    }
+    
+    public Boolean handleUpdateResult(boolean isCreated, Exception ex, 
+                                        Logger logger) {
+        
+        return handleResult(isCreated, ex, logger);
+    }
+    
+    
     //GENERIC
     public Boolean handleResult(boolean isResultOk, Exception ex, 
                                        Logger logger) {

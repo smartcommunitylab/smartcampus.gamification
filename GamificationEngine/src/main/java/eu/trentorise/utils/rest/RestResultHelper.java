@@ -15,10 +15,10 @@ public class RestResultHelper<T> {
         return handleResult(result, ex, logger);
     }
     
-    public Boolean handleCreationResult(boolean isCreated, Exception ex, 
+    public Boolean handleCreationResult(boolean isTaskOk, Exception ex, 
                                         Logger logger) {
         
-        return handleResult(isCreated, ex, logger);
+        return handleResult(isTaskOk, ex, logger);
     }
     
     
@@ -27,10 +27,10 @@ public class RestResultHelper<T> {
         return handleResult(result, ex, logger);
     }
     
-    public Boolean handleReadingResult(boolean isCreated, Exception ex, 
+    public Boolean handleReadingResult(boolean isTaskOk, Exception ex, 
                                        Logger logger) {
         
-        return handleResult(isCreated, ex, logger);
+        return handleResult(isTaskOk, ex, logger);
     }
     
     
@@ -39,10 +39,22 @@ public class RestResultHelper<T> {
         return handleResult(result, ex, logger);
     }
     
-    public Boolean handleUpdateResult(boolean isCreated, Exception ex, 
+    public Boolean handleUpdateResult(boolean isTaskOk, Exception ex, 
+                                      Logger logger) {
+        
+        return handleResult(isTaskOk, ex, logger);
+    }
+    
+    
+    //DELETION
+    public Boolean handleDeletionResult(T result, Exception ex, Logger logger) {
+        return handleResult(result, ex, logger);
+    }
+    
+    public Boolean handleDeletionResult(boolean isTaskOk, Exception ex, 
                                         Logger logger) {
         
-        return handleResult(isCreated, ex, logger);
+        return handleResult(isTaskOk, ex, logger);
     }
     
     

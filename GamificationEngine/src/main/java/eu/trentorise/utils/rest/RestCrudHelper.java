@@ -95,6 +95,25 @@ public class RestCrudHelper<T, CC, C> {
     }
     
     
+    //DELETE
+    public T deleteSingleElement(C containerWithIds,
+                                 ICrudManager<T, CC, C> manager,
+                                 Logger logger) {
+        
+        T result = null;
+        Exception exception = null;
+        try {
+            result = manager.deleteSingleElement(containerWithIds);
+        } catch (Exception ex) {
+            exception = ex;
+        } finally {
+            restResultHelper.handleDeletionResult(result, exception, logger);
+        }
+        
+        return result;
+    }
+    
+    
     //RESPONSE
     //this one returns the entity
     /*public ResponseEntity<T> makeCreationResponse(T result) {
@@ -115,6 +134,10 @@ public class RestCrudHelper<T, CC, C> {
         
         return this.makeResponse(builder, absolutePathWithIds, uriVariables, 
                                  HttpStatus.NO_CONTENT);
+    }
+    
+    public ResponseEntity<Void> makeDeletionResponse() {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
     protected ResponseEntity<Void> makeResponse(UriComponentsBuilder builder, 

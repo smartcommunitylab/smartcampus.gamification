@@ -17,4 +17,6 @@ public interface ICrudManager<T, CC, C> {
     public T readSingleElement(C containerWithIds) throws Exception;
     
     public T updateSingleElement(C containerWithForeignIds) throws Exception;
+    
+    public T deleteSingleElement(C containerWithIds) throws Exception;
 }

@@ -78,6 +78,23 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
     }
     
     
+    //DELETE
+    @Override
+    public Application deleteSingleElement(Application containerWithIds) throws Exception {
+        //TODO: return null or throw Exception if it is not possible to delete
+        //that one or if it is not present
+        
+        Application returnValue = null;
+        
+        Application expectedApp = this.createViaggiaRovereto();
+        if (0 == comparator.compare(containerWithIds, expectedApp)) {
+            returnValue = expectedApp;
+        }
+        
+        return returnValue;
+    }
+    
+    
     public Collection<Application> createElements() {
         List<Application> elements = new ArrayList<>();
         

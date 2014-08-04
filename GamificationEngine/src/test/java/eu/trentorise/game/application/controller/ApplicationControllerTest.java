@@ -136,4 +136,26 @@ public class ApplicationControllerTest extends SkipServiceTestHelper {
                            jsonRequest,
                            expectedStatus);
     }
+    
+    @Test
+    public void testDeleteApplication() throws Exception {
+        Application requestElement = MockApplicationManager.createInstance().createViaggiaRovereto();
+        this.executeTestDeleteApplication(requestElement, HttpStatus.NO_CONTENT);
+        
+        requestElement.setId(-1);
+        this.executeTestDeleteApplication(requestElement, HttpStatus.NOT_FOUND);
+    }
+    
+    protected void executeTestDeleteApplication(Application requestElement, 
+                                                HttpStatus expectedStatus) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        
+        helper.executeTest("ApplicationControllerTest - testUpdateApplication",
+                           BASE_RELATIVE_URL + "/" + requestElement.getId(),
+                           HttpMethod.DELETE,
+                           Void.class, 
+                           null,
+                           expectedStatus);
+    }
 }

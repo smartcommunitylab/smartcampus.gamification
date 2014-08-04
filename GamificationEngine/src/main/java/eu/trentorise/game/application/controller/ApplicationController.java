@@ -46,7 +46,6 @@ public class ApplicationController {
         return restCrudHelper.makeCreationResponse(builder, 
                                                    IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH,
                                                    this.makeUriVariables(result));
-        //return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
     
     
@@ -94,14 +93,27 @@ public class ApplicationController {
         return restCrudHelper.makeUpdateResponse(builder, 
                                                  IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH,
                                                  this.makeUriVariables(result));
-        //return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
+    
+    
+    //DELETE
+    @RequestMapping(value = IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH, method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<Void> deleteApplication(@PathVariable(value = IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM) Integer appId) {
+        
+        Application app = new Application();
+        app.setId(appId);
+        restCrudHelper.deleteSingleElement(app, manager, logger);
+    
+        return restCrudHelper.makeDeletionResponse();
+    }
+    
     
     protected Map<String, Object> makeUriVariables(Application result) {
         Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put(IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM, result.getId());
         return uriVariables;
     }
+    
     
     @Qualifier("mockApplicationManager")
     @Autowired

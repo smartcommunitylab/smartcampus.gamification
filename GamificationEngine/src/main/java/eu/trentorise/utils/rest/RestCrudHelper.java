@@ -4,8 +4,6 @@ package eu.trentorise.utils.rest;
 import java.util.Collection;
 import java.util.Map;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +22,7 @@ public class RestCrudHelper<T, CC, C> {
     //CREATE
     public T createSingleElement(C containerWithIds,
                                  ICrudManager<T, CC, C> manager,
+                                 RestResultHelper<T> restResultHelper,
                                  Logger logger) {
         
         T result = null;
@@ -43,6 +42,7 @@ public class RestCrudHelper<T, CC, C> {
     //READ
     public Collection<T> readCollection(CC containerWithIds,
                                         ICrudManager<T, CC, C> manager,
+                                        RestResultHelper restResultHelper,
                                         Logger logger) {
         
         Collection<T> result = null;
@@ -60,6 +60,7 @@ public class RestCrudHelper<T, CC, C> {
     
     public T readSingleElement(C containerWithIds,
                                ICrudManager<T, CC, C> manager,
+                               RestResultHelper<T> restResultHelper,
                                Logger logger) {
         
         T result = null;
@@ -79,6 +80,7 @@ public class RestCrudHelper<T, CC, C> {
     //UPDATE
     public T updateSingleElement(C containerWithIds,
                                  ICrudManager<T, CC, C> manager,
+                                 RestResultHelper<T> restResultHelper,
                                  Logger logger) {
         
         T result = null;
@@ -98,6 +100,7 @@ public class RestCrudHelper<T, CC, C> {
     //DELETE
     public T deleteSingleElement(C containerWithIds,
                                  ICrudManager<T, CC, C> manager,
+                                 RestResultHelper<T> restResultHelper,
                                  Logger logger) {
         
         T result = null;
@@ -151,9 +154,4 @@ public class RestCrudHelper<T, CC, C> {
         headers.setLocation(uriComponents.toUri());
         return new ResponseEntity<>(headers, httpStatus);
     }
-    
-    
-    @Qualifier("restResultHelper")
-    @Autowired
-    protected RestResultHelper restResultHelper;
 }

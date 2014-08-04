@@ -5,11 +5,11 @@ import eu.trentorise.game.application.response.ApplicationCollectionResponse;
 import eu.trentorise.game.application.response.ApplicationResponse;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.utils.rest.ICrudManager;
+import eu.trentorise.utils.rest.AbstractRestCrudController;
 import eu.trentorise.utils.rest.RestCrudHelper;
+import eu.trentorise.utils.rest.RestResultHelper;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,37 +27,34 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Luca Piras
  */
 @Controller("applicationController")
-public class ApplicationController {
-    
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationController.class.getName());
+public class ApplicationController extends AbstractRestCrudController<Application, Object, Application> {
     
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
     
-    //CREATE
-    @RequestMapping(value=IGameConstants.SERVICE_APPLICATIONS_PATH, method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<Void> createApplication(@RequestBody Application application, 
-                                                                UriComponentsBuilder builder) {
-        
-        Application result = restCrudHelper.createSingleElement(application, 
-                                                                manager,
-                                                                logger);
+    public ApplicationController() {
+        super(IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH,
+              LoggerFactory.getLogger(ApplicationController.class.getName()));
+    }
     
-        return restCrudHelper.makeCreationResponse(builder, 
-                                                   IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH,
-                                                   this.makeUriVariables(result));
+
+    //CREATE
+    @RequestMapping(value = IGameConstants.SERVICE_APPLICATIONS_PATH, method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Void> createApplication(@RequestBody Application application,
+                                                  UriComponentsBuilder builder) {
+        
+        return super.createResource(application, builder);
     }
     
     
     //READ
     @RequestMapping(value=IGameConstants.SERVICE_APPLICATIONS_PATH, method = RequestMethod.GET)
     public @ResponseBody ApplicationCollectionResponse readApplications() {
-        Collection<Application> result = restCrudHelper.readCollection(null, 
-                                                                           manager,
-                                                                           logger);
+        Collection<Application> results = super.readResources(null);
                                                 
         ApplicationCollectionResponse response = new ApplicationCollectionResponse();
-        response.setApplications(result);
+        response.setApplications(results);
         
         return response;
     }
@@ -67,9 +64,8 @@ public class ApplicationController {
         
         Application app = new Application();
         app.setId(appId);
-        Application result = restCrudHelper.readSingleElement(app, 
-                                                                  manager,
-                                                                  logger);
+        
+        Application result = super.readResourceById(app);
         
         ApplicationResponse response = new ApplicationResponse();
         response.setApplication(result);
@@ -86,13 +82,7 @@ public class ApplicationController {
         
         application.setId(appId);
         
-        Application result = restCrudHelper.updateSingleElement(application, 
-                                                                manager,
-                                                                logger);
-    
-        return restCrudHelper.makeUpdateResponse(builder, 
-                                                 IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH,
-                                                 this.makeUriVariables(result));
+        return super.updateResource(application, builder);
     }
     
     
@@ -102,25 +92,37 @@ public class ApplicationController {
         
         Application app = new Application();
         app.setId(appId);
-        restCrudHelper.deleteSingleElement(app, manager, logger);
-    
-        return restCrudHelper.makeDeletionResponse();
+        
+        return super.deleteResource(app);
     }
     
     
-    protected Map<String, Object> makeUriVariables(Application result) {
-        Map<String, Object> uriVariables = new HashMap<>();
+    @Override
+    protected Map<String, Object> populateUriVariables(Application containerWithIds,
+                                                       Application result, 
+                                                       Map<String, Object> uriVariables) {
+        
         uriVariables.put(IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM, result.getId());
+        
         return uriVariables;
     }
     
-    
+
     @Qualifier("mockApplicationManager")
     @Autowired
-    protected ICrudManager<Application, Object, Application> manager;
-    
-    
+    public void setManager(ICrudManager<Application, Object, Application> manager) {
+        this.manager = manager;
+    }
+
     @Qualifier("applicationRestCrudHelper")
     @Autowired
-    protected RestCrudHelper<Application, Object, Application> restCrudHelper;
+    public void setRestCrudHelper(RestCrudHelper<Application, Object, Application> restCrudHelper) {
+        this.restCrudHelper = restCrudHelper;
+    }
+
+    @Qualifier("restResultHelper")
+    @Autowired
+    public void setRestResultHelper(RestResultHelper restResultHelper) {
+        this.restResultHelper = restResultHelper;
+    }
 }

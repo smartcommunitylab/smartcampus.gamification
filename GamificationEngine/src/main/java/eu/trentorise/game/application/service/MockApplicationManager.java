@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("mockApplicationManager")
-public class MockApplicationManager extends MockResponder implements IApplicationManager, ICrudManager<Application, Object, Application> {
+public class MockApplicationManager extends MockResponder implements ICrudManager<Application, Object, Application> {
 
     public static MockApplicationManager createInstance() {
         return new MockApplicationManager();
@@ -40,12 +40,11 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
         return this.readApplicationById(container.getId());
     }
     
-    @Override
+    
     public Collection<Application> readApplications() throws Exception {
         return this.createElements();
     }
     
-    @Override
     public Application readApplicationById(Integer appId) throws Exception {
         Application returnValue = null;
         
@@ -65,7 +64,7 @@ public class MockApplicationManager extends MockResponder implements IApplicatio
     @Override
     public Application updateSingleElement(Application containerWithForeignIds) throws Exception {
         //TODO: return null or throw Exception if it is not possible to update a
-        //new one
+        //that one
         
         Application returnValue = null;
         

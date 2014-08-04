@@ -27,8 +27,14 @@ public interface IGameConstants {
     public static final String SERVICE_GAME_AAA_PATH = SERVICE_PATH + "/AAA";
     /*views and services - services - profile*/
     public static final String SERVICE_GAME_PROFILE_PATH = SERVICE_PATH + "/profile";
+    /*views and services - services - applications*/
+    public static final String SERVICE_APPLICATIONS_PATH = SERVICE_PATH + "/applications";
+    public static final String SERVICE_APPLICATIONS_SINGLE_PATH_PARAM = "appId";
+    public static final String SERVICE_APPLICATIONS_SINGLE_PATH = SERVICE_APPLICATIONS_PATH + "/{" + SERVICE_APPLICATIONS_SINGLE_PATH_PARAM + "}";
     /*views and services - services - profile*/
-    public static final String SERVICE_GAME_PROFILE_GAME_PATH = SERVICE_GAME_PROFILE_PATH + "/game";
+    public static final String SERVICE_GAME_PROFILE_GAMES_PATH = SERVICE_GAME_PROFILE_PATH + "/games";
+    public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM = "gameId";
+    public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH = SERVICE_GAME_PROFILE_GAMES_PATH + "/{" + SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM + "}";
     /*views and services - services - player*/
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
     /*views and services - services - configuration*/
@@ -39,10 +45,6 @@ public interface IGameConstants {
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PLUGINS_PATH + "/badge-collection";
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_PATH + "/badge";
     public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PLUGINS_PATH + "/leaderboard-point";
-    /*views and services - services - applications*/
-    public static final String SERVICE_APPLICATIONS_PATH = SERVICE_PATH + "/applications";
-    public static final String SERVICE_APPLICATIONS_SINGLE_PATH_PARAM = "appId";
-    public static final String SERVICE_APPLICATIONS_SINGLE_PATH = SERVICE_APPLICATIONS_PATH + "/{" + SERVICE_APPLICATIONS_SINGLE_PATH_PARAM + "}";
     /*views and services - services - actions*/
     public static final String SERVICE_ACTION_PATH = SERVICE_PATH + "/action";
     public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_ACTION_PATH + "/param";

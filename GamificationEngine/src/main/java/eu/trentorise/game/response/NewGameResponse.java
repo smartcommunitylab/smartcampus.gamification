@@ -1,13 +1,15 @@
-package eu.trentorise.game.profile.game.response;
+package eu.trentorise.game.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.trentorise.game.profile.game.model.Game;
-import eu.trentorise.game.response.*;
 
 /**
  *
  * @author Luca Piras
  */
-public class NewGameResponse extends GameResponse {
+//Necessary for the getCustomizedPluginListService Test
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class NewGameResponse {
     
     protected Game game;
 
@@ -21,6 +23,6 @@ public class NewGameResponse extends GameResponse {
 
     @Override
     public String toString() {
-        return "NewGameResponse{" + "game=" + game + '}';
+        return "GameResponse{" + "game=" + game + '}';
     }
 }

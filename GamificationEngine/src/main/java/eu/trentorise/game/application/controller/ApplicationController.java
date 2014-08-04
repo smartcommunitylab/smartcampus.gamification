@@ -114,7 +114,7 @@ public class ApplicationController extends AbstractRestCrudController<Applicatio
         this.manager = manager;
     }
 
-    @Qualifier("applicationRestCrudHelper")
+    @Qualifier("restCrudHelper")
     @Autowired
     public void setRestCrudHelper(RestCrudHelper<Application, Object, Application> restCrudHelper) {
         this.restCrudHelper = restCrudHelper;

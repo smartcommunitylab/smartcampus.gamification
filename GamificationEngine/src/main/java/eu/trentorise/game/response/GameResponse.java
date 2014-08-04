@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 //Necessary for the getCustomizedPluginListService Test
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Deprecated
 public class GameResponse {
     
     protected Boolean success;

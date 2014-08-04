@@ -4,6 +4,7 @@ package eu.trentorise.game.response;
  *
  * @author Luca Piras
  */
+@Deprecated
 public class MockResponder implements IMockResponder {
     
     @Override

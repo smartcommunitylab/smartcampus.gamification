@@ -4,6 +4,7 @@ package eu.trentorise.game.response;
  *
  * @author Luca Piras
  */
+@Deprecated
 public interface IMockResponder {
     
     public GameResponse getPositiveResponse();

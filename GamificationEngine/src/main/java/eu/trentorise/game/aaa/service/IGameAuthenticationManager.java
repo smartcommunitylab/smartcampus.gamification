@@ -9,5 +9,5 @@ import eu.trentorise.game.aaa.model.User;
  */
 public interface IGameAuthenticationManager {
     
-    public User authenticate(IAuthenticationContainer container);
+    public User authenticate(IAuthenticationContainer container) throws Exception;
 }

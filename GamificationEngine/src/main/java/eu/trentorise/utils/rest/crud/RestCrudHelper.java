@@ -1,6 +1,7 @@
 package eu.trentorise.utils.rest.crud;
 
 
+import eu.trentorise.utils.rest.RestHelper;
 import java.util.Collection;
 import org.slf4j.Logger;
        
@@ -11,7 +12,7 @@ import org.slf4j.Logger;
  * @param <CC>
  * @param <C>
  */
-public class RestCrudHelper<T, CC, C> {
+public class RestCrudHelper<T, CC, C> extends RestHelper<T, C> {
     
     //CREATE
     public T createSingleElement(C containerWithIds,

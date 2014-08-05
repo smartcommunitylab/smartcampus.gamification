@@ -19,7 +19,7 @@ public class MockGameAuthenticationManager implements IGameAuthenticationManager
     }
     
     @Override
-    public User authenticate(IAuthenticationContainer container) {
+    public User authenticate(IAuthenticationContainer container) throws Exception {
         //TODO: improve the authentication, now it is very basic and not safe
         //TODO: return null or throw Exception if it is not possible to 
         //authenticate that one

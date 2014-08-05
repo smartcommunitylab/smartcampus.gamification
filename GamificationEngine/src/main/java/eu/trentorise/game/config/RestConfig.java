@@ -1,5 +1,6 @@
 package eu.trentorise.game.config;
 
+import eu.trentorise.utils.rest.RestHelper;
 import eu.trentorise.utils.rest.crud.RestCrudHelper;
 import eu.trentorise.utils.rest.crud.RestCrudResponseHelper;
 import eu.trentorise.utils.rest.crud.RestCrudResultHelper;
@@ -16,6 +17,12 @@ import org.springframework.context.annotation.Configuration;
 public class RestConfig {    
     
     ///////RestHelper///////
+    @Bean(name="restHelper")
+    public RestHelper restHelper() {
+        return new RestHelper();
+    }
+    
+    ///////RestCrudHelper///////
     @Bean(name="restCrudHelper")
     public RestCrudHelper restCrudHelper() {
         return new RestCrudHelper();

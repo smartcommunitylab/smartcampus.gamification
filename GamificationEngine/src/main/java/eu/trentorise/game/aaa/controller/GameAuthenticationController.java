@@ -1,10 +1,11 @@
 package eu.trentorise.game.aaa.controller;
 
 import eu.trentorise.game.aaa.container.AuthenticationContainer;
-import eu.trentorise.game.aaa.model.User;
+import eu.trentorise.game.aaa.container.IAuthenticationContainer;
 import eu.trentorise.game.aaa.request.GameAuthenticationRequest;
 import eu.trentorise.game.aaa.service.IGameAuthenticationManager;
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.utils.rest.RestHelper;
 import eu.trentorise.utils.rest.RestResponseHelper;
 import eu.trentorise.utils.rest.RestResultHelper;
 import org.slf4j.Logger;
@@ -31,18 +32,11 @@ public class GameAuthenticationController {
     
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public @ResponseBody ResponseEntity<Void> authenticate(@RequestBody GameAuthenticationRequest request) throws Exception {
-        AuthenticationContainer container = new AuthenticationContainer();
+        IAuthenticationContainer container = new AuthenticationContainer();
         container.setUser(request.getUser());
         
-        User result = null;
-        Exception exception = null;
-        try {
-            result = manager.authenticate(container);
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            restResultHelper.handleResult(result, exception, logger);
-        }
+        restHelper.execute(container, manager, "authenticate", 
+                           IAuthenticationContainer.class, restResultHelper, logger);
         
         return restResponseHelper.makeNoContentResponse();
     }
@@ -52,6 +46,10 @@ public class GameAuthenticationController {
     @Autowired
     protected IGameAuthenticationManager manager;
     
+    
+    @Qualifier("restHelper")
+    @Autowired
+    protected RestHelper restHelper;
     
     @Qualifier("restResultHelper")
     @Autowired

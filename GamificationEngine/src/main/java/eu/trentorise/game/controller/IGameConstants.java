@@ -24,7 +24,7 @@ public interface IGameConstants {
     /*views and services - services -*/
     public static final String SERVICE_PATH = VIEW_PATH + "services";
     /*views and services - services - profile*/
-    public static final String SERVICE_GAME_AAA_PATH = SERVICE_PATH + "/AAA";
+    public static final String SERVICE_GAME_AAA_PATH = SERVICE_PATH + "/aaa";
     /*views and services - services - profile*/
     public static final String SERVICE_GAME_PROFILE_PATH = SERVICE_PATH + "/profile";
     /*views and services - services - applications*/

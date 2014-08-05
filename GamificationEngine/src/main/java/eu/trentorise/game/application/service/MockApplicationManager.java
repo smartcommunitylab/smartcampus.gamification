@@ -1,7 +1,7 @@
 package eu.trentorise.game.application.service;
 
 import eu.trentorise.game.action.model.Application;
-import eu.trentorise.utils.rest.ICrudManager;
+import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("mockApplicationManager")
-public class MockApplicationManager implements ICrudManager<Application, Object, Application> {
+public class MockApplicationManager implements IRestCrudManager<Application, Object, Application> {
 
     public static MockApplicationManager createInstance() {
         return new MockApplicationManager();

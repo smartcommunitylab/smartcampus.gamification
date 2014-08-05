@@ -1,11 +1,17 @@
 package eu.trentorise.game.aaa.controller;
 
+import eu.trentorise.game.aaa.container.AuthenticationContainer;
+import eu.trentorise.game.aaa.model.User;
 import eu.trentorise.game.aaa.request.GameAuthenticationRequest;
 import eu.trentorise.game.aaa.service.IGameAuthenticationManager;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.response.GameResponse;
+import eu.trentorise.utils.rest.RestResponseHelper;
+import eu.trentorise.utils.rest.RestResultHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,13 +27,37 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(IGameConstants.SERVICE_GAME_AAA_PATH)
 public class GameAuthenticationController {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/login" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody GameResponse authenticate(@RequestBody GameAuthenticationRequest co) {
+    private static final Logger logger = LoggerFactory.getLogger(GameAuthenticationController.class.getName());
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    public @ResponseBody ResponseEntity<Void> authenticate(@RequestBody GameAuthenticationRequest request) throws Exception {
+        AuthenticationContainer container = new AuthenticationContainer();
+        container.setUser(request.getUser());
         
-        return manager.authenticate(null);
+        User result = null;
+        Exception exception = null;
+        try {
+            result = manager.authenticate(container);
+        } catch (Exception ex) {
+            exception = ex;
+        } finally {
+            restResultHelper.handleResult(result, exception, logger);
+        }
+        
+        return restResponseHelper.makeNoContentResponse();
     }
+    
     
     @Qualifier("mockGameAuthenticationManager")
     @Autowired
     protected IGameAuthenticationManager manager;
+    
+    
+    @Qualifier("restResultHelper")
+    @Autowired
+    protected RestResultHelper restResultHelper;
+    
+    @Qualifier("restResponseHelper")
+    @Autowired
+    protected RestResponseHelper restResponseHelper;
 }

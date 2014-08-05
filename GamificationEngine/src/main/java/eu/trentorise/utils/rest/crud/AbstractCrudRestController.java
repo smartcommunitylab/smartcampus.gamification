@@ -1,4 +1,4 @@
-package eu.trentorise.utils.rest;
+package eu.trentorise.utils.rest.crud;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,42 +14,43 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @param <CC>
  * @param <C>
  */
-public abstract class AbstractRestCrudController<T, CC, C> {
+public abstract class AbstractCrudRestController<T, CC, C> {
     
     protected Logger logger;
     
     protected String resourceSinglePath;
     
-    public AbstractRestCrudController(String resourceSinglePath, Logger logger) {
+    public AbstractCrudRestController(String resourceSinglePath, Logger logger) {
         this.resourceSinglePath = resourceSinglePath;
         
         this.logger = logger;
     }
+    
     
     //CREATE
     public ResponseEntity<Void> createResource(C containerWithIds, 
                                                UriComponentsBuilder builder) {
         
         T result = restCrudHelper.createSingleElement(containerWithIds, manager,
-                                                      restResultHelper, logger);
+                                                  restCrudResultHelper, logger);
     
-        return restCrudHelper.makeCreationResponse(builder, 
-                                                   resourceSinglePath,
-                                                   this.makeUriVariables(containerWithIds, 
-                                                                         result));
+        return restCrudResponseHelper.makeCreationResponse(builder, 
+                                                       resourceSinglePath,
+                                                       this.makeUriVariables(containerWithIds, 
+                                                                             result));
     }
     
     
     //READ
     public Collection<T> readResources(CC containerWithIds) {
         return restCrudHelper.readCollection(containerWithIds, manager, 
-                                            restResultHelper, logger);
+                                            restCrudResultHelper, logger);
     }
     
     
     public T readResourceById(C containerWithIds) {
         return restCrudHelper.readSingleElement(containerWithIds, manager, 
-                                                restResultHelper, logger);
+                                                restCrudResultHelper, logger);
     }
     
     
@@ -58,21 +59,20 @@ public abstract class AbstractRestCrudController<T, CC, C> {
                                                UriComponentsBuilder builder) {
         
         T result = restCrudHelper.updateSingleElement(containerWithIds, manager,
-                                                      restResultHelper, logger);
+                                                      restCrudResultHelper, logger);
     
-        return restCrudHelper.makeUpdateResponse(builder, 
-                                                 resourceSinglePath,
-                                                 this.makeUriVariables(containerWithIds, 
-                                                                       result));
+        return restCrudResponseHelper.makeUpdateResponse(builder, 
+                                                     resourceSinglePath,
+                                                     this.makeUriVariables(containerWithIds, result));
     }
     
     
     //DELETE
     public ResponseEntity<Void> deleteResource(C containerWithIds) {
         restCrudHelper.deleteSingleElement(containerWithIds, manager, 
-                                           restResultHelper, logger);
+                                           restCrudResultHelper, logger);
     
-        return restCrudHelper.makeDeletionResponse();
+        return restCrudResponseHelper.makeDeletionResponse();
     }
     
     
@@ -90,9 +90,11 @@ public abstract class AbstractRestCrudController<T, CC, C> {
                                                                 Map<String, Object> uriVariables);
     
     
-    protected ICrudManager<T, CC, C> manager;
+    protected IRestCrudManager<T, CC, C> manager;
     
     protected RestCrudHelper<T, CC, C> restCrudHelper;
     
-    protected RestResultHelper<T> restResultHelper;
+    protected RestCrudResultHelper<T> restCrudResultHelper;
+    
+    protected RestCrudResponseHelper restCrudResponseHelper;
 }

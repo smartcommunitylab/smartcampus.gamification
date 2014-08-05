@@ -1,8 +1,10 @@
 package eu.trentorise.game.aaa.service;
 
-import eu.trentorise.game.aaa.request.GameAuthenticationRequest;
-import eu.trentorise.game.response.MockResponder;
-import eu.trentorise.game.response.GameResponse;
+import eu.trentorise.game.aaa.container.IAuthenticationContainer;
+import eu.trentorise.game.aaa.model.User;
+import java.util.Comparator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,10 +12,37 @@ import org.springframework.stereotype.Service;
  * @author Luca Piras
  */
 @Service("mockGameAuthenticationManager")
-public class MockGameAuthenticationManager extends MockResponder implements IGameAuthenticationManager {
+public class MockGameAuthenticationManager implements IGameAuthenticationManager {
 
-    @Override
-    public GameResponse authenticate(GameAuthenticationRequest gameAuthentication) {
-        return this.getPositiveResponse();
+    public static MockGameAuthenticationManager createInstance() {
+        return new MockGameAuthenticationManager();
     }
+    
+    @Override
+    public User authenticate(IAuthenticationContainer container) {
+        //TODO: improve the authentication, now it is very basic and not safe
+        //TODO: return null or throw Exception if it is not possible to 
+        //authenticate that one
+        
+        User returnValue = null;
+        
+        User expectedElement = this.createUser();
+        if (0 == comparator.compare(container.getUser(), expectedElement)) {
+            returnValue = expectedElement;
+        }
+        
+        return returnValue;
+    }
+    
+    public User createUser() {
+        User element = new User();
+        element.setUsername("gamificationUser@gmail.com");
+        element.setPassword("gamificationUserPwd");
+        return element;
+    }
+    
+    
+    @Qualifier("userComparator")
+    @Autowired
+    protected Comparator<User> comparator;
 }

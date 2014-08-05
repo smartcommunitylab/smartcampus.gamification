@@ -1,4 +1,4 @@
-package eu.trentorise.utils.rest;
+package eu.trentorise.utils.rest.crud;
 
 import java.util.Collection;
 
@@ -9,7 +9,7 @@ import java.util.Collection;
  * @param <CC>
  * @param <C>
  */
-public interface ICrudManager<T, CC, C> {
+public interface IRestCrudManager<T, CC, C> {
     
     public T createSingleElement(C containerWithForeignIds) throws Exception;
     

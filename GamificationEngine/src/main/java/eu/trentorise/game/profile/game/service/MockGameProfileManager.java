@@ -1,7 +1,7 @@
 package eu.trentorise.game.profile.game.service;
 
 import eu.trentorise.game.profile.game.model.Game;
-import eu.trentorise.utils.rest.ICrudManager;
+import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @author Luca Piras
  */
 @Service("mockGameProfileManager")
-public class MockGameProfileManager implements ICrudManager<Game, Object, Game> {
+public class MockGameProfileManager implements IRestCrudManager<Game, Object, Game> {
 
     public static MockGameProfileManager createInstance() {
         return new MockGameProfileManager();

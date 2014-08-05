@@ -4,10 +4,11 @@ import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.application.response.ApplicationCollectionResponse;
 import eu.trentorise.game.application.response.ApplicationResponse;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.utils.rest.ICrudManager;
-import eu.trentorise.utils.rest.AbstractRestCrudController;
-import eu.trentorise.utils.rest.RestCrudHelper;
-import eu.trentorise.utils.rest.RestResultHelper;
+import eu.trentorise.utils.rest.crud.IRestCrudManager;
+import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
+import eu.trentorise.utils.rest.crud.RestCrudHelper;
+import eu.trentorise.utils.rest.crud.RestCrudResponseHelper;
+import eu.trentorise.utils.rest.crud.RestCrudResultHelper;
 import java.util.Collection;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Luca Piras
  */
 @Controller("applicationController")
-public class ApplicationController extends AbstractRestCrudController<Application, Object, Application> {
+public class ApplicationController extends AbstractCrudRestController<Application, Object, Application> {
     
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
@@ -110,7 +111,7 @@ public class ApplicationController extends AbstractRestCrudController<Applicatio
 
     @Qualifier("mockApplicationManager")
     @Autowired
-    public void setManager(ICrudManager<Application, Object, Application> manager) {
+    public void setManager(IRestCrudManager<Application, Object, Application> manager) {
         this.manager = manager;
     }
 
@@ -120,9 +121,15 @@ public class ApplicationController extends AbstractRestCrudController<Applicatio
         this.restCrudHelper = restCrudHelper;
     }
 
-    @Qualifier("restResultHelper")
+    @Qualifier("restCrudResultHelper")
     @Autowired
-    public void setRestResultHelper(RestResultHelper restResultHelper) {
-        this.restResultHelper = restResultHelper;
+    public void setRestCrudResultHelper(RestCrudResultHelper restCrudResultHelper) {
+        this.restCrudResultHelper = restCrudResultHelper;
+    }
+    
+    @Qualifier("restCrudResponseHelper")
+    @Autowired
+    public void setRestCrudResponseHelper(RestCrudResponseHelper restCrudResponseHelper) {
+        this.restCrudResponseHelper = restCrudResponseHelper;
     }
 }

@@ -2,7 +2,7 @@ package eu.trentorise.game.ruleengine.model;
 
 import eu.trentorise.game.action.model.Action;
 import eu.trentorise.game.action.model.BasicParam;
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.Reward;
 
 /**
@@ -24,7 +24,7 @@ public class Rule {
     protected String lhsOperand;
     
     //customizedPluginInvolved
-    protected CustomizedGamificationPlugin customizedGamificationPlugin;
+    protected CustomizedPlugin customizedGamificationPlugin;
     
     //rightHandSide
     protected Operator rhsPluginOperator;
@@ -84,11 +84,11 @@ public class Rule {
         this.lhsOperand = lhsOperand;
     }
 
-    public CustomizedGamificationPlugin getCustomizedGamificationPlugin() {
+    public CustomizedPlugin getCustomizedGamificationPlugin() {
         return customizedGamificationPlugin;
     }
 
-    public void setCustomizedGamificationPlugin(CustomizedGamificationPlugin customizedGamificationPlugin) {
+    public void setCustomizedGamificationPlugin(CustomizedPlugin customizedGamificationPlugin) {
         this.customizedGamificationPlugin = customizedGamificationPlugin;
     }
 

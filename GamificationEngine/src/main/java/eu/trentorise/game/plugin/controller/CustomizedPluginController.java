@@ -7,9 +7,8 @@ import eu.trentorise.game.plugin.container.ICustomizedPluginActivationDeactivati
 import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
 import eu.trentorise.game.plugin.request.CustomizedPluginActivationDeactivationRequest;
 import eu.trentorise.game.plugin.request.CustomizedPluginListRequest;
-import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
-import eu.trentorise.game.plugin.response.GamificationPluginResponse;
-import eu.trentorise.game.plugin.service.IGamePluginManager;
+import eu.trentorise.game.plugin.response.CustomizedPluginListResponse;
+import eu.trentorise.game.plugin.service.IPluginManager;
 import eu.trentorise.game.response.GameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,18 +22,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Luca Piras
  */
-@Controller("gamePluginController")
-@RequestMapping(IGameConstants.SERVICE_PLUGINS_PATH)
-public class GamePluginController {
+@Controller("customizedPluginController")
+@RequestMapping(value=IGameConstants.SERVICE_PLUGINS_PATH)
+public class CustomizedPluginController {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/getGamificationPlugins" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody GamificationPluginResponse getGamificationPlugins() {
-        
-        return gamePluginManager.getGamificationPlugins();
-    }
+    //TODO: IMPORTANT!!! define validators for all the services exposed by the
+    //controllers
     
     @RequestMapping(method = RequestMethod.POST, value = "/getCustomizedGamificationPlugins" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody CustomizedGamificationPluginListResponse getCustomizedGamificationPlugins(@RequestBody CustomizedPluginListRequest request) {
+    public @ResponseBody CustomizedPluginListResponse getCustomizedGamificationPlugins(@RequestBody CustomizedPluginListRequest request) {
         ICustomizedPluginListContainer container = new CustomizedPluginListContainer();
         container.setGame(request.getGame());
         container.setGamificationPlugin(request.getGamificationPlugin());
@@ -54,5 +50,5 @@ public class GamePluginController {
     
     @Qualifier("mockGamePluginManager")
     @Autowired
-    protected IGamePluginManager gamePluginManager;
+    protected IPluginManager gamePluginManager;
 }

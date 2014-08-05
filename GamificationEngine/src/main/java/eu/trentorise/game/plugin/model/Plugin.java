@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 //Necessary for the getCustomizedPluginListService Test
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GamificationPlugin {
+public class Plugin {
     
     //TODO: this is the key
     protected Integer id;

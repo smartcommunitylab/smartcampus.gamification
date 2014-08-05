@@ -8,9 +8,9 @@ import eu.trentorise.game.plugin.badgecollection.request.BadgeCollectionPluginRe
 import eu.trentorise.game.plugin.badgecollection.request.BadgeRequest;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
 import eu.trentorise.game.plugin.badgecollection.service.MockBadgeCollectionPluginManager;
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
-import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
@@ -34,8 +34,8 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
      */
     @Test
     public void testSetCustomizedGamificationPlugin() throws Exception {
-        RestTemplateJsonServiceTestHelper<CustomizedGamificationPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        MockGamePluginManager mock = new MockGamePluginManager();
+        RestTemplateJsonServiceTestHelper<CustomizedPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        MockPluginManager mock = new MockPluginManager();
         ObjectMapper mapper = new ObjectMapper();
         
         Game game = new Game();
@@ -50,16 +50,16 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
-        CustomizedGamificationPluginResponse response = helper.executeTest("testBadgeCollectionSetCustomizedGamificationPlugin", 
+        CustomizedPluginResponse response = helper.executeTest("testBadgeCollectionSetCustomizedGamificationPlugin", 
                                                                            BASE_RELATIVE_URL + "/setCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
                                                                            HttpMethod.POST,
-                                                                           CustomizedGamificationPluginResponse.class, 
+                                                                           CustomizedPluginResponse.class, 
                                                                            jsonRequest);
         
         if (null != response) {
             assertTrue(response.isSuccess());
             
-            CustomizedGamificationPlugin customizedPlugin = response.getCustomizedGamificationPlugin();
+            CustomizedPlugin customizedPlugin = response.getCustomizedPlugin();
             
             assertNotNull(customizedPlugin.getId());
             assertEquals(customizedPlugin.getGamificationPlugin().getId(), plugin.getGamificationPlugin().getId());
@@ -75,7 +75,7 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
      */
     @Test
     public void testGetBadges() throws Exception {
-        MockGamePluginManager mock = new MockGamePluginManager();
+        MockPluginManager mock = new MockPluginManager();
         MockBadgeCollectionPluginManager badgeMock = new MockBadgeCollectionPluginManager();
         badgeMock.setManager(mock);
         

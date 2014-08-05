@@ -3,7 +3,7 @@ package eu.trentorise.game.ruleengine.service;
 import eu.trentorise.game.annotation.TransactionalGame;
 import eu.trentorise.game.data.PlayerRepository;
 import eu.trentorise.game.model.player.Player;
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
 import eu.trentorise.game.ruleengine.service.executor.IRulesExecutionManager;
 import org.slf4j.Logger;
@@ -84,7 +84,7 @@ public class RuleEngineManager implements IRuleEngineManager {
     
     @TransactionalGame
     @Override
-    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) throws Exception {
+    public void runEngine(Collection facts, PluginIdentifier gamificationApproachId) throws Exception {
         //TODO: DELETE
         boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         //this.dataJpaTry();
@@ -102,7 +102,7 @@ public class RuleEngineManager implements IRuleEngineManager {
     }
     
     protected void runRules(Collection facts, IRulesPreparerManager rpm, 
-                            GamificationPluginIdentifier gamificationApproachId) {
+                            PluginIdentifier gamificationApproachId) {
         
         rpm.prepareRules(knowledgeBuilder, gamificationApproachId);
         

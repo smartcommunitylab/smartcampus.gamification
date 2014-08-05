@@ -1,6 +1,6 @@
 package eu.trentorise.game.ruleengine.service;
 
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
 import eu.trentorise.game.ruleengine.container.IRuleTemplateContainer;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
@@ -13,5 +13,5 @@ import java.util.Collection;
  */
 public interface IRuleEngineManager {
     
-    public void runEngine(Collection facts, GamificationPluginIdentifier gamificationApproachId) throws Exception;
+    public void runEngine(Collection facts, PluginIdentifier gamificationApproachId) throws Exception;
 }

@@ -5,7 +5,7 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.badgecollection.model.Badge;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeResponse;
 import eu.trentorise.game.plugin.badgecollection.service.MockBadgeCollectionPluginManager;
-import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.servicetest.HttpMultipartPostCallerServiceTestHelper;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class BadgeControllerTest extends SkipServiceTestHelper {
     public void testSetBadge() throws Exception {
         HttpMultipartPostCallerServiceTestHelper helper = new HttpMultipartPostCallerServiceTestHelper(true);
         ObjectMapper mapper = new ObjectMapper();
-        MockGamePluginManager mock = new MockGamePluginManager();
+        MockPluginManager mock = new MockPluginManager();
         MockBadgeCollectionPluginManager badgeMock = new MockBadgeCollectionPluginManager();
         badgeMock.setManager(mock);
         

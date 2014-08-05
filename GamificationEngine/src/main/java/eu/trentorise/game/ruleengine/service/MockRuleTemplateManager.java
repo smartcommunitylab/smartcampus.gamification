@@ -2,8 +2,8 @@ package eu.trentorise.game.ruleengine.service;
 
 import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.model.ParamType;
-import eu.trentorise.game.plugin.model.GamificationPlugin;
-import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.plugin.model.Plugin;
+import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
@@ -37,7 +37,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     public RuleTemplateResponse getRuleTemplates(IRuleTemplateContainer container) throws Exception {
         List<RuleTemplate> list = new ArrayList<>();
         
-        GamificationPlugin plugin = container.getRuleTemplate().getPlugin();
+        Plugin plugin = container.getRuleTemplate().getPlugin();
         if (0 == comparator.compare(plugin, manager.createPointsPlugin())) {
             list = this.createPointPluginRuleTemplateList();
         } else if (0 == comparator.compare(plugin, manager.createBadgeCollectionPlugin())) {
@@ -98,7 +98,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     public List<RuleTemplate> createPointPluginRuleTemplateList() throws Exception {
         List<RuleTemplate> list = new ArrayList<>();
         
-        GamificationPlugin plugin = manager.createPointsPlugin();
+        Plugin plugin = manager.createPointsPlugin();
         
         list.add(this.createRuleTemplate(plugin, 0, "BasicActionPoints", RuleTemplateType.BASIC, "A user, by doing a specific action, can earn Usage Points"));
         list.add(this.createRuleTemplate(plugin, 1, "ParamActionPoints", RuleTemplateType.PARAMETRIC, "A user, by doing a specific action, can earn Usage Points"));
@@ -109,7 +109,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     public List<RuleTemplate> createBadgeCollectionPluginRuleTemplateList() throws Exception {
         List<RuleTemplate> list = new ArrayList<>();
         
-        GamificationPlugin plugin = manager.createPointsPlugin();
+        Plugin plugin = manager.createPointsPlugin();
         
         list.add(this.createRuleTemplate(plugin, 0, "FirstTimeActionBadges", RuleTemplateType.BASIC, "When an action happens for the first time, a user earn a badge"));
         list.add(this.createRuleTemplate(plugin, 1, "ParamFirstTimeActionBadges", RuleTemplateType.PARAMETRIC, "When an action happens for the first time, a user earn a badge"));
@@ -124,7 +124,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return list;
     }
     
-    protected RuleTemplate createRuleTemplate(GamificationPlugin plugin, 
+    protected RuleTemplate createRuleTemplate(Plugin plugin, 
                                               Integer id, String name, 
                                               RuleTemplateType type, String description) {
         
@@ -156,7 +156,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return list;
     }
     
-    public List<Operator> createPluginOperators(GamificationPlugin plugin) {
+    public List<Operator> createPluginOperators(Plugin plugin) {
         List<Operator> list = new ArrayList<>();
         
         if (null != plugin) {
@@ -232,16 +232,16 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return ((RuleSettingResponse) this.buildPositiveResponse(response));
     }
     
-    public void setManager(MockGamePluginManager manager) {
+    public void setManager(MockPluginManager manager) {
         this.manager = manager;
     }
     
     
     @Qualifier("mockGamePluginManager")
     @Autowired
-    protected MockGamePluginManager manager;
+    protected MockPluginManager manager;
     
-    @Qualifier("gamificationPluginKeyComparator")
+    @Qualifier("pluginKeyComparator")
     @Autowired
-    protected Comparator<GamificationPlugin> comparator;
+    protected Comparator<Plugin> comparator;
 }

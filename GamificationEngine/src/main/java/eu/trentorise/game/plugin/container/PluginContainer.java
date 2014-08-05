@@ -1,4 +1,4 @@
-package eu.trentorise.game.ruleengine.container;
+package eu.trentorise.game.plugin.container;
 
 import eu.trentorise.game.plugin.model.Plugin;
 
@@ -6,7 +6,7 @@ import eu.trentorise.game.plugin.model.Plugin;
  *
  * @author Luca Piras
  */
-public class PluginOperatorContainer implements IPluginOperatorContainer {
+public class PluginContainer implements IPluginContainer {
     
     protected Plugin gamificationPlugin;
 
@@ -22,6 +22,6 @@ public class PluginOperatorContainer implements IPluginOperatorContainer {
 
     @Override
     public String toString() {
-        return "PluginOperatorContainer{" + "gamificationPlugin=" + gamificationPlugin + '}';
+        return "GamificationPluginContainer{" + "gamificationPlugin=" + gamificationPlugin + '}';
     }
 }

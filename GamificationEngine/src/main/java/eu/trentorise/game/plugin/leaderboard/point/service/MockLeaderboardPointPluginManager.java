@@ -2,10 +2,10 @@ package eu.trentorise.game.plugin.leaderboard.point.service;
 
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
-import eu.trentorise.game.plugin.service.IGameCustomizedPluginManager;
-import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
+import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.response.MockResponder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,22 +13,22 @@ import org.springframework.stereotype.Service;
 
 
 @Service("mockLeaderboardPointPluginManager")
-public class MockLeaderboardPointPluginManager extends MockResponder implements IGameCustomizedPluginManager<LeaderboardPointPlugin> {
+public class MockLeaderboardPointPluginManager extends MockResponder implements ICustomizedPluginManager<LeaderboardPointPlugin> {
 
     @Override
-    public CustomizedGamificationPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<LeaderboardPointPlugin> container) {
+    public CustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<LeaderboardPointPlugin> container) {
         //TODO: create new customizedGamificationPlugin, obtain an id, then
         //create a customizedPluginGame using the new 
         //customizedGamificationPlugin with its id and the provided game
-        CustomizedGamificationPlugin plugin = manager.createGreenWeeklyLeadearboardPlugin();
+        CustomizedPlugin plugin = manager.createGreenWeeklyLeadearboardPlugin();
         
-        CustomizedGamificationPluginResponse response = new CustomizedGamificationPluginResponse();
-        response.setCustomizedGamificationPlugin(plugin);
+        CustomizedPluginResponse response = new CustomizedPluginResponse();
+        response.setCustomizedPlugin(plugin);
         
-        return ((CustomizedGamificationPluginResponse) this.buildPositiveResponse(response));
+        return ((CustomizedPluginResponse) this.buildPositiveResponse(response));
     }
     
     @Qualifier("mockGamePluginManager")
     @Autowired
-    protected MockGamePluginManager manager;
+    protected MockPluginManager manager;
 }

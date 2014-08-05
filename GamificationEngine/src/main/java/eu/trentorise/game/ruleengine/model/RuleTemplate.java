@@ -1,6 +1,6 @@
 package eu.trentorise.game.ruleengine.model;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 
 /**
  *
@@ -9,7 +9,7 @@ import eu.trentorise.game.plugin.model.GamificationPlugin;
 public class RuleTemplate {
     
     protected Integer id;
-    protected GamificationPlugin plugin;
+    protected Plugin plugin;
     
     //TODO: this one has to be unique
     protected String name;
@@ -26,11 +26,11 @@ public class RuleTemplate {
         this.id = id;
     }
 
-    public GamificationPlugin getPlugin() {
+    public Plugin getPlugin() {
         return plugin;
     }
 
-    public void setPlugin(GamificationPlugin plugin) {
+    public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
     }
 

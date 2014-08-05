@@ -2,17 +2,20 @@ package eu.trentorise.game.plugin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.request.CustomizedPluginActivationDeactivationRequest;
-import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
-import eu.trentorise.game.plugin.response.GamificationPluginResponse;
-import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.plugin.response.CustomizedPluginListResponse;
+import eu.trentorise.game.plugin.response.PluginCollectionResponse;
+import eu.trentorise.game.plugin.response.PluginResponse;
+import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
@@ -20,37 +23,78 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 
 
 /**
  *
  * @author Luca Piras
  */
-public class GamePluginControllerTest extends SkipServiceTestHelper {
+public class PluginControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
 
-    /**
-     * Test of getGamificationPlugins method, of class GamePluginController.
-     * @throws java.lang.Exception
-     */
+    
     @Test
-    public void testGetGamificationPlugins() throws Exception {
-        RestTemplateJsonServiceTestHelper<GamificationPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+    public void testReadPlugins() throws Exception {
+        Collection<Plugin> expectedElements = MockPluginManager.createInstance().createElements();
+        this.executeTestReadPlugins((List<Plugin>) expectedElements);
+    }
+    
+    protected void executeTestReadPlugins(List<Plugin> expectedElements) throws Exception {
         
-        GamificationPluginResponse response = helper.executeTest("testGetGamificationPlugins", 
-                                                  BASE_RELATIVE_URL + "/getGamificationPlugins" + FINAL_PART_RELATIVE_URL,
-                                                  HttpMethod.POST,
-                                                  GamificationPluginResponse.class, 
-                                                  "");
+        RestTemplateJsonServiceTestHelper<PluginCollectionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        
+        PluginCollectionResponse response = helper.executeTest("PluginControllerTest - testReadPlugins",
+                                                               BASE_RELATIVE_URL,
+                                                               HttpMethod.GET,
+                                                               PluginCollectionResponse.class, 
+                                                               null);
         
         if (null != response) {
-            assertTrue(response.isSuccess());
+            List<Plugin> responseElements = (List) response.getPlugins();
             
-            List<GamificationPlugin> gamificationPlugins = response.getGamificationPlugins();
-            assertNotNull(gamificationPlugins);
-            assertNotEquals(0, gamificationPlugins.size());
+            assertNotNull(responseElements);
+            assertEquals(responseElements.size(), expectedElements.size());
+            
+            for (int i = 0; i < responseElements.size(); i++) {
+                Plugin responseElement = responseElements.get(i);
+                Plugin expectedElement = expectedElements.get(i);
+                
+                assertEquals(responseElement.getId(), expectedElement.getId());
+                assertEquals(responseElement.getName(), 
+                             expectedElement.getName());
+            }
+        }
+    }
+    
+    @Test
+    public void testReadPluginById() throws Exception {
+        Plugin expectedElement = MockPluginManager.createInstance().createPointsPlugin();
+        this.executeTestReadPluginById(expectedElement, HttpStatus.OK);
+        
+        expectedElement.setId(-1);
+        this.executeTestReadPluginById(expectedElement, HttpStatus.NOT_FOUND);
+    }
+    
+    protected void executeTestReadPluginById(Plugin expectedElement, 
+                                             HttpStatus expectedStatus) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<PluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        
+        PluginResponse response = helper.executeTest("PluginControllerTest - testReadPluginById",
+                                                     BASE_RELATIVE_URL + "/" + expectedElement.getId(),
+                                                     HttpMethod.GET,
+                                                     PluginResponse.class,
+                                                     null, 
+                                                     expectedStatus);
+        
+        if (null != response && 0 == expectedStatus.compareTo(HttpStatus.OK)) {
+            Plugin responseElement = response.getPlugin();
+            
+            assertNotNull(responseElement);
+            assertEquals(0, (new PluginKeyComparator()).compare(expectedElement, responseElement));
         }
     }
     
@@ -60,13 +104,13 @@ public class GamePluginControllerTest extends SkipServiceTestHelper {
      */
     @Test
     public void testGetCustomizedGamificationPlugins() throws Exception {
-        RestTemplateJsonServiceTestHelper<CustomizedGamificationPluginListResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        RestTemplateJsonServiceTestHelper<CustomizedPluginListResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         
-        MockGamePluginManager mock = new MockGamePluginManager();
+        MockPluginManager mock = new MockPluginManager();
         
         
-        CustomizedGamificationPluginListResponse response = this.executeTest(helper, new GamificationPlugin());
-        List<CustomizedGamificationPlugin> list = new ArrayList<>();
+        CustomizedPluginListResponse response = this.executeTest(helper, new Plugin());
+        List<CustomizedPlugin> list = new ArrayList<>();
         this.testCustomizedPlugins(response, list);
         
         response = this.executeTest(helper, mock.createPointsPlugin());
@@ -97,7 +141,7 @@ public class GamePluginControllerTest extends SkipServiceTestHelper {
     @Test
     public void testActivateDeactivateCustomizedGamificationPlugin() throws Exception {
         RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        MockGamePluginManager mock = new MockGamePluginManager();
+        MockPluginManager mock = new MockPluginManager();
         ObjectMapper mapper = new ObjectMapper();
         
         CustomizedPluginActivationDeactivationRequest request = new CustomizedPluginActivationDeactivationRequest();
@@ -123,7 +167,7 @@ public class GamePluginControllerTest extends SkipServiceTestHelper {
         }
     }
     
-    protected String makeRequest(GamificationPlugin plugin) {
+    protected String makeRequest(Plugin plugin) {
         StringBuilder sb = new StringBuilder();
         
         sb.append("{\"game\": {");
@@ -139,29 +183,29 @@ public class GamePluginControllerTest extends SkipServiceTestHelper {
         return sb.toString();
     }
 
-    protected CustomizedGamificationPluginListResponse executeTest(RestTemplateJsonServiceTestHelper<CustomizedGamificationPluginListResponse> helper, 
-                                                         GamificationPlugin gamificationPlugin) throws Exception {
+    protected CustomizedPluginListResponse executeTest(RestTemplateJsonServiceTestHelper<CustomizedPluginListResponse> helper, 
+                                                         Plugin gamificationPlugin) throws Exception {
         
         return helper.executeTest("testGetCustomizedGamificationPlugins", 
                                   BASE_RELATIVE_URL + "/getCustomizedGamificationPlugins" + FINAL_PART_RELATIVE_URL,
                                   HttpMethod.POST,
-                                  CustomizedGamificationPluginListResponse.class, 
+                                  CustomizedPluginListResponse.class, 
                                   this.makeRequest(gamificationPlugin));
     }
 
-    protected void testCustomizedPlugins(CustomizedGamificationPluginListResponse response, 
-                                         List<CustomizedGamificationPlugin> elements) {
+    protected void testCustomizedPlugins(CustomizedPluginListResponse response, 
+                                         List<CustomizedPlugin> elements) {
         
         if (null != response) {
             assertTrue(response.isSuccess());
             
-            List<CustomizedGamificationPlugin> responsePlugins = response.getCustomizedGamificationPlugins();
+            List<CustomizedPlugin> responsePlugins = response.getCustomizedPlugins();
             assertNotNull(responsePlugins);
             assertEquals(elements.size(), responsePlugins.size());
             
             for (int i = 0; i < responsePlugins.size(); i++) {
-                CustomizedGamificationPlugin responsePlugin = responsePlugins.get(i);
-                CustomizedGamificationPlugin element = elements.get(i);
+                CustomizedPlugin responsePlugin = responsePlugins.get(i);
+                CustomizedPlugin element = elements.get(i);
                 
                 assertEquals(responsePlugin.getId(), element.getId());
                 assertEquals(responsePlugin.getGamificationPlugin().getId(), element.getGamificationPlugin().getId());

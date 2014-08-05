@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.comparator;
 
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
  *
  * @author Luca Piras
  */
-@Component("customizedGamificationPluginKeyComparator")
-public class CustomizedGamificationPluginKeyComparator implements Comparator<CustomizedGamificationPlugin>{
+@Component("customizedPluginKeyComparator")
+public class CustomizedPluginKeyComparator implements Comparator<CustomizedPlugin>{
 
     @Override
-    public int compare(CustomizedGamificationPlugin o1, CustomizedGamificationPlugin o2) {
+    public int compare(CustomizedPlugin o1, CustomizedPlugin o2) {
         int finalComparison = gamificationPluginComparator.compare(o1, o2);
         if (0 == finalComparison) {
             finalComparison = gamificationPluginComparator.compare(o1.getGamificationPlugin(), o2.getGamificationPlugin());
@@ -24,7 +24,7 @@ public class CustomizedGamificationPluginKeyComparator implements Comparator<Cus
         return finalComparison;
     }
     
-    @Qualifier("gamificationPluginKeyComparator")
+    @Qualifier("pluginKeyComparator")
     @Autowired
-    protected Comparator<GamificationPlugin> gamificationPluginComparator;
+    protected Comparator<Plugin> gamificationPluginComparator;
 }

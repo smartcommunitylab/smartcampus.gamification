@@ -7,10 +7,10 @@ import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeResponse;
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
-import eu.trentorise.game.plugin.service.IGameCustomizedPluginManager;
-import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
+import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.utils.web.WebFile;
 import java.net.MalformedURLException;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service("mockBadgeCollectionPluginManager")
-public class MockBadgeCollectionPluginManager extends MockResponder implements IGameCustomizedPluginManager<BadgeCollectionPlugin>,
+public class MockBadgeCollectionPluginManager extends MockResponder implements ICustomizedPluginManager<BadgeCollectionPlugin>,
                                                                                IBadgeCollectionPluginManager,
                                                                                IBadgeManager {
 
@@ -37,16 +37,16 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
     public static final String BADGE_FILE_NAME_GREEN_HERO_2 = "green_hero_2.png";
     
     @Override
-    public CustomizedGamificationPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<BadgeCollectionPlugin> container) {
+    public CustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<BadgeCollectionPlugin> container) {
         //TODO: create new customizedGamificationPlugin, obtain an id, then
         //create a customizedPluginGame using the new 
         //customizedGamificationPlugin with its id and the provided game
-        CustomizedGamificationPlugin plugin = manager.createEcologicalBadgesPlugin();
+        CustomizedPlugin plugin = manager.createEcologicalBadgesPlugin();
         
-        CustomizedGamificationPluginResponse response = new CustomizedGamificationPluginResponse();
-        response.setCustomizedGamificationPlugin(plugin);
+        CustomizedPluginResponse response = new CustomizedPluginResponse();
+        response.setCustomizedPlugin(plugin);
         
-        return ((CustomizedGamificationPluginResponse) this.buildPositiveResponse(response));
+        return ((CustomizedPluginResponse) this.buildPositiveResponse(response));
     }
     
     @Override
@@ -152,13 +152,13 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
         return ((BadgeResponse) this.buildPositiveResponse(response));
     }
     
-    public void setManager(MockGamePluginManager manager) {
+    public void setManager(MockPluginManager manager) {
         this.manager = manager;
     }
     
     @Qualifier("mockGamePluginManager")
     @Autowired
-    protected MockGamePluginManager manager;
+    protected MockPluginManager manager;
     
     @Qualifier("badgeCollectionKeyComparator")
     @Autowired

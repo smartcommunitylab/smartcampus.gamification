@@ -5,8 +5,8 @@ import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.service.MockActionManager;
 import eu.trentorise.game.application.service.MockApplicationManager;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.model.GamificationPlugin;
-import eu.trentorise.game.plugin.service.MockGamePluginManager;
+import eu.trentorise.game.plugin.model.Plugin;
+import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
@@ -43,12 +43,12 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
      */
     @Test
     public void testGetRuleTemplates() throws Exception {
-        MockGamePluginManager mock = new MockGamePluginManager();
+        MockPluginManager mock = new MockPluginManager();
         MockRuleTemplateManager ruleTemplateMock = new MockRuleTemplateManager();
         ruleTemplateMock.setManager(mock);
         
         
-        GamificationPlugin plugin = mock.createPointsPlugin();
+        Plugin plugin = mock.createPointsPlugin();
         List<RuleTemplate> expectedElements = ruleTemplateMock.createPointPluginRuleTemplateList();
         this.executeTestGetRuleTemplates(plugin, expectedElements);
         
@@ -61,7 +61,7 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
         this.executeTestGetRuleTemplates(plugin, expectedElements);
     }
     
-    protected void executeTestGetRuleTemplates(GamificationPlugin plugin,
+    protected void executeTestGetRuleTemplates(Plugin plugin,
                                                List<RuleTemplate> expectedElements) throws Exception {
         
         RestTemplateJsonServiceTestHelper<RuleTemplateResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
@@ -161,13 +161,13 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
     @Test
     public void testGetPluginOperatorsSupported() throws Exception {
         MockRuleTemplateManager mock = new MockRuleTemplateManager();
-        MockGamePluginManager gamePluginManagerMock = new MockGamePluginManager();
+        MockPluginManager gamePluginManagerMock = new MockPluginManager();
         
         this.executeTestGetPluginOperatorsSupported(gamePluginManagerMock.createPointsPlugin(), 
                                                     mock.createPointPluginOperators());
     }
     
-    protected void executeTestGetPluginOperatorsSupported(GamificationPlugin plugin,
+    protected void executeTestGetPluginOperatorsSupported(Plugin plugin,
                                                           List<Operator> expectedElements) throws Exception {
         
         RestTemplateJsonServiceTestHelper<OperatorResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
@@ -215,7 +215,7 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
     @Test
     public void testSetRule() throws Exception {
         MockRuleTemplateManager mock = new MockRuleTemplateManager();
-        MockGamePluginManager gamePluginManagerMock = new MockGamePluginManager();
+        MockPluginManager gamePluginManagerMock = new MockPluginManager();
         
         Game game = new Game();
         game.setId(135);

@@ -2,7 +2,7 @@ package eu.trentorise.game.controller;
 
 import eu.trentorise.game.request.HelloGameRequest;
 import eu.trentorise.game.model.backpack.Badge;
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
 import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class HelloGameController extends AbstractController<HelloGameRequest> {
         
         //TODO: manage the value of the gamification approach id
         rulesEngineManager.runEngine(null, 
-                                     GamificationPluginIdentifier.BADGE_PLUGIN);
+                                     PluginIdentifier.BADGE_PLUGIN);
         
         actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();*/
         

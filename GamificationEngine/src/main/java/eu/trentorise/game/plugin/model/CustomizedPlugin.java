@@ -8,15 +8,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 //Necessary for the getCustomizedPluginListService Test
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CustomizedGamificationPlugin extends GamificationPlugin {
+public class CustomizedPlugin extends Plugin {
     
-    protected GamificationPlugin gamificationPlugin;
+    protected Plugin gamificationPlugin;
 
-    public GamificationPlugin getGamificationPlugin() {
+    public Plugin getGamificationPlugin() {
         return gamificationPlugin;
     }
 
-    public void setGamificationPlugin(GamificationPlugin gamificationPlugin) {
+    public void setGamificationPlugin(Plugin gamificationPlugin) {
         this.gamificationPlugin = gamificationPlugin;
     }
     

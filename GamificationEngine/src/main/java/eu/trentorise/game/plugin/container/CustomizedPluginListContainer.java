@@ -1,6 +1,6 @@
 package eu.trentorise.game.plugin.container;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.profile.game.model.Game;
 
 
@@ -8,7 +8,7 @@ public class CustomizedPluginListContainer implements ICustomizedPluginListConta
 
     protected Game game;
     
-    protected GamificationPlugin gamificationPlugin;
+    protected Plugin gamificationPlugin;
     
     @Override
     public Game getGame() {
@@ -21,12 +21,12 @@ public class CustomizedPluginListContainer implements ICustomizedPluginListConta
     }
     
     @Override
-    public GamificationPlugin getGamificationPlugin() {
+    public Plugin getGamificationPlugin() {
         return gamificationPlugin;
     }
 
     @Override
-    public void setGamificationPlugin(GamificationPlugin plugin) {
+    public void setGamificationPlugin(Plugin plugin) {
         this.gamificationPlugin = plugin;
     }
 

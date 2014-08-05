@@ -1,10 +1,10 @@
 package eu.trentorise.game.plugin.point.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.plugin.point.model.rule.PointRuleTemplate;
 import eu.trentorise.game.plugin.point.service.IPointRuleManager;
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.action.model.Action;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +36,8 @@ public class PointRuleController {
         //TODO: manage the id of the rule
         rule.setId(1);
         
-        GamificationPlugin plugin = new GamificationPlugin();
-        plugin.setName(GamificationPluginIdentifier.POINT_PLUGIN.toString());
+        Plugin plugin = new Plugin();
+        plugin.setName(PluginIdentifier.POINT_PLUGIN.toString());
         rule.setPlugin(plugin);
         
         rule.setAction(action);

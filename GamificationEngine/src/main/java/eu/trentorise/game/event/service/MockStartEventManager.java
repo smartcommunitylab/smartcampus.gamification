@@ -1,7 +1,7 @@
 package eu.trentorise.game.event.service;
 
 import eu.trentorise.game.event.model.StartEvent;
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
@@ -27,7 +27,7 @@ public class MockStartEventManager extends MockResponder implements IStartEventM
         try {
             //TODO: manage the value of the gamification approach id
             rulesEngineManager.runEngine(elements,
-                    GamificationPluginIdentifier.POINT_PLUGIN);
+                    PluginIdentifier.POINT_PLUGIN);
         } catch (Exception ex) {
             logger.debug("************************** EXCEPTION *******************************" + ex);
         }

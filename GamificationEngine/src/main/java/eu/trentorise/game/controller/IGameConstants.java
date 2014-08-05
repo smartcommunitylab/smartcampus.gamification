@@ -35,16 +35,18 @@ public interface IGameConstants {
     public static final String SERVICE_GAME_PROFILE_GAMES_PATH = SERVICE_GAME_PROFILE_PATH + "/games";
     public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM = "gameId";
     public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH = SERVICE_GAME_PROFILE_GAMES_PATH + "/{" + SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM + "}";
-    /*views and services - services - player*/
-    public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
-    /*views and services - services - configuration*/
-    public static final String SERVICE_GAME_CONFIGURATION = SERVICE_PATH + "/configuration";
     /*views and services - services - plugins*/
     public static final String SERVICE_PLUGINS_PATH = SERVICE_PATH + "/plugins";
+    public static final String SERVICE_PLUGINS_SINGLE_PATH_PARAM = "plugId";
+    public static final String SERVICE_PLUGINS_SINGLE_PATH = SERVICE_PLUGINS_PATH + "/{" + SERVICE_PLUGINS_SINGLE_PATH_PARAM + "}";
     public static final String SERVICE_PLUGINS_POINT_PATH = SERVICE_PLUGINS_PATH + "/point";
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PLUGINS_PATH + "/badge-collection";
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_PATH + "/badge";
     public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PLUGINS_PATH + "/leaderboard-point";
+    /*views and services - services - player*/
+    public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
+    /*views and services - services - configuration*/
+    public static final String SERVICE_GAME_CONFIGURATION = SERVICE_PATH + "/configuration";
     /*views and services - services - actions*/
     public static final String SERVICE_ACTION_PATH = SERVICE_PATH + "/action";
     public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_ACTION_PATH + "/param";

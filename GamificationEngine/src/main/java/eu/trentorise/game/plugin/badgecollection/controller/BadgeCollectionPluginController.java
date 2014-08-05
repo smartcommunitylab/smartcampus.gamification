@@ -9,8 +9,8 @@ import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
 import eu.trentorise.game.plugin.badgecollection.service.IBadgeCollectionPluginManager;
 import eu.trentorise.game.plugin.controller.AbstractCustomizedPluginController;
 import eu.trentorise.game.plugin.request.AbstractCustomizedPluginRequest;
-import eu.trentorise.game.plugin.response.CustomizedGamificationPluginResponse;
-import eu.trentorise.game.plugin.service.IGameCustomizedPluginManager;
+import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BadgeCollectionPluginController extends AbstractCustomizedPluginController {
     
     @RequestMapping(method = RequestMethod.POST, value = "/setCustomizedGamificationPlugin" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody CustomizedGamificationPluginResponse setCustomizedGamificationPlugin(@RequestBody BadgeCollectionPluginRequest request) {
+    public @ResponseBody CustomizedPluginResponse setCustomizedGamificationPlugin(@RequestBody BadgeCollectionPluginRequest request) {
         return super.setCustomizedGamificationPlugin((AbstractCustomizedPluginRequest) request);
     }
     
@@ -43,7 +43,7 @@ public class BadgeCollectionPluginController extends AbstractCustomizedPluginCon
     
     @Qualifier("mockBadgeCollectionPluginManager")
     @Autowired
-    public void setManager(IGameCustomizedPluginManager manager) {
+    public void setManager(ICustomizedPluginManager manager) {
         this.manager = manager;
     }
             

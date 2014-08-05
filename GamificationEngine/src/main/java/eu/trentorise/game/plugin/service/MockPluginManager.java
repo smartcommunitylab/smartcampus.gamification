@@ -1,20 +1,26 @@
 package eu.trentorise.game.plugin.service;
 
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
+import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
 import eu.trentorise.game.plugin.container.ICustomizedPluginActivationDeactivationContainer;
 import eu.trentorise.game.plugin.container.ICustomizedPluginListContainer;
+import eu.trentorise.game.plugin.container.IPluginContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.leaderboard.point.model.UpdateRate;
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.model.Typology;
-import eu.trentorise.game.plugin.response.CustomizedGamificationPluginListResponse;
-import eu.trentorise.game.plugin.response.GamificationPluginResponse;
+import eu.trentorise.game.plugin.response.CustomizedPluginListResponse;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.response.MockResponder;
+import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,22 +28,65 @@ import org.springframework.stereotype.Service;
  * @author Luca Piras
  */
 @Service("mockGamePluginManager")
-public class MockGamePluginManager extends MockResponder implements IGamePluginManager {
+public class MockPluginManager extends MockResponder implements IPluginManager, IRestCrudManager<Plugin, Object, IPluginContainer> {
+
+    public static MockPluginManager createInstance() {
+        MockPluginManager mock = new MockPluginManager();
+        mock.comparator = new PluginKeyComparator();
+        return mock;
+    }
+    
+    
+    @Override
+    public Plugin createSingleElement(IPluginContainer containerWithForeignIds) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
-    public GamificationPluginResponse getGamificationPlugins() {
-        List<GamificationPlugin> list = new ArrayList<>();
+    public Collection<Plugin> readCollection(Object containerWithIds) throws Exception {
+        //TODO: return null or throw Exception if this activity it is not 
+        //possible
+        return this.createElements();
+    }
+
+    @Override
+    public Plugin readSingleElement(IPluginContainer containerWithIds) throws Exception {
+        //TODO: return null or throw Exception if this activity it is not 
+        //possible
+        Plugin returnValue = null;
+        
+        Plugin expectedElement = this.createPointsPlugin();
+        if (0 == comparator.compare(containerWithIds.getGamificationPlugin(), expectedElement)) {
+            returnValue = expectedElement;
+        }
+        
+        return returnValue;
+    }
+
+    @Override
+    public Plugin updateSingleElement(IPluginContainer containerWithForeignIds) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Plugin deleteSingleElement(IPluginContainer containerWithIds) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    public Collection<Plugin> createElements() {
+        Collection<Plugin> list = new ArrayList<>();
         
         list.add(this.createPointsPlugin());
         list.add(this.createBadgeCollectionPlugin());
         list.add(this.createLeadearboardPointPlugin());
         
-        return this.makeResponse(list);
+        return list;
     }
 
     @Override
-    public CustomizedGamificationPluginListResponse getCustomizedGamificationPlugins(ICustomizedPluginListContainer container) {
-        List<CustomizedGamificationPlugin> list = new ArrayList<>();
+    public CustomizedPluginListResponse getCustomizedGamificationPlugins(ICustomizedPluginListContainer container) {
+        List<CustomizedPlugin> list = new ArrayList<>();
         
         //TODO: refactoring of this part changing it with a dynamic mechanism
         //that use persistence. Refactoring by creating a DAO that will manage 
@@ -69,13 +118,13 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
         return this.buildPositiveResponse(new GameResponse());
     }
     
-    protected GamificationPlugin createNewPlugin(GamificationPlugin emptyPlugin,
+    protected Plugin createNewPlugin(Plugin emptyPlugin,
                                                  Integer id, String name,
                                                  String version,
                                                  String description) {
         
         if (null == emptyPlugin) {
-            emptyPlugin = new GamificationPlugin();
+            emptyPlugin = new Plugin();
         }
         
         emptyPlugin.setId(id);
@@ -86,7 +135,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
         return emptyPlugin;
     }
     
-    protected CustomizedGamificationPlugin createNewCustomizedPlugin(CustomizedGamificationPlugin emptyPlugin,
+    protected CustomizedPlugin createNewCustomizedPlugin(CustomizedPlugin emptyPlugin,
                                                                      Integer id, 
                                                                      Integer fatherId,
                                                                      String name,
@@ -94,7 +143,7 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
                                                                      String description) {
         
         if (null == emptyPlugin) {
-            emptyPlugin = new CustomizedGamificationPlugin();
+            emptyPlugin = new CustomizedPlugin();
         }
         
         this.createNewPlugin(emptyPlugin, fatherId, name, version, description);
@@ -104,22 +153,22 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
         return emptyPlugin;
     }
     
-    public GamificationPlugin createPointsPlugin() {
+    public Plugin createPointsPlugin() {
         return this.createNewPlugin(null, 0, "Points", "0.1",
                                     "Points plugin description...");
     }
     
-    public GamificationPlugin createBadgeCollectionPlugin() {
+    public Plugin createBadgeCollectionPlugin() {
         return this.createNewPlugin(null, 1, "Badge collection", "0.1", 
                           "Badge collection plugin description...");
     }
     
-    public GamificationPlugin createLeadearboardPointPlugin() {
+    public Plugin createLeadearboardPointPlugin() {
         return this.createNewPlugin(null, 2, "Point Leaderboard", "0.1", 
                                     "Point Leaderboard plugin description...");
     }
     
-    protected GamificationPlugin createNewPointPlugin(Integer id, 
+    protected Plugin createNewPointPlugin(Integer id, 
                                                       Integer fatherId,
                                                       String name, 
                                                       String version,
@@ -235,24 +284,21 @@ public class MockGamePluginManager extends MockResponder implements IGamePluginM
         return plugin;
     }
     
-    protected void addNewPlugin(List<GamificationPlugin> list, Integer id, 
+    protected void addNewPlugin(List<Plugin> list, Integer id, 
                                 String name, String version, 
                                 String description) {
         
         list.add(this.createNewPlugin(null, id, name, version, description));
     }
-
-    protected GamificationPluginResponse makeResponse(List<GamificationPlugin> list) {
-        GamificationPluginResponse response = new GamificationPluginResponse();
-        response.setGamificationPlugins(list);
+    
+    protected CustomizedPluginListResponse makeCustomizedResponse(List<CustomizedPlugin> list) {
+        CustomizedPluginListResponse response = new CustomizedPluginListResponse();
+        response.setCustomizedPlugins(list);
         
-        return ((GamificationPluginResponse) this.buildPositiveResponse(response));
+        return ((CustomizedPluginListResponse) this.buildPositiveResponse(response));
     }
     
-    protected CustomizedGamificationPluginListResponse makeCustomizedResponse(List<CustomizedGamificationPlugin> list) {
-        CustomizedGamificationPluginListResponse response = new CustomizedGamificationPluginListResponse();
-        response.setCustomizedGamificationPlugins(list);
-        
-        return ((CustomizedGamificationPluginListResponse) this.buildPositiveResponse(response));
-    }
+    @Qualifier("pluginKeyComparator")
+    @Autowired
+    protected Comparator<Plugin> comparator;
 }

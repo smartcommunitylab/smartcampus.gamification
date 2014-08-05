@@ -10,7 +10,7 @@ public class CustomizedPluginGame {
     
     protected Game game;
     
-    protected CustomizedGamificationPlugin customizedGamificationPlugin;
+    protected CustomizedPlugin customizedGamificationPlugin;
     
     protected Boolean activated;
 
@@ -22,11 +22,11 @@ public class CustomizedPluginGame {
         this.game = game;
     }
 
-    public CustomizedGamificationPlugin getCustomizedGamificationPlugin() {
+    public CustomizedPlugin getCustomizedGamificationPlugin() {
         return customizedGamificationPlugin;
     }
 
-    public void setCustomizedGamificationPlugin(CustomizedGamificationPlugin customizedGamificationPlugin) {
+    public void setCustomizedGamificationPlugin(CustomizedPlugin customizedGamificationPlugin) {
         this.customizedGamificationPlugin = customizedGamificationPlugin;
     }
 

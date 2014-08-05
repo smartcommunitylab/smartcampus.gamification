@@ -32,11 +32,15 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
 
     @Override
     public Collection<Game> readCollection(Object containerWithIds) throws Exception {
+        //TODO: return null or throw Exception if this activity it is not 
+        //possible
         return this.createElements();
     }
 
     @Override
     public Game readSingleElement(Game containerWithIds) throws Exception {
+        //TODO: return null or throw Exception if this activity it is not 
+        //possible
         Game returnValue = null;
         
         Game expectedElement = this.createRoveretoGame();

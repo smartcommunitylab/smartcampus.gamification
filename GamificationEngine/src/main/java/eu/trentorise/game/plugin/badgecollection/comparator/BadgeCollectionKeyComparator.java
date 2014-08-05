@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.badgecollection.comparator;
 
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,7 +19,7 @@ public class BadgeCollectionKeyComparator implements Comparator<BadgeCollectionP
         return customizedGamificationPluginComparator.compare(o1, o2);
     }
     
-    @Qualifier("customizedGamificationPluginKeyComparator")
+    @Qualifier("customizedPluginKeyComparator")
     @Autowired
-    protected Comparator<CustomizedGamificationPlugin> customizedGamificationPluginComparator;
+    protected Comparator<CustomizedPlugin> customizedGamificationPluginComparator;
 }

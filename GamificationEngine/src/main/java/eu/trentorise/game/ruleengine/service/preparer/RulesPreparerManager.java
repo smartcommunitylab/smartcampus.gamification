@@ -1,7 +1,7 @@
 package eu.trentorise.game.ruleengine.service.preparer;
 
 
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import eu.trentorise.game.plugin.PluginIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.trentorise.game.ruleengine.model.Rule;
@@ -16,13 +16,13 @@ public class RulesPreparerManager implements IRulesPreparerManager {
     
     @Override
     public void prepareRules(IKnowledgeBuilder kbuilder, 
-                             GamificationPluginIdentifier gamificationApproachId) {
+                             PluginIdentifier gamificationApproachId) {
         
         List<Rule> rules = this.getRules(gamificationApproachId);
         this.addRules(kbuilder, rules);
     }
     
-    protected List<Rule> getRules(GamificationPluginIdentifier gamificationApproachId) {
+    protected List<Rule> getRules(PluginIdentifier gamificationApproachId) {
         return dao.getRules(gamificationApproachId);
     }
     

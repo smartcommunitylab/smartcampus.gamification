@@ -1,12 +1,12 @@
 package eu.trentorise.game.plugin.badgecollection.model;
 
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
 
 /**
  *
  * @author Luca Piras
  */
-public class BadgeCollectionPlugin extends CustomizedGamificationPlugin {
+public class BadgeCollectionPlugin extends CustomizedPlugin {
 
     @Override
     public String toString() {

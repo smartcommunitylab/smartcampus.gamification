@@ -1,6 +1,6 @@
 package eu.trentorise.game.ruleengine.request;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 
 /**
  *
@@ -8,13 +8,13 @@ import eu.trentorise.game.plugin.model.GamificationPlugin;
  */
 public class PluginOperatorRequest {
     
-    protected GamificationPlugin gamificationPlugin;
+    protected Plugin gamificationPlugin;
 
-    public GamificationPlugin getGamificationPlugin() {
+    public Plugin getGamificationPlugin() {
         return gamificationPlugin;
     }
 
-    public void setGamificationPlugin(GamificationPlugin gamificationPlugin) {
+    public void setGamificationPlugin(Plugin gamificationPlugin) {
         this.gamificationPlugin = gamificationPlugin;
     }
 

@@ -1,6 +1,6 @@
 package eu.trentorise.game.plugin.container;
 
-import eu.trentorise.game.plugin.model.CustomizedGamificationPlugin;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.profile.game.model.Game;
 
 /**
@@ -11,7 +11,7 @@ public class CustomizedPluginActivationDeactivationContainer implements ICustomi
 
     protected Game game;
     
-    protected CustomizedGamificationPlugin customizedGamificationPlugin;
+    protected CustomizedPlugin customizedGamificationPlugin;
 
     protected boolean activated;
     
@@ -26,12 +26,12 @@ public class CustomizedPluginActivationDeactivationContainer implements ICustomi
     }
 
     @Override
-    public CustomizedGamificationPlugin getCustomizedGamificationPlugin() {
+    public CustomizedPlugin getCustomizedGamificationPlugin() {
         return customizedGamificationPlugin;
     }
 
     @Override
-    public void setCustomizedGamificationPlugin(CustomizedGamificationPlugin customizedGamificationPlugin) {
+    public void setCustomizedGamificationPlugin(CustomizedPlugin customizedGamificationPlugin) {
         this.customizedGamificationPlugin = customizedGamificationPlugin;
     }
 

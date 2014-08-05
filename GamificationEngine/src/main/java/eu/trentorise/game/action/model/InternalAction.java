@@ -1,6 +1,6 @@
 package eu.trentorise.game.action.model;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 
 /**
@@ -9,15 +9,15 @@ import eu.trentorise.game.ruleengine.model.RuleTemplate;
  */
 public class InternalAction extends Action {
     
-    protected GamificationPlugin plugin;
+    protected Plugin plugin;
     
     protected RuleTemplate ruleTemplate;
 
-    public GamificationPlugin getPlugin() {
+    public Plugin getPlugin() {
         return plugin;
     }
 
-    public void setPlugin(GamificationPlugin plugin) {
+    public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
     }
 

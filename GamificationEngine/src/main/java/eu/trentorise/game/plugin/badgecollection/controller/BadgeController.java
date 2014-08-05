@@ -7,7 +7,7 @@ import eu.trentorise.game.plugin.badgecollection.container.IBadgeSettingContaine
 import eu.trentorise.game.plugin.badgecollection.model.Badge;
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeResponse;
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class BadgeController {
         BadgeCollectionPlugin badgeCollection = new BadgeCollectionPlugin();
         badgeCollection.setId(badgeCollectionId);
         
-        GamificationPlugin gamificationPlugin = new GamificationPlugin();
+        Plugin gamificationPlugin = new Plugin();
         gamificationPlugin.setId(badgeCollectionPluginId);
         
         badgeCollection.setGamificationPlugin(gamificationPlugin);

@@ -1,6 +1,6 @@
 package eu.trentorise.game.profile.game.model;
 
-import eu.trentorise.game.plugin.model.GamificationPlugin;
+import eu.trentorise.game.plugin.model.Plugin;
 
 /**
  *
@@ -9,7 +9,7 @@ import eu.trentorise.game.plugin.model.GamificationPlugin;
 public class GameConfiguration {
     
     protected GameProfile gameProfile;
-    protected GamificationPlugin plugin;
+    protected Plugin plugin;
     
     protected boolean pluginActivated;
 
@@ -21,11 +21,11 @@ public class GameConfiguration {
         this.gameProfile = gameProfile;
     }
 
-    public GamificationPlugin getPlugin() {
+    public Plugin getPlugin() {
         return plugin;
     }
 
-    public void setPlugin(GamificationPlugin plugin) {
+    public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
     }
 

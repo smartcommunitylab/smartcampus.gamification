@@ -1,6 +1,6 @@
 package eu.trentorise.game.ruleengine.data;
 
-import eu.trentorise.game.plugin.GamificationPluginIdentifier;
+import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.ruleengine.model.Rule;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class AbstractRulesDAO implements IRulesDAO {
     
     @Override
-    public List<Rule> getRules(GamificationPluginIdentifier gamificationApproachId) {
+    public List<Rule> getRules(PluginIdentifier gamificationApproachId) {
         
         List<String> contentRules = initContentRules();
         contentRules = obtainsContentRules(contentRules);

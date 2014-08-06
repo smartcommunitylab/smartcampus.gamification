@@ -156,7 +156,7 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
         this.manager = manager;
     }
     
-    @Qualifier("mockGamePluginManager")
+    @Qualifier("mockPluginManager")
     @Autowired
     protected MockPluginManager manager;
     

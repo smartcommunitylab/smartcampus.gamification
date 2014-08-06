@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Plugin {
     
-    //TODO: this is the key
+    //TODO: key
     protected Integer id;
     
     protected String name;

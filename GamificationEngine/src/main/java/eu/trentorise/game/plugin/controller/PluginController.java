@@ -74,7 +74,7 @@ public class PluginController extends AbstractCrudRestController<Plugin, Object,
     }
     
     
-    @Qualifier("mockGamePluginManager")
+    @Qualifier("mockPluginManager")
     @Autowired
     public void setManager(IRestCrudManager<Plugin, Object, IPluginContainer> manager) {
         this.manager = manager;

@@ -32,19 +32,19 @@ public abstract class AbstractCrudRestController<T, CC, C> {
                                                UriComponentsBuilder builder) {
         
         T result = restCrudHelper.createSingleElement(containerWithIds, manager,
-                                                  restCrudResultHelper, logger);
+                                                      restCrudResultHelper,
+                                                      logger);
     
         return restCrudResponseHelper.makeCreationResponse(builder, 
-                                                       resourceSinglePath,
-                                                       this.makeUriVariables(containerWithIds, 
-                                                                             result));
+                                                           resourceSinglePath,
+                                                           this.makeUriVariables(containerWithIds, result));
     }
     
     
     //READ
     public Collection<T> readResources(CC containerWithIds) {
         return restCrudHelper.readCollection(containerWithIds, manager, 
-                                            restCrudResultHelper, logger);
+                                             restCrudResultHelper, logger);
     }
     
     
@@ -61,9 +61,9 @@ public abstract class AbstractCrudRestController<T, CC, C> {
         T result = restCrudHelper.updateSingleElement(containerWithIds, manager,
                                                       restCrudResultHelper, logger);
     
-        return restCrudResponseHelper.makeUpdateResponse(builder, 
-                                                     resourceSinglePath,
-                                                     this.makeUriVariables(containerWithIds, result));
+        return restCrudResponseHelper.makeUpdateResponse(builder,
+                                                         resourceSinglePath,
+                                                         this.makeUriVariables(containerWithIds, result));
     }
     
     

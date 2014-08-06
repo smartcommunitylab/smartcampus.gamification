@@ -6,11 +6,13 @@ import eu.trentorise.game.profile.game.model.Game;
  *
  * @author Luca Piras
  */
-public class CustomizedPluginGame {
+public class GameCustomizedPlugin {
     
+    //TODO: key
     protected Game game;
     
-    protected CustomizedPlugin customizedGamificationPlugin;
+    //TODO: key
+    protected CustomizedPlugin customizedPlugin;
     
     protected Boolean activated;
 
@@ -22,12 +24,12 @@ public class CustomizedPluginGame {
         this.game = game;
     }
 
-    public CustomizedPlugin getCustomizedGamificationPlugin() {
-        return customizedGamificationPlugin;
+    public CustomizedPlugin getCustomizedPlugin() {
+        return customizedPlugin;
     }
 
-    public void setCustomizedGamificationPlugin(CustomizedPlugin customizedGamificationPlugin) {
-        this.customizedGamificationPlugin = customizedGamificationPlugin;
+    public void setCustomizedPlugin(CustomizedPlugin customizedPlugin) {
+        this.customizedPlugin = customizedPlugin;
     }
 
     public Boolean isActivated() {
@@ -40,6 +42,6 @@ public class CustomizedPluginGame {
 
     @Override
     public String toString() {
-        return "CustomizedPluginGame{" + "game=" + game + ", customizedGamificationPlugin=" + customizedGamificationPlugin + ", activated=" + activated + '}';
+        return "GameCustomizedPlugin{" + "game=" + game + ", customizedPlugin=" + customizedPlugin + ", activated=" + activated + '}';
     }
 }

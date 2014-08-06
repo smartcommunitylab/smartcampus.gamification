@@ -27,7 +27,7 @@ public class MockPointPluginManager extends MockResponder implements ICustomized
         return ((CustomizedPluginResponse) this.buildPositiveResponse(response));
     }
     
-    @Qualifier("mockGamePluginManager")
+    @Qualifier("mockPluginManager")
     @Autowired
     protected MockPluginManager manager;
 }

@@ -28,7 +28,7 @@ public class MockLeaderboardPointPluginManager extends MockResponder implements 
         return ((CustomizedPluginResponse) this.buildPositiveResponse(response));
     }
     
-    @Qualifier("mockGamePluginManager")
+    @Qualifier("mockPluginManager")
     @Autowired
     protected MockPluginManager manager;
 }

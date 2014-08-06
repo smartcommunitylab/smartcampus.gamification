@@ -6,6 +6,7 @@ package eu.trentorise.game.profile.game.model;
  */
 public class Game {
     
+    //TODO: key
     protected Integer id;
     
     protected String name;

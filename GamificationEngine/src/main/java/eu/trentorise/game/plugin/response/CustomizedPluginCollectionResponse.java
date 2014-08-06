@@ -3,8 +3,7 @@ package eu.trentorise.game.plugin.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
-import eu.trentorise.game.response.*;
-import java.util.List;
+import java.util.Collection;
 
 /**
  *
@@ -12,20 +11,20 @@ import java.util.List;
  */
 //Necessary for the getCustomizedPluginListService Test
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CustomizedPluginListResponse extends GameResponse {
+public class CustomizedPluginCollectionResponse {
     
-    protected List<CustomizedPlugin> customizedPlugins;
+    protected Collection<CustomizedPlugin> customizedPlugins;
 
-    public List<CustomizedPlugin> getCustomizedPlugins() {
+    public Collection<CustomizedPlugin> getCustomizedPlugins() {
         return customizedPlugins;
     }
 
-    public void setCustomizedPlugins(List<CustomizedPlugin> customizedPlugins) {
+    public void setCustomizedPlugins(Collection<CustomizedPlugin> customizedPlugins) {
         this.customizedPlugins = customizedPlugins;
     }
 
     @Override
     public String toString() {
-        return "CustomizedPluginListResponse{" + "customizedPlugins=" + customizedPlugins + '}';
+        return "CustomizedPluginCollectionResponse{" + "customizedPlugins=" + customizedPlugins + '}';
     }
 }

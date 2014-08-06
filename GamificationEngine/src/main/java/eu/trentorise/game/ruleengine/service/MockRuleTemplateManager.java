@@ -237,7 +237,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     }
     
     
-    @Qualifier("mockGamePluginManager")
+    @Qualifier("mockPluginManager")
     @Autowired
     protected MockPluginManager manager;
     

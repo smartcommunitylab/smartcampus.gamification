@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomizedPlugin extends Plugin {
     
+    //TODO: id with the id of this customizedPlugin (the id provided by
+    //the super class)
     protected Plugin gamificationPlugin;
 
     public Plugin getGamificationPlugin() {

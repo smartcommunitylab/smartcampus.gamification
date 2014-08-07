@@ -9,6 +9,7 @@ import eu.trentorise.game.plugin.response.PluginCollectionResponse;
 import eu.trentorise.game.plugin.response.PluginResponse;
 import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.model.Game;
+import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
@@ -104,7 +105,7 @@ public class PluginControllerTest extends SkipServiceTestHelper {
         CustomizedPluginActivationDeactivationRequest request = new CustomizedPluginActivationDeactivationRequest();
         
         Game game = new Game();
-        game.setId(135);
+        game.setId(MockGameProfileManager.MOCK_GAME_ID);
         
         request.setGame(game);
         request.setCustomizedGamificationPlugin(mock.createEcologicalBadgesPlugin());

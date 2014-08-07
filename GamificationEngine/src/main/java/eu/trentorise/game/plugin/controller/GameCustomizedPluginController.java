@@ -1,13 +1,15 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.container.GameCustomizedPluginCollectionContainer;
+import eu.trentorise.game.plugin.container.GameCustomizedPluginContainer;
 import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
+import eu.trentorise.game.plugin.container.IGameCustomizedPluginContainer;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.response.CustomizedPluginCollectionResponse;
+import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
@@ -30,7 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Luca Piras
  */
 @Controller("gameCustomizedPluginController")
-public class GameCustomizedPluginController extends AbstractCrudRestController<CustomizedPlugin, IGameCustomizedPluginCollectionContainer, CustomizedPluginContainer> {
+public class GameCustomizedPluginController extends AbstractCrudRestController<CustomizedPlugin, 
+                                                                               IGameCustomizedPluginCollectionContainer, 
+                                                                               IGameCustomizedPluginContainer> {
 
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
@@ -47,18 +51,8 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId) {
         
-        Game game = new Game();
-        game.setId(gameId);
-        
-        Plugin plugin = new Plugin();
-        plugin.setId(plugId);
-        
-        CustomizedPlugin customizedPlugin = new CustomizedPlugin();
-        customizedPlugin.setGamificationPlugin(plugin);
-        
-        GameCustomizedPlugin gcp = new GameCustomizedPlugin();
-        gcp.setGame(game);
-        gcp.setCustomizedPlugin(customizedPlugin);
+        GameCustomizedPlugin gcp = this.makeContainerContent(gameId, plugId, 
+                                                             null);
         
         IGameCustomizedPluginCollectionContainer container = new GameCustomizedPluginCollectionContainer();
         container.setGameCustomizedPlugin(gcp);
@@ -71,10 +65,30 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
         return response;
     }
     
-
+    @RequestMapping(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH, method = RequestMethod.GET)
+    public @ResponseBody CustomizedPluginResponse readGameCustomizedPluginById(
+                         @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
+                         @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
+                         @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId) {
+        
+        GameCustomizedPlugin gcp = this.makeContainerContent(gameId, plugId, 
+                                                             cusPlugId);
+        
+        IGameCustomizedPluginContainer container = new GameCustomizedPluginContainer();
+        container.setGameCustomizedPlugin(gcp);
+        
+        CustomizedPlugin result = super.readResourceById(container);
+        
+        CustomizedPluginResponse response = new CustomizedPluginResponse();
+        response.setCustomizedPlugin(result);
+        
+        return response;
+    }
+       
     @Override
-    protected Map<String, Object> populateUriVariables(CustomizedPluginContainer containerWithIds, 
-                                                       CustomizedPlugin result, Map<String, Object> uriVariables) {
+    protected Map<String, Object> populateUriVariables(IGameCustomizedPluginContainer containerWithIds, 
+                                                       CustomizedPlugin result, 
+                                                       Map<String, Object> uriVariables) {
         
         uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, result.getId());
         uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, result.getId());
@@ -84,15 +98,37 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
     }
     
     
+    protected GameCustomizedPlugin makeContainerContent(Integer gameId, 
+                                                        Integer plugId, 
+                                                        Integer cusPlugId) {
+        
+        Game game = new Game();
+        game.setId(gameId);
+        
+        Plugin plugin = new Plugin();
+        plugin.setId(plugId);
+        
+        CustomizedPlugin customizedPlugin = new CustomizedPlugin();
+        customizedPlugin.setId(cusPlugId);
+        customizedPlugin.setPlugin(plugin);
+        
+        GameCustomizedPlugin gcp = new GameCustomizedPlugin();
+        gcp.setGame(game);
+        gcp.setCustomizedPlugin(customizedPlugin);
+        
+        return gcp;
+    }
+    
+    
     @Qualifier("mockGameCustomizedPluginManager")
     @Autowired
-    public void setManager(IRestCrudManager<CustomizedPlugin, IGameCustomizedPluginCollectionContainer, CustomizedPluginContainer> manager) {
+    public void setManager(IRestCrudManager<CustomizedPlugin, IGameCustomizedPluginCollectionContainer, IGameCustomizedPluginContainer> manager) {
         this.manager = manager;
     }
 
     @Qualifier("restCrudHelper")
     @Autowired
-    public void setRestCrudHelper(RestCrudHelper<CustomizedPlugin, IGameCustomizedPluginCollectionContainer, CustomizedPluginContainer> restCrudHelper) {
+    public void setRestCrudHelper(RestCrudHelper<CustomizedPlugin, IGameCustomizedPluginCollectionContainer, IGameCustomizedPluginContainer> restCrudHelper) {
         this.restCrudHelper = restCrudHelper;
     }
 

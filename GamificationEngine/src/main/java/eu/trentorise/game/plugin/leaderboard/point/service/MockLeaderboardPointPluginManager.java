@@ -3,7 +3,7 @@ package eu.trentorise.game.plugin.leaderboard.point.service;
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
-import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
 import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
 import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.response.MockResponder;
@@ -16,16 +16,16 @@ import org.springframework.stereotype.Service;
 public class MockLeaderboardPointPluginManager extends MockResponder implements ICustomizedPluginManager<LeaderboardPointPlugin> {
 
     @Override
-    public CustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<LeaderboardPointPlugin> container) {
+    public SettingCustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<LeaderboardPointPlugin> container) {
         //TODO: create new customizedGamificationPlugin, obtain an id, then
         //create a customizedPluginGame using the new 
         //customizedGamificationPlugin with its id and the provided game
         CustomizedPlugin plugin = manager.createGreenWeeklyLeadearboardPlugin();
         
-        CustomizedPluginResponse response = new CustomizedPluginResponse();
+        SettingCustomizedPluginResponse response = new SettingCustomizedPluginResponse();
         response.setCustomizedPlugin(plugin);
         
-        return ((CustomizedPluginResponse) this.buildPositiveResponse(response));
+        return ((SettingCustomizedPluginResponse) this.buildPositiveResponse(response));
     }
     
     @Qualifier("mockPluginManager")

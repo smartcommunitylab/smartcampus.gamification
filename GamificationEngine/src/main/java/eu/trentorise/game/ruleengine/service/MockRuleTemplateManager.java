@@ -54,7 +54,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         List<Rule> list = new ArrayList<>();
         
         Game game = container.getGame();
-        /*if (135 == game.getId()) {this.cr
+        /*if (MockGameProfileManager.MOCK_GAME_ID == game.getId()) {this.cr
             if (0 == comparator.compare(plugin, manager.createPointsPlugin())) {
                 list = this.createPointPluginRuleTemplateList();
             } else if (0 == comparator.compare(plugin, manager.createBadgeCollectionPlugin())) {

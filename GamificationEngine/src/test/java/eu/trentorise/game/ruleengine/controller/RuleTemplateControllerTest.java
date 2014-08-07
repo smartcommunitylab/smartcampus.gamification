@@ -8,6 +8,7 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.model.Game;
+import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
 import eu.trentorise.game.ruleengine.model.Rule;
@@ -218,7 +219,7 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
         MockPluginManager gamePluginManagerMock = new MockPluginManager();
         
         Game game = new Game();
-        game.setId(135);
+        game.setId(MockGameProfileManager.MOCK_GAME_ID);
         
         
         //TODO: to be completed

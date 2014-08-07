@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service("mockGameProfileManager")
 public class MockGameProfileManager implements IRestCrudManager<Game, Object, Game> {
 
+    public static final int MOCK_GAME_ID = 135;
+    
     public static MockGameProfileManager createInstance() {
         return new MockGameProfileManager();
     }
@@ -26,7 +28,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
     public Game createSingleElement(Game containerWithForeignIds) throws Exception {
         //TODO: return null or throw Exception if it is not possible to create a
         //new one
-        containerWithForeignIds.setId(135);
+        containerWithForeignIds.setId(MOCK_GAME_ID);
         return containerWithForeignIds;
     }
 
@@ -90,7 +92,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
     
     public Game createRoveretoGame() {
         Game element = new Game();
-        element.setId(135);
+        element.setId(MockGameProfileManager.MOCK_GAME_ID);
         element.setName("RoveretoGame");
         return element;
     }

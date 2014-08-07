@@ -18,10 +18,14 @@ public class CustomizedPluginKeyComparator implements Comparator<CustomizedPlugi
     public int compare(CustomizedPlugin o1, CustomizedPlugin o2) {
         int finalComparison = gamificationPluginComparator.compare(o1, o2);
         if (0 == finalComparison) {
-            finalComparison = gamificationPluginComparator.compare(o1.getGamificationPlugin(), o2.getGamificationPlugin());
+            finalComparison = gamificationPluginComparator.compare(o1.getPlugin(), o2.getPlugin());
         }
         
         return finalComparison;
+    }
+
+    public void setGamificationPluginComparator(Comparator<Plugin> gamificationPluginComparator) {
+        this.gamificationPluginComparator = gamificationPluginComparator;
     }
     
     @Qualifier("pluginKeyComparator")

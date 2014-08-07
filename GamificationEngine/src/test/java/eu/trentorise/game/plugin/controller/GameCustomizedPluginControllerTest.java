@@ -1,13 +1,20 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.game.plugin.comparator.CustomizedPluginKeyComparator;
+import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
+import eu.trentorise.game.plugin.container.GameCustomizedPluginCollectionContainer;
+import eu.trentorise.game.plugin.container.GameCustomizedPluginContainer;
 import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
+import eu.trentorise.game.plugin.container.IGameCustomizedPluginContainer;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.response.CustomizedPluginCollectionResponse;
+import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
 import eu.trentorise.game.plugin.service.MockGameCustomizedPluginManager;
 import eu.trentorise.game.plugin.service.MockPluginManager;
+import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import eu.trentorise.utils.web.IUrlMaker;
@@ -21,6 +28,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 
 
 /**
@@ -30,37 +38,40 @@ import org.springframework.http.HttpMethod;
 public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_PATH;
+    protected final static String BASE_RELATIVE_URL_SINGLE_PATH = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
 
     
     @Test
-    public void testReadCustomizedPlugins() throws Exception {
+    public void testReadGameCustomizedPlugins() throws Exception {
         MockGameCustomizedPluginManager mockCustomizedPluginManager = MockGameCustomizedPluginManager.createInstance();
         MockPluginManager mockPluginManager = MockPluginManager.createInstance();
         
+        IGameCustomizedPluginCollectionContainer container = new GameCustomizedPluginCollectionContainer();
+        
         Plugin plugin = mockPluginManager.createPointsPlugin();
-        IGameCustomizedPluginCollectionContainer container = mockCustomizedPluginManager.createContainer(135, plugin);
+        container.setGameCustomizedPlugin(mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null));
         Collection<CustomizedPlugin> expectedElements = mockPluginManager.createCustomizedPlugins(container);
-        this.executeTestReadCustomizedPlugins(container.getGameCustomizedPlugin(),
-                                              (List<CustomizedPlugin>) expectedElements);
+        this.executeTestReadGameCustomizedPlugins(container.getGameCustomizedPlugin(),
+                                                  (List<CustomizedPlugin>) expectedElements);
         
         plugin = mockPluginManager.createBadgeCollectionPlugin();
-        container = mockCustomizedPluginManager.createContainer(135, plugin);
+        container.setGameCustomizedPlugin(mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null));
         expectedElements = mockPluginManager.createCustomizedPlugins(container);
         
-        this.executeTestReadCustomizedPlugins(container.getGameCustomizedPlugin(),
-                                              (List<CustomizedPlugin>) expectedElements);
+        this.executeTestReadGameCustomizedPlugins(container.getGameCustomizedPlugin(),
+                                                  (List<CustomizedPlugin>) expectedElements);
         
         plugin = mockPluginManager.createLeadearboardPointPlugin();
-        container = mockCustomizedPluginManager.createContainer(135, plugin);
+        container.setGameCustomizedPlugin(mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null));
         expectedElements = mockPluginManager.createCustomizedPlugins(container);
         
-        this.executeTestReadCustomizedPlugins(container.getGameCustomizedPlugin(),
-                                              (List<CustomizedPlugin>) expectedElements);
+        this.executeTestReadGameCustomizedPlugins(container.getGameCustomizedPlugin(),
+                                                  (List<CustomizedPlugin>) expectedElements);
     }
     
-    protected void executeTestReadCustomizedPlugins(GameCustomizedPlugin gcp, 
-                                                    List<CustomizedPlugin> expectedElements) throws Exception {
+    protected void executeTestReadGameCustomizedPlugins(GameCustomizedPlugin gcp, 
+                                                        List<CustomizedPlugin> expectedElements) throws Exception {
         
         RestTemplateJsonServiceTestHelper<CustomizedPluginCollectionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         IUrlMaker urlMaker = new UrlMaker();
@@ -68,10 +79,7 @@ public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
         String relativeUrl = urlMaker.makeUrl(BASE_RELATIVE_URL, 
                                               this.makeCollectionUriVariables(gcp));
         
-        
-        
-        
-        CustomizedPluginCollectionResponse response = helper.executeTest("PluginControllerTest - testReadCustomizedPlugins",
+        CustomizedPluginCollectionResponse response = helper.executeTest("PluginControllerTest - testReadGameCustomizedPlugins",
                                                                          relativeUrl,
                                                                          HttpMethod.GET,
                                                                          CustomizedPluginCollectionResponse.class, 
@@ -88,9 +96,62 @@ public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
                 CustomizedPlugin expectedElement = expectedElements.get(i);
                 
                 assertEquals(responseElement.getId(), expectedElement.getId());
-                assertEquals(responseElement.getGamificationPlugin().getId(), 
-                             expectedElement.getGamificationPlugin().getId());
+                assertEquals(responseElement.getPlugin().getId(), 
+                             expectedElement.getPlugin().getId());
             }
+        }
+    }
+    
+    @Test
+    public void testReadGameCustomizedPluginById() throws Exception {
+        MockGameCustomizedPluginManager mockCustomizedPluginManager = MockGameCustomizedPluginManager.createInstance();
+        
+        IGameCustomizedPluginContainer container = new GameCustomizedPluginContainer();
+        
+        CustomizedPlugin expectedElement = MockPluginManager.createInstance().createGreenLeavesPointPlugin();
+        GameCustomizedPlugin containerContent = mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, 
+                                                                                                   expectedElement.getPlugin(),
+                                                                                                   expectedElement.getId());
+        container.setGameCustomizedPlugin(containerContent);
+        GameCustomizedPlugin gameCustomizedPlugin = container.getGameCustomizedPlugin();
+        
+        
+        this.executeTestReadGameCustomizedPluginById(gameCustomizedPlugin, expectedElement, HttpStatus.OK);
+        
+        gameCustomizedPlugin.getCustomizedPlugin().setId(-1);
+        this.executeTestReadGameCustomizedPluginById(gameCustomizedPlugin, expectedElement, HttpStatus.NOT_FOUND);
+        
+        gameCustomizedPlugin.getCustomizedPlugin().setId(0);
+        this.executeTestReadGameCustomizedPluginById(gameCustomizedPlugin, expectedElement, HttpStatus.NOT_FOUND);
+    }
+    
+    protected void executeTestReadGameCustomizedPluginById(GameCustomizedPlugin gcp,
+                                                           CustomizedPlugin expectedElement, 
+                                                           HttpStatus expectedStatus) throws Exception {
+        
+        RestTemplateJsonServiceTestHelper<CustomizedPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        IUrlMaker urlMaker = new UrlMaker();
+        
+        String relativeUrl = urlMaker.makeUrl(BASE_RELATIVE_URL_SINGLE_PATH, 
+                                              this.makeUriVariables(gcp));
+        
+        CustomizedPluginResponse response = helper.executeTest("PluginControllerTest - readGameCustomizedPluginById",
+                                                               relativeUrl,
+                                                               HttpMethod.GET,
+                                                               CustomizedPluginResponse.class,
+                                                               null, 
+                                                               expectedStatus);
+        
+        if (null != response && 0 == expectedStatus.compareTo(HttpStatus.OK)) {
+            CustomizedPlugin responseElement = response.getCustomizedPlugin();
+            
+            assertNotNull(responseElement);
+            
+            CustomizedPluginKeyComparator comparator = new CustomizedPluginKeyComparator();
+            PluginKeyComparator pluginKeyComparator = new PluginKeyComparator();
+            comparator.setGamificationPluginComparator(pluginKeyComparator);
+            
+            assertEquals(0, comparator.compare(expectedElement, responseElement));
         }
     }
     
@@ -101,7 +162,7 @@ public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
         uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, 
                          element.getGame().getId());
         uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, 
-                         element.getCustomizedPlugin().getGamificationPlugin().getId());
+                         element.getCustomizedPlugin().getPlugin().getId());
         
         return uriVariables;
     }

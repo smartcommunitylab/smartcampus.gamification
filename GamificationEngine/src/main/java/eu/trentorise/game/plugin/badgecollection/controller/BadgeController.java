@@ -40,7 +40,7 @@ public class BadgeController {
         Plugin gamificationPlugin = new Plugin();
         gamificationPlugin.setId(badgeCollectionPluginId);
         
-        badgeCollection.setGamificationPlugin(gamificationPlugin);
+        badgeCollection.setPlugin(gamificationPlugin);
         
         badge.setBadgeCollection(badgeCollection);
         

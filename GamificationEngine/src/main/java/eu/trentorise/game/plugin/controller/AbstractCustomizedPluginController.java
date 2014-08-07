@@ -2,7 +2,7 @@ package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.request.AbstractCustomizedPluginRequest;
-import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
 import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
 
 /**
@@ -11,7 +11,7 @@ import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
  */
 public abstract class AbstractCustomizedPluginController {
     
-    public CustomizedPluginResponse setCustomizedGamificationPlugin(AbstractCustomizedPluginRequest request) {
+    public SettingCustomizedPluginResponse setCustomizedGamificationPlugin(AbstractCustomizedPluginRequest request) {
         CustomizedPluginContainer container = new CustomizedPluginContainer();
         container.setGame(request.getGame());
         container.setPlugin(request.getPlugin());

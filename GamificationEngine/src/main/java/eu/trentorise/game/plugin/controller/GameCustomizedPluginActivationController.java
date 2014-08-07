@@ -2,14 +2,10 @@ package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.container.CustomizedPluginActivationDeactivationContainer;
-import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.container.ICustomizedPluginActivationDeactivationContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
-import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.request.CustomizedPluginActivationDeactivationRequest;
 import eu.trentorise.game.plugin.service.IGameCustomizedPluginManager;
 import eu.trentorise.game.response.GameResponse;
-import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

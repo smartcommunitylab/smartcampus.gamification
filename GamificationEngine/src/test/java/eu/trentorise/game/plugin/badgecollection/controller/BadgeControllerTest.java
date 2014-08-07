@@ -69,7 +69,7 @@ public class BadgeControllerTest extends SkipServiceTestHelper {
         nameValuePairs.add(new BasicNameValuePair(IGameConstants.PARAM_BADGECOLLECTION_ID, 
                                                   expectedBadge.getBadgeCollection().getId() + ""));
         nameValuePairs.add(new BasicNameValuePair(IGameConstants.PARAM_BADGECOLLECTION_PLUGIN_ID, 
-                                                  expectedBadge.getBadgeCollection().getGamificationPlugin().getId() + ""));
+                                                  expectedBadge.getBadgeCollection().getPlugin().getId() + ""));
         
         String stringResponse = helper.executeTest("testSetBadge", 
                                                    BASE_RELATIVE_URL + "/setBadge" + FINAL_PART_RELATIVE_URL,
@@ -88,7 +88,7 @@ public class BadgeControllerTest extends SkipServiceTestHelper {
             assertNotNull(badgeResponse);
             assertEquals(badgeResponse.getId(), expectedBadge.getId());
             assertEquals(badgeResponse.getBadgeCollection().getId(), expectedBadge.getBadgeCollection().getId());
-            assertEquals(badgeResponse.getBadgeCollection().getGamificationPlugin().getId(), expectedBadge.getBadgeCollection().getGamificationPlugin().getId());
+            assertEquals(badgeResponse.getBadgeCollection().getPlugin().getId(), expectedBadge.getBadgeCollection().getPlugin().getId());
         }
     }
 }

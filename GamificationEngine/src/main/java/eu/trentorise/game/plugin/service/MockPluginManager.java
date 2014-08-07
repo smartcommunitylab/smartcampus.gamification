@@ -11,7 +11,6 @@ import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.model.Typology;
-import eu.trentorise.game.plugin.response.CustomizedPluginCollectionResponse;
 import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
@@ -87,16 +86,13 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
     
     public Collection<CustomizedPlugin> createCustomizedPlugins(IGameCustomizedPluginCollectionContainer container) {
         List<CustomizedPlugin> list = new ArrayList<>();
-        //TODO: vai nella tabella gameCustomizedPlugin e recupera tutti i
-        //customizedPlugins per il game indicato ed il plugin indicato
-        //l'id del customizedPlugin non deve essere ovviamente settato
         
         //TODO: refactoring of this part changing it with a dynamic mechanism
         //that use persistence. Refactoring by creating a DAO that will manage 
         //the getting of customized plugins in relation to the gamification
         //plugin provided (points for instance. The caller know the name of
         //gamification plugins thanks to the getGamificationPluginList service)
-        Integer id = container.getGameCustomizedPlugin().getCustomizedPlugin().getGamificationPlugin().getId();
+        Integer id = container.getGameCustomizedPlugin().getCustomizedPlugin().getPlugin().getId();
         if (null != id) {
             if (0 == id.compareTo(this.createPointsPlugin().getId())) {
                 list.add(this.createGreenLeavesPointPlugin());
@@ -184,7 +180,7 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
                                                               version,
                                                               description);
         
-        plugin.setGamificationPlugin(this.createPointsPlugin());
+        plugin.setPlugin(this.createPointsPlugin());
         plugin.setTypology(typology);
         
         return plugin;
@@ -222,7 +218,7 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
                                                                         version,
                                                                         description);
         
-        plugin.setGamificationPlugin(this.createBadgeCollectionPlugin());
+        plugin.setPlugin(this.createBadgeCollectionPlugin());
         
         return plugin;
     }
@@ -280,7 +276,7 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
                                                                          version,
                                                                          description);
         
-        plugin.setGamificationPlugin(this.createLeadearboardPointPlugin());
+        plugin.setPlugin(this.createLeadearboardPointPlugin());
         plugin.setPointPlugin(dependency);
         plugin.setUpdateRate(updateRate);
         

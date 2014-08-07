@@ -1,7 +1,7 @@
 package eu.trentorise.game.plugin.service;
 
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
-import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
 
 /**
  *
@@ -10,5 +10,5 @@ import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
  */
 public interface ICustomizedPluginManager<P> {
     
-    public CustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<P> container);
+    public SettingCustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<P> container);
 }

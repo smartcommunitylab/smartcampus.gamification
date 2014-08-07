@@ -9,9 +9,10 @@ import eu.trentorise.game.plugin.badgecollection.request.BadgeRequest;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
 import eu.trentorise.game.plugin.badgecollection.service.MockBadgeCollectionPluginManager;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
-import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
 import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.model.Game;
+import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.List;
@@ -34,12 +35,12 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
      */
     @Test
     public void testSetCustomizedGamificationPlugin() throws Exception {
-        RestTemplateJsonServiceTestHelper<CustomizedPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        RestTemplateJsonServiceTestHelper<SettingCustomizedPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
         MockPluginManager mock = new MockPluginManager();
         ObjectMapper mapper = new ObjectMapper();
         
         Game game = new Game();
-        game.setId(135);
+        game.setId(MockGameProfileManager.MOCK_GAME_ID);
         
         BadgeCollectionPluginRequest request = new BadgeCollectionPluginRequest();
         request.setGame(game);
@@ -50,10 +51,10 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
         String jsonRequest = mapper.writeValueAsString(request);
         System.out.println(jsonRequest);
         
-        CustomizedPluginResponse response = helper.executeTest("testBadgeCollectionSetCustomizedGamificationPlugin", 
+        SettingCustomizedPluginResponse response = helper.executeTest("testBadgeCollectionSetCustomizedGamificationPlugin", 
                                                                            BASE_RELATIVE_URL + "/setCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
                                                                            HttpMethod.POST,
-                                                                           CustomizedPluginResponse.class, 
+                                                                           SettingCustomizedPluginResponse.class, 
                                                                            jsonRequest);
         
         if (null != response) {
@@ -62,7 +63,7 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
             CustomizedPlugin customizedPlugin = response.getCustomizedPlugin();
             
             assertNotNull(customizedPlugin.getId());
-            assertEquals(customizedPlugin.getGamificationPlugin().getId(), plugin.getGamificationPlugin().getId());
+            assertEquals(customizedPlugin.getPlugin().getId(), plugin.getPlugin().getId());
             assertEquals(customizedPlugin.getName(), plugin.getName());
             assertEquals(customizedPlugin.getVersion(), plugin.getVersion());
             assertEquals(customizedPlugin.getDescription(), plugin.getDescription());
@@ -125,8 +126,8 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
                 assertEquals(responseBadge.getId(), expectedBadge.getId());
                 assertEquals(responseBadge.getBadgeCollection().getId(), 
                              expectedBadge.getBadgeCollection().getId());
-                assertEquals(responseBadge.getBadgeCollection().getGamificationPlugin().getId(), 
-                             expectedBadge.getBadgeCollection().getGamificationPlugin().getId());
+                assertEquals(responseBadge.getBadgeCollection().getPlugin().getId(), 
+                             expectedBadge.getBadgeCollection().getPlugin().getId());
             }
         }
     }

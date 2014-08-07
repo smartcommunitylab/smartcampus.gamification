@@ -8,7 +8,7 @@ import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeResponse;
 import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
-import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
 import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
 import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.response.MockResponder;
@@ -37,16 +37,16 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
     public static final String BADGE_FILE_NAME_GREEN_HERO_2 = "green_hero_2.png";
     
     @Override
-    public CustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<BadgeCollectionPlugin> container) {
+    public SettingCustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<BadgeCollectionPlugin> container) {
         //TODO: create new customizedGamificationPlugin, obtain an id, then
         //create a customizedPluginGame using the new 
         //customizedGamificationPlugin with its id and the provided game
         CustomizedPlugin plugin = manager.createEcologicalBadgesPlugin();
         
-        CustomizedPluginResponse response = new CustomizedPluginResponse();
+        SettingCustomizedPluginResponse response = new SettingCustomizedPluginResponse();
         response.setCustomizedPlugin(plugin);
         
-        return ((CustomizedPluginResponse) this.buildPositiveResponse(response));
+        return ((SettingCustomizedPluginResponse) this.buildPositiveResponse(response));
     }
     
     @Override
@@ -129,7 +129,7 @@ public class MockBadgeCollectionPluginManager extends MockResponder implements I
 
         WebFile image = new WebFile();
         image.setFileName(badgeFileName);
-        image.setUrl(new URL(this.makeUrl(badgeCollection.getGamificationPlugin().getId(), 
+        image.setUrl(new URL(this.makeUrl(badgeCollection.getPlugin().getId(), 
                                           badgeCollection.getId(), 
                                           badgeFileName)));
 

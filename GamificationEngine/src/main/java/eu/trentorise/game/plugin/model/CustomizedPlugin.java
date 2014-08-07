@@ -12,18 +12,18 @@ public class CustomizedPlugin extends Plugin {
     
     //TODO: id with the id of this customizedPlugin (the id provided by
     //the super class)
-    protected Plugin gamificationPlugin;
+    protected Plugin plugin;
 
-    public Plugin getGamificationPlugin() {
-        return gamificationPlugin;
+    public Plugin getPlugin() {
+        return plugin;
     }
 
-    public void setGamificationPlugin(Plugin gamificationPlugin) {
-        this.gamificationPlugin = gamificationPlugin;
+    public void setPlugin(Plugin plugin) {
+        this.plugin = plugin;
     }
-    
+
     @Override
     public String toString() {
-        return "CustomizedGamificationPlugin{" + "gamificationPlugin=" + gamificationPlugin + '}';
+        return "CustomizedPlugin{" + "plugin=" + plugin + '}';
     }
 }

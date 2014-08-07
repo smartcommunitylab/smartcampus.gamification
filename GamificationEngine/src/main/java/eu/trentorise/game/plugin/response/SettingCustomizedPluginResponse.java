@@ -1,15 +1,15 @@
 package eu.trentorise.game.plugin.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.response.GameResponse;
 
 /**
  *
  * @author Luca Piras
  */
-//Necessary for the getCustomizedPluginListService Test
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CustomizedPluginResponse {
+@Deprecated
+public class SettingCustomizedPluginResponse extends GameResponse {
+    //TODO: remove this class and use the CustomizedPuginResponse one
     
     protected CustomizedPlugin customizedPlugin;
 
@@ -23,6 +23,6 @@ public class CustomizedPluginResponse {
 
     @Override
     public String toString() {
-        return "CustomizedPluginResponse{" + "customizedPlugin=" + customizedPlugin + '}';
+        return "SettingCustomizedPuginResponse{" + "customizedPlugin=" + customizedPlugin + '}';
     }
 }

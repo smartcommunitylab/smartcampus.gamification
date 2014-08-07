@@ -16,7 +16,7 @@ public class MockGameConfigurationManager extends MockResponder implements IGame
     @Override
     public ImportGamifiableActionsResponse importGamifiableActions(GameConfiguration gameConfiguration) {
         ImportGamifiableActionsResponse response = new ImportGamifiableActionsResponse();
-        //response.setNewGameId(135);
+        //response.setNewGameId(MockGameProfileManager.MOCK_GAME_ID);
         return ((ImportGamifiableActionsResponse) this.buildPositiveResponse(response));
     }
     

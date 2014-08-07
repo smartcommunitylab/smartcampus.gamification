@@ -120,9 +120,6 @@ public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
         
         gameCustomizedPlugin.getCustomizedPlugin().setId(-1);
         this.executeTestReadGameCustomizedPluginById(gameCustomizedPlugin, expectedElement, HttpStatus.NOT_FOUND);
-        
-        gameCustomizedPlugin.getCustomizedPlugin().setId(0);
-        this.executeTestReadGameCustomizedPluginById(gameCustomizedPlugin, expectedElement, HttpStatus.NOT_FOUND);
     }
     
     protected void executeTestReadGameCustomizedPluginById(GameCustomizedPlugin gcp,

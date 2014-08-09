@@ -45,8 +45,8 @@ public class PointPluginController extends AbstractCrudRestController<PointPlugi
     //CREATE
     @RequestMapping(value = IGameConstants.SERVICE_PLUGINS_POINT_PATH, method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Void> createGame(@RequestBody PointPlugin element,
-                                           UriComponentsBuilder builder) {
+    public ResponseEntity<Void> createPointPlugin(@RequestBody PointPlugin element,
+                                                  UriComponentsBuilder builder) {
         
         //TODO: this plugin knows what is the id of the main related plugin,
         //think how to implement it

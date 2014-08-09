@@ -36,6 +36,11 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_RULEENGINE_RULETEMPLATE_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
+
+    
+    public RuleTemplateControllerTest() {
+        super("RuleTemplateControllerTest");
+    }
     
     
     /**

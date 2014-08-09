@@ -10,6 +10,7 @@ import eu.trentorise.game.plugin.service.MockGameCustomizedPluginManager;
 import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
+import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
 import java.util.Collection;
 import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Service;
 
 
 @Service("mockPointPluginManager")
-public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Object, PointPlugin>{
+public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Object, PointPlugin>,
+                                               IRestCrudTestManager<PointPlugin> {
 
     public static MockPointPluginManager createInstance() {
         MockPointPluginManager mock = new MockPointPluginManager();
@@ -90,6 +92,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
     }
     
     
+    @Override
     public Collection createElements() {
         Plugin plugin = mockPluginManager.createPointsPlugin();
         GameCustomizedPlugin containerContent = mockGameCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null);
@@ -100,6 +103,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         return mockPluginManager.createCustomizedPlugins(container);
     }
 
+    @Override
     public PointPlugin createElement() {
         return mockPluginManager.createGreenLeavesPointPlugin();
     }

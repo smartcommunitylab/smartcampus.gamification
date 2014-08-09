@@ -4,10 +4,6 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 
 
 /**
@@ -19,25 +15,12 @@ public class GameConfigurationControllerTest extends SkipServiceTestHelper {
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAME_CONFIGURATION;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
     
+    
     public GameConfigurationControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
+        super("GameConfigurationControllerTest");
     }
 
+    
     /**
      * Test of activateDeactivatePlugin method, of class GameProfileController.
      * @throws java.lang.Exception

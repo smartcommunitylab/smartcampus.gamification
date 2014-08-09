@@ -34,6 +34,11 @@ public class PluginControllerTest extends SkipServiceTestHelper {
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
 
     
+    public PluginControllerTest() {
+        super("PluginControllerTest");
+    }
+    
+    
     @Test
     public void testReadPlugins() throws Exception {
         Collection<Plugin> expectedElements = MockPluginManager.createInstance().createElements();

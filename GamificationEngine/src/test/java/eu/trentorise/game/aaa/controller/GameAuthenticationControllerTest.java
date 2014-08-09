@@ -19,6 +19,12 @@ public class GameAuthenticationControllerTest extends SkipServiceTestHelper {
 
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAME_AAA_PATH;
     
+    
+    public GameAuthenticationControllerTest() {
+        super("GameAuthenticationControllerTest");
+    }
+    
+    
     @Test
     public void testAuthenticate() throws Exception {
         User requestElement = MockGameAuthenticationManager.createInstance().createUser();

@@ -24,6 +24,12 @@ public class LeadearboardPointPluginControllerTest extends SkipServiceTestHelper
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_LEADERBOARDPOINT_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
 
+    
+    public LeadearboardPointPluginControllerTest() {
+        super("LeadearboardPointPluginControllerTest");
+    }
+    
+    
     /**
      * Test of setCustomizedGamificationPlugin method, of class LeaderboardPointPluginController.
      * @throws java.lang.Exception

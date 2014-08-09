@@ -42,6 +42,11 @@ public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
 
     
+    public GameCustomizedPluginControllerTest() {
+        super("GameCustomizedPluginControllerTest");
+    }
+    
+    
     @Test
     public void testReadGameCustomizedPlugins() throws Exception {
         MockGameCustomizedPluginManager mockCustomizedPluginManager = MockGameCustomizedPluginManager.createInstance();

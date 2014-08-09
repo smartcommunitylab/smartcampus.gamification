@@ -28,6 +28,12 @@ public class GameProfileControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAME_PROFILE_GAMES_PATH;
     
+    
+    public GameProfileControllerTest() {
+        super("GameProfileControllerTest");
+    }
+    
+    
     @Test
     public void testCreateGame() throws Exception {
         Game requestElement = MockGameProfileManager.createInstance().createRoveretoGame();

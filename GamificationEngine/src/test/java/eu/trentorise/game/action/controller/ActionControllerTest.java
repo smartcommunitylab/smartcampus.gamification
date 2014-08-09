@@ -27,6 +27,12 @@ public class ActionControllerTest extends SkipServiceTestHelper {
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_ACTION_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
     
+    
+    public ActionControllerTest() {
+        super("ActionControllerTest");
+    }
+    
+    
     /**
      * Test of testGetExternalActions method, of class ActionController.
      * @throws java.lang.Exception

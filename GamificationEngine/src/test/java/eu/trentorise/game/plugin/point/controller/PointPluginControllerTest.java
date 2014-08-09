@@ -1,171 +1,118 @@
 package eu.trentorise.game.plugin.point.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.response.PointPluginCollectionResponse;
 import eu.trentorise.game.plugin.point.response.PointPluginResponse;
 import eu.trentorise.game.plugin.point.service.MockPointPluginManager;
-import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import eu.trentorise.game.servicetest.SkipServiceTestHelper;
-import java.util.Collection;
-import java.util.Comparator;
+import eu.trentorise.game.servicetest.AbstractRestCrudTest;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 
 /**
  *
  * @author Luca Piras
  */
-public class PointPluginControllerTest extends SkipServiceTestHelper {
+public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin, 
+                                                                    PointPluginCollectionResponse,
+                                                                    PointPluginResponse> {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_POINT_PATH;
+    protected static final MockPointPluginManager mockPointPluginManager = MockPointPluginManager.createInstance();
     
-    protected MockPointPluginManager manager;
-    protected Comparator<CustomizedPlugin> comparator;
-
+    
     public PointPluginControllerTest() {
-        this.manager = MockPointPluginManager.createInstance();
-        this.comparator = this.manager.getComparator();
+        super("PointPluginControllerTest", 
+              IGameConstants.SERVICE_PLUGINS_POINT_PATH,
+              mockPointPluginManager,
+              mockPointPluginManager.getComparator());
     }
     
     
+    //CREATE
     @Test
-    public void testCreatePointPlugin() throws Exception {
-        PointPlugin requestElement = manager.createElement();
-        requestElement.setId(null);
-        this.executeTestCreatePointPlugin(requestElement, HttpStatus.CREATED);
+    public void testCreateElement() throws Exception {
+        super.testCreateElement("testCreatePointPlugin");
     }
     
-    protected void executeTestCreatePointPlugin(PointPlugin requestElement, 
-                                                HttpStatus expectedStatus) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        ObjectMapper mapper = new ObjectMapper();
-        
-        String jsonRequest = mapper.writeValueAsString(requestElement);
-        System.out.println(jsonRequest);
-        
-        helper.executeTest("PointPluginControllerTest - testCreatePointPlugin",
-                           BASE_RELATIVE_URL,
-                           HttpMethod.POST,
-                           Void.class, 
-                           jsonRequest,
-                           expectedStatus);
+    @Override
+    protected PointPlugin manageElementToCreate(PointPlugin element) {
+        element.setId(null);
+        return element;
     }
     
+    
+    //READ COLLECTION
     @Test
-    public void testReadPointPlugins() throws Exception {
-        Collection<PointPlugin> expectedElements = manager.createElements();
-        this.executeTestReadPointPlugins((List<PointPlugin>) expectedElements);
+    public void testReadCollection() throws Exception {
+        super.testReadCollection("testReadPointPlugins", 
+                                 PointPluginCollectionResponse.class);
     }
     
-    protected void executeTestReadPointPlugins(List<PointPlugin> expectedElements) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<PointPluginCollectionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        
-        PointPluginCollectionResponse response = helper.executeTest("PointPluginControllerTest - testReadPointPlugins",
-                                                                    BASE_RELATIVE_URL,
-                                                                    HttpMethod.GET,
-                                                                    PointPluginCollectionResponse.class, 
-                                                                    null);
-        
-        if (null != response) {
-            List<PointPlugin> responseElements = (List) response.getPointPlugins();
-            
-            assertNotNull(responseElements);
-            assertEquals(responseElements.size(), expectedElements.size());
-            
-            for (int i = 0; i < responseElements.size(); i++) {
-                PointPlugin responseElement = responseElements.get(i);
-                PointPlugin expectedElement = expectedElements.get(i);
-                
-                assertEquals(0, this.comparator.compare(responseElement, 
-                                                        expectedElement));
-            }
-        }
+    @Override
+    protected List<PointPlugin> retrieveCollection(PointPluginCollectionResponse response) {
+        return (List<PointPlugin>) response.getPointPlugins();
     }
     
+    
+    //READ SINGLE ELEMENT
     @Test
-    public void testReadPointPluginById() throws Exception {
-        PointPlugin expectedElement = manager.createElement();
-        this.executeTestReadPointPluginById(expectedElement, HttpStatus.OK);
-        
-        expectedElement.setId(-1);
-        this.executeTestReadPointPluginById(expectedElement, HttpStatus.NOT_FOUND);
+    public void testReadElementById() throws Exception {
+        super.testReadElementById("testReadPointPluginById", 
+                                  PointPluginResponse.class);
+    }
+
+    @Override
+    protected PointPlugin manageNegativeElementToReadById(PointPlugin element) {
+        return this.setNegativeId(element);
     }
     
-    protected void executeTestReadPointPluginById(PointPlugin expectedElement, 
-                                                  HttpStatus expectedStatus) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<PointPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        
-        PointPluginResponse response = helper.executeTest("PointPluginControllerTest - testReadPointPluginById",
-                                                          BASE_RELATIVE_URL + "/" + expectedElement.getId(),
-                                                          HttpMethod.GET,
-                                                          PointPluginResponse.class, 
-                                                          null, 
-                                                          expectedStatus);
-        
-        if (null != response && 0 == expectedStatus.compareTo(HttpStatus.OK)) {
-            PointPlugin responseElement = response.getPointPlugin();
-            
-            assertNotNull(responseElement);
-            assertEquals(0, this.comparator.compare(expectedElement, responseElement));
-        }
+    @Override
+    protected PointPlugin retrieveSingleElement(PointPluginResponse response) {
+        return response.getPointPlugin();
     }
     
+    
+    //UPDATE
     @Test
-    public void testUpdatePointPlugin() throws Exception {
-        PointPlugin requestElement = manager.createElement();
-        requestElement.setName(requestElement.getName() + "Modified");
-        this.executeTestUpdatePointPlugin(requestElement, HttpStatus.NO_CONTENT);
+    public void testUpdateElement() throws Exception {
+        super.testUpdateElement("testUpdatePointPlugin");
+    }
+
+    @Override
+    protected PointPlugin managePositiveElementToUpdate(PointPlugin element) {
+        element.setName(element.getName() + "Modified");
         
-        requestElement.setId(-1);
-        this.executeTestUpdatePointPlugin(requestElement, HttpStatus.NOT_FOUND);
+        return element;
+    }
+
+    @Override
+    protected PointPlugin manageNegativeElementToUpdate(PointPlugin element) {
+        return this.setNegativeId(element);
     }
     
-    protected void executeTestUpdatePointPlugin(PointPlugin requestElement, 
-                                                HttpStatus expectedStatus) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        ObjectMapper mapper = new ObjectMapper();
-        
-        String jsonRequest = mapper.writeValueAsString(requestElement);
-        System.out.println(jsonRequest);
-        
-        helper.executeTest("PointPluginControllerTest - testUpdatePointPlugin",
-                           BASE_RELATIVE_URL + "/" + requestElement.getId(),
-                           HttpMethod.PUT,
-                           Void.class, 
-                           jsonRequest,
-                           expectedStatus);
-    }
     
+    //DELETE
     @Test
-    public void testDeletePointPlugin() throws Exception {
-        PointPlugin requestElement = manager.createElement();
-        this.executeTestDeletePointPlugin(requestElement, HttpStatus.NO_CONTENT);
-        
-        requestElement.setId(-1);
-        this.executeTestDeletePointPlugin(requestElement, HttpStatus.NOT_FOUND);
+    public void testDeleteElement() throws Exception {
+        super.testDeleteElement("testDeletePointPlugin");
     }
     
-    protected void executeTestDeletePointPlugin(PointPlugin requestElement, 
-                                                HttpStatus expectedStatus) throws Exception {
+    @Override
+    protected PointPlugin manageNegativeElementToDelete(PointPlugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //TOOLS
+    @Override
+    protected String makeSinglePartRelativeUrl(PointPlugin element) {
+        return element.getId().toString();
+    }
+
+    
+    protected PointPlugin setNegativeId(PointPlugin element) {
+        element.setId(-1);
         
-        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        
-        helper.executeTest("PointPluginControllerTest - testDeletePointPlugin",
-                           BASE_RELATIVE_URL + "/" + requestElement.getId(),
-                           HttpMethod.DELETE,
-                           Void.class, 
-                           null,
-                           expectedStatus);
+        return element;
     }
 }

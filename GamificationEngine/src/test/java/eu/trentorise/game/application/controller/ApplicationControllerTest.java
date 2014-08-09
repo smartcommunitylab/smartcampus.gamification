@@ -24,6 +24,12 @@ public class ApplicationControllerTest extends SkipServiceTestHelper {
     
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_APPLICATIONS_PATH;
     
+    
+    public ApplicationControllerTest() {
+        super("ApplicationControllerTest");
+    }
+    
+    
     @Test
     public void testCreateApplication() throws Exception {
         Application requestElement = MockApplicationManager.createInstance().createViaggiaRovereto();

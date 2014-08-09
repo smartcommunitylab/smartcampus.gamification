@@ -29,6 +29,12 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
     protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_BADGECOLLECTION_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
 
+    
+    public BadgeCollectionPluginControllerTest() {
+        super("BadgeCollectionPluginControllerTest");
+    }
+    
+    
     /**
      * Test of setCustomizedGamificationPlugin method, of class BadgeCollectionPluginController.
      * @throws java.lang.Exception

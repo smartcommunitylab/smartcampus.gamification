@@ -16,19 +16,19 @@ public class CustomizedPluginKeyComparator implements Comparator<CustomizedPlugi
 
     @Override
     public int compare(CustomizedPlugin o1, CustomizedPlugin o2) {
-        int finalComparison = gamificationPluginComparator.compare(o1, o2);
+        int finalComparison = pluginComparator.compare(o1, o2);
         if (0 == finalComparison) {
-            finalComparison = gamificationPluginComparator.compare(o1.getPlugin(), o2.getPlugin());
+            finalComparison = pluginComparator.compare(o1.getPlugin(), o2.getPlugin());
         }
         
         return finalComparison;
     }
 
-    public void setGamificationPluginComparator(Comparator<Plugin> gamificationPluginComparator) {
-        this.gamificationPluginComparator = gamificationPluginComparator;
+    public void setPluginComparator(Comparator<Plugin> pluginComparator) {
+        this.pluginComparator = pluginComparator;
     }
     
     @Qualifier("pluginKeyComparator")
     @Autowired
-    protected Comparator<Plugin> gamificationPluginComparator;
+    protected Comparator<Plugin> pluginComparator;
 }

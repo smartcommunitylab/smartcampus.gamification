@@ -26,8 +26,9 @@ public class MockGameCustomizedPluginManager extends MockResponder implements IC
 
     public static MockGameCustomizedPluginManager createInstance() {
         MockGameCustomizedPluginManager mock = new MockGameCustomizedPluginManager();
-        mock.mockPluginManager = new MockPluginManager();
+        mock.mockPluginManager = MockPluginManager.createInstance();
         mock.comparator = new CustomizedPluginKeyComparator();
+        ((CustomizedPluginKeyComparator) mock.comparator).setPluginComparator(mock.mockPluginManager.getComparator());
         return mock;
     }
     
@@ -110,7 +111,13 @@ public class MockGameCustomizedPluginManager extends MockResponder implements IC
         
         return gcp;
     }
-        
+
+    
+    public Comparator<CustomizedPlugin> getComparator() {
+        return comparator;
+    }
+    
+    
     @Qualifier("mockPluginManager")
     @Autowired
     protected MockPluginManager mockPluginManager;

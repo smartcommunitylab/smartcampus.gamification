@@ -43,7 +43,7 @@ public abstract class AbstractCrudRestController<T, CC, C> {
                                                                    resourceSinglePath,
                                                                    this.makeUriVariables(containerWithIds, result));
         } catch (Exception ex) {
-            restExceptionHandler.handleException(ex, logger);
+            restExceptionHandler.handleException(ex, "createResource", logger);
         }
         
         return response;
@@ -60,7 +60,7 @@ public abstract class AbstractCrudRestController<T, CC, C> {
                                                      logger);
             
         } catch (Exception ex) {
-            restExceptionHandler.handleException(ex, logger);
+            restExceptionHandler.handleException(ex, "readResources", logger);
         }
         
         return response;
@@ -76,7 +76,8 @@ public abstract class AbstractCrudRestController<T, CC, C> {
                                                         restCrudResultHelper, 
                                                         logger);
         } catch (Exception ex) {
-            restExceptionHandler.handleException(ex, logger);
+            restExceptionHandler.handleException(ex, "readResourceById", 
+                                                 logger);
         }
         
         return response;
@@ -98,7 +99,7 @@ public abstract class AbstractCrudRestController<T, CC, C> {
                                                                  resourceSinglePath,
                                                                  this.makeUriVariables(containerWithIds, result));
         } catch (Exception ex) {
-            restExceptionHandler.handleException(ex, logger);
+            restExceptionHandler.handleException(ex, "updateResource", logger);
         }
         
         return response;
@@ -114,7 +115,7 @@ public abstract class AbstractCrudRestController<T, CC, C> {
     
             response = restCrudResponseHelper.makeDeletionResponse();
         } catch (Exception ex) {
-            restExceptionHandler.handleException(ex, logger);
+            restExceptionHandler.handleException(ex, "deleteResource", logger);
         }
         
         return response;

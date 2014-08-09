@@ -146,7 +146,7 @@ public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
             
             CustomizedPluginKeyComparator comparator = new CustomizedPluginKeyComparator();
             PluginKeyComparator pluginKeyComparator = new PluginKeyComparator();
-            comparator.setGamificationPluginComparator(pluginKeyComparator);
+            comparator.setPluginComparator(pluginKeyComparator);
             
             assertEquals(0, comparator.compare(expectedElement, responseElement));
         }

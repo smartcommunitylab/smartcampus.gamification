@@ -43,7 +43,7 @@ public class GameAuthenticationController {
         
             response = restResponseHelper.makeNoContentResponse();
         } catch (Exception ex) {
-            restExceptionHandler.handleException(ex, logger);
+            restExceptionHandler.handleException(ex, "authenticate", logger);
         }
         
         return response;

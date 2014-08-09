@@ -289,6 +289,12 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
         
         list.add(this.createNewPlugin(null, id, name, version, description));
     }
+
+    
+    public Comparator<Plugin> getComparator() {
+        return comparator;
+    }
+    
     
     @Qualifier("pluginKeyComparator")
     @Autowired

@@ -9,8 +9,14 @@ import org.slf4j.Logger;
  */
 public class RestExceptionHandler {
     
-    public void handleException(Exception ex, Logger logger) throws ResourceException {
-        StringBuilder sb = new StringBuilder("Exception: ").append(ex);
+    public void handleException(Exception ex, String actionNameExecuted, 
+                                Logger logger) throws ResourceException {
+        
+        ResourceException resourceException = new ResourceException(ex);
+        
+        StringBuilder sb = new StringBuilder("Exception (actionNameExecuted: ");
+        sb.append(actionNameExecuted).append("): ");
+        sb.append(resourceException.getMessage()).append(" - ").append(ex);
         
         Throwable cause = ex.getCause();
         if (null != cause) {
@@ -19,6 +25,6 @@ public class RestExceptionHandler {
         
         logger.warn(sb.toString());
         
-        throw new ResourceException(ex);
+        throw resourceException;
     }
 }

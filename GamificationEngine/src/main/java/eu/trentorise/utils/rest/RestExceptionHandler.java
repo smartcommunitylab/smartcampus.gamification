@@ -9,7 +9,7 @@ import org.slf4j.Logger;
  */
 public class RestExceptionHandler {
     
-    public void handleException(Exception ex, Logger logger) {
+    public void handleException(Exception ex, Logger logger) throws ResourceException {
         StringBuilder sb = new StringBuilder("Exception: ").append(ex);
         
         Throwable cause = ex.getCause();

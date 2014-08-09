@@ -11,49 +11,45 @@ import org.slf4j.Logger;
 public class RestCrudResultHelper<T> extends RestResultHelper<T> {
     
     //CREATE
-    public Boolean handleCreationResult(T result, Exception ex, Logger logger) {
-        return handleResult(result, ex, logger);
+    public Boolean handleCreationResult(T result, Logger logger) throws Exception {
+        return handleResult(result, logger);
     }
     
-    public Boolean handleCreationResult(boolean isTaskOk, Exception ex, 
-                                        Logger logger) {
+    public Boolean handleCreationResult(boolean isTaskOk, Logger logger) throws Exception {
         
-        return handleResult(isTaskOk, ex, logger);
+        return handleResult(isTaskOk, logger);
     }
     
     
     //READ
-    public Boolean handleReadingResult(T result, Exception ex, Logger logger) {
-        return handleResult(result, ex, logger);
+    public Boolean handleReadingResult(T result, Logger logger) throws Exception {
+        return handleResult(result, logger);
     }
     
-    public Boolean handleReadingResult(boolean isTaskOk, Exception ex, 
-                                       Logger logger) {
+    public Boolean handleReadingResult(boolean isTaskOk, Logger logger) throws Exception {
         
-        return handleResult(isTaskOk, ex, logger);
+        return handleResult(isTaskOk, logger);
     }
     
     
     //CREATE
-    public Boolean handleUpdateResult(T result, Exception ex, Logger logger) {
-        return handleResult(result, ex, logger);
+    public Boolean handleUpdateResult(T result, Logger logger) throws Exception {
+        return handleResult(result, logger);
     }
     
-    public Boolean handleUpdateResult(boolean isTaskOk, Exception ex, 
-                                      Logger logger) {
+    public Boolean handleUpdateResult(boolean isTaskOk, Logger logger) throws Exception {
         
-        return handleResult(isTaskOk, ex, logger);
+        return handleResult(isTaskOk, logger);
     }
     
     
     //DELETION
-    public Boolean handleDeletionResult(T result, Exception ex, Logger logger) {
-        return handleResult(result, ex, logger);
+    public Boolean handleDeletionResult(T result, Logger logger) throws Exception  {
+        return handleResult(result, logger);
     }
     
-    public Boolean handleDeletionResult(boolean isTaskOk, Exception ex, 
-                                        Logger logger) {
+    public Boolean handleDeletionResult(boolean isTaskOk, Logger logger) throws Exception {
         
-        return handleResult(isTaskOk, ex, logger);
+        return handleResult(isTaskOk, logger);
     }
 }

@@ -16,18 +16,11 @@ public class RestHelper<T, C> {
                      String managerMethodName,
                      Class containerClass,
                      RestResultHelper<T> restResultHelper,
-                     Logger logger) {
+                     Logger logger) throws Exception {
         
-        T result = null;
-        Exception exception = null;
-        try {
-            Method method = manager.getClass().getMethod(managerMethodName, containerClass);
-            result = (T) method.invoke(manager, containerWithIds);
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            restResultHelper.handleResult(result, exception, logger);
-        }
+        Method method = manager.getClass().getMethod(managerMethodName, containerClass);
+        T result = (T) method.invoke(manager, containerWithIds);
+        restResultHelper.handleResult(result, logger);
         
         return result;
     }

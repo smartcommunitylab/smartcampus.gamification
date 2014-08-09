@@ -42,16 +42,22 @@ public interface IGameConstants {
     public static final String SERVICE_PLUGINS_SINGLE_PATH_RELATIVE = SERVICE_PLUGINS_PATH_RELATIVE + "/{" + SERVICE_PLUGINS_SINGLE_PATH_PARAM + "}";
     public static final String SERVICE_PLUGINS_SINGLE_PATH = SERVICE_PATH + SERVICE_PLUGINS_SINGLE_PATH_RELATIVE;
     /*views and services - services - profile - games - plugins - customizedPlugins */
-    public static final String SERVICE_CUSTOMIZEDPLUGINS_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + "/customizedplugins";
+    public static final String SERVICE_CUSTOMIZEDPLUGINS_PATH_RELATIVE = "/customizedplugins";
+    public static final String SERVICE_CUSTOMIZEDPLUGINS_PATH = SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + SERVICE_CUSTOMIZEDPLUGINS_PATH_RELATIVE;
     public static final String SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM = "cusPlugId";
     public static final String SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH = SERVICE_CUSTOMIZEDPLUGINS_PATH + "/{" + SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM + "}";
+    /*views and services - services - profile - games - plugins - gameCustomizedPlugins */
+    public static final String SERVICE_GAMECUSTOMIZEDPLUGINS_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + SERVICE_CUSTOMIZEDPLUGINS_PATH;
+    public static final String SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH;
     /*views and services - services - profile - games - plugins - customizedPlugins - points */
-    public static final String SERVICE_PLUGINS_POINT_PATH = SERVICE_PLUGINS_PATH + "/point";
+    public static final String SERVICE_PLUGINS_POINT_PATH = SERVICE_PATH + "/point-plugins";
+    public static final String SERVICE_PLUGINS_POINT_SINGLE_PATH_PARAM = SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM;
+    public static final String SERVICE_PLUGINS_POINT_SINGLE_PATH = SERVICE_PLUGINS_POINT_PATH + "/{" + SERVICE_PLUGINS_POINT_SINGLE_PATH_PARAM + "}";
     /*views and services - services - profile - games - plugins - customizedPlugins - badgeCollections */
-    public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PLUGINS_PATH + "/badge-collection";
+    public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PATH + "/badgecollection-plugins";
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_PATH + "/badge";
     /*views and services - services - profile - games - plugins - customizedPlugins - leaderboardspoint */
-    public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PLUGINS_PATH + "/leaderboard-point";
+    public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PATH + "/leaderboardpoint-plugins";
     /*views and services - services - player*/
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
     /*views and services - services - configuration*/

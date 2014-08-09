@@ -6,6 +6,7 @@ import eu.trentorise.game.plugin.container.PluginContainer;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.response.PluginCollectionResponse;
 import eu.trentorise.game.plugin.response.PluginResponse;
+import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import eu.trentorise.utils.rest.crud.RestCrudHelper;
@@ -96,5 +97,11 @@ public class PluginController extends AbstractCrudRestController<Plugin, Object,
     @Autowired
     public void setRestCrudResponseHelper(RestCrudResponseHelper restCrudResponseHelper) {
         this.restCrudResponseHelper = restCrudResponseHelper;
+    }
+    
+    @Qualifier("restExceptionHandler")
+    @Autowired
+    public void setRestExceptionHandler(RestExceptionHandler restExceptionHandler) {
+        this.restExceptionHandler = restExceptionHandler;
     }
 }

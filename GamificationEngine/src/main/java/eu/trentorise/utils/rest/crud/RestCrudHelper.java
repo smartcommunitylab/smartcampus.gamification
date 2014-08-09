@@ -18,17 +18,11 @@ public class RestCrudHelper<T, CC, C> extends RestHelper<T, C> {
     public T createSingleElement(C containerWithIds,
                                  IRestCrudManager<T, CC, C> manager,
                                  RestCrudResultHelper<T> restResultHelper,
-                                 Logger logger) {
+                                 Logger logger) throws Exception {
         
-        T result = null;
-        Exception exception = null;
-        try {
-            result = manager.createSingleElement(containerWithIds);
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            restResultHelper.handleCreationResult(result, exception, logger);
-        }
+        
+        T result = manager.createSingleElement(containerWithIds);
+        restResultHelper.handleCreationResult(result, logger);
         
         return result;
     }
@@ -38,17 +32,12 @@ public class RestCrudHelper<T, CC, C> extends RestHelper<T, C> {
     public Collection<T> readCollection(CC containerWithIds,
                                         IRestCrudManager<T, CC, C> manager,
                                         RestCrudResultHelper restResultHelper,
-                                        Logger logger) {
+                                        Logger logger) throws Exception {
         
-        Collection<T> result = null;
-        Exception exception = null;
-        try {
-            result = manager.readCollection(containerWithIds);
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            restResultHelper.handleReadingResult(result, exception, logger);
-        }
+        
+        Collection<T> result = manager.readCollection(containerWithIds);
+        restResultHelper.handleReadingResult(result, logger);
+        
         
         return result;
     }
@@ -56,17 +45,10 @@ public class RestCrudHelper<T, CC, C> extends RestHelper<T, C> {
     public T readSingleElement(C containerWithIds,
                                IRestCrudManager<T, CC, C> manager,
                                RestCrudResultHelper<T> restResultHelper,
-                               Logger logger) {
+                               Logger logger) throws Exception {
         
-        T result = null;
-        Exception exception = null;
-        try {
-            result = manager.readSingleElement(containerWithIds);
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            restResultHelper.handleReadingResult(result, exception, logger);
-        }
+        T result = manager.readSingleElement(containerWithIds);
+        restResultHelper.handleReadingResult(result, logger);
         
         return result;
     }
@@ -76,17 +58,10 @@ public class RestCrudHelper<T, CC, C> extends RestHelper<T, C> {
     public T updateSingleElement(C containerWithIds,
                                  IRestCrudManager<T, CC, C> manager,
                                  RestCrudResultHelper<T> restResultHelper,
-                                 Logger logger) {
+                                 Logger logger) throws Exception {
         
-        T result = null;
-        Exception exception = null;
-        try {
-            result = manager.updateSingleElement(containerWithIds);
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            restResultHelper.handleUpdateResult(result, exception, logger);
-        }
+        T result = manager.updateSingleElement(containerWithIds);
+        restResultHelper.handleUpdateResult(result, logger);
         
         return result;
     }
@@ -96,17 +71,10 @@ public class RestCrudHelper<T, CC, C> extends RestHelper<T, C> {
     public T deleteSingleElement(C containerWithIds,
                                  IRestCrudManager<T, CC, C> manager,
                                  RestCrudResultHelper<T> restResultHelper,
-                                 Logger logger) {
+                                 Logger logger) throws Exception {
         
-        T result = null;
-        Exception exception = null;
-        try {
-            result = manager.deleteSingleElement(containerWithIds);
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            restResultHelper.handleDeletionResult(result, exception, logger);
-        }
+        T result = manager.deleteSingleElement(containerWithIds);
+        restResultHelper.handleDeletionResult(result, logger);
         
         return result;
     }

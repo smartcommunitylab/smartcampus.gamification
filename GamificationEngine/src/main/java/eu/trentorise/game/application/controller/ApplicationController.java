@@ -4,6 +4,7 @@ import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.application.response.ApplicationCollectionResponse;
 import eu.trentorise.game.application.response.ApplicationResponse;
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
 import eu.trentorise.utils.rest.crud.RestCrudHelper;
@@ -131,5 +132,11 @@ public class ApplicationController extends AbstractCrudRestController<Applicatio
     @Autowired
     public void setRestCrudResponseHelper(RestCrudResponseHelper restCrudResponseHelper) {
         this.restCrudResponseHelper = restCrudResponseHelper;
+    }
+
+    @Qualifier("restExceptionHandler")
+    @Autowired
+    public void setRestExceptionHandler(RestExceptionHandler restExceptionHandler) {
+        this.restExceptionHandler = restExceptionHandler;
     }
 }

@@ -1,5 +1,6 @@
 package eu.trentorise.utils.rest.crud;
 
+import eu.trentorise.utils.rest.RestExceptionHandler;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,48 +32,92 @@ public abstract class AbstractCrudRestController<T, CC, C> {
     public ResponseEntity<Void> createResource(C containerWithIds, 
                                                UriComponentsBuilder builder) {
         
-        T result = restCrudHelper.createSingleElement(containerWithIds, manager,
-                                                      restCrudResultHelper,
-                                                      logger);
-    
-        return restCrudResponseHelper.makeCreationResponse(builder, 
-                                                           resourceSinglePath,
-                                                           this.makeUriVariables(containerWithIds, result));
+        ResponseEntity<Void> response = null;
+        try {
+            T result = restCrudHelper.createSingleElement(containerWithIds, 
+                                                          manager,
+                                                          restCrudResultHelper,
+                                                          logger);
+            
+            response = restCrudResponseHelper.makeCreationResponse(builder, 
+                                                                   resourceSinglePath,
+                                                                   this.makeUriVariables(containerWithIds, result));
+        } catch (Exception ex) {
+            restExceptionHandler.handleException(ex, logger);
+        }
+        
+        return response;
     }
     
     
     //READ
     public Collection<T> readResources(CC containerWithIds) {
-        return restCrudHelper.readCollection(containerWithIds, manager, 
-                                             restCrudResultHelper, logger);
+        Collection<T> response = null;
+        
+        try {
+            response = restCrudHelper.readCollection(containerWithIds, manager, 
+                                                     restCrudResultHelper,
+                                                     logger);
+            
+        } catch (Exception ex) {
+            restExceptionHandler.handleException(ex, logger);
+        }
+        
+        return response;
     }
     
     
     public T readResourceById(C containerWithIds) {
-        return restCrudHelper.readSingleElement(containerWithIds, manager, 
-                                                restCrudResultHelper, logger);
+        T response = null;
+        
+        try {
+            response = restCrudHelper.readSingleElement(containerWithIds, 
+                                                        manager, 
+                                                        restCrudResultHelper, 
+                                                        logger);
+        } catch (Exception ex) {
+            restExceptionHandler.handleException(ex, logger);
+        }
+        
+        return response;
     }
     
     
     //UPDATE
     public ResponseEntity<Void> updateResource(C containerWithIds,
                                                UriComponentsBuilder builder) {
-        
-        T result = restCrudHelper.updateSingleElement(containerWithIds, manager,
-                                                      restCrudResultHelper, logger);
     
-        return restCrudResponseHelper.makeUpdateResponse(builder,
-                                                         resourceSinglePath,
-                                                         this.makeUriVariables(containerWithIds, result));
+        ResponseEntity<Void> response = null;
+        try {
+            T result = restCrudHelper.updateSingleElement(containerWithIds, 
+                                                          manager,
+                                                          restCrudResultHelper, 
+                                                          logger);
+    
+            response = restCrudResponseHelper.makeUpdateResponse(builder,
+                                                                 resourceSinglePath,
+                                                                 this.makeUriVariables(containerWithIds, result));
+        } catch (Exception ex) {
+            restExceptionHandler.handleException(ex, logger);
+        }
+        
+        return response;
     }
     
     
     //DELETE
     public ResponseEntity<Void> deleteResource(C containerWithIds) {
-        restCrudHelper.deleteSingleElement(containerWithIds, manager, 
-                                           restCrudResultHelper, logger);
+        ResponseEntity<Void> response = null;
+        try {
+            restCrudHelper.deleteSingleElement(containerWithIds, manager, 
+                                               restCrudResultHelper, logger);
     
-        return restCrudResponseHelper.makeDeletionResponse();
+            response = restCrudResponseHelper.makeDeletionResponse();
+        } catch (Exception ex) {
+            restExceptionHandler.handleException(ex, logger);
+        }
+        
+        return response;
     }
     
     
@@ -97,4 +142,6 @@ public abstract class AbstractCrudRestController<T, CC, C> {
     protected RestCrudResultHelper<T> restCrudResultHelper;
     
     protected RestCrudResponseHelper restCrudResponseHelper;
+    
+    protected RestExceptionHandler restExceptionHandler;
 }

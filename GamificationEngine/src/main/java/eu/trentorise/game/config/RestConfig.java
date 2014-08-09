@@ -1,5 +1,6 @@
 package eu.trentorise.game.config;
 
+import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.RestHelper;
 import eu.trentorise.utils.rest.crud.RestCrudHelper;
 import eu.trentorise.utils.rest.crud.RestCrudResponseHelper;
@@ -48,9 +49,16 @@ public class RestConfig {
         return new RestResponseHelper();
     }
     
-    ///////RestResponseHelper///////
+    ///////RestCrudResponseHelper///////
     @Bean(name="restCrudResponseHelper")
     public RestCrudResponseHelper restCrudResponseHelper() {
         return new RestCrudResponseHelper();
+    }
+    
+    
+    ///////RestExceptionHandler///////
+    @Bean(name="restExceptionHandler")
+    public RestExceptionHandler restExceptionHandler() {
+        return new RestExceptionHandler();
     }
 }

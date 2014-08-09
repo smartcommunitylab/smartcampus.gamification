@@ -9,6 +9,7 @@ import eu.trentorise.game.plugin.service.ICustomizedPluginManager;
  *
  * @author Luca Piras
  */
+@Deprecated
 public abstract class AbstractCustomizedPluginController {
     
     public SettingCustomizedPluginResponse setCustomizedGamificationPlugin(AbstractCustomizedPluginRequest request) {

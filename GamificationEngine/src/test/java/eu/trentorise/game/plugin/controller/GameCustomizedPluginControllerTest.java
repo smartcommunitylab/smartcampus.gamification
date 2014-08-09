@@ -37,8 +37,8 @@ import org.springframework.http.HttpStatus;
  */
 public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_PATH;
-    protected final static String BASE_RELATIVE_URL_SINGLE_PATH = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH;
+    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_PATH;
+    protected final static String BASE_RELATIVE_URL_SINGLE_PATH = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH;
     protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
 
     

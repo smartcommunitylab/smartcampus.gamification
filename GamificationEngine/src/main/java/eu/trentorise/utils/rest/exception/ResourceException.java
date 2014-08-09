@@ -12,6 +12,10 @@ public class ResourceException extends RuntimeException {
     
     public static final String MSG_DEFAULT = "Problems managing a resource!";
     
+    public ResourceException() {
+        super(MSG_DEFAULT);
+    }
+    
     public ResourceException(Throwable cause) {
         super(MSG_DEFAULT, cause);
     }

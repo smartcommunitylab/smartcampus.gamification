@@ -24,7 +24,7 @@ public class Rule {
     protected String lhsOperand;
     
     //customizedPluginInvolved
-    protected CustomizedPlugin customizedGamificationPlugin;
+    protected CustomizedPlugin customizedPlugin;
     
     //rightHandSide
     protected Operator rhsPluginOperator;
@@ -84,12 +84,12 @@ public class Rule {
         this.lhsOperand = lhsOperand;
     }
 
-    public CustomizedPlugin getCustomizedGamificationPlugin() {
-        return customizedGamificationPlugin;
+    public CustomizedPlugin getCustomizedPlugin() {
+        return customizedPlugin;
     }
 
-    public void setCustomizedGamificationPlugin(CustomizedPlugin customizedGamificationPlugin) {
-        this.customizedGamificationPlugin = customizedGamificationPlugin;
+    public void setCustomizedPlugin(CustomizedPlugin customizedPlugin) {
+        this.customizedPlugin = customizedPlugin;
     }
 
     public Operator getRhsPluginOperator() {
@@ -150,6 +150,6 @@ public class Rule {
 
     @Override
     public String toString() {
-        return "Rule{" + "id=" + id + ", ruleTemplate=" + ruleTemplate + ", action=" + action + ", lhsBasicParam=" + lhsBasicParam + ", lhsOperator=" + lhsOperator + ", lhsOperand=" + lhsOperand + ", customizedGamificationPlugin=" + customizedGamificationPlugin + ", rhsPluginOperator=" + rhsPluginOperator + ", rhsValue=" + rhsValue + ", rhsBasicParam=" + rhsBasicParam + ", rhsOperator=" + rhsOperator + ", rhsOperand=" + rhsOperand + ", reward=" + reward + ", content=" + content + '}';
+        return "Rule{" + "id=" + id + ", ruleTemplate=" + ruleTemplate + ", action=" + action + ", lhsBasicParam=" + lhsBasicParam + ", lhsOperator=" + lhsOperator + ", lhsOperand=" + lhsOperand + ", customizedPlugin=" + customizedPlugin + ", rhsPluginOperator=" + rhsPluginOperator + ", rhsValue=" + rhsValue + ", rhsBasicParam=" + rhsBasicParam + ", rhsOperator=" + rhsOperator + ", rhsOperand=" + rhsOperand + ", reward=" + reward + ", content=" + content + '}';
     }
 }

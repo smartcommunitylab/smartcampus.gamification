@@ -8,6 +8,7 @@ import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
  * @author Luca Piras
  * @param <P>
  */
+@Deprecated
 public interface ICustomizedPluginManager<P> {
     
     public SettingCustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<P> container);

@@ -14,7 +14,7 @@ public class GameCustomizedPlugin {
     //TODO: key
     protected CustomizedPlugin customizedPlugin;
     
-    protected Boolean activated;
+    protected boolean activated;
 
     public Game getGame() {
         return game;
@@ -32,11 +32,11 @@ public class GameCustomizedPlugin {
         this.customizedPlugin = customizedPlugin;
     }
 
-    public Boolean isActivated() {
+    public boolean isActivated() {
         return activated;
     }
 
-    public void setActivated(Boolean activated) {
+    public void setActivated(boolean activated) {
         this.activated = activated;
     }
 

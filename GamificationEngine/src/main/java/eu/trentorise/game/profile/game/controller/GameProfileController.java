@@ -4,6 +4,7 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.GameCollectionResponse;
 import eu.trentorise.game.response.NewGameResponse;
+import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import eu.trentorise.utils.rest.crud.RestCrudHelper;
@@ -132,5 +133,11 @@ public class GameProfileController extends AbstractCrudRestController<Game, Obje
     @Autowired
     public void setRestCrudResponseHelper(RestCrudResponseHelper restCrudResponseHelper) {
         this.restCrudResponseHelper = restCrudResponseHelper;
+    }
+    
+    @Qualifier("restExceptionHandler")
+    @Autowired
+    public void setRestExceptionHandler(RestExceptionHandler restExceptionHandler) {
+        this.restExceptionHandler = restExceptionHandler;
     }
 }

@@ -11,6 +11,7 @@ import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.response.CustomizedPluginCollectionResponse;
 import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
 import eu.trentorise.game.profile.game.model.Game;
+import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import eu.trentorise.utils.rest.crud.RestCrudHelper;
@@ -40,13 +41,13 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
     //controllers
     
     public GameCustomizedPluginController() {
-        super(IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH,
+        super(IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH,
               LoggerFactory.getLogger(GameCustomizedPluginController.class.getName()));
     }
     
     
     //READ
-    @RequestMapping(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_PATH, method = RequestMethod.GET)
+    @RequestMapping(value = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_PATH, method = RequestMethod.GET)
     public @ResponseBody CustomizedPluginCollectionResponse readGameCustomizedPlugins(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId) {
@@ -65,7 +66,7 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
         return response;
     }
     
-    @RequestMapping(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH, method = RequestMethod.GET)
+    @RequestMapping(value = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH, method = RequestMethod.GET)
     public @ResponseBody CustomizedPluginResponse readGameCustomizedPluginById(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
@@ -142,5 +143,11 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
     @Autowired
     public void setRestCrudResponseHelper(RestCrudResponseHelper restCrudResponseHelper) {
         this.restCrudResponseHelper = restCrudResponseHelper;
+    }
+    
+    @Qualifier("restExceptionHandler")
+    @Autowired
+    public void setRestExceptionHandler(RestExceptionHandler restExceptionHandler) {
+        this.restExceptionHandler = restExceptionHandler;
     }
 }

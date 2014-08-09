@@ -5,6 +5,7 @@ import eu.trentorise.game.aaa.container.IAuthenticationContainer;
 import eu.trentorise.game.aaa.request.GameAuthenticationRequest;
 import eu.trentorise.game.aaa.service.IGameAuthenticationManager;
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.RestHelper;
 import eu.trentorise.utils.rest.RestResponseHelper;
 import eu.trentorise.utils.rest.RestResultHelper;
@@ -32,13 +33,20 @@ public class GameAuthenticationController {
     
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public @ResponseBody ResponseEntity<Void> authenticate(@RequestBody GameAuthenticationRequest request) throws Exception {
-        IAuthenticationContainer container = new AuthenticationContainer();
-        container.setUser(request.getUser());
+        ResponseEntity<Void> response = null;
+        try {
+            IAuthenticationContainer container = new AuthenticationContainer();
+            container.setUser(request.getUser());
         
-        restHelper.execute(container, manager, "authenticate", 
-                           IAuthenticationContainer.class, restResultHelper, logger);
+            restHelper.execute(container, manager, "authenticate", 
+                               IAuthenticationContainer.class, restResultHelper, logger);
         
-        return restResponseHelper.makeNoContentResponse();
+            response = restResponseHelper.makeNoContentResponse();
+        } catch (Exception ex) {
+            restExceptionHandler.handleException(ex, logger);
+        }
+        
+        return response;
     }
     
     
@@ -58,4 +66,8 @@ public class GameAuthenticationController {
     @Qualifier("restResponseHelper")
     @Autowired
     protected RestResponseHelper restResponseHelper;
+    
+    @Qualifier("restExceptionHandler")
+    @Autowired
+    protected RestExceptionHandler restExceptionHandler;
 }

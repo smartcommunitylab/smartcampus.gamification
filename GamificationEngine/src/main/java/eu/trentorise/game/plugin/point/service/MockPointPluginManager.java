@@ -35,7 +35,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         //TODO: return null or throw Exception if it is not possible to create a
         //new one
         
-        return mockPluginManager.createGreenLeavesPointPlugin();
+        return this.createElement();
     }
 
     @Override

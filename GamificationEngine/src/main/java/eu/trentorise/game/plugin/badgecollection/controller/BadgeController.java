@@ -2,15 +2,21 @@ package eu.trentorise.game.plugin.badgecollection.controller;
 
 import eu.trentorise.game.plugin.badgecollection.service.IBadgeManager;
 import eu.trentorise.game.controller.IGameConstants;
+import eu.trentorise.game.plugin.badgecollection.container.BadgeContainer;
 import eu.trentorise.game.plugin.badgecollection.container.BadgeSettingContainer;
+import eu.trentorise.game.plugin.badgecollection.container.IBadgeContainer;
 import eu.trentorise.game.plugin.badgecollection.container.IBadgeSettingContainer;
 import eu.trentorise.game.plugin.badgecollection.model.Badge;
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
+import eu.trentorise.game.plugin.badgecollection.request.BadgeRequest;
+import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeResponse;
+import eu.trentorise.game.plugin.badgecollection.service.IBadgeCollectionPluginManager;
 import eu.trentorise.game.plugin.model.Plugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,10 +54,22 @@ public class BadgeController {
         
         return manager.setBadge(container);
     }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/getBadges" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
+    public @ResponseBody BadgeListResponse getBadges(@RequestBody BadgeRequest request) throws Exception {
+        IBadgeContainer container = new BadgeContainer();
+        container.setBadgeCollection(request.getBadgeCollection());
+        
+        return badgeCollectionPluginManager.getBadges(container);
+    }
             
     //TODO: in the final implementation the following manager will be a 
     //separated class (at the moment it is in mockBadgeCollectionPluginManager)
     @Qualifier("mockBadgeCollectionPluginManager")
     @Autowired
     protected IBadgeManager manager;
+    
+    @Qualifier("mockBadgeCollectionPluginManager")
+    @Autowired
+    protected IBadgeCollectionPluginManager badgeCollectionPluginManager;
 }

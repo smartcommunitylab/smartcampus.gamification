@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.badgecollection.model.Badge;
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
-import eu.trentorise.game.plugin.badgecollection.request.BadgeCollectionPluginRequest;
 import eu.trentorise.game.plugin.badgecollection.request.BadgeRequest;
+import eu.trentorise.game.plugin.badgecollection.response.BadgeCollectionPluginCollectionResponse;
+import eu.trentorise.game.plugin.badgecollection.response.BadgeCollectionPluginResponse;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeListResponse;
 import eu.trentorise.game.plugin.badgecollection.service.MockBadgeCollectionPluginManager;
-import eu.trentorise.game.plugin.model.CustomizedPlugin;
-import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
 import eu.trentorise.game.plugin.service.MockPluginManager;
-import eu.trentorise.game.profile.game.model.Game;
-import eu.trentorise.game.profile.game.service.MockGameProfileManager;
+import eu.trentorise.game.servicetest.AbstractRestCrudTest;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -24,57 +21,108 @@ import org.springframework.http.HttpMethod;
  *
  * @author Luca Piras
  */
-public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
+public class BadgeCollectionPluginControllerTest extends AbstractRestCrudTest<BadgeCollectionPlugin, 
+                                                                              BadgeCollectionPluginCollectionResponse,
+                                                                              BadgeCollectionPluginResponse> {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_BADGECOLLECTION_PATH;
-    protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-
+    protected static final MockBadgeCollectionPluginManager mockBadgeCollectionPluginManager = MockBadgeCollectionPluginManager.createInstance();
     
     public BadgeCollectionPluginControllerTest() {
-        super("BadgeCollectionPluginControllerTest");
+        super("BadgeCollectionPluginControllerTest", 
+              IGameConstants.SERVICE_PLUGINS_BADGECOLLECTION_PATH,
+              mockBadgeCollectionPluginManager,
+              mockBadgeCollectionPluginManager.getComparator());
     }
     
     
-    /**
-     * Test of setCustomizedGamificationPlugin method, of class BadgeCollectionPluginController.
-     * @throws java.lang.Exception
-     */
+    //CREATE
     @Test
-    public void testSetCustomizedGamificationPlugin() throws Exception {
-        RestTemplateJsonServiceTestHelper<SettingCustomizedPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        MockPluginManager mock = new MockPluginManager();
-        ObjectMapper mapper = new ObjectMapper();
-        
-        Game game = new Game();
-        game.setId(MockGameProfileManager.MOCK_GAME_ID);
-        
-        BadgeCollectionPluginRequest request = new BadgeCollectionPluginRequest();
-        request.setGame(game);
-        BadgeCollectionPlugin plugin = mock.createEcologicalBadgesPlugin();
-        plugin.setId(null);
-        request.setPlugin(plugin);
-        
-        String jsonRequest = mapper.writeValueAsString(request);
-        System.out.println(jsonRequest);
-        
-        SettingCustomizedPluginResponse response = helper.executeTest("testBadgeCollectionSetCustomizedGamificationPlugin", 
-                                                                           BASE_RELATIVE_URL + "/setCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
-                                                                           HttpMethod.POST,
-                                                                           SettingCustomizedPluginResponse.class, 
-                                                                           jsonRequest);
-        
-        if (null != response) {
-            assertTrue(response.isSuccess());
-            
-            CustomizedPlugin customizedPlugin = response.getCustomizedPlugin();
-            
-            assertNotNull(customizedPlugin.getId());
-            assertEquals(customizedPlugin.getPlugin().getId(), plugin.getPlugin().getId());
-            assertEquals(customizedPlugin.getName(), plugin.getName());
-            assertEquals(customizedPlugin.getVersion(), plugin.getVersion());
-            assertEquals(customizedPlugin.getDescription(), plugin.getDescription());
-        }
+    public void testCreateElement() throws Exception {
+        super.testCreateElement("testCreateBadgeCollectionPlugin");
     }
+    
+    @Override
+    protected BadgeCollectionPlugin manageElementToCreate(BadgeCollectionPlugin element) {
+        element.setId(null);
+        return element;
+    }
+    
+    
+    //READ COLLECTION
+    @Test
+    public void testReadCollection() throws Exception {
+        super.testReadCollection("testReadBadgeCollectionPlugins", 
+                                 BadgeCollectionPluginCollectionResponse.class);
+    }
+    
+    @Override
+    protected List<BadgeCollectionPlugin> retrieveCollection(BadgeCollectionPluginCollectionResponse response) {
+        return (List<BadgeCollectionPlugin>) response.getBadgeCollectionPlugins();
+    }
+    
+    
+    //READ SINGLE ELEMENT
+    @Test
+    public void testReadElementById() throws Exception {
+        super.testReadElementById("testReadBadgeCollectionPluginById", 
+                                  BadgeCollectionPluginResponse.class);
+    }
+
+    @Override
+    protected BadgeCollectionPlugin manageNegativeElementToReadById(BadgeCollectionPlugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    @Override
+    protected BadgeCollectionPlugin retrieveSingleElement(BadgeCollectionPluginResponse response) {
+        return response.getBadgeCollectionPlugin();
+    }
+    
+    
+    //UPDATE
+    @Test
+    public void testUpdateElement() throws Exception {
+        super.testUpdateElement("testUpdateBadgeCollectionPlugin");
+    }
+
+    @Override
+    protected BadgeCollectionPlugin managePositiveElementToUpdate(BadgeCollectionPlugin element) {
+        element.setName(element.getName() + "Modified");
+        
+        return element;
+    }
+
+    @Override
+    protected BadgeCollectionPlugin manageNegativeElementToUpdate(BadgeCollectionPlugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //DELETE
+    @Test
+    public void testDeleteElement() throws Exception {
+        super.testDeleteElement("testDeleteBadgeCollectionPlugin");
+    }
+    
+    @Override
+    protected BadgeCollectionPlugin manageNegativeElementToDelete(BadgeCollectionPlugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //TOOLS
+    @Override
+    protected String makeSinglePartRelativeUrl(BadgeCollectionPlugin element) {
+        return element.getId().toString();
+    }
+
+    
+    protected BadgeCollectionPlugin setNegativeId(BadgeCollectionPlugin element) {
+        element.setId(-1);
+        
+        return element;
+    }
+    
     
     /**
      * Test of getBadges method, of class BadgeCollectionPluginController.
@@ -112,7 +160,7 @@ public class BadgeCollectionPluginControllerTest extends SkipServiceTestHelper {
         System.out.println(jsonRequest);
         
         BadgeListResponse response = helper.executeTest("testGetBadges",
-                                                        BASE_RELATIVE_URL + "/getBadges" + FINAL_PART_RELATIVE_URL,
+                                                        this.baseRelativeUrl + "/badge/getBadges" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION,
                                                         HttpMethod.POST,
                                                         BadgeListResponse.class, 
                                                         jsonRequest);

@@ -108,6 +108,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         return mockPluginManager.createGreenLeavesPointPlugin();
     }
     
+    
     public Comparator<CustomizedPlugin> getComparator() {
         return comparator;
     }

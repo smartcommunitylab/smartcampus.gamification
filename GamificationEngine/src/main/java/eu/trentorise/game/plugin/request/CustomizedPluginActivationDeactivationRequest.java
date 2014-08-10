@@ -7,6 +7,7 @@ import eu.trentorise.game.profile.game.model.Game;
  *
  * @author Luca Piras
  */
+@Deprecated
 public class CustomizedPluginActivationDeactivationRequest {
     
     protected Game game;

@@ -60,6 +60,8 @@ public interface IGameConstants {
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_PATH + "/badge";
     /*views and services - services - profile - games - plugins - customizedPlugins - leaderboardspoint */
     public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PATH + "/leaderboardpoint-plugins";
+    public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_SINGLE_PATH_PARAM = SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM;
+    public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_SINGLE_PATH = SERVICE_PLUGINS_LEADERBOARDPOINT_PATH + "/{" + SERVICE_PLUGINS_LEADERBOARDPOINT_SINGLE_PATH_PARAM + "}";
     /*views and services - services - player*/
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
     /*views and services - services - configuration*/

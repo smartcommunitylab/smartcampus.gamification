@@ -270,8 +270,8 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
         
         LeaderboardPointPlugin plugin = new LeaderboardPointPlugin();
         plugin = (LeaderboardPointPlugin) this.createNewCustomizedPlugin(plugin,
-                                                                         fatherId,
                                                                          id,
+                                                                         fatherId,
                                                                          name, 
                                                                          version,
                                                                          description);

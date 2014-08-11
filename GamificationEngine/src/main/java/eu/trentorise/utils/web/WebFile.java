@@ -12,6 +12,8 @@ public class WebFile {
     public static final String WEB_PATH_DELIMITER = "/";
     
     protected String fileName;
+    
+    protected String fileContent;
 
     protected URL url;
 
@@ -33,6 +35,14 @@ public class WebFile {
         this.fileName = fileName;
     }
 
+    public String getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
+    }
+    
     public URL getUrl() {
         return url;
     }

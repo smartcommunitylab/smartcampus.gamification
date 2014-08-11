@@ -24,6 +24,12 @@ public class BadgeKeyComparator implements Comparator<Badge> {
         
         return finalComparison;
     }
+
+    
+    public void setBadgeCollectionPluginComparator(Comparator<BadgeCollectionPlugin> badgeCollectionPluginComparator) {
+        this.badgeCollectionPluginComparator = badgeCollectionPluginComparator;
+    }
+    
     
     @Qualifier("badgeCollectionKeyComparator")
     @Autowired

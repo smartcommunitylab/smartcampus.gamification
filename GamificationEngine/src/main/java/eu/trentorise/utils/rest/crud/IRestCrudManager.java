@@ -16,7 +16,7 @@ public interface IRestCrudManager<T, CC, C> {
     public Collection<T> readCollection(CC containerWithIds) throws Exception;
     public T readSingleElement(C containerWithIds) throws Exception;
     
-    public T updateSingleElement(C containerWithForeignIds) throws Exception;
+    public T updateSingleElement(C containerWithIds) throws Exception;
     
     public T deleteSingleElement(C containerWithIds) throws Exception;
 }

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service("mockPointPluginManager")
 public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Object, PointPlugin>,
-                                               IRestCrudTestManager<PointPlugin> {
+                                               IRestCrudTestManager<PointPlugin, Object, PointPlugin> {
 
     public static MockPointPluginManager createInstance() {
         MockPointPluginManager mock = new MockPointPluginManager();
@@ -35,7 +35,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         //TODO: return null or throw Exception if it is not possible to create a
         //new one
         
-        return this.createElement();
+        return this.createElement(containerWithForeignIds);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         //possible
         //TODO: vai nella tabella PointPlugin e recupera tutti i
         //customizedPlugins per il plugin indicato
-        return this.createElements();
+        return this.createElements(containerWithIds);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         //possible
         PointPlugin returnValue = null;
         
-        PointPlugin expectedElement = this.createElement();
+        PointPlugin expectedElement = this.createElement(containerWithIds);
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -68,7 +68,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         
         PointPlugin returnValue = null;
         
-        PointPlugin expectedElement = this.createElement();
+        PointPlugin expectedElement = this.createElement(containerWithForeignIds);
         if (0 == comparator.compare(containerWithForeignIds, expectedElement)) {
             returnValue = containerWithForeignIds;
         }
@@ -83,7 +83,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
         
         PointPlugin returnValue = null;
         
-        PointPlugin expectedElement = this.createElement();
+        PointPlugin expectedElement = this.createElement(containerWithIds);
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -93,7 +93,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
     
     
     @Override
-    public Collection createElements() {
+    public Collection createElements(Object containerWithIds) throws Exception {
         Plugin plugin = mockPluginManager.createPointsPlugin();
         GameCustomizedPlugin containerContent = mockGameCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null);
         
@@ -104,7 +104,7 @@ public class MockPointPluginManager implements IRestCrudManager<PointPlugin, Obj
     }
 
     @Override
-    public PointPlugin createElement() {
+    public PointPlugin createElement(PointPlugin containerWithIds) throws Exception {
         return mockPluginManager.createGreenLeavesPointPlugin();
     }
     

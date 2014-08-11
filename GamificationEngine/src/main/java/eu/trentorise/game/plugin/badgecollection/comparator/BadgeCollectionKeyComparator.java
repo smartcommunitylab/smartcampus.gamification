@@ -18,6 +18,12 @@ public class BadgeCollectionKeyComparator implements Comparator<BadgeCollectionP
     public int compare(BadgeCollectionPlugin o1, BadgeCollectionPlugin o2) {
         return customizedGamificationPluginComparator.compare(o1, o2);
     }
+
+    
+    public void setCustomizedGamificationPluginComparator(Comparator<CustomizedPlugin> customizedGamificationPluginComparator) {
+        this.customizedGamificationPluginComparator = customizedGamificationPluginComparator;
+    }
+    
     
     @Qualifier("customizedPluginKeyComparator")
     @Autowired

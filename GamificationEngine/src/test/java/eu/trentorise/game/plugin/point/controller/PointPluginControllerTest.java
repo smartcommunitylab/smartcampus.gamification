@@ -13,7 +13,9 @@ import org.junit.Test;
  *
  * @author Luca Piras
  */
-public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin, 
+public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin,
+                                                                    Object, 
+                                                                    PointPlugin,
                                                                     PointPluginCollectionResponse,
                                                                     PointPluginResponse> {
     
@@ -31,7 +33,7 @@ public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin,
     //CREATE
     @Test
     public void testCreateElement() throws Exception {
-        super.testCreateElement("testCreatePointPlugin");
+        super.testCreateElement("testCreatePointPlugin", null, null);
     }
     
     @Override
@@ -44,8 +46,8 @@ public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin,
     //READ COLLECTION
     @Test
     public void testReadCollection() throws Exception {
-        super.testReadCollection("testReadPointPlugins", 
-                                 PointPluginCollectionResponse.class);
+        super.testReadCollection("testReadPointPlugins", null, 
+                                 PointPluginCollectionResponse.class, null);
     }
     
     @Override
@@ -57,8 +59,8 @@ public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin,
     //READ SINGLE ELEMENT
     @Test
     public void testReadElementById() throws Exception {
-        super.testReadElementById("testReadPointPluginById", 
-                                  PointPluginResponse.class);
+        super.testReadElementById("testReadPointPluginById", null,
+                                  PointPluginResponse.class, null);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin,
     //UPDATE
     @Test
     public void testUpdateElement() throws Exception {
-        super.testUpdateElement("testUpdatePointPlugin");
+        super.testUpdateElement("testUpdatePointPlugin", null, null);
     }
 
     @Override
@@ -94,7 +96,7 @@ public class PointPluginControllerTest extends AbstractRestCrudTest<PointPlugin,
     //DELETE
     @Test
     public void testDeleteElement() throws Exception {
-        super.testDeleteElement("testDeletePointPlugin");
+        super.testDeleteElement("testDeletePointPlugin", null, null);
     }
     
     @Override

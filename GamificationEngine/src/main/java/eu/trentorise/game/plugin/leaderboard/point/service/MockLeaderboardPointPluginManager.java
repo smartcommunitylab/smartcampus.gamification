@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service("mockLeaderboardPointPluginManager")
 public class MockLeaderboardPointPluginManager implements IRestCrudManager<LeaderboardPointPlugin, Object, LeaderboardPointPlugin>,
-                                                          IRestCrudTestManager<LeaderboardPointPlugin> {
+                                                          IRestCrudTestManager<LeaderboardPointPlugin, Object, LeaderboardPointPlugin> {
     
     public static MockLeaderboardPointPluginManager createInstance() {
         MockLeaderboardPointPluginManager mock = new MockLeaderboardPointPluginManager();
@@ -35,7 +35,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
         //TODO: return null or throw Exception if it is not possible to create a
         //new one
         
-        return this.createElement();
+        return this.createElement(containerWithForeignIds);
     }
     
     @Override
@@ -44,7 +44,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
         //possible
         //TODO: vai nella tabella LeaderboardPointPlugin e recupera tutti i
         //customizedPlugins per il plugin indicato
-        return this.createElements();
+        return this.createElements(containerWithIds);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
         //possible
         LeaderboardPointPlugin returnValue = null;
         
-        LeaderboardPointPlugin expectedElement = this.createElement();
+        LeaderboardPointPlugin expectedElement = this.createElement(containerWithIds);
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -68,7 +68,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
         
         LeaderboardPointPlugin returnValue = null;
         
-        LeaderboardPointPlugin expectedElement = this.createElement();
+        LeaderboardPointPlugin expectedElement = this.createElement(containerWithForeignIds);
         if (0 == comparator.compare(containerWithForeignIds, expectedElement)) {
             returnValue = containerWithForeignIds;
         }
@@ -83,7 +83,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
         
         LeaderboardPointPlugin returnValue = null;
         
-        LeaderboardPointPlugin expectedElement = this.createElement();
+        LeaderboardPointPlugin expectedElement = this.createElement(containerWithIds);
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -93,7 +93,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
     
     
     @Override
-    public Collection createElements() {
+    public Collection createElements(Object containerWithIds) throws Exception {
         Plugin plugin = mockPluginManager.createLeadearboardPointPlugin();
         GameCustomizedPlugin containerContent = mockGameCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null);
         
@@ -104,7 +104,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
     }
 
     @Override
-    public LeaderboardPointPlugin createElement() {
+    public LeaderboardPointPlugin createElement(LeaderboardPointPlugin containerWithIds) throws Exception {
         return mockPluginManager.createGreenWeeklyLeadearboardPlugin();
     }
     

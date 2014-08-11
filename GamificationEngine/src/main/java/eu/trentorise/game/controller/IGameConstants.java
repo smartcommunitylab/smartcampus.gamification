@@ -57,7 +57,10 @@ public interface IGameConstants {
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_PATH = SERVICE_PATH + "/badgecollection-plugins";
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_SINGLE_PATH_PARAM = SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM;
     public static final String SERVICE_PLUGINS_BADGECOLLECTION_SINGLE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_PATH + "/{" + SERVICE_PLUGINS_BADGECOLLECTION_SINGLE_PATH_PARAM + "}";
-    public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_PATH + "/badge";
+    /*views and services - services - profile - games - plugins - customizedPlugins - badgeCollections - badges*/
+    public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_SINGLE_PATH + "/badges";
+    public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_SINGLE_PATH_PARAM = "badgeId";
+    public static final String SERVICE_PLUGINS_BADGECOLLECTION_BADGE_SINGLE_PATH = SERVICE_PLUGINS_BADGECOLLECTION_BADGE_PATH + "/{" + SERVICE_PLUGINS_BADGECOLLECTION_BADGE_SINGLE_PATH_PARAM + "}";
     /*views and services - services - profile - games - plugins - customizedPlugins - leaderboardspoint */
     public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_PATH = SERVICE_PATH + "/leaderboardpoint-plugins";
     public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_SINGLE_PATH_PARAM = SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM;

@@ -13,7 +13,9 @@ import org.junit.Test;
  *
  * @author Luca Piras
  */
-public class LeaderboardPointPluginControllerTest extends AbstractRestCrudTest<LeaderboardPointPlugin, 
+public class LeaderboardPointPluginControllerTest extends AbstractRestCrudTest<LeaderboardPointPlugin,
+                                                                               Object, 
+                                                                               LeaderboardPointPlugin,
                                                                                LeaderboardPointPluginCollectionResponse,
                                                                                LeaderboardPointPluginResponse> {
     
@@ -31,7 +33,7 @@ public class LeaderboardPointPluginControllerTest extends AbstractRestCrudTest<L
     //CREATE
     @Test
     public void testCreateElement() throws Exception {
-        super.testCreateElement("testCreateLeaderboardPointPlugin");
+        super.testCreateElement("testCreateLeaderboardPointPlugin", null, null);
     }
     
     @Override
@@ -44,8 +46,9 @@ public class LeaderboardPointPluginControllerTest extends AbstractRestCrudTest<L
     //READ COLLECTION
     @Test
     public void testReadCollection() throws Exception {
-        super.testReadCollection("testReadLeaderboardPointPlugins", 
-                                 LeaderboardPointPluginCollectionResponse.class);
+        super.testReadCollection("testReadLeaderboardPointPlugins", null, 
+                                 LeaderboardPointPluginCollectionResponse.class,
+                                 null);
     }
     
     @Override
@@ -57,8 +60,8 @@ public class LeaderboardPointPluginControllerTest extends AbstractRestCrudTest<L
     //READ SINGLE ELEMENT
     @Test
     public void testReadElementById() throws Exception {
-        super.testReadElementById("testReadLeaderboardPointPluginById", 
-                                  LeaderboardPointPluginResponse.class);
+        super.testReadElementById("testReadLeaderboardPointPluginById", null,
+                                  LeaderboardPointPluginResponse.class, null);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class LeaderboardPointPluginControllerTest extends AbstractRestCrudTest<L
     //UPDATE
     @Test
     public void testUpdateElement() throws Exception {
-        super.testUpdateElement("testUpdateLeaderboardPointPlugin");
+        super.testUpdateElement("testUpdateLeaderboardPointPlugin", null, null);
     }
 
     @Override
@@ -94,7 +97,7 @@ public class LeaderboardPointPluginControllerTest extends AbstractRestCrudTest<L
     //DELETE
     @Test
     public void testDeleteElement() throws Exception {
-        super.testDeleteElement("testDeleteLeaderboardPointPlugin");
+        super.testDeleteElement("testDeleteLeaderboardPointPlugin", null, null);
     }
     
     @Override

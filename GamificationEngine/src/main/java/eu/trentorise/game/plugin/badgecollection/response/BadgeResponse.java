@@ -1,13 +1,12 @@
 package eu.trentorise.game.plugin.badgecollection.response;
 
 import eu.trentorise.game.plugin.badgecollection.model.Badge;
-import eu.trentorise.game.response.GameResponse;
 
 /**
  *
  * @author Luca Piras
  */
-public class BadgeResponse extends GameResponse {
+public class BadgeResponse {
     
     protected Badge badge;
 
@@ -21,6 +20,6 @@ public class BadgeResponse extends GameResponse {
 
     @Override
     public String toString() {
-        return "BadgeResponse{" + "badge=" + badge + " " + super.toString() + " }";
+        return "BadgeResponse{" + "badge=" + badge + '}';
     }
 }

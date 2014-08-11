@@ -9,18 +9,6 @@ public interface IGameConstants {
     /*views and services*/
     public static final String VIEW_PATH = "/game/";
     public static final String VIEW_INTERNAL_NAMESPACE = "game.";
-    
-    
-    /*parameters*/
-    /*game configuration*/
-    public static final String PARAM_GAME_ID = "gameId";
-    public static final String PARAM_GAMIFIABLE_ACTIONS_FILE = "gamifiableactionsfile";
-    /*badgeCollection - badge*/
-    public static final String PARAM_BADGECOLLECTION_ID = "badgecollectionId";
-    public static final String PARAM_BADGECOLLECTION_PLUGIN_ID = "badgecollectionpluginId";
-    public static final String PARAM_BADGECOLLECTION_BADGE_FILE = "badgecollectionbadgefile";
-    
-    
     /*views and services - services -*/
     public static final String SERVICE_PATH = VIEW_PATH + "services";
     /*views and services - services - profile*/
@@ -31,6 +19,12 @@ public interface IGameConstants {
     public static final String SERVICE_APPLICATIONS_PATH = SERVICE_PATH + "/applications";
     public static final String SERVICE_APPLICATIONS_SINGLE_PATH_PARAM = "appId";
     public static final String SERVICE_APPLICATIONS_SINGLE_PATH = SERVICE_APPLICATIONS_PATH + "/{" + SERVICE_APPLICATIONS_SINGLE_PATH_PARAM + "}";
+    /*views and services - services - actions*/
+    /*views and services - services - actions - externalActions*/
+    public static final String SERVICE_EXTERNALACTIONS_PATH = SERVICE_APPLICATIONS_SINGLE_PATH + "/externalactions";
+    public static final String SERVICE_EXTERNALACTIONS_SINGLE_PATH_PARAM = "extActId";
+    public static final String SERVICE_EXTERNALACTIONS_SINGLE_PATH = SERVICE_EXTERNALACTIONS_PATH + "/{" + SERVICE_EXTERNALACTIONS_SINGLE_PATH_PARAM + "}";
+    public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_EXTERNALACTIONS_PATH + "/param";
     /*views and services - services - profile - games*/
     public static final String SERVICE_GAME_PROFILE_GAMES_PATH = SERVICE_GAME_PROFILE_PATH + "/games";
     public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM = "gameId";
@@ -69,9 +63,6 @@ public interface IGameConstants {
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
     /*views and services - services - configuration*/
     public static final String SERVICE_GAME_CONFIGURATION = SERVICE_PATH + "/configuration";
-    /*views and services - services - actions*/
-    public static final String SERVICE_ACTION_PATH = SERVICE_PATH + "/action";
-    public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_ACTION_PATH + "/param";
     /*views and services - services - ruleengine*/
     public static final String SERVICE_RULEENGINE_PATH = SERVICE_PATH + "/rule-engine";
      /*views and services - services - ruleengine - ruletemplates*/

@@ -2,6 +2,8 @@ package eu.trentorise.game.servicetest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
+import eu.trentorise.utils.web.IUrlMaker;
+import eu.trentorise.utils.web.UrlMaker;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -10,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  *
@@ -257,13 +258,13 @@ public abstract class AbstractRestCrudTest<T, CC, C, RC, RT> extends SkipService
         return sb.toString();
     }
     
-    protected String expandUrl(String url, Map<String, Object> uriVariables) {
+    protected String expandUrl(String urlWithPathVariables, Map<String, Object> uriVariables) {
         if (!uriVariables.isEmpty()) {
-            UriComponentsBuilder builder = UriComponentsBuilder.fromPath(url);
-            url = builder.buildAndExpand(uriVariables).toString();
+            IUrlMaker urlMaker = new UrlMaker();
+            urlWithPathVariables = urlMaker.makeUrl(urlWithPathVariables, uriVariables);
         }
         
-        return url;
+        return urlWithPathVariables;
     }
 
     protected String chooseBaseRelativeUrl(String baseRelativeUrlExpanded) {

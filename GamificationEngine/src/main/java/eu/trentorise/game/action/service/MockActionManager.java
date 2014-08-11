@@ -1,18 +1,18 @@
 package eu.trentorise.game.action.service;
 
+import eu.trentorise.game.action.comparator.ActionKeyComparator;
 import eu.trentorise.game.action.container.IActionContainer;
-import eu.trentorise.game.action.container.IExternalActionContainer;
 import eu.trentorise.game.action.model.Action;
 import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.model.ExternalAction;
 import eu.trentorise.game.action.model.Param;
 import eu.trentorise.game.action.model.ParamType;
-import eu.trentorise.game.action.response.ExternalActionResponse;
 import eu.trentorise.game.action.response.ParamResponse;
 import eu.trentorise.game.application.service.MockApplicationManager;
 import eu.trentorise.game.response.MockResponder;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,12 +30,9 @@ public class MockActionManager extends MockResponder implements IActionManager {
         MockActionManager mock = new MockActionManager();
         mock.setManager(mockApplicationManager);
         
+        mock.comparator = new ActionKeyComparator();
+        
         return mock;
-    }
-    
-    @Override
-    public ExternalActionResponse getExternalActions(IExternalActionContainer container) throws Exception {
-        return this.makeExternalActionResponse(this.createActions());
     }
     
     @Override
@@ -56,7 +53,7 @@ public class MockActionManager extends MockResponder implements IActionManager {
         return list;
     }
     
-    public List<ExternalAction> createActions() {
+    public List<ExternalAction> createViaggiaRoveretoExternalActions() {
         List<ExternalAction> list = new ArrayList<>();
         
         Application application = manager.createViaggiaRovereto();
@@ -130,14 +127,12 @@ public class MockActionManager extends MockResponder implements IActionManager {
         
         return ((ParamResponse) this.buildPositiveResponse(response));
     }
-    
-    protected ExternalActionResponse makeExternalActionResponse(List<ExternalAction> list) {
-        ExternalActionResponse response = new ExternalActionResponse();
-        response.setActions(list);
-        
-        return ((ExternalActionResponse) this.buildPositiveResponse(response));
-    }
 
+    
+    public Comparator<Action> getComparator() {
+        return comparator;
+    }
+    
     public MockApplicationManager getManager() {
         return manager;
     }
@@ -149,4 +144,9 @@ public class MockActionManager extends MockResponder implements IActionManager {
     @Qualifier("mockApplicationManager")
     @Autowired
     protected MockApplicationManager manager;
+    
+    
+    @Qualifier("actionKeyComparator")
+    @Autowired
+    protected Comparator<Action> comparator;
 }

@@ -53,34 +53,6 @@ public class MockActionManager extends MockResponder implements IActionManager {
         return list;
     }
     
-    public List<ExternalAction> createViaggiaRoveretoExternalActions() {
-        List<ExternalAction> list = new ArrayList<>();
-        
-        Application application = manager.createViaggiaRovereto();
-        
-        list.add(this.createAction(application, 1, "BusDelayReporting", "The user has reported the delay of a bus"));
-        list.add(this.createAction(application, 2, "BusServiceRating", "The user has rated the bus service quality"));
-        list.add(this.createAction(application, 3, "BusCommentAdding", "The user has commented the bus service"));
-        list.add(this.createItineratySavingExternalAction());
-        list.add(this.createAction(application, 5, "BikeUsage", "The user has used a bike"));
-        list.add(this.createAction(application, 6, "CarUsage", "The user has used a car"));
-        list.add(this.createAction(application, 7, "BusUsage", "The user has used a bus"));
-        
-        return list;
-    }
-    
-    protected ExternalAction createAction(Application application, Integer id, 
-                                          String name, String description) {
-        
-        ExternalAction element = new ExternalAction();
-        
-        element = (ExternalAction) this.createAction(element, id, name, description);
-        
-        element.setApplication(application);
-        
-        return element;
-    }
-    
     protected Action createAction(Action element, Integer id, 
                                   String name, String description) {
         
@@ -102,6 +74,18 @@ public class MockActionManager extends MockResponder implements IActionManager {
     
     public ExternalAction createExternalAction() {
         return this.createItineratySavingExternalAction();
+    }
+    
+    protected ExternalAction createAction(Application application, Integer id, 
+                                          String name, String description) {
+        
+        ExternalAction element = new ExternalAction();
+        
+        element = (ExternalAction) this.createAction(element, id, name, description);
+        
+        element.setApplication(application);
+        
+        return element;
     }
     
     public Action createAction() {

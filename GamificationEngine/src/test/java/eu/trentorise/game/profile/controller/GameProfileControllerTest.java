@@ -36,7 +36,7 @@ public class GameProfileControllerTest extends SkipServiceTestHelper {
     
     @Test
     public void testCreateGame() throws Exception {
-        Game requestElement = MockGameProfileManager.createInstance().createRoveretoGame();
+        Game requestElement = MockGameProfileManager.createInstance().createElement();
         requestElement.setId(null);
         this.executeTestCreateGame(requestElement, HttpStatus.CREATED);
     }
@@ -93,7 +93,7 @@ public class GameProfileControllerTest extends SkipServiceTestHelper {
    
     @Test
     public void testReadGameById() throws Exception {
-        Game expectedElement = MockGameProfileManager.createInstance().createRoveretoGame();
+        Game expectedElement = MockGameProfileManager.createInstance().createElement();
         this.executeTestReadGameById(expectedElement, HttpStatus.OK);
         
         expectedElement.setId(-1);
@@ -122,7 +122,7 @@ public class GameProfileControllerTest extends SkipServiceTestHelper {
     
     @Test
     public void testUpdateGame() throws Exception {
-        Game requestElement = MockGameProfileManager.createInstance().createRoveretoGame();
+        Game requestElement = MockGameProfileManager.createInstance().createElement();
         requestElement.setName("RoveretoGameModified");
         this.executeTestUpdateGame(requestElement, HttpStatus.NO_CONTENT);
         
@@ -149,7 +149,7 @@ public class GameProfileControllerTest extends SkipServiceTestHelper {
     
     @Test
     public void testDeleteGame() throws Exception {
-        Game requestElement = MockGameProfileManager.createInstance().createRoveretoGame();
+        Game requestElement = MockGameProfileManager.createInstance().createElement();
         this.executeTestDeleteGame(requestElement, HttpStatus.NO_CONTENT);
         
         requestElement.setId(-1);

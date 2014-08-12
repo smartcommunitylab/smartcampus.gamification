@@ -2,17 +2,14 @@ package eu.trentorise.game.plugin.service;
 
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
 import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
-import eu.trentorise.game.plugin.container.ICustomizedPluginActivationDeactivationContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
 import eu.trentorise.game.plugin.container.IPluginContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.leaderboard.point.model.UpdateRate;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.model.Typology;
-import eu.trentorise.game.response.GameResponse;
-import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,8 +24,7 @@ import org.springframework.stereotype.Service;
  * @author Luca Piras
  */
 @Service("mockPluginManager")
-public class MockPluginManager extends MockResponder implements IGameCustomizedPluginManager,
-                                                                IRestCrudManager<Plugin, Object, IPluginContainer> {
+public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPluginContainer> {
 
     public static MockPluginManager createInstance() {
         MockPluginManager mock = new MockPluginManager();
@@ -84,7 +80,7 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
         return list;
     }
     
-    public Collection<CustomizedPlugin> createCustomizedPlugins(IGameCustomizedPluginCollectionContainer container) {
+    public Collection<CustomizedPlugin> createCustomizedPlugins(GameCustomizedPlugin container) {
         List<CustomizedPlugin> list = new ArrayList<>();
         
         //TODO: refactoring of this part changing it with a dynamic mechanism
@@ -92,7 +88,7 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
         //the getting of customized plugins in relation to the gamification
         //plugin provided (points for instance. The caller know the name of
         //gamification plugins thanks to the getGamificationPluginList service)
-        Integer id = container.getGameCustomizedPlugin().getCustomizedPlugin().getPlugin().getId();
+        Integer id = container.getCustomizedPlugin().getPlugin().getId();
         if (null != id) {
             if (0 == id.compareTo(this.createPointsPlugin().getId())) {
                 list.add(this.createGreenLeavesPointPlugin());
@@ -112,10 +108,6 @@ public class MockPluginManager extends MockResponder implements IGameCustomizedP
         return list;
     }
     
-    @Override
-    public GameResponse activateDeactivateCustomizedGamificationPlugin(ICustomizedPluginActivationDeactivationContainer container) {
-        return this.buildPositiveResponse(new GameResponse());
-    }
     
     protected Plugin createNewPlugin(Plugin emptyPlugin,
                                                  Integer id, String name,

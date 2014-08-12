@@ -1,164 +1,156 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.comparator.CustomizedPluginKeyComparator;
-import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
-import eu.trentorise.game.plugin.container.GameCustomizedPluginCollectionContainer;
-import eu.trentorise.game.plugin.container.GameCustomizedPluginContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginContainer;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
-import eu.trentorise.game.plugin.model.Plugin;
-import eu.trentorise.game.plugin.response.CustomizedPluginCollectionResponse;
-import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.response.GameCustomizedPluginCollectionResponse;
+import eu.trentorise.game.plugin.response.GameCustomizedPluginResponse;
 import eu.trentorise.game.plugin.service.MockGameCustomizedPluginManager;
 import eu.trentorise.game.plugin.service.MockPluginManager;
-import eu.trentorise.game.profile.game.service.MockGameProfileManager;
-import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import eu.trentorise.game.servicetest.SkipServiceTestHelper;
+import eu.trentorise.game.servicetest.AbstractRestCrudTest;
 import eu.trentorise.utils.web.IUrlMaker;
 import eu.trentorise.utils.web.UrlMaker;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-import static org.junit.Assert.*;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 
 
 /**
  *
  * @author Luca Piras
  */
-public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
+public class GameCustomizedPluginControllerTest extends AbstractRestCrudTest<GameCustomizedPlugin,
+                                                                             GameCustomizedPlugin, 
+                                                                             GameCustomizedPlugin,
+                                                                             GameCustomizedPluginCollectionResponse,
+                                                                             GameCustomizedPluginResponse> {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_PATH;
-    protected final static String BASE_RELATIVE_URL_SINGLE_PATH = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH;
-    protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
+    protected static final MockGameCustomizedPluginManager mockGameCustomizedPluginManager = MockGameCustomizedPluginManager.createInstance();
+    protected static final MockPluginManager mockPluginManager = MockPluginManager.createInstance();
 
     
     public GameCustomizedPluginControllerTest() {
-        super("GameCustomizedPluginControllerTest");
+        super("GameCustomizedPluginControllerTest", 
+              IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_PATH,
+              mockGameCustomizedPluginManager,
+              mockGameCustomizedPluginManager.getComparator());
     }
     
     
+    //CREATE
     @Test
-    public void testReadGameCustomizedPlugins() throws Exception {
-        MockGameCustomizedPluginManager mockCustomizedPluginManager = MockGameCustomizedPluginManager.createInstance();
-        MockPluginManager mockPluginManager = MockPluginManager.createInstance();
-        
-        IGameCustomizedPluginCollectionContainer container = new GameCustomizedPluginCollectionContainer();
-        
-        Plugin plugin = mockPluginManager.createPointsPlugin();
-        container.setGameCustomizedPlugin(mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null));
-        Collection<CustomizedPlugin> expectedElements = mockPluginManager.createCustomizedPlugins(container);
-        this.executeTestReadGameCustomizedPlugins(container.getGameCustomizedPlugin(),
-                                                  (List<CustomizedPlugin>) expectedElements);
-        
-        plugin = mockPluginManager.createBadgeCollectionPlugin();
-        container.setGameCustomizedPlugin(mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null));
-        expectedElements = mockPluginManager.createCustomizedPlugins(container);
-        
-        this.executeTestReadGameCustomizedPlugins(container.getGameCustomizedPlugin(),
-                                                  (List<CustomizedPlugin>) expectedElements);
-        
-        plugin = mockPluginManager.createLeadearboardPointPlugin();
-        container.setGameCustomizedPlugin(mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null));
-        expectedElements = mockPluginManager.createCustomizedPlugins(container);
-        
-        this.executeTestReadGameCustomizedPlugins(container.getGameCustomizedPlugin(),
-                                                  (List<CustomizedPlugin>) expectedElements);
+    public void testCreateElement() throws Exception {
+        super.testCreateElement("testCreateGameCustomizedPlugin", null, 
+                                makeBaseRelativeUrlExpanded(mockGameCustomizedPluginManager.createElement(null)));
     }
     
-    protected void executeTestReadGameCustomizedPlugins(GameCustomizedPlugin gcp, 
-                                                        List<CustomizedPlugin> expectedElements) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<CustomizedPluginCollectionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        IUrlMaker urlMaker = new UrlMaker();
-        
-        String relativeUrl = urlMaker.makeUrl(BASE_RELATIVE_URL, 
-                                              this.makeCollectionUriVariables(gcp));
-        
-        CustomizedPluginCollectionResponse response = helper.executeTest("PluginControllerTest - testReadGameCustomizedPlugins",
-                                                                         relativeUrl,
-                                                                         HttpMethod.GET,
-                                                                         CustomizedPluginCollectionResponse.class, 
-                                                                         null);
-        
-        if (null != response) {
-            List<CustomizedPlugin> responseElements = (List) response.getCustomizedPlugins();
-            
-            assertNotNull(responseElements);
-            assertEquals(responseElements.size(), expectedElements.size());
-            
-            for (int i = 0; i < responseElements.size(); i++) {
-                CustomizedPlugin responseElement = responseElements.get(i);
-                CustomizedPlugin expectedElement = expectedElements.get(i);
-                
-                assertEquals(responseElement.getId(), expectedElement.getId());
-                assertEquals(responseElement.getPlugin().getId(), 
-                             expectedElement.getPlugin().getId());
-            }
-        }
+    @Override
+    protected GameCustomizedPlugin manageElementToCreate(GameCustomizedPlugin element) {
+        return element;
     }
     
+    
+    //READ COLLECTION
     @Test
-    public void testReadGameCustomizedPluginById() throws Exception {
-        MockGameCustomizedPluginManager mockCustomizedPluginManager = MockGameCustomizedPluginManager.createInstance();
+    public void testReadCollection() throws Exception {
+        GameCustomizedPlugin element = mockGameCustomizedPluginManager.createElement(null);
+        CustomizedPlugin cp = element.getCustomizedPlugin();
+        //in this way we receive all customizedPlugins of a specified plugin
+        //associated with the specified game
+        cp.setId(null);
+        cp.setPlugin(mockPluginManager.createPointsPlugin());
+        super.testReadCollection("testReadGameCustomizedPlugins", 
+                                 element, 
+                                 GameCustomizedPluginCollectionResponse.class,
+                                 makeBaseRelativeUrlExpanded(element));
         
-        IGameCustomizedPluginContainer container = new GameCustomizedPluginContainer();
+        cp.setPlugin(mockPluginManager.createBadgeCollectionPlugin());
+        super.testReadCollection("testReadGameCustomizedPlugins", 
+                                 element, 
+                                 GameCustomizedPluginCollectionResponse.class,
+                                 makeBaseRelativeUrlExpanded(element));
         
-        CustomizedPlugin expectedElement = MockPluginManager.createInstance().createGreenLeavesPointPlugin();
-        GameCustomizedPlugin containerContent = mockCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, 
-                                                                                                   expectedElement.getPlugin(),
-                                                                                                   expectedElement.getId());
-        container.setGameCustomizedPlugin(containerContent);
-        GameCustomizedPlugin gameCustomizedPlugin = container.getGameCustomizedPlugin();
-        
-        
-        this.executeTestReadGameCustomizedPluginById(gameCustomizedPlugin, expectedElement, HttpStatus.OK);
-        
-        gameCustomizedPlugin.getCustomizedPlugin().setId(-1);
-        this.executeTestReadGameCustomizedPluginById(gameCustomizedPlugin, expectedElement, HttpStatus.NOT_FOUND);
+        cp.setPlugin(mockPluginManager.createLeadearboardPointPlugin());
+        super.testReadCollection("testReadGameCustomizedPlugins", 
+                                 element, 
+                                 GameCustomizedPluginCollectionResponse.class,
+                                 makeBaseRelativeUrlExpanded(element));
     }
     
-    protected void executeTestReadGameCustomizedPluginById(GameCustomizedPlugin gcp,
-                                                           CustomizedPlugin expectedElement, 
-                                                           HttpStatus expectedStatus) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<CustomizedPluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        IUrlMaker urlMaker = new UrlMaker();
-        
-        String relativeUrl = urlMaker.makeUrl(BASE_RELATIVE_URL_SINGLE_PATH, 
-                                              this.makeUriVariables(gcp));
-        
-        CustomizedPluginResponse response = helper.executeTest("PluginControllerTest - readGameCustomizedPluginById",
-                                                               relativeUrl,
-                                                               HttpMethod.GET,
-                                                               CustomizedPluginResponse.class,
-                                                               null, 
-                                                               expectedStatus);
-        
-        if (null != response && 0 == expectedStatus.compareTo(HttpStatus.OK)) {
-            CustomizedPlugin responseElement = response.getCustomizedPlugin();
-            
-            assertNotNull(responseElement);
-            
-            CustomizedPluginKeyComparator comparator = new CustomizedPluginKeyComparator();
-            PluginKeyComparator pluginKeyComparator = new PluginKeyComparator();
-            comparator.setPluginComparator(pluginKeyComparator);
-            
-            assertEquals(0, comparator.compare(expectedElement, responseElement));
-        }
+    @Override
+    protected List<GameCustomizedPlugin> retrieveCollection(GameCustomizedPluginCollectionResponse response) {
+        return (List<GameCustomizedPlugin>) response.getGameCustomizedPlugins();
+    }
+    
+    //READ SINGLE ELEMENT
+    @Test
+    public void testReadElementById() throws Exception {
+        super.testReadElementById("testReadGameCustomizedPluginById", null, 
+                                  GameCustomizedPluginResponse.class,
+                                  makeBaseRelativeUrlExpanded(mockGameCustomizedPluginManager.createElement(null)));
+    }
+
+    @Override
+    protected GameCustomizedPlugin manageNegativeElementToReadById(GameCustomizedPlugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    @Override
+    protected GameCustomizedPlugin retrieveSingleElement(GameCustomizedPluginResponse response) {
+        return response.getGameCustomizedPlugin();
     }
     
     
-    protected Map<String, Object> makeCollectionUriVariables(GameCustomizedPlugin element) {
+    //UPDATE
+    @Test
+    public void testUpdateElement() throws Exception {
+        super.testUpdateElement("testUpdateGameCustomizedPlugin", null,
+                                makeBaseRelativeUrlExpanded(mockGameCustomizedPluginManager.createElement(null)));
+    }
+
+    @Override
+    protected GameCustomizedPlugin managePositiveElementToUpdate(GameCustomizedPlugin element) {
+        element.setActivated(false);
+        
+        return element;
+    }
+
+    @Override
+    protected GameCustomizedPlugin manageNegativeElementToUpdate(GameCustomizedPlugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //DELETE
+    @Test
+    public void testDeleteElement() throws Exception {
+        super.testDeleteElement("testDeleteGameCustomizedPlugin", null,
+                                makeBaseRelativeUrlExpanded(mockGameCustomizedPluginManager.createElement(null)));
+    }
+    
+    @Override
+    protected GameCustomizedPlugin manageNegativeElementToDelete(GameCustomizedPlugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //TOOLS
+    @Override
+    protected String makeSinglePartRelativeUrl(GameCustomizedPlugin element) {
+        return element.getCustomizedPlugin().getId().toString();
+    }
+
+    
+    protected GameCustomizedPlugin setNegativeId(GameCustomizedPlugin element) {
+        element.getCustomizedPlugin().setId(-1);
+        
+        return element;
+    }
+    
+    protected String makeBaseRelativeUrlExpanded(GameCustomizedPlugin element) {
         Map<String, Object> uriVariables = new HashMap<>();
         
         uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, 
@@ -166,15 +158,7 @@ public class GameCustomizedPluginControllerTest extends SkipServiceTestHelper {
         uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, 
                          element.getCustomizedPlugin().getPlugin().getId());
         
-        return uriVariables;
-    }
-    
-    protected Map<String, Object> makeUriVariables(GameCustomizedPlugin element) {
-        Map<String, Object> uriVariables = this.makeCollectionUriVariables(element);
-        
-        uriVariables.put(IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM, 
-                         element.getCustomizedPlugin().getId());
-        
-        return uriVariables;
+        IUrlMaker urlMaker = new UrlMaker();
+        return urlMaker.makeUrl(this.baseRelativeUrl, uriVariables);
     }
 }

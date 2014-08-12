@@ -1,22 +1,16 @@
 package eu.trentorise.game.plugin.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
 import eu.trentorise.game.plugin.model.Plugin;
-import eu.trentorise.game.plugin.request.CustomizedPluginActivationDeactivationRequest;
 import eu.trentorise.game.plugin.response.PluginCollectionResponse;
 import eu.trentorise.game.plugin.response.PluginResponse;
 import eu.trentorise.game.plugin.service.MockPluginManager;
-import eu.trentorise.game.profile.game.model.Game;
-import eu.trentorise.game.profile.game.service.MockGameProfileManager;
-import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
 import eu.trentorise.game.servicetest.SkipServiceTestHelper;
 import java.util.Collection;
 import java.util.List;
 
-import static junit.framework.TestCase.assertTrue;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -98,35 +92,6 @@ public class PluginControllerTest extends SkipServiceTestHelper {
             
             assertNotNull(responseElement);
             assertEquals(0, (new PluginKeyComparator()).compare(expectedElement, responseElement));
-        }
-    }
-    
-    @Test
-    public void testActivateDeactivateCustomizedGamificationPlugin() throws Exception {
-        RestTemplateJsonServiceTestHelper<GameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        MockPluginManager mock = new MockPluginManager();
-        ObjectMapper mapper = new ObjectMapper();
-        
-        CustomizedPluginActivationDeactivationRequest request = new CustomizedPluginActivationDeactivationRequest();
-        
-        Game game = new Game();
-        game.setId(MockGameProfileManager.MOCK_GAME_ID);
-        
-        request.setGame(game);
-        request.setCustomizedGamificationPlugin(mock.createEcologicalBadgesPlugin());
-        request.setActivated(true);
-        
-        String jsonRequest = mapper.writeValueAsString(request);
-        System.out.println(jsonRequest);
-        
-        GameResponse response = helper.executeTest("testActivateDeactivateCustomizedGamificationPlugin", 
-                                                   BASE_RELATIVE_URL + "/activateDeactivateCustomizedGamificationPlugin" + FINAL_PART_RELATIVE_URL,
-                                                   HttpMethod.POST,
-                                                   GameResponse.class, 
-                                                   jsonRequest);
-        
-        if (null != response) {
-            assertTrue(response.isSuccess());
         }
     }
 }

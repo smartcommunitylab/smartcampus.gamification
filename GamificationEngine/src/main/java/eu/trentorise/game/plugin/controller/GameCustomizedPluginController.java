@@ -1,15 +1,11 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.container.GameCustomizedPluginCollectionContainer;
-import eu.trentorise.game.plugin.container.GameCustomizedPluginContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginContainer;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
-import eu.trentorise.game.plugin.response.CustomizedPluginCollectionResponse;
-import eu.trentorise.game.plugin.response.CustomizedPluginResponse;
+import eu.trentorise.game.plugin.response.GameCustomizedPluginCollectionResponse;
+import eu.trentorise.game.plugin.response.GameCustomizedPluginResponse;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
@@ -22,20 +18,23 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  *
  * @author Luca Piras
  */
 @Controller("gameCustomizedPluginController")
-public class GameCustomizedPluginController extends AbstractCrudRestController<CustomizedPlugin, 
-                                                                               IGameCustomizedPluginCollectionContainer, 
-                                                                               IGameCustomizedPluginContainer> {
+public class GameCustomizedPluginController extends AbstractCrudRestController<GameCustomizedPlugin, 
+                                                                               GameCustomizedPlugin, 
+                                                                               GameCustomizedPlugin> {
 
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
@@ -46,62 +45,108 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
     }
     
     
+    //CREATE
+    @RequestMapping(value = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_PATH, method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Void> createGameCustomizedPlugin(
+                                @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
+                                @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
+                                @RequestBody GameCustomizedPlugin element,
+                                UriComponentsBuilder builder) {
+        
+        //TODO: validate the ids
+        GameCustomizedPlugin gcp = this.makeGameCustomizedPlugin(gameId, plugId,
+                                                                 element.getCustomizedPlugin().getId(),
+                                                                 element.isActivated());
+        
+        return super.createResource(gcp, builder);
+    }
+    
+    
     //READ
     @RequestMapping(value = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_PATH, method = RequestMethod.GET)
-    public @ResponseBody CustomizedPluginCollectionResponse readGameCustomizedPlugins(
+    public @ResponseBody GameCustomizedPluginCollectionResponse readGameCustomizedPlugins(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId) {
         
-        GameCustomizedPlugin gcp = this.makeContainerContent(gameId, plugId, 
-                                                             null);
+        GameCustomizedPlugin gcp = this.makeGameCustomizedPlugin(gameId, plugId, 
+                                                                 null, null);
         
-        IGameCustomizedPluginCollectionContainer container = new GameCustomizedPluginCollectionContainer();
-        container.setGameCustomizedPlugin(gcp);
-        
-        Collection<CustomizedPlugin> results = super.readResources(container);
+        Collection<GameCustomizedPlugin> results = super.readResources(gcp);
                                                 
-        CustomizedPluginCollectionResponse response = new CustomizedPluginCollectionResponse();
-        response.setCustomizedPlugins(results);
+        GameCustomizedPluginCollectionResponse response = new GameCustomizedPluginCollectionResponse();
+        response.setGameCustomizedPlugins(results);
         
         return response;
     }
     
     @RequestMapping(value = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH, method = RequestMethod.GET)
-    public @ResponseBody CustomizedPluginResponse readGameCustomizedPluginById(
+    public @ResponseBody GameCustomizedPluginResponse readGameCustomizedPluginById(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
                          @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId) {
         
-        GameCustomizedPlugin gcp = this.makeContainerContent(gameId, plugId, 
-                                                             cusPlugId);
+        GameCustomizedPlugin gcp = this.makeGameCustomizedPlugin(gameId, plugId, 
+                                                                 cusPlugId, null);
         
-        IGameCustomizedPluginContainer container = new GameCustomizedPluginContainer();
-        container.setGameCustomizedPlugin(gcp);
+        GameCustomizedPlugin result = super.readResourceById(gcp);
         
-        CustomizedPlugin result = super.readResourceById(container);
-        
-        CustomizedPluginResponse response = new CustomizedPluginResponse();
-        response.setCustomizedPlugin(result);
+        GameCustomizedPluginResponse response = new GameCustomizedPluginResponse();
+        response.setGameCustomizedPlugin(result);
         
         return response;
     }
-       
+    
+    
+    //UPDATE
+    @RequestMapping(value = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH, method = RequestMethod.PUT)
+    public @ResponseBody ResponseEntity<Void> updateGameCustomizedPlugin(
+                         @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
+                         @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
+                         @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId, 
+                         @RequestBody GameCustomizedPlugin element,
+                         UriComponentsBuilder builder) {
+        
+        //TODO: validate the ids
+        GameCustomizedPlugin gcp = this.makeGameCustomizedPlugin(gameId, plugId, 
+                                                                 cusPlugId,
+                                                                 element.isActivated());
+        
+        return super.updateResource(gcp, builder);
+    }
+    
+    
+    //DELETE
+    @RequestMapping(value = IGameConstants.SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH, method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<Void> deleteGameCustomizedPlugin(@PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
+                         @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
+                         @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId) {
+        
+        //TODO: validate the ids
+        GameCustomizedPlugin gcp = this.makeGameCustomizedPlugin(gameId, plugId, 
+                                                                 cusPlugId, null);
+        
+        return super.deleteResource(gcp);
+    }
+    
+    
     @Override
-    protected Map<String, Object> populateUriVariables(IGameCustomizedPluginContainer containerWithIds, 
-                                                       CustomizedPlugin result, 
+    protected Map<String, Object> populateUriVariables(GameCustomizedPlugin containerWithIds, 
+                                                       GameCustomizedPlugin result, 
                                                        Map<String, Object> uriVariables) {
         
-        uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, result.getId());
-        uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, result.getId());
-        uriVariables.put(IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM, result.getId());
+        uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, result.getGame().getId());
+        uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, result.getCustomizedPlugin().getPlugin().getId());
+        uriVariables.put(IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM, result.getCustomizedPlugin().getId());
         
         return uriVariables;
     }
     
     
-    protected GameCustomizedPlugin makeContainerContent(Integer gameId, 
-                                                        Integer plugId, 
-                                                        Integer cusPlugId) {
+    protected GameCustomizedPlugin makeGameCustomizedPlugin(Integer gameId, 
+                                                            Integer plugId,
+                                                            Integer cusPlugId,
+                                                            Boolean activated) {
         
         Game game = new Game();
         game.setId(gameId);
@@ -116,6 +161,7 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
         GameCustomizedPlugin gcp = new GameCustomizedPlugin();
         gcp.setGame(game);
         gcp.setCustomizedPlugin(customizedPlugin);
+        gcp.setActivated(activated);
         
         return gcp;
     }
@@ -123,13 +169,13 @@ public class GameCustomizedPluginController extends AbstractCrudRestController<C
     
     @Qualifier("mockGameCustomizedPluginManager")
     @Autowired
-    public void setManager(IRestCrudManager<CustomizedPlugin, IGameCustomizedPluginCollectionContainer, IGameCustomizedPluginContainer> manager) {
+    public void setManager(IRestCrudManager<GameCustomizedPlugin, GameCustomizedPlugin, GameCustomizedPlugin> manager) {
         this.manager = manager;
     }
 
     @Qualifier("restCrudHelper")
     @Autowired
-    public void setRestCrudHelper(RestCrudHelper<CustomizedPlugin, IGameCustomizedPluginCollectionContainer, IGameCustomizedPluginContainer> restCrudHelper) {
+    public void setRestCrudHelper(RestCrudHelper<GameCustomizedPlugin, GameCustomizedPlugin, GameCustomizedPlugin> restCrudHelper) {
         this.restCrudHelper = restCrudHelper;
     }
 

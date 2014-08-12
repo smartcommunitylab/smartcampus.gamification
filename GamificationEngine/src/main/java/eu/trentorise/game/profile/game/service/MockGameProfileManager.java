@@ -1,5 +1,6 @@
 package eu.trentorise.game.profile.game.service;
 
+import eu.trentorise.game.profile.game.comparator.GameKeyComparator;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import java.util.ArrayList;
@@ -20,7 +21,11 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
     public static final int MOCK_GAME_ID = 135;
     
     public static MockGameProfileManager createInstance() {
-        return new MockGameProfileManager();
+        MockGameProfileManager mock = new MockGameProfileManager();
+        
+        mock.comparator = new GameKeyComparator();
+        
+        return mock;
     }
     
     
@@ -45,7 +50,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
         //possible
         Game returnValue = null;
         
-        Game expectedElement = this.createRoveretoGame();
+        Game expectedElement = this.createElement();
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -60,7 +65,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
         
         Game returnValue = null;
         
-        Game expectedElement = this.createRoveretoGame();
+        Game expectedElement = this.createElement();
         if (0 == comparator.compare(containerWithForeignIds, expectedElement)) {
             returnValue = containerWithForeignIds;
         }
@@ -75,7 +80,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
         
         Game returnValue = null;
         
-        Game expectedElement = this.createRoveretoGame();
+        Game expectedElement = this.createElement();
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -86,16 +91,22 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
 
     public Collection<Game> createElements() {
         List<Game> elements = new ArrayList<>();
-        elements.add(this.createRoveretoGame());
+        elements.add(this.createElement());
         return elements;
     }
     
-    public Game createRoveretoGame() {
+    public Game createElement() {
         Game element = new Game();
         element.setId(MockGameProfileManager.MOCK_GAME_ID);
         element.setName("RoveretoGame");
         return element;
     }
+
+    
+    public Comparator<Game> getComparator() {
+        return comparator;
+    }
+    
     
     @Qualifier("gameKeyComparator")
     @Autowired

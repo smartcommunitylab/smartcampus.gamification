@@ -1,24 +1,28 @@
-package eu.trentorise.game.plugin.container;
+package eu.trentorise.game.plugin.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
 
-
-public class GameCustomizedPluginCollectionContainer implements IGameCustomizedPluginCollectionContainer {
-
+/**
+ *
+ * @author Luca Piras
+ */
+//Necessary for the getCustomizedPluginListService Test
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class GameCustomizedPluginResponse {
+    
     protected GameCustomizedPlugin gameCustomizedPlugin;
 
-    @Override
     public GameCustomizedPlugin getGameCustomizedPlugin() {
         return gameCustomizedPlugin;
     }
 
-    @Override
     public void setGameCustomizedPlugin(GameCustomizedPlugin gameCustomizedPlugin) {
         this.gameCustomizedPlugin = gameCustomizedPlugin;
     }
 
     @Override
     public String toString() {
-        return "GameCustomizedPluginCollectionContainer{" + "gameCustomizedPlugin=" + gameCustomizedPlugin + '}';
+        return "GameCustomizedPluginResponse{" + "gameCustomizedPlugin=" + gameCustomizedPlugin + '}';
     }
 }

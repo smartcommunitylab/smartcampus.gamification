@@ -1,16 +1,16 @@
 package eu.trentorise.game.plugin.service;
 
 import eu.trentorise.game.plugin.comparator.CustomizedPluginKeyComparator;
-import eu.trentorise.game.plugin.container.CustomizedPluginContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginContainer;
+import eu.trentorise.game.plugin.comparator.GameCustomizedPluginKeyComparator;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
-import eu.trentorise.game.plugin.response.SettingCustomizedPluginResponse;
+import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.profile.game.model.Game;
-import eu.trentorise.game.response.MockResponder;
+import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
+import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,35 +19,46 @@ import org.springframework.stereotype.Service;
 
 
 @Service("mockGameCustomizedPluginManager")
-public class MockGameCustomizedPluginManager extends MockResponder implements ICustomizedPluginManager<CustomizedPlugin>,
-                                                        IRestCrudManager<CustomizedPlugin, 
-                                                                         IGameCustomizedPluginCollectionContainer, 
-                                                                         IGameCustomizedPluginContainer> {
+public class MockGameCustomizedPluginManager implements IRestCrudManager<GameCustomizedPlugin, 
+                                                                         GameCustomizedPlugin, 
+                                                                         GameCustomizedPlugin>,
+                                                        IRestCrudTestManager<GameCustomizedPlugin, 
+                                                                             GameCustomizedPlugin, 
+                                                                             GameCustomizedPlugin> {
 
     public static MockGameCustomizedPluginManager createInstance() {
         MockGameCustomizedPluginManager mock = new MockGameCustomizedPluginManager();
         mock.mockPluginManager = MockPluginManager.createInstance();
-        mock.comparator = new CustomizedPluginKeyComparator();
-        ((CustomizedPluginKeyComparator) mock.comparator).setPluginComparator(mock.mockPluginManager.getComparator());
+        mock.mockGameProfileManager = MockGameProfileManager.createInstance();
+        
+        mock.customizedPluginComparator = new CustomizedPluginKeyComparator();
+        ((CustomizedPluginKeyComparator) mock.customizedPluginComparator).setPluginComparator(mock.mockPluginManager.getComparator());
+        mock.comparator = new GameCustomizedPluginKeyComparator();
+        ((GameCustomizedPluginKeyComparator) mock.comparator).setGameKeyComparator(mock.mockGameProfileManager.getComparator());
+        ((GameCustomizedPluginKeyComparator) mock.comparator).setCustomizedPluginKeyComparator(mock.customizedPluginComparator);
+        
         return mock;
     }
     
     
     @Override
-    public CustomizedPlugin createSingleElement(IGameCustomizedPluginContainer containerWithForeignIds) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GameCustomizedPlugin createSingleElement(GameCustomizedPlugin containerWithForeignIds) throws Exception {
+        //TODO: return null or throw Exception if it is not possible to create a
+        //new one
+        
+        return this.createElement(containerWithForeignIds);
     }
 
     @Override
-    public Collection<CustomizedPlugin> readCollection(IGameCustomizedPluginCollectionContainer containerWithIds) throws Exception {
+    public Collection<GameCustomizedPlugin> readCollection(GameCustomizedPlugin containerWithIds) throws Exception {
         //TODO: vai nella tabella gameCustomizedPlugin e recupera tutti i
         //customizedPlugins per il game indicato ed il plugin indicato
         //l'id del customizedPlugin non deve essere ovviamente settato
-        return this.mockPluginManager.createCustomizedPlugins(containerWithIds);
+        return this.createElements(containerWithIds);
     }
 
     @Override
-    public CustomizedPlugin readSingleElement(IGameCustomizedPluginContainer containerWithIds) throws Exception {
+    public GameCustomizedPlugin readSingleElement(GameCustomizedPlugin containerWithIds) throws Exception {
         //TODO: return null or throw Exception if this activity it is not 
         //possible
         //TODO: vai nella tabella gameCustomizedPlugin e recupera tutti i
@@ -59,11 +70,10 @@ public class MockGameCustomizedPluginManager extends MockResponder implements IC
         //CustomizedPlugin bypassando il gameId, i customizedPlugins da rendere
         //sono quelli del gioco, e del customizedPlugin (key id piu' plugin id
         //del plugin interno al CustomizedPlugin) indicati
-        CustomizedPlugin returnValue = null;
+        GameCustomizedPlugin returnValue = null;
         
-        CustomizedPlugin expectedElement = this.mockPluginManager.createGreenLeavesPointPlugin();
-        if (0 == comparator.compare(containerWithIds.getGameCustomizedPlugin().getCustomizedPlugin(),
-                                    expectedElement)) {
+        GameCustomizedPlugin expectedElement = this.createElement(containerWithIds);
+        if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
         
@@ -71,31 +81,67 @@ public class MockGameCustomizedPluginManager extends MockResponder implements IC
     }
 
     @Override
-    public CustomizedPlugin updateSingleElement(IGameCustomizedPluginContainer containerWithForeignIds) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GameCustomizedPlugin updateSingleElement(GameCustomizedPlugin containerWithForeignIds) throws Exception {
+        //TODO: return null or throw Exception if it is not possible to update a
+        //that one
+        
+        GameCustomizedPlugin returnValue = null;
+        
+        GameCustomizedPlugin expectedElement = this.createElement(containerWithForeignIds);
+        if (0 == comparator.compare(containerWithForeignIds, expectedElement)) {
+            returnValue = containerWithForeignIds;
+        }
+        
+        return returnValue;
     }
 
     @Override
-    public CustomizedPlugin deleteSingleElement(IGameCustomizedPluginContainer containerWithIds) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GameCustomizedPlugin deleteSingleElement(GameCustomizedPlugin containerWithIds) throws Exception {
+        //TODO: return null or throw Exception if it is not possible to delete
+        //that one or if it is not present
+        
+        GameCustomizedPlugin returnValue = null;
+        
+        GameCustomizedPlugin expectedElement = this.createElement(containerWithIds);
+        if (0 == comparator.compare(containerWithIds, expectedElement)) {
+            returnValue = expectedElement;
+        }
+        
+        return returnValue;
     }
+    
     
     @Override
-    public SettingCustomizedPluginResponse setCustomizedGamificationPlugin(CustomizedPluginContainer<CustomizedPlugin> container) {
-        //TODO: create new customizedGamificationPlugin, obtain an id, then
-        //create a customizedPluginGame using the new 
-        //customizedGamificationPlugin with its id and the provided game
-                
-        CustomizedPlugin plugin = container.getPlugin();
-        plugin.setId(5);
+    public GameCustomizedPlugin createElement(GameCustomizedPlugin containerWithIds) throws Exception {
+        Game game = mockGameProfileManager.createElement();
+        PointPlugin pointPlugin = mockPluginManager.createGreenLeavesPointPlugin();
         
-        SettingCustomizedPluginResponse response = new SettingCustomizedPluginResponse();
-        response.setCustomizedPlugin(plugin);
+        GameCustomizedPlugin element = new GameCustomizedPlugin();
+        element.setGame(game);
+        element.setCustomizedPlugin(pointPlugin);
+        element.setActivated(Boolean.TRUE);
         
-        return ((SettingCustomizedPluginResponse) this.buildPositiveResponse(response));
+        return element;
+    }
+
+    @Override
+    public Collection<GameCustomizedPlugin> createElements(GameCustomizedPlugin containerWithIds) throws Exception {
+        Collection<CustomizedPlugin> customizedPlugins = this.mockPluginManager.createCustomizedPlugins(containerWithIds);
+        
+        Collection<GameCustomizedPlugin> gameCustomizedPlugins = new ArrayList<>();
+        for (CustomizedPlugin current : customizedPlugins) {
+            GameCustomizedPlugin gcp = new GameCustomizedPlugin();
+            gcp.setGame(mockGameProfileManager.createElement());
+            gcp.setCustomizedPlugin(current);
+            gcp.setActivated(Boolean.TRUE);
+            gameCustomizedPlugins.add(gcp);
+        }
+        
+        return gameCustomizedPlugins;
     }
     
-    public GameCustomizedPlugin createContainerContent(Integer gameId, Plugin plugin, Integer cusPlugId) {
+    
+    public GameCustomizedPlugin createContainer(Integer gameId, Plugin plugin, Integer cusPlugId) {
         Game game = new Game();
         game.setId(gameId);
         
@@ -113,7 +159,11 @@ public class MockGameCustomizedPluginManager extends MockResponder implements IC
     }
 
     
-    public Comparator<CustomizedPlugin> getComparator() {
+    public Comparator<CustomizedPlugin> getCustomizedPluginComparator() {
+        return customizedPluginComparator;
+    }
+    
+    public Comparator<GameCustomizedPlugin> getComparator() {
         return comparator;
     }
     
@@ -122,7 +172,16 @@ public class MockGameCustomizedPluginManager extends MockResponder implements IC
     @Autowired
     protected MockPluginManager mockPluginManager;
     
+    @Qualifier("mockGameProfileManager")
+    @Autowired
+    protected MockGameProfileManager mockGameProfileManager;
+    
+    
     @Qualifier("customizedPluginKeyComparator")
     @Autowired
-    protected Comparator<CustomizedPlugin> comparator;
+    protected Comparator<CustomizedPlugin> customizedPluginComparator;
+    
+    @Qualifier("gameCustomizedPluginKeyComparator")
+    @Autowired
+    protected Comparator<GameCustomizedPlugin> comparator;
 }

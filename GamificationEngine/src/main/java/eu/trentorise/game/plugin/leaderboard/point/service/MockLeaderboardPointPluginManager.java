@@ -1,7 +1,5 @@
 package eu.trentorise.game.plugin.leaderboard.point.service;
 
-import eu.trentorise.game.plugin.container.GameCustomizedPluginCollectionContainer;
-import eu.trentorise.game.plugin.container.IGameCustomizedPluginCollectionContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.GameCustomizedPlugin;
@@ -26,7 +24,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
         MockLeaderboardPointPluginManager mock = new MockLeaderboardPointPluginManager();
         mock.mockPluginManager = MockPluginManager.createInstance();
         mock.mockGameCustomizedPluginManager = MockGameCustomizedPluginManager.createInstance();
-        mock.comparator = mock.mockGameCustomizedPluginManager.getComparator();
+        mock.comparator = mock.mockGameCustomizedPluginManager.getCustomizedPluginComparator();
         return mock;
     }
     
@@ -95,10 +93,7 @@ public class MockLeaderboardPointPluginManager implements IRestCrudManager<Leade
     @Override
     public Collection createElements(Object containerWithIds) throws Exception {
         Plugin plugin = mockPluginManager.createLeadearboardPointPlugin();
-        GameCustomizedPlugin containerContent = mockGameCustomizedPluginManager.createContainerContent(MockGameProfileManager.MOCK_GAME_ID, plugin, null);
-        
-        IGameCustomizedPluginCollectionContainer container = new GameCustomizedPluginCollectionContainer();
-        container.setGameCustomizedPlugin(containerContent);
+        GameCustomizedPlugin container = mockGameCustomizedPluginManager.createContainer(MockGameProfileManager.MOCK_GAME_ID, plugin, null);
         
         return mockPluginManager.createCustomizedPlugins(container);
     }

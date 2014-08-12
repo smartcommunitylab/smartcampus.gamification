@@ -16,14 +16,16 @@ import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
 import eu.trentorise.game.ruleengine.request.RuleRequest;
-import eu.trentorise.game.ruleengine.request.RuleTemplateRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
 import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
+import eu.trentorise.game.ruleengine.response.RuleTemplateCollectionResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
+import eu.trentorise.game.servicetest.AbstractRestCrudTest;
 import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import eu.trentorise.game.servicetest.SkipServiceTestHelper;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
@@ -32,88 +34,143 @@ import org.springframework.http.HttpMethod;
  *
  * @author Luca Piras
  */
-public class RuleTemplateControllerTest extends SkipServiceTestHelper {
+public class RuleTemplateControllerTest extends AbstractRestCrudTest<RuleTemplate, 
+                                                                     Plugin,
+                                                                     RuleTemplate,
+                                                                     RuleTemplateCollectionResponse,
+                                                                     RuleTemplateResponse> {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_RULEENGINE_RULETEMPLATE_PATH;
-    protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-
+    protected static final MockRuleTemplateManager mockRuleTemplateManager = MockRuleTemplateManager.createInstance();
+    protected static final MockPluginManager mockPluginManager = MockPluginManager.createInstance();
+    
     
     public RuleTemplateControllerTest() {
-        super("RuleTemplateControllerTest");
+        super("RuleTemplateControllerTest", 
+              IGameConstants.SERVICE_RULEENGINE_RULETEMPLATES_PATH,
+              mockRuleTemplateManager,
+              mockRuleTemplateManager.getComparator());
     }
     
     
-    /**
-     * Test of getRuleTemplates method, of class RuleEngineController.
-     * @throws java.lang.Exception
-     */
+    //CREATE
+    /*@Test
+    public void testCreateElement() throws Exception {
+        super.testCreateElement("testCreateRuleTemplate", null, 
+                                makeBaseRelativeUrlExpanded(null));
+    }*/
+    
+    @Override
+    protected RuleTemplate manageElementToCreate(RuleTemplate element) {
+        element.setId(null);
+        return element;
+    }
+    
+    
+    //READ COLLECTION
     @Test
-    public void testGetRuleTemplates() throws Exception {
-        MockPluginManager mock = new MockPluginManager();
-        MockRuleTemplateManager ruleTemplateMock = new MockRuleTemplateManager();
-        ruleTemplateMock.setManager(mock);
+    public void testReadCollection() throws Exception {
+        Plugin plugin = mockPluginManager.createPointsPlugin();
+        super.testReadCollection("testReadRuleTemplates", 
+                                 plugin, 
+                                 RuleTemplateCollectionResponse.class,
+                                 makeBaseRelativeUrlExpanded(plugin));
         
+        plugin = mockPluginManager.createBadgeCollectionPlugin();
+        super.testReadCollection("testReadRuleTemplates", 
+                                 plugin, 
+                                 RuleTemplateCollectionResponse.class,
+                                 makeBaseRelativeUrlExpanded(plugin));
         
-        Plugin plugin = mock.createPointsPlugin();
-        List<RuleTemplate> expectedElements = ruleTemplateMock.createPointPluginRuleTemplateList();
-        this.executeTestGetRuleTemplates(plugin, expectedElements);
-        
-        plugin = mock.createBadgeCollectionPlugin();
-        expectedElements = ruleTemplateMock.createBadgeCollectionPluginRuleTemplateList();
-        this.executeTestGetRuleTemplates(plugin, expectedElements);
-        
-        plugin = mock.createLeadearboardPointPlugin();
-        expectedElements = ruleTemplateMock.createLeaderboardPointPluginRuleTemplateList();
-        this.executeTestGetRuleTemplates(plugin, expectedElements);
+        plugin = mockPluginManager.createLeadearboardPointPlugin();
+        super.testReadCollection("testReadRuleTemplates", 
+                                 plugin, 
+                                 RuleTemplateCollectionResponse.class,
+                                 makeBaseRelativeUrlExpanded(plugin));
     }
     
-    protected void executeTestGetRuleTemplates(Plugin plugin,
-                                               List<RuleTemplate> expectedElements) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<RuleTemplateResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        ObjectMapper mapper = new ObjectMapper();
-        
-        RuleTemplateRequest request = new RuleTemplateRequest();
-        RuleTemplate ruleTemplate = new RuleTemplate();
-        ruleTemplate.setPlugin(plugin);
-        request.setRuleTemplate(ruleTemplate);
-        
-        String jsonRequest = mapper.writeValueAsString(request);
-        System.out.println(jsonRequest);
-        
-        //TODO: change restTemplate in order not to execute all this part even
-        //though it is not necessary (when this kinds of tests are not 
-        //activated)
-        RuleTemplateResponse response = helper.executeTest("testGetRuleTemplates",
-                                                           BASE_RELATIVE_URL + "/getRuleTemplates" + FINAL_PART_RELATIVE_URL,
-                                                           HttpMethod.POST,
-                                                           RuleTemplateResponse.class, 
-                                                           jsonRequest);
-        
-        if (null != response) {
-            assertTrue(response.isSuccess());
-            
-            List<RuleTemplate> responseElements = response.getRuleTemplates();
-            
-            assertNotNull(responseElements);
-            assertEquals(responseElements.size(), expectedElements.size());
-            
-            for (int i = 0; i < responseElements.size(); i++) {
-                RuleTemplate responseElement = responseElements.get(i);
-                RuleTemplate expectedElement = expectedElements.get(i);
-                
-                assertEquals(responseElement.getId(), expectedElement.getId());
-                assertEquals(responseElement.getPlugin().getId(), 
-                             expectedElement.getPlugin().getId());
-                assertEquals(responseElement.getName(), 
-                             expectedElement.getName());
-                assertEquals(responseElement.getType(), 
-                             expectedElement.getType());
-                assertEquals(responseElement.getDescription(), 
-                             expectedElement.getDescription());
-            }
-        }
+    @Override
+    protected List<RuleTemplate> retrieveCollection(RuleTemplateCollectionResponse response) {
+        return (List<RuleTemplate>) response.getRuleTemplates();
     }
+    
+    
+    //READ SINGLE ELEMENT
+    @Test
+    public void testReadElementById() throws Exception {
+        Plugin plugin = mockPluginManager.createPointsPlugin();
+        super.testReadElementById("testReadRuleTemplateById", null, 
+                                  RuleTemplateResponse.class,
+                                  makeBaseRelativeUrlExpanded(plugin));
+    }
+
+    @Override
+    protected RuleTemplate manageNegativeElementToReadById(RuleTemplate element) {
+        return this.setNegativeId(element);
+    }
+    
+    @Override
+    protected RuleTemplate retrieveSingleElement(RuleTemplateResponse response) {
+        return response.getRuleTemplate();
+    }
+    
+    
+    //UPDATE
+    /*@Test
+    public void testUpdateElement() throws Exception {
+        Plugin plugin = mockPluginManager.createPointsPlugin();
+        super.testUpdateElement("testUpdateRuleTemplate", null,
+                                makeBaseRelativeUrlExpanded(plugin));
+    }*/
+
+    @Override
+    protected RuleTemplate managePositiveElementToUpdate(RuleTemplate element) {
+        element.setName(element.getName() + "Modified");
+        
+        return element;
+    }
+
+    @Override
+    protected RuleTemplate manageNegativeElementToUpdate(RuleTemplate element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //DELETE
+    /*@Test
+    public void testDeleteElement() throws Exception {
+        Plugin plugin = mockPluginManager.createPointsPlugin();
+        super.testDeleteElement("testDeleteRuleTemplate", null,
+                                makeBaseRelativeUrlExpanded(plugin));
+    }*/
+    
+    @Override
+    protected RuleTemplate manageNegativeElementToDelete(RuleTemplate element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //TOOLS
+    @Override
+    protected String makeSinglePartRelativeUrl(RuleTemplate element) {
+        return element.getId().toString();
+    }
+
+    
+    protected RuleTemplate setNegativeId(RuleTemplate element) {
+        element.setId(-1);
+        
+        return element;
+    }
+    
+    protected String makeBaseRelativeUrlExpanded(Plugin plugin) {
+        Map<String, Object> uriVariables = new HashMap<>();
+        
+        uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, 
+                         plugin.getId());
+        
+        return super.expandUrl(this.baseRelativeUrl, uriVariables);
+    }
+    
     
     /**
      * Test of testGetOperatorsSupported method, of class RuleTemplateController.
@@ -152,7 +209,7 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
         System.out.println(jsonRequest);
         
         OperatorResponse response = helper.executeTest("testGetOperatorsSupported",
-                                                       BASE_RELATIVE_URL + "/getOperatorsSupported" + FINAL_PART_RELATIVE_URL,
+                                                       "/game/services/ruleengine/ruletemplates" + "/getOperatorsSupported" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION,
                                                        HttpMethod.POST,
                                                        OperatorResponse.class, 
                                                        jsonRequest);
@@ -186,7 +243,7 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
         System.out.println(jsonRequest);
         
         OperatorResponse response = helper.executeTest("testGetPluginOperatorsSupported",
-                                                       BASE_RELATIVE_URL + "/getPluginOperatorsSupported" + FINAL_PART_RELATIVE_URL,
+                                                       "/game/services/ruleengine/ruletemplates" + "/getPluginOperatorsSupported" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION,
                                                        HttpMethod.POST,
                                                        OperatorResponse.class, 
                                                        jsonRequest);
@@ -244,7 +301,7 @@ public class RuleTemplateControllerTest extends SkipServiceTestHelper {
         System.out.println(jsonRequest);
         
         RuleSettingResponse response = helper.executeTest("testSetRule",
-                                                   BASE_RELATIVE_URL + "/setRule" + FINAL_PART_RELATIVE_URL,
+                                                   "/game/services/ruleengine/ruletemplates" + "/setRule" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION,
                                                    HttpMethod.POST,
                                                    RuleSettingResponse.class, 
                                                    jsonRequest);

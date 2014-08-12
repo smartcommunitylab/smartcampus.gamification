@@ -61,12 +61,12 @@ public interface IGameConstants {
     public static final String SERVICE_PLUGINS_LEADERBOARDPOINT_SINGLE_PATH = SERVICE_PLUGINS_LEADERBOARDPOINT_PATH + "/{" + SERVICE_PLUGINS_LEADERBOARDPOINT_SINGLE_PATH_PARAM + "}";
     /*views and services - services - player*/
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
-    /*views and services - services - configuration*/
-    public static final String SERVICE_GAME_CONFIGURATION = SERVICE_PATH + "/configuration";
     /*views and services - services - ruleengine*/
-    public static final String SERVICE_RULEENGINE_PATH = SERVICE_PATH + "/rule-engine";
+    public static final String SERVICE_RULEENGINE_PATH = SERVICE_PATH + "/ruleengine";
      /*views and services - services - ruleengine - ruletemplates*/
-    public static final String SERVICE_RULEENGINE_RULETEMPLATE_PATH = SERVICE_RULEENGINE_PATH + "/rule-template";
+    public static final String SERVICE_RULEENGINE_RULETEMPLATES_PATH = SERVICE_RULEENGINE_PATH + SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + "/ruletemplates";
+    public static final String SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM = "ruleTemplId";
+    public static final String SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH = SERVICE_RULEENGINE_RULETEMPLATES_PATH + "/{" + SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM + "}";
     /*views and services - services - events*/
     public static final String SERVICE_EVENTS_PATH = SERVICE_PATH + "/events";
     public static final String SERVICE_EVENTS_START_EVENT_PATH = SERVICE_EVENTS_PATH + "/start-event";

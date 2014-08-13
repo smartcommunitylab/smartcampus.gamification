@@ -1,27 +1,25 @@
 package eu.trentorise.game.action.response;
 
 import eu.trentorise.game.action.model.Param;
-import eu.trentorise.game.response.GameResponse;
-import java.util.List;
 
 /**
  *
  * @author Luca Piras
  */
-public class ParamResponse extends GameResponse {
+public class ParamResponse {
     
-    protected List<Param> params;
+    protected Param param;
 
-    public List<Param> getParams() {
-        return params;
+    public Param getParam() {
+        return param;
     }
 
-    public void setParams(List<Param> params) {
-        this.params = params;
+    public void setParam(Param param) {
+        this.param = param;
     }
 
     @Override
     public String toString() {
-        return "ParamResponse{" + "params=" + params + '}';
+        return "ParamResponse{" + "param=" + param + '}';
     }
 }

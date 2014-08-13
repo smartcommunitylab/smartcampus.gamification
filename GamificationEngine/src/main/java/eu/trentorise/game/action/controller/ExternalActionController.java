@@ -48,6 +48,7 @@ public class ExternalActionController extends AbstractCrudRestController<Externa
     }
     
     
+    //CUSTOM METHODS
     @RequestMapping(method = RequestMethod.POST, value = IGameConstants.SERVICE_EXTERNALACTIONS_PATH)
     public @ResponseBody ExternalActionCollectionResponse createExternalActions(
                          @PathVariable(value = IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH_PARAM) Integer appId,
@@ -137,7 +138,7 @@ public class ExternalActionController extends AbstractCrudRestController<Externa
     }
     
     
-   protected Application makeApplication(Integer appId) {
+    protected Application makeApplication(Integer appId) {
         Application element = new Application();
         element.setId(appId);
         return element;

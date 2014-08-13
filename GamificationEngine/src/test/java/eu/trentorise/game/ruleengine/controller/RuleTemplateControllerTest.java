@@ -2,8 +2,7 @@ package eu.trentorise.game.ruleengine.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.action.model.BasicParam;
-import eu.trentorise.game.action.service.MockActionManager;
-import eu.trentorise.game.application.service.MockApplicationManager;
+import eu.trentorise.game.action.service.MockExternalActionParamManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.service.MockPluginManager;
@@ -178,12 +177,10 @@ public class RuleTemplateControllerTest extends AbstractRestCrudTest<RuleTemplat
      */
     @Test
     public void testGetOperatorsSupported() throws Exception {
-        MockRuleTemplateManager mock = new MockRuleTemplateManager();
-        MockApplicationManager applicationManagerMock = new MockApplicationManager();
-        MockActionManager actionManagerMock = new MockActionManager();
-        actionManagerMock.setManager(applicationManagerMock);
+        MockRuleTemplateManager mock = MockRuleTemplateManager.createInstance();
+        MockExternalActionParamManager mockExternalActionParamManager = MockExternalActionParamManager.createInstance();
         
-        BasicParam createBikeKmParam = actionManagerMock.createBikeKmParam();
+        BasicParam createBikeKmParam = mockExternalActionParamManager.createBikeKmParam();
         
         this.executeTestGetOperatorsSupported(createBikeKmParam,
                                               HandSideType.LEFT, 

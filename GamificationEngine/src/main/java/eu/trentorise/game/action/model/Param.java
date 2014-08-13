@@ -10,7 +10,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Param {
     
+    //key
     protected String name;
+    //key
     protected Action action;
     
     protected CompositeParam compositeParam;

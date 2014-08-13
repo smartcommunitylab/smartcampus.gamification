@@ -1,5 +1,7 @@
 package eu.trentorise.game.controller;
 
+import static eu.trentorise.game.controller.IGameConstants.SERVICE_APPLICATIONS_SINGLE_PATH;
+
 /**
  *
  * @author luca
@@ -24,7 +26,10 @@ public interface IGameConstants {
     public static final String SERVICE_EXTERNALACTIONS_PATH = SERVICE_APPLICATIONS_SINGLE_PATH + "/externalactions";
     public static final String SERVICE_EXTERNALACTIONS_SINGLE_PATH_PARAM = "extActId";
     public static final String SERVICE_EXTERNALACTIONS_SINGLE_PATH = SERVICE_EXTERNALACTIONS_PATH + "/{" + SERVICE_EXTERNALACTIONS_SINGLE_PATH_PARAM + "}";
-    public static final String SERVICE_ACTION_PARAM_PATH = SERVICE_EXTERNALACTIONS_PATH + "/param";
+    /*views and services - services - actions - externalActions - params*/
+    public static final String SERVICE_EXTERNALACTIONS_PARAMS_PATH = SERVICE_EXTERNALACTIONS_SINGLE_PATH + "/params";
+    public static final String SERVICE_EXTERNALACTIONS_PARAMS_SINGLE_PATH_PARAM = "paramName";
+    public static final String SERVICE_EXTERNALACTIONS_PARAMS_SINGLE_PATH = SERVICE_EXTERNALACTIONS_PARAMS_PATH + "/{" + SERVICE_EXTERNALACTIONS_PARAMS_SINGLE_PATH_PARAM + "}";
     /*views and services - services - profile - games*/
     public static final String SERVICE_GAME_PROFILE_GAMES_PATH = SERVICE_GAME_PROFILE_PATH + "/games";
     public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM = "gameId";

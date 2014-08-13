@@ -1,6 +1,6 @@
 package eu.trentorise.game.action.model;
 
-import eu.trentorise.game.plugin.model.Plugin;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 
 /**
@@ -9,16 +9,16 @@ import eu.trentorise.game.ruleengine.model.RuleTemplate;
  */
 public class InternalAction extends Action {
     
-    protected Plugin plugin;
+    protected CustomizedPlugin customizedPlugin;
     
     protected RuleTemplate ruleTemplate;
 
-    public Plugin getPlugin() {
-        return plugin;
+    public CustomizedPlugin getCustomizedPlugin() {
+        return customizedPlugin;
     }
 
-    public void setPlugin(Plugin plugin) {
-        this.plugin = plugin;
+    public void setCustomizedPlugin(CustomizedPlugin customizedPlugin) {
+        this.customizedPlugin = customizedPlugin;
     }
 
     public RuleTemplate getRuleTemplate() {
@@ -31,6 +31,6 @@ public class InternalAction extends Action {
 
     @Override
     public String toString() {
-        return "InternalAction{" + "plugin=" + plugin + ", ruleTemplate=" + ruleTemplate + " " + super.toString() + " " + '}';
+        return "InternalAction{" + "customizedPlugin=" + customizedPlugin + ", ruleTemplate=" + ruleTemplate + '}';
     }
 }

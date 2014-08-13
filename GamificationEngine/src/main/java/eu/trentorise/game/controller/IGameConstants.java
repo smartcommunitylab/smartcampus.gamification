@@ -34,6 +34,10 @@ public interface IGameConstants {
     public static final String SERVICE_GAME_PROFILE_GAMES_PATH = SERVICE_GAME_PROFILE_PATH + "/games";
     public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM = "gameId";
     public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH = SERVICE_GAME_PROFILE_GAMES_PATH + "/{" + SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM + "}";
+    /*views and services - services - profile - games - internalActions*/
+    public static final String SERVICE_GAME_INTERNALACTIONS_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + "/internalactions";
+    public static final String SERVICE_GAME_INTERNALACTIONS_SINGLE_PATH_PARAM = "intActId";
+    public static final String SERVICE_GAME_INTERNALACTIONS_SINGLE_PATH = SERVICE_GAME_INTERNALACTIONS_PATH + "/{" + SERVICE_GAME_INTERNALACTIONS_SINGLE_PATH_PARAM + "}";
     /*views and services - services - plugins*/
     public static final String SERVICE_PLUGINS_PATH_RELATIVE = "/plugins";
     public static final String SERVICE_PLUGINS_PATH = SERVICE_PATH + SERVICE_PLUGINS_PATH_RELATIVE;

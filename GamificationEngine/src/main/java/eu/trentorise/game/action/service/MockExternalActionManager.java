@@ -105,27 +105,27 @@ public class MockExternalActionManager implements IExternalActionImporter,
     
     @Override
     public Collection createElements(Application containerWithIds) throws Exception {
-        return this.createViaggiaRoveretoExternalActions();
+        return this.createViaggiaRoveretoAppExternalActions();
     }
     
     
     public Collection<ExternalAction> createExternalActions(IImportExternalActionContainer container) {
-        return this.createViaggiaRoveretoExternalActions();
+        return this.createViaggiaRoveretoAppExternalActions();
     }
 
     
-    public List<ExternalAction> createViaggiaRoveretoExternalActions() {
+    public List<ExternalAction> createViaggiaRoveretoAppExternalActions() {
         List<ExternalAction> list = new ArrayList<>();
         
         Application application = mockApplicationManager.createViaggiaRovereto();
         
-        list.add(mockActionManager.createAction(application, 1, "BusDelayReporting", "The user has reported the delay of a bus"));
-        list.add(mockActionManager.createAction(application, 2, "BusServiceRating", "The user has rated the bus service quality"));
-        list.add(mockActionManager.createAction(application, 3, "BusCommentAdding", "The user has commented the bus service"));
+        list.add(mockActionManager.createExternalAction(application, 1, "BusDelayReporting", "The user has reported the delay of a bus"));
+        list.add(mockActionManager.createExternalAction(application, 2, "BusServiceRating", "The user has rated the bus service quality"));
+        list.add(mockActionManager.createExternalAction(application, 3, "BusCommentAdding", "The user has commented the bus service"));
         list.add(mockActionManager.createItineratySavingExternalAction());
-        list.add(mockActionManager.createAction(application, 5, "BikeUsage", "The user has used a bike"));
-        list.add(mockActionManager.createAction(application, 6, "CarUsage", "The user has used a car"));
-        list.add(mockActionManager.createAction(application, 7, "BusUsage", "The user has used a bus"));
+        list.add(mockActionManager.createExternalAction(application, 5, "BikeUsage", "The user has used a bike"));
+        list.add(mockActionManager.createExternalAction(application, 6, "CarUsage", "The user has used a car"));
+        list.add(mockActionManager.createExternalAction(application, 7, "BusUsage", "The user has used a bus"));
         
         return list;
     }

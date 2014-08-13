@@ -4,7 +4,10 @@ import eu.trentorise.game.action.comparator.ActionKeyComparator;
 import eu.trentorise.game.action.model.Action;
 import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.action.model.ExternalAction;
+import eu.trentorise.game.action.model.InternalAction;
 import eu.trentorise.game.application.service.MockApplicationManager;
+import eu.trentorise.game.plugin.model.CustomizedPlugin;
+import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,7 +43,7 @@ public class MockActionManager {
     }
     
     protected ExternalAction createItineratySavingExternalAction() {
-        return this.createAction(manager.createViaggiaRovereto(), 4, "ItinerarySaving", "The user has saved an itinerary");
+        return this.createExternalAction(manager.createViaggiaRovereto(), 4, "ItinerarySaving", "The user has saved an itinerary");
     }
     
     public Action createItineratySavingAction() {
@@ -52,7 +55,7 @@ public class MockActionManager {
         return this.createItineratySavingExternalAction();
     }
     
-    protected ExternalAction createAction(Application application, Integer id, 
+    protected ExternalAction createExternalAction(Application application, Integer id, 
                                           String name, String description) {
         
         ExternalAction element = new ExternalAction();
@@ -60,6 +63,23 @@ public class MockActionManager {
         element = (ExternalAction) this.createAction(element, id, name, description);
         
         element.setApplication(application);
+        
+        return element;
+    }
+    
+    protected InternalAction createInternalAction(CustomizedPlugin customizedPlugin, 
+                                                  RuleTemplate ruleTemplate,
+                                                  Integer id, 
+                                                  String name, 
+                                                  String description) {
+        
+        InternalAction element = new InternalAction();
+        
+        element = (InternalAction) this.createAction(element, id, name, 
+                                                     description);
+        
+        element.setCustomizedPlugin(customizedPlugin);
+        element.setRuleTemplate(ruleTemplate);
         
         return element;
     }

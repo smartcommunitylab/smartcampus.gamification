@@ -1,6 +1,5 @@
 package eu.trentorise.game.ruleengine.comparator;
 
-import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import java.util.Comparator;

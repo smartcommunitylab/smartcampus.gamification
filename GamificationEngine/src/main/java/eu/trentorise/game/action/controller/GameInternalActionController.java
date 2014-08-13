@@ -59,7 +59,7 @@ public class GameInternalActionController extends AbstractCrudRestController<Gam
     @RequestMapping(value = IGameConstants.SERVICE_GAME_INTERNALACTIONS_SINGLE_PATH, method = RequestMethod.GET)
     public @ResponseBody GameInternalActionResponse readInternalActionById(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
-                         @PathVariable(value = IGameConstants.SERVICE_GAME_INTERNALACTIONS_SINGLE_PATH_PARAM) Integer intActId) {
+                         @PathVariable(value = IGameConstants.SERVICE_INTERNALACTIONS_SINGLE_PATH_PARAM) Integer intActId) {
         
         GameInternalAction element = this.makeGameInternalAction(gameId, intActId);
         
@@ -75,7 +75,7 @@ public class GameInternalActionController extends AbstractCrudRestController<Gam
     @Override
     protected Map<String, Object> populateUriVariables(GameInternalAction containerWithIds, GameInternalAction result, Map<String, Object> uriVariables) {
         uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, result.getGame().getId());
-        uriVariables.put(IGameConstants.SERVICE_GAME_INTERNALACTIONS_SINGLE_PATH_PARAM, result.getInternalAction().getId());
+        uriVariables.put(IGameConstants.SERVICE_INTERNALACTIONS_SINGLE_PATH_PARAM, result.getInternalAction().getId());
         
         return uriVariables;
     }

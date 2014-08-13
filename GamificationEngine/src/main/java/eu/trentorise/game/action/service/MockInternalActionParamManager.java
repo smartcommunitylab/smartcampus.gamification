@@ -1,9 +1,7 @@
 package eu.trentorise.game.action.service;
 
-import eu.trentorise.game.action.comparator.ParamKeyComparator;
-import eu.trentorise.game.action.model.Action;
-import eu.trentorise.game.action.model.BasicParam;
-import eu.trentorise.game.action.model.ExternalAction;
+import eu.trentorise.game.action.model.GameInternalAction;
+import eu.trentorise.game.action.model.InternalAction;
 import eu.trentorise.game.action.model.Param;
 import eu.trentorise.game.action.model.ParamType;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
@@ -20,17 +18,18 @@ import org.springframework.stereotype.Service;
  *
  * @author Luca Piras
  */
-@Service("mockExternalActionParamManager")
-public class MockExternalActionParamManager implements IRestCrudManager<Param, ExternalAction, Param>,
-                                                       IRestCrudTestManager<Param, ExternalAction, Param>{
+@Service("mockInternalActionParamManager")
+public class MockInternalActionParamManager implements IRestCrudManager<Param, InternalAction, Param>,
+                                                       IRestCrudTestManager<Param, InternalAction, Param>{
 
-    public static MockExternalActionParamManager createInstance() {
-        MockExternalActionParamManager mock = new MockExternalActionParamManager();
+    public static MockInternalActionParamManager createInstance() {
+        MockInternalActionParamManager mock = new MockInternalActionParamManager();
         
         mock.mockActionManager = MockActionManager.createInstance();
+        mock.mockGameInternalActionManager = MockGameInternalActionManager.createInstance();
+        mock.mockExternalActionParamManager = MockExternalActionParamManager.createInstance();
         
-        mock.comparator = new ParamKeyComparator();
-        ((ParamKeyComparator) mock.comparator).setComparator(mock.mockActionManager.getComparator());
+        mock.comparator = mock.mockExternalActionParamManager.getComparator();
         
         return mock;
     }
@@ -42,10 +41,10 @@ public class MockExternalActionParamManager implements IRestCrudManager<Param, E
     }
     
     @Override
-    public Collection<Param> readCollection(ExternalAction containerWithIds) throws Exception {
+    public Collection<Param> readCollection(InternalAction containerWithIds) throws Exception {
         //TODO: return null or throw Exception if this activity it is not 
         //possible
-        //TODO: vai nella tabella ExternalAction e recupera tutti i
+        //TODO: vai nella tabella InternalAction e recupera tutti i
         //gli elementi per l'app indicata
         return this.createElements(containerWithIds);
     }
@@ -77,35 +76,23 @@ public class MockExternalActionParamManager implements IRestCrudManager<Param, E
     
     @Override
     public Param createElement(Param containerWithIds) throws Exception {
-        return this.createBikeKmParam();
+        return this.createGreenLeavesPointsUpdatingParam();
     }
     
     @Override
-    public List<Param> createElements(ExternalAction containerWithIds) {
+    public List<Param> createElements(InternalAction containerWithIds) throws Exception {
         List<Param> list = new ArrayList<>();
         
-        ExternalAction action = mockActionManager.createExternalAction();
-        
-        list.add(this.createBikeKmParam());
-        list.add(this.createBasicParam(action, "carKM", ParamType.INTEGER));
-        list.add(this.createBasicParam(action, "busKM", ParamType.INTEGER));
-        list.add(this.createBasicParam(action, "means", ParamType.INTEGER));
+        list.add(this.createGreenLeavesPointsUpdatingParam());
         
         return list;
     }
     
-    
-    public BasicParam createBasicParam(Action action, String name, ParamType type) {
-        BasicParam element = new BasicParam();
-        element.setAction(action);
-        element.setName(name);
-        element.setType(ParamType.INTEGER);
+    protected Param createGreenLeavesPointsUpdatingParam() throws Exception {
+        GameInternalAction gameInternalAction = mockGameInternalActionManager.createGameGreenLeavesUpdatingInternalAction();
+        InternalAction internalAction = gameInternalAction.getInternalAction();
         
-        return element;
-    }
-    
-    public BasicParam createBikeKmParam() {
-        return this.createBasicParam(mockActionManager.createExternalAction(), "bikeKM", ParamType.INTEGER);
+        return mockExternalActionParamManager.createBasicParam(internalAction, "greenLeaves", ParamType.INTEGER);
     }
 
     
@@ -117,6 +104,14 @@ public class MockExternalActionParamManager implements IRestCrudManager<Param, E
     @Qualifier("mockActionManager")
     @Autowired
     protected MockActionManager mockActionManager;
+    
+    @Qualifier("mockGameInternalActionManager")
+    @Autowired
+    protected MockGameInternalActionManager mockGameInternalActionManager;
+    
+    @Qualifier("mockExternalActionParamManager")
+    @Autowired
+    protected MockExternalActionParamManager mockExternalActionParamManager;
     
     
     @Qualifier("paramKeyComparator")

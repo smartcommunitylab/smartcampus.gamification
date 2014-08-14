@@ -1,5 +1,6 @@
 package eu.trentorise.game.action.service;
 
+import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.model.GameInternalAction;
 import eu.trentorise.game.action.model.InternalAction;
 import eu.trentorise.game.action.model.Param;
@@ -88,7 +89,7 @@ public class MockInternalActionParamManager implements IRestCrudManager<Param, I
         return list;
     }
     
-    protected Param createGreenLeavesPointsUpdatingParam() throws Exception {
+    public BasicParam createGreenLeavesPointsUpdatingParam() throws Exception {
         GameInternalAction gameInternalAction = mockGameInternalActionManager.createGameGreenLeavesUpdatingInternalAction();
         InternalAction internalAction = gameInternalAction.getInternalAction();
         

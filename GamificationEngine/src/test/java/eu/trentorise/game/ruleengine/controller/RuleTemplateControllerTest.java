@@ -6,17 +6,12 @@ import eu.trentorise.game.action.service.MockExternalActionParamManager;
 import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.service.MockPluginManager;
-import eu.trentorise.game.profile.game.model.Game;
-import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
-import eu.trentorise.game.ruleengine.model.Rule;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
-import eu.trentorise.game.ruleengine.request.RuleRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
-import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateCollectionResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.MockRuleTemplateManager;
@@ -265,46 +260,6 @@ public class RuleTemplateControllerTest extends AbstractRestCrudTest<RuleTemplat
                 
                 assertEquals(responseElement.getSymbol(), expectedElement.getSymbol());
             }
-        }
-    }
-    
-    /**
-     * Test of testSetRule method, of class RuleTemplateController.
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testSetRule() throws Exception {
-        MockRuleTemplateManager mock = new MockRuleTemplateManager();
-        MockPluginManager gamePluginManagerMock = new MockPluginManager();
-        
-        Game game = new Game();
-        game.setId(MockGameProfileManager.MOCK_GAME_ID);
-        
-        
-        //TODO: to be completed
-        this.executeTestSetRule(game, null);
-    }
-    
-    protected void executeTestSetRule(Game game, Rule rule) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<RuleSettingResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        ObjectMapper mapper = new ObjectMapper();
-        
-        RuleRequest request = new RuleRequest();
-        request.setGame(game);
-        request.setRule(rule);
-        
-        String jsonRequest = mapper.writeValueAsString(request);
-        System.out.println(jsonRequest);
-        
-        RuleSettingResponse response = helper.executeTest("testSetRule",
-                                                   "/game/services/ruleengine/ruletemplates" + "/setRule" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION,
-                                                   HttpMethod.POST,
-                                                   RuleSettingResponse.class, 
-                                                   jsonRequest);
-        
-        if (null != response) {
-            assertTrue(response.isSuccess());
         }
     }
 }

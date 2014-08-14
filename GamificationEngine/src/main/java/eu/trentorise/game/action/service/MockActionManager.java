@@ -46,9 +46,14 @@ public class MockActionManager {
         return this.createExternalAction(manager.createViaggiaRovereto(), 4, "ItinerarySaving", "The user has saved an itinerary");
     }
     
-    public Action createItineratySavingAction() {
-        Action element = new Action();
-        return this.createAction(element, 4, "ItinerarySaving", "The user has saved an itinerary");
+    public ExternalAction createBusDelayReportingAction() {
+        Application app = this.manager.createViaggiaRovereto();
+        return this.createExternalAction(app, 1, "BusDelayReporting", "The user has reported the delay of a bus");
+    }
+    
+    public ExternalAction createItineratySavingAction() {
+        Application app = this.manager.createViaggiaRovereto();
+        return this.createExternalAction(app, 4, "ItinerarySaving", "The user has saved an itinerary");
     }
     
     public ExternalAction createExternalAction() {

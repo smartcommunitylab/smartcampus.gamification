@@ -148,6 +148,11 @@ public class MockBadgeManager implements IRestCrudManager<Badge, BadgeCollection
                                 BADGE_FILE_NAME_GREEN_HERO_NOVICE);
     }
     
+    public Badge createGreenHeroOne() throws Exception {
+        return this.createBadge(mockPluginManager.createEcologicalBadgesPlugin(), 1,
+                                BADGE_FILE_NAME_GREEN_HERO_1);
+    }
+    
     public List<Badge> createHealthBadgesList() throws Exception {
         List<Badge> list = new ArrayList<>();
         
@@ -166,7 +171,7 @@ public class MockBadgeManager implements IRestCrudManager<Badge, BadgeCollection
         BadgeCollectionPlugin badgeCollection = mockPluginManager.createEcologicalBadgesPlugin();
         
         list.add(this.createGreenHeroNovice());
-        list.add(this.createBadge(badgeCollection, 1, BADGE_FILE_NAME_GREEN_HERO_1));
+        list.add(this.createGreenHeroOne());
         list.add(this.createBadge(badgeCollection, 2, BADGE_FILE_NAME_GREEN_HERO_2));
         
         return list;

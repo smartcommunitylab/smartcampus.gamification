@@ -106,7 +106,7 @@ public class MockGameInternalActionManager implements IRestCrudManager<GameInter
     }
 
     
-    protected GameInternalAction createGameGreenLeavesUpdatingInternalAction() throws Exception {
+    public GameInternalAction createGameGreenLeavesUpdatingInternalAction() throws Exception {
         Game game = mockGameProfileManager.createElement();
         
         PointPlugin customizedPlugin = mockPluginManager.createGreenLeavesPointPlugin();

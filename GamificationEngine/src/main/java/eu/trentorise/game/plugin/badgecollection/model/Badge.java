@@ -1,5 +1,6 @@
 package eu.trentorise.game.plugin.badgecollection.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.trentorise.game.plugin.model.Reward;
 import eu.trentorise.utils.web.WebFile;
 
@@ -7,6 +8,8 @@ import eu.trentorise.utils.web.WebFile;
  *
  * @author Luca Piras
  */
+//Necessary for the Test
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Badge extends Reward {
     
     protected BadgeCollectionPlugin badgeCollection;

@@ -41,9 +41,11 @@ public interface IGameConstants {
     public static final String SERVICE_INTERNALACTIONS_PARAMS_SINGLE_PATH_PARAM = "paramName";
     public static final String SERVICE_INTERNALACTIONS_PARAMS_SINGLE_PATH = SERVICE_INTERNALACTIONS_PARAMS_PATH + "/{" + SERVICE_INTERNALACTIONS_PARAMS_SINGLE_PATH_PARAM + "}";
     /*views and services - services - profile - games*/
-    public static final String SERVICE_GAME_PROFILE_GAMES_PATH = SERVICE_GAME_PROFILE_PATH + "/games";
+    public static final String SERVICE_GAME_PROFILE_GAMES_PATH_RELATIVE = "/games";
+    public static final String SERVICE_GAME_PROFILE_GAMES_PATH = SERVICE_GAME_PROFILE_PATH + SERVICE_GAME_PROFILE_GAMES_PATH_RELATIVE;
     public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM = "gameId";
-    public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH = SERVICE_GAME_PROFILE_GAMES_PATH + "/{" + SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM + "}";
+    public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_RELATIVE = SERVICE_GAME_PROFILE_GAMES_PATH_RELATIVE + "/{" + SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM + "}";
+    public static final String SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH = SERVICE_GAME_PROFILE_PATH + SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_RELATIVE;
     /*views and services - services - profile - games - internalActions*/
     public static final String SERVICE_GAME_INTERNALACTIONS_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + SERVICE_INTERNALACTIONS_PATH_RELATIVE;
     public static final String SERVICE_GAME_INTERNALACTIONS_SINGLE_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + SERVICE_INTERNALACTIONS_SINGLE_PATH_RELATIVE;
@@ -57,7 +59,8 @@ public interface IGameConstants {
     public static final String SERVICE_CUSTOMIZEDPLUGINS_PATH_RELATIVE = "/customizedplugins";
     public static final String SERVICE_CUSTOMIZEDPLUGINS_PATH = SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + SERVICE_CUSTOMIZEDPLUGINS_PATH_RELATIVE;
     public static final String SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM = "cusPlugId";
-    public static final String SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH = SERVICE_CUSTOMIZEDPLUGINS_PATH + "/{" + SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM + "}";
+    public static final String SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_RELATIVE = SERVICE_CUSTOMIZEDPLUGINS_PATH_RELATIVE + "/{" + SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM + "}";
+    public static final String SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH = SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_RELATIVE;
     /*views and services - services - profile - games - plugins - gameCustomizedPlugins */
     public static final String SERVICE_GAMECUSTOMIZEDPLUGINS_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + SERVICE_CUSTOMIZEDPLUGINS_PATH;
     public static final String SERVICE_GAMECUSTOMIZEDPLUGINS_SINGLE_PATH = SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH + SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH;
@@ -81,10 +84,21 @@ public interface IGameConstants {
     public static final String SERVICE_GAME_PLAYER = SERVICE_PATH + "/player";
     /*views and services - services - ruleengine*/
     public static final String SERVICE_RULEENGINE_PATH = SERVICE_PATH + "/ruleengine";
-     /*views and services - services - ruleengine - ruletemplates*/
-    public static final String SERVICE_RULEENGINE_RULETEMPLATES_PATH = SERVICE_RULEENGINE_PATH + SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + "/ruletemplates";
+    /*views and services - services - ruleengine - ruletemplates*/
+    public static final String SERVICE_RULEENGINE_RULETEMPLATES_PATH_RELATIVE = "/ruletemplates";
+    public static final String SERVICE_RULEENGINE_RULETEMPLATES_PATH = SERVICE_RULEENGINE_PATH + SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + SERVICE_RULEENGINE_RULETEMPLATES_PATH_RELATIVE;
     public static final String SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM = "ruleTemplId";
-    public static final String SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH = SERVICE_RULEENGINE_RULETEMPLATES_PATH + "/{" + SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM + "}";
+    public static final String SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_RELATIVE = SERVICE_RULEENGINE_RULETEMPLATES_PATH_RELATIVE + "/{" + SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM + "}";
+    public static final String SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH = SERVICE_RULEENGINE_PATH + SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_RELATIVE;
+    /*views and services - services - ruleengine - games - plugins - customizedPlugins - ruleTemplates - rules*/
+    public static final String SERVICE_RULEENGINE_G_P_CP_RT_RULES_PATH = SERVICE_RULEENGINE_PATH + 
+                                                                         SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_RELATIVE + 
+                                                                         SERVICE_PLUGINS_SINGLE_PATH_RELATIVE + 
+                                                                         SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_RELATIVE + 
+                                                                         SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_RELATIVE + 
+                                                                         "/rules";
+    public static final String SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH_PARAM = "ruleId";
+    public static final String SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH = SERVICE_RULEENGINE_G_P_CP_RT_RULES_PATH + "/{" + SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH_PARAM + "}";
     /*views and services - services - events*/
     public static final String SERVICE_EVENTS_PATH = SERVICE_PATH + "/events";
     public static final String SERVICE_EVENTS_START_EVENT_PATH = SERVICE_EVENTS_PATH + "/start-event";

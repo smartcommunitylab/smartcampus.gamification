@@ -119,7 +119,7 @@ public class MockExternalActionManager implements IExternalActionImporter,
         
         Application application = mockApplicationManager.createViaggiaRovereto();
         
-        list.add(mockActionManager.createExternalAction(application, 1, "BusDelayReporting", "The user has reported the delay of a bus"));
+        list.add(mockActionManager.createBusDelayReportingAction());
         list.add(mockActionManager.createExternalAction(application, 2, "BusServiceRating", "The user has rated the bus service quality"));
         list.add(mockActionManager.createExternalAction(application, 3, "BusCommentAdding", "The user has commented the bus service"));
         list.add(mockActionManager.createItineratySavingExternalAction());

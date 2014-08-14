@@ -7,7 +7,7 @@ import eu.trentorise.game.ruleengine.model.Rule;
  *
  * @author Luca Piras
  */
-public class RuleContainer implements IRuleContainer {
+public class GameRuleContainer implements IGameRuleContainer {
     
     protected Game game;
     

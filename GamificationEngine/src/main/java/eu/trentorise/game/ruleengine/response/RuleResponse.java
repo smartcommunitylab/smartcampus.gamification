@@ -1,27 +1,25 @@
 package eu.trentorise.game.ruleengine.response;
 
-import eu.trentorise.game.response.GameResponse;
 import eu.trentorise.game.ruleengine.model.Rule;
-import java.util.List;
 
 /**
  *
  * @author Luca Piras
  */
-public class RuleResponse extends GameResponse {
+public class RuleResponse {
 
-    protected List<Rule> rules;
+    protected Rule rule;
 
-    public List<Rule> getRules() {
-        return rules;
+    public Rule getRule() {
+        return rule;
     }
 
-    public void setRules(List<Rule> rules) {
-        this.rules = rules;
+    public void setRule(Rule rule) {
+        this.rule = rule;
     }
 
     @Override
     public String toString() {
-        return "RuleResponse{" + "rules=" + rules + '}';
+        return "RuleResponse{" + "rule=" + rule + '}';
     }
 }

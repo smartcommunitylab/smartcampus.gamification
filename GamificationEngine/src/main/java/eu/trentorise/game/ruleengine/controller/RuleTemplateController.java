@@ -4,17 +4,12 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
 import eu.trentorise.game.ruleengine.container.IPluginOperatorContainer;
-import eu.trentorise.game.ruleengine.container.IRuleContainer;
 import eu.trentorise.game.ruleengine.container.OperatorContainer;
 import eu.trentorise.game.ruleengine.container.PluginOperatorContainer;
-import eu.trentorise.game.ruleengine.container.RuleContainer;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import eu.trentorise.game.ruleengine.request.OperatorRequest;
 import eu.trentorise.game.ruleengine.request.PluginOperatorRequest;
-import eu.trentorise.game.ruleengine.request.RuleRequest;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
-import eu.trentorise.game.ruleengine.response.RuleResponse;
-import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateCollectionResponse;
 import eu.trentorise.game.ruleengine.response.RuleTemplateResponse;
 import eu.trentorise.game.ruleengine.service.IRuleTemplateManager;
@@ -103,19 +98,6 @@ public class RuleTemplateController extends AbstractCrudRestController<RuleTempl
     }
     
     
-    @RequestMapping(method = RequestMethod.POST, value = "/game/services/ruleengine/ruletemplates" + "/getRules" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody RuleResponse getRules(@RequestBody RuleRequest request) throws Exception {
-        //TODO: this service will provide a list of rules related to a game 
-        //(activated or deactivated, this is not important), to a ruleTemplate
-        //and to a customizedPlugin (ruleTemplate and customizedPlugin are
-        //inside the rule)
-        IRuleContainer container = new RuleContainer();
-        container.setGame(request.getGame());
-        container.setRule(request.getRule());
-        
-        return mockRuleTemplateManager.getRules(container);
-    }
-    
     @RequestMapping(method = RequestMethod.POST, value = "/game/services/ruleengine/ruletemplates" + "/getOperatorsSupported" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
     public @ResponseBody OperatorResponse getOperatorsSupported(@RequestBody OperatorRequest request) throws Exception {
         IOperatorContainer container = new OperatorContainer();
@@ -137,20 +119,6 @@ public class RuleTemplateController extends AbstractCrudRestController<RuleTempl
         container.setGamificationPlugin(request.getGamificationPlugin());
         
         return mockRuleTemplateManager.getPluginOperatorsSupported(container);
-    }
-    
-    @RequestMapping(method = RequestMethod.POST, value = "/game/services/ruleengine/ruletemplates" + "/setRule" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)
-    public @ResponseBody RuleSettingResponse setRule(@RequestBody RuleRequest request) throws Exception {
-        //TODO: set the rule, its relation with a game, and other internal 
-        //relation (action, param, operator, ruleTemplate, etc. Furthermore,
-        //create generate the content string, the rule in drools language and 
-        //evaluate if it is possible to validate/verify the rule with drools
-        //(compile, etc.), if it is sustainable and so on
-        IRuleContainer container = new RuleContainer();
-        container.setGame(request.getGame());
-        container.setRule(request.getRule());
-        
-        return mockRuleTemplateManager.setRule(container);
     }
     
     

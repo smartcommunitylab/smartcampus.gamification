@@ -4,20 +4,15 @@ import eu.trentorise.game.action.model.BasicParam;
 import eu.trentorise.game.action.model.ParamType;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.service.MockPluginManager;
-import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.response.MockResponder;
 import eu.trentorise.game.ruleengine.comparator.RuleTemplateKeyComparator;
 import eu.trentorise.game.ruleengine.container.IOperatorContainer;
 import eu.trentorise.game.ruleengine.container.IPluginOperatorContainer;
-import eu.trentorise.game.ruleengine.container.IRuleContainer;
 import eu.trentorise.game.ruleengine.model.HandSideType;
 import eu.trentorise.game.ruleengine.model.Operator;
-import eu.trentorise.game.ruleengine.model.Rule;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
 import eu.trentorise.game.ruleengine.model.RuleTemplateType;
 import eu.trentorise.game.ruleengine.response.OperatorResponse;
-import eu.trentorise.game.ruleengine.response.RuleResponse;
-import eu.trentorise.game.ruleengine.response.RuleSettingResponse;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
 import java.util.ArrayList;
@@ -90,7 +85,7 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     
     @Override
     public RuleTemplate createElement(RuleTemplate containerWithIds) throws Exception {
-        return this.createBasicActionPoints();
+        return this.createBasicActionPointsRuleTemplate();
     }
 
     @Override
@@ -111,10 +106,8 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
     public List<RuleTemplate> createPointPluginRuleTemplateList() throws Exception {
         List<RuleTemplate> list = new ArrayList<>();
         
-        Plugin plugin = mockPluginManager.createPointsPlugin();
-        
-        list.add(this.createBasicActionPoints());
-        list.add(this.createRuleTemplate(plugin, 1, "ParamActionPoints", RuleTemplateType.PARAMETRIC, "A user, by doing a specific action, can earn Usage Points"));
+        list.add(this.createBasicActionPointsRuleTemplate());
+        list.add(this.createParamActionPointsRuleTemplate());
         
         return list;
     }
@@ -124,9 +117,9 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         
         Plugin plugin = mockPluginManager.createBadgeCollectionPlugin();
         
-        list.add(this.createRuleTemplate(plugin, 0, "FirstTimeActionBadges", RuleTemplateType.BASIC, "When an action happens for the first time, a user earn a badge"));
+        list.add(this.createFirstTimeActionBadgesRuleTemplate());
         list.add(this.createRuleTemplate(plugin, 1, "ParamFirstTimeActionBadges", RuleTemplateType.PARAMETRIC, "When an action happens for the first time, a user earn a badge"));
-        list.add(this.createRuleTemplate(plugin, 2, "ParamPointTotalBadges", RuleTemplateType.PARAMETRIC, "Given a total of accumulated points a player can only earn once a badge"));
+        list.add(this.createParamPointTotalBadgesRuleTemplate());
         
         return list;
     }
@@ -150,31 +143,26 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return ruleTemplate;
     }
     
-    protected RuleTemplate createBasicActionPoints() {
+    protected RuleTemplate createBasicActionPointsRuleTemplate() {
         Plugin plugin = mockPluginManager.createPointsPlugin();
         return this.createRuleTemplate(plugin, 0, "BasicActionPoints", RuleTemplateType.BASIC, "A user, by doing a specific action, can earn Usage Points");
     }
     
-    
-    @Override
-    public RuleResponse getRules(IRuleContainer container) {
-        List<Rule> list = new ArrayList<>();
-        
-        Game game = container.getGame();
-        /*if (MockGameProfileManager.MOCK_GAME_ID == game.getId()) {this.cr
-            if (0 == pluginKeyComparator.compare(plugin, mockPluginManager.createPointsPlugin())) {
-                list = this.createPointPluginRuleTemplateList();
-            } else if (0 == pluginKeyComparator.compare(plugin, mockPluginManager.createBadgeCollectionPlugin())) {
-                list = this.createBadgeCollectionPluginRuleTemplateList();
-            } else if (0 == pluginKeyComparator.compare(plugin, mockPluginManager.createLeadearboardPointPlugin())) {
-                list = this.createLeaderboardPointPluginRuleTemplateList();
-            }
-        }
-        
-        return this.makeCustomizedResponse(list);*/
-        
-        return null;
+    protected RuleTemplate createParamActionPointsRuleTemplate() {
+        Plugin plugin = mockPluginManager.createPointsPlugin();
+        return this.createRuleTemplate(plugin, 1, "ParamActionPoints", RuleTemplateType.PARAMETRIC, "A user, by doing a specific action, can earn Green Leaves");
     }
+    
+    protected RuleTemplate createFirstTimeActionBadgesRuleTemplate() {
+        Plugin plugin = mockPluginManager.createBadgeCollectionPlugin();
+        return this.createRuleTemplate(plugin, 0, "FirstTimeActionBadges", RuleTemplateType.BASIC, "When an action happens for the first time, a user earns a badge");
+    }
+    
+    protected RuleTemplate createParamPointTotalBadgesRuleTemplate() {
+        Plugin plugin = mockPluginManager.createBadgeCollectionPlugin();
+        return this.createRuleTemplate(plugin, 2, "ParamPointTotalBadges", RuleTemplateType.PARAMETRIC, "Given a total of accumulated points a player can earn only once a badge");
+    }
+    
     
     @Override
     public OperatorResponse getOperatorsSupported(IOperatorContainer container) {
@@ -187,20 +175,6 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         return this.makeResponse(this.createPluginOperators(container.getGamificationPlugin()));
     }
     
-    @Override
-    public RuleSettingResponse setRule(IRuleContainer container) {
-        //TODO: set the rule, its relation with a game, and other internal 
-        //relation (action, param, operator, ruleTemplate, etc. Furthermore,
-        //create generate the content string, the rule in drools language and 
-        //evaluate if it is possible to validate/verify the rule with drools
-        //(compile, etc.), if it is sustainable and so on
-        
-        //TODO:
-        
-        //container.getRule().getRuleTemplate()
-        
-        return this.makeResponse();
-    }    
         
     public List<Operator> createOperators(BasicParam param, 
                                           HandSideType handSideType) {
@@ -280,12 +254,6 @@ public class MockRuleTemplateManager extends MockResponder implements IRuleTempl
         response.setOperators(list);
         
         return ((OperatorResponse) this.buildPositiveResponse(response));
-    }
-    
-    protected RuleSettingResponse makeResponse() {
-        RuleSettingResponse response = new RuleSettingResponse();
-        
-        return ((RuleSettingResponse) this.buildPositiveResponse(response));
     }
     
     

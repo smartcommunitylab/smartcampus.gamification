@@ -7,7 +7,7 @@ import eu.trentorise.game.ruleengine.model.Rule;
  *
  * @author Luca Piras
  */
-public interface IRuleContainer {
+public interface IGameRuleContainer {
     
     public Game getGame();
     public void setGame(Game game);

@@ -35,7 +35,7 @@ public class GameRuleControllerTest extends AbstractRestCrudTest<GameRule,
     @Test
     public void testCreateElement() throws Exception {
         GameRule element = mockRuleManager.createElement(null);
-        super.testCreateElement("testCreateRule", element, 
+        super.testCreateElement("testCreateGameRule", element, 
                                 makeBaseRelativeUrlExpanded(element));
     }
     
@@ -50,25 +50,25 @@ public class GameRuleControllerTest extends AbstractRestCrudTest<GameRule,
     @Test
     public void testReadCollection() throws Exception {
         GameRule container = mockRuleManager.createGameRule(mockRuleManager.createUsagePointsBasicActionPointsRule());
-        super.testReadCollection("testReadRules", 
+        super.testReadCollection("testReadGameRules", 
                                  container, 
                                  GameRuleCollectionResponse.class,
                                  makeBaseRelativeUrlExpanded(container));
         
         container = mockRuleManager.createGameRule(mockRuleManager.createGreenLeavesParamActionPointsRule());
-        super.testReadCollection("testReadRules", 
+        super.testReadCollection("testReadGameRules", 
                                  container, 
                                  GameRuleCollectionResponse.class,
                                  makeBaseRelativeUrlExpanded(container));
         
         container = mockRuleManager.createGameRule(mockRuleManager.createEcologicalBadgesFirstTimeActionBadgesRule());
-        super.testReadCollection("testReadRules", 
+        super.testReadCollection("testReadGameRules", 
                                  container, 
                                  GameRuleCollectionResponse.class,
                                  makeBaseRelativeUrlExpanded(container));
         
         container = mockRuleManager.createGameRule(mockRuleManager.createEcologicalBadgesParamPointTotalBadgesRule());
-        super.testReadCollection("testReadRules", 
+        super.testReadCollection("testReadGameRules", 
                                  container, 
                                  GameRuleCollectionResponse.class,
                                  makeBaseRelativeUrlExpanded(container));
@@ -84,7 +84,7 @@ public class GameRuleControllerTest extends AbstractRestCrudTest<GameRule,
     @Test
     public void testReadElementById() throws Exception {
         GameRule element = mockRuleManager.createElement(null);
-        super.testReadElementById("testReadRuleById", 
+        super.testReadElementById("testReadGameRuleById", 
                                   element, 
                                   GameRuleResponse.class,
                                   makeBaseRelativeUrlExpanded(element));
@@ -105,14 +105,14 @@ public class GameRuleControllerTest extends AbstractRestCrudTest<GameRule,
     @Test
     public void testUpdateElement() throws Exception {
         GameRule element = mockRuleManager.createElement(null);
-        super.testUpdateElement("testUpdateRule", 
+        super.testUpdateElement("testUpdateGameRule", 
                                 element,
                                 makeBaseRelativeUrlExpanded(element));
     }
 
     @Override
     protected GameRule managePositiveElementToUpdate(GameRule element) {
-        element.getRule().setLhsOperand("2");
+        element.setActivated(false);
         
         return element;
     }
@@ -127,7 +127,7 @@ public class GameRuleControllerTest extends AbstractRestCrudTest<GameRule,
     @Test
     public void testDeleteElement() throws Exception {
         GameRule element = mockRuleManager.createElement(null);
-        super.testDeleteElement("testDeleteRule", 
+        super.testDeleteElement("testDeleteGameRule", 
                                 element,
                                 makeBaseRelativeUrlExpanded(element));
     }

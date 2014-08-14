@@ -144,12 +144,13 @@ public class MockGameRuleManager implements IRestCrudManager<GameRule, GameRule,
     }
     
     public GameRule createGameRule(Rule rule) {
-        GameRule container = new GameRule();
+        GameRule element = new GameRule();
         
-        container.setGame(mockGameProfileManager.createElement());
-        container.setRule(rule);
+        element.setGame(mockGameProfileManager.createElement());
+        element.setRule(rule);
+        element.setActivated(Boolean.TRUE);
         
-        return container;
+        return element;
     }
     
     public List<Rule> createBasicActionPointsRulesCollection() throws Exception {

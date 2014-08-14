@@ -5,12 +5,11 @@ import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.profile.game.model.Game;
-import eu.trentorise.game.ruleengine.container.GameRuleContainer;
-import eu.trentorise.game.ruleengine.container.IGameRuleContainer;
+import eu.trentorise.game.ruleengine.model.GameRule;
 import eu.trentorise.game.ruleengine.model.Rule;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
-import eu.trentorise.game.ruleengine.response.RuleCollectionResponse;
-import eu.trentorise.game.ruleengine.response.RuleResponse;
+import eu.trentorise.game.ruleengine.response.GameRuleCollectionResponse;
+import eu.trentorise.game.ruleengine.response.GameRuleResponse;
 import eu.trentorise.utils.rest.RestExceptionHandler;
 import eu.trentorise.utils.rest.crud.AbstractCrudRestController;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
@@ -36,44 +35,47 @@ import org.springframework.web.util.UriComponentsBuilder;
  *
  * @author Luca Piras
  */
-@Controller("ruleController")
-public class RuleController extends AbstractCrudRestController<Rule, IGameRuleContainer, IGameRuleContainer> {
+@Controller("gameRuleController")
+public class GameRuleController extends AbstractCrudRestController<GameRule, GameRule, GameRule> {
 
     //TODO: IMPORTANT!!! define validators for all the services exposed by the
     //controllers
     
-    public RuleController() {
+    public GameRuleController() {
         super(IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH, 
-              LoggerFactory.getLogger(RuleController.class.getName()));
+              LoggerFactory.getLogger(GameRuleController.class.getName()));
     }
     
     
     //CREATE
     @RequestMapping(value = IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_PATH, method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Void> createRule(@PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
-                                           @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
-                                           @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId,
-                                           @PathVariable(value = IGameConstants.SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM) Integer ruleTemplId,
-                                           @RequestBody Rule element,
-                                           UriComponentsBuilder builder) {
+    public ResponseEntity<Void> createGameRule(@PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
+                                               @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
+                                               @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId,
+                                               @PathVariable(value = IGameConstants.SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM) Integer ruleTemplId,
+                                               @RequestBody GameRule element,
+                                               UriComponentsBuilder builder) {
         
         //TODO: validate the ids
+        //TODO: create the new rule provided and create an instance in gameRule
+        //in order to associate the game indicated with the rule provided
+        //(as default behavior set activated to true)
+        GameRule gameRule = this.makeContainer(gameId,
+                                               plugId, 
+                                               cusPlugId,
+                                               ruleTemplId,
+                                               null,
+                                               element.getRule(),
+                                               element.isActivated());
         
-        IGameRuleContainer container = this.makeContainer(gameId,
-                                                          plugId, 
-                                                          cusPlugId,
-                                                          ruleTemplId,
-                                                          null,
-                                                          element);
-        
-        return super.createResource(container, builder);
+        return super.createResource(gameRule, builder);
     }
     
     
     //READ
     @RequestMapping(value=IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_PATH, method = RequestMethod.GET)
-    public @ResponseBody RuleCollectionResponse readRules(
+    public @ResponseBody GameRuleCollectionResponse readGameRules(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
                          @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId,
@@ -85,23 +87,24 @@ public class RuleController extends AbstractCrudRestController<Rule, IGameRuleCo
         //and to a customizedPlugin (ruleTemplate and customizedPlugin are
         //inside the rule)
         
-        IGameRuleContainer container = this.makeContainer(gameId,
-                                                          plugId, 
-                                                          cusPlugId,
-                                                          ruleTemplId,
-                                                          null,
-                                                          null);
+        GameRule gameRule = this.makeContainer(gameId,
+                                               plugId, 
+                                               cusPlugId,
+                                               ruleTemplId,
+                                               null,
+                                               null,
+                                               null);
         
-        Collection<Rule> results = super.readResources(container);
+        Collection<GameRule> results = super.readResources(gameRule);
                                                 
-        RuleCollectionResponse response = new RuleCollectionResponse();
-        response.setRules(results);
+        GameRuleCollectionResponse response = new GameRuleCollectionResponse();
+        response.setGameRules(results);
         
         return response;
     }
     
     @RequestMapping(value = IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH, method = RequestMethod.GET)
-    public @ResponseBody RuleResponse readRuleById(
+    public @ResponseBody GameRuleResponse readGameRuleById(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
                          @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId,
@@ -110,17 +113,18 @@ public class RuleController extends AbstractCrudRestController<Rule, IGameRuleCo
         
         //TODO: validate the ids
         
-        IGameRuleContainer container = this.makeContainer(gameId,
-                                                          plugId, 
-                                                          cusPlugId,
-                                                          ruleTemplId,
-                                                          ruleId,
-                                                          null);
+        GameRule gameRule = this.makeContainer(gameId,
+                                               plugId, 
+                                               cusPlugId,
+                                               ruleTemplId,
+                                               ruleId,
+                                               null,
+                                               null);
         
-        Rule result = super.readResourceById(container);
+        GameRule result = super.readResourceById(gameRule);
         
-        RuleResponse response = new RuleResponse();
-        response.setRule(result);
+        GameRuleResponse response = new GameRuleResponse();
+        response.setGameRule(result);
         
         return response;
     }
@@ -128,31 +132,35 @@ public class RuleController extends AbstractCrudRestController<Rule, IGameRuleCo
     
     //UPDATE
     @RequestMapping(value = IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH, method = RequestMethod.PUT)
-    public @ResponseBody ResponseEntity<Void> updateRule(
+    public @ResponseBody ResponseEntity<Void> updateGameRule(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
                          @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId,
                          @PathVariable(value = IGameConstants.SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM) Integer ruleTemplId,
                          @PathVariable(value = IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH_PARAM) Integer ruleId,
-                         @RequestBody Rule element,
+                         @RequestBody GameRule element,
                          UriComponentsBuilder builder) {
         
         //TODO: validate the ids
+        //TODO: update the new rule provided and update an instance in gameRule
+        //in order to update the game indicated with the rule provided
+        //(useful to set activated or deactivated)
         
-        IGameRuleContainer container = this.makeContainer(gameId,
-                                                          plugId, 
-                                                          cusPlugId,
-                                                          ruleTemplId,
-                                                          ruleId,
-                                                          element);
+        GameRule gameRule = this.makeContainer(gameId,
+                                               plugId, 
+                                               cusPlugId,
+                                               ruleTemplId,
+                                               ruleId,
+                                               element.getRule(),
+                                               element.isActivated());
         
-        return super.updateResource(container, builder);
+        return super.updateResource(gameRule, builder);
     }
     
     
     //DELETE
     @RequestMapping(value = IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH, method = RequestMethod.DELETE)
-    public @ResponseBody ResponseEntity<Void> deleteRule(
+    public @ResponseBody ResponseEntity<Void> deleteGameRule(
                          @PathVariable(value = IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM) Integer gameId,
                          @PathVariable(value = IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM) Integer plugId,
                          @PathVariable(value = IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM) Integer cusPlugId,
@@ -161,35 +169,40 @@ public class RuleController extends AbstractCrudRestController<Rule, IGameRuleCo
         
         //TODO: validate the ids
         
-        IGameRuleContainer container = this.makeContainer(gameId,
-                                                          plugId, 
-                                                          cusPlugId,
-                                                          ruleTemplId,
-                                                          ruleId,
-                                                          null);
+        GameRule gameRule = this.makeContainer(gameId,
+                                               plugId, 
+                                               cusPlugId,
+                                               ruleTemplId,
+                                               ruleId,
+                                               null,
+                                               null);
         
-        return super.deleteResource(container);
+        return super.deleteResource(gameRule);
     }
     
 
     @Override
-    protected Map<String, Object> populateUriVariables(IGameRuleContainer containerWithIds, Rule result, Map<String, Object> uriVariables) {
-        uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, containerWithIds.getGame().getId());
-        uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, result.getRuleTemplate().getPlugin().getId());
-        uriVariables.put(IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM, result.getCustomizedPlugin().getId());
-        uriVariables.put(IGameConstants.SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM, result.getRuleTemplate().getId());
-        uriVariables.put(IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH_PARAM, result.getId());
+    protected Map<String, Object> populateUriVariables(GameRule containerWithIds, 
+                                                       GameRule result, 
+                                                       Map<String, Object> uriVariables) {
+        
+        uriVariables.put(IGameConstants.SERVICE_GAME_PROFILE_GAMES_SINGLE_PATH_PARAM, result.getGame().getId());
+        uriVariables.put(IGameConstants.SERVICE_PLUGINS_SINGLE_PATH_PARAM, result.getRule().getRuleTemplate().getPlugin().getId());
+        uriVariables.put(IGameConstants.SERVICE_CUSTOMIZEDPLUGINS_SINGLE_PATH_PARAM, result.getRule().getCustomizedPlugin().getId());
+        uriVariables.put(IGameConstants.SERVICE_RULEENGINE_RULETEMPLATES_SINGLE_PATH_PARAM, result.getRule().getRuleTemplate().getId());
+        uriVariables.put(IGameConstants.SERVICE_RULEENGINE_G_P_CP_RT_RULES_SINGLE_PATH_PARAM, result.getRule().getId());
         
         return uriVariables;
     }
     
     
-    protected IGameRuleContainer makeContainer(Integer gameId,
-                                               Integer plugId,
-                                               Integer cusPlugId, 
-                                               Integer ruleTemplId, 
-                                               Integer ruleId,
-                                               Rule rule) {
+    protected GameRule makeContainer(Integer gameId,
+                                     Integer plugId,
+                                     Integer cusPlugId, 
+                                     Integer ruleTemplId, 
+                                     Integer ruleId,
+                                     Rule rule,
+                                     Boolean activated) {
         
         Game game = new Game();
         game.setId(gameId);
@@ -212,23 +225,24 @@ public class RuleController extends AbstractCrudRestController<Rule, IGameRuleCo
         rule.setCustomizedPlugin(customizedPlugin);
         rule.setRuleTemplate(ruleTemplate);
         
-        IGameRuleContainer element = new GameRuleContainer();
+        GameRule element = new GameRule();
         element.setGame(game);
         element.setRule(rule);
+        element.setActivated(activated);
         
         return element;
     }
     
     
-    @Qualifier("mockRuleManager")
+    @Qualifier("mockGameRuleManager")
     @Autowired
-    public void setManager(IRestCrudManager<Rule, IGameRuleContainer, IGameRuleContainer> manager) {
+    public void setManager(IRestCrudManager<GameRule, GameRule, GameRule> manager) {
         this.manager = manager;
     }
 
     @Qualifier("restCrudHelper")
     @Autowired
-    public void setRestCrudHelper(RestCrudHelper<Rule, IGameRuleContainer, IGameRuleContainer> restCrudHelper) {
+    public void setRestCrudHelper(RestCrudHelper<GameRule, GameRule, GameRule> restCrudHelper) {
         this.restCrudHelper = restCrudHelper;
     }
 

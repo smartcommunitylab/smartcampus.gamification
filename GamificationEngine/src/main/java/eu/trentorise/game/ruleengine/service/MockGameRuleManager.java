@@ -11,9 +11,9 @@ import eu.trentorise.game.plugin.model.CustomizedPlugin;
 import eu.trentorise.game.plugin.model.Reward;
 import eu.trentorise.game.plugin.service.MockPluginManager;
 import eu.trentorise.game.profile.game.service.MockGameProfileManager;
+import eu.trentorise.game.ruleengine.comparator.GameRuleKeyComparator;
 import eu.trentorise.game.ruleengine.comparator.RuleKeyComparator;
-import eu.trentorise.game.ruleengine.container.GameRuleContainer;
-import eu.trentorise.game.ruleengine.container.IGameRuleContainer;
+import eu.trentorise.game.ruleengine.model.GameRule;
 import eu.trentorise.game.ruleengine.model.Operator;
 import eu.trentorise.game.ruleengine.model.Rule;
 import eu.trentorise.game.ruleengine.model.RuleTemplate;
@@ -28,13 +28,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 
-@Service("mockRuleManager")
-public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContainer, IGameRuleContainer>,
-                                        IRestCrudTestManager<Rule, IGameRuleContainer, IGameRuleContainer> {
+@Service("mockGameRuleManager")
+public class MockGameRuleManager implements IRestCrudManager<GameRule, GameRule, GameRule>, 
+        IRestCrudTestManager<GameRule, GameRule, GameRule> {
     
     
-    public static MockRuleManager createInstance() {
-        MockRuleManager mock = new MockRuleManager();
+    public static MockGameRuleManager createInstance() {
+        MockGameRuleManager mock = new MockGameRuleManager();
         mock.mockRuleTemplateManager = MockRuleTemplateManager.createInstance();
         mock.mockActionManager = MockActionManager.createInstance();
         mock.mockExternalActionParamManager = MockExternalActionParamManager.createInstance();
@@ -45,14 +45,17 @@ public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContaine
         mock.mockGameProfileManager = MockGameProfileManager.createInstance();
         
         mock.ruleTemplateKeyComparator = mock.mockRuleTemplateManager.getComparator();
-        mock.comparator = new RuleKeyComparator();
-        ((RuleKeyComparator) mock.comparator).setRuleTemplateKeyComparator(mock.mockRuleTemplateManager.getComparator());
+        mock.ruleKeyComparator = new RuleKeyComparator();
+        ((RuleKeyComparator) mock.ruleKeyComparator).setRuleTemplateKeyComparator(mock.mockRuleTemplateManager.getComparator());
+        mock.comparator = new GameRuleKeyComparator();
+        ((GameRuleKeyComparator) mock.comparator).setGameKeyComparator(mock.mockGameProfileManager.getComparator());
+        ((GameRuleKeyComparator) mock.comparator).setRuleKeyComparator(mock.ruleKeyComparator);
         
         return mock;
     }
     
     @Override
-    public Rule createSingleElement(IGameRuleContainer containerWithForeignIds) throws Exception {
+    public GameRule createSingleElement(GameRule containerWithForeignIds) throws Exception {
         //TODO: return null or throw Exception if it is not possible to create a
         //new one
         
@@ -60,7 +63,7 @@ public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContaine
     }
 
     @Override
-    public Collection<Rule> readCollection(IGameRuleContainer containerWithIds) throws Exception {
+    public Collection<GameRule> readCollection(GameRule containerWithIds) throws Exception {
         //TODO: return null or throw Exception if this activity it is not 
         //possible
         //TODO: vai nella tabella Rule e recupera tutti i
@@ -69,13 +72,13 @@ public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContaine
     }
 
     @Override
-    public Rule readSingleElement(IGameRuleContainer containerWithIds) throws Exception {
+    public GameRule readSingleElement(GameRule containerWithIds) throws Exception {
         //TODO: return null or throw Exception if this activity it is not 
         //possible
-        Rule returnValue = null;
+        GameRule returnValue = null;
         
-        Rule expectedElement = this.createElement(containerWithIds);
-        if (0 == comparator.compare(containerWithIds.getRule(), expectedElement)) {
+        GameRule expectedElement = this.createElement(containerWithIds);
+        if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
         
@@ -83,29 +86,29 @@ public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContaine
     }
 
     @Override
-    public Rule updateSingleElement(IGameRuleContainer containerWithForeignIds) throws Exception {
+    public GameRule updateSingleElement(GameRule containerWithForeignIds) throws Exception {
         //TODO: return null or throw Exception if it is not possible to update a
         //that one
         
-        Rule returnValue = null;
+        GameRule returnValue = null;
         
-        Rule expectedElement = this.createElement(containerWithForeignIds);
-        if (0 == comparator.compare(containerWithForeignIds.getRule(), expectedElement)) {
-            returnValue = containerWithForeignIds.getRule();
+        GameRule expectedElement = this.createElement(containerWithForeignIds);
+        if (0 == comparator.compare(containerWithForeignIds, expectedElement)) {
+            returnValue = containerWithForeignIds;
         }
         
         return returnValue;
     }
 
     @Override
-    public Rule deleteSingleElement(IGameRuleContainer containerWithIds) throws Exception {
+    public GameRule deleteSingleElement(GameRule containerWithIds) throws Exception {
         //TODO: return null or throw Exception if it is not possible to delete
         //that one or if it is not present
         
-        Rule returnValue = null;
+        GameRule returnValue = null;
         
-        Rule expectedElement = this.createElement(containerWithIds);
-        if (0 == comparator.compare(containerWithIds.getRule(), expectedElement)) {
+        GameRule expectedElement = this.createElement(containerWithIds);
+        if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
         
@@ -113,63 +116,35 @@ public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContaine
     }
     
     @Override
-    public Rule createElement(IGameRuleContainer containerWithIds) throws Exception {
-        return this.createGreenLeavesParamActionPointsRule();
+    public GameRule createElement(GameRule containerWithIds) throws Exception {
+        return this.createGameRule(this.createGreenLeavesParamActionPointsRule());
     }
-    
-    /*@Override
-    public Rule createElement(IGameRuleContainer containerWithIds) throws Exception {
-        Rule element = null;
-        
-        Rule containerRule = containerWithIds.getRule();
-        List<IGameRuleContainer> singleElements = this.createSingleElements();
-        for (int i = 0; null == element && i < singleElements.size(); i++) {
-            Rule current = singleElements.get(i).getRule();
-            //CREATE
-            if (null == containerRule.getId()) {
-                if (0 == ruleTemplateKeyComparator.compare(containerRule.getRuleTemplate(), current.getRuleTemplate())) {
-                    element = current;
-                }
-            } else if (0 == comparator.compare(containerRule, current)) {
-                element = current;
-            }
-        }
-        
-        return element;
-    }*/
     
     @Override
-    public Collection createElements(IGameRuleContainer containerWithIds) throws Exception {
-        Collection<Rule> elements = new ArrayList<>();
+    public Collection createElements(GameRule containerWithIds) throws Exception {
+        Collection<GameRule> elements = new ArrayList<>();
         
         RuleTemplate ruleTemplate = containerWithIds.getRule().getRuleTemplate();
-        
+        Collection<Rule> rules = new ArrayList<>();
         if (0 == ruleTemplateKeyComparator.compare(ruleTemplate, mockRuleTemplateManager.createBasicActionPointsRuleTemplate())) {
-            elements = this.createBasicActionPointsRulesCollection();
+            rules = this.createBasicActionPointsRulesCollection();
         } else if (0 == ruleTemplateKeyComparator.compare(ruleTemplate, mockRuleTemplateManager.createParamActionPointsRuleTemplate())) {
-            elements = this.createParamActionPointsRulesCollection();
+            rules = this.createParamActionPointsRulesCollection();
         } else if (0 == ruleTemplateKeyComparator.compare(ruleTemplate, mockRuleTemplateManager.createFirstTimeActionBadgesRuleTemplate())) {
-            elements = this.createFirstTimeActionBadgesRulesCollection();
+            rules = this.createFirstTimeActionBadgesRulesCollection();
         } else if (0 == ruleTemplateKeyComparator.compare(ruleTemplate, mockRuleTemplateManager.createParamPointTotalBadgesRuleTemplate())) {
-            elements = this.createParamPointTotalBadgesRulesCollection();
+            rules = this.createParamPointTotalBadgesRulesCollection();
+        }
+        
+        for (Rule rule : rules) {
+            elements.add(createGameRule(rule));
         }
         
         return elements;
     }
     
-    /*public List<IGameRuleContainer> createSingleElements() throws Exception {
-        List<IGameRuleContainer> elements = new ArrayList<>();
-        
-        elements.add(this.createContainer(this.createUsagePointsBasicActionPointsRule()));
-        elements.add(this.createContainer(this.createGreenLeavesParamActionPointsRule()));
-        elements.add(this.createContainer(this.createEcologicalBadgesFirstTimeActionBadgesRule()));
-        elements.add(this.createContainer(this.createEcologicalBadgesParamPointTotalBadgesRule()));
-        
-        return elements;
-    }*/
-    
-    public IGameRuleContainer createContainer(Rule rule) {
-        IGameRuleContainer container = new GameRuleContainer();
+    public GameRule createGameRule(Rule rule) {
+        GameRule container = new GameRule();
         
         container.setGame(mockGameProfileManager.createElement());
         container.setRule(rule);
@@ -363,9 +338,9 @@ public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContaine
         
         return rule;
     }
+
     
-    
-    public Comparator<Rule> getComparator() {
+    public Comparator<GameRule> getComparator() {
         return comparator;
     }
     
@@ -409,5 +384,9 @@ public class MockRuleManager implements IRestCrudManager<Rule, IGameRuleContaine
     
     @Qualifier("ruleKeyComparator")
     @Autowired
-    protected Comparator<Rule> comparator;
+    protected Comparator<Rule> ruleKeyComparator;
+    
+    @Qualifier("gameRuleKeyComparator")
+    @Autowired
+    protected Comparator<GameRule> comparator;
 }

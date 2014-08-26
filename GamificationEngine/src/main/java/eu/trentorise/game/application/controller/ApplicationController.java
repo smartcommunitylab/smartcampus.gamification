@@ -110,7 +110,7 @@ public class ApplicationController extends AbstractCrudRestController<Applicatio
     }
     
 
-    @Qualifier("mockApplicationManager")
+    @Qualifier("applicationManager")
     @Autowired
     public void setManager(IRestCrudManager<Application, Object, Application> manager) {
         this.manager = manager;

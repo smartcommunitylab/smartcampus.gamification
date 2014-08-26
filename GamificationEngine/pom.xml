@@ -384,6 +384,12 @@
         <artifactId>drools-decisiontables</artifactId>
 	<version>6.0.0.Final</version>
     </dependency>
+    <!--GUAVA-->
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>17.0</version>
+    </dependency>
   </dependencies>
   <properties>
     <spring.version>3.2.5.RELEASE</spring.version>

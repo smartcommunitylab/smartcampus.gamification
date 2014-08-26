@@ -1,7 +1,9 @@
 package eu.trentorise.game.application.service;
 
 import eu.trentorise.game.action.model.Application;
+import eu.trentorise.game.application.comparator.ApplicationKeyComparator;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
+import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,10 +13,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("mockApplicationManager")
-public class MockApplicationManager implements IRestCrudManager<Application, Object, Application> {
+public class MockApplicationManager implements IRestCrudManager<Application, Object, Application>,
+                                               IRestCrudTestManager<Application, Object, Application> {
 
     public static MockApplicationManager createInstance() {
-        return new MockApplicationManager();
+        MockApplicationManager mock = new MockApplicationManager();
+        
+        mock.comparator = new ApplicationKeyComparator();
+        
+        return mock;
     }
 
     
@@ -30,32 +37,47 @@ public class MockApplicationManager implements IRestCrudManager<Application, Obj
     
     //READ
     @Override
-    public Collection<Application> readCollection(Object container) throws Exception {
-        return this.readApplications();
+    public Collection<Application> readCollection(Object containerWithIds) throws Exception {
+        return this.createElements(containerWithIds);
     }
 
     @Override
-    public Application readSingleElement(Application container) throws Exception {
-        return this.readApplicationById(container.getId());
-    }
-    
-    
-    public Collection<Application> readApplications() throws Exception {
-        return this.createElements();
-    }
-    
-    public Application readApplicationById(Integer appId) throws Exception {
+    public Application readSingleElement(Application containerWithIds) throws Exception {
+        //TODO: return null or throw Exception if this activity it is not 
+        //possible
         Application returnValue = null;
         
-        Application app = new Application();
-        app.setId(appId);
-        
-        Application expectedApp = this.createViaggiaRovereto();
-        if (0 == comparator.compare(app, expectedApp)) {
-            returnValue = expectedApp;
+        Application expectedElement = this.createElement(containerWithIds);
+        if (0 == comparator.compare(containerWithIds, expectedElement)) {
+            returnValue = expectedElement;
         }
         
         return returnValue;
+    }
+    
+    
+    @Override
+    public Application createElement(Application containerWithIds) throws Exception {
+        return this.createViaggiaRovereto();
+    }
+
+    @Override
+    public Collection<Application> createElements(Object containerWithIds) throws Exception {
+        List<Application> elements = new ArrayList<>();
+        
+        elements.add(this.createViaggiaRovereto());
+        
+        /*Application application = new Application();
+        application.setId(1);
+        application.setName("VIAGGIATRENTO");
+        elements.add(application);
+        
+        application = new Application();
+        application.setName("VIVITRENTO");
+        application.setId(2);
+        elements.add(application);*/
+        
+        return elements;
     }
     
     
@@ -93,30 +115,18 @@ public class MockApplicationManager implements IRestCrudManager<Application, Obj
     }
     
     
-    public Collection<Application> createElements() {
-        List<Application> elements = new ArrayList<>();
-        
-        elements.add(this.createViaggiaRovereto());
-        
-        Application application = new Application();
-        application.setId(1);
-        application.setName("VIAGGIATRENTO");
-        elements.add(application);
-        
-        application = new Application();
-        application.setName("VIVITRENTO");
-        application.setId(2);
-        elements.add(application);
-        
-        return elements;
-    }
-    
     public Application createViaggiaRovereto() {
         Application application = new Application();
-        application.setId(0);
+        application.setId(1);
         application.setName("VIAGGIAROVERETO");
         return application;
     }
+
+    
+    public Comparator<Application> getComparator() {
+        return comparator;
+    }
+    
     
     @Qualifier("applicationKeyComparator")
     @Autowired

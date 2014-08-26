@@ -1,13 +1,25 @@
 package eu.trentorise.game.action.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+
 /**
  *
  * @author Luca Piras
  */
+@Entity
 public class Application {
     
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     protected Integer id;
 
+    @NotNull
+    @Column(nullable = false)
     protected String name;
     
     public Integer getId() {

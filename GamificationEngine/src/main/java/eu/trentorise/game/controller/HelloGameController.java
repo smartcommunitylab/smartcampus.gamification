@@ -41,15 +41,14 @@ public class HelloGameController extends AbstractController<HelloGameRequest> {
     public String get(Model model, HttpSession session) throws Exception {
         
         super.manageGet(model, session);
-        
-        //CDBFFFO deactivated to disable connection with the db
-        /*boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
+                
+        boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         
         //TODO: manage the value of the gamification approach id
-        rulesEngineManager.runEngine(null, 
-                                     PluginIdentifier.BADGE_PLUGIN);
+        //rulesEngineManager.runEngine(null, 
+          //                           PluginIdentifier.BADGE_PLUGIN);
         
-        actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();*/
+        actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         
         return this.viewInternal;
     }

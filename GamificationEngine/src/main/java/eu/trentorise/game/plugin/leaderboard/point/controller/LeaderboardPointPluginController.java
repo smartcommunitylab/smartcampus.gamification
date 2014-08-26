@@ -1,7 +1,6 @@
 package eu.trentorise.game.plugin.leaderboard.point.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.leaderboard.point.response.LeaderboardPointPluginCollectionResponse;
 import eu.trentorise.game.plugin.leaderboard.point.response.LeaderboardPointPluginResponse;
@@ -131,7 +130,7 @@ public class LeaderboardPointPluginController extends AbstractCrudRestController
     
     protected Plugin makePlugin() {
         Plugin plugin = new Plugin();
-        plugin.setId(PluginIdentifier.LEADERBOARD_PLUGIN.ordinal());
+        plugin.setId(IGameConstants.SEQUENCE_INITIAL_VALUE + 2);
         return plugin;
     }
 

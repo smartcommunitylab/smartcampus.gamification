@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller("pointRuleController")
 @RequestMapping(IGameConstants.SERVICE_PLUGINS_POINT_PATH)
+@Deprecated
 public class PointRuleController {
     
     @RequestMapping(method = RequestMethod.GET, value = "/addRule" + IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION)

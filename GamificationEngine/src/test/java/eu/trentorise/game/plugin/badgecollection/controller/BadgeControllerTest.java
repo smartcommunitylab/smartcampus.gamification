@@ -54,15 +54,15 @@ public class BadgeControllerTest extends AbstractRestCrudTest<Badge,
         super.testReadCollection("testReadBadges", 
                                  mockPluginManager.createUsageBadgesPlugin(), 
                                  BadgeCollectionResponse.class,
-                                 makeBaseRelativeUrlExpanded(0));
+                                 makeBaseRelativeUrlExpanded(IGameConstants.SEQUENCE_INITIAL_VALUE));
         super.testReadCollection("testReadBadges", 
                                  mockPluginManager.createHealthBadgesPlugin(), 
                                  BadgeCollectionResponse.class,
-                                 makeBaseRelativeUrlExpanded(1));
+                                 makeBaseRelativeUrlExpanded(IGameConstants.SEQUENCE_INITIAL_VALUE + 1));
         super.testReadCollection("testReadBadges", 
                                  mockPluginManager.createEcologicalBadgesPlugin(), 
                                  BadgeCollectionResponse.class,
-                                 makeBaseRelativeUrlExpanded(2));
+                                 makeBaseRelativeUrlExpanded(IGameConstants.SEQUENCE_INITIAL_VALUE + 2));
     }
     
     @Override
@@ -76,7 +76,7 @@ public class BadgeControllerTest extends AbstractRestCrudTest<Badge,
     public void testReadElementById() throws Exception {
         super.testReadElementById("testReadBadgeById", null, 
                                   BadgeResponse.class,
-                                  makeBaseRelativeUrlExpanded(2));
+                                  makeBaseRelativeUrlExpanded(IGameConstants.SEQUENCE_INITIAL_VALUE));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class BadgeControllerTest extends AbstractRestCrudTest<Badge,
     @Test
     public void testUpdateElement() throws Exception {
         super.testUpdateElement("testUpdateBadge", null,
-                                makeBaseRelativeUrlExpanded(2));
+                                makeBaseRelativeUrlExpanded(IGameConstants.SEQUENCE_INITIAL_VALUE));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class BadgeControllerTest extends AbstractRestCrudTest<Badge,
     @Test
     public void testDeleteElement() throws Exception {
         super.testDeleteElement("testDeleteBadge", null,
-                                makeBaseRelativeUrlExpanded(2));
+                                makeBaseRelativeUrlExpanded(IGameConstants.SEQUENCE_INITIAL_VALUE));
     }
     
     @Override

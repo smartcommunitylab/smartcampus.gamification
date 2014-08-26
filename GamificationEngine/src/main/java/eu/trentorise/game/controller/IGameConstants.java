@@ -112,5 +112,17 @@ public interface IGameConstants {
     
     
     /*JPA*/
+    /*JPA - sequences */
     public static final int SEQUENCE_INITIAL_VALUE = 1;
+    public static final String SEQUENCE_GENERATOR_NAME_POSTFIX = "_SEQUENCE";
+    public static final String SEQUENCE_NAME_POSTFIX = "_sequence";
+    /*JPA - sequences - Application*/
+    public static final String APPLICATION_SEQUENCE_GENERATOR_NAME = "APPLICATION" + SEQUENCE_GENERATOR_NAME_POSTFIX;
+    public static final String APPLICATION_SEQUENCE_NAME = "application" + SEQUENCE_NAME_POSTFIX;
+    /*JPA - sequences - Game*/
+    public static final String GAME_SEQUENCE_GENERATOR_NAME = "GAME" + SEQUENCE_GENERATOR_NAME_POSTFIX;
+    public static final String GAME_SEQUENCE_NAME = "game" + SEQUENCE_NAME_POSTFIX;
+    /*JPA - sequences - Plugin*/
+    public static final String PLUGIN_SEQUENCE_GENERATOR_NAME = "PLUGIN" + SEQUENCE_GENERATOR_NAME_POSTFIX;
+    public static final String PLUGIN_SEQUENCE_NAME = "plugin" + SEQUENCE_NAME_POSTFIX;
 }

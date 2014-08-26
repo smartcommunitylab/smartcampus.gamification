@@ -1,7 +1,6 @@
 package eu.trentorise.game.plugin.point.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.response.PointPluginCollectionResponse;
@@ -132,7 +131,7 @@ public class PointPluginController extends AbstractCrudRestController<PointPlugi
     
     protected Plugin makePlugin() {
         Plugin plugin = new Plugin();
-        plugin.setId(PluginIdentifier.POINT_PLUGIN.ordinal());
+        plugin.setId(IGameConstants.SEQUENCE_INITIAL_VALUE);
         return plugin;
     }
 

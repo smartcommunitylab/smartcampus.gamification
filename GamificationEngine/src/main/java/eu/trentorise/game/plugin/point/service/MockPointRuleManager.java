@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service("mockPointRuleManager")
+@Deprecated
 public class MockPointRuleManager extends MockResponder implements IPointRuleManager {
 
     @Override

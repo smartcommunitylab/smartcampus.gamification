@@ -1,18 +1,31 @@
 package eu.trentorise.game.plugin.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import eu.trentorise.game.controller.IGameConstants;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author Luca Piras
  */
-//Necessary for the getCustomizedPluginListService Test
+//Necessary for the Test
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@SequenceGenerator(name=IGameConstants.PLUGIN_SEQUENCE_GENERATOR_NAME, sequenceName=IGameConstants.PLUGIN_SEQUENCE_NAME)
 public class Plugin {
     
-    //TODO: key
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO, generator=IGameConstants.PLUGIN_SEQUENCE_GENERATOR_NAME)
     protected Integer id;
     
+    @NotNull
+    @Column(nullable = false)
     protected String name;
     
     protected String version;

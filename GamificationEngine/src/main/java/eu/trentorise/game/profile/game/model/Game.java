@@ -1,5 +1,6 @@
 package eu.trentorise.game.profile.game.model;
 
+import eu.trentorise.game.controller.IGameConstants;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,11 +14,11 @@ import javax.validation.constraints.NotNull;
  * @author Luca Piras
  */
 @Entity
-@SequenceGenerator(name="GAME_SEQUENCE", sequenceName="game_sequence")
+@SequenceGenerator(name=IGameConstants.GAME_SEQUENCE_GENERATOR_NAME, sequenceName=IGameConstants.GAME_SEQUENCE_NAME)
 public class Game {
     
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO, generator="GAME_SEQUENCE")
+    @GeneratedValue(strategy=GenerationType.AUTO, generator=IGameConstants.GAME_SEQUENCE_GENERATOR_NAME)
     protected Integer id;
     
     @NotNull

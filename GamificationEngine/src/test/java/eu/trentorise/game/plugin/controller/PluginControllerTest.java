@@ -1,97 +1,130 @@
 package eu.trentorise.game.plugin.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
 import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.response.PluginCollectionResponse;
 import eu.trentorise.game.plugin.response.PluginResponse;
 import eu.trentorise.game.plugin.service.MockPluginManager;
-import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import eu.trentorise.game.servicetest.SkipServiceTestHelper;
-import java.util.Collection;
+import eu.trentorise.game.servicetest.AbstractRestCrudTest;
 import java.util.List;
-
-
-import static org.junit.Assert.*;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 
 
 /**
  *
  * @author Luca Piras
  */
-public class PluginControllerTest extends SkipServiceTestHelper {
+public class PluginControllerTest extends AbstractRestCrudTest<Plugin, 
+                                                               Object,
+                                                               Plugin,
+                                                               PluginCollectionResponse,
+                                                               PluginResponse> {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_PLUGINS_PATH;
-    protected final static String FINAL_PART_RELATIVE_URL = IGameConstants.SERVICE_SEPARATOR_PLUS_EXTENSION;
-
+    protected static final MockPluginManager mockPluginManager = MockPluginManager.createInstance();
+    
     
     public PluginControllerTest() {
-        super("PluginControllerTest");
+        super("PluginControllerTest", 
+              IGameConstants.SERVICE_PLUGINS_PATH,
+              mockPluginManager,
+              mockPluginManager.getComparator());
     }
     
     
     @Test
-    public void testReadPlugins() throws Exception {
-        Collection<Plugin> expectedElements = MockPluginManager.createInstance().createElements();
-        this.executeTestReadPlugins((List<Plugin>) expectedElements);
+    public void testPlugin() throws Exception {
+        super.testReadCollection("testReadPlugins", null, 
+                                 PluginCollectionResponse.class, null);
+        
+        super.testReadElementById("testReadPluginById", null, 
+                                  PluginResponse.class, null);
     }
     
-    protected void executeTestReadPlugins(List<Plugin> expectedElements) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<PluginCollectionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        
-        PluginCollectionResponse response = helper.executeTest("PluginControllerTest - testReadPlugins",
-                                                               BASE_RELATIVE_URL,
-                                                               HttpMethod.GET,
-                                                               PluginCollectionResponse.class, 
-                                                               null);
-        
-        if (null != response) {
-            List<Plugin> responseElements = (List) response.getPlugins();
-            
-            assertNotNull(responseElements);
-            assertEquals(responseElements.size(), expectedElements.size());
-            
-            for (int i = 0; i < responseElements.size(); i++) {
-                Plugin responseElement = responseElements.get(i);
-                Plugin expectedElement = expectedElements.get(i);
-                
-                assertEquals(responseElement.getId(), expectedElement.getId());
-                assertEquals(responseElement.getName(), 
-                             expectedElement.getName());
-            }
-        }
+    //CREATE
+    /*@Test
+    public void testCreateElement() throws Exception {
+        super.testCreateElement("testCreatePlugin", null, null);
+    }*/
+    
+    @Override
+    protected Plugin manageElementToCreate(Plugin element) {
+        element.setId(null);
+        return element;
     }
     
-    @Test
-    public void testReadPluginById() throws Exception {
-        Plugin expectedElement = MockPluginManager.createInstance().createPointsPlugin();
-        this.executeTestReadPluginById(expectedElement, HttpStatus.OK);
-        
-        expectedElement.setId(-1);
-        this.executeTestReadPluginById(expectedElement, HttpStatus.NOT_FOUND);
+    
+    //READ COLLECTION
+    /*@Test
+    public void testReadCollection() throws Exception {
+        super.testReadCollection("testReadPlugins", null, 
+                                 PluginCollectionResponse.class, null);
+    }*/
+    
+    @Override
+    protected List<Plugin> retrieveCollection(PluginCollectionResponse response) {
+        return (List<Plugin>) response.getPlugins();
     }
     
-    protected void executeTestReadPluginById(Plugin expectedElement, 
-                                             HttpStatus expectedStatus) throws Exception {
+    
+    //READ SINGLE ELEMENT
+    /*@Test
+    public void testReadElementById() throws Exception {
+        super.testReadElementById("testReadPluginById", null, 
+                                  PluginResponse.class, null);
+    }*/
+
+    @Override
+    protected Plugin manageNegativeElementToReadById(Plugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    @Override
+    protected Plugin retrieveSingleElement(PluginResponse response) {
+        return response.getPlugin();
+    }
+    
+    
+    //UPDATE
+    /*@Test
+    public void testUpdateElement() throws Exception {
+        super.testUpdateElement("testUpdatePlugin", null, null);
+    }*/
+
+    @Override
+    protected Plugin managePositiveElementToUpdate(Plugin element) {
+        element.setName(element.getName() + "Modified");
         
-        RestTemplateJsonServiceTestHelper<PluginResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
+        return element;
+    }
+
+    @Override
+    protected Plugin manageNegativeElementToUpdate(Plugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //DELETE
+    /*@Test
+    public void testDeleteElement() throws Exception {
+        super.testDeleteElement("testDeletePlugin", null, null);
+    }*/
+    
+    @Override
+    protected Plugin manageNegativeElementToDelete(Plugin element) {
+        return this.setNegativeId(element);
+    }
+    
+    
+    //TOOLS
+    @Override
+    protected String makeSinglePartRelativeUrl(Plugin element) {
+        return element.getId().toString();
+    }
+
+    
+    protected Plugin setNegativeId(Plugin element) {
+        element.setId(-1);
         
-        PluginResponse response = helper.executeTest("PluginControllerTest - testReadPluginById",
-                                                     BASE_RELATIVE_URL + "/" + expectedElement.getId(),
-                                                     HttpMethod.GET,
-                                                     PluginResponse.class,
-                                                     null, 
-                                                     expectedStatus);
-        
-        if (null != response && 0 == expectedStatus.compareTo(HttpStatus.OK)) {
-            Plugin responseElement = response.getPlugin();
-            
-            assertNotNull(responseElement);
-            assertEquals(0, (new PluginKeyComparator()).compare(expectedElement, responseElement));
-        }
+        return element;
     }
 }

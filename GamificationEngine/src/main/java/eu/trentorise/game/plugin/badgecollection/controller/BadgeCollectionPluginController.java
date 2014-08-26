@@ -1,7 +1,6 @@
 package eu.trentorise.game.plugin.badgecollection.controller;
 
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeCollectionPluginCollectionResponse;
 import eu.trentorise.game.plugin.badgecollection.response.BadgeCollectionPluginResponse;
@@ -138,7 +137,7 @@ public class BadgeCollectionPluginController extends AbstractCrudRestController<
     
     protected Plugin makePlugin() {
         Plugin plugin = new Plugin();
-        plugin.setId(PluginIdentifier.BADGE_PLUGIN.ordinal());
+        plugin.setId(IGameConstants.SEQUENCE_INITIAL_VALUE + 1);
         return plugin;
     }
     

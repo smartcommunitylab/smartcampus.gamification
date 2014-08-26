@@ -1,8 +1,8 @@
 package eu.trentorise.game.plugin.service;
 
+import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.badgecollection.model.BadgeCollectionPlugin;
 import eu.trentorise.game.plugin.comparator.PluginKeyComparator;
-import eu.trentorise.game.plugin.container.IPluginContainer;
 import eu.trentorise.game.plugin.leaderboard.point.model.LeaderboardPointPlugin;
 import eu.trentorise.game.plugin.leaderboard.point.model.UpdateRate;
 import eu.trentorise.game.plugin.model.CustomizedPlugin;
@@ -11,6 +11,7 @@ import eu.trentorise.game.plugin.model.Plugin;
 import eu.trentorise.game.plugin.point.model.PointPlugin;
 import eu.trentorise.game.plugin.point.model.Typology;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
+import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,7 +25,8 @@ import org.springframework.stereotype.Service;
  * @author Luca Piras
  */
 @Service("mockPluginManager")
-public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPluginContainer> {
+public class MockPluginManager implements IRestCrudManager<Plugin, Object, Plugin>,
+                                          IRestCrudTestManager<Plugin, Object, Plugin> {
 
     public static MockPluginManager createInstance() {
         MockPluginManager mock = new MockPluginManager();
@@ -34,7 +36,7 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     
     
     @Override
-    public Plugin createSingleElement(IPluginContainer containerWithForeignIds) throws Exception {
+    public Plugin createSingleElement(Plugin containerWithForeignIds) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -42,17 +44,17 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     public Collection<Plugin> readCollection(Object containerWithIds) throws Exception {
         //TODO: return null or throw Exception if this activity it is not 
         //possible
-        return this.createElements();
+        return this.createElements(containerWithIds);
     }
 
     @Override
-    public Plugin readSingleElement(IPluginContainer containerWithIds) throws Exception {
+    public Plugin readSingleElement(Plugin containerWithIds) throws Exception {
         //TODO: return null or throw Exception if this activity it is not 
         //possible
         Plugin returnValue = null;
         
         Plugin expectedElement = this.createPointsPlugin();
-        if (0 == comparator.compare(containerWithIds.getGamificationPlugin(), expectedElement)) {
+        if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
         
@@ -60,25 +62,31 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     }
 
     @Override
-    public Plugin updateSingleElement(IPluginContainer containerWithForeignIds) throws Exception {
+    public Plugin updateSingleElement(Plugin containerWithForeignIds) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Plugin deleteSingleElement(IPluginContainer containerWithIds) throws Exception {
+    public Plugin deleteSingleElement(Plugin containerWithIds) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    
-    public Collection<Plugin> createElements() {
+    @Override
+    public Plugin createElement(Plugin containerWithIds) throws Exception {
+        return this.createPointsPlugin();
+    }
+
+    @Override
+    public Collection<Plugin> createElements(Object containerWithIds) throws Exception {
         Collection<Plugin> list = new ArrayList<>();
         
         list.add(this.createPointsPlugin());
-        list.add(this.createBadgeCollectionPlugin());
-        list.add(this.createLeadearboardPointPlugin());
+        //list.add(this.createBadgeCollectionPlugin());
+        //list.add(this.createLeadearboardPointPlugin());
         
         return list;
     }
+    
     
     public Collection<CustomizedPlugin> createCustomizedPlugins(GameCustomizedPlugin container) {
         List<CustomizedPlugin> list = new ArrayList<>();
@@ -110,9 +118,9 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     
     
     protected Plugin createNewPlugin(Plugin emptyPlugin,
-                                                 Integer id, String name,
-                                                 String version,
-                                                 String description) {
+                                     Integer id, String name,
+                                     String version,
+                                     String description) {
         
         if (null == emptyPlugin) {
             emptyPlugin = new Plugin();
@@ -127,11 +135,11 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     }
     
     protected CustomizedPlugin createNewCustomizedPlugin(CustomizedPlugin emptyPlugin,
-                                                                     Integer id, 
-                                                                     Integer fatherId,
-                                                                     String name,
-                                                                     String version,
-                                                                     String description) {
+                                                         Integer id, 
+                                                         Integer fatherId,
+                                                         String name,
+                                                         String version,
+                                                         String description) {
         
         if (null == emptyPlugin) {
             emptyPlugin = new CustomizedPlugin();
@@ -145,26 +153,26 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     }
     
     public Plugin createPointsPlugin() {
-        return this.createNewPlugin(null, 0, "Points", "0.1",
+        return this.createNewPlugin(null, IGameConstants.SEQUENCE_INITIAL_VALUE, "Points", "0.1",
                                     "Points plugin description...");
     }
     
     public Plugin createBadgeCollectionPlugin() {
-        return this.createNewPlugin(null, 1, "Badge collection", "0.1", 
+        return this.createNewPlugin(null, IGameConstants.SEQUENCE_INITIAL_VALUE + 1, "Badge collection", "0.1", 
                           "Badge collection plugin description...");
     }
     
     public Plugin createLeadearboardPointPlugin() {
-        return this.createNewPlugin(null, 2, "Point Leaderboard", "0.1", 
+        return this.createNewPlugin(null, IGameConstants.SEQUENCE_INITIAL_VALUE + 2, "Point Leaderboard", "0.1", 
                                     "Point Leaderboard plugin description...");
     }
     
     protected Plugin createNewPointPlugin(Integer id, 
-                                                      Integer fatherId,
-                                                      String name, 
-                                                      String version,
-                                                      String description, 
-                                                      Typology typology) {
+                                          Integer fatherId,
+                                          String name, 
+                                          String version,
+                                          String description, 
+                                          Typology typology) {
         
         PointPlugin plugin = new PointPlugin();
         plugin = (PointPlugin) this.createNewCustomizedPlugin(plugin, id, 
@@ -179,19 +187,22 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     }
     
     public PointPlugin createGreenLeavesPointPlugin() {
-        return (PointPlugin) this.createNewPointPlugin(0, 0, "Green leaves", "0.1", 
+        Integer id = this.createPointsPlugin().getId();
+        return (PointPlugin) this.createNewPointPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE, id, "Green leaves", "0.1", 
                                                        "Description of Green leaves", 
                                                        Typology.SKILL_POINTS);
     }
     
     public PointPlugin createHeartsPointPlugin() {
-        return (PointPlugin) this.createNewPointPlugin(1, 0, "Hearts", "0.1", 
+        Integer id = this.createPointsPlugin().getId();
+        return (PointPlugin) this.createNewPointPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE + 1, id, "Hearts", "0.1", 
                                                        "Description of Hearts", 
                                                        Typology.SKILL_POINTS);
     }
     
     public PointPlugin createUsagePointsPointPlugin() {
-        return (PointPlugin) this.createNewPointPlugin(2, 0, "Usage points", "0.1", 
+        Integer id = this.createPointsPlugin().getId();
+        return (PointPlugin) this.createNewPointPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE + 2, id, "Usage points", "0.1", 
                                                        "Description of Usage points", 
                                                        Typology.SKILL_POINTS);
     }
@@ -216,37 +227,43 @@ public class MockPluginManager implements IRestCrudManager<Plugin, Object, IPlug
     }
     
     public BadgeCollectionPlugin createUsageBadgesPlugin() {
-        return this.createNewBadgeCollectionPlugin(0, 1, "Usage badges", "0.1", 
+        Integer id = this.createBadgeCollectionPlugin().getId();
+        return this.createNewBadgeCollectionPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE, id, "Usage badges", "0.1", 
                                                    "Description of Usage badges");
     }
     
     public BadgeCollectionPlugin createHealthBadgesPlugin() {
-        return this.createNewBadgeCollectionPlugin(1, 1, "Health badges", "0.1", 
+        Integer id = this.createBadgeCollectionPlugin().getId();
+        return this.createNewBadgeCollectionPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE + 1, id, "Health badges", "0.1", 
                                                    "Description of Health badges");
     }
     
     public BadgeCollectionPlugin createEcologicalBadgesPlugin() {
-        return this.createNewBadgeCollectionPlugin(2, 1, 
+        Integer id = this.createBadgeCollectionPlugin().getId();
+        return this.createNewBadgeCollectionPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE + 2, id, 
                                                    "Ecological badges", "0.1",
                                                    "Description of Ecological badges");
     }
     
     public LeaderboardPointPlugin createGreenWeeklyLeadearboardPlugin() {
-        return this.createNewPointLeaderboardPlugin(0, 2, "Green weekly leaderboard", "0.1", 
+        Integer id = this.createLeadearboardPointPlugin().getId();
+        return this.createNewPointLeaderboardPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE, id, "Green weekly leaderboard", "0.1", 
                                                     "Description of Green weekly leaderboard", 
                                                     this.createGreenLeavesPointPlugin(),
                                                     UpdateRate.WEEKLY);
     }
     
     public LeaderboardPointPlugin createGreenMonthlyLeadearboardPlugin() {
-        return this.createNewPointLeaderboardPlugin(1, 2, "Green monthly leaderboard", "0.1", 
+        Integer id = this.createLeadearboardPointPlugin().getId();
+        return this.createNewPointLeaderboardPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE + 1, id, "Green monthly leaderboard", "0.1", 
                                                     "Description of Green monthly leaderboard", 
                                                     this.createGreenLeavesPointPlugin(),
                                                     UpdateRate.MONTHLY);
     }
     
     public LeaderboardPointPlugin createUsageCumulativeLeadearboardPlugin() {
-        return this.createNewPointLeaderboardPlugin(2, 2, "Usage cumulative leaderboard", "0.1", 
+        Integer id = this.createLeadearboardPointPlugin().getId();
+        return this.createNewPointLeaderboardPlugin(IGameConstants.SEQUENCE_INITIAL_VALUE + 2, id, "Usage cumulative leaderboard", "0.1", 
                                                     "Description of Usage cumulative leaderboard", 
                                                     this.createUsagePointsPointPlugin(),
                                                     UpdateRate.CUMULATIVE);

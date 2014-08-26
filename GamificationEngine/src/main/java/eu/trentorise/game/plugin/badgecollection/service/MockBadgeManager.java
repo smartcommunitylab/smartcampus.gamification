@@ -1,5 +1,6 @@
 package eu.trentorise.game.plugin.badgecollection.service;
 
+import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.plugin.badgecollection.comparator.BadgeCollectionKeyComparator;
 import eu.trentorise.game.plugin.badgecollection.comparator.BadgeKeyComparator;
 import eu.trentorise.game.plugin.badgecollection.model.Badge;
@@ -113,7 +114,7 @@ public class MockBadgeManager implements IRestCrudManager<Badge, BadgeCollection
     
     @Override
     public Badge createElement(Badge containerWithIds) throws Exception {
-        return this.createGreenHeroNovice();
+        return this.createUsageBadgesBronzeBadge();
     }
     
     @Override
@@ -136,20 +137,26 @@ public class MockBadgeManager implements IRestCrudManager<Badge, BadgeCollection
         
         BadgeCollectionPlugin badgeCollection = mockPluginManager.createUsageBadgesPlugin();
         
-        list.add(this.createBadge(badgeCollection, 0, BADGE_FILE_NAME_BRONZE));
-        list.add(this.createBadge(badgeCollection, 1, BADGE_FILE_NAME_SILVER));
-        list.add(this.createBadge(badgeCollection, 2, BADGE_FILE_NAME_GOLD));
+        list.add(this.createUsageBadgesBronzeBadge());
+        list.add(this.createBadge(badgeCollection, IGameConstants.SEQUENCE_INITIAL_VALUE + 1, BADGE_FILE_NAME_SILVER));
+        list.add(this.createBadge(badgeCollection, IGameConstants.SEQUENCE_INITIAL_VALUE + 2, BADGE_FILE_NAME_GOLD));
         
         return list;
     }
     
+    public Badge createUsageBadgesBronzeBadge() throws Exception {
+        return this.createBadge(mockPluginManager.createUsageBadgesPlugin(), 
+                                IGameConstants.SEQUENCE_INITIAL_VALUE, 
+                                BADGE_FILE_NAME_BRONZE);
+    }
+    
     public Badge createGreenHeroNovice() throws Exception {
-        return this.createBadge(mockPluginManager.createEcologicalBadgesPlugin(), 0,
+        return this.createBadge(mockPluginManager.createEcologicalBadgesPlugin(), IGameConstants.SEQUENCE_INITIAL_VALUE,
                                 BADGE_FILE_NAME_GREEN_HERO_NOVICE);
     }
     
     public Badge createGreenHeroOne() throws Exception {
-        return this.createBadge(mockPluginManager.createEcologicalBadgesPlugin(), 1,
+        return this.createBadge(mockPluginManager.createEcologicalBadgesPlugin(), IGameConstants.SEQUENCE_INITIAL_VALUE + 1,
                                 BADGE_FILE_NAME_GREEN_HERO_1);
     }
     
@@ -158,9 +165,9 @@ public class MockBadgeManager implements IRestCrudManager<Badge, BadgeCollection
         
         BadgeCollectionPlugin badgeCollection = mockPluginManager.createHealthBadgesPlugin();
         
-        list.add(this.createBadge(badgeCollection, 0, BADGE_FILE_NAME_BRONZE));
-        list.add(this.createBadge(badgeCollection, 1, BADGE_FILE_NAME_SILVER));
-        list.add(this.createBadge(badgeCollection, 2, BADGE_FILE_NAME_GOLD));
+        list.add(this.createBadge(badgeCollection, IGameConstants.SEQUENCE_INITIAL_VALUE, BADGE_FILE_NAME_BRONZE));
+        list.add(this.createBadge(badgeCollection, IGameConstants.SEQUENCE_INITIAL_VALUE + 1, BADGE_FILE_NAME_SILVER));
+        list.add(this.createBadge(badgeCollection, IGameConstants.SEQUENCE_INITIAL_VALUE + 2, BADGE_FILE_NAME_GOLD));
         
         return list;
     }
@@ -172,7 +179,7 @@ public class MockBadgeManager implements IRestCrudManager<Badge, BadgeCollection
         
         list.add(this.createGreenHeroNovice());
         list.add(this.createGreenHeroOne());
-        list.add(this.createBadge(badgeCollection, 2, BADGE_FILE_NAME_GREEN_HERO_2));
+        list.add(this.createBadge(badgeCollection, IGameConstants.SEQUENCE_INITIAL_VALUE + 2, BADGE_FILE_NAME_GREEN_HERO_2));
         
         return list;
     }

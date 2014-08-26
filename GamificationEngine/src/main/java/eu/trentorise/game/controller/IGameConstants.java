@@ -109,4 +109,8 @@ public interface IGameConstants {
     public static final String VIEW_PAGE_EXTENSION_SEPARATOR = ".";
     public static final String SERVICE_EXTENSION_SEPARATOR = VIEW_PAGE_EXTENSION_SEPARATOR;
     public static final String SERVICE_SEPARATOR_PLUS_EXTENSION = SERVICE_EXTENSION_SEPARATOR + SERVICE_EXTENSION;
+    
+    
+    /*JPA*/
+    public static final int SEQUENCE_INITIAL_VALUE = 1;
 }

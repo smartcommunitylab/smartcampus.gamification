@@ -1,8 +1,10 @@
 package eu.trentorise.game.profile.game.service;
 
+import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.game.profile.game.comparator.GameKeyComparator;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
+import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,9 +18,10 @@ import org.springframework.stereotype.Service;
  * @author Luca Piras
  */
 @Service("mockGameProfileManager")
-public class MockGameProfileManager implements IRestCrudManager<Game, Object, Game> {
+public class MockGameProfileManager implements IRestCrudManager<Game, Object, Game>,
+                                               IRestCrudTestManager<Game, Object, Game> {
 
-    public static final int MOCK_GAME_ID = 135;
+    public static final int MOCK_GAME_ID = IGameConstants.SEQUENCE_INITIAL_VALUE;
     
     public static MockGameProfileManager createInstance() {
         MockGameProfileManager mock = new MockGameProfileManager();
@@ -41,7 +44,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
     public Collection<Game> readCollection(Object containerWithIds) throws Exception {
         //TODO: return null or throw Exception if this activity it is not 
         //possible
-        return this.createElements();
+        return this.createElements(null);
     }
 
     @Override
@@ -50,7 +53,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
         //possible
         Game returnValue = null;
         
-        Game expectedElement = this.createElement();
+        Game expectedElement = this.createElement(null);
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -65,7 +68,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
         
         Game returnValue = null;
         
-        Game expectedElement = this.createElement();
+        Game expectedElement = this.createElement(null);
         if (0 == comparator.compare(containerWithForeignIds, expectedElement)) {
             returnValue = containerWithForeignIds;
         }
@@ -80,7 +83,7 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
         
         Game returnValue = null;
         
-        Game expectedElement = this.createElement();
+        Game expectedElement = this.createElement(null);
         if (0 == comparator.compare(containerWithIds, expectedElement)) {
             returnValue = expectedElement;
         }
@@ -88,18 +91,20 @@ public class MockGameProfileManager implements IRestCrudManager<Game, Object, Ga
         return returnValue;
     }
     
-
-    public Collection<Game> createElements() {
-        List<Game> elements = new ArrayList<>();
-        elements.add(this.createElement());
-        return elements;
-    }
     
-    public Game createElement() {
+    @Override
+    public Game createElement(Game containerWithIds) throws Exception {
         Game element = new Game();
         element.setId(MockGameProfileManager.MOCK_GAME_ID);
         element.setName("RoveretoGame");
         return element;
+    }
+
+    @Override
+    public Collection<Game> createElements(Object containerWithIds) throws Exception {
+        List<Game> elements = new ArrayList<>();
+        elements.add(this.createElement(null));
+        return elements;
     }
 
     

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -12,10 +13,11 @@ import javax.validation.constraints.NotNull;
  * @author Luca Piras
  */
 @Entity
+@SequenceGenerator(name="APPLICATION_SEQUENCE", sequenceName="application_sequence")
 public class Application {
     
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO, generator="APPLICATION_SEQUENCE")
     protected Integer id;
 
     @NotNull

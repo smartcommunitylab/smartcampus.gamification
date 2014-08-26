@@ -1,171 +1,136 @@
 package eu.trentorise.game.profile.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.controller.IGameConstants;
-import eu.trentorise.game.profile.game.comparator.GameKeyComparator;
 import eu.trentorise.game.profile.game.model.Game;
 import eu.trentorise.game.profile.game.service.MockGameProfileManager;
 import eu.trentorise.game.response.GameCollectionResponse;
 import eu.trentorise.game.response.NewGameResponse;
-import eu.trentorise.game.servicetest.RestTemplateJsonServiceTestHelper;
-import eu.trentorise.game.servicetest.SkipServiceTestHelper;
-import java.util.Collection;
+import eu.trentorise.game.servicetest.AbstractRestCrudTest;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-
-
 
 
 /**
  *
  * @author Luca Piras
  */
-public class GameProfileControllerTest extends SkipServiceTestHelper {
+public class GameProfileControllerTest extends AbstractRestCrudTest<Game, 
+                                                                    Object,
+                                                                    Game,
+                                                                    GameCollectionResponse,
+                                                                    NewGameResponse> {
     
-    protected final static String BASE_RELATIVE_URL = IGameConstants.SERVICE_GAME_PROFILE_GAMES_PATH;
+    protected static final MockGameProfileManager mockGameProfileManager = MockGameProfileManager.createInstance();
     
     
     public GameProfileControllerTest() {
-        super("GameProfileControllerTest");
+        super("GameProfileControllerTest", 
+              IGameConstants.SERVICE_GAME_PROFILE_GAMES_PATH,
+              mockGameProfileManager,
+              mockGameProfileManager.getComparator());
     }
     
     
     @Test
-    public void testCreateGame() throws Exception {
-        Game requestElement = MockGameProfileManager.createInstance().createElement();
-        requestElement.setId(null);
-        this.executeTestCreateGame(requestElement, HttpStatus.CREATED);
+    public void testGame() throws Exception {
+        super.testCreateElement("testCreateGame", null, null);
+        
+        super.testReadCollection("testReadGames", null, 
+                                 GameCollectionResponse.class, null);
+        
+        super.testReadElementById("testReadGameById", null, 
+                                  NewGameResponse.class, null);
+        
+        super.testUpdateElement("testUpdateGame", null, null);
+        
+        //super.testDeleteElement("testDeleteGame", null, null);
     }
     
-    protected void executeTestCreateGame(Game requestElement, 
-                                         HttpStatus expectedStatus) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        ObjectMapper mapper = new ObjectMapper();
-        
-        String jsonRequest = mapper.writeValueAsString(requestElement);
-        System.out.println(jsonRequest);
-        
-        helper.executeTest("GameProfileControllerTest - testCreateGame",
-                           BASE_RELATIVE_URL,
-                           HttpMethod.POST,
-                           Void.class, 
-                           jsonRequest,
-                           expectedStatus);
+    //CREATE
+    /*@Test
+    public void testCreateElement() throws Exception {
+        super.testCreateElement("testCreateGame", null, null);
+    }*/
+    
+    @Override
+    protected Game manageElementToCreate(Game element) {
+        element.setId(null);
+        return element;
     }
     
-    @Test
-    public void testReadGames() throws Exception {
-        Collection<Game> expectedElements = MockGameProfileManager.createInstance().createElements();
-        this.executeTestReadGames((List<Game>) expectedElements);
+    
+    //READ COLLECTION
+    /*@Test
+    public void testReadCollection() throws Exception {
+        super.testReadCollection("testReadGames", null, 
+                                 GameCollectionResponse.class, null);
+    }*/
+    
+    @Override
+    protected List<Game> retrieveCollection(GameCollectionResponse response) {
+        return (List<Game>) response.getGames();
     }
     
-    protected void executeTestReadGames(List<Game> expectedElements) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<GameCollectionResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        
-        GameCollectionResponse response = helper.executeTest("GameProfileControllerTest - testReadGames",
-                                                             BASE_RELATIVE_URL,
-                                                             HttpMethod.GET,
-                                                             GameCollectionResponse.class, 
-                                                             null);
-        
-        if (null != response) {
-            List<Game> responseElements = (List) response.getGames();
-            
-            assertNotNull(responseElements);
-            assertEquals(responseElements.size(), expectedElements.size());
-            
-            for (int i = 0; i < responseElements.size(); i++) {
-                Game responseElement = responseElements.get(i);
-                Game expectedElement = expectedElements.get(i);
-                
-                assertEquals(responseElement.getId(), expectedElement.getId());
-                assertEquals(responseElement.getName(), 
-                             expectedElement.getName());
-            }
-        }
-    }
-   
-    @Test
-    public void testReadGameById() throws Exception {
-        Game expectedElement = MockGameProfileManager.createInstance().createElement();
-        this.executeTestReadGameById(expectedElement, HttpStatus.OK);
-        
-        expectedElement.setId(-1);
-        this.executeTestReadGameById(expectedElement, HttpStatus.NOT_FOUND);
+    
+    //READ SINGLE ELEMENT
+    /*@Test
+    public void testReadElementById() throws Exception {
+        super.testReadElementById("testReadGameById", null, 
+                                  GameResponse.class, null);
+    }*/
+
+    @Override
+    protected Game manageNegativeElementToReadById(Game element) {
+        return this.setNegativeId(element);
     }
     
-    protected void executeTestReadGameById(Game expectedElement, 
-                                                  HttpStatus expectedStatus) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<NewGameResponse> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        
-        NewGameResponse response = helper.executeTest("GameProfileControllerTest - testReadGameById",
-                                                      BASE_RELATIVE_URL + "/" + expectedElement.getId(),
-                                                      HttpMethod.GET,
-                                                      NewGameResponse.class, 
-                                                      null, 
-                                                      expectedStatus);
-        
-        if (null != response && 0 == expectedStatus.compareTo(HttpStatus.OK)) {
-            Game responseElement = response.getGame();
-            
-            assertNotNull(responseElement);
-            assertEquals(0, (new GameKeyComparator()).compare(expectedElement, responseElement));
-        }
+    @Override
+    protected Game retrieveSingleElement(NewGameResponse response) {
+        return response.getGame();
     }
     
-    @Test
-    public void testUpdateGame() throws Exception {
-        Game requestElement = MockGameProfileManager.createInstance().createElement();
-        requestElement.setName("RoveretoGameModified");
-        this.executeTestUpdateGame(requestElement, HttpStatus.NO_CONTENT);
+    
+    //UPDATE
+    /*@Test
+    public void testUpdateElement() throws Exception {
+        super.testUpdateElement("testUpdateGame", null, null);
+    }*/
+
+    @Override
+    protected Game managePositiveElementToUpdate(Game element) {
+        element.setName(element.getName() + "Modified");
         
-        requestElement.setId(-1);
-        this.executeTestUpdateGame(requestElement, HttpStatus.NOT_FOUND);
+        return element;
+    }
+
+    @Override
+    protected Game manageNegativeElementToUpdate(Game element) {
+        return this.setNegativeId(element);
     }
     
-    protected void executeTestUpdateGame(Game requestElement, 
-                                         HttpStatus expectedStatus) throws Exception {
-        
-        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        ObjectMapper mapper = new ObjectMapper();
-        
-        String jsonRequest = mapper.writeValueAsString(requestElement);
-        System.out.println(jsonRequest);
-        
-        helper.executeTest("GameProfileControllerTest - testUpdateGame",
-                           BASE_RELATIVE_URL + "/" + requestElement.getId(),
-                           HttpMethod.PUT,
-                           Void.class, 
-                           jsonRequest,
-                           expectedStatus);
+    
+    //DELETE
+    /*@Test
+    public void testDeleteElement() throws Exception {
+        super.testDeleteElement("testDeleteGame", null, null);
+    }*/
+    
+    @Override
+    protected Game manageNegativeElementToDelete(Game element) {
+        return this.setNegativeId(element);
     }
     
-    @Test
-    public void testDeleteGame() throws Exception {
-        Game requestElement = MockGameProfileManager.createInstance().createElement();
-        this.executeTestDeleteGame(requestElement, HttpStatus.NO_CONTENT);
-        
-        requestElement.setId(-1);
-        this.executeTestDeleteGame(requestElement, HttpStatus.NOT_FOUND);
-    }
     
-    protected void executeTestDeleteGame(Game requestElement, 
-                                                HttpStatus expectedStatus) throws Exception {
+    //TOOLS
+    @Override
+    protected String makeSinglePartRelativeUrl(Game element) {
+        return element.getId().toString();
+    }
+
+    
+    protected Game setNegativeId(Game element) {
+        element.setId(-1);
         
-        RestTemplateJsonServiceTestHelper<Void> helper = new RestTemplateJsonServiceTestHelper<>(true);
-        
-        helper.executeTest("GameProfileControllerTest - testUpdateGame",
-                           BASE_RELATIVE_URL + "/" + requestElement.getId(),
-                           HttpMethod.DELETE,
-                           Void.class, 
-                           null,
-                           expectedStatus);
+        return element;
     }
 }

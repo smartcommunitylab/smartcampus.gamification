@@ -113,7 +113,7 @@ public class MockGameCustomizedPluginManager implements IRestCrudManager<GameCus
     
     @Override
     public GameCustomizedPlugin createElement(GameCustomizedPlugin containerWithIds) throws Exception {
-        Game game = mockGameProfileManager.createElement();
+        Game game = mockGameProfileManager.createElement(null);
         PointPlugin pointPlugin = mockPluginManager.createGreenLeavesPointPlugin();
         
         GameCustomizedPlugin element = new GameCustomizedPlugin();
@@ -131,7 +131,7 @@ public class MockGameCustomizedPluginManager implements IRestCrudManager<GameCus
         Collection<GameCustomizedPlugin> gameCustomizedPlugins = new ArrayList<>();
         for (CustomizedPlugin current : customizedPlugins) {
             GameCustomizedPlugin gcp = new GameCustomizedPlugin();
-            gcp.setGame(mockGameProfileManager.createElement());
+            gcp.setGame(mockGameProfileManager.createElement(null));
             gcp.setCustomizedPlugin(current);
             gcp.setActivated(Boolean.TRUE);
             gameCustomizedPlugins.add(gcp);

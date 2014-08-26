@@ -2,6 +2,7 @@ package eu.trentorise.game.application.service;
 
 import eu.trentorise.game.action.model.Application;
 import eu.trentorise.game.application.comparator.ApplicationKeyComparator;
+import eu.trentorise.game.controller.IGameConstants;
 import eu.trentorise.utils.rest.crud.IRestCrudManager;
 import eu.trentorise.utils.rest.crud.IRestCrudTestManager;
 import java.util.ArrayList;
@@ -68,13 +69,13 @@ public class MockApplicationManager implements IRestCrudManager<Application, Obj
         elements.add(this.createViaggiaRovereto());
         
         /*Application application = new Application();
-        application.setId(1);
+        application.setId(IGameConstants.SEQUENCE_INITIAL_VALUE + 1);
         application.setName("VIAGGIATRENTO");
         elements.add(application);
         
         application = new Application();
         application.setName("VIVITRENTO");
-        application.setId(2);
+        application.setId(IGameConstants.SEQUENCE_INITIAL_VALUE + 2);
         elements.add(application);*/
         
         return elements;
@@ -117,7 +118,7 @@ public class MockApplicationManager implements IRestCrudManager<Application, Obj
     
     public Application createViaggiaRovereto() {
         Application application = new Application();
-        application.setId(1);
+        application.setId(IGameConstants.SEQUENCE_INITIAL_VALUE);
         application.setName("VIAGGIAROVERETO");
         return application;
     }

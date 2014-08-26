@@ -111,7 +111,7 @@ public class GameProfileController extends AbstractCrudRestController<Game, Obje
     }
     
 
-    @Qualifier("mockGameProfileManager")
+    @Qualifier("gameProfileManager")
     @Autowired
     public void setManager(IRestCrudManager<Game, Object, Game> manager) {
         this.manager = manager;

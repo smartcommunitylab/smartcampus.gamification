@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 public class GameConfig {
     
     protected static final String DROOLS_RULES_PATH = "/conf/drools/rules/";
+    protected static final String DROOLS_RULES_ROV_GAME_PATH = DROOLS_RULES_PATH + "rov_green_game/";
     
     ///////IRulesEngineManager///////
     @Bean(name="badgeRulesEngineManager")
@@ -51,6 +52,17 @@ public class GameConfig {
         return manager;
     }
     
+    @Bean(name="rovGameRulesEngineManager")
+    public IRuleEngineManager rovGameRulesEngineManager() {
+        RuleEngineManager manager = new RuleEngineManager();
+        
+        manager.setKnowledgeBuilder(new DroolsKnowledgeBuilder());
+        manager.setFactsDAO(rovGameFactsDAO);
+        manager.setRulesPreparerManager(rovGameRulesPreparerManager());
+        manager.setAddNewRulePreparerManager(null);
+        
+        return manager;
+    }
     
     ///////IRulesPreparerManager///////
     @Bean(name="pointRulesPreparerManager")
@@ -73,6 +85,14 @@ public class GameConfig {
     public IRulesPreparerManager badgeAddNewRulePreparerManager() {
         RulesPreparerManager manager = new RulesPreparerManager();
         manager.setDao(badgeAddNewRuleDroolsTemplateRulesDAO());
+        
+        return manager;
+    }
+    
+    @Bean(name="rovGameRulesPreparerManager")
+    public IRulesPreparerManager rovGameRulesPreparerManager() {
+        RulesPreparerManager manager = new RulesPreparerManager();
+        manager.setDao(rovGameDroolsTemplateRulesDAO());
         
         return manager;
     }
@@ -102,6 +122,15 @@ public class GameConfig {
         DroolsTemplateRulesDAO dao = new DroolsTemplateRulesDAO();
         dao.setSpreadSheetDAO(badgeMockAddNewRuleSpreadSheetDAO());
         dao.setRulesStreamDAO(badgeDroolsRulesStreamDAO());
+        
+        return dao;
+    }
+    
+    @Bean(name="rovGameDroolsTemplateRulesDAO")
+    public IRulesDAO rovGameDroolsTemplateRulesDAO() {
+        DroolsTemplateRulesDAO dao = new DroolsTemplateRulesDAO();
+        dao.setSpreadSheetDAO(rovGameMockSpreadSheetDAO());
+        dao.setRulesStreamDAO(rovGameDroolsRulesStreamDAO());
         
         return dao;
     }
@@ -146,6 +175,19 @@ public class GameConfig {
         return dao;
     }
     
+    @Bean(name="rovGameMockSpreadSheetDAO")
+    public ISpreadSheetDAO rovGameMockSpreadSheetDAO() {
+        MockSpreadSheetDAO dao = new MockSpreadSheetDAO();
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"1\",\"1\",\"bikeKM\",\"2\"\n");
+        sb.append("\"2\",\"1\",\"busKM\",\"1\"\n");
+        
+        dao.setContent(sb.toString());
+        
+        return dao;
+    }
+    
     
     ///////IRulesStreamDAO///////
     @Bean(name="pointDroolsRulesStreamDAO")
@@ -166,6 +208,15 @@ public class GameConfig {
         return dao;
     }
     
+    @Bean(name="rovGameDroolsRulesStreamDAO")
+    public IRulesStreamDAO rovGameDroolsRulesStreamDAO() {
+        DroolsRulesStreamDAO dao = new DroolsRulesStreamDAO();
+        
+        dao.setResourcePath(DROOLS_RULES_ROV_GAME_PATH + "point.drt");
+        
+        return dao;
+    }
+    
     
     @Qualifier("mockFactsDAO")
     @Autowired
@@ -173,4 +224,8 @@ public class GameConfig {
     @Qualifier("mockPointFactsDAO")
     @Autowired
     protected IFactsDAO pointFactsDAO;
+    
+    @Qualifier("rovGameFactsDAO")
+    @Autowired
+    protected IFactsDAO rovGameFactsDAO;
 }

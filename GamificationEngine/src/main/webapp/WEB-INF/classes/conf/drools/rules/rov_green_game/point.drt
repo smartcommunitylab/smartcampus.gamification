@@ -1,0 +1,26 @@
+template header
+ruleId
+actionId
+paramName
+rhsOperand
+
+package pointTemplates;
+
+import eu.trentorise.game.ruleengine.model.experimental.ExternalAction;
+import eu.trentorise.game.ruleengine.model.experimental.Player;
+
+template "pointTemplate"
+
+rule "PointRule_@{ruleId}"
+    when
+	action : ExternalAction(id == @{actionId},
+                                paramValue : params.get("@{paramName}"),
+                                paramValue != null,
+                                paramValueInt : ((Integer) params.get("@{paramName}")),
+			        paramValueInt > 0,
+                                player : player,
+                                player != null);
+    then
+        player.setTotalPoints(player.getTotalPoints() + (paramValueInt * @{rhsOperand}));
+end
+end template

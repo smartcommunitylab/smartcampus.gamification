@@ -45,8 +45,8 @@ public class HelloGameController extends AbstractController<HelloGameRequest> {
         boolean actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         
         //TODO: manage the value of the gamification approach id
-        //rulesEngineManager.runEngine(null, 
-          //                           PluginIdentifier.BADGE_PLUGIN);
+        rulesEngineManager.runEngine(null, 
+                                     PluginIdentifier.BADGE_PLUGIN);
         
         actualTransactionActive = TransactionSynchronizationManager.isActualTransactionActive();
         
@@ -69,7 +69,7 @@ public class HelloGameController extends AbstractController<HelloGameRequest> {
     protected void initializeExistentCommandObject(HelloGameRequest co) {}
     
     
-    @Qualifier("badgeRulesEngineManager")
+    @Qualifier("rovGameRulesEngineManager")
     @Autowired
     protected IRuleEngineManager rulesEngineManager;
     

@@ -1,5 +1,7 @@
 package eu.trentorise.game.ruleengine.model.experimental;
 
+import java.util.Map;
+
 /**
  *
  * @author Luca Piras
@@ -7,9 +9,9 @@ package eu.trentorise.game.ruleengine.model.experimental;
 public class Player {
     
     protected Integer id;
-    //key gameId
-    //Map<int, PlayerState> states;
-    protected Integer totalPoints;
+    
+    //Integer gameId
+    protected Map<Integer, PlayerState> gameStates;
 
     public Integer getId() {
         return id;
@@ -19,16 +21,16 @@ public class Player {
         this.id = id;
     }
 
-    public Integer getTotalPoints() {
-        return totalPoints;
+    public Map<Integer, PlayerState> getGameStates() {
+        return gameStates;
     }
 
-    public void setTotalPoints(Integer totalPoints) {
-        this.totalPoints = totalPoints;
+    public void setGameStates(Map<Integer, PlayerState> gameStates) {
+        this.gameStates = gameStates;
     }
 
     @Override
     public String toString() {
-        return "Player{" + "id=" + id + ", totalPoints=" + totalPoints + '}';
+        return "Player{" + "id=" + id + ", gameStates=" + gameStates + '}';
     }
 }

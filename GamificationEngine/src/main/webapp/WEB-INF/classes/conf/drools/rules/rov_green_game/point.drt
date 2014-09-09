@@ -2,12 +2,12 @@ template header
 ruleId
 actionId
 paramName
+customizedPluginId
 rhsOperand
 
 package pointTemplates;
 
-import eu.trentorise.game.ruleengine.model.experimental.ExternalAction;
-import eu.trentorise.game.ruleengine.model.experimental.Player;
+import eu.trentorise.game.ruleengine.model.experimental.*;
 
 template "pointTemplate"
 
@@ -20,7 +20,9 @@ rule "PointRule_@{ruleId}"
 			        paramValueInt > 0,
                                 player : player,
                                 player != null);
+        game : Game(id != null);
     then
-        player.setTotalPoints(player.getTotalPoints() + (paramValueInt * @{rhsOperand}));
+        PointPluginState state = (PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get(@{customizedPluginId});
+        state.setTotalPoints(state.getTotalPoints() + (paramValueInt * @{rhsOperand}));
 end
 end template

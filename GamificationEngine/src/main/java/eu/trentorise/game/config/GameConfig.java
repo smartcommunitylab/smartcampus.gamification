@@ -180,8 +180,8 @@ public class GameConfig {
         MockSpreadSheetDAO dao = new MockSpreadSheetDAO();
         
         StringBuilder sb = new StringBuilder();
-        sb.append("\"1\",\"1\",\"bikeKM\",\"2\"\n");
-        sb.append("\"2\",\"1\",\"busKM\",\"1\"\n");
+        sb.append("\"1\",\"1\",\"bikeKM\",\"1\",\"2\"\n");
+        sb.append("\"2\",\"1\",\"busKM\",\"1\",\"1\"\n");
         
         dao.setContent(sb.toString());
         

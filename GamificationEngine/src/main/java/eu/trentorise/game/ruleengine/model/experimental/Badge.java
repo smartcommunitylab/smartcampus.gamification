@@ -1,23 +1,25 @@
 package eu.trentorise.game.ruleengine.model.experimental;
 
+import java.util.Objects;
+
 /**
  *
  * @author Luca Piras
  */
 public class Badge {
-    protected Integer id;
     protected String name;
     protected String icon;
     protected String timestamp;
 
-    public Integer getId() {
-        return id;
+    
+    public Badge() {
     }
-
-    public void setId(Integer id) {
-        this.id = id;
+    
+    public Badge(String name) {
+        this.name = name;
     }
-
+    
+    
     public String getName() {
         return name;
     }
@@ -42,8 +44,31 @@ public class Badge {
         this.timestamp = timestamp;
     }
 
+    
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Badge other = (Badge) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
-        return "Badge{" + "id=" + id + ", name=" + name + ", icon=" + icon + ", timestamp=" + timestamp + '}';
+        return "Badge{" + "name=" + name + ", icon=" + icon + ", timestamp=" + timestamp + '}';
     }
 }

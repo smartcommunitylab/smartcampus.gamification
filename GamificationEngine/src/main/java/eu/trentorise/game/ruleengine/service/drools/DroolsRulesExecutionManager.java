@@ -45,7 +45,13 @@ public class DroolsRulesExecutionManager extends AbstractRulesExecutionManager<K
         // add the packages to a knowledgebase (deploy the knowledge packages).
         knowledgeBase.addKnowledgePackages(pkgs);
  
-        return knowledgeBase.newStatelessKnowledgeSession();
+        StatelessKnowledgeSession session = knowledgeBase.newStatelessKnowledgeSession();
+        
+        if (logger.isDebugEnabled()) {
+            session.addEventListener(new DroolsRuleEventListener());
+        }
+        
+        return session;
     }
 
     @Override

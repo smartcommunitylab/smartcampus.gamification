@@ -5,13 +5,16 @@ import eu.trentorise.game.ruleengine.data.IRulesDAO;
 import eu.trentorise.game.ruleengine.data.IRulesStreamDAO;
 import eu.trentorise.game.ruleengine.data.ISpreadSheetDAO;
 import eu.trentorise.game.ruleengine.data.MockSpreadSheetDAO;
+import eu.trentorise.game.ruleengine.data.drools.DroolsFileRulesDAO;
+import eu.trentorise.game.ruleengine.data.drools.DroolsRuleTemplateDAO;
 import eu.trentorise.game.ruleengine.data.drools.DroolsRulesStreamDAO;
-import eu.trentorise.game.ruleengine.data.drools.DroolsTemplateRulesDAO;
 import eu.trentorise.game.ruleengine.service.IRuleEngineManager;
 import eu.trentorise.game.ruleengine.service.RuleEngineManager;
 import eu.trentorise.game.ruleengine.service.drools.DroolsKnowledgeBuilder;
 import eu.trentorise.game.ruleengine.service.preparer.IRulesPreparerManager;
 import eu.trentorise.game.ruleengine.service.preparer.RulesPreparerManager;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -68,7 +71,11 @@ public class GameConfig {
     @Bean(name="pointRulesPreparerManager")
     public IRulesPreparerManager pointRulesPreparerManager() {
         RulesPreparerManager manager = new RulesPreparerManager();
-        manager.setDao(pointDroolsTemplateRulesDAO());
+        
+        List<IRulesDAO> daos = new ArrayList<>();
+        daos.add(pointDroolsRuleTemplateDAO());
+        
+        manager.setDaos(daos);
         
         return manager;
     }
@@ -76,7 +83,11 @@ public class GameConfig {
     @Bean(name="badgeRulesPreparerManager")
     public IRulesPreparerManager badgeRulesPreparerManager() {
         RulesPreparerManager manager = new RulesPreparerManager();
-        manager.setDao(badgeDroolsTemplateRulesDAO());
+        
+        List<IRulesDAO> daos = new ArrayList<>();
+        daos.add(badgeDroolsRuleTemplateDAO());
+        
+        manager.setDaos(daos);
         
         return manager;
     }
@@ -84,7 +95,11 @@ public class GameConfig {
     @Bean(name="badgeAddNewRulePreparerManager")
     public IRulesPreparerManager badgeAddNewRulePreparerManager() {
         RulesPreparerManager manager = new RulesPreparerManager();
-        manager.setDao(badgeAddNewRuleDroolsTemplateRulesDAO());
+        
+        List<IRulesDAO> daos = new ArrayList<>();
+        daos.add(badgeAddNewRuleDroolsRuleTemplateDAO());
+        
+        manager.setDaos(daos);
         
         return manager;
     }
@@ -92,45 +107,75 @@ public class GameConfig {
     @Bean(name="rovGameRulesPreparerManager")
     public IRulesPreparerManager rovGameRulesPreparerManager() {
         RulesPreparerManager manager = new RulesPreparerManager();
-        manager.setDao(rovGameDroolsTemplateRulesDAO());
+        
+        List<IRulesDAO> daos = new ArrayList<>();
+        //daos.add(rovGameBadgeCollectionPluginDroolsRuleDAO());
+        daos.add(rovGamePointPluginDroolsRuleDAO());
+        
+        manager.setDaos(daos);
         
         return manager;
     }
     
     
     ///////IRulesDAO///////
-    @Bean(name="pointDroolsTemplateRulesDAO")
-    public IRulesDAO pointDroolsTemplateRulesDAO() {
-        DroolsTemplateRulesDAO dao = new DroolsTemplateRulesDAO();
+    @Bean(name="pointDroolsRuleTemplateDAO")
+    public IRulesDAO pointDroolsRuleTemplateDAO() {
+        DroolsRuleTemplateDAO dao = new DroolsRuleTemplateDAO();
         dao.setSpreadSheetDAO(pointMockSpreadSheetDAO());
         dao.setRulesStreamDAO(pointDroolsRulesStreamDAO());
         
         return dao;
     }
     
-    @Bean(name="badgeDroolsTemplateRulesDAO")
-    public IRulesDAO badgeDroolsTemplateRulesDAO() {
-        DroolsTemplateRulesDAO dao = new DroolsTemplateRulesDAO();
+    @Bean(name="badgeDroolsRuleTemplateDAO")
+    public IRulesDAO badgeDroolsRuleTemplateDAO() {
+        DroolsRuleTemplateDAO dao = new DroolsRuleTemplateDAO();
         dao.setSpreadSheetDAO(badgeMockSpreadSheetDAO());
         dao.setRulesStreamDAO(badgeDroolsRulesStreamDAO());
         
         return dao;
     }
     
-    @Bean(name="badgeAddNewRuleDroolsTemplateRulesDAO")
-    public IRulesDAO badgeAddNewRuleDroolsTemplateRulesDAO() {
-        DroolsTemplateRulesDAO dao = new DroolsTemplateRulesDAO();
+    @Bean(name="badgeAddNewRuleDroolsRuleTemplateDAO")
+    public IRulesDAO badgeAddNewRuleDroolsRuleTemplateDAO() {
+        DroolsRuleTemplateDAO dao = new DroolsRuleTemplateDAO();
         dao.setSpreadSheetDAO(badgeMockAddNewRuleSpreadSheetDAO());
         dao.setRulesStreamDAO(badgeDroolsRulesStreamDAO());
         
         return dao;
     }
     
-    @Bean(name="rovGameDroolsTemplateRulesDAO")
-    public IRulesDAO rovGameDroolsTemplateRulesDAO() {
-        DroolsTemplateRulesDAO dao = new DroolsTemplateRulesDAO();
-        dao.setSpreadSheetDAO(rovGameMockSpreadSheetDAO());
-        dao.setRulesStreamDAO(rovGameDroolsRulesStreamDAO());
+    @Bean(name="rovGamePointPluginDroolsRuleTemplateDAO")
+    public IRulesDAO rovGamePointPluginDroolsRuleTemplateDAO() {
+        DroolsRuleTemplateDAO dao = new DroolsRuleTemplateDAO();
+        dao.setSpreadSheetDAO(rovGamePointPluginMockSpreadSheetDAO());
+        dao.setRulesStreamDAO(rovGamePointPluginDroolsRuleTemplatesStreamDAO());
+        
+        return dao;
+    }
+    
+    @Bean(name="rovGamePointPluginDroolsRuleDAO")
+    public IRulesDAO rovGamePointPluginDroolsRuleDAO() {
+        DroolsFileRulesDAO dao = new DroolsFileRulesDAO();
+        dao.setRulesStreamDAO(rovGamePointPluginDroolsRulesStreamDAO());
+        
+        return dao;
+    }
+    
+    @Bean(name="rovGameBadgeCollectionPluginDroolsRuleTemplateDAO")
+    public IRulesDAO rovGameBadgeCollectionPluginDroolsRuleTemplateDAO() {
+        DroolsRuleTemplateDAO dao = new DroolsRuleTemplateDAO();
+        dao.setSpreadSheetDAO(rovGameBadgeCollectionPluginMockSpreadSheetDAO());
+        dao.setRulesStreamDAO(rovGameBadgeCollectionPluginDroolsRulesStreamDAO());
+        
+        return dao;
+    }
+    
+    @Bean(name="rovGameBadgeCollectionPluginDroolsRuleDAO")
+    public IRulesDAO rovGameBadgeCollectionPluginDroolsRuleDAO() {
+        DroolsFileRulesDAO dao = new DroolsFileRulesDAO();
+        dao.setRulesStreamDAO(rovGameBadgeCollectionPluginDroolsRulesStreamDAO());
         
         return dao;
     }
@@ -175,19 +220,32 @@ public class GameConfig {
         return dao;
     }
     
-    @Bean(name="rovGameMockSpreadSheetDAO")
-    public ISpreadSheetDAO rovGameMockSpreadSheetDAO() {
+    @Bean(name="rovGamePointPluginMockSpreadSheetDAO")
+    public ISpreadSheetDAO rovGamePointPluginMockSpreadSheetDAO() {
         MockSpreadSheetDAO dao = new MockSpreadSheetDAO();
         
         StringBuilder sb = new StringBuilder();
-        sb.append("\"1\",\"1\",\"bikeKM\",\"1\",\"2\"\n");
-        sb.append("\"2\",\"1\",\"busKM\",\"1\",\"1\"\n");
+        sb.append("\"1\",\"saveItinerary\",\"bikeKM\",\"greenLeaves\",\"2\"\n");
+        sb.append("\"2\",\"saveItinerary\",\"busKM\",\"greenLeaves\",\"1\"\n");
         
         dao.setContent(sb.toString());
         
         return dao;
     }
     
+    @Bean(name="rovGameBadgeCollectionPluginMockSpreadSheetDAO")
+    public ISpreadSheetDAO rovGameBadgeCollectionPluginMockSpreadSheetDAO() {
+        MockSpreadSheetDAO dao = new MockSpreadSheetDAO();
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"1\",\"1\",\"20\",\"2\"\n");
+        sb.append("\"2\",\"1\",\"50\",\"3\"\n");
+        
+        dao.setContent(sb.toString());
+        
+        return dao;
+    }
+            
     
     ///////IRulesStreamDAO///////
     @Bean(name="pointDroolsRulesStreamDAO")
@@ -208,11 +266,38 @@ public class GameConfig {
         return dao;
     }
     
-    @Bean(name="rovGameDroolsRulesStreamDAO")
-    public IRulesStreamDAO rovGameDroolsRulesStreamDAO() {
+    @Bean(name="rovGamePointPluginDroolsRuleTemplatesStreamDAO")
+    public IRulesStreamDAO rovGamePointPluginDroolsRuleTemplatesStreamDAO() {
         DroolsRulesStreamDAO dao = new DroolsRulesStreamDAO();
         
-        dao.setResourcePath(DROOLS_RULES_ROV_GAME_PATH + "point.drt");
+        dao.setResourcePath(DROOLS_RULES_ROV_GAME_PATH + "pointTemplates.drt");
+        
+        return dao;
+    }
+    
+    @Bean(name="rovGamePointPluginDroolsRulesStreamDAO")
+    public IRulesStreamDAO rovGamePointPluginDroolsRulesStreamDAO() {
+        DroolsRulesStreamDAO dao = new DroolsRulesStreamDAO();
+        
+        dao.setResourcePath(DROOLS_RULES_ROV_GAME_PATH + "pointRules.drl");
+        
+        return dao;
+    }
+    
+    @Bean(name="rovGameBadgeCollectionPluginDroolsRuleTemplatesStreamDAO")
+    public IRulesStreamDAO rovGameBadgeCollectionPluginDroolsRuleTemplatesStreamDAO() {
+        DroolsRulesStreamDAO dao = new DroolsRulesStreamDAO();
+        
+        dao.setResourcePath(DROOLS_RULES_ROV_GAME_PATH + "badgecollectionTemplates.drt");
+        
+        return dao;
+    }
+    
+    @Bean(name="rovGameBadgeCollectionPluginDroolsRulesStreamDAO")
+    public IRulesStreamDAO rovGameBadgeCollectionPluginDroolsRulesStreamDAO() {
+        DroolsRulesStreamDAO dao = new DroolsRulesStreamDAO();
+        
+        dao.setResourcePath(DROOLS_RULES_ROV_GAME_PATH + "badgecollectionRules.drl");
         
         return dao;
     }

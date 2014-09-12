@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Luca Piras
  */
-public abstract class TemplateRulesDAO extends AbstractRulesDAO {
+public abstract class RuleTemplateDAO extends AbstractRulesDAO {
     
-    private static final Logger logger = LoggerFactory.getLogger(TemplateRulesDAO.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(RuleTemplateDAO.class.getName());
     
     protected ISpreadSheetDAO spreadSheetDAO;
     
@@ -23,28 +23,28 @@ public abstract class TemplateRulesDAO extends AbstractRulesDAO {
     @Override
     protected List<String> obtainsContentRules(List<String> contentRules) {
         String contentRule = null;
-        
+
         String spreadSheet = spreadSheetDAO.getSpreadSheet();
-        
+
         InputStream rulesStream = null;
         try {
             rulesStream = rulesStreamDAO.getRulesStream();
-            
+
             contentRule = this.compile(spreadSheet, rulesStream);
         } catch (IOException e) {
             this.closeStream(rulesStream);
-            
+
             throw new IllegalArgumentException("Could not read spreadsheet or rules stream.", e);
         } finally {
             this.closeStream(rulesStream);
         }
-        
+
         if (logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder("************DRL: ");
             sb.append(contentRule);
             logger.debug(sb.toString());
         }
-        
+
         contentRules.add(contentRule);
         
         return contentRules;
@@ -57,8 +57,8 @@ public abstract class TemplateRulesDAO extends AbstractRulesDAO {
     }
     
     protected abstract String compile(String spreadSheet, InputStream rulesStream);
-
     
+
     public ISpreadSheetDAO getSpreadSheetDAO() {
         return spreadSheetDAO;
     }

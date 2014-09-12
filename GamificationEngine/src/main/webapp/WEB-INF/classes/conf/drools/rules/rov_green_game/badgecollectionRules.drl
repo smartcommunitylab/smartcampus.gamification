@@ -1,0 +1,53 @@
+import eu.trentorise.game.ruleengine.model.experimental.*;
+
+declare type PointPluginState
+
+    @propertyChangeSupport
+
+end
+
+rule "ParamPointTotalBadgesRule_1"
+    when
+        game : Game();
+        action : ExternalAction(player : player,
+                                eval(((PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves")).getTotalPoints() > 20),
+                                eval(!((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().contains(new Badge("Green Hero Level 1"))));
+        
+        //playerGamePluginStates : $player.getGameStates();//.get($game.getId()).getPluginStates();
+        /*$ppState : (PointPluginState) playerGamePluginStates.get(PointPlugin.class).get(@{customizedPluginId});
+        ppState.getTotalPoints() >= @{expectedPoints};
+        badge : new Badge();
+        badge.setId(@{badgeId});
+        bcpState : (BadgeCollectionPluginState) playerGamePluginStates.get(BadgeCollectionPlugin.class).get(customizedPluginId);
+        earnedBadges : bcpState.getEarnedBadges();
+        !earnedBadges.contains(badge);*/
+    then
+        ((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().add(new Badge("Green Hero Level 1"));
+        //earnedBadges.add(badge);
+        //action.setPlayer(player);
+end
+
+/*import eu.trentorise.game.ruleengine.model.experimental.*;
+
+rule "ParamPointTotalBadgesRule_1"
+    when
+        game : Game();
+        action : ExternalAction(player : player,
+                                eval(((PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves")).getTotalPoints() > 20),
+                                eval(((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().contains(new Badge("Green Hero Level 1"))));
+    then
+        ((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().add(new Badge("Green Hero Level 1"));
+end*/
+
+/*rule "ParamPointTotalBadgesRule_1"
+    when
+        game : Game();
+        action : ExternalAction(player : player,
+                                trial : player.gameStates.get(1).pluginStates.get("PointPlugin"),//.get("greenLeaves")).getTotalPoints() > 20,
+                                eval(((PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves")).getTotalPoints() > 20),
+                                eval(((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().contains(new Badge("Green Hero Level 1"))));
+    then
+        ((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().add(new Badge("Green Hero Level 1"));
+        //earnedBadges.add(badge);
+        //action.setPlayer(player);
+end*/

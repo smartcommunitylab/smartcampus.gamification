@@ -12,12 +12,11 @@ import java.util.List;
 public abstract class AbstractRulesDAO implements IRulesDAO {
     
     @Override
-    public List<Rule> getRules(PluginIdentifier gamificationApproachId) {
+    public List<Rule> getRules(List<Rule> rules) {
         
         List<String> contentRules = initContentRules();
         contentRules = obtainsContentRules(contentRules);
         
-        List<Rule> rules = this.initRules();
         rules = buildRules(rules, contentRules);
         
         return rules;
@@ -29,11 +28,6 @@ public abstract class AbstractRulesDAO implements IRulesDAO {
     }
     
     protected abstract List<String> obtainsContentRules(List<String> contentRules);
-    
-    protected List<Rule> initRules() {
-        //TODO: do we need to synchronize it?
-        return new ArrayList<>();
-    }
     
     protected List<Rule> buildRules(List<Rule> rules, List<String> contentRules) {
         int id = 1;

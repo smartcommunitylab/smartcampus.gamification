@@ -8,16 +8,16 @@ import java.util.Map;
  */
 public class ExternalAction {
     
-    protected Integer id;
+    protected String name;
     protected Player player;
     protected Map<String, Object> params;
 
-    public Integer getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Player getPlayer() {
@@ -38,6 +38,6 @@ public class ExternalAction {
 
     @Override
     public String toString() {
-        return "ExternalAction{" + "id=" + id + ", player=" + player + ", params=" + params + '}';
+        return "ExternalAction{" + "name=" + name + ", player=" + player + ", params=" + params + '}';
     }
 }

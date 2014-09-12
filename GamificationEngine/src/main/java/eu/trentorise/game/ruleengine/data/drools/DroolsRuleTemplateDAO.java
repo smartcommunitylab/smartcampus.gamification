@@ -1,6 +1,6 @@
 package eu.trentorise.game.ruleengine.data.drools;
 
-import eu.trentorise.game.ruleengine.data.TemplateRulesDAO;
+import eu.trentorise.game.ruleengine.data.RuleTemplateDAO;
 import eu.trentorise.utils.io.IStringToStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 
  * @author Luca Piras
  */
-public class DroolsTemplateRulesDAO extends TemplateRulesDAO {
+public class DroolsRuleTemplateDAO extends RuleTemplateDAO {
 
     @Override
     protected String compile(String spreadSheet, InputStream rulesStream) {

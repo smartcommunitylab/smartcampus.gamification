@@ -1,0 +1,86 @@
+import eu.trentorise.game.ruleengine.model.experimental.*;
+
+declare type PointPluginState
+
+    @propertyChangeSupport
+
+end
+
+declare type State
+
+    @propertyChangeSupport
+
+end
+
+rule "ParamPointTotalBadgesRule_1"
+    when
+        game : Game();
+        action : ExternalAction(player : player,
+                                eval(((PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves")).getTotalPoints() > 20),
+                                eval(!((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().contains(new Badge("Green Hero Level 1"))));
+    then
+        ((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().add(new Badge("Green Hero Level 1"));
+end
+
+rule "PointRule_1"
+    when
+	action : ExternalAction(name == "saveItinerary",
+				bikeKM : ((Integer) params.get("bikeKM")),
+				busKM : ((Integer) params.get("busKM")),
+                                player : player);
+        game : Game();
+    then
+        PointPluginState state = (PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves");
+        state.setTotalPoints(state.getTotalPoints() + (bikeKM * 2) + busKM);
+end
+
+rule "ParamPointTotalBadgesRule_TRIAL"
+    when
+        action : PointPluginState(totalPoints >= 10000);
+        state : BadgeCollectionPluginState();
+    then
+        state.getEarnedBadges().add(new Badge("Green Hero Level 1"));
+end
+
+rule "PointRule_TRIAL"
+    when
+	state : PointPluginState(totalPoints == 0);
+    then
+        state.setTotalPoints(10000);
+end
+
+rule "B to D"
+    when
+        State(name == "B", state == State.FINISHED )
+        d : State(name == "D", state == State.NOTRUN )
+    then
+        System.out.println(d.getName() + " finished" );
+        d.setState( State.FINISHED );
+end
+
+rule "B to C"
+        salience 10
+    when
+        State(name == "B", state == State.FINISHED )
+        c : State(name == "C", state == State.NOTRUN )
+    then
+        System.out.println(c.getName() + " finished" );
+        c.setState( State.FINISHED );
+end
+
+rule "A to B"
+    when
+        State(name == "A", state == State.FINISHED )
+        b : State(name == "B", state == State.NOTRUN )
+    then
+        System.out.println(b.getName() + " finished" );
+        b.setState( State.FINISHED );
+end
+
+rule Bootstrap
+    when
+        a : State(name == "A", state == State.NOTRUN )
+    then
+        System.out.println(a.getName() + " finished" );
+        a.setState( State.FINISHED );
+end

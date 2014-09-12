@@ -1,6 +1,5 @@
 package eu.trentorise.game.ruleengine.data;
 
-import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.ruleengine.model.Rule;
 import java.util.List;
 
@@ -10,5 +9,5 @@ import java.util.List;
  */
 public interface IRulesDAO {
     
-    public List<Rule> getRules(PluginIdentifier gamificationApproachId);
+    public List<Rule> getRules(List<Rule> rules);
 }

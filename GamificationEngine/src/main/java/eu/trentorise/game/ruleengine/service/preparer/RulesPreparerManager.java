@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import eu.trentorise.game.ruleengine.model.Rule;
 import eu.trentorise.game.ruleengine.data.IRulesDAO;
 import eu.trentorise.game.ruleengine.service.IKnowledgeBuilder;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,7 +24,18 @@ public class RulesPreparerManager implements IRulesPreparerManager {
     }
     
     protected List<Rule> getRules(PluginIdentifier gamificationApproachId) {
-        return dao.getRules(gamificationApproachId);
+        List<Rule> rules = this.initRules();
+        
+        for (IRulesDAO dao : daos) {
+            dao.getRules(rules);
+        }
+        
+        return rules;
+    }
+    
+    protected List<Rule> initRules() {
+        //TODO: do we need to synchronize it?
+        return new ArrayList<>();
     }
     
     protected void addRules(IKnowledgeBuilder kbuilder, List<Rule> rules) {
@@ -32,14 +44,15 @@ public class RulesPreparerManager implements IRulesPreparerManager {
         }
     }
 
-    public IRulesDAO getDao() {
-        return dao;
+    
+    public List<IRulesDAO> getDaos() {
+        return daos;
     }
 
-    public void setDao(IRulesDAO dao) {
-        this.dao = dao;
+    public void setDaos(List<IRulesDAO> daos) {
+        this.daos = daos;
     }
     
     
-    protected IRulesDAO dao;
+    protected List<IRulesDAO> daos;
 }

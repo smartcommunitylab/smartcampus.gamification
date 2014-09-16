@@ -1,6 +1,5 @@
 package eu.trentorise.game.ruleengine.data;
 
-import eu.trentorise.game.plugin.PluginIdentifier;
 import eu.trentorise.game.ruleengine.model.Rule;
 import java.util.ArrayList;
 import java.util.List;

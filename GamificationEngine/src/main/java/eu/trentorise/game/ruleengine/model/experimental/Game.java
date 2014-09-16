@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Game {
     
-    protected Integer id;
+    protected String name;
     protected Collection<Player> players;
     protected Collection<ExternalAction> externalActions;
     //Since rules are defined in Drools, we assume there is no 	//data model for rules
@@ -18,12 +18,12 @@ public class Game {
     //Integer pluginId
     protected Map<Integer, PluginState> gameState;
 
-    public Integer getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Collection<Player> getPlayers() {
@@ -60,6 +60,6 @@ public class Game {
 
     @Override
     public String toString() {
-        return "Game{" + "id=" + id + ", players=" + players + ", externalActions=" + externalActions + ", plugins=" + plugins + ", gameState=" + gameState + '}';
+        return "Game{" + "name=" + name + ", players=" + players + ", externalActions=" + externalActions + ", plugins=" + plugins + ", gameState=" + gameState + '}';
     }
 }

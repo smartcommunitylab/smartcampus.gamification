@@ -11,7 +11,12 @@ public class PointPluginState extends PluginState {
     
     protected Integer totalPoints;
 
-    private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
+    private final PropertyChangeSupport changes = new PropertyChangeSupport( this );    
+
+    //public PointPluginState() {
+      //  this.totalPoints = 0;
+    //}
+    
     
     public Integer getTotalPoints() {
         return totalPoints;

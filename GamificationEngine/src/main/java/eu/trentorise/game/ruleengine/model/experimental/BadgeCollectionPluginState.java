@@ -8,7 +8,7 @@ import java.util.Collection;
  */
 public class BadgeCollectionPluginState extends PluginState {
     protected Collection<Badge> earnedBadges;
-
+    
     public Collection<Badge> getEarnedBadges() {
         return earnedBadges;
     }

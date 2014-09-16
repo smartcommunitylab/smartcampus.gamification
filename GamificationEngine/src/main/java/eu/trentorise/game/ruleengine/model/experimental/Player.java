@@ -10,9 +10,15 @@ public class Player {
     
     protected Integer id;
     
-    //Integer gameId
-    protected Map<Integer, PlayerState> gameStates;
-
+    //Integer gameName
+    protected Map<String, PlayerState> gameStates;
+    
+    
+    public PluginState getGameCustomizedPluginState(String gameName, Class pluginClass, String customizedPluginName) {
+        return this.gameStates.get(gameName).getPluginStates().get(pluginClass).get(customizedPluginName);
+    }
+    
+    
     public Integer getId() {
         return id;
     }
@@ -21,11 +27,11 @@ public class Player {
         this.id = id;
     }
 
-    public Map<Integer, PlayerState> getGameStates() {
+    public Map<String, PlayerState> getGameStates() {
         return gameStates;
     }
 
-    public void setGameStates(Map<Integer, PlayerState> gameStates) {
+    public void setGameStates(Map<String, PlayerState> gameStates) {
         this.gameStates = gameStates;
     }
 

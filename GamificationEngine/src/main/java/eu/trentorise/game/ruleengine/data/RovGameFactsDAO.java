@@ -32,7 +32,7 @@ public class RovGameFactsDAO implements IFactsDAO {
         List elements = new ArrayList();
         
         String greenLeavesName = "greenLeaves";
-        Integer rovGameId = 1;
+        String rovGameName = "rovGame";
         String ecologicalBadgesName = "ecologicalBadges";
         String greenHeroFirstLevelName = "Green Hero Level 1";
         
@@ -51,7 +51,7 @@ public class RovGameFactsDAO implements IFactsDAO {
         params.put("busKM", 30);
         
         PointPluginState pointPluginState = new PointPluginState();
-        pointPluginState.setTotalPoints(11);
+        pointPluginState.setTotalPoints(0);
         
         
         Collection<Badge> earnedBadges = new ArrayList<>();
@@ -81,11 +81,11 @@ public class RovGameFactsDAO implements IFactsDAO {
         
         
         Game game = new Game();
-        game.setId(rovGameId);
+        game.setName(rovGameName);
         
-        //Integer gameId
-        Map<Integer, PlayerState> playerGameStates = new HashMap<>();
-        playerGameStates.put(game.getId(), rovGamePlayerState);
+        //Integer gameName
+        Map<String, PlayerState> playerGameStates = new HashMap<>();
+        playerGameStates.put(game.getName(), rovGamePlayerState);
         
         Player player = new Player();
         player.setId(1);
@@ -97,7 +97,7 @@ public class RovGameFactsDAO implements IFactsDAO {
         extAct.setPlayer(player);
         
         elements.add(extAct);
-        elements.add(game);
+        //elements.add(game);
         
         
         //PointPluginState state = (PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get(greenLeavesName);
@@ -120,7 +120,8 @@ public class RovGameFactsDAO implements IFactsDAO {
         //Boolean b = ((PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves")).getTotalPoints() > 20;
         //b = ((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().contains(new Badge("Green Hero Level 1"));
         
-        elements.add(new State("A"));
+        
+        /*elements.add(new State("A"));
         elements.add(new State("B"));
         elements.add(new State("C"));
         elements.add(new State("D"));
@@ -133,7 +134,7 @@ public class RovGameFactsDAO implements IFactsDAO {
         Collection<Badge> badges = new ArrayList<>();
         badges.add(greenHeroNovice);
         badgeCollectionPluginState1.setEarnedBadges(badges);
-        elements.add(badgeCollectionPluginState1);
+        elements.add(badgeCollectionPluginState1);*/
         
         return elements;
     }

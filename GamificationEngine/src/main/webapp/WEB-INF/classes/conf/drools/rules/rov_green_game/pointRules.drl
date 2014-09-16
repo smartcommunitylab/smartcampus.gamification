@@ -12,34 +12,67 @@ declare type State
 
 end
 
-rule "ParamPointTotalBadgesRule_1"
+/*rule "ParamPointTotalBadgesRule_1"
     when
-        game : Game();
-        action : ExternalAction(player : player,
-                                eval(((PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves")).getTotalPoints() > 20),
-                                eval(!((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().contains(new Badge("Green Hero Level 1"))));
+        state : PointPluginState(totalPoints >= 20);
+        player : Player(badgeCollectionState : ((BadgeCollectionPluginState) this.getGameCustomizedPluginState("rovGame", BadgeCollectionPlugin.class, "ecologicalBadges")),
+                        !badgeCollectionState.earnedBadges.contains(new Badge("Green Hero Level 1")));
     then
-        ((BadgeCollectionPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(BadgeCollectionPlugin.class).get("ecologicalBadges")).getEarnedBadges().add(new Badge("Green Hero Level 1"));
+        badgeCollectionState.getEarnedBadges().add(new Badge("Green Hero Level 1"));
 end
 
 rule "PointRule_1"
     when
-	action : ExternalAction(name == "saveItinerary",
-				bikeKM : ((Integer) params.get("bikeKM")),
-				busKM : ((Integer) params.get("busKM")),
-                                player : player);
-        game : Game();
+    ExternalAction(name == "saveItinerary",
+                       bikeKM : ((Integer) params.get("bikeKM")),
+                       busKM : ((Integer) params.get("busKM")),
+                       player : player);
     then
-        PointPluginState state = (PointPluginState) player.getGameStates().get(game.getId()).getPluginStates().get(PointPlugin.class).get("greenLeaves");
+        PointPluginState state = (PointPluginState) player.getGameCustomizedPluginState("rovGame", PointPlugin.class, "greenLeaves");
         state.setTotalPoints(state.getTotalPoints() + (bikeKM * 2) + busKM);
+       
+        insert(state);
+        insert(player);
+end*/
+
+rule "ParamPointTotalBadgesRule_1"
+    when
+        //state : PointPluginState(totalPoints >= 20);
+        player : Player(badgeCollectionState : ((BadgeCollectionPluginState) this.getGameCustomizedPluginState("rovGame", BadgeCollectionPlugin.class, "ecologicalBadges")),
+                        pointState : ((PointPluginState) this.getGameCustomizedPluginState("rovGame", PointPlugin.class, "greenLeaves")),
+                        pointState.totalPoints >= 20,
+                        !badgeCollectionState.earnedBadges.contains(new Badge("Green Hero Level 1")));
+        /*badgeCollectionState : ((BadgeCollectionPluginState) player.getGameCustomizedPluginState("rovGame", BadgeCollectionPlugin.class, "ecologicalBadges")),
+                                badgeCollectionState.earnedBadges.contains(new Badge("Green Hero Level 1")));
+        action : ExternalAction(player : player,
+                                pointState : ((PointPluginState) player.getGameCustomizedPluginState("rovGame", PointPlugin.class, "greenLeaves")),
+                                pointState.totalPoints >= 20,
+                                badgeCollectionState : ((BadgeCollectionPluginState) player.getGameCustomizedPluginState("rovGame", BadgeCollectionPlugin.class, "ecologicalBadges")),
+                                badgeCollectionState.earnedBadges.contains(new Badge("Green Hero Level 1")));*/
+    then
+        badgeCollectionState.getEarnedBadges().add(new Badge("Green Hero Level 1"));
 end
 
-rule "ParamPointTotalBadgesRule_TRIAL"
+rule "PointRule_1"
     when
-        action : PointPluginState(totalPoints >= 10000);
+	ExternalAction(name == "saveItinerary",
+                       bikeKM : ((Integer) params.get("bikeKM")),
+                       busKM : ((Integer) params.get("busKM")),
+                       player : player);
+    then
+        PointPluginState state = (PointPluginState) player.getGameCustomizedPluginState("rovGame", PointPlugin.class, "greenLeaves");
+        state.setTotalPoints(state.getTotalPoints() + (bikeKM * 2) + busKM);
+        
+        //insert(state);
+        insert(player);
+end
+
+/*rule "ParamPointTotalBadgesRule_TRIAL"
+    when
+        PointPluginState(totalPoints >= 10000);
         state : BadgeCollectionPluginState();
     then
-        state.getEarnedBadges().add(new Badge("Green Hero Level 1"));
+        state.getEarnedBadges().add(new Badge("Green Hero Level 2"));
 end
 
 rule "PointRule_TRIAL"
@@ -47,7 +80,7 @@ rule "PointRule_TRIAL"
 	state : PointPluginState(totalPoints == 0);
     then
         state.setTotalPoints(10000);
-end
+end*/
 
 rule "B to D"
     when

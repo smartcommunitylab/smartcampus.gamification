@@ -1,0 +1,8 @@
+package eu.trentorise.game.model
+
+rule "check input"
+when
+    InputData( $d : data["bikeDistance"] > 0.0 )
+then
+    System.out.println($d.getClass().getName());
+end

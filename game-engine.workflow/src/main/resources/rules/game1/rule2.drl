@@ -1,0 +1,8 @@
+package eu.trentorise.game.model
+
+rule "valid sample"
+when
+    eval(true)
+then
+   System.out.println("rule2");
+end

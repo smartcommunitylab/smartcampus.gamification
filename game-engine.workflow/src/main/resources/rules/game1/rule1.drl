@@ -3,6 +3,10 @@ package eu.trentorise.game.model
 rule "check input"
 when
     InputData( $d : data["bikeDistance"] > 0.0 )
+    PlayerState($state: state)
 then
+	System.out.println("rule1");
     System.out.println($d.getClass().getName());
+    System.out.println($state.get("FIRST"));
+    $state.put("FIRST", "DROOLS");
 end

@@ -1,12 +1,30 @@
 package eu.trentorise.game.model
 
-rule "check input"
+
+rule "init point"
+	salience 1000
 when
-    InputData( $d : data["bikeDistance"] > 0.0 )
-    PlayerState($state: state)
+    not PointConcept(name == "green leaves")
 then
-	System.out.println("rule1");
-    System.out.println($d.getClass().getName());
-    System.out.println($state.get("FIRST"));
-    $state.put("FIRST", "DROOLS");
+	System.out.println("apply \'init point\'");
+	PointConcept pc = new PointConcept('green leaves');
+	insert(pc);
+end
+
+
+
+rule "update point"
+	no-loop
+when
+    InputData( $d : data["bikeDistance"] > 1.0 )
+    $pc : PointConcept(name == "green leaves")
+then
+	System.out.println("apply \'update point\'");
+    $pc.setScore($pc.getScore() + 2.0);
+    update($pc);
+end
+
+
+query "getGameConcepts"
+    $result: GameConcept()
 end

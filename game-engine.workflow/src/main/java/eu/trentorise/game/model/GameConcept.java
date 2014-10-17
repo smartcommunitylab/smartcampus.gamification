@@ -4,6 +4,13 @@ public abstract class GameConcept {
 	protected String id;
 	protected String name;
 
+	public GameConcept(String name) {
+		this.name = name;
+	}
+
+	public GameConcept() {
+	}
+
 	public String getId() {
 		return id;
 	}

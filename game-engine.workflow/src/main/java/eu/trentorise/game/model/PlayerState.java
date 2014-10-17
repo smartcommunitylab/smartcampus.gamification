@@ -1,15 +1,23 @@
 package eu.trentorise.game.model;
 
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class PlayerState {
-	private Map<String, Object> state;
+	@JsonDeserialize(as = HashSet.class, contentAs = PointConcept.class)
+	private Set<GameConcept> state;
 
-	public Map<String, Object> getState() {
+	public PlayerState() {
+		state = new HashSet<GameConcept>();
+	}
+
+	public Set<GameConcept> getState() {
 		return state;
 	}
 
-	public void setState(Map<String, Object> state) {
+	public void setState(Set<GameConcept> state) {
 		this.state = state;
 	}
 

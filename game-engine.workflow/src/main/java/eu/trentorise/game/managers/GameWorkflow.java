@@ -1,6 +1,5 @@
 package eu.trentorise.game.managers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -33,9 +32,6 @@ public class GameWorkflow implements Workflow {
 		String gameId = gameSrv.getGameIdByAction(actionId);
 
 		PlayerState playerState = playerSrv.loadState(userId, gameId);
-		playerState = new PlayerState();
-		playerState.setState(new HashMap<String, Object>());
-		playerState.getState().put("FIRST", "Ciccio");
 
 		PlayerState newState = gameEngine.execute(gameId, playerState, data);
 

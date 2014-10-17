@@ -2,8 +2,11 @@ package eu.trentorise.game.managers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -13,11 +16,14 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.GameEngine;
@@ -40,15 +46,25 @@ public class DroolsEngine implements GameEngine {
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
 		InputData droolsInput = new InputData(data);
 		List<Command> cmds = new ArrayList<Command>();
-		cmds.add(CommandFactory.newInsert(droolsInput, "input"));
-		cmds.add(CommandFactory.newInsert(state, "playerstate"));
+		cmds.add(CommandFactory.newInsert(droolsInput));
+		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newFireAllRules());
+		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
 		ExecutionResults results = kSession.execute(CommandFactory
 				.newBatchExecution(cmds));
 
-		PlayerState p = (PlayerState) results.getValue("playerstate");
-		logger.info(p.getState().get("FIRST").toString());
-		return null;
+		logger.info(results.getIdentifiers().toString());
+
+		Set<GameConcept> newState = new HashSet<GameConcept>();
+
+		Iterator<QueryResultsRow> iter = ((QueryResults) results
+				.getValue("retrieveState")).iterator();
+		while (iter.hasNext()) {
+			newState.add((GameConcept) iter.next().get("$result"));
+		}
+
+		state.setState(newState);
+		return state;
 	}
 
 	private void loadGameRules(String gameId) {

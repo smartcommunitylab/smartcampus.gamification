@@ -19,8 +19,15 @@ public class Application {
 		ctx.refresh();
 		Workflow wf = ctx.getBean(Workflow.class);
 
+		/**
+		 * input map known fields
+		 * 
+		 * bikeDistance walkDistance busDistance trainDistance
+		 * 
+		 */
+
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("bikeDistance", 0.9);
+		data.put("bikeDistance", 1.9);
 		data.put("footDistance", 0.100);
 
 		wf.apply("action1", "1", data);

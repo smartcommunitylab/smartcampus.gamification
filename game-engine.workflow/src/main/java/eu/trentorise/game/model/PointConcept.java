@@ -1,6 +1,6 @@
 package eu.trentorise.game.model;
 
-public class ScoreConcept extends GameConcept {
+public class PointConcept extends GameConcept {
 	private Double score;
 
 	public Double getScore() {

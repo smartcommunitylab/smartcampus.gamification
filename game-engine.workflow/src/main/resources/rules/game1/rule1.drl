@@ -13,14 +13,16 @@ end
 
 
 
-rule "update point"
+rule "update bike/foot point"
 	no-loop
 when
-    InputData( $d : data["bikeDistance"] > 1.0 )
+    InputData( $bike : data["bikeDistance"])
+    InputData( $walk : data["walkDistance"])
     $pc : PointConcept(name == "green leaves")
 then
 	System.out.println("apply \'update point\'");
-    $pc.setScore($pc.getScore() + 2.0);
+	Integer dist = new Double((Double) $bike + (Double) $walk).intValue();
+    $pc.setScore($pc.getScore() + 2.0 * dist);
     update($pc);
 end
 

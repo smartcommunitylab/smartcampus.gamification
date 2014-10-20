@@ -6,7 +6,7 @@ rule "init point"
 when
     not PointConcept(name == "green leaves")
 then
-	System.out.println("apply \'init point\'");
+	log("apply \'init point\'");
 	PointConcept pc = new PointConcept('green leaves');
 	insert(pc);
 end
@@ -20,7 +20,7 @@ when
     InputData( $walk : data["walkDistance"])
     $pc : PointConcept(name == "green leaves")
 then
-	System.out.println("apply \'update point\'");
+	log("apply \'update point\'");
 	Integer dist = new Double((Double) $bike + (Double) $walk).intValue();
     $pc.setScore($pc.getScore() + 2.0 * dist);
     update($pc);

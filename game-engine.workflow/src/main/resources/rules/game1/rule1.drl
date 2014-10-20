@@ -25,8 +25,3 @@ then
     $pc.setScore($pc.getScore() + 2.0 * dist);
     update($pc);
 end
-
-
-query "getGameConcepts"
-    $result: GameConcept()
-end

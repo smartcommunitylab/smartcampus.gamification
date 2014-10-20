@@ -1,0 +1,5 @@
+package eu.trentorise.game.model
+
+query "getGameConcepts"
+    $result: GameConcept()
+end

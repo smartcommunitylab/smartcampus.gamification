@@ -71,6 +71,13 @@ public class DroolsEngine implements GameEngine {
 		KieResources res = kieServices.getResources();
 		KieFileSystem kfs = kieServices.newKieFileSystem();
 
+		// load core.drl
+		File coreRules = new File("src/main/resources/rules/core.drl");
+		Resource coreRes = res.newFileSystemResource(coreRules
+				.getAbsolutePath());
+		kfs.write(coreRes);
+		logger.info("Core rules loaded");
+
 		File rulesFolder = new File("src/main/resources/rules/" + gameId);
 		if (rulesFolder.exists()) {
 			for (File rule : rulesFolder.listFiles()) {

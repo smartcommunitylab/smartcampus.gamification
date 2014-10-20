@@ -3,10 +3,8 @@ package eu.trentorise.game.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 public class PlayerState {
-	@JsonDeserialize(as = HashSet.class, contentAs = PointConcept.class)
+
 	private Set<GameConcept> state;
 
 	public PlayerState() {

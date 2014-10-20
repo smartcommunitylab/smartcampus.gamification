@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -14,7 +16,10 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.services.PlayerService;
 
 @Component
@@ -24,7 +29,7 @@ public class PlayerManager implements PlayerService {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	private Map<String, PlayerState> data;
+	private Map<String, StatePersistence> data;
 
 	@PostConstruct
 	@SuppressWarnings("unused")
@@ -41,19 +46,19 @@ public class PlayerManager implements PlayerService {
 
 		} catch (Exception e) {
 			logger.error("Error loading playerstorage: " + e.getMessage());
-			data = new HashMap<String, PlayerState>();
+			data = new HashMap<String, StatePersistence>();
 		}
 	}
 
 	public PlayerState loadState(String userId, String gameId) {
 		String key = userId + "-" + gameId;
-		return data.get(key) != null ? mapper.convertValue(data.get(key),
-				PlayerState.class) : new PlayerState();
+		return data.get(key) != null ? convert(mapper.convertValue(
+				data.get(key), StatePersistence.class)) : new PlayerState();
 	}
 
 	public boolean saveState(String userId, String gameId, PlayerState state) {
 		String key = userId + "-" + gameId;
-		data.put(key, state);
+		data.put(key, convert(state));
 
 		try {
 			mapper.writeValue(new FileOutputStream("playerstorage"), data);
@@ -65,35 +70,54 @@ public class PlayerManager implements PlayerService {
 		}
 	}
 
-	class StatePersistence {
-		private String userId;
-		private String gameId;
+	private StatePersistence convert(PlayerState ps) {
+		StatePersistence sp = new StatePersistence();
+		for (GameConcept gc : ps.getState()) {
+			if (gc instanceof PointConcept) {
+				sp.getPoints().add((PointConcept) gc);
+			}
 
-		private PlayerState state;
-
-		public String getUserId() {
-			return userId;
+			if (gc instanceof BadgeCollectionConcept) {
+				sp.getBadges().add((BadgeCollectionConcept) gc);
+			}
 		}
 
-		public void setUserId(String userId) {
-			this.userId = userId;
-		}
-
-		public String getGameId() {
-			return gameId;
-		}
-
-		public void setGameId(String gameId) {
-			this.gameId = gameId;
-		}
-
-		public PlayerState getState() {
-			return state;
-		}
-
-		public void setState(PlayerState state) {
-			this.state = state;
-		}
-
+		return sp;
 	}
+
+	private PlayerState convert(StatePersistence sp) {
+		PlayerState ps = new PlayerState();
+		ps.getState().addAll(sp.getPoints());
+		ps.getState().addAll(sp.getBadges());
+
+		return ps;
+	}
+
+}
+
+class StatePersistence {
+	private Set<PointConcept> points = new HashSet<PointConcept>();
+	private Set<BadgeCollectionConcept> badges = new HashSet<BadgeCollectionConcept>();
+
+	public StatePersistence() {
+		points = new HashSet<PointConcept>();
+		badges = new HashSet<BadgeCollectionConcept>();
+	}
+
+	public Set<PointConcept> getPoints() {
+		return points;
+	}
+
+	public void setPoints(Set<PointConcept> points) {
+		this.points = points;
+	}
+
+	public Set<BadgeCollectionConcept> getBadges() {
+		return badges;
+	}
+
+	public void setBadges(Set<BadgeCollectionConcept> badges) {
+		this.badges = badges;
+	}
+
 }

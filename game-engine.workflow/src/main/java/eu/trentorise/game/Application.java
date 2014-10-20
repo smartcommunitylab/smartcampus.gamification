@@ -24,13 +24,17 @@ public class Application {
 		 * 
 		 * bikeDistance walkDistance busDistance trainDistance
 		 * 
+		 * distances must be expressed in km
+		 * 
 		 */
 
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("bikeDistance", 1.9);
-		data.put("footDistance", 0.100);
+		data.put("bikeDistance", 1.93);
+		data.put("walkDistance", 7.100);
 
-		wf.apply("action1", "1", data);
+		data.put("busDistance", 1.93);
+
+		wf.apply("save_itinerary", "1", data);
 	}
 
 }

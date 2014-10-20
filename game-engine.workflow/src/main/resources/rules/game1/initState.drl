@@ -1,0 +1,12 @@
+package eu.trentorise.game.model
+
+
+rule "init point"
+	salience 1000
+when
+    not PointConcept(name == "green leaves")
+then
+	log("apply \'init green leaves\'");
+	PointConcept pc = new PointConcept('green leaves');
+	insert(pc);
+end

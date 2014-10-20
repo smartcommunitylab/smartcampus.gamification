@@ -18,7 +18,7 @@ public class GameManager implements GameService {
 	@SuppressWarnings("unused")
 	private void initRepo() {
 		repo = new HashMap<String, String>();
-		repo.put("action1", "game1");
+		repo.put("save_itinerary", "game1");
 		repo.put("action2", "game1");
 		repo.put("action3", "game1");
 		repo.put("action4", "game1");

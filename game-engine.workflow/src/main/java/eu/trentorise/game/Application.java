@@ -22,9 +22,14 @@ public class Application {
 		/**
 		 * input map known fields
 		 * 
-		 * bikeDistance walkDistance busDistance trainDistance
+		 * bikeDistance walkDistance busDistance trainDistance carDistance ->
+		 * double , distances must be expressed in km
 		 * 
-		 * distances must be expressed in km
+		 * bikeSharing -> boolean
+		 * 
+		 * park -> park id
+		 * 
+		 * 
 		 * 
 		 */
 
@@ -33,7 +38,8 @@ public class Application {
 		data.put("walkDistance", 7.100);
 
 		data.put("busDistance", 1.93);
-
+		data.put("bikesharing", true);
+		data.put("park", "stadium2");
 		wf.apply("save_itinerary", "1", data);
 	}
 

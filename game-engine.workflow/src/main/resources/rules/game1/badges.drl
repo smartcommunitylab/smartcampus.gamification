@@ -1,5 +1,10 @@
 package eu.trentorise.game.model
 
+/* ***************************************************************************
+  POINTS
+  
+*************************************************************************** */
+
 rule "20 point badge"
 	salience -1000
 when
@@ -8,4 +13,93 @@ when
 then
 	log("apply \'20-point badge\'");
 	$bc.getBadgeEarned().add('20-point');
+end
+
+rule "50 point badge"
+	salience -1000
+when
+    PointConcept(score >= 50.0)
+    $bc : BadgeCollectionConcept(badgeEarned not contains '50-point')
+then
+	log("apply \'50-point badge\'");
+	$bc.getBadgeEarned().add('50-point');
+end
+
+rule "100 point badge"
+	salience -1000
+when
+    PointConcept(score >= 100.0)
+    $bc : BadgeCollectionConcept(badgeEarned not contains '100-point')
+then
+	log("apply \'100-point badge\'");
+	$bc.getBadgeEarned().add('100-point');
+end
+
+rule "200 point badge"
+	salience -1000
+when
+    PointConcept(score >= 200.0)
+    $bc : BadgeCollectionConcept(badgeEarned not contains '200-point')
+then
+	log("apply \'200-point badge\'");
+	$bc.getBadgeEarned().add('200-point');
+end
+
+rule "500 point badge"
+	salience -1000
+when
+    PointConcept(score >= 500.0)
+    $bc : BadgeCollectionConcept(badgeEarned not contains '500-point')
+then
+	log("apply \'500-point badge\'");
+	$bc.getBadgeEarned().add('500-point');
+end
+
+rule "1000 point badge"
+	salience -1000
+when
+    PointConcept(score >= 1000.0)
+    $bc : BadgeCollectionConcept(badgeEarned not contains '1000-point')
+then
+	log("apply \'1000-point badge\'");
+	$bc.getBadgeEarned().add('1000-point');
+end
+
+rule "2000 point badge"
+	salience -1000
+when
+    PointConcept(score >= 2000.0)
+    $bc : BadgeCollectionConcept(badgeEarned not contains '2000-point')
+then
+	log("apply \'2000-point badge\'");
+	$bc.getBadgeEarned().add('2000-point');
+end
+
+/* ***************************************************************************
+E-MOTION  
+  
+*************************************************************************** */
+
+rule "e-motion badge"
+	salience -1000
+when
+    InputData(data['bikesharing'] == true)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'e-motion')
+then
+	log("apply \'e-motion badge\'");
+	$bc.getBadgeEarned().add('e-motion');
+end
+
+/* ***************************************************************************
+PARK  
+  
+*************************************************************************** */
+rule "park badge"
+	salience -1000
+when
+    InputData( $park : data['park'] != null)
+    $bc : BadgeCollectionConcept(badgeEarned not contains $park)
+then
+	log("apply \'park badge\' " + $park);
+	$bc.getBadgeEarned().add((String) $park);
 end

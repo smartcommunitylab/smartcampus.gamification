@@ -39,7 +39,6 @@ public class PlayerManager implements PlayerService {
 			File store = new File("playerstorage");
 			if (store.exists()) {
 				data = mapper.readValue(new File("playerstorage"), Map.class);
-				logger.info("" + data.size());
 			} else {
 				throw new IOException("playerstorage not exists");
 			}

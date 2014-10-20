@@ -1,0 +1,11 @@
+package eu.trentorise.game.model
+
+rule "20 point badge"
+	salience -1000
+when
+    PointConcept(score >= 20.0)
+    $bc : BadgeCollectionConcept(badgeEarned not contains '20-point')
+then
+	log("apply \'20-point badge\'");
+	$bc.getBadgeEarned().add('20-point');
+end

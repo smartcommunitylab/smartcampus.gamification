@@ -10,3 +10,14 @@ then
 	PointConcept pc = new PointConcept('green leaves');
 	insert(pc);
 end
+
+
+rule "init badge collection"
+	salience 1000
+when
+    not BadgeCollectionConcept()
+then
+	log("apply \'init badge collection\'");
+	BadgeCollectionConcept bcc = new BadgeCollectionConcept();
+	insert(bcc);
+end

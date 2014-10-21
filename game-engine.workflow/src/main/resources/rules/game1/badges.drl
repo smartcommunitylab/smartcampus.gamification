@@ -110,12 +110,10 @@ P+R
   
 *************************************************************************** */
 rule "p+r badge"
-	no-loop
 	salience -1000
 when
     InputData(data['park'] in ('QUERCIA','STADIO'))
-    ( InputData(data['walkDistance'] != null) or InputData(data['bikeDistance'] != null)
-     or InputData(data['busDistance'] != null) or InputData(data['trainDistance'] != null) )
+    InputData(data['walkDistance'] != null || data['bikeDistance'] != null || data['busDistance'] != null || data['trainDistance'] != null)
     $bc : BadgeCollectionConcept(badgeEarned not contains 'p+r')
 then
 	log("apply \'p+r badge\'");

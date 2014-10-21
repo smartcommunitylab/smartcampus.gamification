@@ -103,3 +103,25 @@ then
 	log("apply \'park badge\' " + $park);
 	$bc.getBadgeEarned().add((String) $park);
 end
+
+
+/* ***************************************************************************
+P+R
+  
+*************************************************************************** */
+rule "p+r badge"
+	no-loop
+	salience -1000
+when
+    InputData(data['park'] in ('QUERCIA','STADIO'))
+    ( InputData(data['walkDistance'] != null) or InputData(data['bikeDistance'] != null)
+     or InputData(data['busDistance'] != null) or InputData(data['trainDistance'] != null) )
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'p+r')
+then
+	log("apply \'p+r badge\'");
+	$bc.getBadgeEarned().add('p+r');
+	update( $bc );
+end
+
+
+

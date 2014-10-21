@@ -53,8 +53,6 @@ public class DroolsEngine implements GameEngine {
 		ExecutionResults results = kSession.execute(CommandFactory
 				.newBatchExecution(cmds));
 
-		logger.info(results.getIdentifiers().toString());
-
 		Set<GameConcept> newState = new HashSet<GameConcept>();
 
 		Iterator<QueryResultsRow> iter = ((QueryResults) results

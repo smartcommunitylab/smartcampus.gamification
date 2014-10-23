@@ -3,10 +3,10 @@ package eu.trentorise.game.managers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -16,10 +16,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.services.PlayerService;
 
 @Component
@@ -72,13 +70,9 @@ public class PlayerManager implements PlayerService {
 	private StatePersistence convert(PlayerState ps) {
 		StatePersistence sp = new StatePersistence();
 		for (GameConcept gc : ps.getState()) {
-			if (gc instanceof PointConcept) {
-				sp.getPoints().add((PointConcept) gc);
-			}
-
-			if (gc instanceof BadgeCollectionConcept) {
-				sp.getBadges().add((BadgeCollectionConcept) gc);
-			}
+			sp.getConcepts().add(
+					new ConceptPersistence(mapper.convertValue(gc, Map.class),
+							gc.getClass().getCanonicalName()));
 		}
 
 		return sp;
@@ -86,37 +80,62 @@ public class PlayerManager implements PlayerService {
 
 	private PlayerState convert(StatePersistence sp) {
 		PlayerState ps = new PlayerState();
-		ps.getState().addAll(sp.getPoints());
-		ps.getState().addAll(sp.getBadges());
-
+		for (ConceptPersistence cp : sp.getConcepts()) {
+			GameConcept gc;
+			try {
+				gc = mapper.convertValue(cp.getConcept(),
+						(Class<? extends GameConcept>) Thread.currentThread()
+								.getContextClassLoader()
+								.loadClass(cp.getType()));
+				ps.getState().add(gc);
+			} catch (Exception e) {
+				logger.error("Problem to load class {}", cp.getType());
+			}
+		}
 		return ps;
+	}
+}
+
+class ConceptPersistence {
+
+	private Map<String, Object> concept;
+	private String type;
+
+	public ConceptPersistence(Map<String, Object> concept, String type) {
+		this.concept = concept;
+		this.type = type;
+	}
+
+	public ConceptPersistence() {
+	}
+
+	public Map<String, Object> getConcept() {
+		return concept;
+	}
+
+	public void setConcept(Map<String, Object> concept) {
+		this.concept = concept;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }
 
 class StatePersistence {
-	private Set<PointConcept> points = new HashSet<PointConcept>();
-	private Set<BadgeCollectionConcept> badges = new HashSet<BadgeCollectionConcept>();
+	private List<ConceptPersistence> concepts = new ArrayList<ConceptPersistence>();
 
-	public StatePersistence() {
-		points = new HashSet<PointConcept>();
-		badges = new HashSet<BadgeCollectionConcept>();
+	public List<ConceptPersistence> getConcepts() {
+		return concepts;
 	}
 
-	public Set<PointConcept> getPoints() {
-		return points;
-	}
-
-	public void setPoints(Set<PointConcept> points) {
-		this.points = points;
-	}
-
-	public Set<BadgeCollectionConcept> getBadges() {
-		return badges;
-	}
-
-	public void setBadges(Set<BadgeCollectionConcept> badges) {
-		this.badges = badges;
+	public void setConcepts(List<ConceptPersistence> concepts) {
+		this.concepts = concepts;
 	}
 
 }

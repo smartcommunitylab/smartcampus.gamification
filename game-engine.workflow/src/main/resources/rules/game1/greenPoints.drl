@@ -18,9 +18,9 @@ then
 	Double train = $train != null ? (Double) $train : 0;
 
 	Long dist1 = Math.round(bike + walk);
-	log("dist1 " + dist1);
+	//log("dist1 " + dist1);
 	Long dist2 = Math.round(bus + train);
-    log("dist2 " + dist2);
+    //log("dist2 " + dist2);
     
     $pc.setScore($pc.getScore() + walk_bike_points * dist1 + bus_train_points * dist2);
     update($pc);

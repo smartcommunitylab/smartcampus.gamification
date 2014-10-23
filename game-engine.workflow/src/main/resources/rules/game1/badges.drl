@@ -1,5 +1,8 @@
 package eu.trentorise.game.model
 
+
+global java.util.ArrayList pr_parks;
+
 /* ***************************************************************************
   POINTS
   
@@ -112,7 +115,7 @@ P+R
 rule "p+r badge"
 	salience -1000
 when
-    InputData(data['park'] in ('QUERCIA','STADIO'))
+    InputData(data['park'] memberOf pr_parks)
     InputData(data['walkDistance'] != null || data['bikeDistance'] != null || data['busDistance'] != null || data['trainDistance'] != null)
     $bc : BadgeCollectionConcept(badgeEarned not contains 'p+r')
 then

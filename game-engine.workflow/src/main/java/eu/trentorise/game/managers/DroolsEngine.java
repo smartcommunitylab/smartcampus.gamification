@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.math.NumberUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.command.Command;
@@ -50,6 +53,9 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newFireAllRules());
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
+
+		kSession = loadGameConstants(kSession, gameId);
+
 		ExecutionResults results = kSession.execute(CommandFactory
 				.newBatchExecution(cmds));
 
@@ -65,6 +71,48 @@ public class DroolsEngine implements GameEngine {
 		return state;
 	}
 
+	private StatelessKieSession loadGameConstants(StatelessKieSession kSession,
+			String gameId) {
+		File rulesFolder = new File("src/main/resources/rules/" + gameId);
+
+		// load game constants
+		File constantsFile = new File(rulesFolder, "constants");
+		try {
+			PropertiesConfiguration constants = new PropertiesConfiguration(
+					constantsFile);
+			constants.setListDelimiter(',');
+			logger.info("constants file loaded for game {}", gameId);
+			Iterator<String> constantsIter = constants.getKeys();
+			while (constantsIter.hasNext()) {
+				String constant = constantsIter.next();
+				logger.info("{} class {}", constant,
+						constants.getProperty(constant).getClass().getName());
+				kSession.setGlobal(constant,
+						numberConversion(constants.getProperty(constant)));
+				logger.debug("constant {} loaded", constant);
+			}
+		} catch (ConfigurationException e) {
+			logger.error("{} loading exception",
+					constantsFile.getAbsoluteFile());
+		}
+		return kSession;
+	}
+
+	private Object numberConversion(Object value) {
+
+		if (value instanceof String) {
+			String converted = (String) value;
+			if (NumberUtils.isNumber(converted) && !converted.contains(".")) {
+				return new Integer(converted);
+			}
+			if (NumberUtils.isNumber(converted) && converted.contains(".")) {
+				return new Double(converted);
+			}
+		}
+
+		return value;
+	}
+
 	private void loadGameRules(String gameId) {
 		KieResources res = kieServices.getResources();
 		KieFileSystem kfs = kieServices.newKieFileSystem();
@@ -77,6 +125,8 @@ public class DroolsEngine implements GameEngine {
 		logger.info("Core rules loaded");
 
 		File rulesFolder = new File("src/main/resources/rules/" + gameId);
+
+		// load rules
 		if (rulesFolder.exists()) {
 			for (File rule : rulesFolder.listFiles()) {
 				Resource r1 = res.newFileSystemResource(rule.getAbsolutePath());

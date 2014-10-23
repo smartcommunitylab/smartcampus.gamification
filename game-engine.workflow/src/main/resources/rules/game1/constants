@@ -1,0 +1,22 @@
+# insert your constants to use in game rules
+# 
+# SAMPLE USAGE 
+# 
+# constants file
+# var_name = var_value
+# 
+#
+# usage in rule
+# global VALUE_TYPE var_name;
+#
+# supported VALUE_TYPE
+# java.lang.Integer (i.e. var=1)
+# java.lang.Double  (i.e. var=2.3)
+# java.lang.String  (i.e. var=park)
+# java.util.ArrayList (i.e var=park,street,bikestation)
+
+
+walk_bike_points=2
+bus_train_points=1
+pr_points=5
+pr_parks=STADIO,MANIFATTURA

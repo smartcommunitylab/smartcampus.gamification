@@ -37,8 +37,8 @@ public class Application {
 		data.put("bikeDistance", 1.93);
 		data.put("walkDistance", 7.100);
 		data.put("busDistance", 1.00);
-		// data.put("bikesharing", true);
-		data.put("park", "QUERCIA");
+		data.put("bikesharing", true);
+		data.put("park", "MANIFATTURA");
 		wf.apply("save_itinerary", "1", data);
 	}
 

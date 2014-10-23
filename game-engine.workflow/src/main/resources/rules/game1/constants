@@ -10,9 +10,9 @@
 # global VALUE_TYPE var_name;
 #
 # supported VALUE_TYPE
-# java.lang.Integer (i.e. var=1)
-# java.lang.Double  (i.e. var=2.3)
-# java.lang.String  (i.e. var=park)
+# Integer (i.e. var=1)
+# Double  (i.e. var=2.3)
+# String  (i.e. var=park)
 # java.util.ArrayList (i.e var=park,street,bikestation)
 
 

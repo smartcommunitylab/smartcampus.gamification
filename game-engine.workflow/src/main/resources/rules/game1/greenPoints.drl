@@ -1,9 +1,9 @@
 package eu.trentorise.game.model
 
 
-global java.lang.Integer walk_bike_points;
-global java.lang.Integer bus_train_points;
-global java.lang.Integer pr_points;
+global Integer walk_bike_points;
+global Integer bus_train_points;
+global Integer pr_points;
 global java.util.ArrayList pr_parks;
 
 rule "update green points"
@@ -17,10 +17,10 @@ then
     Double bus = $bus != null ? (Double) $bus : 0;
 	Double train = $train != null ? (Double) $train : 0;
 
-	Integer dist1 = (int) (bike + walk);
-	//log("dist1" + dist1);
-	Integer dist2 = (int) (bus + train);
-    //log("dist2" + dist2);
+	Long dist1 = Math.round(bike + walk);
+	log("dist1 " + dist1);
+	Long dist2 = Math.round(bus + train);
+    log("dist2 " + dist2);
     
     $pc.setScore($pc.getScore() + walk_bike_points * dist1 + bus_train_points * dist2);
     update($pc);

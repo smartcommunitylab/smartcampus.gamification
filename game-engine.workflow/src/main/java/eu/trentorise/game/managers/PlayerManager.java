@@ -20,7 +20,7 @@ import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.PlayerService;
 
-@Component
+@Component("simplePlayerManager")
 public class PlayerManager implements PlayerService {
 
 	private final Logger logger = LoggerFactory.getLogger(PlayerManager.class);

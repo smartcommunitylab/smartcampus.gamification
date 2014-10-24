@@ -4,19 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
+import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.services.Workflow;
 
-@ComponentScan("eu.trentorise.game")
-@Configuration
 public class Application {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		ctx.register(Application.class);
+		ctx.register(AppConfig.class);
 		ctx.register(MongoConfig.class);
 		ctx.refresh();
 		Workflow wf = ctx.getBean(Workflow.class);
@@ -37,11 +34,11 @@ public class Application {
 
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("bikeDistance", 4.43);
-		// data.put("walkDistance", 7.100);
-		// data.put("busDistance", 1.00);
+		data.put("walkDistance", 7.100);
+		data.put("busDistance", 1.00);
 		data.put("bikesharing", true);
-		// data.put("park", "MANIFATTURA");
-		data.put("park", "QUERCIA");
+		data.put("park", "MANIFATTURA");
+		// data.put("park", "QUERCIA");
 		wf.apply("save_itinerary", "2", data);
 	}
 

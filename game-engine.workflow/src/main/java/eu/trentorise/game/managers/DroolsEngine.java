@@ -85,8 +85,6 @@ public class DroolsEngine implements GameEngine {
 			Iterator<String> constantsIter = constants.getKeys();
 			while (constantsIter.hasNext()) {
 				String constant = constantsIter.next();
-				logger.info("{} class {}", constant,
-						constants.getProperty(constant).getClass().getName());
 				kSession.setGlobal(constant,
 						numberConversion(constants.getProperty(constant)));
 				logger.debug("constant {} loaded", constant);

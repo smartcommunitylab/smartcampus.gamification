@@ -2,6 +2,8 @@ package eu.trentorise.game.managers;
 
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,6 +30,12 @@ public class GameWorkflow implements Workflow {
 
 	@Autowired
 	GameService gameSrv;
+
+	@PostConstruct
+	@SuppressWarnings("unused")
+	private void startup() {
+		gameSrv.startupTasks("game1");
+	}
 
 	public void apply(String actionId, String userId, Map<String, Object> data) {
 

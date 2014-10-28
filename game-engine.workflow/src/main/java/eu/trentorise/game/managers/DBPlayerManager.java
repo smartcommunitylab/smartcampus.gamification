@@ -1,5 +1,7 @@
 package eu.trentorise.game.managers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -77,5 +79,15 @@ public class DBPlayerManager implements PlayerService {
 			}
 		}
 		return ps;
+	}
+
+	public List<String> readPlayers(String gameId) {
+		List<StatePersistence> states = repo.findByGameId(gameId);
+		List<String> result = new ArrayList<String>();
+		for (StatePersistence state : states) {
+			result.add(state.getPlayerId());
+		}
+
+		return result;
 	}
 }

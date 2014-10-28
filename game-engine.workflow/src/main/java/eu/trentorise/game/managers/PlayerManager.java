@@ -94,6 +94,11 @@ public class PlayerManager implements PlayerService {
 		}
 		return ps;
 	}
+
+	public List<String> readPlayers(String gameId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
 }
 
 class ConceptPersistence {

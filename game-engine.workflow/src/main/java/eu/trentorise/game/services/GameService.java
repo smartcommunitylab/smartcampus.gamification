@@ -6,4 +6,6 @@ import org.springframework.stereotype.Service;
 public interface GameService {
 
 	public String getGameIdByAction(String actionId);
+
+	public void startupTasks(String gameId);
 }

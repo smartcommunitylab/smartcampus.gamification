@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.model.Action;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.PlayerState;
@@ -38,7 +39,7 @@ public class DroolsEngine implements GameEngine {
 
 	private KieServices kieServices = KieServices.Factory.get();
 
-	public PlayerState execute(String gameId, PlayerState state,
+	public PlayerState execute(String gameId, PlayerState state, String action,
 			Map<String, Object> data) {
 
 		loadGameRules(gameId);
@@ -48,8 +49,10 @@ public class DroolsEngine implements GameEngine {
 
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
 		InputData droolsInput = new InputData(data);
+		Action actionFact = new Action(action);
 		List<Command> cmds = new ArrayList<Command>();
 		cmds.add(CommandFactory.newInsert(droolsInput));
+		cmds.add(CommandFactory.newInsert(actionFact));
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newFireAllRules());
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));

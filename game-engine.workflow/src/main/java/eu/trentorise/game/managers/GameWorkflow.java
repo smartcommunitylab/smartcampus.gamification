@@ -34,7 +34,7 @@ public class GameWorkflow implements Workflow {
 	@PostConstruct
 	@SuppressWarnings("unused")
 	private void startup() {
-		gameSrv.startupTasks("game1");
+		// gameSrv.startupTasks("game1");
 	}
 
 	public void apply(String actionId, String userId, Map<String, Object> data) {
@@ -43,7 +43,8 @@ public class GameWorkflow implements Workflow {
 
 		PlayerState playerState = playerSrv.loadState(userId, gameId);
 
-		PlayerState newState = gameEngine.execute(gameId, playerState, data);
+		PlayerState newState = gameEngine.execute(gameId, playerState,
+				actionId, data);
 
 		boolean result = playerSrv.saveState(userId, gameId, newState);
 

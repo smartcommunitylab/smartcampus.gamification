@@ -10,5 +10,5 @@ import eu.trentorise.game.model.PlayerState;
 public interface GameEngine {
 
 	public PlayerState execute(String gameId, PlayerState state,
-			Map<String, Object> data);
+			String action, Map<String, Object> data);
 }

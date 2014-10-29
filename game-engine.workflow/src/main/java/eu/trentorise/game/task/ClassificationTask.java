@@ -19,6 +19,10 @@ public class ClassificationTask extends GameTask {
 
 	private static final int DEFAULT_VALUE = 3;
 
+	private static final String ACTION_GOLD = "gold_position";
+	private static final String ACTION_SILVER = "silver_position";
+	private static final String ACTION_BRONZE = "bronze_position";
+
 	public ClassificationTask(TaskSchedule schedule, String itemType) {
 		super(schedule);
 		this.itemsToNotificate = DEFAULT_VALUE;
@@ -52,9 +56,13 @@ public class ClassificationTask extends GameTask {
 		if (itemsToNotificate < states.size()) {
 			states = states.subList(0, itemsToNotificate);
 		}
-		for (PlayerState p : states) {
-			ctx.sendAction();
+		try {
+			ctx.sendAction(ACTION_GOLD, states.get(0).getPlayerId());
+			ctx.sendAction(ACTION_SILVER, states.get(0).getPlayerId());
+			ctx.sendAction(ACTION_BRONZE, states.get(0).getPlayerId());
+		} catch (IndexOutOfBoundsException e) {
 		}
+
 	}
 
 	private class ClassificationSorter implements Comparator<PlayerState> {

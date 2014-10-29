@@ -66,6 +66,8 @@ public class DBPlayerManager implements PlayerService {
 
 	private PlayerState convert(eu.trentorise.game.repo.StatePersistence sp) {
 		PlayerState ps = new PlayerState();
+		ps.setGameId(sp.getGameId());
+		ps.setPlayerId(sp.getPlayerId());
 		for (eu.trentorise.game.repo.ConceptPersistence cp : sp.getConcepts()) {
 			GameConcept gc;
 			try {

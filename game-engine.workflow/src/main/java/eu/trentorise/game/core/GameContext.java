@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.Workflow;
 
 @Component("gameCtx")
 @Scope("prototype")
@@ -23,6 +24,9 @@ public class GameContext {
 	@Qualifier("dbPlayerManager")
 	PlayerService playerSrv;
 
+	@Autowired
+	Workflow gameWorkflow;
+
 	public GameContext(String gameRefId) {
 		this.gameRefId = gameRefId;
 	}
@@ -31,8 +35,8 @@ public class GameContext {
 
 	}
 
-	public void sendAction() {
-		logger.info("sendAction");
+	public void sendAction(String action, String playerId) {
+		gameWorkflow.apply(action, playerId, null);
 	}
 
 	public PlayerState readStatus(String playerId) {

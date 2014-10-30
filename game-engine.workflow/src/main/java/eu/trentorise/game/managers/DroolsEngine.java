@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -48,11 +49,15 @@ public class DroolsEngine implements GameEngine {
 				.getRepository().getDefaultReleaseId());
 
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
-		InputData droolsInput = new InputData(data);
-		Action actionFact = new Action(action);
+
 		List<Command> cmds = new ArrayList<Command>();
-		cmds.add(CommandFactory.newInsert(droolsInput));
-		cmds.add(CommandFactory.newInsert(actionFact));
+
+		if (data != null) {
+			cmds.add(CommandFactory.newInsert(new InputData(data)));
+		}
+		if (!StringUtils.isBlank(action)) {
+			cmds.add(CommandFactory.newInsert(new Action(action)));
+		}
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newFireAllRules());
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));

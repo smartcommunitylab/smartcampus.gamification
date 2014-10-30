@@ -34,9 +34,9 @@ public class Application {
 
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("bikeDistance", 4.43);
-		data.put("walkDistance", 7.100);
+		// data.put("walkDistance", 7.100);
 		data.put("busDistance", 1.00);
-		data.put("bikesharing", true);
+		// data.put("bikesharing", true);
 		data.put("park", "MANIFATTURA");
 		// data.put("park", "QUERCIA");
 		wf.apply("save_itinerary", "2", data);

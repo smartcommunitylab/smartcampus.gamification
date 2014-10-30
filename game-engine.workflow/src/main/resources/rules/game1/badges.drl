@@ -125,4 +125,47 @@ then
 end
 
 
+/* ***************************************************************************
+CLASSIFICATION
+  
+*************************************************************************** */
+rule "classification gold badge"
+	salience -1000
+when
+    Action( id == 'classification')
+    InputData( data['classification_name'] == 'final classification')
+    InputData( data['classification_position'] == 1)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'gold medal')
+then
+	log("apply \'gold medal badge\'");
+	$bc.getBadgeEarned().add('gold medal');
+	update( $bc );
+end
+
+rule "classification silver badge"
+	salience -1000
+when
+    Action( id == 'classification')
+    InputData( data['classification_name'] == 'final classification')
+    InputData( data['classification_position'] == 2)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'silver medal')
+then
+	log("apply \'silver medal badge\'");
+	$bc.getBadgeEarned().add('silver medal');
+	update( $bc );
+end
+
+rule "classification bronze badge"
+	salience -1000
+when
+    Action( id == 'classification')
+    InputData( data['classification_name'] == 'final classification')
+    InputData( data['classification_position'] == 3)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'bronze medal')
+then
+	log("apply \'bronze medal badge\'");
+	$bc.getBadgeEarned().add('bronze medal');
+	update( $bc );
+end
+
 

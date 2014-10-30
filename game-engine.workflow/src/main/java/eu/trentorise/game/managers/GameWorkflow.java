@@ -34,7 +34,7 @@ public class GameWorkflow implements Workflow {
 	@PostConstruct
 	@SuppressWarnings("unused")
 	private void startup() {
-		// gameSrv.startupTasks("game1");
+		gameSrv.startupTasks("game1");
 	}
 
 	public void apply(String actionId, String userId, Map<String, Object> data) {

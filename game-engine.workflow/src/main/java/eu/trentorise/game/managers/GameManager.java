@@ -30,7 +30,7 @@ public class GameManager implements GameService {
 	private void initRepo() {
 		repo = new HashMap<String, String>();
 		repo.put("save_itinerary", "game1");
-		repo.put("action2", "game1");
+		repo.put("classification", "game1");
 		repo.put("action3", "game1");
 		repo.put("action4", "game1");
 		repo.put("action5", "game1");
@@ -44,9 +44,9 @@ public class GameManager implements GameService {
 
 	public void startupTasks(String gameId) {
 
-		taskManager.createTask(new ClassificationTask(new TaskSchedule(), 4,
-				"green leaves"), (GameContext) provider.getApplicationContext()
-				.getBean("gameCtx", gameId));
+		taskManager.createTask(new ClassificationTask(new TaskSchedule(), 3,
+				"green leaves", "final classification"), (GameContext) provider
+				.getApplicationContext().getBean("gameCtx", gameId));
 
 	}
 }

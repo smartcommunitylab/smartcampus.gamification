@@ -43,8 +43,9 @@ public class GameManager implements GameService {
 	}
 
 	public void startupTasks(String gameId) {
-
-		taskManager.createTask(new ClassificationTask(new TaskSchedule(), 3,
+		TaskSchedule schedule = new TaskSchedule();
+		schedule.setCronExpression("0 * * * * *");
+		taskManager.createTask(new ClassificationTask(schedule, 3,
 				"green leaves", "final classification"), (GameContext) provider
 				.getApplicationContext().getBean("gameCtx", gameId));
 

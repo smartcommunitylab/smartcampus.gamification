@@ -20,7 +20,8 @@ public class TaskManager {
 	ThreadPoolTaskScheduler scheduler;
 
 	public void createTask(GameTask task, GameContext ctx) {
-		CronTrigger trigger = new CronTrigger("1 * * * * MON-FRI");
+		CronTrigger trigger = new CronTrigger(task.getSchedule()
+				.getCronExpression());
 
 		ScheduledFuture schedulefuture = scheduler.schedule(new TaskRun(task,
 				ctx), trigger);
@@ -39,7 +40,7 @@ public class TaskManager {
 
 		public void run() {
 			logger.info("RUN TASK");
-			gameTask.execute(gameCtx);
+			// gameTask.execute(gameCtx);
 		}
 
 	}

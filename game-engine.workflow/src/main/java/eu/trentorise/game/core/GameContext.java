@@ -1,6 +1,7 @@
 package eu.trentorise.game.core;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +36,9 @@ public class GameContext {
 
 	}
 
-	public void sendAction(String action, String playerId) {
-		gameWorkflow.apply(action, playerId, null);
+	public void sendAction(String action, String playerId,
+			Map<String, Object> params) {
+		gameWorkflow.apply(action, playerId, params);
 	}
 
 	public PlayerState readStatus(String playerId) {

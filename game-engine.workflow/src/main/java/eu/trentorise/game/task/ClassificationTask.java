@@ -3,7 +3,12 @@ package eu.trentorise.game.task;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
@@ -14,26 +19,33 @@ import eu.trentorise.game.model.PointConcept;
 
 public class ClassificationTask extends GameTask {
 
+	private final Logger logger = LoggerFactory
+			.getLogger(ClassificationTask.class);
+
 	private int itemsToNotificate;
 	private String itemType;
+	private String classificationName;
 
 	private static final int DEFAULT_VALUE = 3;
 
-	private static final String ACTION_GOLD = "gold_position";
-	private static final String ACTION_SILVER = "silver_position";
-	private static final String ACTION_BRONZE = "bronze_position";
+	private static final String ACTION_CLASSIFICATION = "classification";
+	private static final String K_POSITION = "classification_position";
+	private static final String K_CLASSIFICATION_NAME = "classification_name";
 
-	public ClassificationTask(TaskSchedule schedule, String itemType) {
+	public ClassificationTask(TaskSchedule schedule, String itemType,
+			String classificationName) {
 		super(schedule);
 		this.itemsToNotificate = DEFAULT_VALUE;
 		this.itemType = itemType;
+		this.classificationName = classificationName;
 	}
 
 	public ClassificationTask(TaskSchedule schedule, int itemsToNotificate,
-			String itemType) {
+			String itemType, String classificationName) {
 		super(schedule);
 		this.itemsToNotificate = itemsToNotificate;
 		this.itemType = itemType;
+		this.classificationName = classificationName;
 	}
 
 	@Override
@@ -50,19 +62,48 @@ public class ClassificationTask extends GameTask {
 			states.add(ctx.readStatus(p));
 		}
 		// sort for green leaves
-		Collections.sort(states, new ClassificationSorter(itemType));
+		Collections.sort(states,
+				Collections.reverseOrder(new ClassificationSorter(itemType)));
+
+		// debug logging
+		if (logger.isDebugEnabled()) {
+			for (PlayerState state : states) {
+				PointConcept score = retrieveConcept(state, itemType);
+				if (score != null) {
+					logger.debug("{}: player {} score {}", classificationName,
+							state.getPlayerId(), score.getScore());
+				}
+			}
+		}
 
 		// event on classification
 		if (itemsToNotificate < states.size()) {
 			states = states.subList(0, itemsToNotificate);
 		}
-		try {
-			ctx.sendAction(ACTION_GOLD, states.get(0).getPlayerId());
-			ctx.sendAction(ACTION_SILVER, states.get(0).getPlayerId());
-			ctx.sendAction(ACTION_BRONZE, states.get(0).getPlayerId());
-		} catch (IndexOutOfBoundsException e) {
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(K_CLASSIFICATION_NAME, classificationName);
+		for (int i = 0; i < itemsToNotificate; i++) {
+			params.put(K_POSITION, i + 1);
+			try {
+				ctx.sendAction(ACTION_CLASSIFICATION, states.get(i)
+						.getPlayerId(), params);
+			} catch (IndexOutOfBoundsException e) {
+				break;
+			}
 		}
 
+	}
+
+	private PointConcept retrieveConcept(PlayerState p, String pointType) {
+		for (GameConcept gc : p.getState()) {
+			if (gc instanceof PointConcept
+					&& ((PointConcept) gc).getName().equals(pointType)) {
+				return (PointConcept) gc;
+			}
+		}
+
+		return null;
 	}
 
 	private class ClassificationSorter implements Comparator<PlayerState> {
@@ -74,8 +115,8 @@ public class ClassificationTask extends GameTask {
 		}
 
 		public int compare(PlayerState o1, PlayerState o2) {
-			PointConcept pc1 = retrieveConcept(o1);
-			PointConcept pc2 = retrieveConcept(o2);
+			PointConcept pc1 = retrieveConcept(o1, pointType);
+			PointConcept pc2 = retrieveConcept(o2, pointType);
 			if (pc1 == null && pc2 != null) {
 				return -1;
 			}
@@ -92,15 +133,5 @@ public class ClassificationTask extends GameTask {
 
 		}
 
-		private PointConcept retrieveConcept(PlayerState p) {
-			for (GameConcept gc : p.getState()) {
-				if (gc instanceof PointConcept
-						&& ((PointConcept) gc).getName().equals(pointType)) {
-					return (PointConcept) gc;
-				}
-			}
-
-			return null;
-		}
 	}
 }

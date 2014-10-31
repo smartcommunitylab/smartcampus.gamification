@@ -54,7 +54,7 @@ public class GamePersistence {
 		for (GenericObjectPersistence obj : tasks) {
 			try {
 				t.add(mapper.convertValue(
-						obj.getConcept(),
+						obj.getObj(),
 						(Class<? extends GameTask>) Thread.currentThread()
 								.getContextClassLoader()
 								.loadClass(obj.getType())));

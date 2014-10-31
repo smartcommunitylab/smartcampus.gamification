@@ -51,7 +51,7 @@ public class StatePersistence {
 		for (GenericObjectPersistence obj : concepts) {
 			try {
 				state.add(mapper.convertValue(
-						obj.getConcept(),
+						obj.getObj(),
 						(Class<? extends GameConcept>) Thread.currentThread()
 								.getContextClassLoader()
 								.loadClass(obj.getType())));

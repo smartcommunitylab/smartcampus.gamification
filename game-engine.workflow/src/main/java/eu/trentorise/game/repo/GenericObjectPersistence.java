@@ -5,25 +5,25 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GenericObjectPersistence {
-	private Map<String, Object> concept;
+	private Map<String, Object> obj;
 	private String type;
 
 	public GenericObjectPersistence(Object obj) {
 		ObjectMapper mapper = new ObjectMapper();
 
-		this.concept = mapper.convertValue(obj, Map.class);
+		this.obj = mapper.convertValue(obj, Map.class);
 		this.type = obj.getClass().getCanonicalName();
 	}
 
 	public GenericObjectPersistence() {
 	}
 
-	public Map<String, Object> getConcept() {
-		return concept;
+	public Map<String, Object> getObj() {
+		return obj;
 	}
 
-	public void setConcept(Map<String, Object> concept) {
-		this.concept = concept;
+	public void setObj(Map<String, Object> concept) {
+		this.obj = concept;
 	}
 
 	public String getType() {

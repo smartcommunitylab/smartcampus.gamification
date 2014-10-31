@@ -22,7 +22,7 @@ public class ClassificationTask extends GameTask {
 	private final Logger logger = LoggerFactory
 			.getLogger(ClassificationTask.class);
 
-	private int itemsToNotificate;
+	private Integer itemsToNotificate;
 	private String itemType;
 	private String classificationName;
 
@@ -137,5 +137,29 @@ public class ClassificationTask extends GameTask {
 
 		}
 
+	}
+
+	public Integer getItemsToNotificate() {
+		return itemsToNotificate;
+	}
+
+	public void setItemsToNotificate(Integer itemsToNotificate) {
+		this.itemsToNotificate = itemsToNotificate;
+	}
+
+	public String getItemType() {
+		return itemType;
+	}
+
+	public void setItemType(String itemType) {
+		this.itemType = itemType;
+	}
+
+	public String getClassificationName() {
+		return classificationName;
+	}
+
+	public void setClassificationName(String classificationName) {
+		this.classificationName = classificationName;
 	}
 }

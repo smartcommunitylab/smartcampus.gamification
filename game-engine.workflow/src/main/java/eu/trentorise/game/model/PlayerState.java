@@ -8,10 +8,14 @@ public class PlayerState {
 	private String playerId;
 	private String gameId;
 
-	private Set<GameConcept> state;
+	private Set<GameConcept> state = new HashSet<GameConcept>();
 
 	public PlayerState() {
-		state = new HashSet<GameConcept>();
+	}
+
+	public PlayerState(String playerId, String gameId) {
+		this.playerId = playerId;
+		this.gameId = gameId;
 	}
 
 	public Set<GameConcept> getState() {

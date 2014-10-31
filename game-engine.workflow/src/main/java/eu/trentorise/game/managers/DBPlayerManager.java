@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
@@ -25,19 +22,18 @@ public class DBPlayerManager implements PlayerService {
 	@Autowired
 	private PlayerRepo repo;
 
-	private ObjectMapper mapper = new ObjectMapper();;
-
 	public PlayerState loadState(String userId, String gameId) {
 		eu.trentorise.game.repo.StatePersistence state = repo
 				.findByGameIdAndPlayerId(gameId, userId);
 
-		return state == null ? new PlayerState() : convert(state);
+		return state == null ? new PlayerState(userId, gameId) : state
+				.toPlayerState();
 	}
 
 	public boolean saveState(String userId, String gameId, PlayerState state) {
 		eu.trentorise.game.repo.StatePersistence persistedState = repo
 				.findByGameIdAndPlayerId(gameId, userId);
-		StatePersistence toSave = convert(userId, gameId, state);
+		StatePersistence toSave = new StatePersistence(state);
 		if (persistedState == null) {
 			persistedState = toSave;
 		} else {
@@ -46,39 +42,6 @@ public class DBPlayerManager implements PlayerService {
 
 		repo.save(persistedState);
 		return true;
-	}
-
-	private eu.trentorise.game.repo.StatePersistence convert(String playerId,
-			String gameId, PlayerState ps) {
-		eu.trentorise.game.repo.StatePersistence sp = new eu.trentorise.game.repo.StatePersistence();
-		sp.setGameId(gameId);
-		sp.setPlayerId(playerId);
-		for (GameConcept gc : ps.getState()) {
-			sp.getConcepts().add(
-					new eu.trentorise.game.repo.GenericObjectPersistence(gc));
-		}
-
-		return sp;
-	}
-
-	private PlayerState convert(eu.trentorise.game.repo.StatePersistence sp) {
-		PlayerState ps = new PlayerState();
-		ps.setGameId(sp.getGameId());
-		ps.setPlayerId(sp.getPlayerId());
-		for (eu.trentorise.game.repo.GenericObjectPersistence cp : sp
-				.getConcepts()) {
-			GameConcept gc;
-			try {
-				gc = mapper.convertValue(cp.getConcept(),
-						(Class<? extends GameConcept>) Thread.currentThread()
-								.getContextClassLoader()
-								.loadClass(cp.getType()));
-				ps.getState().add(gc);
-			} catch (Exception e) {
-				logger.error("Problem to load class {}", cp.getType());
-			}
-		}
-		return ps;
 	}
 
 	public List<String> readPlayers(String gameId) {

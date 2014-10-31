@@ -14,13 +14,13 @@ public class StatePersistence {
 	private String playerId;
 	private String gameId;
 
-	private List<ConceptPersistence> concepts = new ArrayList<ConceptPersistence>();
+	private List<GenericObjectPersistence> concepts = new ArrayList<GenericObjectPersistence>();
 
-	public List<ConceptPersistence> getConcepts() {
+	public List<GenericObjectPersistence> getConcepts() {
 		return concepts;
 	}
 
-	public void setConcepts(List<ConceptPersistence> concepts) {
+	public void setConcepts(List<GenericObjectPersistence> concepts) {
 		this.concepts = concepts;
 	}
 

@@ -2,7 +2,6 @@ package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +55,7 @@ public class DBPlayerManager implements PlayerService {
 		sp.setPlayerId(playerId);
 		for (GameConcept gc : ps.getState()) {
 			sp.getConcepts().add(
-					new eu.trentorise.game.repo.ConceptPersistence(mapper
-							.convertValue(gc, Map.class), gc.getClass()
-							.getCanonicalName()));
+					new eu.trentorise.game.repo.GenericObjectPersistence(gc));
 		}
 
 		return sp;
@@ -68,7 +65,8 @@ public class DBPlayerManager implements PlayerService {
 		PlayerState ps = new PlayerState();
 		ps.setGameId(sp.getGameId());
 		ps.setPlayerId(sp.getPlayerId());
-		for (eu.trentorise.game.repo.ConceptPersistence cp : sp.getConcepts()) {
+		for (eu.trentorise.game.repo.GenericObjectPersistence cp : sp
+				.getConcepts()) {
 			GameConcept gc;
 			try {
 				gc = mapper.convertValue(cp.getConcept(),

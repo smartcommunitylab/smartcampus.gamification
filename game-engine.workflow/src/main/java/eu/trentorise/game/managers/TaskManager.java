@@ -40,7 +40,7 @@ public class TaskManager {
 
 		public void run() {
 			logger.info("RUN TASK");
-			// gameTask.execute(gameCtx);
+			gameTask.execute(gameCtx);
 		}
 
 	}

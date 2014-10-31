@@ -2,16 +2,20 @@ package eu.trentorise.game.repo;
 
 import java.util.Map;
 
-public class ConceptPersistence {
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class GenericObjectPersistence {
 	private Map<String, Object> concept;
 	private String type;
 
-	public ConceptPersistence(Map<String, Object> concept, String type) {
-		this.concept = concept;
-		this.type = type;
+	public GenericObjectPersistence(Object obj) {
+		ObjectMapper mapper = new ObjectMapper();
+
+		this.concept = mapper.convertValue(obj, Map.class);
+		this.type = obj.getClass().getCanonicalName();
 	}
 
-	public ConceptPersistence() {
+	public GenericObjectPersistence() {
 	}
 
 	public Map<String, Object> getConcept() {

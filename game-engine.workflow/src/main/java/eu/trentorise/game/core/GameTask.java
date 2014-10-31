@@ -10,6 +10,10 @@ public abstract class GameTask {
 		this.setSchedule(schedule);
 	}
 
+	public GameTask() {
+
+	}
+
 	public TaskSchedule getSchedule() {
 		return schedule;
 	}

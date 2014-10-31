@@ -48,6 +48,10 @@ public class ClassificationTask extends GameTask {
 		this.classificationName = classificationName;
 	}
 
+	public ClassificationTask() {
+
+	}
+
 	@Override
 	public void execute(GameContext ctx) {
 		if (ctx == null) {

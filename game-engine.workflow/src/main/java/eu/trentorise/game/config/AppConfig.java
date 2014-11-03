@@ -27,7 +27,8 @@ public class AppConfig {
 	@Bean
 	public Scheduler quartzScheduler() {
 		try {
-			return new StdSchedulerFactory().getScheduler();
+			//
+			return new StdSchedulerFactory("engine.properties").getScheduler();
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 			return null;

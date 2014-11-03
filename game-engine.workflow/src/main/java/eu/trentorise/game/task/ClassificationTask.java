@@ -34,7 +34,7 @@ public class ClassificationTask extends GameTask {
 
 	public ClassificationTask(TaskSchedule schedule, String itemType,
 			String classificationName) {
-		super(schedule);
+		super(classificationName, schedule);
 		this.itemsToNotificate = DEFAULT_VALUE;
 		this.itemType = itemType;
 		this.classificationName = classificationName;
@@ -42,7 +42,7 @@ public class ClassificationTask extends GameTask {
 
 	public ClassificationTask(TaskSchedule schedule, int itemsToNotificate,
 			String itemType, String classificationName) {
-		super(schedule);
+		super(classificationName, schedule);
 		this.itemsToNotificate = itemsToNotificate;
 		this.itemType = itemType;
 		this.classificationName = classificationName;

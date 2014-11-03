@@ -3,10 +3,16 @@ package eu.trentorise.game.managers;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.apache.commons.lang.StringUtils;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,28 +34,64 @@ public class QuartzTaskManager implements TaskService {
 	private final Logger logger = LoggerFactory
 			.getLogger(QuartzTaskManager.class);
 
+	@PostConstruct
+	@SuppressWarnings("unused")
+	private void init() {
+		try {
+			scheduler.start();
+		} catch (SchedulerException e) {
+			logger.error("Scheduler not started: {}", e.getMessage());
+		}
+	}
+
+	@PreDestroy
+	@SuppressWarnings("unused")
+	private void shutdown() {
+		try {
+			scheduler.shutdown();
+		} catch (SchedulerException e) {
+			logger.error("Scheduler shutdown problem: {}", e.getMessage());
+		}
+	}
+
 	public void createTask(GameTask task, GameContext ctx) {
 		try {
-			JobDetailFactoryBean jobFactory = new JobDetailFactoryBean();
-			jobFactory.setJobClass(GameJobQuartz.class);
-			Map<String, Object> jobdata = new HashMap<String, Object>();
-			jobdata.put("task", task);
-			jobdata.put("gameCtx", ctx);
-			jobFactory.setJobDataAsMap(jobdata);
-			jobFactory.setName("job_" + System.currentTimeMillis());
-			jobFactory.afterPropertiesSet();
-			JobDetail job = jobFactory.getObject();
 
-			CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
-			String cronExpression = task.getSchedule().getCronExpression();
-			// fix for version 2.2.1 of CronTrigger
-			triggerFactory.setCronExpression(fixCronExpression(cronExpression));
-			triggerFactory.setName("trigger_" + System.currentTimeMillis());
-			triggerFactory.setJobDetail(job);
-			triggerFactory.afterPropertiesSet();
-			Trigger trigger = triggerFactory.getObject();
-			scheduler.scheduleJob(job, trigger);
-			scheduler.start();
+			if (!scheduler.checkExists(new JobKey(task.getName(), ctx
+					.getGameRefId()))
+					&& !scheduler.checkExists(new TriggerKey(task.getName(),
+							ctx.getGameRefId()))) {
+				JobDetailFactoryBean jobFactory = new JobDetailFactoryBean();
+				jobFactory.setJobClass(GameJobQuartz.class);
+				Map<String, Object> jobdata = new HashMap<String, Object>();
+				jobdata.put("task", task);
+				jobdata.put("gameCtx", ctx);
+				jobFactory.setName(task.getName());
+				jobFactory.setGroup(ctx.getGameRefId());
+				jobFactory.afterPropertiesSet();
+				JobDetail job = jobFactory.getObject();
+
+				CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
+				String cronExpression = task.getSchedule().getCronExpression();
+				// fix for version 2.2.1 of CronTrigger
+				triggerFactory
+						.setCronExpression(fixCronExpression(cronExpression));
+				triggerFactory.setName(task.getName());
+				triggerFactory.setGroup(ctx.getGameRefId());
+				triggerFactory.setJobDetail(job);
+				triggerFactory.afterPropertiesSet();
+				Trigger trigger = triggerFactory.getObject();
+				scheduler.scheduleJob(job, trigger);
+
+				scheduler.getContext().putAll(jobdata);
+				scheduler.start();
+				logger.info("Created and started job task {} in group {}",
+						task.getName(), ctx.getGameRefId());
+			} else {
+				logger.info("Job task {} in group {} already exists",
+						task.getName(), ctx.getGameRefId());
+			}
+
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

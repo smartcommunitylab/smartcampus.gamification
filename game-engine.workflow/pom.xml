@@ -109,7 +109,7 @@
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 
-<!-- QUARTZ DEP -->
+		<!-- QUARTZ DEP -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
@@ -124,6 +124,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>4.1.1.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.novemberain</groupId>
+			<artifactId>quartz-mongodb</artifactId>
+			<version>1.9.0</version>
 		</dependency>
 	</dependencies>
 
@@ -182,4 +188,11 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
+		</repository>
+	</repositories>
 </project>

@@ -23,10 +23,10 @@ public class GameContext {
 
 	@Autowired
 	@Qualifier("dbPlayerManager")
-	PlayerService playerSrv;
+	private PlayerService playerSrv;
 
 	@Autowired
-	Workflow gameWorkflow;
+	private Workflow gameWorkflow;
 
 	public GameContext(String gameRefId) {
 		this.gameRefId = gameRefId;
@@ -47,6 +47,10 @@ public class GameContext {
 
 	public List<String> readPlayers() {
 		return playerSrv.readPlayers(gameRefId);
+	}
+
+	public String getGameRefId() {
+		return gameRefId;
 	}
 
 }

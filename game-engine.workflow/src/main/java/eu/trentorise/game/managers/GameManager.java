@@ -67,7 +67,7 @@ public class GameManager implements GameService {
 			game.setTasks(new HashSet<GameTask>());
 
 			TaskSchedule schedule = new TaskSchedule();
-			schedule.setCronExpression("0 * * * * *");
+			schedule.setCronExpression("0 */1 * * * *");
 			ClassificationTask task1 = new ClassificationTask(schedule, 3,
 					"green leaves", "final classification");
 			game.getTasks().add(task1);

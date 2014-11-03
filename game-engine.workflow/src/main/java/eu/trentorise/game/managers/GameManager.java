@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.AppContextProvider;
@@ -19,6 +20,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.ClassificationTask;
 
 @Component
@@ -29,7 +31,9 @@ public class GameManager implements GameService {
 	private static Map<String, String> repo;
 
 	@Autowired
-	TaskManager taskManager;
+	@Qualifier("quartzTaskManager")
+	// @Qualifier("taskManager")
+	TaskService taskManager;
 
 	@Autowired
 	AppContextProvider provider;

@@ -1,5 +1,8 @@
 package eu.trentorise.game.config;
 
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,5 +22,15 @@ public class AppConfig {
 	@Bean
 	public AppContextProvider appCtxProvider() {
 		return new AppContextProvider();
+	}
+
+	@Bean
+	public Scheduler quartzScheduler() {
+		try {
+			return new StdSchedulerFactory().getScheduler();
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

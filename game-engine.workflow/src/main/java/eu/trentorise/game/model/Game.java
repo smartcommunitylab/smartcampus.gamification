@@ -10,6 +10,13 @@ public class Game {
 	private Set<String> actions;
 	private Set<GameTask> tasks;
 
+	public Game() {
+	}
+
+	public Game(String id) {
+		this.id = id;
+	}
+
 	public String getId() {
 		return id;
 	}

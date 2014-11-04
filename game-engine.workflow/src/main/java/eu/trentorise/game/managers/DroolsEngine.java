@@ -25,11 +25,14 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Action;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.InputData;
+import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.GameEngine;
 
@@ -37,6 +40,9 @@ import eu.trentorise.game.services.GameEngine;
 public class DroolsEngine implements GameEngine {
 
 	private final Logger logger = LoggerFactory.getLogger(DroolsEngine.class);
+
+	@Autowired
+	NotificationManager notificationSrv;
 
 	private KieServices kieServices = KieServices.Factory.get();
 
@@ -58,11 +64,17 @@ public class DroolsEngine implements GameEngine {
 		if (!StringUtils.isBlank(action)) {
 			cmds.add(CommandFactory.newInsert(new Action(action)));
 		}
+
+		cmds.add(CommandFactory.newInsert(new Game(gameId)));
+		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
+
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newFireAllRules());
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
 
 		kSession = loadGameConstants(kSession, gameId);
+
+		kSession.setGlobal("notificationSrv", notificationSrv);
 
 		ExecutionResults results = kSession.execute(CommandFactory
 				.newBatchExecution(cmds));

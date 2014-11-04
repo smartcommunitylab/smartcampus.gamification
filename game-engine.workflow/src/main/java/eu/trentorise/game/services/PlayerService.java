@@ -11,6 +11,8 @@ public interface PlayerService {
 
 	public PlayerState loadState(String userId, String gameId);
 
+	public List<PlayerState> loadStates(String gameId);
+
 	public boolean saveState(String userId, String gameId, PlayerState state);
 
 	public List<String> readPlayers(String gameId);

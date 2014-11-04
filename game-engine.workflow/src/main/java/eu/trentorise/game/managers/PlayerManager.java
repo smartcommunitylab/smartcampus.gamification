@@ -99,6 +99,11 @@ public class PlayerManager implements PlayerService {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
+
+	public List<PlayerState> loadStates(String gameId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
 }
 
 class ConceptPersistence {

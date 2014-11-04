@@ -53,4 +53,14 @@ public class DBPlayerManager implements PlayerService {
 
 		return result;
 	}
+
+	public List<PlayerState> loadStates(String gameId) {
+		List<StatePersistence> states = repo.findByGameId(gameId);
+		List<PlayerState> result = new ArrayList<PlayerState>();
+		for (StatePersistence state : states) {
+			result.add(state.toPlayerState());
+		}
+
+		return result;
+	}
 }

@@ -1,6 +1,5 @@
 package eu.trentorise.game.model;
 
-
 public abstract class Notification {
 
 	private String gameId;
@@ -10,6 +9,10 @@ public abstract class Notification {
 	public Notification(String gameId, String playerId) {
 		this.gameId = gameId;
 		this.playerId = playerId;
+		timestamp = System.currentTimeMillis();
+	}
+
+	public Notification() {
 		timestamp = System.currentTimeMillis();
 	}
 

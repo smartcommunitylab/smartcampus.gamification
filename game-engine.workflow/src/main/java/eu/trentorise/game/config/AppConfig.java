@@ -36,22 +36,37 @@ public class AppConfig {
 	public Scheduler quartzScheduler() {
 		try {
 			InputStream propIn = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("quartz.properties");
+					.getResourceAsStream("task.persistence.properties");
+			boolean activatePersistence = false;
+			Properties props = new Properties();
 			if (propIn != null) {
 				logger.info("quartz.properties founded");
-				Properties props = new Properties();
 				props.load(propIn);
-				return new StdSchedulerFactory(props).getScheduler();
+				if ("true".equalsIgnoreCase(props.getProperty(
+						"task.persistence.activate", "false"))) {
+					activatePersistence = true;
+					logger.info("task.persistence.activate conf setted to TRUE");
+				} else {
+					logger.info("task.persistence.activate conf setted to FALSE or not setted");
+				}
 			} else {
 				logger.info("quartz.properties not found");
+			}
+			if (activatePersistence) {
+				logger.info("task persistence active");
+				return new StdSchedulerFactory(props).getScheduler();
+			} else {
+				logger.info("task persistence unactive");
 				return new StdSchedulerFactory().getScheduler();
+
 			}
 		} catch (SchedulerException e) {
 			logger.error("Error creating scheduler");
 			return null;
 		} catch (IOException e) {
-			logger.error("Error reading scheduler confs");
+			logger.error("Error loading scheduler props");
 			return null;
 		}
+
 	}
 }

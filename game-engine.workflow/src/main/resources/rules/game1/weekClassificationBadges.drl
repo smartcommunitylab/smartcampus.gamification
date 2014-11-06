@@ -1,0 +1,76 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+
+global eu.trentorise.game.managers.NotificationManager notificationSrv;
+
+/* ***************************************************************************
+GREEN WEEK CLASSIFICATION
+  
+*************************************************************************** */
+rule "week classification badge green"
+	salience -1000
+when
+    Action( id == 'classification')
+    InputData( data['classification_name'] == 'week classification green')
+    InputData( data['classification_position'] == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'king-week-green')
+then
+	log("apply \'king-week-green badge\'");
+	$bc.getBadgeEarned().add('king-week-green');
+	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'king-week-green');
+	notificationSrv.notificate(notification);
+	log("notificate \'king-week-green badge\'");
+	update( $bc );
+end
+
+
+/* ***************************************************************************
+HEALTH WEEK CLASSIFICATION
+  
+*************************************************************************** */
+
+rule "week classification badge health"
+	salience -1000
+when
+    Action( id == 'classification')
+    InputData( data['classification_name'] == 'week classification health')
+    InputData( data['classification_position'] == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'king-week-health')
+then
+	log("apply \'king-week-health badge\'");
+	$bc.getBadgeEarned().add('king-week-health');
+	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'king-week-health');
+	notificationSrv.notificate(notification);
+	log("notificate \'king-week-health badge\'");
+	update( $bc );
+end
+
+
+
+/* ***************************************************************************
+P+R WEEK CLASSIFICATION
+  
+*************************************************************************** */
+
+rule "week classification badge pr"
+	salience -1000
+when
+    Action( id == 'classification')
+    InputData( data['classification_name'] == 'week classification pr')
+    InputData( data['classification_position'] == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'king-week-pr')
+then
+	log("apply \'king-week-pr badge\'");
+	$bc.getBadgeEarned().add('king-week-pr');
+	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'king-week-pr');
+	notificationSrv.notificate(notification);
+	log("notificate \'king-week-pr badge\'");
+	update( $bc );
+end

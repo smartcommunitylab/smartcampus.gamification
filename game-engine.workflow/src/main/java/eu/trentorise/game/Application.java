@@ -28,6 +28,10 @@ public class Application {
 		 * 
 		 * park -> park id
 		 * 
+		 * sustainable -> boolean
+		 * 
+		 * p+r -> boolean
+		 * 
 		 * 
 		 * 
 		 */
@@ -37,8 +41,9 @@ public class Application {
 		data.put("walkDistance", 7.100);
 		data.put("busDistance", 1.00);
 		data.put("bikesharing", true);
+		data.put("sustainable", true);
+		data.put("p+r", true);
 		data.put("park", "MANIFATTURA");
-		// data.put("park", "QUERCIA");
 		wf.apply("save_itinerary", "2", data);
 	}
 

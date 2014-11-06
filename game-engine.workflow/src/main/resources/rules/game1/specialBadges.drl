@@ -1,0 +1,68 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+
+global eu.trentorise.game.managers.NotificationManager notificationSrv;
+
+
+/* ***************************************************************************
+E-MOTION  
+  
+*************************************************************************** */
+
+rule "e-motion badge"
+	salience -1000
+when
+    InputData(data['bikesharing'] == true)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'e-motion')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply \'e-motion badge\'");
+	$bc.getBadgeEarned().add('e-motion');
+	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'e-motion');
+	notificationSrv.notificate(notification);
+	log("notificate \'e-motion badge\'");
+end
+
+/* ***************************************************************************
+PARK  
+  
+*************************************************************************** */
+
+rule "park badge"
+	salience -1000
+when
+    InputData( $park : data['park'] != null)
+    $bc : BadgeCollectionConcept(badgeEarned not contains ($park+'-park'))
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply  \'"+$park+"-park badge\'");
+	$bc.getBadgeEarned().add((String) $park+'-park');
+	BadgeNotification notification = new BadgeNotification($gameId,$playerId,$park+'-park');
+	notificationSrv.notificate(notification);
+	log("notificate \'"+$park+'-park'+" badge\'");
+	update( $bc );
+end
+
+
+/* ***************************************************************************
+IMPACT 0
+  
+*************************************************************************** */
+rule "zero impact badge"
+	salience -1000
+when
+    InputData(data['walkDistance'] != null || data['bikeDistance'] != null)
+    $bc : BadgeCollectionConcept(badgeEarned not contains 'zero-impact')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply \'zero-impact badge\'");
+	$bc.getBadgeEarned().add('zero-impact');
+	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'zero-impact');
+	notificationSrv.notificate(notification);
+	log("notificate \'zero-impact badge\'");
+	update( $bc );
+end

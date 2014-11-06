@@ -1,39 +1,56 @@
 package eu.trentorise.game.model
 
 
-global Integer walk_bike_points;
-global Integer bus_train_points;
-global Integer pr_points;
-global java.util.ArrayList pr_parks;
+global Integer green_walk_bike_points;
+global Integer green_bus_train_points;
+global Integer green_pr_bonus;
+global Integer green_sustainable_bonus;
+
+declare PRItinerary end
+
 
 rule "update green points"
 when
-    InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"], $train : data["trainDistance"])
+    InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"],$train : data["trainDistance"])
     $pc : PointConcept(name == "green leaves")
 then
 	log("apply \'update green points\'");
 	Double bike = $bike != null ? (Double) $bike : 0;
 	Double walk = $walk != null ? (Double) $walk : 0;
     Double bus = $bus != null ? (Double) $bus : 0;
-	Double train = $train != null ? (Double) $train : 0;
+    Double train = $train != null ? (Double) $train : 0;
 
 	Long dist1 = Math.round(bike + walk);
 	//log("dist1 " + dist1);
 	Long dist2 = Math.round(bus + train);
     //log("dist2 " + dist2);
     
-    $pc.setScore($pc.getScore() + walk_bike_points * dist1 + bus_train_points * dist2);
+    $pc.setScore($pc.getScore() + green_walk_bike_points * dist1 + green_bus_train_points * dist2);
     update($pc);
 end
 
-rule "p+r points"
+rule "green p+r bonus"
+	salience 10
 when
-    InputData(data['park'] memberOf pr_parks)
-    InputData(data['walkDistance'] != null || data['bikeDistance'] != null || data['busDistance'] != null || data['trainDistance'] != null) 
+    InputData(data['p+r'] == true) 
     $pc : PointConcept(name == "green leaves")
 then
-	log("apply \'p+r green points\'");
-	$pc.setScore($pc.getScore() + pr_points);
+	log("apply \'green p+r bonus\'");
+	$pc.setScore($pc.getScore() + green_pr_bonus);
+    update($pc);
+    insert(new PRItinerary());
+end
+
+rule "green sustainable bonus"
+	salience 1
+when
+    InputData(data['sustainable'] == true)
+    //InputData(data['p+r'] == false)
+    not PRItinerary()
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'green sustainable bonus\'");
+	$pc.setScore($pc.getScore() + green_sustainable_bonus);
     update($pc);
 end
 

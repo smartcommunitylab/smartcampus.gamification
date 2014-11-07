@@ -61,7 +61,7 @@ rule "week classification badge pr"
 	salience -1000
 when
     Action( id == 'classification')
-    InputData( data['classification_name'] == 'week classification pr')
+    InputData( data['classification_name'] == 'week classification p+r')
     InputData( data['classification_position'] == 1)
     Game( $gameId: id)
     Player( $playerId : id)

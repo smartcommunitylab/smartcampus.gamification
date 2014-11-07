@@ -47,11 +47,6 @@ public class GameManager implements GameService {
 		repo = new HashMap<String, String>();
 		repo.put("save_itinerary", "game1");
 		repo.put("classification", "game1");
-		repo.put("action3", "game1");
-		repo.put("action4", "game1");
-		repo.put("action5", "game1");
-		repo.put("action7", "game2");
-		// repo.put("action1", "game3");
 
 		String gameId = "game1";
 		// init game1 for dev purpose
@@ -66,11 +61,36 @@ public class GameManager implements GameService {
 
 			game.setTasks(new HashSet<GameTask>());
 
+			// final classifications
 			TaskSchedule schedule = new TaskSchedule();
-			schedule.setCronExpression("0 */1 * * * *");
+			schedule.setCronExpression("0 5 * * * *");
 			ClassificationTask task1 = new ClassificationTask(schedule, 3,
-					"green leaves", "final classification");
+					"green leaves", "final classification green");
 			game.getTasks().add(task1);
+
+			ClassificationTask task2 = new ClassificationTask(schedule, 3,
+					"health", "final classification health");
+			game.getTasks().add(task2);
+
+			ClassificationTask task3 = new ClassificationTask(schedule, 3,
+					"p+r", "final classification p+r");
+			game.getTasks().add(task3);
+
+			// week classifications
+			schedule = new TaskSchedule();
+			schedule.setCronExpression("0 0 * * * *");
+			ClassificationTask task4 = new ClassificationTask(schedule, 1,
+					"green leaves", "week classification green");
+			game.getTasks().add(task4);
+
+			ClassificationTask task5 = new ClassificationTask(schedule, 1,
+					"health", "week classification health");
+			game.getTasks().add(task5);
+
+			ClassificationTask task6 = new ClassificationTask(schedule, 1,
+					"p+r", "week classification p+r");
+			game.getTasks().add(task6);
+
 			saveGameDefinition(game);
 			logger.debug("created game {}", gameId);
 		} else {

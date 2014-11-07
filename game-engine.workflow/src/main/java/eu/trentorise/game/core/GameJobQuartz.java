@@ -24,9 +24,7 @@ public class GameJobQuartz extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
 			throws JobExecutionException {
-		logger.info("RUN TASK");
-
-		// task.execute(gameCtx);
+		task.execute(gameCtx);
 	}
 
 	public GameTask getTask() {

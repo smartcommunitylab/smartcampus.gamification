@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ public class ClassificationTask extends GameTask {
 	private static final String ACTION_CLASSIFICATION = "classification";
 	private static final String K_POSITION = "classification_position";
 	private static final String K_CLASSIFICATION_NAME = "classification_name";
+	private static final String K_CLASSIFICATION_TYPE = "classification_point_type";
 
 	public ClassificationTask(TaskSchedule schedule, String itemType,
 			String classificationName) {
@@ -56,6 +58,12 @@ public class ClassificationTask extends GameTask {
 	public void execute(GameContext ctx) {
 		if (ctx == null) {
 			return;
+		}
+
+		if (StringUtils.isBlank(classificationName)
+				|| StringUtils.isBlank(itemType)) {
+			throw new IllegalArgumentException(
+					"classificationName and itemType cannot be null or empty");
 		}
 		// read all game players
 		List<String> players = ctx.readPlayers();
@@ -87,6 +95,7 @@ public class ClassificationTask extends GameTask {
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put(K_CLASSIFICATION_NAME, classificationName);
+		params.put(K_CLASSIFICATION_TYPE, itemType);
 		for (int i = 0; i < itemsToNotificate; i++) {
 			params.put(K_POSITION, i + 1);
 			try {

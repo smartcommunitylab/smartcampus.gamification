@@ -68,6 +68,7 @@ public class QuartzTaskManager implements TaskService {
 				jobdata.put("gameCtx", ctx);
 				jobFactory.setName(task.getName());
 				jobFactory.setGroup(ctx.getGameRefId());
+				jobFactory.setJobDataAsMap(jobdata);
 				jobFactory.afterPropertiesSet();
 				JobDetail job = jobFactory.getObject();
 
@@ -83,8 +84,6 @@ public class QuartzTaskManager implements TaskService {
 				Trigger trigger = triggerFactory.getObject();
 				scheduler.scheduleJob(job, trigger);
 
-				scheduler.getContext().putAll(jobdata);
-				scheduler.start();
 				logger.info("Created and started job task {} in group {}",
 						task.getName(), ctx.getGameRefId());
 			} else {

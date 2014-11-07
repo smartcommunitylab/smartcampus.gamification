@@ -1,0 +1,74 @@
+<div class="well" style="text-align: center; padding-top: 2%;">
+
+	<div class="container-fluid" ng-init="getClassification(params.id)">
+		<div class="panel panel-primary" >
+			<div class="panel-heading">
+				<h3 class="panel-title"><strong>{{ 'home_title_page-classification-global' | i18n }}</strong></h3>
+			</div>
+			<div class="panel-body">
+				<form role="form" name="form" >
+<!-- <div class="row"> -->
+<!-- 	<div class="col-md-6"></div> -->
+<!-- 	<div class="col-md-6"> -->
+<!-- 		{{ 'home_filter_label' | i18n }} : <input type="search" ng-model="q" -->
+<!-- 		placeholder="{{ 'filter_text' | i18n }}" /> -->
+<!-- 	</div> -->
+<!-- 	<br> -->
+<!-- </div> -->
+					<div class="col-md-12" align="left">
+						<label for="score_type_sel">{{ 'score_type_label' | i18n }}:</label>&nbsp;
+						<select id="score_type_sel" class="form-control" ng-model="scoreTypes" ng-options="s.code as s.title for s in sTypes">
+						</select>
+					</div>
+					<div class="col-md-12">
+						<hr>
+					</div>
+	
+					<div class="col-md-12" ng-show="!isLoading">
+						<table class="table table-striped" style="width: 100%">
+							<tr ng-show="GameClassification.length != 0">
+								<th width="23%" align="center">{{ 'player_code' | i18n }}</th>
+								<th width="23%">{{ 'game_code' | i18n }}</th>
+								<th width="23%">{{ 'player_state_badge' | i18n }}</th>
+								<th width="23%">{{ 'player_state_score' | i18n }}</th>
+								<th width="8%">{{ 'player_operations' | i18n }}</th>
+							</tr>
+							<tbody class="animate-repeat"
+								ng-repeat="p in GameClassification | filter:q | orderBy: '-score[0].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
+								<tr>
+									<td align="left">{{ p.id }}</td>
+									<td align="left">{{ p.gameId }}</td>
+									<td align="left">{{ p.badge }}</td>
+									<td align="left" ng-show="scoreTypes == p.score[0].name">{{ p.score[0].score }}</td>
+									<td align="left" ng-show="scoreTypes == p.score[1].name">{{ p.score[1].score }}</td>
+									<td align="left" ng-show="scoreTypes == p.score[2].name">{{ p.score[2].score }}</td>
+									<td align="left">
+										<a ng-show="p.id == userId" href="#/profile/{{ gameId }}" ng-click="showProfile()" alt="{{ 'player_view' | i18n }}" title="{{ 'player_view' | i18n }}" ><i class="glyphicon glyphicon-eye-open"></i></a>
+									</td>
+								</tr>
+							</tbody>
+							<tr ng-show="GameClassification.length == 0">
+								<td colspan="6"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
+							</tr>
+						</table>
+						<button class="btn btn-primary"
+							ng-disabled="currentPage == 0"
+							ng-click="currentPage=currentPage-1">{{ 'previous_label' | i18n }}</button>
+							{{currentPage+1}}/{{numberOfPages()}}
+						<button class="btn btn-primary"
+							ng-disabled="currentPage >= GameClassification.length/maxPlayers - 1"
+							ng-click="currentPage=currentPage+1">{{ 'next_label' | i18n }}</button>
+					</div>
+					<div class="col-md-12" ng-show="isLoading">
+						<div class="row" style="height: 90px; margin-top: 20px">
+							<div style="text-align: center">
+								<img src="img/ajax-loader.gif" width="40" height="40" /><br>
+								<h3>{{ 'loading_text' | i18n }}...</h3>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

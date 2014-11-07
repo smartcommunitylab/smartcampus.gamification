@@ -1,0 +1,48 @@
+<div class="well">
+<!-- 	<div class="tab_menu" ng-model="tabs.index" bs-tabs> -->
+<!-- 		<div ng-repeat="tab in tabs" data-title="{{tab}}"></div> -->
+<!-- 	</div> -->
+<!-- 	<div ng-show="tabs.active() == 'Practices'"> -->
+<!-- 	ng-controller="filtro2Controller" -->
+		<div class="container-fluid" ng-init="getProfile(params.id)">
+			
+<!-- 			<div class="row" align="center"> -->
+<!-- 				<div class="col-md-12"> -->
+<!-- 					<h3>{{ 'home_title_page-player-details' | i18n }}</h3> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+			
+			<div class="panel panel-primary" >
+		   		<div class="panel-heading">
+		    		<h3 class="panel-title"><strong>{{ 'home_title_page-player-details' | i18n }}</strong></h3>
+		  		</div>
+		  		<div class="panel-body">
+		  			
+		  			<table width="100%">
+						<tr>
+							<td colspan="2"><strong>{{ 'player_details_game_label' | i18n }}:</strong> {{ userProfile.gameId }}</td>
+						</tr>
+						<tbody class="animate-repeat" ng-repeat="s in userProfile.scores">
+							<tr>
+								<td><strong>{{ 'player_details_score_name_label' | i18n }}:</strong> {{ s.name }}</td>
+								<td><strong>{{ 'player_details_score_label' | i18n }}:</strong> {{ s.score }}</td>
+							</tr>
+						</tbody>	
+<!-- 						<tr> -->
+<!-- 							<td><strong>{{ 'player_details_score_name_label' | i18n }}:</strong> {{ userProfile.scoreName }}</td> -->
+<!-- 							<td><strong>{{ 'player_details_score_label' | i18n }}:</strong> {{ userProfile.score }}</td> -->
+<!-- 						</tr> -->
+						<tr>
+							<td><strong>{{ 'player_details_badge_label' | i18n }}:</strong> {{ userProfile.badge }}</td>
+							<td></td>
+						</tr>
+		   			</table>
+		  		
+		  		</div>
+		  	</div>
+			
+			
+			
+		</div>
+<!-- 	</div> -->
+</div>

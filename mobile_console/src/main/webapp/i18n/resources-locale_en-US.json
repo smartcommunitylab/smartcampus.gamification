@@ -1,0 +1,278 @@
+[{
+    "key": "msg_text_attention",
+    "value": "Attenzione",
+    "description": "Testo generico attenzione"
+},{
+    "key": "msg_text_err",
+    "value": "Errore",
+    "description": "Testo messaggio generico errore"
+},{
+    "key": "msg_text_failure",
+    "value": "Insuccesso",
+    "description": "Testo messaggio generico insuccesso"
+},{
+    "key": "text_btn_end",
+    "value": "Termina",
+    "description": "Testo pulsante 'termina'"
+},{
+    "key": "text_btn_next",
+    "value": "Avanti",
+    "description": "Testo pulsante 'avanti'"
+},{
+    "key": "text_btn_close",
+    "value": "Chiudi",
+    "description": "Testo pulsante 'chiudi'"
+},{
+    "key": "text_btn_save",
+    "value": "Salva",
+    "description": "Testo pulsante 'salva'"
+},{
+    "key": "app_tab-title",
+    "value": "Gamification",
+    "description": "Titolo tab browser"
+}, {
+    "key": "app_home-title",
+    "value": "Web Console",
+    "description": "Titolo pagina home app"
+}, {
+    "key": "app_console-title",
+    "value": "Console Operatore",
+    "description": "Titolo pagina console app"
+}, {
+    "key": "menu_bar-home",
+    "value": "Home",
+    "description": "Link home"
+}, {
+    "key": "menu_bar-logout",
+    "value": "Esci",
+    "description": "Link esci"
+}, {
+    "key": "text_btn_prec_comp",
+    "value": "Precedente",
+    "description": "Testo pulsante 'componente precedente'"
+}, {
+	"key": "left_menu-moreServices",
+	"value": "Servizi utili",
+	"description": "Menu sx Servizi utili"
+}, {
+	"key": "left_menu-profile",
+	"value": "Profilo",
+	"description": "Link profilo"
+}, {
+	"key": "left_menu-classification",
+	"value": "Classifica",
+	"description": "Link classifica"
+}, {
+	"key": "home_title_page-classification-global",
+	"value": "Classifica Generale",
+	"description": "Titolo classifica generale"
+}, {
+	"key": "score_type_label",
+	"value": "Tipo di punteggio",
+	"description": "Label classifica - tipo di punteggio"
+}, {
+	"key": "home_title_page-player-details",
+	"value": "Profilo Giocatore",
+	"description": "Titolo dettagli giocatore"
+}, {
+	"key": "player_details_game_label",
+	"value": "Nome Gioco",
+	"description": "Label dettagli giocatore - nome gioco"
+}, {
+	"key": "player_details_score_name_label",
+	"value": "Descrizione Punteggio",
+	"description": "Label dettagli giocatore - nome punteggio"
+}, {
+	"key": "player_details_score_label",
+	"value": "Punteggio",
+	"description": "Label dettagli giocatore - punteggio"
+}, {
+	"key": "player_details_badge_label",
+	"value": "Badge Raggiunto",
+	"description": "Label dettagli giocatore - badge"
+}, {
+	"key": "left_menu-report",
+	"value": "Analizza dati",
+	"description": "Link servizio report"
+}, {
+	"key": "citizen_info",
+	"value": "Informazioni Utente",
+	"description": "Titolo informazioni giocatore"
+}, {
+	"key": "citizen_name",
+	"value": "Nome",
+	"description": "Label nome cittadino"
+}, {
+	"key": "comunity_name",
+	"value": "Nome",
+	"description": "Nome comunita"
+}, {
+	"key": "citizen_surname",
+	"value": "Cognome",
+	"description": "Label cognome cittadino"
+}, {
+	"key": "citizen_address",
+	"value": "Indirizzo",
+	"description": "Label indirizzo cittadino"
+}, {
+	"key": "comunity_address",
+	"value": "Indirizzo",
+	"description": "Indirizzo comunita"
+}, {
+	"key": "citizen_phone",
+	"value": "Telefono",
+	"description": "Label telefono cittadino"
+}, {
+	"key": "citizen_gender",
+	"value": "Sesso",
+	"description": "Label sesso cittadino"
+}, {
+	"key": "citizen_taxcode",
+	"value": "CF",
+	"description": "Label cf cittadino"
+}, {
+	"key": "citizen_date_of_birth",
+	"value": "Data di nascita",
+	"description": "Label data e luogo di nascita cittadino"
+}, {
+	"key": "citizen_birth_place",
+	"value": "Stato di nascita:",
+	"description": "Label stato di nascita cittadino"
+}, {
+	"key": "citizen_birth_municipality",
+	"value": "Comune di nascita:",
+	"description": "Label comune di nascita cittadino"
+}, {
+	"key": "citizen_mail",
+	"value": "E-mail",
+	"description": "Label mail cittadino"
+}, {
+	"key": "need_help",
+	"value": "Ti serve aiuto",
+	"description": "Menu dx Assistenza online"
+}, {
+	"key": "call_skype",
+	"value": "Chiama",
+	"description": "Link chiamata skype"
+}, {
+	"key": "online_assistance_skype",
+	"value": "l'assistenza on-line",
+	"description": "Label assistenza skype"
+}, {
+	"key": "guide",
+	"value": "Guida",
+	"description": "Menu dx Guida"
+}, {
+	"key": "faq",
+	"value": "Domande frequenti",
+	"description": "Link faq"
+}, {
+	"key": "documents",
+	"value": "Documenti",
+	"description": "Link documenti"
+}, {
+	"key": "home_filter_label",
+	"value": "Filtra per cod.",
+	"description": "Label per filtro pratiche"
+}, {
+	"key": "filter_text",
+	"value": "filtra elementi...",
+	"description": "Testo iniziale text box del filtro"
+}, {
+	"key": "practice_title",
+	"value": "Titolo",
+	"description": "Label titolo pratica"
+}, {
+	"key": "practice_type",
+	"value": "Tipo",
+	"description": "Label tipo pratica"
+}, {
+	"key": "player_code",
+	"value": "Codice Giocatore",
+	"description": "Label tipo pratica"
+}, {
+	"key": "game_code",
+	"value": "Codice Gioco",
+	"description": "Label tipo pratica"
+}, {
+	"key": "player_state_badge",
+	"value": "Stato Badge",
+	"description": "Label stato badge giocatore"
+}, {
+	"key": "player_state_score",
+	"value": "Punteggio",
+	"description": "Label stato punteggio"
+}, {
+	"key": "player_operations",
+	"value": "Azioni",
+	"description": "Label operazioni su pratica"
+}, {
+	"key": "player_view",
+	"value": "Visualizza",
+	"description": "Link visualizza dati giocatore"
+}, {
+	"key": "practice_view_pdf_file",
+	"value": "Scheda PDF",
+	"description": "Link visualizza pdf"
+}, {
+	"key": "practice_edit",
+	"value": "Modifica",
+	"description": "Link modifica"
+}, {
+	"key": "practice_cons",
+	"value": "Conferma",
+	"description": "Link conferma"
+}, {
+	"key": "previous_label",
+	"value": "Prec",
+	"description": "Label precedente"
+}, {
+	"key": "next_label",
+	"value": "Succ",
+	"description": "Label successivo"
+}, {
+	"key": "practice_remove",
+	"value": "Rimuovi",
+	"description": "Link rimuovi"
+}, {
+	"key": "practice_edit_label",
+	"value": "Modifica",
+	"description": "Label modifica pratica"
+}, {
+	"key": "practice_goback_label",
+	"value": "Indietro",
+	"description": "Label torna indietro"
+}, {
+	"key": "no_player_in_lists",
+	"value": "Nessun giocatore presente in classifica",
+	"description": "Messaggio classifica vuota"
+}, {
+	"key": "document_title",
+	"value": "Documenti",
+	"description": "Testo sezione documenti"
+}, {
+	"key": "usefull_link",
+	"value": "Contatti utili",
+	"description": "Titolo sezione contatti utili"
+}, {
+	"key": "loading_text",
+	"value": "Caricamento in corso",
+	"description": "Testo caricamento"
+}, {
+	"key": "close_view_button",
+	"value": "Chiudi",
+	"description": "Testo pulsante chiudi pagina visualizza."
+}, {
+	"key": "datepicker_button_today",
+	"value": "Oggi",
+	"description": "Testo pulsante datapicker per oggi"
+}, {
+	"key": "datepicker_button_canc",
+	"value": "Cancella",
+	"description": "Testo pulsante datapicker per cancella"
+}, {
+	"key": "datepicker_button_close",
+	"value": "Chiudi",
+	"description": "Testo pulsante datapicker per chiudi"
+}
+]

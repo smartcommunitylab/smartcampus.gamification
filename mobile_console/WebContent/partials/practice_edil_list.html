@@ -1,0 +1,80 @@
+<div class="well">
+<!-- 	<div class="tab_menu" ng-model="tabs.index" bs-tabs> -->
+<!-- 		<div ng-repeat="tab in tabs" data-title="{{tab}}"></div> -->
+<!-- 	</div> -->
+<!-- 	<div ng-show="tabs.active() == 'Practices'"> -->
+		<div class="container"
+			style="text-align: center; padding-top: 2%;">
+			<div class="row">
+				<div class="span7">
+					<h3>Edilizia Abitativa</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span3">
+					<a href="#/Practice/new/add" class="btn btn-primary btn-lg" role="button">Aggiungi</a>
+<!-- 					<a href="#" class="btn btn-primary btn-lg" role="button" ng-click="newPracticeJsp()">Aggiungi</a> -->
+				</div>
+				<div class="span4">
+					Filtra per cod. : <input type="search" ng-model="q"
+						placeholder="filter elements..." />
+				</div>
+				<br>
+			</div>
+			<div class="row">
+				<br>
+				<div class="span7"
+					ng-init="getPracticesByType(1)" >
+					<table class="table" style="width: 100%">
+						<tr>
+							<th></th>
+							<th>Cod</th>
+							<th>Titolo</th>
+							<!-- <th>Tipo</th> -->
+							<th>Stato</th>
+							<th>Giorno apertura</th>
+							<th>Azioni</th>
+						</tr>
+						<tbody class="animate-repeat"
+							ng-repeat="practice in practices | filter:q | orderBy:'-openingDate' | startFrom:currentPage*maxPractices | limitTo:maxPractices">
+							<tr>
+								<td><i class="icon-minus"></i></td>
+								<td>{{practice.code}}</td>
+								<td>{{practice.name}}</td>
+								<td>
+								<!-- <dev ng-show = "practice.type == 1" >{{ practiceType.edil }}</dev> -->
+								<!-- <dev ng-show = "practice.type == 2">{{ practiceType.ass }}</dev> -->
+									<div class="text" ng-show = "practice.state == 1 && !editableForm.$visible" ><i class="icon-ok"></i> (Approvata)</div>
+									<div class="text" ng-show = "practice.state == 2 && !editableForm.$visible"><i class="icon-time"></i> (Da approvare)</div>
+									<div class="text" ng-show = "practice.state == 3 && !editableForm.$visible"><i class="icon-ok"></i> (Consolidata)</div>
+									<div class="text" ng-show = "practice.state == 4 && !editableForm.$visible"><i class="icon-time"></i> (Da Consolidare)</div>
+									<div class="text" ng-show = "practice.state == 5 && !editableForm.$visible"><i class="icon-remove"></i> (Rimossa)</div>
+								</td>
+								<td>{{(practice.openingDate | date:"dd/MM/yyyy")}}</td>
+								<td>
+									<a href="#/Practice/{{practice.id}}?frompage=PracticeList/edil&frommenu=showPractices(1)" >Visualizza</a>&nbsp;
+									<a ng-show ="practice.state > 3" ng-href="#/PracticeList/edil" ng-click=deletePractice(practice.id)>Rimuovi</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<button class="btn btn-primary"
+							ng-disabled="currentPage == 0"
+							ng-click="currentPage=currentPage-1">Prec</button>
+						{{currentPage+1}}/{{numberOfPages()}}
+					<button class="btn btn-primary"
+							ng-disabled="currentPage >= practices.length/maxPractices - 1"
+							ng-click="currentPage=currentPage+1">Succ</button>
+				</div>
+			</div>
+<!-- 			<div class="row"> -->
+<!-- 				<div class="span5"></div> -->
+<!-- 				<div class="span3"> -->
+<!-- 					<button type="button" class="btn btn-default" -->
+<!-- 						ng-click="newPracticeShow()">Add</button> -->
+<!-- 				</div> -->
+<!-- 				<br> -->
+<!-- 			</div> -->
+		</div>
+<!-- 	</div> -->
+</div>

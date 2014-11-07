@@ -1,0 +1,69 @@
+<div class="well">
+<!-- 	<div class="tab_menu" ng-model="tabs.index" bs-tabs> -->
+<!-- 		<div ng-repeat="tab in tabs" data-title="{{tab}}"></div> -->
+<!-- 	</div> -->
+<!-- 	<div ng-show="tabs.active() == 'Practices'"> -->
+<!-- 	ng-controller="filtro2Controller" -->
+		<div class="container"
+			style="text-align: center; padding-top: 2%;">
+			<div class="row">
+				<div class="span7">
+					<h3>Pratiche recenti</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span3"></div>
+				<div class="span4">
+					Filtra per cod. : <input type="search" ng-model="q"
+						placeholder="filter elements..." />
+				</div>
+				<br>
+			</div>
+			<div class="row">
+				<br>
+				<div class="span7"
+					ng-init="getPractices()" >
+					<table class="table" style="width: 98%">
+						<tr>
+							<th></th>
+							<th>Cod</th>
+							<th>Titolo</th>
+							<th>Tipo</th>
+							<th>Giorno apertura</th>
+							<th>Azioni</th>
+						</tr>
+						<tbody class="animate-repeat"
+							ng-repeat="practice in practices | filter:q | filter: consolidedPractices | orderBy:'-openingDate' | startFrom:currentPage*maxPractices | limitTo:maxPractices">
+							<tr>
+								<td><i class="icon-minus"></i></td>
+								<td>{{practice.code}}</td>
+								<td>{{practice.name}}</td>
+								<td>
+									<dev ng-show = "practice.type == 1" >{{ practiceType.edil }}</dev>
+									<dev ng-show = "practice.type == 2">{{ practiceType.ass }}</dev>
+								</td>
+								<td>{{(practice.openingDate | date:"dd/MM/yyyy")}}</td>
+								<td><a href="#/Practice/{{practice.id}}" >Visualizza</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<button class="btn btn-primary"
+							ng-disabled="currentPage == 0"
+							ng-click="currentPage=currentPage-1">Prec</button>
+						{{currentPage+1}}/{{numberOfPages()}}
+					<button class="btn btn-primary"
+							ng-disabled="currentPage >= practices.length/maxPractices - 1"
+							ng-click="currentPage=currentPage+1">Succ</button>
+				</div>
+			</div>
+<!-- 			<div class="row"> -->
+<!-- 				<div class="span5"></div> -->
+<!-- 				<div class="span3"> -->
+<!-- 					<button type="button" class="btn btn-default" -->
+<!-- 						ng-click="newPracticeShow()">Add</button> -->
+<!-- 				</div> -->
+<!-- 				<br> -->
+<!-- 			</div> -->
+		</div>
+<!-- 	</div> -->
+</div>

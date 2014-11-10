@@ -55,7 +55,6 @@
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -184,6 +183,15 @@
 				<version>2.9</version>
 				<configuration>
 					<nohelp>true</nohelp>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>eu.trentorise.game.WebApplication</mainClass>
+					<layout>ZIP</layout>
 				</configuration>
 			</plugin>
 		</plugins>

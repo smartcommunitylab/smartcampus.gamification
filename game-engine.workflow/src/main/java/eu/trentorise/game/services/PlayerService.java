@@ -13,7 +13,7 @@ public interface PlayerService {
 
 	public List<PlayerState> loadStates(String gameId);
 
-	public boolean saveState(String userId, String gameId, PlayerState state);
+	public boolean saveState(PlayerState state);
 
 	public List<String> readPlayers(String gameId);
 }

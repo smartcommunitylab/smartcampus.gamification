@@ -3,6 +3,7 @@ package eu.trentorise.game.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,18 @@ public class DBPlayerManager implements PlayerService {
 				.toPlayerState();
 	}
 
-	public boolean saveState(String userId, String gameId, PlayerState state) {
-		// eu.trentorise.game.repo.StatePersistence persistedState = repo
-		// .findByGameIdAndPlayerId(gameId, userId);
+	public boolean saveState(PlayerState state) {
 		StatePersistence toSave = new StatePersistence(state);
-		
+
+		if (StringUtils.isBlank(state.getGameId())
+				|| StringUtils.isBlank(state.getPlayerId())) {
+			throw new IllegalArgumentException(
+					"field gameId and playerId of PlayerState MUST be set");
+		}
+
 		Criteria criteria = new Criteria();
-		criteria = criteria.and("gameId").is(gameId).and("playerId").is(userId);
+		criteria = criteria.and("gameId").is(state.getGameId()).and("playerId")
+				.is(state.getPlayerId());
 		Query query = new Query(criteria);
 		Update update = new Update();
 		update.set("concepts", toSave.getConcepts());

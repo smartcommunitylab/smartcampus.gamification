@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -53,8 +54,15 @@ public class PlayerManager implements PlayerService {
 				data.get(key), StatePersistence.class)) : new PlayerState();
 	}
 
-	public boolean saveState(String userId, String gameId, PlayerState state) {
-		String key = userId + "-" + gameId;
+	public boolean saveState(PlayerState state) {
+
+		if (StringUtils.isBlank(state.getGameId())
+				|| StringUtils.isBlank(state.getPlayerId())) {
+			throw new IllegalArgumentException(
+					"field gameId and playerId of PlayerState MUST be set");
+		}
+
+		String key = state.getPlayerId() + "-" + state.getGameId();
 		data.put(key, convert(state));
 
 		try {

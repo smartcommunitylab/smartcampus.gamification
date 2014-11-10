@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,7 @@ public class ClassificationTask extends GameTask {
 	@Override
 	public void execute(GameContext ctx) {
 		if (ctx == null) {
+			logger.warn("gameContext null");
 			return;
 		}
 
@@ -73,37 +75,43 @@ public class ClassificationTask extends GameTask {
 		for (String p : players) {
 			states.add(ctx.readStatus(p));
 		}
-		// sort for green leaves
-		Collections.sort(states,
-				Collections.reverseOrder(new ClassificationSorter(itemType)));
+
+		Classification classification = new Classification(states);
 
 		// debug logging
 		if (logger.isDebugEnabled()) {
-			for (PlayerState state : states) {
-				PointConcept score = retrieveConcept(state, itemType);
-				if (score != null) {
-					logger.debug("{}: player {} score {}", classificationName,
-							state.getPlayerId(), score.getScore());
-				}
-			}
-		}
+			for (ClassificationItem item : classification.getClassification()) {
+				logger.debug("{}: player {} score {}", classificationName,
+						item.getPlayerId(), item.getScore());
 
-		// event on classification
-		if (itemsToNotificate < states.size()) {
-			states = states.subList(0, itemsToNotificate);
+			}
 		}
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put(K_CLASSIFICATION_NAME, classificationName);
 		params.put(K_CLASSIFICATION_TYPE, itemType);
-		for (int i = 0; i < itemsToNotificate; i++) {
-			params.put(K_POSITION, i + 1);
-			try {
-				ctx.sendAction(ACTION_CLASSIFICATION, states.get(i)
-						.getPlayerId(), params);
-			} catch (IndexOutOfBoundsException e) {
+
+		int position = 1, nextPosition = 1, index;
+		Double lastScore = null;
+		boolean sameScore = false;
+		for (ClassificationItem item : classification) {
+
+			sameScore = lastScore != null && lastScore == item.getScore();
+			index = nextPosition - 1;
+
+			if (index > itemsToNotificate && !sameScore) {
 				break;
 			}
+			if (sameScore) {
+				params.put(K_POSITION, position);
+			} else {
+				params.put(K_POSITION, nextPosition);
+				position = nextPosition;
+			}
+			lastScore = item.getScore();
+			nextPosition++;
+
+			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), params);
 		}
 
 	}
@@ -119,31 +127,73 @@ public class ClassificationTask extends GameTask {
 		return null;
 	}
 
-	private class ClassificationSorter implements Comparator<PlayerState> {
+	private class Classification implements Iterable<ClassificationItem> {
+		private List<ClassificationItem> classification;
 
-		private String pointType;
-
-		public ClassificationSorter(String pointType) {
-			this.pointType = pointType;
+		public Classification(List<PlayerState> states) {
+			init(states);
 		}
 
-		public int compare(PlayerState o1, PlayerState o2) {
-			PointConcept pc1 = retrieveConcept(o1, pointType);
-			PointConcept pc2 = retrieveConcept(o2, pointType);
-			if (pc1 == null && pc2 != null) {
-				return -1;
+		private void init(List<PlayerState> states) {
+			classification = new ArrayList<ClassificationItem>();
+			for (PlayerState state : states) {
+				classification.add(new ClassificationItem(retrieveConcept(
+						state, itemType).getScore(), state.getPlayerId()));
 			}
 
-			if (pc1 != null && pc2 == null) {
-				return 1;
+			Collections.sort(classification,
+					Collections.reverseOrder(new ClassificationSorter()));
+
+		}
+
+		private class ClassificationSorter implements
+				Comparator<ClassificationItem> {
+
+			public ClassificationSorter() {
 			}
 
-			if (pc1 == null && pc2 == null) {
-				return 0;
+			public int compare(ClassificationItem o1, ClassificationItem o2) {
+				return Double.compare(o1.getScore(), o2.getScore());
 			}
 
-			return pc1.getScore().compareTo(pc2.getScore());
+		}
 
+		public List<ClassificationItem> getClassification() {
+			return classification;
+		}
+
+		public void setClassification(List<ClassificationItem> classification) {
+			this.classification = classification;
+		}
+
+		public Iterator<ClassificationItem> iterator() {
+			return classification.iterator();
+		}
+	}
+
+	private class ClassificationItem {
+		private double score;
+		private String playerId;
+
+		public ClassificationItem(double score, String playerId) {
+			this.score = score;
+			this.playerId = playerId;
+		}
+
+		public double getScore() {
+			return score;
+		}
+
+		public void setScore(double score) {
+			this.score = score;
+		}
+
+		public String getPlayerId() {
+			return playerId;
+		}
+
+		public void setPlayerId(String playerId) {
+			this.playerId = playerId;
 		}
 
 	}

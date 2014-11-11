@@ -16,7 +16,7 @@ when
     InputData( data['classification_position'] == 1)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'king-week-green')
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'king-week-green')
 then
 	log("apply \'king-week-green badge\'");
 	$bc.getBadgeEarned().add('king-week-green');
@@ -40,7 +40,7 @@ when
     InputData( data['classification_position'] == 1)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'king-week-health')
+    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'king-week-health')
 then
 	log("apply \'king-week-health badge\'");
 	$bc.getBadgeEarned().add('king-week-health');
@@ -65,7 +65,7 @@ when
     InputData( data['classification_position'] == 1)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'king-week-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'king-week-pr')
 then
 	log("apply \'king-week-pr badge\'");
 	$bc.getBadgeEarned().add('king-week-pr');

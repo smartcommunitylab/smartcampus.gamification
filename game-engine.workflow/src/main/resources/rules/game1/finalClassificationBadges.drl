@@ -17,7 +17,7 @@ when
     InputData( data['classification_position'] == 1)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'gold-medal-green')
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green')
 then
 	log("apply \'gold-medal-green badge\'");
 	$bc.getBadgeEarned().add('gold-medal-green');
@@ -35,7 +35,7 @@ when
     InputData( data['classification_position'] == 2)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'silver-medal-green')
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'silver-medal-green')
 then
 	log("apply \'silver-medal-green badge\'");
 	$bc.getBadgeEarned().add('silver-medal-green');
@@ -53,7 +53,7 @@ when
     InputData( data['classification_position'] == 3)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'bronze-medal-green')
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'bronze-medal-green')
 then
 	log("apply \'bronze-medal-green badge\'");
 	$bc.getBadgeEarned().add('bronze-medal-green');
@@ -75,7 +75,7 @@ when
     InputData( data['classification_position'] == 1)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'gold-medal-health')
+    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'gold-medal-health')
 then
 	log("apply \'gold-medal-health badge\'");
 	$bc.getBadgeEarned().add('gold-medal-health');
@@ -93,7 +93,7 @@ when
     InputData( data['classification_position'] == 2)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'silver-medal-health')
+    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'silver-medal-health')
 then
 	log("apply \'silver-medal-health badge\'");
 	$bc.getBadgeEarned().add('silver-medal-health');
@@ -111,7 +111,7 @@ when
     InputData( data['classification_position'] == 3)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'bronze-medal-health')
+    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'bronze-medal-health')
 then
 	log("apply \'bronze-medal-health badge\'");
 	$bc.getBadgeEarned().add('bronze-medal-health');
@@ -133,7 +133,7 @@ when
     InputData( data['classification_position'] == 1)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'gold-medal-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'gold-medal-pr')
 then
 	log("apply \'gold-medal-pr badge\'");
 	$bc.getBadgeEarned().add('gold-medal-pr');
@@ -151,7 +151,7 @@ when
     InputData( data['classification_position'] == 2)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'silver-medal-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'silver-medal-pr')
 then
 	log("apply \'silver-medal-pr badge\'");
 	$bc.getBadgeEarned().add('silver-medal-pr');
@@ -169,7 +169,7 @@ when
     InputData( data['classification_position'] == 3)
     Game( $gameId: id)
     Player( $playerId : id)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'bronze-medal-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'bronze-medal-pr')
 then
 	log("apply \'bronze-medal-pr badge\'");
 	$bc.getBadgeEarned().add('bronze-medal-pr');

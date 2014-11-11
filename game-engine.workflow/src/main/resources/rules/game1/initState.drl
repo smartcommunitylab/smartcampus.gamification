@@ -42,12 +42,42 @@ end
   
 *************************************************************************** */
 
-rule "init badge collection"
+rule "init green badge collection"
 	salience 1000
 when
-    not BadgeCollectionConcept()
+    not BadgeCollectionConcept(name == "green leaves")
 then
-	log("apply \'init badge collection\'");
-	BadgeCollectionConcept bcc = new BadgeCollectionConcept();
+	log("apply \'init green leaves badge collection\'");
+	BadgeCollectionConcept bcc = new BadgeCollectionConcept("green leaves");
+	insert(bcc);
+end
+
+rule "init health badge collection"
+	salience 1000
+when
+    not BadgeCollectionConcept(name == "health")
+then
+	log("apply \'init health badge collection\'");
+	BadgeCollectionConcept bcc = new BadgeCollectionConcept("health");
+	insert(bcc);
+end
+
+rule "init p+r badge collection"
+	salience 1000
+when
+    not BadgeCollectionConcept(name == "p+r")
+then
+	log("apply \'init p+r badge collection\'");
+	BadgeCollectionConcept bcc = new BadgeCollectionConcept("p+r");
+	insert(bcc);
+end
+
+rule "init special badge collection"
+	salience 1000
+when
+    not BadgeCollectionConcept(name == "special")
+then
+	log("apply \'init special badge collection\'");
+	BadgeCollectionConcept bcc = new BadgeCollectionConcept("special");
 	insert(bcc);
 end

@@ -9,7 +9,7 @@ rule "10 point pr badge"
 	salience -1000
 when
     PointConcept(name == 'p+r', score >= 10.0)
-    $bc : BadgeCollectionConcept(badgeEarned not contains '10-point-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains '10-point-pr')
     Game( $gameId: id)
     Player( $playerId : id)
 then
@@ -18,13 +18,14 @@ then
 	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'10-point-pr');
 	notificationSrv.notificate(notification);
 	log("notificate \'10-point-pr badge\'");
+	update( $bc );
 end
 
 rule "20 point pr badge"
 	salience -1000
 when
     PointConcept(name == 'p+r', score >= 20.0)
-    $bc : BadgeCollectionConcept(badgeEarned not contains '20-point-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains '20-point-pr')
     Game( $gameId: id)
     Player( $playerId : id)
 then
@@ -33,6 +34,7 @@ then
 	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'20-point-pr');
 	notificationSrv.notificate(notification);
 	log("notificate \'20-point-pr badge\'");
+	update( $bc );
 end
 
 
@@ -40,7 +42,7 @@ rule "50 point pr badge"
 	salience -1000
 when
     PointConcept(name == 'p+r', score >= 50.0)
-    $bc : BadgeCollectionConcept(badgeEarned not contains '50-point-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains '50-point-pr')
     Game( $gameId: id)
     Player( $playerId : id)
 then
@@ -49,13 +51,14 @@ then
 	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'50-point-pr');
 	notificationSrv.notificate(notification);
 	log("notificate \'50-point-pr badge\'");
+	update( $bc );
 end
 
 rule "100 point pr badge"
 	salience -1000
 when
     PointConcept(name == 'p+r', score >= 100.0)
-    $bc : BadgeCollectionConcept(badgeEarned not contains '100-point-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains '100-point-pr')
     Game( $gameId: id)
     Player( $playerId : id)
 then
@@ -64,13 +67,14 @@ then
 	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'100-point-pr');
 	notificationSrv.notificate(notification);
 	log("notificate \'100-point-pr badge\'");
+	update( $bc );
 end
 
 rule "200 point pr badge"
 	salience -1000
 when
     PointConcept(name == 'p+r', score >= 200.0)
-    $bc : BadgeCollectionConcept(badgeEarned not contains '200-point-pr')
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains '200-point-pr')
     Game( $gameId: id)
     Player( $playerId : id)
 then
@@ -79,4 +83,5 @@ then
 	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'200-point-pr');
 	notificationSrv.notificate(notification);
 	log("notificate \'200-point-pr badge\'");
+	update( $bc );
 end

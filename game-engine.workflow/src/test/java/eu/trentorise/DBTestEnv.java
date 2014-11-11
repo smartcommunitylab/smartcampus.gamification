@@ -55,7 +55,7 @@ public class DBTestEnv {
 		db.save(definePlayerState("1", 15d, 2d, 5d));
 		db.save(definePlayerState("2", 12d, 50d, 12d));
 		db.save(definePlayerState("11", 112d, 52d, 1d));
-		db.save(definePlayerState("12", 2d, 20d, 11d));
+		db.save(definePlayerState("122", 2d, 20d, 11d));
 
 	}
 
@@ -100,7 +100,14 @@ public class DBTestEnv {
 		pc = new PointConcept("p+r");
 		pc.setScore(prPoint);
 		myState.add(pc);
-		BadgeCollectionConcept badge = new BadgeCollectionConcept();
+		BadgeCollectionConcept badge = new BadgeCollectionConcept(
+				"green leaves");
+		myState.add(badge);
+		badge = new BadgeCollectionConcept("health");
+		myState.add(badge);
+		badge = new BadgeCollectionConcept("p+r");
+		myState.add(badge);
+		badge = new BadgeCollectionConcept("special");
 		myState.add(badge);
 		player.setState(myState);
 
@@ -133,41 +140,41 @@ public class DBTestEnv {
 
 		// final classifications
 		TaskSchedule schedule = new TaskSchedule();
-		schedule.setCronExpression("*/55 * * * * *");
+		schedule.setCronExpression("5 * * * * *");
 		ClassificationTask task1 = new ClassificationTask(schedule, 3,
 				"green leaves", "final classification green");
 		game.getTasks().add(task1);
 
-		// schedule = new TaskSchedule();
-		// schedule.setCronExpression("0 5 * * * *");
-		// ClassificationTask task2 = new ClassificationTask(schedule, 3,
-		// "health", "final classification health");
-		// game.getTasks().add(task2);
-		//
-		// schedule = new TaskSchedule();
-		// schedule.setCronExpression("0 6 * * * *");
-		// ClassificationTask task3 = new ClassificationTask(schedule, 3, "p+r",
-		// "final classification p+r");
-		// game.getTasks().add(task3);
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("10 * * * * *");
+		ClassificationTask task2 = new ClassificationTask(schedule, 3,
+				"health", "final classification health");
+		game.getTasks().add(task2);
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("15 * * * * *");
+		ClassificationTask task3 = new ClassificationTask(schedule, 3, "p+r",
+				"final classification p+r");
+		game.getTasks().add(task3);
 
 		// week classifications
-		// schedule = new TaskSchedule();
-		// schedule.setCronExpression("0 0 * * * *");
-		// ClassificationTask task4 = new ClassificationTask(schedule, 1,
-		// "green leaves", "week classification green");
-		// game.getTasks().add(task4);
-		//
 		schedule = new TaskSchedule();
-		schedule.setCronExpression("0/30 * * * * *");
+		schedule.setCronExpression("20 0 * * * *");
+		ClassificationTask task4 = new ClassificationTask(schedule, 1,
+				"green leaves", "week classification green");
+		game.getTasks().add(task4);
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("30 * * * * *");
 		ClassificationTask task5 = new ClassificationTask(schedule, 1,
 				"health", "week classification health");
 		game.getTasks().add(task5);
-		//
-		// schedule = new TaskSchedule();
-		// schedule.setCronExpression("0 2 * * * *");
-		// ClassificationTask task6 = new ClassificationTask(schedule, 1, "p+r",
-		// "week classification p+r");
-		// game.getTasks().add(task6);
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("40 * * * * *");
+		ClassificationTask task6 = new ClassificationTask(schedule, 1, "p+r",
+				"week classification p+r");
+		game.getTasks().add(task6);
 		return new GamePersistence(game);
 
 	}

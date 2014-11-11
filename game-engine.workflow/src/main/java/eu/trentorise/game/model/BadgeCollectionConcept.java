@@ -11,6 +11,11 @@ public class BadgeCollectionConcept extends GameConcept {
 		badgeEarned = new ArrayList<String>();
 	}
 
+	public BadgeCollectionConcept(String name) {
+		super(name);
+		badgeEarned = new ArrayList<String>();
+	}
+
 	public List<String> getBadgeEarned() {
 		return badgeEarned;
 	}

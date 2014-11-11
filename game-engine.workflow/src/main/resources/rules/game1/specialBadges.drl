@@ -14,7 +14,7 @@ rule "e-motion badge"
 	salience -1000
 when
     InputData(data['bikesharing'] == true)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'e-motion')
+    $bc : BadgeCollectionConcept(name == "special", badgeEarned not contains 'e-motion')
     Game( $gameId: id)
     Player( $playerId : id)
 then
@@ -23,6 +23,7 @@ then
 	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'e-motion');
 	notificationSrv.notificate(notification);
 	log("notificate \'e-motion badge\'");
+	update( $bc );
 end
 
 /* ***************************************************************************
@@ -34,7 +35,7 @@ rule "park badge"
 	salience -1000
 when
     InputData( $park : data['park'] != null)
-    $bc : BadgeCollectionConcept(badgeEarned not contains ($park+'-park'))
+    $bc : BadgeCollectionConcept(name == "special", badgeEarned not contains ($park+'-park'))
     Game( $gameId: id)
     Player( $playerId : id)
 then
@@ -55,7 +56,7 @@ rule "zero impact badge"
 	salience -1000
 when
     InputData(data['walkDistance'] != null || data['bikeDistance'] != null)
-    $bc : BadgeCollectionConcept(badgeEarned not contains 'zero-impact')
+    $bc : BadgeCollectionConcept(name == "special", badgeEarned not contains 'zero-impact')
     Game( $gameId: id)
     Player( $playerId : id)
 then

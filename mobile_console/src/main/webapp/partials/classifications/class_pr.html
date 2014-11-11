@@ -1,0 +1,52 @@
+<form role="form" name="form" >
+	<div class="col-md-12">
+		<hr>
+	</div>
+	
+	<div class="col-md-12" ng-show="!isLoading">
+		<table class="table table-striped" style="width: 100%">
+			<tr ng-show="GameClassification.length != 0">
+				<th width="25%" align="left">{{ 'player_position' | i18n }}</th>
+				<th width="50%" align="center">{{ 'player_name' | i18n }}</th>
+				<!-- <th width="23%">{{ 'game_code' | i18n }}</th> -->
+				<!-- <th width="23%">{{ 'player_state_badge' | i18n }}</th> -->
+				<th width="25%">{{ 'player_state_score' | i18n }}</th>
+			</tr>
+			<tbody class="animate-repeat"
+				ng-repeat="p in GameClassification | filter:q | orderBy: '-score[2].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
+				<tr ng-show="p.id == userId" class="success">
+					<td align="left">{{$index + 1}}</td>
+					<td align="left">{{ p.name }}</td>
+					<!-- <td align="left">{{ p.gameId }}</td> -->
+					<!-- <td align="left">{{ p.badge }}</td> -->
+					<td align="left">{{ p.score[2].score }}</td>
+				</tr>
+				<tr ng-show="p.id != userId">
+					<td align="left">{{$index + 1}}</td>
+					<td align="left">{{ p.name }}</td>
+					<!-- <td align="left">{{ p.gameId }}</td> -->
+					<!-- <td align="left">{{ p.badge }}</td> -->
+					<td align="left">{{ p.score[2].score }}</td>
+				</tr>
+			</tbody>
+			<tr ng-show="GameClassification.length == 0">
+				<td colspan="6"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
+			</tr>
+		</table>
+		<button class="btn btn-primary"
+			ng-disabled="currentPage == 0"
+			ng-click="currentPage=currentPage-1">{{ 'previous_label' | i18n }}</button>
+			{{currentPage+1}}/{{numberOfPages()}}
+		<button class="btn btn-primary"
+			ng-disabled="currentPage >= GameClassification.length/maxPlayers - 1"
+			ng-click="currentPage=currentPage+1">{{ 'next_label' | i18n }}</button>
+	</div>
+	<div class="col-md-12" ng-show="isLoading">
+		<div class="row" style="height: 90px; margin-top: 20px">
+			<div style="text-align: center">
+				<img src="img/ajax-loader.gif" width="40" height="40" /><br>
+				<h3>{{ 'loading_text' | i18n }}...</h3>
+			</div>
+		</div>
+	</div>
+</form>

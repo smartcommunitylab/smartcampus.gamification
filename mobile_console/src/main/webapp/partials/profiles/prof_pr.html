@@ -1,0 +1,19 @@
+<table width="100%">
+	<tr>
+		<td colspan="2"><strong>{{ 'player_details_game_label' | i18n }}:</strong> {{ userProfile.gameId }}</td>
+	</tr>
+	<tr>
+		<td><strong>{{ 'player_details_score_name_label' | i18n }}:</strong> {{ userProfile.scores[2].name }}</td>
+		<td><strong>{{ 'player_details_score_label' | i18n }}:</strong> {{ userProfile.scores[2].score }}</td>
+	</tr>
+	<tr>
+		<!-- <td><strong>{{ 'player_details_badge_label' | i18n }}:</strong> {{ userProfile.badge }}</td> -->
+		<td><strong>{{ 'player_details_badge_label' | i18n }}</strong></td>
+		<td></td>
+	</tr>
+	<tbody class="animate-repeat" ng-repeat="b in userProfile.badges[2].badgeEarned">
+		<tr>
+			<td colspan="2">{{ b }}</td>
+		</tr>
+	</tbody>
+</table>

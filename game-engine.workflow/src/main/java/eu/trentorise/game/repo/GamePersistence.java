@@ -30,6 +30,8 @@ public class GamePersistence {
 
 	private Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
 
+	private Set<String> rules = new HashSet<String>();
+
 	public GamePersistence() {
 
 	}
@@ -38,7 +40,7 @@ public class GamePersistence {
 		id = game.getId();
 		name = game.getName();
 		actions = game.getActions();
-
+		rules = game.getRules();
 		for (GameTask gt : game.getTasks()) {
 			tasks.add(new GenericObjectPersistence(gt));
 		}
@@ -49,6 +51,7 @@ public class GamePersistence {
 		game.setId(id);
 		game.setName(name);
 		game.setActions(actions);
+		game.setRules(rules);
 		Set<GameTask> t = new HashSet<GameTask>();
 		ObjectMapper mapper = new ObjectMapper();
 		for (GenericObjectPersistence obj : tasks) {

@@ -37,14 +37,14 @@ public class Application {
 		 */
 
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("bikeDistance", 4.43);
-		data.put("walkDistance", 7.100);
-		data.put("busDistance", 1.00);
-		data.put("bikesharing", true);
-		data.put("sustainable", true);
+		data.put("bikeDistance", 2.43);
+		data.put("walkDistance", 3.100);
+		// data.put("busDistance", 6.00);
+		// data.put("bikesharing", true);
+		// data.put("sustainable", true);
 		data.put("p+r", true);
-		data.put("park", "MANIFATTURA");
-		wf.apply("save_itinerary", "2", data);
+		// data.put("park", "MANIFATTURA");
+		wf.apply("save_itinerary", "1", data);
 	}
 
 }

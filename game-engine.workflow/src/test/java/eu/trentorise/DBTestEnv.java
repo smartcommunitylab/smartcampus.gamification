@@ -116,6 +116,19 @@ public class DBTestEnv {
 		game.getActions().add("save_itinerary");
 		game.getActions().add("classification");
 
+		game.setRules(new HashSet<String>());
+
+		game.getRules().add("finalClassificationBadges.drl");
+		game.getRules().add("greenBadges.drl");
+		game.getRules().add("greenPoints.drl");
+		game.getRules().add("healthBadges.drl");
+		game.getRules().add("healthPoints.drl");
+		game.getRules().add("initState.drl");
+		game.getRules().add("prBadges.drl");
+		game.getRules().add("prPoints.drl");
+		game.getRules().add("specialBadges.drl");
+		game.getRules().add("weekClassificationBadges.drl");
+
 		game.setTasks(new HashSet<GameTask>());
 
 		// final classifications

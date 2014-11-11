@@ -9,6 +9,7 @@ public class Game {
 	private String name;
 	private Set<String> actions;
 	private Set<GameTask> tasks;
+	private Set<String> rules;
 
 	public Game() {
 	}
@@ -47,6 +48,14 @@ public class Game {
 
 	public void setTasks(Set<GameTask> tasks) {
 		this.tasks = tasks;
+	}
+
+	public Set<String> getRules() {
+		return rules;
+	}
+
+	public void setRules(Set<String> rules) {
+		this.rules = rules;
 	}
 
 }

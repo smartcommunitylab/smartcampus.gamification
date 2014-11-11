@@ -59,11 +59,24 @@ public class GameManager implements GameService {
 			game.getActions().add("save_itinerary");
 			game.getActions().add("classification");
 
+			game.setRules(new HashSet<String>());
+
+			game.getRules().add("finalClassificationBadges.drl");
+			game.getRules().add("greenBadges.drl");
+			game.getRules().add("greenPoints.drl");
+			game.getRules().add("healthBadges.drl");
+			game.getRules().add("healthPoints.drl");
+			game.getRules().add("initState.drl");
+			game.getRules().add("prBadges.drl");
+			game.getRules().add("prPoints.drl");
+			game.getRules().add("specialBadges.drl");
+			game.getRules().add("weekClassificationBadges.drl");
+
 			game.setTasks(new HashSet<GameTask>());
 
 			// final classifications
 			TaskSchedule schedule = new TaskSchedule();
-			schedule.setCronExpression("0 5 * * * *");
+			schedule.setCronExpression("30 * * * * *");
 			ClassificationTask task1 = new ClassificationTask(schedule, 3,
 					"green leaves", "final classification green");
 			game.getTasks().add(task1);
@@ -78,7 +91,7 @@ public class GameManager implements GameService {
 
 			// week classifications
 			schedule = new TaskSchedule();
-			schedule.setCronExpression("0 0 * * * *");
+			schedule.setCronExpression("55 * * * * *");
 			ClassificationTask task4 = new ClassificationTask(schedule, 1,
 					"green leaves", "week classification green");
 			game.getTasks().add(task4);

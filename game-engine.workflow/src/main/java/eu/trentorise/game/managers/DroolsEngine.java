@@ -1,6 +1,6 @@
 package eu.trentorise.game.managers;
 
-import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,6 +35,7 @@ import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.GameEngine;
+import eu.trentorise.game.services.GameService;
 
 @Component
 public class DroolsEngine implements GameEngine {
@@ -43,6 +44,9 @@ public class DroolsEngine implements GameEngine {
 
 	@Autowired
 	NotificationManager notificationSrv;
+
+	@Autowired
+	GameService gameSrv;
 
 	private KieServices kieServices = KieServices.Factory.get();
 
@@ -93,13 +97,13 @@ public class DroolsEngine implements GameEngine {
 
 	private StatelessKieSession loadGameConstants(StatelessKieSession kSession,
 			String gameId) {
-		File rulesFolder = new File("src/main/resources/rules/" + gameId);
-
 		// load game constants
-		File constantsFile = new File(rulesFolder, "constants");
+
+		URL costantsFileURL = Thread.currentThread().getContextClassLoader()
+				.getResource("rules/" + gameId + "/constants");
 		try {
 			PropertiesConfiguration constants = new PropertiesConfiguration(
-					constantsFile);
+					costantsFileURL);
 			constants.setListDelimiter(',');
 			logger.info("constants file loaded for game {}", gameId);
 			Iterator<String> constantsIter = constants.getKeys();
@@ -110,8 +114,7 @@ public class DroolsEngine implements GameEngine {
 				logger.debug("constant {} loaded", constant);
 			}
 		} catch (ConfigurationException e) {
-			logger.error("{} loading exception",
-					constantsFile.getAbsoluteFile());
+			logger.error("{} loading exception", costantsFileURL);
 		}
 		return kSession;
 	}
@@ -136,26 +139,23 @@ public class DroolsEngine implements GameEngine {
 		KieFileSystem kfs = kieServices.newKieFileSystem();
 
 		// load core.drl
-		File coreRules = new File("src/main/resources/rules/core.drl");
-		Resource coreRes = res.newFileSystemResource(coreRules
-				.getAbsolutePath());
+		Resource coreRes = res.newClassPathResource("rules/core.drl");
 		kfs.write(coreRes);
 		logger.info("Core rules loaded");
 
-		File rulesFolder = new File("src/main/resources/rules/" + gameId);
-
 		// load rules
-		if (rulesFolder.exists()) {
-			for (File rule : rulesFolder.listFiles()) {
-				Resource r1 = res.newFileSystemResource(rule.getAbsolutePath());
-				kfs.write(r1);
-				logger.info(rule.getAbsolutePath() + " loaded");
-			}
-			kieServices.newKieBuilder(kfs).buildAll();
-			logger.info("Rules repository built");
-		} else {
-			logger.error(rulesFolder.getAbsolutePath());
+
+		Game game = gameSrv.loadGameDefinitionById(gameId);
+
+		for (String rule : game.getRules()) {
+			String path = "rules/" + gameId + "/" + rule;
+			Resource r1 = res.newClassPathResource(path);
+			kfs.write(r1);
+			logger.info("{} loaded", path);
 		}
+		kieServices.newKieBuilder(kfs).buildAll();
+		logger.info("Rules repository built");
 
 	}
+
 }

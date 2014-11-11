@@ -159,7 +159,7 @@ public class DBTestEnv {
 
 		// week classifications
 		schedule = new TaskSchedule();
-		schedule.setCronExpression("20 0 * * * *");
+		schedule.setCronExpression("20 * * * * *");
 		ClassificationTask task4 = new ClassificationTask(schedule, 1,
 				"green leaves", "week classification green");
 		game.getTasks().add(task4);

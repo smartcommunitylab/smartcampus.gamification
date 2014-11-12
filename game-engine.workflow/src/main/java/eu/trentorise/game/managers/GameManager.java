@@ -89,6 +89,52 @@ public class GameManager implements GameService {
 		}
 	}
 
+	private Set<GameTask> testTasks() {
+		Set<GameTask> tasks = new HashSet<GameTask>();
+
+		// week classification
+
+		TaskSchedule schedule = new TaskSchedule();
+		schedule.setCronExpression("0 0 12 17 * *");
+		ClassificationTask task4 = new ClassificationTask(schedule, 1,
+				"green leaves", "week classification green");
+		tasks.add(task4);
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("0 5 12 17 * *");
+		ClassificationTask task5 = new ClassificationTask(schedule, 1,
+				"health", "week classification health");
+		tasks.add(task5);
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("0 10 12 17 * *");
+		ClassificationTask task6 = new ClassificationTask(schedule, 1, "p+r",
+				"week classification p+r");
+		tasks.add(task6);
+
+		// final classification
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("0 0 12 19 * *");
+		ClassificationTask task1 = new ClassificationTask(schedule, 3,
+				"green leaves", "final classification green");
+		tasks.add(task1);
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("0 5 12 19 * *");
+		ClassificationTask task2 = new ClassificationTask(schedule, 3,
+				"health", "final classification health");
+		tasks.add(task2);
+
+		schedule = new TaskSchedule();
+		schedule.setCronExpression("0 10 12 19 * *");
+		ClassificationTask task3 = new ClassificationTask(schedule, 3, "p+r",
+				"final classification p+r");
+		tasks.add(task3);
+
+		return tasks;
+	}
+
 	private Set<GameTask> finalGameTasks() {
 		Set<GameTask> tasks = new HashSet<GameTask>();
 

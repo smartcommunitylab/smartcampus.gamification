@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlayerRepositoryDao extends CrudRepository<Player, String>{
 	
-	public Player findById(String id);
+	public Player findByPid(String id);
+	
+	public Player findBySocialId(String id);
 
 }

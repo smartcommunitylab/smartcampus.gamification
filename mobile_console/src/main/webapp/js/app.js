@@ -37,6 +37,11 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
+    	.when('/rules', {
+    		templateUrl: 'partials/rules.html',
+    		controller: 'MainCtrl',
+    		controllerAs: 'main'
+    	})
     	.otherwise({
     		redirectTo:'/'
     	});

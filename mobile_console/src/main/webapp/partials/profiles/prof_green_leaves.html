@@ -1,19 +1,87 @@
-<table width="100%">
-	<tr>
-		<td colspan="2"><strong>{{ 'player_details_game_label' | i18n }}:</strong> {{ userProfile.gameId }}</td>
-	</tr>
+<!-- <table width="100%"> -->
+<!-- 	<tr> -->
+<!-- 		<td colspan="2"><strong>{{ 'player_details_game_label' | i18n }}:</strong> {{ userProfile.gameId }}</td> -->
+<!-- 	</tr> -->
 	
-	<tr>
-		<td><strong>{{ 'player_details_score_name_label' | i18n }}:</strong> {{ userProfile.scores[0].name }}</td>
-		<td><strong>{{ 'player_details_score_label' | i18n }}:</strong> {{ userProfile.scores[0].score }}</td>
-	</tr>
-	<tr>
-		<td><strong>{{ 'player_details_badge_label' | i18n }}</strong></td>
-		<td></td>
-	</tr>
-	<tbody class="animate-repeat" ng-repeat="b in userProfile.badges[0].badgeEarned">
-		<tr>
-			<td>{{ b }}</td>
-		</tr>
-	</tbody>
-</table>
+<!-- 	<tr> -->
+<!-- 		<td><strong>{{ 'player_details_score_name_label' | i18n }}:</strong> {{ userProfile.scores[0].name }}</td> -->
+<!-- 		<td><strong>{{ 'player_details_score_label' | i18n }}:</strong> {{ userProfile.scores[0].score }}</td> -->
+<!-- 	</tr> -->
+<!-- 	<tr> -->
+<!-- 		<td><strong>{{ 'player_details_badge_label' | i18n }}</strong></td> -->
+<!-- 		<td></td> -->
+<!-- 	</tr> -->
+<!-- 	<tbody class="animate-repeat" ng-repeat="b in userProfile.badges[0].badgeEarned"> -->
+<!-- 		<tr> -->
+<!-- 			<td>{{ b }}</td> -->
+<!-- 		</tr> -->
+<!-- 	</tbody> -->
+<!-- </table> -->
+<div id="green-big-score" class="row" ng-show="userShowGreenKingWeek!=true">
+	<div class="col-md-6 col-md-offset-3" align="center">
+		<h5>
+			<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
+			<strong>{{ userProfile.scores[0].score }} {{ 'player_details_score_label_green' | i18n }}</strong>
+		</h5>
+	</div>
+</div>
+<div id="green-small-score" class="row" ng-show="userShowGreenKingWeek!=true" align="center">
+	<div class="col-md-3 col-md-offset-3" align="center">
+		<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
+	</div>
+	<div class="col-md-3" align="center">
+		<h5><strong>{{ userProfile.scores[0].score }} {{ 'player_details_score_label_green' | i18n }}</strong></h5>
+	</div>
+</div>
+<div id="green-big-score-king" class="row" ng-show="userShowGreenKingWeek==true">
+	<div class="col-md-6" align="right">
+		<h5>
+			<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
+			<strong>{{ userProfile.scores[0].score }} {{ 'player_details_score_label_green' | i18n }}</strong>
+		</h5>
+	</div>
+	<div class="col-md-1" align="center"></div>
+	<div class="col-md-5" align="center">
+		<img height="150" width="150" src="img/green/greenKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
+	</div>
+</div>
+<div id="green-small-score-king" class="row" ng-show="userShowGreenKingWeek==true">
+	<div class="col-md-3 col-md-offset-3" align="center">
+		<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
+	</div>
+	<div class="col-md-3" align="center">	
+		<h5><strong>{{ userProfile.scores[0].score }} {{ 'player_details_score_label_green' | i18n }}</strong></h5>
+	</div>
+	<div class="col-md-3" align="center">
+		<img height="150" width="150" src="img/green/greenKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
+	</div>
+</div>
+<div class="row" align="center">
+	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 10">
+		<img height="150" width="150" src="img/green/greenLeaves10.svg" alt="Bedge Green 10" title="Bedge Green 10">
+	</div>
+	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 50">
+		<img height="150" width="150" src="img/green/greenLeaves50.svg" alt="Bedge Green 50" title="Bedge Green 50">
+	</div>
+	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 100">
+		<img height="150" width="150" src="img/green/greenLeaves100.svg" alt="Bedge Green 100" title="Bedge Green 100">
+	</div>
+	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 250">
+		<img height="150" width="150" src="img/green/greenLeaves250.svg" alt="Bedge Green 250" title="Bedge Green 250">
+	</div>
+	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 500">
+		<img height="150" width="150" src="img/green/greenLeaves500.svg" alt="Bedge Green 500" title="Bedge Green 500">
+	</div>
+	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 1000">
+		<img height="150" width="150" src="img/green/greenLeaves1000.svg" alt="Bedge Green 1000" title="Bedge Green 1000">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenBronzeMedal==true">
+		<img height="150" width="150" src="img/green/greenBronzeMedal.svg" alt="Bedge Green Bronze Medal" title="Bedge Green Bronze Medal">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenSilverMedal==true">
+		<img height="150" width="150" src="img/green/greenSilverMedal.svg" alt="Bedge Green Silver Medal" title="Bedge Green Silver Medal">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenGoldMedal==true">
+		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Green Gold Medal" title="Bedge Green Gold Medal">
+	</div>
+</div>

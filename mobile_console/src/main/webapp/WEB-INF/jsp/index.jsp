@@ -2,9 +2,10 @@
 <html ng-app="cp">
 <head id="myHead" lang="it">
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ 'app_tab-title' | i18n }}</title>
 
-<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="css/xeditable.css" rel="stylesheet">
 <link href="css/modaldialog.css" rel="stylesheet">
@@ -27,8 +28,6 @@
 <script src="js/controllers/ctrl.js?1001"></script>
 <script src="js/controllers/ctrl_login.js?1000"></script>
 <script src="js/controllers/ctrl_main.js?1000"></script>
-<script src="js/controllers/ctrl_practice.js?1001"></script>
-<script src="js/controllers/ctrl_info.js"></script>
 
 <script src="js/filters.js?1001"></script>
 <script src="js/services.js?1001"></script>
@@ -139,6 +138,7 @@ var base64="<%=request.getAttribute("base64")%>";
 	        if ((d.tagName.toUpperCase() === 'INPUT' && 
 	             (
 	                 d.type.toUpperCase() === 'TEXT' ||
+	                 d.type.toUpperCase() === 'NUMBER' ||
 	                 d.type.toUpperCase() === 'PASSWORD' || 
 	                 d.type.toUpperCase() === 'FILE' || 
 	                 d.type.toUpperCase() === 'EMAIL' || 
@@ -160,98 +160,247 @@ var base64="<%=request.getAttribute("base64")%>";
 
   
   </script>
+  <style>
+	.navbar-default {
+		background: #c2c2c2;
+		font-weight: bold;
+	}
+	.navbar-default .navbar-text {
+  		color: #2a2a2a;
+	}
+	.navbar-default .navbar-nav > li > a {
+	  	color: #2a2a2a;
+	}
+	.navbar-default .navbar-nav
+	
+/* 	.navbar-default .navbar-nav > .active { */
+/* 	  	color: #00984a; /*#555555;*/ */
+/* 	  	background-color: #c2c2c2; */
+/* 	} */
+	
+	.navbar-default .navbar-nav > .active > a, 
+	.navbar-default .navbar-nav > .active > a:hover, 
+	.navbar-default .navbar-nav > .active > a:focus {
+	 	color: #00984a; /*#555555;*/
+	  	background: #c2c2c2;
+	}
+
+  	.tab-content {
+    	border-left: 3px solid #c2c2c2;
+    	border-right: 3px solid #c2c2c2;
+    	border-bottom: 3px solid #c2c2c2;
+    	background-color: #e5e4e2;
+    	padding: 25px;
+	}
+	.nav-tabs {
+		font-weight: bold;
+        color: #2a2a2a;
+        background-color: #e5e4e2;
+    }
+	
+	.nav-tabs.nav-justified > li > a,
+    .nav-tabs.nav-justified > li > a:hover,
+    .nav-tabs.nav-justified > li > a:focus {
+        color: #2a2a2a;
+        background-color: #e5e4e2;
+        border-top: 3px solid #c2c2c2;
+        border-right: 3px solid #c2c2c2;
+      	border-left: 3px solid #c2c2c2;
+     	border-bottom: 3px solid #c2c2c2;
+/* 		border-bottom-color: transparent; */
+    } 
+	
+	.nav-tabs.nav-justified > li.active > a,
+    .nav-tabs.nav-justified > li.active > a:hover,
+    .nav-tabs.nav-justified > li.active > a:focus {
+        color: #00984a;
+        background-color: #e5e4e2;
+        border-top: 3px solid #c2c2c2;
+        border-right: 3px solid #c2c2c2;
+      	border-left: 3px solid #c2c2c2;
+		border-bottom: 3px solid #e5e4e2;
+    } 
+    
+    #prof-nav.tab-content {
+    	background-color: trasparent;
+    	padding: 25px;
+	}
+	
+	.panel-success {
+		background-color: #e5e4e2;
+        border-top: 3px solid #c2c2c2;
+        border-right: 3px solid #c2c2c2;
+      	border-left: 3px solid #c2c2c2;
+		border-bottom: 3px solid #c2c2c2;
+	}
+	
+/* 	@media (max-width: @screen-xs-max) { */
+/*   		#my-small-menu { display: block; }  /* show it on small screens */ */
+/*   		#my-big-menu { display: none; }  /* hide it on small screens */ */
+/* 	} */
+
+	#my-small-menu { display: block; }   /* hide it elsewhere */
+  	#my-big-menu { display: none; }   /* show it elsewhere */
+  	/* Block for green score */
+  	#green-small-score { display: block; }
+	#green-big-score { display: none; }
+	#green-small-score-king { display: block; }
+	#green-big-score-king { display: none; }
+	/* Block for health score */
+  	#health-small-score { display: block; }
+	#health-big-score { display: none; }
+	#health-small-score-king { display: block; }
+	#health-big-score-king { display: none; }
+	/* Block for pr score */
+  	#pr-small-score { display: block; }
+	#pr-big-score { display: none; }
+	#pr-small-score-king { display: block; }
+	#pr-big-score-king { display: none; }
+	
+
+	@media (min-width:768px) {
+		#my-small-menu { display: none; }   /* hide it elsewhere */
+  		#my-big-menu { display: block; }   /* show it elsewhere */
+/*   	#my-small-tabs { dispaly: none; } */
+/*   	#my-big-tabs { dispaly: block; } */
+		/* Block for green score */
+		#green-small-score { display: none; }
+		#green-big-score { display: block; }
+		#green-small-score-king { display: none; }
+		#green-big-score-king { display: block; }
+		/* Block for health score */
+  		#health-small-score { display: none; }
+		#health-big-score { display: block; }
+		#health-small-score-king { display: none; }
+		#health-big-score-king { display: block; }
+		/* Block for pr score */
+  		#pr-small-score { display: none; }
+		#pr-big-score { display: block; }
+		#pr-small-score-king { display: none; }
+		#pr-big-score-king { display: block; }
+		
+		
+	}
+	
+  </style>
 
 </head>
 
 <body>
 	<div id="myBody" ng-controller="MainCtrl" ng-init="setItalianLanguage()">
 	
-    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div id="my-big-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
       	<div class="row" align="center">
-      	<div class="col-md-2"></div>
-		<div class="col-md-8">
+		<div class="col-md-8 col-md-offset-2">
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
 			<!-- <li class="active"><a href="#/" ng-click="home()">{{ 'menu_bar-home' | i18n }}</a></li> -->
+            <li>
+            	<a>
+            		<img height="22" src="img/foglia.svg">
+            	</a>
+            </li> 
             
             <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li>
             <li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li>
+            <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
             
           </ul>
           <ul class="nav navbar-nav navbar-right" >
-<!--           	<li class="dropdown"> -->
-<!--           		<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ 'guide' | i18n }} <span class="caret"></span></a> -->
-<!--           		<ul class="dropdown-menu" role="menu"> -->
-<!--             		<li><a href="http://www.trentinosociale.it/index.php/Servizi-ai-cittadini/Guida-ai-servizi/per-destinatari/Anziani/Abitare-o-disporre-di-un-alloggio-adeguato-e-sicuro/Locazione-alloggio-pubblico-a-canone-sociale" target="_blank">{{ 'document_link_edil' | i18n }}</a></li> -->
-<!--             		<li><a href="http://www.trentinosociale.it/index.php/Servizi-ai-cittadini/Guida-ai-servizi/per-destinatari/Anziani/Abitare-o-disporre-di-un-alloggio-adeguato-e-sicuro/Contributo-sul-canone-di-affitto" target="_blank">{{ 'document_link_allowances' | i18n }}</a></li> -->
-<!--             	</ul> -->
-<!--           	</li> -->
-<!--           	<li><a href="mailto:myweb.edilizia@comunitadellavallagarina.tn.it?Subject=Info%20MyWeb" target="_top" alt="myweb.edilizia@comunitadellavallagarina.tn.it" title="myweb.edilizia@comunitadellavallagarina.tn.it">{{ 'usefull_link'| i18n }}</a></li> -->
           	<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li>
           	<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li>
-            <li class="active" >
-            	<a>
-            		<span class="glyphicon glyphicon-user"></span>
-            		{{ getUserName() }} {{ getUserSurname() }}
-            	</a>
-            </li>
-            
+<!--             <li class="active" > -->
+<!--             	<a> -->
+<!--             		<span class="glyphicon glyphicon-user"></span> -->
+<!--             		{{ getUserName() }} {{ getUserSurname() }} -->
+<!--             	</a> -->
+<!--             </li> --> 
             <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li><!-- ng-click="logout()" -->
           </ul>
         </div><!-- /.nav-collapse -->
         </div>
-        <div class="col-md-2"></div>
     	</div>
       </div><!-- /.container -->
     </div><!-- /.navbar -->
+    
+    <div id="my-small-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+      	<div class="row">
+			<div class="col-md-8 col-md-offset-2">
+			    <div class="navbar-header">
+				    <ul class="nav navbar-nav">
+						<!-- <li class="active"><a href="#/" ng-click="home()">{{ 'menu_bar-home' | i18n }}</a></li> -->
+			            <li class="dropdown">
+			            	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" >
+			            		<img height="22" src="img/navMobile.svg">
+			            	</a>
+			            	<ul class="dropdown-menu" role="menu">
+			            		<li><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li>
+			            		<li><a href="#/classification/{{ gameId }}" ng-click="showClassification()" ><strong>{{ 'left_menu-classification' | i18n }}</strong></a></li>
+			            		<li><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
+			            		<li class="divider"></li>
+			            		<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li>
+			          			<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li>
+			          			<li class="divider"></li>
+			          			<li><a href="logout" ng-click="logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li><!-- ng-click="logout()" -->
+			            	</ul>
+			            </li> 
+			         </ul>
+			    </div>
+			    <div class="collapse navbar-collapse navbar-right">
+			    	<ul class="nav navbar-nav">
+			         	<li class="active" ng-show="isActiveProfile() == 'active'">{{ 'left_menu-profile' | i18n }}</li>
+			            <li class="active" ng-show="isActiveClassification() == 'active'">{{ 'left_menu-classification' | i18n }}</li>
+			            <li class="active" ng-show="isActiveRules() == 'active'">{{ 'left_menu-rules' | i18n }}</li> 
+			         </ul>
+			    </div>     
+	    	</div>
+	    </div>
+<!--         <div class="collapse navbar-collapse"> -->
+<!--           <ul class="nav navbar-nav"> -->
+<!--             <li class="dropdown"> -->
+<!--             	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> -->
+<!--             		<img height="22" src="img/navMobile.svg"> -->
+<!--             	</a> -->
+<!--             	<ul class="dropdown-menu" role="menu"> -->
+<!--             		<li><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li> -->
+<!--             		<li><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li> -->
+<!--             		<li><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li> -->
+<!--             		<li class="divider"></li> -->
+<!--             		<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
+<!--           			<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
+<!--           			<li class="divider"></li> -->
+<!--           			<li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
+<!--             	</ul> -->
+<!--             </li>   -->
+<!--           </ul> -->
+<!--         </div> -->
+      </div><!-- /.container -->
+    </div><!-- /.navbar -->
+    
 	<div class="container">
 <!-- 		<div class="row" style="margin-top:70px;"> -->
 		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-8">
+			<div class="col-md-8 col-md-offset-2">
 				<div class="panel panel-default" style="margin-top:65px;">
 			  		<div class="panel-body">
-			  			<div style="margin:5px 15px;">
-						<!-- Rights menu - List of links and other services (menu mensa etc) style="margin: 50px 20px 10px 0;" -->
-	<!-- 				<div class="col-md-2" style="margin-top:135px;" ng-show="!frameOpened"> -->
-	<!-- 					<div class="panel panel-default" style="height: 230px"> -->
-	<!-- 						<div class="panel-heading"> -->
-	<!-- 							<h4 class="panel-title">{{ 'left_menu-availableServices_eu' | i18n }}</h4> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="panel-body"> -->
-	<!-- 							<ul class="nav nav-pills nav-stacked" style="font-size: 14px"> -->
-	<!-- 			            		<li class="{{ isActiveLinkEdil() }}"><a href="#/PracticeList/edil/1" ng-click="showPractices(1, true)">{{ 'left_menu-bildings' | i18n }}</a></li> -->
-	<!-- 			            		<li class="{{ isActiveLinkAss() }}"><a href="#/PracticeList/ass/1" ng-click="showPractices(2, true)">{{ 'left_menu-allowances' | i18n }}</a></li> -->
-	<!-- 			        		</ul> -->
-	<!-- 			        	</div> -->
-	<!-- 			        </div> -->
-	<!-- 			        <div class="panel panel-default" style="height: 230px"> -->
-	<!-- 						<div class="panel-heading"> -->
-	<!-- 							<h4 class="panel-title">{{ 'left_menu-availableServices_extraeu' | i18n }}</h4> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="panel-body"> -->
-	<!-- 							<ul class="nav nav-pills nav-stacked" style="font-size: 14px"> -->
-	<!-- 			            		<li class="{{ isActiveLinkEdilExtra() }}"><a href="#/PracticeList/edil/2" ng-click="showPractices(1, false)">{{ 'left_menu-bildings' | i18n }}</a></li> -->
-	<!-- 			            		<li class="{{ isActiveLinkAssExtra() }}"><a href="#/PracticeList/ass/2" ng-click="showPractices(2, false)">{{ 'left_menu-allowances' | i18n }}</a></li> -->
-	<!-- 			        		</ul> -->
-	<!-- 			        	</div> -->
-	<!-- 			        </div> -->
-	<!-- 				</div> -->
+			  			<div style="margin:5px 5px;">
+			  			
 				<!-- Main section with informations and practices -->
 	<!-- 		<div ng-class="{col-md-7:!frameOpened, col-md-9:frameOpened}"> -->
 	<!-- 				<div ng-class="{'col-md-8':!frameOpened, 'col-md-10':frameOpened}"> -->
 	<!-- 					<div class="col-md-10"> -->
-							<div class="row" align="center" style="height: 85px"><!-- ; margin-top: 20px; -->
-								<div><!-- "text-align: center" -->
-									<table>
-										<tr>
-											<td width="35%" align="center" valign="middle"><img src="img/gamification_small.jpeg" alt="Logo gamification" title="Logo gamification" /></td>
-											<td width="65%" align="center" valign="middle"><h1>{{ 'app_home-title' | i18n }}</h1></td>
-										</tr>
-									</table>
-								</div>
-							</div>
+<!-- 							<div class="row" align="center" style="height: 85px">; margin-top: 20px; -->
+<!-- 								<div>"text-align: center" -->
+<!-- 									<table> -->
+<!-- 										<tr> -->
+<!-- 											<td width="35%" align="center" valign="middle"><img src="img/gamification_small.jpeg" alt="Logo gamification" title="Logo gamification" /></td> -->
+<!-- 											<td width="65%" align="center" valign="middle"><h1>{{ 'app_home-title' | i18n }}</h1></td> -->
+<!-- 										</tr> -->
+<!-- 									</table> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
 							
 <!-- 							<div class="row"> -->
 <!-- 								<div class="well">style="height: 250px" -->
@@ -286,24 +435,23 @@ var base64="<%=request.getAttribute("base64")%>";
 <!-- 									</table> -->
 <!-- 								</div> -->
 <!-- 							</div> -->
-							
-							<div class="row" style="height: 30px;" ng-show="!frameOpened">&nbsp;</div>
-							<div ng-view class="row" >{{ 'loading_text'| i18n }}...</div>
+							<ng-view class="row">{{ 'loading_text'| i18n }}...</ng-view>
 						</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-2"></div>
 			</div>
 			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-8">
-					<hr>
+				<div class="col-md-8 col-md-offset-2" align="center">
+					
+					<h5><font face="Raleway-bold" size="5" color="gray"><strong>Green Game</strong></font> con ViaggiaRovereto</h5>
+					&egrave; un progetto di:
+					<br>
 					<footer>
 		<!-- 				<p>&copy; SmartCampus 2013</p> -->
+						<img src="img/footer.svg" width="90%" alt="" title="" />
 					</footer>
 				</div>
-				<div class="col-md-2"></div>	
 			</div>
 		</div>
 	</div>	

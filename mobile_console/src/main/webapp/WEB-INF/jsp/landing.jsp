@@ -2,6 +2,7 @@
 <html ng-app="cp">
 <head lang="it">
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- <title>{{ 'app_tab-title' | i18n }}</title> -->
 <title>Gamification</title>
 
@@ -46,18 +47,22 @@
 	}
 	
 </script>
+<style type="text/css">
+	.panel {
+		background: url(img/paginaAccesso-56-56-56.svg) no-repeat center center fixed;
+	}
+</style>
 
 </head>
 
 <body>
 	<div class="container" align="center"><!-- ng-controller="LoginCtrl" ng-init="checkLogin()" -->
-		<div class="row" style="margin-top: 50px;">
-			<div class="col-md-2"></div>
-			<div class="col-md-8">
-				<div class="panel panel-default" >
+		<div class="row" style="margin-top: 20px">
+			<div class="col-md-8 col-md-offset-2">
+				<div class="panel panel-default" background="img/paginaAccesso-56-56-56.svg">
 	  				<div class="panel-body">
 	<!-- 				<div class="row" style="height: 800px"> -->
-						<div style="margin: 10px 10px 10px 10px">
+						<div style="margin: 5px 3px 5px 3px">
 							<!--[if lt IE 9]>
 							<div class="row" style="height: 20px" align="center" ng-init="hideLogin()">
 								<h4><font color="red">Alcune funzionalit&agrave; del portale non sono supportate in Internet Explorer 8 e versioni inferiori. Aggiorna Internet Explorer ad un versione successiva o utilizza un altro browser per accedere al portale.</font></h4>
@@ -68,37 +73,35 @@
 							<div class="row" style="height: 20px" align="center" ng-show="isIe10==true">
 								<h4><font color="red">Alcune funzionalit&agrave; del portale non sono supportate in Internet Explorer. Utilizza un altro browser per accedere al portale.</font></h4>
 							</div>
-							<div style="margin: 20px" align="center">
-	<!-- 							<h2>MyWeb</h2> -->
-								<img src="img/gamification_med.jpeg" alt="Logo gamification" title="Logo gamification" />
+							<div style="margin: 50px 15px 15px 15px" align="center">
+								<h1>
+									<font face="Raleway-bold" size="48" color="gray"><strong>GreenGame</strong></font>
+								</h1>
+								<h2>
+									<font face="Raleway">con ViaggiaRovereto</font>
+								</h2>
+								<!-- <img src="img/gamification_med.jpeg" alt="Logo gamification" title="Logo gamification" /> -->
 							</div>
-							<div class="well">
-							<p align="justify">Caro Utente, benvenuto in <b>Gamification WEB</b>, il Portale dove puoi tenere sotto controllo il tuo profilo e la classifica generale del gioco integrato nell' app di <b>Rovereto Explorer</b>. Effettua il login per visualizzare i dati.<br></p>
-							<table class="table" style="width: 98%">
-								<tr>
-									<!--<td align="center"><a id="btn_login_prod" href="adc_login" class="btn btn-primary" role="button" ng-click="getLogin()" disabled="false">Procedi con l'autenticazione</a></td> ng-show="isIe10!=true && isLoginShowed!=false" -->						
-									<td align="center"><a id="btn_login_test" href="login" class="btn btn-default" role="button" ng-click="getOldLogin()" disabled="false">Login</a></td>
-								</tr>
-								<tr>
-									<td colspan="1">&nbsp;</td>
-								</tr>
-							</table>
+							<div class="row" style="height: 150px; margin-top: 80px" align="center">
+								&nbsp;
+								&nbsp;
+								<a id="btn_login_test" href="login" class="btn btn-success btn-lg" role="button" ng-click="getOldLogin()" disabled="false"><font face="Raleway" size="4"><strong>Accedi con Google</strong></font></a>
+							</div>
+							<div class="row" align="center">
+								<img src="img/lineaPaginaAccesso-57.svg" width="95%" alt="" title="" />
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-8">
-				<hr>
+			<div class="col-md-8 col-md-offset-2">
+				<!-- <hr> -->
 				<footer>
-<!-- 				<p>&copy; SmartCampus 2013</p> -->
+			<!-- <p>&copy; SmartCampus 2013</p> -->
 				</footer>
 			</div>
-			<div class="col-md-2"></div>
 		</div>
 	</div>
 

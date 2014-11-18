@@ -39,12 +39,13 @@ public class Application {
 		Map<String, Object> data = new HashMap<String, Object>();
 		// data.put("bikeDistance", 8.43);
 		// data.put("walkDistance", 3.100);
-		// data.put("busDistance", 6.00);
+		// data.put("carDistance", 0.00);
+		// data.put("busDistance", 0.00);
 		// data.put("bikesharing", true);
-		data.put("sustainable", true);
+		// data.put("sustainable", true);
 		// data.put("p+r", true);
-		data.put("park", "MANIFATTURA");
-		wf.apply("save_itinerary", "122", data);
+		// data.put("park", "MANIFATTURA");
+		wf.apply("save_itinerary", "1", data);
 	}
 
 }

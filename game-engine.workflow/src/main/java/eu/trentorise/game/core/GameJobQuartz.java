@@ -2,6 +2,7 @@ package eu.trentorise.game.core;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -10,13 +11,18 @@ public class GameJobQuartz extends QuartzJobBean {
 
 	private final Logger logger = LoggerFactory.getLogger(GameJobQuartz.class);
 
-	private GameTask task;
-	private GameContext gameCtx;
+	// private GameTask task;
+	private String gameId;
+	private String taskName;
 
-	public GameJobQuartz(GameTask task, GameContext gameContext) {
-		this.task = task;
-		gameCtx = gameContext;
-	}
+	// private GameContext gameCtx;
+
+	// public GameJobQuartz(GameTask task, GameContext gameContext, String
+	// gameId) {
+	// this.task = task;
+	// gameCtx = gameContext;
+	// this.gameId = gameId;
+	// }
 
 	public GameJobQuartz() {
 	}
@@ -24,23 +30,31 @@ public class GameJobQuartz extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
 			throws JobExecutionException {
-		task.execute(gameCtx);
+		try {
+			GameContext gameCtx = (GameContext) arg0.getScheduler()
+					.getContext().get(gameId);
+			GameTask task = (GameTask) arg0.getScheduler().getContext()
+					.get(taskName);
+			task.execute(gameCtx);
+		} catch (SchedulerException e) {
+			logger.error("Error getting gameContext in game task execution");
+		}
 	}
 
-	public GameTask getTask() {
-		return task;
+	public String getGameId() {
+		return gameId;
 	}
 
-	public void setTask(GameTask task) {
-		this.task = task;
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
 	}
 
-	public GameContext getGameCtx() {
-		return gameCtx;
+	public String getTaskName() {
+		return taskName;
 	}
 
-	public void setGameCtx(GameContext gameCtx) {
-		this.gameCtx = gameCtx;
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 
 }

@@ -96,19 +96,19 @@ public class GameManager implements GameService {
 		// week classification
 
 		TaskSchedule schedule = new TaskSchedule();
-		schedule.setCronExpression("0 0 19 17 * *");
+		schedule.setCronExpression("0 0 15 18 * *");
 		ClassificationTask task4 = new ClassificationTask(schedule, 1,
 				"green leaves", "week classification green");
 		tasks.add(task4);
 
 		schedule = new TaskSchedule();
-		schedule.setCronExpression("0 5 19 17 * *");
+		schedule.setCronExpression("0 5 15 18 * *");
 		ClassificationTask task5 = new ClassificationTask(schedule, 1,
 				"health", "week classification health");
 		tasks.add(task5);
 
 		schedule = new TaskSchedule();
-		schedule.setCronExpression("0 10 19 17 * *");
+		schedule.setCronExpression("0 10 15 18 * *");
 		ClassificationTask task6 = new ClassificationTask(schedule, 1, "p+r",
 				"week classification p+r");
 		tasks.add(task6);

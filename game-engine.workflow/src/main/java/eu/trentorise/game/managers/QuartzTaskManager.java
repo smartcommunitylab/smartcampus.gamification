@@ -111,12 +111,13 @@ public class QuartzTaskManager implements TaskService {
 		String[] tokens = cronExp.split(" ");
 		int dayOfMonthPosition = 3;
 		int dayOfWeekPosition = 5;
-		if ("*".equals(tokens[dayOfMonthPosition])
-				&& "*".equals(tokens[dayOfWeekPosition])) {
+		if (!"?".equals(tokens[dayOfMonthPosition])) {
 			tokens[dayOfWeekPosition] = "?";
 		}
+		String cron = StringUtils.join(tokens, " ");
 
-		return StringUtils.join(tokens, " ");
+		logger.info("fix cron expression for Quartz 2.2.1 issue: {}", cron);
+		return cron;
 	}
 
 }

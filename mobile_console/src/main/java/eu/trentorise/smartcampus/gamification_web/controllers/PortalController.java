@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -97,6 +100,10 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.mail.subject}")
     private String mailSubject;
+    @Autowired
+    @Value("${gamification.mail.send}")
+    private String mailSend;
+    
 	
 	/*
 	 * OAUTH2
@@ -169,8 +176,8 @@ public class PortalController extends SCController{
 			throws SecurityException, AACException {
 		String redirectUri = mainURL + "/check";
 		logger.info(String.format("I am in get check. RedirectUri = %s", redirectUri));
-		//logger.info(String.format("type param = %s", type));
 		String userToken = aacService.exchngeCodeForToken(code, redirectUri).getAccess_token();
+		//logger.info(String.format("User token = %s", userToken));
 		List<GrantedAuthority> list = Collections.<GrantedAuthority> singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 		Authentication auth = new PreAuthenticatedAuthenticationToken(userToken, "", list);
 		auth = authenticationManager.authenticate(auth);
@@ -183,11 +190,12 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/login")
 	public ModelAndView secure(HttpServletRequest request) {
 		String redirectUri = mainURL + "/check";
-		logger.error(String.format("I am in get login"));
+		String redirectAacService = aacService.generateAuthorizationURIForCodeFlow(redirectUri, "/google",
+				"smartcampus.profile.basicprofile.me,smartcampus.profile.accountprofile.me", null);
+		//logger.error(String.format("Redirect url : %s", redirectAacService));
 		return new ModelAndView(
 				"redirect:"
-						+ aacService.generateAuthorizationURIForCodeFlow(redirectUri, "/google",
-								"smartcampus.profile.basicprofile.me,smartcampus.profile.accountprofile.me", null));
+						+ redirectAacService);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/prelogin")
@@ -251,10 +259,11 @@ public class PortalController extends SCController{
 	}
 	
 	// Here I insert a task that invoke the WS notification
-	@Scheduled(fixedRate = 60*1000) // Repeat once a minute
+	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
+	@Scheduled(cron="0 0 8-23/2 * * *") // Repeat every two hours strarting from 8 to 23:59
 	public synchronized void checkNotification(){
 		
-		if(itsTime(new Date())){
+		//if(itsTime(new Date())){
 			logger.error(String.format("Check Notification task. Cycle - %d", i++));
 			
 			String urlWS = "notification/" + gameName;
@@ -262,8 +271,10 @@ public class PortalController extends SCController{
 			RestTemplate restTemplate = new RestTemplate();
 			logger.error("Notification WS GET " + urlWS);
 			
-			long millis = System.currentTimeMillis() - (2*24*60*60*1000);	// Delta in millis of one day
+			//long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of one day
+			long millis = System.currentTimeMillis() - (2*60*60*1000);	// Delta in millis of 2 hours
 			String timestamp = "?timestamp=" + millis;
+			//String timestamp = "";
 			String result = "";
 			try {
 				result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
@@ -281,27 +292,48 @@ public class PortalController extends SCController{
 						//Convert the playerid in a mail
 						logger.error(String.format("Player %s", notifications.get(i).getPlayerId()));
 						
-						//Player player = playerRepositoryDao.findById(notifications.get(i).getPlayerId());					
-						Player player = new Player("43", "Mattia", "Bortolamedi", "regolo85", "regolo85@gmail.com");
+						Player player = playerRepositoryDao.findBySocialId(notifications.get(i).getPlayerId());	
+						//Player player = new Player("43", "Mattia", "Bortolamedi", "regolo85", "regolo85@gmail.com");
 						
-						String mailto = player.getMail();
+//						Player player = null;
+//						boolean find = false;
+//						Iterable<Player> players = playerRepositoryDao.findAll();
+//						Iterator<Player> iter = players.iterator();
+//						while(players.iterator().hasNext()){
+//							Player tmp_player = players.iterator().next();
+//							logger.error(String.format("Player in db : %s", tmp_player.getNikName()));
+//							logger.error(String.format("PId : %s", tmp_player.getPId()));
+//							logger.error(String.format("PlayerId notifications : %s", notifications.get(i).getPlayerId()));
+//							if(tmp_player.getPId().compareTo(notifications.get(i).getPlayerId()) == 0){
+//								//find = true;
+//								player = tmp_player;
+//							}
+//						}
+						String mailto = null;
+						String playerName = notifications.get(i).getPlayerId();
+						if(player != null){
+							mailto = player.getMail();
+							playerName = player.getName();
+						}
 						if(mailto == null || mailto.compareTo("") == 0){
 							mailto = mailTo;
 						}
 						
-//						try {
-//							this.emailService.sendMailGamification(player.getName(), null, notifications.get(i).getBadge(), "3", mailto, Locale.ITALIAN);
-//						} catch (MessagingException e) {
-//							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
-//						}
-						logger.error(String.format("Invio mail a %s con notifica : %s", player.getName() ,notifications.get(i).toString()));
+						if(mailSend.compareTo("true") == 0){
+							try {
+								this.emailService.sendMailGamification(playerName, null, notifications.get(i).getBadge(), "np", mailto, Locale.ITALIAN);
+							} catch (MessagingException e) {
+								logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+							}
+							logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.get(i).toString()));
+						}
 					}
 				}		
 				
 			} else {
 				logger.error(String.format("Notification Result Fail: %s", result));
 			}
-		}
+		//}
 	}
 	
 	/**

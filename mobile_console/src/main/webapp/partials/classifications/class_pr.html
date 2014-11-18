@@ -1,11 +1,11 @@
 <div ng-show="!isLoading">
-	<table class="table table-hover" style="width: 100%">
+	<table class="table table-hover" style="width: 90%">
 		<tr ng-show="GameClassification.length != 0">
-			<th width="25%" align="left">{{ 'player_position' | i18n }}</th>
+			<th width="20%" align="left">{{ 'player_position' | i18n }}</th>
 			<th width="50%" align="center">{{ 'player_name' | i18n }}</th>
 			<!-- <th width="23%">{{ 'game_code' | i18n }}</th> -->
 			<!-- <th width="23%">{{ 'player_state_badge' | i18n }}</th> -->
-			<th width="25%">{{ 'player_state_score' | i18n }}</th>
+			<th width="20%">{{ 'player_state_score' | i18n }}</th>
 		</tr>
 		<tbody class="animate-repeat"
 			ng-repeat="p in GameClassification | filter:q | orderBy: '-score[2].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
@@ -25,7 +25,7 @@
 			</tr>
 		</tbody>
 		<tr ng-show="GameClassification.length == 0">
-			<td colspan="6"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
+			<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
 		</tr>
 	</table>
 	<button class="btn btn-primary"

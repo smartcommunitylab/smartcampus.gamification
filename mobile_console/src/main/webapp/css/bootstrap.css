@@ -1512,13 +1512,15 @@ table th[class*="col-"] {
 .table > thead > tr.success > th,
 .table > tbody > tr.success > th,
 .table > tfoot > tr.success > th {
-  background-color: #dff0d8;
+  /*background-color: #dff0d8;*/
+  background-color: #3cbc7c;
 }
 .table-hover > tbody > tr > td.success:hover,
 .table-hover > tbody > tr > th.success:hover,
 .table-hover > tbody > tr.success:hover > td,
 .table-hover > tbody > tr.success:hover > th {
-  background-color: #d0e9c6;
+  /*background-color: #d0e9c6;*/
+  background-color: #50d090;
 }
 .table > thead > tr > td.info,
 .table > tbody > tr > td.info,
@@ -3934,16 +3936,16 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-default {
-  background-color: #f8f8f8;
-  border-color: #e7e7e7;
+  background-color: #c2c2c2;  /*#f8f8f8;*/
+  border-color: #c2c2c2; /*#e7e7e7;*/
 }
 .navbar-default .navbar-brand {
-  color: #777777;
+  color: #c2c2c2; /*#777777;*/
 }
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
   color: #5e5e5e;
-  background-color: transparent;
+  background-color: #c2c2c2; /*transparent;*/
 }
 .navbar-default .navbar-text {
   color: #777777;
@@ -3953,27 +3955,27 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-  color: #333333;
-  background-color: transparent;
+  color: #00984a; /*#333333;*/
+  background-color: #c2c2c2;
 }
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
-  color: #555555;
-  background-color: #e7e7e7;
+  color: #00984a; /*#555555;*/
+  background-color: #c2c2c2;
 }
 .navbar-default .navbar-nav > .disabled > a,
 .navbar-default .navbar-nav > .disabled > a:hover,
 .navbar-default .navbar-nav > .disabled > a:focus {
-  color: #cccccc;
-  background-color: transparent;
+  color: #777777;
+  background-color: #c2c2c2;
 }
 .navbar-default .navbar-toggle {
-  border-color: #dddddd;
+  border-color: #c2c2c2; /*#dddddd;*/
 }
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
-  background-color: #dddddd;
+  background-color:  #c2c2c2; /*#dddddd;*/
 }
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #888888;
@@ -3985,7 +3987,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
-  background-color: #e7e7e7;
+  background-color: #c2c2c2; /*#e7e7e7;*/
   color: #555555;
 }
 @media (max-width: 767px) {
@@ -3995,13 +3997,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
   .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
     color: #333333;
-    background-color: transparent;
+    background-color: #c2c2c2; /*transparent;*/
   }
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #555555;
-    background-color: #e7e7e7;
+    background-color: #c2c2c2; /*#e7e7e7;*/
   }
   .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
   .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,

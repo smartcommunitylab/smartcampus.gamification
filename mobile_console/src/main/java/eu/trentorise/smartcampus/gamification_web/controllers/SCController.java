@@ -43,11 +43,11 @@ public class SCController {
 	private String aacURL;
 
 	@Autowired
-	@Value("${smartcampus.clientId}")
+	@Value("${smartcampus.gamification.clientId}")
 	private String client_id;
 
 	@Autowired
-	@Value("${smartcampus.clientSecret}")
+	@Value("${smartcampus.gamification.clientSecret}")
 	private String client_secret;
 
 //	private SCWebApiClient client = null;

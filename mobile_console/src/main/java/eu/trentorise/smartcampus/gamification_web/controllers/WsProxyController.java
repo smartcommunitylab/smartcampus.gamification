@@ -1,5 +1,6 @@
 package eu.trentorise.smartcampus.gamification_web.controllers;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import eu.trentorise.smartcampus.gamification_web.repository.Player;
+import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
+
 @Controller
 public class WsProxyController {
 	
@@ -24,6 +28,9 @@ public class WsProxyController {
 	//@Value("${smartcampus.urlws.epu}")
 	@Value("${smartcampus.urlws.gamification}")
 	private String gamificationUrl;
+	
+	@Autowired
+    private PlayerRepositoryDao playerRepositoryDao;
 	
 //	@Autowired
 //	@Value("${smartcampus.mode.test}")
@@ -70,6 +77,25 @@ public class WsProxyController {
 		return result;	
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/rest/allNiks")
+	public @ResponseBody
+	String getAllNiks(HttpServletRequest request, @RequestParam String urlWS){
+		logger.error("WS-get All profiles."); //Added for log ws calls info in preliminary phase of portal
+		
+		String result = "{ \"players\":[";
+		
+		Iterable<Player> iter = playerRepositoryDao.findAll();
+		for(Player p: iter){
+			logger.error(String.format("Profile result %s", p.getNikName()));
+			result += p.toJSONString() + ",";
+		}
+		result = result.substring(0, result.length()-1);
+		result += "]}";
+		
+		logger.error(String.format("WS-Get all profiles result %s", result));
+		
+		return result;	
+	}
 	
 	
 }

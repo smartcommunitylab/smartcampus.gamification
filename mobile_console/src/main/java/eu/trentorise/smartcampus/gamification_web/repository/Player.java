@@ -7,7 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Player {
 	
 	@Id
-	private String id;
+	private String pid;
+	private String socialId;
 	
 	private String name;
 	private String surname;
@@ -18,18 +19,19 @@ public class Player {
 		super();
 	}
 
-	public Player(String id, String name, String surname, String nikName,
+	public Player(String pid, String socialId, String name, String surname, String nikName,
 			String mail) {
 		super();
-		this.id = id;
+		this.pid = pid;
+		this.socialId = socialId;
 		this.name = name;
 		this.surname = surname;
 		this.nikName = nikName;
 		this.mail = mail;
 	}
 
-	public String getId() {
-		return id;
+	public String getPId() {
+		return pid;
 	}
 
 	public String getName() {
@@ -48,8 +50,8 @@ public class Player {
 		return mail;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setPId(String pid) {
+		this.pid = pid;
 	}
 
 	public void setName(String name) {
@@ -67,6 +69,29 @@ public class Player {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
+
+	public String getPid() {
+		return pid;
+	}
+
+	public String getSocialId() {
+		return socialId;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+
+	public void setSocialId(String socialId) {
+		this.socialId = socialId;
+	}
+
+	public String toJSONString() {
+		return "{\"pid\":\"" + pid + "\", \"socialId\":\"" + socialId + "\", \"name\":\""
+				+ name + "\", \"surname\":\"" + surname + "\", \"nikName\":\"" + nikName
+				+ "\", \"mail\":\"" + mail + "\"}";
+	}
+	
 	
 
 }

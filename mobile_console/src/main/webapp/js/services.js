@@ -192,7 +192,16 @@ cp.service('sharedDataService', function(){
          'VILLA LAGARINA',
          'VOLANO'
     ];
-	
+    
+    this.playersList = [
+         {pid:"1", socialId:"1", name:"Raman", surname:"Kazhamiakin", nikname:"Raman1", mail:"kashamiakin@gmail.com"},
+         {pid:"43", socialId:"43", name:"Mattia", surname:"Bortolamedi", nikname:"Regolo85", mail:"regolo85@gmail.com"},
+         {pid:"67", socialId:"67", name:"Raman", surname:"Kazhamiakin", nikname:"Raman2", mail:"kashamiakin@gmail.com"},
+         {pid:"168", socialId:"168", name:"Giuseppe", surname:"Valetto", nikname:"Peppo", mail:"valettofbk@gmail.com"},
+         {pid:"157", socialId:"157", name:"Paola", surname:"Rampelotto", nikname:"PaolaR", mail:"paola.rampelotto@gmail.com"},
+         {pid:"167", socialId:"167", name:"Annapaola", surname:"Marconi", nikname:"AnnaPaolaM", mail:"annapaola.marconi@gmail.com"},
+         {pid:"208", socialId:"208", name:"Mirko", surname:"Perillo", nikname:"MirkoP", mail:"mirko.perillo@gmail.com"}
+    ];
 	
 	// Get and Set methods
 	this.getUsedLanguage = function(){
@@ -203,6 +212,14 @@ cp.service('sharedDataService', function(){
 	this.setUsedLanguage = function(value){
 		sessionStorage.language = value;
 		this.usedLanguage = value;
+	};
+	
+	this.getPlayersList = function(){
+		return this.playersList;
+	};
+	
+	this.setPlayerList = function(list){
+		this.playersList = list;
 	};
 	
 	this.getName = function(){
@@ -728,6 +745,57 @@ cp.factory('invokeWSServiceProxy', function($http, $q) {
 				data : data
 			}).success(function(data) {
 				//console.log("Returned data ok: " + JSON.stringify(data));
+				deferred.resolve(data);
+			}).error(function(data) {
+				console.log("Returned data FAIL: " + JSON.stringify(data));
+				deferred.resolve(data);
+			});
+		}
+		return deferred.promise;
+	};
+	return {getProxy : getProxy};
+});
+
+cp.factory('invokeWSNiksServiceProxy', function($http, $q) {
+	var getProxy = function(method, funcName, params, headers, data){
+		var deferred = $q.defer();
+		
+		var urlWS = funcName;
+		if(params != null){
+			urlWS += '?';
+			for(var propertyName in params) {
+				urlWS += propertyName + '=' + params[propertyName];
+				urlWS += '&';
+			};
+			urlWS = urlWS.substring(0, urlWS.length - 1); // I remove the last '&'
+		}
+		//console.log("Proxy Service: url completo " + urlWS);
+		
+		if(method == 'GET' && params != null){
+			$http({
+				method : method,
+				url : 'rest/allNiks',
+				params : {
+					"urlWS" : urlWS + '&noCache=' + new Date().getTime()	// quela mer.. de ie el cacheava tut e con sta modifica el funzia
+				},
+				headers : headers
+			}).success(function(data) {
+				//console.log("Returned data niks ok: " + JSON.stringify(data));
+				deferred.resolve(data);
+			}).error(function(data) {
+				console.log("Returned data FAIL: " + JSON.stringify(data));
+				deferred.resolve(data);
+			});
+		} else if(method == 'GET' && params == null){
+			$http({
+				method : method,
+				url : 'rest/allNiks',
+				params : {
+					"urlWS" : urlWS + '?noCache=' + new Date().getTime()	// quela mer.. de ie el cacheava tut e con sta modifica el funzia
+				},
+				headers : headers
+			}).success(function(data) {
+				//console.log("Returned data niks ok: " + JSON.stringify(data));
 				deferred.resolve(data);
 			}).error(function(data) {
 				console.log("Returned data FAIL: " + JSON.stringify(data));

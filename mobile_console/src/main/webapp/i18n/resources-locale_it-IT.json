@@ -63,6 +63,10 @@
 	"value": "Classifica",
 	"description": "Link classifica"
 }, {
+	"key": "left_menu-rules",
+	"value": "Regolamento",
+	"description": "Link regolamento"
+}, {
 	"key": "home_title_page-classification-global",
 	"value": "Classifica Generale",
 	"description": "Titolo classifica generale"
@@ -87,8 +91,20 @@
 	"value": "Punteggio",
 	"description": "Label dettagli giocatore - punteggio"
 }, {
+	"key": "player_details_score_label_green",
+	"value": "Punti Green",
+	"description": "Label dettagli giocatore - punteggio green"
+}, {
+	"key": "player_details_score_label_health",
+	"value": "Punti Salute",
+	"description": "Label dettagli giocatore - punteggio health"
+}, {
+	"key": "player_details_score_label_pr",
+	"value": "Punti Park&Ride",
+	"description": "Label dettagli giocatore - punteggio pr"
+}, {
 	"key": "player_details_badge_label",
-	"value": "Badge Raggiunto",
+	"value": "Badge Conquistati",
 	"description": "Label dettagli giocatore - badge"
 }, {
 	"key": "left_menu-report",
@@ -187,6 +203,22 @@
 	"value": "Tipo",
 	"description": "Label tipo pratica"
 }, {
+	"key": "player_position",
+	"value": "Pos.",
+	"description": "Label posizione giocatore in classifica"
+}, {
+	"key": "player_code",
+	"value": "Codice Giocatore",
+	"description": "Label codice giocatore in classifica"
+}, {
+	"key": "player_name",
+	"value": "Giocatore",
+	"description": "Label nome giocatore in classifica"
+}, {
+	"key": "game_code",
+	"value": "Codice Gioco",
+	"description": "Label codice gioco"
+}, {
 	"key": "player_code",
 	"value": "Codice Giocatore",
 	"description": "Label tipo pratica"
@@ -200,7 +232,7 @@
 	"description": "Label stato badge giocatore"
 }, {
 	"key": "player_state_score",
-	"value": "Punteggio",
+	"value": "Punti",
 	"description": "Label stato punteggio"
 }, {
 	"key": "player_operations",
@@ -274,5 +306,29 @@
 	"key": "datepicker_button_close",
 	"value": "Chiudi",
 	"description": "Testo pulsante datapicker per chiudi"
+}, {
+	"key": "label_profile_title_h4",
+	"value": "Scopri i badge che hai guadagnato",
+	"description": "Testo label titolo profilo"
+}, {
+	"key": "green_leaves_tab_title",
+	"value": "Green",
+	"description": "Titolo tab green leaves"
+}, {
+	"key": "health_tab_title",
+	"value": "Salute",
+	"description": "Titolo tab health"
+}, {
+	"key": "pr_tab_title",
+	"value": "Park&Ride",
+	"description": "Titolo tab pr"
+}, {
+	"key": "special_tab_title",
+	"value": "Speciali",
+	"description": "Titolo tab speciali"
+}, {
+	"key": "no_special_badge",
+	"value": "Non possiedi badge Speciali",
+	"description": "Messaggio No Badge Speciali"
 }
 ]

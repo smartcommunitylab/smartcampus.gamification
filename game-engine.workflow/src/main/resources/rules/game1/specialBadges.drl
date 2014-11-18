@@ -55,7 +55,7 @@ IMPACT 0
 rule "zero impact badge"
 	salience -1000
 when
-    InputData(data['walkDistance'] != null || data['bikeDistance'] != null)
+    InputData((data['walkDistance'] != null || data['bikeDistance'] != null) && ((data['busDistance'] == null || data['busDistance'] == 0) &&  (data['carDistance'] == null || data['carDistance'] == 0)))
     $bc : BadgeCollectionConcept(name == "special", badgeEarned not contains 'zero-impact')
     Game( $gameId: id)
     Player( $playerId : id)

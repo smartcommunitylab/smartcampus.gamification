@@ -3,8 +3,8 @@ package eu.trentorise.smartcampus.gamification_web.repository;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="player")
-public class Player {
+@Document(collection="player_prod")
+public class PlayerProd {
 	
 	@Id
 	private String pid;
@@ -15,11 +15,11 @@ public class Player {
 	private String nikName;
 	private String mail;
 	
-	public Player() {
+	public PlayerProd() {
 		super();
 	}
 
-	public Player(String pid, String socialId, String name, String surname, String nikName,
+	public PlayerProd(String pid, String socialId, String name, String surname, String nikName,
 			String mail) {
 		super();
 		this.pid = pid;
@@ -91,5 +91,5 @@ public class Player {
 				+ name + "\", \"surname\":\"" + surname + "\", \"nikName\":\"" + nikName
 				+ "\", \"mail\":\"" + mail + "\"}";
 	}
-	
+
 }

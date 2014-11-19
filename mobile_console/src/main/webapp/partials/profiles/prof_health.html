@@ -17,7 +17,7 @@
 <!-- 	</tbody> -->
 <!-- </table> -->
 
-<div id="health-big-score" class="row" ng-show="userShowHealthKingWeek!=true">
+<div id="health-big-score" class="row">
 	<div class="col-md-6 col-md-offset-3" align="center">
 		<h5>
 			<img height="150" width="150" src="img/health/healthLeavesTesto.svg" alt="Punteggio Salute" title="Punteggio Salute">
@@ -25,35 +25,28 @@
 		</h5>
 	</div>
 </div>
-<div id="health-small-score" class="row" align="center" ng-show="userShowHealthKingWeek!=true">
+<div id="health-small-score" class="row" align="center">
 	<div class="col-md-3 col-md-offset-3" align="center">
-		<img height="150" width="150" src="img/health/healthLeavesTesto.svg" alt="Punteggio Salute" title="Punteggio Salute">
+		<img height="180" width="150" src="img/health/healthLeavesTesto.svg" alt="Punteggio Salute" title="Punteggio Salute">
 	</div>
 	<div class="col-md-3" align="center">
 		<h5><strong>{{ userProfile.scores[1].score }} {{ 'player_details_score_label_health' | i18n }}</strong></h5>
 	</div>
 </div>
 <div id="health-big-score-king" class="row" ng-show="userShowHealthKingWeek==true">
-	<div class="col-md-6" align="right">
+	<div class="col-md-6 col-md-offset-3" align="center">
 		<h5>
-			<img height="150" width="150" src="img/health/healthLeavesTesto.svg" alt="Punteggio Salute" title="Punteggio Salute">
-			<strong>{{ userProfile.scores[1].score }} {{ 'player_details_score_label_health' | i18n }}</strong>
+			<img height="180" width="150" src="img/health/healthKingWeek.svg" alt="Bedge Health King Week" title="Bedge Health King Week">
+			<strong>{{ 'player_king_week_label_health' | i18n }}</strong>
 		</h5>
-	</div>
-	<div class="col-md-1" align="center"></div>
-	<div class="col-md-5" align="center">
-		<img height="150" width="150" src="img/health/healthKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
 	</div>
 </div>
 <div id="health-small-score-king" class="row" align="center" ng-show="userShowHealthKingWeek==true">
 	<div class="col-md-3 col-md-offset-3" align="center">
-		<img height="150" width="150" src="img/health/healthLeavesTesto.svg" alt="Punteggio Salute" title="Punteggio Salute">
+		<img height="150" width="150" src="img/health/healthKingWeek.svg" alt="Bedge Health King Week" title="Bedge Health King Week">
 	</div>
 	<div class="col-md-3" align="center">
-		<h5><strong>{{ userProfile.scores[1].score }} {{ 'player_details_score_label_health' | i18n }}</strong></h5>
-	</div>
-	<div class="col-md-3" align="center">
-		<img height="150" width="150" src="img/health/healthKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
+		<h5><strong>{{ 'player_king_week_label_health' | i18n }}</strong></h5>
 	</div>
 </div>
 <div class="row" align="center">

@@ -17,7 +17,20 @@
             Complimenti! Hai guadagnato il badge x!
         </p>
         
-        <p th:text="#{position(${u_position})}">
+        <p th:if="${not #lists.isEmpty(n_badges)}" >
+            Complimenti! Hai guadagnato i seguenti badges :
+        </p>    
+        <table th:if="${n_badges ne null}">
+	        <tr th:each="b : ${n_badges}">
+		       <td th:text="${b.badge}">Badge</td>
+		    </tr>
+        </table>
+        
+        <p th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
+            Oggi non hai guadagnato nuovi badge! Gioca ancora ed otterrai nuovi punti!
+        </p>
+        
+        <p th:if="${u_position ne null}" th:text="#{position(${u_position})}">
             La tua posizione in classifica è x°!
         </p>
         
@@ -33,11 +46,12 @@
 <!--             <li>Bowling</li> -->
 <!--         </ul> -->
         <p>
-            In basso puoi trovare il <b>logo gamification</b>.
+            Collegati all'indirizzo <b>https://vas-dev.smartcampuslab.it/gamificationweb</b> 
+            per visualizzare il tuo profilo e la classifica aggiornata.
         </p>
-        <p>
-            <img src="img/gamification_small.png" />
-        </p>
+<!--         <p> -->
+<!--             <img src="img/gamification_small.png" /> -->
+<!--         </p> -->
         <p>
             A presto, <br />
             &emsp; <em>Il Gamification Team</em>

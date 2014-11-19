@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
+import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
+import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
 
 @Controller
@@ -32,9 +34,12 @@ public class WsProxyController {
 	@Autowired
     private PlayerRepositoryDao playerRepositoryDao;
 	
-//	@Autowired
-//	@Value("${smartcampus.mode.test}")
-//	private String isTest;
+	@Autowired
+    private PlayerProdRepositoryDao playerProdRepositoryDao;
+	
+	@Autowired
+	@Value("${smartcampus.isTest}")
+	private String isTest;
 //	
 //	@Autowired
 //	@Value("${smartcampus.cf.test}")
@@ -84,11 +89,20 @@ public class WsProxyController {
 		
 		String result = "{ \"players\":[";
 		
-		Iterable<Player> iter = playerRepositoryDao.findAll();
-		for(Player p: iter){
-			logger.error(String.format("Profile result %s", p.getNikName()));
-			result += p.toJSONString() + ",";
+		if(isTest.compareTo("true") == 0){
+			Iterable<Player> iter = playerRepositoryDao.findAll();
+			for(Player p: iter){
+				logger.error(String.format("Profile result %s", p.getNikName()));
+				result += p.toJSONString() + ",";
+			}
+		} else {
+			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+			for(PlayerProd p: iter){
+				logger.error(String.format("Profile result %s", p.getNikName()));
+				result += p.toJSONString() + ",";
+			}
 		}
+		
 		result = result.substring(0, result.length()-1);
 		result += "]}";
 		

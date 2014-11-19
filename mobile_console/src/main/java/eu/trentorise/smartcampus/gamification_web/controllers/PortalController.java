@@ -39,7 +39,11 @@ import eu.trentorise.smartcampus.aac.AACException;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
 //import eu.trentorise.smartcampus.gamification_web.models.SubjectDn;
 import eu.trentorise.smartcampus.gamification_web.models.UserCS;
+import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
+import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
+import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
+import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
 import eu.trentorise.smartcampus.profileservice.model.AccountProfile;
@@ -66,6 +70,10 @@ public class PortalController extends SCController{
 	private String StartupTime;
 	
 	@Autowired
+	@Value("${smartcampus.isTest}")
+	private String isTest;
+	
+	@Autowired
 	private AuthenticationManager authenticationManager;
 	
 	private static final Logger logger = Logger.getLogger(PortalController.class);
@@ -77,6 +85,12 @@ public class PortalController extends SCController{
 	
     @Autowired
     private PlayerRepositoryDao playerRepositoryDao;
+    
+    @Autowired
+    private PlayerProdRepositoryDao playerProdRepositoryDao;
+    
+    @Autowired
+    private AuthPlayerRepositoryDao authPlayerRepositoryDao;
 	
 	//Mail Params
 	@Autowired
@@ -122,8 +136,25 @@ public class PortalController extends SCController{
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));
 			Object[] objectArray = account.getAccountNames().toArray();
-		
 			Map <String, String> mappaAttributi = account.getAccountAttributes(objectArray[0].toString());
+			
+			// Here I have to check if the user belongs to the list of the testers
+			Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());
+			if(player_check == null){
+				String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
+				logger.info(String.format("Add player: mail %s.", attribute_mail));
+				if(attribute_mail != null){
+					AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
+					logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+					if(auth_p != null){
+						Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+						playerRepositoryDao.save(new_p);
+						logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
+						//playerRepositoryDao.();
+					}
+				}
+				//if(authPlayerRepositoryDao.findByMail(account.getAttribute(account, attribute)))
+			}
 			
 			UserCS utente = createUserCartaServiziByMap(mappaAttributi);
 			
@@ -260,79 +291,174 @@ public class PortalController extends SCController{
 	
 	// Here I insert a task that invoke the WS notification
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
-	@Scheduled(cron="0 0 8-23/2 * * *") // Repeat every two hours strarting from 8 to 23:59
+	@Scheduled(cron="0 0 8 * * *") // Repeat every two hours starting from 00:00 to 23:59 - 0 0 0-23/2 * * *
 	public synchronized void checkNotification(){
+			
+		long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of 24 hours
+		String timestamp = "?timestamp=" + millis;
+		//String timestamp = "";
 		
-		//if(itsTime(new Date())){
+			// New method
+			//if(itsTime(new Date())){
 			logger.error(String.format("Check Notification task. Cycle - %d", i++));
 			
-			String urlWS = "notification/" + gameName;
+			// For cicle to all the users to retrieve the info
+			//for(int i = 0; i < )
 			
-			RestTemplate restTemplate = new RestTemplate();
-			logger.error("Notification WS GET " + urlWS);
-			
-			//long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of one day
-			long millis = System.currentTimeMillis() - (2*60*60*1000);	// Delta in millis of 2 hours
-			String timestamp = "?timestamp=" + millis;
-			//String timestamp = "";
-			String result = "";
-			try {
-				result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
-			} catch (Exception ex){
-				logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
-				//restTemplate.getErrorHandler();
-			}
-			
-			if(result != null){
-				logger.error(String.format("Notification Result Ok: %s", result));
-				ArrayList<Notification> notifications = chekNotification(result);
-				
-				if(!notifications.isEmpty()){
-					for(int i = 0; i < notifications.size(); i++){
-						//Convert the playerid in a mail
-						logger.error(String.format("Player %s", notifications.get(i).getPlayerId()));
-						
-						Player player = playerRepositoryDao.findBySocialId(notifications.get(i).getPlayerId());	
-						//Player player = new Player("43", "Mattia", "Bortolamedi", "regolo85", "regolo85@gmail.com");
-						
-//						Player player = null;
-//						boolean find = false;
-//						Iterable<Player> players = playerRepositoryDao.findAll();
-//						Iterator<Player> iter = players.iterator();
-//						while(players.iterator().hasNext()){
-//							Player tmp_player = players.iterator().next();
-//							logger.error(String.format("Player in db : %s", tmp_player.getNikName()));
-//							logger.error(String.format("PId : %s", tmp_player.getPId()));
-//							logger.error(String.format("PlayerId notifications : %s", notifications.get(i).getPlayerId()));
-//							if(tmp_player.getPId().compareTo(notifications.get(i).getPlayerId()) == 0){
-//								//find = true;
-//								player = tmp_player;
-//							}
-//						}
-						String mailto = null;
-						String playerName = notifications.get(i).getPlayerId();
-						if(player != null){
-							mailto = player.getMail();
-							playerName = player.getName();
-						}
-						if(mailto == null || mailto.compareTo("") == 0){
-							mailto = mailTo;
-						}
-						
-						if(mailSend.compareTo("true") == 0){
-							try {
-								this.emailService.sendMailGamification(playerName, null, notifications.get(i).getBadge(), "np", mailto, Locale.ITALIAN);
-							} catch (MessagingException e) {
-								logger.error(String.format("Errore invio mail : %s", e.getMessage()));
-							}
-							logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.get(i).toString()));
-						}
+			if(isTest.compareTo("true") == 0){
+				Iterable<Player> iter = playerRepositoryDao.findAll();
+				for(Player p: iter){
+					logger.error(String.format("Profile finded  %s", p.getNikName()));
+					String urlWS = "notification/" + gameName + "/" + p.getSocialId();
+					RestTemplate restTemplate = new RestTemplate();
+					logger.error("Notification WS GET " + urlWS);
+					
+					String result = "";
+					try {
+						result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
+					} catch (Exception ex){
+						logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 					}
-				}		
-				
+					
+					ArrayList<Notification> notifications = null;
+					if(result != null){
+						logger.error(String.format("Notification Result Ok: %s", result));
+						notifications = chekNotification(result);	
+						
+					} else {
+						logger.error(String.format("Notification Result Fail: %s", result));
+					}
+					
+					String mailto = null;
+					mailto = p.getMail();
+					String playerName = p.getName();
+					if(mailto == null || mailto.compareTo("") == 0){
+						mailto = mailTo;
+					}
+					
+					if(mailSend.compareTo("true") == 0){
+						try {
+							if(notifications != null){
+								if(notifications.size() == 1){
+									this.emailService.sendMailGamification(playerName, null, notifications.get(0).getBadge(), null, null, mailto, Locale.ITALIAN);
+								} else {
+									this.emailService.sendMailGamification(playerName, null, null, notifications, null, mailto, Locale.ITALIAN);
+								}
+							} else {
+								this.emailService.sendMailGamification(playerName, null, null, null, null, mailto, Locale.ITALIAN);
+							}
+						} catch (MessagingException e) {
+							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+						}
+						logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+					}
+				}
 			} else {
-				logger.error(String.format("Notification Result Fail: %s", result));
+				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+				for(PlayerProd p: iter){
+					logger.error(String.format("Profile finded  %s", p.getNikName()));
+					String urlWS = "notification/" + gameName + "/" + p.getSocialId();
+					RestTemplate restTemplate = new RestTemplate();
+					logger.error("Notification WS GET " + urlWS);
+					
+					String result = "";
+					try {
+						result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
+					} catch (Exception ex){
+						logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+					}
+					
+					ArrayList<Notification> notifications = null;
+					if(result != null){
+						logger.error(String.format("Notification Result Ok: %s", result));
+						notifications = chekNotification(result);	
+						
+					} else {
+						logger.error(String.format("Notification Result Fail: %s", result));
+					}
+					
+					String mailto = null;
+					mailto = p.getMail();
+					String playerName = p.getName();
+					if(mailto == null || mailto.compareTo("") == 0){
+						mailto = mailTo;
+					}
+					
+					if(mailSend.compareTo("true") == 0){
+						try {
+							if(notifications != null){
+								if(notifications.size() == 1){
+									this.emailService.sendMailGamification(playerName, null, notifications.get(0).getBadge(), null, null, mailto, Locale.ITALIAN);
+								} else {
+									this.emailService.sendMailGamification(playerName, null, null, notifications, null, mailto, Locale.ITALIAN);
+								}
+							} else {
+								this.emailService.sendMailGamification(playerName, null, null, null, null, mailto, Locale.ITALIAN);
+							}
+						} catch (MessagingException e) {
+							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+						}
+						logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+					}
+				}				
 			}
+			
+			// Old method
+			
+//			String urlWS = "notification/" + gameName;
+//			
+//			RestTemplate restTemplate = new RestTemplate();
+//			logger.error("Notification WS GET " + urlWS);
+//			
+//			//long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of one day
+//			//long millis = System.currentTimeMillis() - (2*60*60*1000);	// Delta in millis of 2 hours
+//			long millis = System.currentTimeMillis() - (2*60*1000);	// Delta in millis of 2 hours
+//			String timestamp = "?timestamp=" + millis;
+//			//String timestamp = "";
+//			String result = "";
+//			try {
+//				result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
+//			} catch (Exception ex){
+//				logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+//				//restTemplate.getErrorHandler();
+//			}
+//			
+//			if(result != null){
+//				logger.error(String.format("Notification Result Ok: %s", result));
+//				ArrayList<Notification> notifications = chekNotification(result);
+//				
+//				if(!notifications.isEmpty()){
+//					for(int i = 0; i < notifications.size(); i++){
+//						//Convert the playerid in a mail
+//						logger.error(String.format("Player %s", notifications.get(i).getPlayerId()));
+//						
+//						Player player = playerRepositoryDao.findBySocialId(notifications.get(i).getPlayerId());	
+//						//Player player = new Player("43", "Mattia", "Bortolamedi", "regolo85", "regolo85@gmail.com");
+//						
+//						String mailto = null;
+//						String playerName = notifications.get(i).getPlayerId();
+//						if(player != null){
+//							mailto = player.getMail();
+//							playerName = player.getName();
+//						}
+//						if(mailto == null || mailto.compareTo("") == 0){
+//							mailto = mailTo;
+//						}
+//						
+//						if(mailSend.compareTo("true") == 0){
+//							try {
+//								this.emailService.sendMailGamification(playerName, null, notifications.get(i).getBadge(), null, "np", mailto, Locale.ITALIAN);
+//							} catch (MessagingException e) {
+//								logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+//							}
+//							logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.get(i).toString()));
+//						}
+//					}
+//				}		
+//				
+//			} else {
+//				logger.error(String.format("Notification Result Fail: %s", result));
+//			}
 		//}
 	}
 	

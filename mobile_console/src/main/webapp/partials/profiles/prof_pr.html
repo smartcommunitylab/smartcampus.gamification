@@ -17,7 +17,7 @@
 <!-- 	</tbody> -->
 <!-- </table> -->
 
-<div id="pr-big-score" class="row" ng-show="userShowPRKingWeek!=true">
+<div id="pr-big-score" class="row"">
 	<div class="col-md-6 col-md-offset-3" align="center">
 		<h5>
 			<img height="150" width="150" src="img/pr/p&rLeaves.svg" alt="Punteggio P&R" title="Punteggio P&R">
@@ -25,7 +25,7 @@
 		</h5>
 	</div>
 </div>
-<div id="pr-small-score" class="row" ng-show="userShowPRKingWeek!=true" align="center">
+<div id="pr-small-score" class="row" align="center">
 	<div class="col-md-3 col-md-offset-3" align="center">
 		<img height="150" width="150" src="img/pr/p&rLeaves.svg" alt="Punteggio P&R" title="Punteggio P&R">
 	</div>
@@ -34,26 +34,19 @@
 	</div>
 </div>
 <div id="pr-big-score-king" class="row" ng-show="userShowPRKingWeek==true">
-	<div class="col-md-6" align="right">
+	<div class="col-md-6 col-md-offset-3" align="center">
 		<h5>
-			<img height="150" width="150" src="img/pr/p&rLeaves.svg" alt="Punteggio P&R" title="Punteggio P&R">
-			<strong>{{ userProfile.scores[2].score }} {{ 'player_details_score_label_pr' | i18n }}</strong>
+			<img height="180" width="150" src="img/pr/p&rKingWeek.svg" alt="Bedge P&R King Week" title="Bedge P&R King Week">
+			<strong>{{ 'player_king_week_label_pr' | i18n }}</strong>
 		</h5>
-	</div>
-	<div class="col-md-1" align="center"></div>
-	<div class="col-md-5" align="center">
-		<img height="150" width="150" src="img/pr/p&rKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
 	</div>
 </div>
 <div id="pr-small-score-king" class="row" ng-show="userShowPRKingWeek==true" align="center">
-	<div class="col-md-3" align="center">
-		<img height="150" width="150" src="img/pr/p&rLeaves.svg" alt="Punteggio P&R" title="Punteggio P&R">
+	<div class="col-md-3 col-md-offset-3" align="center">
+		<img height="180" width="150" src="img/pr/p&rKingWeek.svg" alt="Bedge P&R King Week" title="Bedge P&R King Week">
 	</div>
 	<div class="col-md-3" align="center">
-		<h5><strong>{{ userProfile.scores[2].score }} {{ 'player_details_score_label_pr' | i18n }}</strong></h5>
-	</div>
-	<div class="col-md-3" align="center">
-		<img height="150" width="150" src="img/pr/p&rKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
+		<h5><strong>{{ 'player_king_week_label_pr' | i18n }}</strong></h5>
 	</div>
 </div>
 <div class="row" align="center">

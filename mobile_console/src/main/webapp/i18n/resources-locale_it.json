@@ -103,6 +103,18 @@
 	"value": "Punti Park&Ride",
 	"description": "Label dettagli giocatore - punteggio pr"
 }, {
+	"key": "player_king_week_label_green",
+	"value": "Re della Settimana",
+	"description": "Label re della settimana - green"
+}, {
+	"key": "player_king_week_label_health",
+	"value": "Re della Settimana",
+	"description": "Label re della settimana - health"
+}, {
+	"key": "player_king_week_label_pr",
+	"value": "Re della Settimana",
+	"description": "Label re della settimana - pr"
+}, {
 	"key": "player_details_badge_label",
 	"value": "Badge Conquistati",
 	"description": "Label dettagli giocatore - badge"

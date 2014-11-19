@@ -1,5 +1,7 @@
 package eu.trentorise.game.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.Game;
@@ -14,4 +16,6 @@ public interface GameService {
 	public void saveGameDefinition(Game game);
 
 	public Game loadGameDefinitionById(String gameId);
+
+	public List<Game> loadGames();
 }

@@ -1,7 +1,9 @@
 package eu.trentorise.game.managers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -205,5 +207,13 @@ public class GameManager implements GameService {
 	public Game loadGameDefinitionById(String gameId) {
 		GamePersistence gp = gameRepo.findOne(gameId);
 		return gp == null ? null : gp.toGame();
+	}
+
+	public List<Game> loadGames() {
+		List<Game> result = new ArrayList<Game>();
+		for (GamePersistence gp : gameRepo.findAll()) {
+			result.add(gp.toGame());
+		}
+		return result;
 	}
 }

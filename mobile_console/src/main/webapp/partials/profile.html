@@ -1,4 +1,9 @@
 <div class="container-fluid" ng-init="getProfile(params.id)">
+
+	<div id="my-prof-head-title" align="center">
+		{{ 'left_menu-profile' | i18n }}
+	</div>
+
 	<div align="center">
 			<h1>{{ getUserName() }} {{ getUserSurname() }}</h1>
 			<h4>{{ 'label_profile_title_h4' | i18n }}</h4>

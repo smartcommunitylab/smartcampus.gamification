@@ -17,7 +17,7 @@
 <!-- 		</tr> -->
 <!-- 	</tbody> -->
 <!-- </table> -->
-<div id="green-big-score" class="row" ng-show="userShowGreenKingWeek!=true">
+<div id="green-big-score" class="row"><!-- ng-show="userShowGreenKingWeek!=true" -->
 	<div class="col-md-6 col-md-offset-3" align="center">
 		<h5>
 			<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
@@ -25,35 +25,28 @@
 		</h5>
 	</div>
 </div>
-<div id="green-small-score" class="row" ng-show="userShowGreenKingWeek!=true" align="center">
+<div id="green-big-score-king" class="row" ng-show="userShowGreenKingWeek==true">
+	<div class="col-md-6 col-md-offset-3" align="center">
+		<h5>
+			<img height="180" width="150" src="img/green/greenKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
+			<strong>{{ 'player_king_week_label_green' | i18n }}</strong>
+		</h5>
+	</div>
+</div>
+<div id="green-small-score" class="row" align="center"><!-- ng-show="userShowGreenKingWeek!=true" -->
 	<div class="col-md-3 col-md-offset-3" align="center">
 		<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
 	</div>
 	<div class="col-md-3" align="center">
 		<h5><strong>{{ userProfile.scores[0].score }} {{ 'player_details_score_label_green' | i18n }}</strong></h5>
-	</div>
-</div>
-<div id="green-big-score-king" class="row" ng-show="userShowGreenKingWeek==true">
-	<div class="col-md-6" align="right">
-		<h5>
-			<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
-			<strong>{{ userProfile.scores[0].score }} {{ 'player_details_score_label_green' | i18n }}</strong>
-		</h5>
-	</div>
-	<div class="col-md-1" align="center"></div>
-	<div class="col-md-5" align="center">
-		<img height="150" width="150" src="img/green/greenKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
 	</div>
 </div>
 <div id="green-small-score-king" class="row" ng-show="userShowGreenKingWeek==true">
 	<div class="col-md-3 col-md-offset-3" align="center">
-		<img height="150" width="150" src="img/green/greenLeavesTesto.svg" alt="Punteggio Green" title="Punteggio Green">
-	</div>
-	<div class="col-md-3" align="center">	
-		<h5><strong>{{ userProfile.scores[0].score }} {{ 'player_details_score_label_green' | i18n }}</strong></h5>
+		<img height="180" width="150" src="img/green/greenKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
 	</div>
 	<div class="col-md-3" align="center">
-		<img height="150" width="150" src="img/green/greenKingWeek.svg" alt="Bedge Green King Week" title="Bedge Green King Week">
+		<h5><strong>{{ 'player_king_week_label_green' | i18n }}</strong></h5>
 	</div>
 </div>
 <div class="row" align="center">

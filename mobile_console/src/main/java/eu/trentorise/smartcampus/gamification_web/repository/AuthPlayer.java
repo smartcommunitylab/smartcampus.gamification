@@ -3,27 +3,25 @@ package eu.trentorise.smartcampus.gamification_web.repository;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="player")
-public class Player {
+@Document(collection="auth_player")
+public class AuthPlayer {
 	
 	@Id
 	private String pid;
-	private String socialId;
 	
 	private String name;
 	private String surname;
 	private String nikName;
 	private String mail;
 	
-	public Player() {
+	public AuthPlayer() {
 		super();
 	}
 
-	public Player(String pid, String socialId, String name, String surname, String nikName,
+	public AuthPlayer(String pid, String name, String surname, String nikName,
 			String mail) {
 		super();
 		this.pid = pid;
-		this.socialId = socialId;
 		this.name = name;
 		this.surname = surname;
 		this.nikName = nikName;
@@ -74,20 +72,13 @@ public class Player {
 		return pid;
 	}
 
-	public String getSocialId() {
-		return socialId;
-	}
-
 	public void setPid(String pid) {
 		this.pid = pid;
 	}
 
-	public void setSocialId(String socialId) {
-		this.socialId = socialId;
-	}
 
 	public String toJSONString() {
-		return "{\"pid\":\"" + pid + "\", \"socialId\":\"" + socialId + "\", \"name\":\""
+		return "{\"pid\":\"" + pid + "\", \"name\":\""
 				+ name + "\", \"surname\":\"" + surname + "\", \"nikName\":\"" + nikName
 				+ "\", \"mail\":\"" + mail + "\"}";
 	}

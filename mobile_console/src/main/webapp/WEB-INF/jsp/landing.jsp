@@ -4,13 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- <title>{{ 'app_tab-title' | i18n }}</title> -->
-<title>Gamification</title>
+<title>Green Game</title>
 
 <link href="css/bootstrap.min.css" rel="stylesheet" />
 <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
 <link href="css/xeditable.css" rel="stylesheet" />
 <link href="css/modaldialog.css" rel="stylesheet" />
-<link href="img/myweb.ico" rel="shortcut icon" type="image/x-icon" />
+<link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
 <script src="js/jquery.min.js"></script>
@@ -73,7 +73,7 @@
 							<div class="row" style="height: 20px" align="center" ng-show="isIe10==true">
 								<h4><font color="red">Alcune funzionalit&agrave; del portale non sono supportate in Internet Explorer. Utilizza un altro browser per accedere al portale.</font></h4>
 							</div>
-							<div style="margin: 50px 15px 15px 15px" align="center">
+							<div style="margin: 50px 5px 5px 5px" align="center">
 								<h1>
 									<font face="Raleway-bold" size="48" color="gray"><strong>GreenGame</strong></font>
 								</h1>

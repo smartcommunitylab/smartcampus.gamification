@@ -1,5 +1,6 @@
 package eu.trentorise.smartcampus.gamification_web.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -17,6 +18,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import eu.trentorise.smartcampus.gamification_web.models.Notification;
 
 @Service
 public class EmailService {
@@ -138,15 +141,18 @@ public class EmailService {
     
     
     public void sendMailGamification(
-            final String recipientName, final String point, final String badge, 
+            final String recipientName, final String point, final String badge, final ArrayList<Notification> badges,
             final String position, final String recipientEmail, final Locale locale)
             throws MessagingException {
         
+    	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
+    	
         // Prepare the evaluation context
         final Context ctx = new Context(locale);
         ctx.setVariable("name", recipientName);
         ctx.setVariable("g_point", point);
         ctx.setVariable("n_badge", badge);
+        ctx.setVariable("n_badges", badges);
         ctx.setVariable("u_position", position);
         
         // Prepare message using a Spring helper
@@ -163,7 +169,7 @@ public class EmailService {
         
         // Send mail
         this.mailSender.send(mimeMessage);
-        logger.error("Gamification Mail Sent - OK");
+        logger.error(String.format("Gamification Mail Sent to %s - OK", recipientName));
         
     }
 

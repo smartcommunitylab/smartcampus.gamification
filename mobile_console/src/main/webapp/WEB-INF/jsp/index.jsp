@@ -3,13 +3,13 @@
 <head id="myHead" lang="it">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ 'app_tab-title' | i18n }}</title>
+<title>Green Game</title>
 
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="css/xeditable.css" rel="stylesheet">
 <link href="css/modaldialog.css" rel="stylesheet">
-<link href="img/myweb.ico" rel="shortcut icon" type="image/x-icon" />
+<link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
 <script src="js/jquery.min.js"></script>
@@ -161,10 +161,17 @@ var base64="<%=request.getAttribute("base64")%>";
   
   </script>
   <style>
+  
+  	.myheader{
+    	text-align: left;
+     	padding: 1em;
+	}
+  
 	.navbar-default {
 		background: #c2c2c2;
 		font-weight: bold;
 	}
+	
 	.navbar-default .navbar-text {
   		color: #2a2a2a;
 	}
@@ -182,6 +189,29 @@ var base64="<%=request.getAttribute("base64")%>";
 	.navbar-default .navbar-nav > .active > a:hover, 
 	.navbar-default .navbar-nav > .active > a:focus {
 	 	color: #00984a; /*#555555;*/
+	  	background: #c2c2c2;
+	}
+	
+	.dropdown-menu .open {
+ 		width: 100px;
+ 		display: inline-block;
+ 	}
+	
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+		color: #2a2a2a; /*#555555;*/
+		font-size: 24px;
+	}
+	
+	.navbar-default .navbar-nav .open .dropdown-menu {
+		color: #2a2a2a; /*#555555;*/
+	  	background: #c2c2c2;
+/* 	  	display: inline-block; */
+	}
+	
+	.navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+	.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+	.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+		color: #00984a; /*#555555;*/
 	  	background: #c2c2c2;
 	}
 
@@ -233,14 +263,11 @@ var base64="<%=request.getAttribute("base64")%>";
       	border-left: 3px solid #c2c2c2;
 		border-bottom: 3px solid #c2c2c2;
 	}
-	
-/* 	@media (max-width: @screen-xs-max) { */
-/*   		#my-small-menu { display: block; }  /* show it on small screens */ */
-/*   		#my-big-menu { display: none; }  /* hide it on small screens */ */
-/* 	} */
 
 	#my-small-menu { display: block; }   /* hide it elsewhere */
   	#my-big-menu { display: none; }   /* show it elsewhere */
+  	#my-small-footer { display: block; }
+  	#my-big-footer { display: none; }
   	/* Block for green score */
   	#green-small-score { display: block; }
 	#green-big-score { display: none; }
@@ -256,11 +283,32 @@ var base64="<%=request.getAttribute("base64")%>";
 	#pr-big-score { display: none; }
 	#pr-small-score-king { display: block; }
 	#pr-big-score-king { display: none; }
+	/* Block for page head titles */
+	#my-prof-head-title { 
+		display: block;
+		color: gray;
+		font-size: 32px;
+		font-weight: bold;
+	}
+	#my-class-head-title { 
+		display: block;
+		color: gray;
+		font-size: 32px;
+		font-weight: bold;
+	}
+	#my-rules-head-title { 
+		display: block;
+		color: gray;
+		font-size: 32px;
+		font-weight: bold;
+	}
 	
 
 	@media (min-width:768px) {
 		#my-small-menu { display: none; }   /* hide it elsewhere */
   		#my-big-menu { display: block; }   /* show it elsewhere */
+  		#my-small-footer { display: none; }
+  		#my-big-footer { display: block; }
 /*   	#my-small-tabs { dispaly: none; } */
 /*   	#my-big-tabs { dispaly: block; } */
 		/* Block for green score */
@@ -278,8 +326,10 @@ var base64="<%=request.getAttribute("base64")%>";
 		#pr-big-score { display: block; }
 		#pr-small-score-king { display: none; }
 		#pr-big-score-king { display: block; }
-		
-		
+		/* Block for page head titles */
+		#my-prof-head-title { display: none; }
+		#my-class-head-title { display: none; }
+		#my-rules-head-title { display: none; }
 	}
 	
   </style>
@@ -308,8 +358,8 @@ var base64="<%=request.getAttribute("base64")%>";
             
           </ul>
           <ul class="nav navbar-nav navbar-right" >
-          	<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li>
-          	<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li>
+			<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
+			<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
 <!--             <li class="active" > -->
 <!--             	<a> -->
 <!--             		<span class="glyphicon glyphicon-user"></span> -->
@@ -329,32 +379,49 @@ var base64="<%=request.getAttribute("base64")%>";
       	<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 			    <div class="navbar-header">
+<!-- 			    		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_col" aria-expanded="false" aria-controls="navbar"> -->
+<!-- 			              <span class="sr-only">Toggle navigation</span> -->
+<!-- 							<img height="22" src="img/navMobile.svg"> -->
+<!-- 			            </button> -->
+			    	
 				    <ul class="nav navbar-nav">
-						<!-- <li class="active"><a href="#/" ng-click="home()">{{ 'menu_bar-home' | i18n }}</a></li> -->
+<!-- 						<li class="active"><a href="#/" ng-click="home()">{{ 'menu_bar-home' | i18n }}</a></li> -->
 			            <li class="dropdown">
 			            	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" >
 			            		<img height="22" src="img/navMobile.svg">
 			            	</a>
 			            	<ul class="dropdown-menu" role="menu">
-			            		<li><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li>
-			            		<li><a href="#/classification/{{ gameId }}" ng-click="showClassification()" ><strong>{{ 'left_menu-classification' | i18n }}</strong></a></li>
-			            		<li><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
-			            		<li class="divider"></li>
-			            		<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li>
-			          			<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li>
+			            		<li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li>
+			            		<li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" ><strong>{{ 'left_menu-classification' | i18n }}</strong></a></li>
+			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
+								<!-- <li class="divider"></li> -->
+								<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li> -->
+								<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li> -->
 			          			<li class="divider"></li>
-			          			<li><a href="logout" ng-click="logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li><!-- ng-click="logout()" -->
+			          			<li><a href="logout" ng-click="logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li>
 			            	</ul>
-			            </li> 
+			            </li>
 			         </ul>
 			    </div>
-			    <div class="collapse navbar-collapse navbar-right">
-			    	<ul class="nav navbar-nav">
-			         	<li class="active" ng-show="isActiveProfile() == 'active'">{{ 'left_menu-profile' | i18n }}</li>
-			            <li class="active" ng-show="isActiveClassification() == 'active'">{{ 'left_menu-classification' | i18n }}</li>
-			            <li class="active" ng-show="isActiveRules() == 'active'">{{ 'left_menu-rules' | i18n }}</li> 
-			         </ul>
-			    </div>     
+<!-- 			    <div id="navbar_col" class="collapse navbar-collapse"> -->
+<!-- 		          <ul class="nav navbar-nav"> -->
+<!-- 		            <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li> -->
+<!-- 		            <li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li> -->
+<!-- 		            <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>  -->
+<!-- 		          </ul> -->
+<!-- 		          <ul class="nav navbar-nav navbar-right" > -->
+<!-- 		          	<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
+<!-- 		          	<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
+<!-- 		            <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
+<!-- 		          </ul> -->
+<!--         		</div> -->
+<!-- 			    <div class="navbar-header pull-right"> -->
+<!-- 			    	<ul class="nav navbar-nav"> -->
+<!-- 			         	<li class="active" ng-show="isActiveProfile() == 'active'">{{ 'left_menu-profile' | i18n }}</li> -->
+<!-- 			            <li class="active" ng-show="isActiveClassification() == 'active'">{{ 'left_menu-classification' | i18n }}</li> -->
+<!-- 			            <li class="active" ng-show="isActiveRules() == 'active'">{{ 'left_menu-rules' | i18n }}</li>  -->
+<!-- 			         </ul> -->
+<!-- 			    </div>      -->
 	    	</div>
 	    </div>
 <!--         <div class="collapse navbar-collapse"> -->
@@ -435,23 +502,55 @@ var base64="<%=request.getAttribute("base64")%>";
 <!-- 									</table> -->
 <!-- 								</div> -->
 <!-- 							</div> -->
-							<ng-view class="row">{{ 'loading_text'| i18n }}...</ng-view>
-						</div>
+								<ng-view class="row">{{ 'loading_text'| i18n }}...</ng-view>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div id="my-big-footer" class="row">
 				<div class="col-md-8 col-md-offset-2" align="center">
 					
 					<h5><font face="Raleway-bold" size="5" color="gray"><strong>Green Game</strong></font> con ViaggiaRovereto</h5>
 					&egrave; un progetto di:
 					<br>
 					<footer>
-		<!-- 				<p>&copy; SmartCampus 2013</p> -->
-						<img src="img/footer.svg" width="90%" alt="" title="" />
+						<!-- <p>&copy; SmartCampus 2013</p> -->
+						<img src="img/footer/footer.svg" width="90%" alt="" title="" />
 					</footer>
 				</div>
+			</div>
+			<div id="my-small-footer" class="row">
+				<div class="col-md-4 col-md-offset-2" align="center">
+					<h5><font face="Raleway-bold" size="5" color="gray"><strong>Green Game</strong></font></h5>
+				</div>
+				<div class="col-md-4" align="center">	
+					<h5> con ViaggiaRovereto</h5>
+				</div>
+				<div class="col-md-4" align="center">	
+					&egrave; un progetto di:
+				</div>	
+					<footer>
+						<br>
+						<div class="col-md-4" align="center">	
+							<img src="img/footer/streetLife.svg" width="120" alt="" title="" />
+						</div>
+						<br>
+						<div class="col-md-4" align="center">	
+							<img src="img/footer/fbk.svg" width="85" alt="" title="" />
+						</div>
+						<br>
+						<div class="col-md-4" align="center">	
+							<img src="img/footer/comuneRV.svg" width="150" alt="" title="" />
+						</div>
+						<br>
+						<div class="col-md-4" align="center">	
+							<img src="img/footer/caire.svg" width="150" alt="" title="" />
+						</div>
+						<br>
+						
+						<!-- <p>&copy; SmartCampus 2013</p> -->
+					</footer>
 			</div>
 		</div>
 	</div>	

@@ -412,10 +412,23 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					name: $scope.getPlayerNameById(list[i].playerId),
     					gameId : list[i].gameId,
     					badges : badges,		//badge : badgeEarned[badgeEarned.length-1],
-    					score : scores
+    					score : scores,
+    					class_pos_g : 1,
+    					class_pos_h : 1,
+    					class_pos_p : 1
     			};
-    			$scope.GameClassification.push(playerData);
+    			//MB19112014: added check to name to consider only the players in list
+    			if(playerData.name != null && playerData.name != ""){
+    				$scope.GameClassification.push(playerData);
+    			}
     		}
+    		// Here I have to order the list by user scores
+    		var greenClassificationTmp = $scope.orderByScores(1, $scope.GameClassification);
+    		$scope.GameClassification = $scope.setCorrectPosGreen(greenClassificationTmp);
+    		var HealthClassificationTmp = $scope.orderByScores(2, $scope.GameClassification);
+    		$scope.GameClassification = $scope.setCorrectPosHealth(HealthClassificationTmp);
+    		var PRClassificationTmp = $scope.orderByScores(3, $scope.GameClassification);
+    		$scope.GameClassification = $scope.setCorrectPosPR(PRClassificationTmp);
     	}
     	$scope.setLoading(false);
     };
@@ -498,6 +511,81 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		}
     	}
     	return name;
+    };
+    
+    // Method used to order the list in a specific score order
+    $scope.orderByScores = function(type, list){
+    	switch(type){
+    		case 1: // case green score
+    			list.sort($scope.greenScoreCompare);
+    			break;
+    		case 2: // case health score
+    			list.sort($scope.healthScoreCompare);
+    			break;
+    		case 3: // case pr score
+    			list.sort($scope.prScoreCompare);
+    			break;
+    		default:
+    			break;
+    	}
+    	return list;
+    };
+    
+    $scope.greenScoreCompare = function(a, b){
+    	if(a.score[0].score > b.score[0].score)
+    		return -1;
+    	if(a.score[0].score < b.score[0].score)
+    		return 1;
+    	return 0;
+    };
+    
+    $scope.healthScoreCompare = function(a, b){
+    	if(a.score[1].score > b.score[1].score)
+    		return -1;
+    	if(a.score[1].score < b.score[1].score)
+    		return 1;
+    	return 0;
+    };
+    
+    $scope.prScoreCompare = function(a, b){
+    	if(a.score[2].score > b.score[2].score)
+    		return -1;
+    	if(a.score[2].score < b.score[2].score)
+    		return 1;
+    	return 0;
+    };
+    
+    $scope.setCorrectPosGreen = function(list){
+    	for(var i = 1; i < list.length; i++){
+    		if(list[i].score[0].score < list[i-1].score[0].score){
+    			list[i].class_pos_g = i + 1;
+    		} else {
+    			list[i].class_pos_g = list[i - 1].class_pos_g;
+    		}
+    	}
+    	return list;
+    };
+    
+    $scope.setCorrectPosHealth = function(list){
+    	for(var i = 1; i < list.length; i++){
+    		if(list[i].score[1].score < list[i-1].score[1].score){
+    			list[i].class_pos_h = i + 1;
+    		} else {
+    			list[i].class_pos_h = list[i - 1].class_pos_h;
+    		}
+    	}
+    	return list;
+    };
+    
+    $scope.setCorrectPosPR = function(list){
+    	for(var i = 1; i < list.length; i++){
+    		if(list[i].score[2].score < list[i-1].score[2].score){
+    			list[i].class_pos_p = i + 1;
+    		} else {
+    			list[i].class_pos_p = list[i - 1].class_pos_p;
+    		}
+    	}
+    	return list;
     };
     
     $scope.checkBadges = function(list){

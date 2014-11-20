@@ -83,7 +83,7 @@ public class GameManager implements GameService {
 			 */
 
 			game.getTasks().addAll(finalGameTasks());
-			game.getTasks().addAll(testTasks());
+			// game.getTasks().addAll(testTasks());
 
 			saveGameDefinition(game);
 			logger.debug("created game {}", gameId);

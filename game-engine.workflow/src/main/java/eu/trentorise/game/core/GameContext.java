@@ -36,7 +36,7 @@ public class GameContext {
 
 	}
 
-	public void sendAction(String action, String playerId,
+	public synchronized void sendAction(String action, String playerId,
 			Map<String, Object> params) {
 		gameWorkflow.apply(action, playerId, params);
 	}

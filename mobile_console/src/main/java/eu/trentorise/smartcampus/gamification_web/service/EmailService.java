@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import eu.trentorise.smartcampus.gamification_web.models.BagesData;
+import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
+import eu.trentorise.smartcampus.gamification_web.models.Summary;
 
 @Service
 public class EmailService {
@@ -141,8 +144,11 @@ public class EmailService {
     
     
     public void sendMailGamification(
-            final String recipientName, final String point, final String badge, final ArrayList<Notification> badges,
-            final String position, final String recipientEmail, final Locale locale)
+            final String recipientName, final String point_green, final String point_health, final String point_pr, final String badge,
+            final String position, 
+            final ArrayList<BagesData> badges,
+            final ArrayList<MailImage> standardImages,
+            final String recipientEmail, final Locale locale)
             throws MessagingException {
         
     	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
@@ -150,10 +156,18 @@ public class EmailService {
         // Prepare the evaluation context
         final Context ctx = new Context(locale);
         ctx.setVariable("name", recipientName);
-        ctx.setVariable("g_point", point);
+        ctx.setVariable("g_point", point_green);
+        ctx.setVariable("h_point", point_health);
+        ctx.setVariable("p_point", point_pr);
         ctx.setVariable("n_badge", badge);
         ctx.setVariable("n_badges", badges);
         ctx.setVariable("u_position", position);
+        ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNFoglie04", standardImages.get(1).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNGreenScore", standardImages.get(2).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNHealthScore", standardImages.get(3).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNPrScore", standardImages.get(4).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageResourceName", standardImages.get(5).getImageName()); // so that we can reference it from HTML
         
         // Prepare message using a Spring helper
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
@@ -166,6 +180,92 @@ public class EmailService {
         // Create the HTML body using Thymeleaf
         final String htmlContent = this.templateEngine.process("email-gamification.html", ctx);
         message.setText(htmlContent, true /* isHtml */);
+        
+        // Add the inline titles image, referenced from the HTML code as "cid:${imageResourceName}"
+        final InputStreamSource imageSourceFoglia03 = new ByteArrayResource(standardImages.get(0).getImageByte());
+        message.addInline(standardImages.get(0).getImageName(), imageSourceFoglia03, standardImages.get(0).getImageType());
+        final InputStreamSource imageSourceFoglia04 = new ByteArrayResource(standardImages.get(1).getImageByte());
+        message.addInline(standardImages.get(1).getImageName(), imageSourceFoglia04, standardImages.get(1).getImageType());
+        
+        // Add the inline score image, referenced from the HTML code as "cid:${imageResourceName}"
+        final InputStreamSource imageSourceGreen = new ByteArrayResource(standardImages.get(2).getImageByte());
+        message.addInline(standardImages.get(2).getImageName(), imageSourceGreen, standardImages.get(2).getImageType());
+        final InputStreamSource imageSourceHealth = new ByteArrayResource(standardImages.get(3).getImageByte());
+        message.addInline(standardImages.get(3).getImageName(), imageSourceHealth, standardImages.get(3).getImageType());
+        final InputStreamSource imageSourcePr = new ByteArrayResource(standardImages.get(4).getImageByte());
+        message.addInline(standardImages.get(4).getImageName(), imageSourcePr, standardImages.get(4).getImageType());
+        
+        // Add the inline footer image, referenced from the HTML code as "cid:${imageResourceName}"
+        final InputStreamSource imageSourceFooter = new ByteArrayResource(standardImages.get(5).getImageByte());
+        message.addInline(standardImages.get(5).getImageName(), imageSourceFooter, standardImages.get(5).getImageType());
+        
+        if(badges != null){
+        	// Add the inline images for badges
+	        for(int i = 0; i < badges.size(); i++){
+	        	final InputStreamSource tmp = new ByteArrayResource(badges.get(i).getImageByte());
+	            message.addInline(badges.get(i).getImageName(), tmp, badges.get(i).getImageType());
+	        }
+        }
+        
+        // Send mail
+        this.mailSender.send(mimeMessage);
+        logger.error(String.format("Gamification Mail Sent to %s - OK", recipientName));
+        
+    }
+    
+    public void sendMailSummary(
+            final String recipientName, final String point_green, final String point_health, final String point_pr, 
+            final ArrayList<Summary> summary,
+            final ArrayList<MailImage> standardImages,
+            final String recipientEmail, final Locale locale)
+            throws MessagingException {
+        
+    	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
+    	
+        // Prepare the evaluation context
+        final Context ctx = new Context(locale);
+        ctx.setVariable("name", recipientName);
+        ctx.setVariable("g_point", point_green);
+        ctx.setVariable("h_point", point_health);
+        ctx.setVariable("p_point", point_pr);
+        ctx.setVariable("n_summ", summary);
+        ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNFoglie04", standardImages.get(1).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNGreenScore", standardImages.get(2).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNHealthScore", standardImages.get(3).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageRNPrScore", standardImages.get(4).getImageName()); // so that we can reference it from HTML
+        ctx.setVariable("imageResourceName", standardImages.get(5).getImageName()); // so that we can reference it from HTML
+        
+        // Prepare message using a Spring helper
+        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+        final MimeMessageHelper message = 
+                new MimeMessageHelper(mimeMessage, true /* multipart */, "UTF-8");
+        message.setSubject("Gamification - Notifica");
+        message.setFrom(mailFrom);
+        message.setTo(recipientEmail);
+
+        // Create the HTML body using Thymeleaf
+        final String htmlContent = this.templateEngine.process("email-gamification-summary.html", ctx);
+        message.setText(htmlContent, true /* isHtml */);
+        
+        // Add the inline titles image, referenced from the HTML code as "cid:${imageResourceName}"
+        final InputStreamSource imageSourceFoglia03 = new ByteArrayResource(standardImages.get(0).getImageByte());
+        message.addInline(standardImages.get(0).getImageName(), imageSourceFoglia03, standardImages.get(0).getImageType());
+        final InputStreamSource imageSourceFoglia04 = new ByteArrayResource(standardImages.get(1).getImageByte());
+        message.addInline(standardImages.get(1).getImageName(), imageSourceFoglia04, standardImages.get(1).getImageType());
+        
+        // Add the inline score image, referenced from the HTML code as "cid:${imageResourceName}"
+        final InputStreamSource imageSourceGreen = new ByteArrayResource(standardImages.get(2).getImageByte());
+        message.addInline(standardImages.get(2).getImageName(), imageSourceGreen, standardImages.get(2).getImageType());
+        final InputStreamSource imageSourceHealth = new ByteArrayResource(standardImages.get(3).getImageByte());
+        message.addInline(standardImages.get(3).getImageName(), imageSourceHealth, standardImages.get(3).getImageType());
+        final InputStreamSource imageSourcePr = new ByteArrayResource(standardImages.get(4).getImageByte());
+        message.addInline(standardImages.get(4).getImageName(), imageSourcePr, standardImages.get(4).getImageType());
+        
+        // Add the inline footer image, referenced from the HTML code as "cid:${imageResourceName}"
+        final InputStreamSource imageSourceFooter = new ByteArrayResource(standardImages.get(5).getImageByte());
+        message.addInline(standardImages.get(5).getImageName(), imageSourceFooter, standardImages.get(5).getImageType());
+        
         
         // Send mail
         this.mailSender.send(mimeMessage);

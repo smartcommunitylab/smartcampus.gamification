@@ -516,7 +516,7 @@ var base64="<%=request.getAttribute("base64")%>";
 					<br>
 					<footer>
 						<!-- <p>&copy; SmartCampus 2013</p> -->
-						<img src="img/footer/footer.svg" width="90%" alt="" title="" />
+						<img src="img/footer/footer.png" width="90%" alt="" title="" />
 					</footer>
 				</div>
 			</div>

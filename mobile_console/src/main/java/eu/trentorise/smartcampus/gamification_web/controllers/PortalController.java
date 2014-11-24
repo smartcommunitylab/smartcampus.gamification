@@ -1,5 +1,10 @@
 package eu.trentorise.smartcampus.gamification_web.controllers;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,6 +19,8 @@ import java.util.Map;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,15 +38,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.trentorise.smartcampus.gamification_web.service.EmailService;
 
 import eu.trentorise.smartcampus.aac.AACException;
+import eu.trentorise.smartcampus.gamification_web.models.BagesData;
+import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
+import eu.trentorise.smartcampus.gamification_web.models.State;
+import eu.trentorise.smartcampus.gamification_web.models.Summary;
 //import eu.trentorise.smartcampus.gamification_web.models.SubjectDn;
 import eu.trentorise.smartcampus.gamification_web.models.UserCS;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
+import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProd;
+import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
@@ -91,6 +106,9 @@ public class PortalController extends SCController{
     
     @Autowired
     private AuthPlayerRepositoryDao authPlayerRepositoryDao;
+    
+    @Autowired
+    private AuthPlayerProdRepositoryDao authPlayerProdRepositoryDao;
 	
 	//Mail Params
 	@Autowired
@@ -138,22 +156,40 @@ public class PortalController extends SCController{
 			Object[] objectArray = account.getAccountNames().toArray();
 			Map <String, String> mappaAttributi = account.getAccountAttributes(objectArray[0].toString());
 			
-			// Here I have to check if the user belongs to the list of the testers
-			Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());
-			if(player_check == null){
-				String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
-				logger.info(String.format("Add player: mail %s.", attribute_mail));
-				if(attribute_mail != null){
-					AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
-					logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-					if(auth_p != null){
-						Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
-						playerRepositoryDao.save(new_p);
-						logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
-						//playerRepositoryDao.();
+			if(isTest.compareTo("true") == 0){
+				// Check if the user belongs to the list of the testers (in test)
+				Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());
+				if(player_check == null){
+					String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
+					logger.info(String.format("Add player: mail %s.", attribute_mail));
+					if(attribute_mail != null){
+						AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
+						if(auth_p != null){
+							logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+							playerRepositoryDao.save(new_p);
+							logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
+							//playerRepositoryDao.();
+						}
 					}
 				}
-				//if(authPlayerRepositoryDao.findByMail(account.getAttribute(account, attribute)))
+			} else {
+				// Check if the user belongs to the list of the testers (in test)
+				PlayerProd player_check = playerProdRepositoryDao.findBySocialId(user.getUserId());
+				if(player_check == null){
+					String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
+					logger.info(String.format("Add player: mail %s.", attribute_mail));
+					if(attribute_mail != null){
+						AuthPlayerProd auth_p = authPlayerProdRepositoryDao.findByMail(attribute_mail);
+						if(auth_p != null){
+							logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+							playerProdRepositoryDao.save(new_p);
+							logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
+							//playerRepositoryDao.();
+						}
+					}
+				}
 			}
 			
 			UserCS utente = createUserCartaServiziByMap(mappaAttributi);
@@ -290,48 +326,82 @@ public class PortalController extends SCController{
 	}
 	
 	// Here I insert a task that invoke the WS notification
-	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
+	//@Scheduled(fixedRate = 3*60*1000) // Repeat once a minute
+	//@Scheduled(cron="0 0 0/2 * * *") // Repeat every hours at 00:00 min/sec
 	@Scheduled(cron="0 0 8 * * *") // Repeat every two hours starting from 00:00 to 23:59 - 0 0 0-23/2 * * *
-	public synchronized void checkNotification(){
-			
+	public synchronized void checkNotification() throws IOException{
+		
+		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
+		
 		long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of 24 hours
 		String timestamp = "?timestamp=" + millis;
 		//String timestamp = "";
 		
+		URL resource = getClass().getResource("/");
+		String path = resource.getPath();
+		logger.error(String.format("class path : %s", path));
+		
+		ArrayList<MailImage> standardImages = new ArrayList<MailImage>();
+		
+		File greenScore = new File(path + "mail/img/green/greenLeavesbase.png");
+		File healthScore = new File(path + "mail/img/health/healthLeavesBase.png");
+		File prScore = new File(path + "mail/img/pr/prLeaves.png");
+		File footer = new File(path + "mail/img/footer.png");
+		File foglie03 = new File(path + "mail/img/foglie03.png");
+		File foglie04 = new File(path + "mail/img/foglie04.png");
+		standardImages.add(new MailImage(foglie03.getName(), FileUtils.readFileToByteArray(foglie03), "image/png"));
+		standardImages.add(new MailImage(foglie04.getName(), FileUtils.readFileToByteArray(foglie04), "image/png"));
+		standardImages.add(new MailImage(greenScore.getName(), FileUtils.readFileToByteArray(greenScore), "image/png"));
+		standardImages.add(new MailImage(healthScore.getName(), FileUtils.readFileToByteArray(healthScore), "image/png"));
+		standardImages.add(new MailImage(prScore.getName(), FileUtils.readFileToByteArray(prScore), "image/png"));
+		standardImages.add(new MailImage(footer.getName(), FileUtils.readFileToByteArray(footer), "image/png"));
+		
+		logger.error(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
+		
+		//ArrayList<BagesData> allBadge = getAllBadges(path);
+		//try {
+		//	this.emailService.sendMailGamification("NikName", "43", "32", "112", null, null, allBadge, standardImages ,mailTo, Locale.ITALIAN);
+		//} catch (MessagingException e1) {
+		//	e1.printStackTrace();
+		//}
+		
 			// New method
-			//if(itsTime(new Date())){
 			logger.error(String.format("Check Notification task. Cycle - %d", i++));
-			
-			// For cicle to all the users to retrieve the info
-			//for(int i = 0; i < )
 			
 			if(isTest.compareTo("true") == 0){
 				Iterable<Player> iter = playerRepositoryDao.findAll();
 				for(Player p: iter){
 					logger.error(String.format("Profile finded  %s", p.getNikName()));
-					String urlWS = "notification/" + gameName + "/" + p.getSocialId();
-					RestTemplate restTemplate = new RestTemplate();
-					logger.error("Notification WS GET " + urlWS);
-					
-					String result = "";
 					try {
-						result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
-					} catch (Exception ex){
-						logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+						Thread.sleep(1500);
+					} catch (InterruptedException e1) {
+						logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
 					}
 					
+					ArrayList<State> states = null;
 					ArrayList<Notification> notifications = null;
-					if(result != null){
-						logger.error(String.format("Notification Result Ok: %s", result));
-						notifications = chekNotification(result);	
+					ArrayList<BagesData> someBadge = null;
+					
+					try {
+					// WS State Invocation
+						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
+						states = getState(urlWSState);
 						
-					} else {
-						logger.error(String.format("Notification Result Fail: %s", result));
+						// WS Notification Invocation
+						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
+						notifications = getNotifications(urlWSNot, timestamp);
+					} catch (InterruptedException ie){
+						logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
+					}
+					
+					if(notifications != null && notifications.size() > 0){
+						ArrayList<BagesData> allBadge = getAllBadges(path);
+						someBadge = checkCorrectBadges(allBadge, notifications);	
 					}
 					
 					String mailto = null;
 					mailto = p.getMail();
-					String playerName = p.getName();
+					String playerName = p.getNikName();
 					if(mailto == null || mailto.compareTo("") == 0){
 						mailto = mailTo;
 					}
@@ -339,47 +409,72 @@ public class PortalController extends SCController{
 					if(mailSend.compareTo("true") == 0){
 						try {
 							if(notifications != null){
-								if(notifications.size() == 1){
-									this.emailService.sendMailGamification(playerName, null, notifications.get(0).getBadge(), null, null, mailto, Locale.ITALIAN);
+								if(states != null && states.size() > 0){
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, null, null, notifications, null, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
 								}
 							} else {
-								this.emailService.sendMailGamification(playerName, null, null, null, null, mailto, Locale.ITALIAN);
+								if(states != null  && states.size() > 0){
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, Locale.ITALIAN);
+								} else {
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, Locale.ITALIAN);
+								}
 							}
 						} catch (MessagingException e) {
 							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
 						}
-						logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+					} else {
+						if(notifications != null){
+							if(states != null && states.size() > 0){
+								logger.error(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+							} else {
+								logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+							}
+						} else {
+							if(states != null  && states.size() > 0){
+								logger.error(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+							} else {
+								logger.error(String.format("Invio mail a %s", playerName));
+							}
+						}
 					}
+					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 				}
 			} else {
 				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
 				for(PlayerProd p: iter){
 					logger.error(String.format("Profile finded  %s", p.getNikName()));
-					String urlWS = "notification/" + gameName + "/" + p.getSocialId();
-					RestTemplate restTemplate = new RestTemplate();
-					logger.error("Notification WS GET " + urlWS);
-					
-					String result = "";
 					try {
-						result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
-					} catch (Exception ex){
-						logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+						Thread.sleep(1500);
+					} catch (InterruptedException e1) {
+						logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
 					}
 					
+					ArrayList<State> states = null;
 					ArrayList<Notification> notifications = null;
-					if(result != null){
-						logger.error(String.format("Notification Result Ok: %s", result));
-						notifications = chekNotification(result);	
+					ArrayList<BagesData> someBadge = null;
+					
+					try {
+					// WS State Invocation
+						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
+						states = getState(urlWSState);
 						
-					} else {
-						logger.error(String.format("Notification Result Fail: %s", result));
+						// WS Notification Invocation
+						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
+						notifications = getNotifications(urlWSNot, timestamp);
+					} catch (InterruptedException ie){
+						logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
+					}
+					
+					if(notifications != null && notifications.size() > 0){
+						ArrayList<BagesData> allBadge = getAllBadges(path);
+						someBadge = checkCorrectBadges(allBadge, notifications);	
 					}
 					
 					String mailto = null;
 					mailto = p.getMail();
-					String playerName = p.getName();
+					String playerName = p.getNikName();
 					if(mailto == null || mailto.compareTo("") == 0){
 						mailto = mailTo;
 					}
@@ -387,20 +482,45 @@ public class PortalController extends SCController{
 					if(mailSend.compareTo("true") == 0){
 						try {
 							if(notifications != null){
-								if(notifications.size() == 1){
-									this.emailService.sendMailGamification(playerName, null, notifications.get(0).getBadge(), null, null, mailto, Locale.ITALIAN);
+								if(states != null  && states.size() > 0){
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, null, null, notifications, null, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
 								}
 							} else {
-								this.emailService.sendMailGamification(playerName, null, null, null, null, mailto, Locale.ITALIAN);
+								if(states != null  && states.size() > 0){
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, Locale.ITALIAN);
+								} else {
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, Locale.ITALIAN);
+								}
 							}
 						} catch (MessagingException e) {
 							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
 						}
-						logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+					} else {
+						if(notifications != null){
+							if(states != null && states.size() > 0){
+								logger.error(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+							} else {
+								logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+							}
+						} else {
+							if(states != null && states.size() > 0){
+								logger.error(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+							} else {
+								logger.error(String.format("Invio mail a %s", playerName));
+							}
+						}
 					}
-				}				
+					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
+				}
+			}
+			
+			// Send summary mail
+			try {
+				this.emailService.sendMailSummary("Mattia", "0", "0", "0", summaryMail, standardImages, mailTo, Locale.ITALIAN);
+			} catch (MessagingException e) {
+				logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
 			}
 			
 			// Old method
@@ -462,6 +582,164 @@ public class PortalController extends SCController{
 		//}
 	}
 	
+	private ArrayList<BagesData> getAllBadges(String path) throws IOException {
+		ArrayList<BagesData> allBadges = new ArrayList<BagesData>();
+		// files for green badges
+		File greenKing = new File(path + "mail/img/green/greenKingWeek.png");
+		File green10 = new File(path + "mail/img/green/greenLeaves10.png");
+		File green50 = new File(path + "mail/img/green/greenLeaves50.png");
+		File green100 = new File(path + "mail/img/green/greenLeaves100.png");
+		File green250 = new File(path + "mail/img/green/greenLeaves250.png");
+		File green500 = new File(path + "mail/img/green/greenLeaves500.png");
+		File green1000 = new File(path + "mail/img/green/greenLeaves1000.png");
+		File greenBronze = new File(path + "mail/img/green/greenBronzeMedal.png");
+		File greenSilver = new File(path + "mail/img/green/greenSilverMedal.png");
+		File greenGold = new File(path + "mail/img/green/greenGoldMedal.png");
+		
+		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king-week-green", "Re della Settimana - Green"));
+		allBadges.add(new BagesData(green10.getName(), FileUtils.readFileToByteArray(green10), "image/png", "10-point-green", "10 Punti Green"));
+		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50-point-green", "50 Punti Green"));
+		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100-point-green", "100 Punti Green"));
+		allBadges.add(new BagesData(green250.getName(), FileUtils.readFileToByteArray(green250), "image/png", "250-point-green", "250 Punti Green"));
+		allBadges.add(new BagesData(green500.getName(), FileUtils.readFileToByteArray(green500), "image/png", "500-point-green", "500 Punti Green"));
+		allBadges.add(new BagesData(green1000.getName(), FileUtils.readFileToByteArray(green1000), "image/png", "1000-point-green", "1000 Punti Green"));
+		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green"));
+		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green"));
+		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green"));
+				
+		// files for health badges
+		File healthKing = new File(path + "mail/img/health/healthKingWeek.png");
+		File health10 = new File(path + "mail/img/health/healthLeaves10.png");
+		File health25 = new File(path + "mail/img/health/healthLeaves25.png");
+		File health50 = new File(path + "mail/img/health/healthLeaves50.png");
+		File health100 = new File(path + "mail/img/health/healthLeaves100.png");
+		File health200 = new File(path + "mail/img/health/healthLeaves200.png");
+		File healthBronze = new File(path + "mail/img/health/healthBronzeMedal.png");
+		File healthSilver = new File(path + "mail/img/health/healthSilverMedal.png");
+		File healthGold = new File(path + "mail/img/health/healthGoldMedal.png");
+		
+		allBadges.add(new BagesData(healthKing.getName(), FileUtils.readFileToByteArray(healthKing), "image/png", "king-week-health", "Re della Settimana - Salute"));
+		allBadges.add(new BagesData(health10.getName(), FileUtils.readFileToByteArray(health10), "image/png", "10-point-health", "10 Punti Salute"));
+		allBadges.add(new BagesData(health25.getName(), FileUtils.readFileToByteArray(health25), "image/png", "25-point-health", "25 Punti Salute"));
+		allBadges.add(new BagesData(health50.getName(), FileUtils.readFileToByteArray(health50), "image/png", "50-point-health", "50 Punti Salute"));
+		allBadges.add(new BagesData(health100.getName(), FileUtils.readFileToByteArray(health100), "image/png", "100-point-health", "100 Punti Salute"));
+		allBadges.add(new BagesData(health200.getName(), FileUtils.readFileToByteArray(health200), "image/png", "200-point-health", "200 Punti Salute"));
+		allBadges.add(new BagesData(healthBronze.getName(), FileUtils.readFileToByteArray(healthBronze), "image/png", "bronze-medal-health", "Medaglia di Bronzo - Salute"));
+		allBadges.add(new BagesData(healthSilver.getName(), FileUtils.readFileToByteArray(healthSilver), "image/png", "silver-medal-health", "Medaglia d'Argento - Salute"));
+		allBadges.add(new BagesData(healthGold.getName(), FileUtils.readFileToByteArray(healthGold), "image/png", "gold-medal-health", "Medaglia d'Oro - Salute"));
+		
+		// files for pr badges
+		File prKing = new File(path + "mail/img/pr/prKingWeek.png");
+		File pr10 = new File(path + "mail/img/pr/prLeaves10.png");
+		File pr20 = new File(path + "mail/img/pr/prLeaves20.png");
+		File pr50 = new File(path + "mail/img/pr/prLeaves50.png");
+		File pr100 = new File(path + "mail/img/pr/prLeaves100.png");
+		File pr200 = new File(path + "mail/img/pr/prLeaves200.png");
+		File prBronze = new File(path + "mail/img/pr/prBronzeMedal.png");
+		File prSilver = new File(path + "mail/img/pr/prSilverMedal.png");
+		File prGold = new File(path + "mail/img/pr/prGoldMedal.png");
+		
+		allBadges.add(new BagesData(prKing.getName(), FileUtils.readFileToByteArray(prKing), "image/png", "king-week-pr", "Re della Settimana - Park&Ride"));
+		allBadges.add(new BagesData(pr10.getName(), FileUtils.readFileToByteArray(pr10), "image/png", "10-point-pr", "10 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr20.getName(), FileUtils.readFileToByteArray(pr20), "image/png", "20-point-pr", "20 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr50.getName(), FileUtils.readFileToByteArray(pr50), "image/png", "50-point-pr", "50 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr100.getName(), FileUtils.readFileToByteArray(pr100), "image/png", "100-point-pr", "100 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr200.getName(), FileUtils.readFileToByteArray(pr200), "image/png", "200-point-pr", "200 Punti Park&Ride"));
+		allBadges.add(new BagesData(prBronze.getName(), FileUtils.readFileToByteArray(prBronze), "image/png", "bronze-medal-pr", "Medaglia di Bronzo - Park&Ride"));
+		allBadges.add(new BagesData(prSilver.getName(), FileUtils.readFileToByteArray(prSilver), "image/png", "silver-medal-pr", "Medaglia d'Argento - Park&Ride"));
+		allBadges.add(new BagesData(prGold.getName(), FileUtils.readFileToByteArray(prGold), "image/png", "gold-medal-pr", "Medaglia d'Oro - Park&Ride"));
+		
+		// files for special badges
+		File specialEmotion = new File(path + "mail/img/special/emotion.png");
+		File specialZeroImpact = new File(path + "mail/img/special/impatto_zero.png");
+		File specialStadioPark = new File(path + "mail/img/special/special_p_quercia.png");
+		File specialManifattura = new File(path + "mail/img/special/special_special_p_manifattura.png");
+		
+		allBadges.add(new BagesData(specialEmotion.getName(), FileUtils.readFileToByteArray(specialEmotion), "image/png", "e-motion", "E-Motion"));
+		allBadges.add(new BagesData(specialZeroImpact.getName(), FileUtils.readFileToByteArray(specialZeroImpact), "image/png", "zero-impact", "Impatto Zero"));
+		allBadges.add(new BagesData(specialStadioPark.getName(), FileUtils.readFileToByteArray(specialStadioPark), "image/png", "Stadio-park", "Parcheggio Stadio Quercia"));
+		allBadges.add(new BagesData(specialManifattura.getName(), FileUtils.readFileToByteArray(specialManifattura), "image/png", "Ex Manifattura-park", "Parcheggio Ex Manifattura"));
+		
+		return allBadges;
+	}
+	
+	private ArrayList<BagesData> checkCorrectBadges(ArrayList<BagesData> allB, ArrayList<Notification> notifics) throws IOException{
+		ArrayList<BagesData> correctBadges = new ArrayList<BagesData>();
+		
+		for(int i = 0; i < allB.size(); i++){
+			for(int j = 0; j < notifics.size(); j++){
+				if(notifics.get(j).getBadge().compareTo(allB.get(i).getTextId()) == 0){
+					logger.error(String.format("Notification check notifics: %s, badge :%s", notifics.get(j).getBadge(), allB.get(i).getTextId()));
+					correctBadges.add(allB.get(i));
+				}
+			}
+		}
+		return correctBadges;
+	}
+	
+	
+	/**
+	 * Method used to retrieve the state of a specific user and to send the find data via mail
+	 * @param urlWS: url of the ws
+	 * @return state ArrayList
+	 * @throws InterruptedException 
+	 */
+	private ArrayList<State> getState(String urlWS) throws InterruptedException{
+		
+		RestTemplate restTemplate = new RestTemplate();
+		logger.error("Notification WS GET " + urlWS);
+		
+		String result = "";
+		try {
+			result = restTemplate.getForObject(gamificationUrl + urlWS, String.class); //I pass the timestamp of the scheduled start time
+		} catch (Exception ex){
+			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+		}
+		
+		ArrayList<State> states = null;
+		
+		if(result != null && result.compareTo("") != 0){
+			logger.error(String.format("State Result Ok: %s", result));
+			states = chekState(result);	
+			
+		} else {
+			logger.error(String.format("State Result Fail: %s", result));
+		}
+		
+		return states;
+	}
+	
+	/**
+	 * Method used to retrieve the notification of a specific user and to send the find data via mail
+	 * @param urlWS: url of the ws
+	 * @param timestamp: timestamp for the new notifications
+	 * @return notification ArrayList
+	 * @throws InterruptedException 
+	 */
+	private ArrayList<Notification> getNotifications(String urlWS, String timestamp) throws InterruptedException{
+		
+		RestTemplate restTemplate = new RestTemplate();
+		logger.error("Notification WS GET " + urlWS);
+		
+		String result = "";
+		try {
+			result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
+		} catch (Exception ex){
+			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+		}
+		
+		ArrayList<Notification> notifications = null;
+		if(result != null){
+			logger.error(String.format("Notification Result Ok: %s", result));
+			notifications = chekNotification(result);	
+			
+		} else {
+			logger.error(String.format("Notification Result Fail: %s", result));
+		}
+		
+		return notifications;
+	}
+	
 	/**
 	 * Method checlNotification: convert the result JSON string in an array of objects
 	 * @param result: input string with the json of the ws
@@ -489,10 +767,79 @@ public class PortalController extends SCController{
 		return notificationList;
 	}
 	
+	/**
+	 * Method checlNotification: convert the result JSON string in an array of objects
+	 * @param result: input string with the json of the ws
+	 * @return Notification ArrayList
+	 */
+	private ArrayList<State> chekState(String result){
+		ArrayList<State> stateList = new ArrayList<State>();
+		logger.error(String.format("Result from WS: %s", result));
+		
+			// Here I have to convert string in a list of notifications
+			String[] firtsStateStrings = result.split("\"state\":\\[");
+			String[] stateStrings = firtsStateStrings[1].split("}");
+			for(int i = 0; i < stateStrings.length-1; i++){
+				if(stateStrings[i].contains("\"score\":")){
+					if(stateStrings[i].charAt(0) == ','){	// used to remove the ',' char at the start of the block
+						stateStrings[i] = stateStrings[i].substring(1);
+					}
+					String fieldStrings[] = stateStrings[i].split(",");
+					logger.error(String.format("Array of fields : %s, %s, %s", fieldStrings[0], fieldStrings[1], fieldStrings[2]));
+					String id = cleanField(fieldStrings[0].split(":"));
+					String name = cleanField(fieldStrings[1].split(":"));
+					String score = cleanFieldScore(fieldStrings[2].split(":"));
+					State state = new State(id, name, score);
+					stateList.add(state);
+				}
+			}
+		
+		return orderState(stateList);
+	}
+	
 	private String cleanField(String[] fieldStrings){
 		String field = fieldStrings[1].replace('"', ' ').trim();
 		return field;
-	};
+	}
+	
+	private String cleanFieldScore(String[] fieldStrings){
+		String field = fieldStrings[1].replace('"', ' ').trim();
+		
+		Float score_num_f = Float.valueOf(field);
+		int score_num_i = score_num_f.intValue();
+		
+		String cleanedScore = Integer.toString(score_num_i);
+		return cleanedScore;
+	}
+	
+	/**
+	 * Method orderState: used to order the state array
+	 * @param toOrder
+	 * @return
+	 */
+	private ArrayList<State> orderState(ArrayList<State> toOrder){
+		ArrayList<State> orderedList = new ArrayList<State>();
+		// I order the list with green score at the first, health score at the second and pr at the third
+		for(int i = 0; i < toOrder.size(); i++){
+			if(toOrder.get(i).getName().compareTo("green leaves") == 0){
+				orderedList.add(toOrder.get(i));
+				break;
+			}
+		}
+		for(int i = 0; i < toOrder.size(); i++){
+			if(toOrder.get(i).getName().compareTo("health") == 0){
+				orderedList.add(toOrder.get(i));
+				break;
+			}
+		}
+		for(int i = 0; i < toOrder.size(); i++){
+			if(toOrder.get(i).getName().compareTo("p+r") == 0){
+				orderedList.add(toOrder.get(i));
+				break;
+			}
+		}
+		return orderedList;
+	}
 	
 	/**
 	 * Method used to check if it is time to run check notification

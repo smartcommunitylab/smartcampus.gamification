@@ -53,8 +53,8 @@ public class Notification {
 
 	@Override
 	public String toString() {
-		return "Notification [gameId=" + gameId + ", playerId=" + playerId
-				+ ", timestamp=" + timestamp + ", badge=" + badge + "]";
+		return "\n Notification [gameId=" + gameId + ", playerId=" + playerId
+				+ ", \ntimestamp=" + timestamp + ", badge=" + badge + "]";
 	}
 	
 

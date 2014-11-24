@@ -3,7 +3,7 @@
     <head>
 <!--     	<link href="../../webapp/css/bootstrap.css" rel="stylesheet" /> -->
 <!-- 		<link href="../../webapp/css/bootstrap-theme.min.css" rel="stylesheet" /> -->
-        <title th:remove="all">GreenGame Aggiornamento</title>
+        <title th:remove="all">GreenGame Riepilogo</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -36,18 +36,15 @@
 					</div>
 				</div>
 	    	</div>
-	    	<div class="row" style="width:700px">
-	    		<div class="col-md-6 col-md-offset-1">
+	    	<div class="row" style="width:1000px">
+	    		<div class="col-md-10 col-md-offset-1">
 			        <h3 th:text="#{greeting(${name})}">
 			            Caro Utente,
 			        </h3>
-			        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{points}">
-			        	complimenti, oggi hai raggiunto:
-			        </h3>
-			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}" th:text="#{only_points}">
+			        <h3 th:text="#{only_points}">
 			        	i punti che hai accumulato fin'ora sono:
 			        </h3>
-			        <div style="margin: 50px 5px 5px 150px">
+			        <div style="margin: 50px 5px 5px 50px">
 				        <table>
 					        <tr>
 						       	<td>
@@ -72,32 +69,19 @@
 			        
 			        <!-- th:if="${name.length() gt 10}" -->
 			        
-			        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{new_badges}">
-			            Inoltre hai guadagnato:
+			        <h3 th:if="${n_summ ne null or not #lists.isEmpty(n_summ)}">
+			            Riepilogo Utenti e Mails:
 			        </h3>
-			        <div style="margin: 50px 5px 5px 150px" >
-				      	<table th:if="${n_badge ne null}">
-					        <tr>
-					        	<td><img src="../../webapp/img/green/greenLeaves10.svg" th:src="${'../../webapp/img/green/greenLeaves10.svg'}" width="100px"></img></td>
-						       	<td th:text="${n_badge}">Badge</td>
-						    </tr>
-				        </table>
+			        <div style="margin: 50px 5px 5px 50px" >
 				        
-				        <table th:if="${n_badges ne null}">
-					        <tr th:each="b : ${n_badges}">
-					        	<td><img src="img/green/greenLeavesbase.png" width="100px"  th:src="'cid:' + ${b.imageName}" alt="" title="" /></td>
-						       	<td><font size="3" >Badge : <strong th:text="${b.showedText}">Badge Name</strong></font></td>
+				        <table th:if="${n_summ ne null}" width="100%">
+					        <tr th:each="s : ${n_summ}">
+					        	<td width="20%" valign="middle"><font size="3" >Utente : <strong th:text="${s.user}">Utente</strong></font></td>
+						       	<td width="35%" valign="middle"><font size="3" >Punti : <strong th:text="${s.scores}">Punti</strong></font></td>
+						       	<td width="45%" valign="middle"><font size="3" >Badges : <strong th:text="${s.notifications}">Badges</strong></font></td>
 						    </tr>
 				        </table>
 			        </div>
-			        
-			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
-			            Oggi non hai guadagnato nuovi badge! Gioca ancora ed otterrai nuovi punti!
-			        </h3>
-			        
-			        <p th:if="${u_position ne null}" th:text="#{position(${u_position})}">
-			            La tua posizione in classifica è x°!
-			        </p>
 			        
 			
 			        <h3>

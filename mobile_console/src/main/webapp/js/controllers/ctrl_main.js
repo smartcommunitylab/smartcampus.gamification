@@ -609,6 +609,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowZeroImpact = false;
     	$scope.userShowManifatturaPark = false;
     	$scope.userShowQuerciaPark = false;
+    	$scope.userShowCentroStoricoPark = false;
+    	$scope.userShowParcheggioCentroPark = false;
+    	$scope.userShowALeoniPark = false;
     	$scope.userShowSpecialBike = false;
     	$scope.userShowSpecialWalking = false;
     	$scope.userNoSpecialBadge = false;
@@ -689,6 +692,14 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				case "Stadio-park" :
     					$scope.userShowQuerciaPark = true;
     					break;
+    				case "Centro Storico-park" :
+    					$scope.userShowCentroStoricoPark = true;
+    					break;
+    				case "Parcheggio Centro-park" :
+    			    	$scope.userShowParcheggioCentroPark = true;
+    					break;
+    				case "P.le A.Leoni-park" :
+    			    	$scope.userShowALeoniPark = true;
     				default: 
 //    					if(list[3].badgeEarned[i].indexOf("-park") > -1){
 //    						$scope.userShowPark = true;

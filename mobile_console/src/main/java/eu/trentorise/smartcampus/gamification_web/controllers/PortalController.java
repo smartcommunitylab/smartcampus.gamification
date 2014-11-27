@@ -358,9 +358,9 @@ public class PortalController extends SCController{
 		
 		logger.error(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
 		
-		//ArrayList<BagesData> allBadge = getAllBadges(path);
+		//ArrayList<BagesData> allBadgeTest = getAllBadges(path);
 		//try {
-		//	this.emailService.sendMailGamification("NikName", "43", "32", "112", null, null, allBadge, standardImages ,mailTo, Locale.ITALIAN);
+		//	this.emailService.sendMailGamification("NikName", "43", "32", "112", null, null, allBadgeTest, standardImages ,mailTo, Locale.ITALIAN);
 		//} catch (MessagingException e1) {
 		//	e1.printStackTrace();
 		//}
@@ -654,11 +654,17 @@ public class PortalController extends SCController{
 		File specialZeroImpact = new File(path + "mail/img/special/impatto_zero.png");
 		File specialStadioPark = new File(path + "mail/img/special/special_p_quercia.png");
 		File specialManifattura = new File(path + "mail/img/special/special_special_p_manifattura.png");
+		File specialCentroStorico = new File(path + "mail/img/special/special_p_centro.storico.png");
+		File specialParcheggioCentro = new File(path + "mail/img/special/special_p_centro.png");
+		File specialPleALeoni = new File(path + "mail/img/special/special_p_p.le.a.leoni.png");
 		
 		allBadges.add(new BagesData(specialEmotion.getName(), FileUtils.readFileToByteArray(specialEmotion), "image/png", "e-motion", "E-Motion"));
 		allBadges.add(new BagesData(specialZeroImpact.getName(), FileUtils.readFileToByteArray(specialZeroImpact), "image/png", "zero-impact", "Impatto Zero"));
 		allBadges.add(new BagesData(specialStadioPark.getName(), FileUtils.readFileToByteArray(specialStadioPark), "image/png", "Stadio-park", "Parcheggio Stadio Quercia"));
 		allBadges.add(new BagesData(specialManifattura.getName(), FileUtils.readFileToByteArray(specialManifattura), "image/png", "Ex Manifattura-park", "Parcheggio Ex Manifattura"));
+		allBadges.add(new BagesData(specialCentroStorico.getName(), FileUtils.readFileToByteArray(specialCentroStorico), "image/png", "Centro Storico-park", "Parcheggio Centro Storico"));
+		allBadges.add(new BagesData(specialParcheggioCentro.getName(), FileUtils.readFileToByteArray(specialParcheggioCentro), "image/png", "Parcheggio Centro-park", "Parcheggio Centro"));
+		allBadges.add(new BagesData(specialPleALeoni.getName(), FileUtils.readFileToByteArray(specialPleALeoni), "image/png", "P.le A.Leoni-park", "Parcheggio Piazzale Leoni"));
 		
 		return allBadges;
 	}

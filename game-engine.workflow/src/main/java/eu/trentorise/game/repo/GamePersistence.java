@@ -41,8 +41,10 @@ public class GamePersistence {
 		name = game.getName();
 		actions = game.getActions();
 		rules = game.getRules();
-		for (GameTask gt : game.getTasks()) {
-			tasks.add(new GenericObjectPersistence(gt));
+		if (game.getTasks() != null) {
+			for (GameTask gt : game.getTasks()) {
+				tasks.add(new GenericObjectPersistence(gt));
+			}
 		}
 	}
 

@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GameRepo extends CrudRepository<GamePersistence, String> {
+
+	public GamePersistence findByActions(String action);
 }

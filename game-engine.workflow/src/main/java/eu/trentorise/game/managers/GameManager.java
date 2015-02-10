@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +42,7 @@ public class GameManager implements GameService {
 	@Autowired
 	GameRepo gameRepo;
 
-	@PostConstruct
+	// @PostConstruct
 	@SuppressWarnings("unused")
 	private void initRepo() {
 		repo = new HashMap<String, String>();
@@ -64,16 +62,28 @@ public class GameManager implements GameService {
 
 			game.setRules(new HashSet<String>());
 
-			game.getRules().add("finalClassificationBadges.drl");
-			game.getRules().add("greenBadges.drl");
-			game.getRules().add("greenPoints.drl");
-			game.getRules().add("healthBadges.drl");
-			game.getRules().add("healthPoints.drl");
-			game.getRules().add("initState.drl");
-			game.getRules().add("prBadges.drl");
-			game.getRules().add("prPoints.drl");
-			game.getRules().add("specialBadges.drl");
-			game.getRules().add("weekClassificationBadges.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId
+							+ "/finalClassificationBadges.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId + "/greenBadges.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId + "/greenPoints.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId + "/healthBadges.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId + "/healthPoints.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId + "/initState.drl");
+			game.getRules()
+					.add("classpath://rules/" + gameId + "/prBadges.drl");
+			game.getRules()
+					.add("classpath://rules/" + gameId + "/prPoints.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId + "/specialBadges.drl");
+			game.getRules().add(
+					"classpath://rules/" + gameId
+							+ "/weekClassificationBadges.drl");
 
 			game.setTasks(new HashSet<GameTask>());
 
@@ -186,7 +196,8 @@ public class GameManager implements GameService {
 	}
 
 	public String getGameIdByAction(String actionId) {
-		return repo.get(actionId);
+		GamePersistence game = gameRepo.findByActions(actionId);
+		return game != null ? game.getId() : null;
 	}
 
 	public void startupTasks(String gameId) {

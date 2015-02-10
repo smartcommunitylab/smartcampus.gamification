@@ -1,5 +1,6 @@
 package eu.trentorise.game.managers;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,6 +48,8 @@ public class DroolsEngine implements GameEngine {
 
 	@Autowired
 	GameService gameSrv;
+
+	private RuleLoader ruleLoader = new RuleLoader();
 
 	private KieServices kieServices = KieServices.Factory.get();
 
@@ -139,23 +142,58 @@ public class DroolsEngine implements GameEngine {
 		KieFileSystem kfs = kieServices.newKieFileSystem();
 
 		// load core.drl
-		Resource coreRes = res.newClassPathResource("rules/core.drl");
-		kfs.write(coreRes);
-		logger.info("Core rules loaded");
+
+		Resource coreRes;
+		try {
+			coreRes = ruleLoader.load("classpath://rules/core.drl");
+			kfs.write(coreRes);
+			logger.info("Core rules loaded");
+		} catch (MalformedURLException e) {
+			logger.error("Exception loading core.drl");
+		}
 
 		// load rules
 
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 
 		for (String rule : game.getRules()) {
-			String path = "rules/" + gameId + "/" + rule;
-			Resource r1 = res.newClassPathResource(path);
-			kfs.write(r1);
-			logger.info("{} loaded", path);
+			// String path = "rules/" + gameId + "/" + rule;
+			Resource r1;
+			try {
+				r1 = ruleLoader.load(rule);
+				kfs.write(r1);
+				logger.info("{} loaded", rule);
+			} catch (MalformedURLException e) {
+				logger.error("Malformed URL loading rule {}, rule not loaded",
+						rule);
+			}
 		}
 		kieServices.newKieBuilder(kfs).buildAll();
 		logger.info("Rules repository built");
 
+	}
+
+	private class RuleLoader {
+		public RuleLoader() {
+		}
+
+		public Resource load(String ruleUrl) throws MalformedURLException {
+			Resource res = null;
+			String url = null;
+			if (ruleUrl.startsWith("classpath://")) {
+				url = ruleUrl.substring("classpath://".length());
+				res = kieServices.getResources().newClassPathResource(url);
+			} else if (ruleUrl.startsWith("file://")) {
+				url = ruleUrl.substring("file://".length());
+				res = kieServices.getResources().newFileSystemResource(url);
+			} else if (ruleUrl.startsWith("db://")) {
+				url = ruleUrl.substring("db://".length());
+				// TODO LOAD from DB
+			} else {
+				throw new MalformedURLException("resource URL not supported");
+			}
+			return res;
+		}
 	}
 
 }

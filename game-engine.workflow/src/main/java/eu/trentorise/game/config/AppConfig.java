@@ -15,6 +15,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import eu.trentorise.game.core.AppContextProvider;
+import eu.trentorise.game.managers.DBPlayerManager;
+import eu.trentorise.game.managers.QuartzTaskManager;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.TaskService;
 
 @ComponentScan("eu.trentorise.game")
 @Configuration
@@ -68,5 +72,15 @@ public class AppConfig {
 			return null;
 		}
 
+	}
+
+	@Bean
+	public PlayerService playerSrv() {
+		return new DBPlayerManager();
+	}
+
+	@Bean
+	public TaskService taskManager() {
+		return new QuartzTaskManager();
 	}
 }

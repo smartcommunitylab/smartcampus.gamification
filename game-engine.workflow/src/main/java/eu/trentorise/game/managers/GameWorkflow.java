@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.PlayerState;
@@ -25,7 +24,6 @@ public class GameWorkflow implements Workflow {
 	GameEngine gameEngine;
 
 	@Autowired
-	@Qualifier("dbPlayerManager")
 	PlayerService playerSrv;
 
 	@Autowired

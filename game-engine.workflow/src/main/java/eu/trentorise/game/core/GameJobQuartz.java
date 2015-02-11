@@ -11,18 +11,8 @@ public class GameJobQuartz extends QuartzJobBean {
 
 	private final Logger logger = LoggerFactory.getLogger(GameJobQuartz.class);
 
-	// private GameTask task;
 	private String gameId;
 	private String taskName;
-
-	// private GameContext gameCtx;
-
-	// public GameJobQuartz(GameTask task, GameContext gameContext, String
-	// gameId) {
-	// this.task = task;
-	// gameCtx = gameContext;
-	// this.gameId = gameId;
-	// }
 
 	public GameJobQuartz() {
 	}

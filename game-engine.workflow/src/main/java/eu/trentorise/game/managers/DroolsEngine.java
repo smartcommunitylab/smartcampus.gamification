@@ -1,5 +1,6 @@
 package eu.trentorise.game.managers;
 
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.command.Command;
-import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
@@ -30,11 +30,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Action;
+import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Rule;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 
@@ -48,8 +50,6 @@ public class DroolsEngine implements GameEngine {
 
 	@Autowired
 	GameService gameSrv;
-
-	private RuleLoader ruleLoader = new RuleLoader();
 
 	private KieServices kieServices = KieServices.Factory.get();
 
@@ -138,9 +138,8 @@ public class DroolsEngine implements GameEngine {
 	}
 
 	private void loadGameRules(String gameId) {
-		KieResources res = kieServices.getResources();
 		KieFileSystem kfs = kieServices.newKieFileSystem();
-
+		RuleLoader ruleLoader = new RuleLoader(gameId);
 		// load core.drl
 
 		Resource coreRes;
@@ -157,7 +156,6 @@ public class DroolsEngine implements GameEngine {
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 
 		for (String rule : game.getRules()) {
-			// String path = "rules/" + gameId + "/" + rule;
 			Resource r1;
 			try {
 				r1 = ruleLoader.load(rule);
@@ -174,7 +172,10 @@ public class DroolsEngine implements GameEngine {
 	}
 
 	private class RuleLoader {
-		public RuleLoader() {
+		private String gameId;
+
+		public RuleLoader(String gameId) {
+			this.gameId = gameId;
 		}
 
 		public Resource load(String ruleUrl) throws MalformedURLException {
@@ -187,8 +188,15 @@ public class DroolsEngine implements GameEngine {
 				url = ruleUrl.substring("file://".length());
 				res = kieServices.getResources().newFileSystemResource(url);
 			} else if (ruleUrl.startsWith("db://")) {
-				url = ruleUrl.substring("db://".length());
-				// TODO LOAD from DB
+				Rule r = gameSrv.loadRule(gameId, ruleUrl);
+				if (r != null) {
+					res = kieServices.getResources().newReaderResource(
+							new StringReader(((DBRule) r).getContent()));
+					res.setSourcePath("rules/" + r.getGameId() + "/"
+							+ ((DBRule) r).getId() + ".drl");
+				} else {
+					logger.error("DBRule {} not exist", url);
+				}
 			} else {
 				throw new MalformedURLException("resource URL not supported");
 			}

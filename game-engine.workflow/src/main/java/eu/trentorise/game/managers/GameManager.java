@@ -1,5 +1,6 @@
 package eu.trentorise.game.managers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,9 +18,14 @@ import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.model.ClasspathRule;
+import eu.trentorise.game.model.DBRule;
+import eu.trentorise.game.model.FSRule;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Rule;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
+import eu.trentorise.game.repo.RuleRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.ClassificationTask;
@@ -41,6 +47,9 @@ public class GameManager implements GameService {
 
 	@Autowired
 	GameRepo gameRepo;
+
+	@Autowired
+	RuleRepo ruleRepo;
 
 	// @PostConstruct
 	@SuppressWarnings("unused")
@@ -227,4 +236,53 @@ public class GameManager implements GameService {
 		}
 		return result;
 	}
+
+	public void addRule(Rule rule) {
+		if (rule != null) {
+			Game game = loadGameDefinitionById(rule.getGameId());
+			if (game != null) {
+				if (rule instanceof ClasspathRule) {
+					game.getRules().add(
+							"classpath://" + ((ClasspathRule) rule).getUrl());
+				}
+
+				if (rule instanceof FSRule) {
+					game.getRules().add("file://" + ((FSRule) rule).getUrl());
+				}
+
+				if (rule instanceof DBRule) {
+					rule = ruleRepo.save((DBRule) rule);
+					game.getRules().add("db://" + ((DBRule) rule).getId());
+				}
+
+				saveGameDefinition(game);
+			} else {
+				logger.error("Game {} not found", rule.getGameId());
+			}
+		}
+	}
+
+	public Rule loadRule(String gameId, String url) {
+		Rule rule = null;
+		if (url != null) {
+			if (url.startsWith("db://")) {
+				url = url.substring("db://".length());
+				return ruleRepo.findOne(url);
+			} else if (url.startsWith("classpath://")) {
+				url = url.substring("classpath://".length());
+				if (Thread.currentThread().getContextClassLoader()
+						.getResource(url) != null) {
+					return new ClasspathRule(gameId, url);
+				}
+
+			} else if (url.startsWith("file://")) {
+				url = url.substring("file://".length());
+				if (new File(url).exists()) {
+					return new FSRule(gameId, url);
+				}
+			}
+		}
+		return rule;
+	}
+
 }

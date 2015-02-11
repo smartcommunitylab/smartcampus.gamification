@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Rule;
 
 @Service
 public interface GameService {
@@ -18,4 +19,8 @@ public interface GameService {
 	public Game loadGameDefinitionById(String gameId);
 
 	public List<Game> loadGames();
+
+	public void addRule(Rule rule);
+
+	public Rule loadRule(String gameId, String url);
 }

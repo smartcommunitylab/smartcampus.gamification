@@ -13,7 +13,7 @@ import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.services.TaskService;
 
-@Component("taskManager")
+@Component
 public class TaskManager implements TaskService {
 
 	private final Logger logger = LoggerFactory.getLogger(TaskManager.class);

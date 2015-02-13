@@ -30,7 +30,7 @@ import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
 import eu.trentorise.game.services.TaskService;
 
-@Component("quartzTaskManager")
+@Component
 public class QuartzTaskManager implements TaskService {
 
 	@Autowired

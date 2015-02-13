@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +21,9 @@ import eu.trentorise.game.services.Workflow;
 public class MainController {
 
 	@Autowired
-	Workflow gameWorkflow;
+	Workflow workflow;
 
 	@Autowired
-	@Qualifier("dbPlayerManager")
 	PlayerService playerSrv;
 
 	@Autowired
@@ -33,8 +31,7 @@ public class MainController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/execute")
 	public void executeAction(@RequestBody ExecutionData data) {
-		gameWorkflow
-				.apply(data.getActionId(), data.getUserId(), data.getData());
+		workflow.apply(data.getActionId(), data.getUserId(), data.getData());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}")

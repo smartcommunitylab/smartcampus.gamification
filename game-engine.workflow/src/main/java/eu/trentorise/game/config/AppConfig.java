@@ -17,8 +17,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.managers.DBPlayerManager;
 import eu.trentorise.game.managers.QuartzTaskManager;
+import eu.trentorise.game.managers.QueueGameWorkflow;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
+import eu.trentorise.game.services.Workflow;
 
 @ComponentScan("eu.trentorise.game")
 @Configuration
@@ -80,7 +82,12 @@ public class AppConfig {
 	}
 
 	@Bean
-	public TaskService taskManager() {
+	public TaskService taskSrv() {
 		return new QuartzTaskManager();
+	}
+
+	@Bean
+	public Workflow workflow() {
+		return new QueueGameWorkflow();
 	}
 }

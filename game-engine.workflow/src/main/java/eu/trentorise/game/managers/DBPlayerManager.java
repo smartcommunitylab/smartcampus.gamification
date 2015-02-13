@@ -19,7 +19,7 @@ import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.PlayerService;
 
-@Component("dbPlayerManager")
+@Component
 public class DBPlayerManager implements PlayerService {
 
 	private final Logger logger = LoggerFactory

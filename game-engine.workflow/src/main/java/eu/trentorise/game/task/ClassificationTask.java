@@ -87,10 +87,6 @@ public class ClassificationTask extends GameTask {
 			}
 		}
 
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put(K_CLASSIFICATION_NAME, classificationName);
-		params.put(K_CLASSIFICATION_TYPE, itemType);
-
 		int position = 1, nextPosition = 1, index;
 		Double lastScore = null;
 		boolean sameScore = false;
@@ -102,6 +98,9 @@ public class ClassificationTask extends GameTask {
 			if (index > itemsToNotificate && !sameScore) {
 				break;
 			}
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put(K_CLASSIFICATION_NAME, classificationName);
+			params.put(K_CLASSIFICATION_TYPE, itemType);
 			if (sameScore) {
 				params.put(K_POSITION, position);
 			} else {

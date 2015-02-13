@@ -6,7 +6,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -22,11 +21,10 @@ public class GameContext {
 	private String gameRefId;
 
 	@Autowired
-	@Qualifier("dbPlayerManager")
 	private PlayerService playerSrv;
 
 	@Autowired
-	private Workflow gameWorkflow;
+	private Workflow workflow;
 
 	public GameContext(String gameRefId) {
 		this.gameRefId = gameRefId;
@@ -38,7 +36,7 @@ public class GameContext {
 
 	public synchronized void sendAction(String action, String playerId,
 			Map<String, Object> params) {
-		gameWorkflow.apply(action, playerId, params);
+		workflow.apply(action, playerId, params);
 	}
 
 	public PlayerState readStatus(String playerId) {

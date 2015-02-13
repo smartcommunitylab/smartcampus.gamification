@@ -108,7 +108,7 @@ public class DroolsEngine implements GameEngine {
 			PropertiesConfiguration constants = new PropertiesConfiguration(
 					costantsFileURL);
 			constants.setListDelimiter(',');
-			logger.info("constants file loaded for game {}", gameId);
+			logger.debug("constants file loaded for game {}", gameId);
 			Iterator<String> constantsIter = constants.getKeys();
 			while (constantsIter.hasNext()) {
 				String constant = constantsIter.next();
@@ -160,7 +160,7 @@ public class DroolsEngine implements GameEngine {
 			try {
 				r1 = ruleLoader.load(rule);
 				kfs.write(r1);
-				logger.info("{} loaded", rule);
+				logger.debug("{} loaded", rule);
 			} catch (MalformedURLException e) {
 				logger.error("Malformed URL loading rule {}, rule not loaded",
 						rule);

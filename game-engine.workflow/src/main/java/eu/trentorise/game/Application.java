@@ -16,7 +16,7 @@ public class Application {
 		ctx.register(AppConfig.class);
 		ctx.register(MongoConfig.class);
 		ctx.refresh();
-		Workflow wf = ctx.getBean(Workflow.class);
+		Workflow gameWorkflow = ctx.getBean("workflow", Workflow.class);
 
 		/**
 		 * input map known fields
@@ -45,7 +45,7 @@ public class Application {
 		// data.put("sustainable", true);
 		// data.put("p+r", true);
 		// data.put("park", "MANIFATTURA");
-		wf.apply("save_itinerary", "1", data);
+		gameWorkflow.apply("save_itinerary", "1", data);
 	}
 
 }

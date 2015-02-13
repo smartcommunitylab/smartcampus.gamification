@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ public class GameManager implements GameService {
 	private final Logger logger = LoggerFactory.getLogger(GameManager.class);
 
 	@Autowired
-	TaskService taskManager;
+	TaskService taskSrv;
 
 	@Autowired
 	AppContextProvider provider;
@@ -40,6 +42,14 @@ public class GameManager implements GameService {
 	@Autowired
 	RuleRepo ruleRepo;
 
+	@PostConstruct
+	@SuppressWarnings("unused")
+	private void startup() {
+		for (Game game : loadGames()) {
+			startupTasks(game.getId());
+		}
+	}
+
 	public String getGameIdByAction(String actionId) {
 		GamePersistence game = gameRepo.findByActions(actionId);
 		return game != null ? game.getId() : null;
@@ -49,7 +59,7 @@ public class GameManager implements GameService {
 		Game game = loadGameDefinitionById(gameId);
 		if (game != null) {
 			for (GameTask task : game.getTasks()) {
-				taskManager.createTask(task, (GameContext) provider
+				taskSrv.createTask(task, (GameContext) provider
 						.getApplicationContext().getBean("gameCtx", gameId));
 			}
 		}

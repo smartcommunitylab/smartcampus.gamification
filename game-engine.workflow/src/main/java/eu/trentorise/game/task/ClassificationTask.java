@@ -95,7 +95,7 @@ public class ClassificationTask extends GameTask {
 			sameScore = lastScore != null && lastScore == item.getScore();
 			index = nextPosition - 1;
 
-			if (index > itemsToNotificate && !sameScore) {
+			if (index >= itemsToNotificate && !sameScore) {
 				break;
 			}
 			Map<String, Object> params = new HashMap<String, Object>();

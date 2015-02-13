@@ -34,6 +34,7 @@ import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.InputData;
+import eu.trentorise.game.model.Notification;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Rule;
@@ -78,10 +79,12 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newFireAllRules());
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
+		cmds.add(CommandFactory.newQuery("retrieveNotifications",
+				"getNotifications"));
 
 		kSession = loadGameConstants(kSession, gameId);
 
-		kSession.setGlobal("notificationSrv", notificationSrv);
+		// kSession.setGlobal("notificationSrv", notificationSrv);
 
 		ExecutionResults results = kSession.execute(CommandFactory
 				.newBatchExecution(cmds));
@@ -92,6 +95,15 @@ public class DroolsEngine implements GameEngine {
 				.getValue("retrieveState")).iterator();
 		while (iter.hasNext()) {
 			newState.add((GameConcept) iter.next().get("$result"));
+		}
+
+		iter = ((QueryResults) results.getValue("retrieveNotifications"))
+				.iterator();
+		while (iter.hasNext()) {
+			Notification note = (Notification) iter.next()
+					.get("$notifications");
+			notificationSrv.notificate(note);
+			logger.info("send notification: {}", note.toString());
 		}
 
 		state.setState(newState);

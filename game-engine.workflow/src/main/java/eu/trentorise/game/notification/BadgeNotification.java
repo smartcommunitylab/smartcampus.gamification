@@ -23,4 +23,10 @@ public class BadgeNotification extends Notification {
 		this.badge = badge;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("[gameId=%s, playerId=%s, badge=%s]", getGameId(),
+				getPlayerId(), badge);
+	}
+
 }

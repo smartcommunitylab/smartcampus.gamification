@@ -2,9 +2,6 @@ package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
 
-global eu.trentorise.game.managers.NotificationManager notificationSrv;
-
-
 rule "10 point pr badge"
 	salience -1000
 when
@@ -15,9 +12,7 @@ when
 then
 	log("apply \'10-point-pr badge\'");
 	$bc.getBadgeEarned().add('10-point-pr');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'10-point-pr');
-	notificationSrv.notificate(notification);
-	log("notificate \'10-point-pr badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'10-point-pr'));
 	update( $bc );
 end
 
@@ -31,9 +26,7 @@ when
 then
 	log("apply \'20-point-pr badge\'");
 	$bc.getBadgeEarned().add('20-point-pr');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'20-point-pr');
-	notificationSrv.notificate(notification);
-	log("notificate \'20-point-pr badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'20-point-pr'));
 	update( $bc );
 end
 
@@ -48,9 +41,7 @@ when
 then
 	log("apply \'50-point-pr badge\'");
 	$bc.getBadgeEarned().add('50-point-pr');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'50-point-pr');
-	notificationSrv.notificate(notification);
-	log("notificate \'50-point-pr badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'50-point-pr'));
 	update( $bc );
 end
 
@@ -64,9 +55,7 @@ when
 then
 	log("apply \'100-point-pr badge\'");
 	$bc.getBadgeEarned().add('100-point-pr');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'100-point-pr');
-	notificationSrv.notificate(notification);
-	log("notificate \'100-point-pr badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'100-point-pr'));
 	update( $bc );
 end
 
@@ -80,8 +69,6 @@ when
 then
 	log("apply \'200-point-pr badge\'");
 	$bc.getBadgeEarned().add('200-point-pr');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'200-point-pr');
-	notificationSrv.notificate(notification);
-	log("notificate \'200-point-pr badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'200-point-pr'));
 	update( $bc );
 end

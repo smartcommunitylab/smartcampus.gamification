@@ -40,4 +40,6 @@ public abstract class Notification {
 		this.timestamp = timestamp;
 	}
 
+	public abstract String toString();
+
 }

@@ -4,6 +4,10 @@ query "getGameConcepts"
     $result: GameConcept()
 end
 
+query "getNotifications"
+	$notifications: Notification()
+end
+
 function void log(String msg) {
  	System.out.println(msg);
 }

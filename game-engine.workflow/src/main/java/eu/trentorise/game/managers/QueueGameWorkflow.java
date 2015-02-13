@@ -63,6 +63,8 @@ public class QueueGameWorkflow implements Workflow {
 
 		public void run() {
 
+			logger.info("actionId: {}, playerId:{}, data: {}", actionId,
+					userId, data);
 			String gameId = gameSrv.getGameIdByAction(actionId);
 
 			PlayerState playerState = playerSrv.loadState(userId, gameId);

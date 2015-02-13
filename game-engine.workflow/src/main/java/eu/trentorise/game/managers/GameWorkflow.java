@@ -28,6 +28,9 @@ public class GameWorkflow implements Workflow {
 	GameService gameSrv;
 
 	public void apply(String actionId, String userId, Map<String, Object> data) {
+		logger.info("actionId: {}, playerId: {}, data: {}", actionId, userId,
+				data);
+
 		String gameId = gameSrv.getGameIdByAction(actionId);
 
 		PlayerState playerState = playerSrv.loadState(userId, gameId);
@@ -40,5 +43,4 @@ public class GameWorkflow implements Workflow {
 		logger.info("Process terminated: {}", result);
 
 	}
-
 }

@@ -2,9 +2,6 @@ package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
 
-global eu.trentorise.game.managers.NotificationManager notificationSrv;
-
-
 /* ***************************************************************************
 E-MOTION  
   
@@ -20,9 +17,7 @@ when
 then
 	log("apply \'e-motion badge\'");
 	$bc.getBadgeEarned().add('e-motion');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'e-motion');
-	notificationSrv.notificate(notification);
-	log("notificate \'e-motion badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'e-motion'));
 	update( $bc );
 end
 
@@ -41,9 +36,7 @@ when
 then
 	log("apply  \'"+$park+"-park badge\'");
 	$bc.getBadgeEarned().add((String) $park+'-park');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,$park+'-park');
-	notificationSrv.notificate(notification);
-	log("notificate \'"+$park+'-park'+" badge\'");
+	insert( new BadgeNotification($gameId,$playerId,$park+'-park'));
 	update( $bc );
 end
 
@@ -62,8 +55,6 @@ when
 then
 	log("apply \'zero-impact badge\'");
 	$bc.getBadgeEarned().add('zero-impact');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'zero-impact');
-	notificationSrv.notificate(notification);
-	log("notificate \'zero-impact badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'zero-impact'));
 	update( $bc );
 end

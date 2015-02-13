@@ -72,6 +72,20 @@ public class GameEngineTest {
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
 				+ "/greenPoints.drl"));
+		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
+				+ "/healthBadges.drl"));
+		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
+				+ "/healthPoints.drl"));
+		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
+				+ "/prBadges.drl"));
+		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
+				+ "/prPoints.drl"));
+		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
+				+ "/specialBadges.drl"));
+		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
+				+ "/weekClassificationBadges.drl"));
+		gameManager.addRule(new ClasspathRule(GAME_ID, "rules/" + GAME_ID
+				+ "/finalClassificationBadges.drl"));
 	}
 
 	private void initDBRuleGame() {
@@ -97,6 +111,48 @@ public class GameEngineTest {
 					.getResource("rules/" + GAME_ID + "/greenPoints.drl")
 					.getFile()));
 			gameManager.addRule(new DBRule(GAME_ID, c));
+			c = FileUtils.readFileToString(new File(Thread.currentThread()
+					.getContextClassLoader()
+					.getResource("rules/" + GAME_ID + "/healthPoints.drl")
+					.getFile()));
+			gameManager.addRule(new DBRule(GAME_ID, c));
+			c = FileUtils.readFileToString(new File(Thread.currentThread()
+					.getContextClassLoader()
+					.getResource("rules/" + GAME_ID + "/healthBadges.drl")
+					.getFile()));
+			gameManager.addRule(new DBRule(GAME_ID, c));
+			c = FileUtils.readFileToString(new File(Thread.currentThread()
+					.getContextClassLoader()
+					.getResource("rules/" + GAME_ID + "/prPoints.drl")
+					.getFile()));
+			gameManager.addRule(new DBRule(GAME_ID, c));
+			c = FileUtils.readFileToString(new File(Thread.currentThread()
+					.getContextClassLoader()
+					.getResource("rules/" + GAME_ID + "/prBadges.drl")
+					.getFile()));
+			gameManager.addRule(new DBRule(GAME_ID, c));
+			c = FileUtils.readFileToString(new File(Thread.currentThread()
+					.getContextClassLoader()
+					.getResource("rules/" + GAME_ID + "/specialBadges.drl")
+					.getFile()));
+			gameManager.addRule(new DBRule(GAME_ID, c));
+			c = FileUtils.readFileToString(new File(Thread
+					.currentThread()
+					.getContextClassLoader()
+					.getResource(
+							"rules/" + GAME_ID
+									+ "/weekClassificationBadges.drl")
+					.getFile()));
+			gameManager.addRule(new DBRule(GAME_ID, c));
+			c = FileUtils.readFileToString(new File(Thread
+					.currentThread()
+					.getContextClassLoader()
+					.getResource(
+							"rules/" + GAME_ID
+									+ "/finalClassificationBadges.drl")
+					.getFile()));
+			gameManager.addRule(new DBRule(GAME_ID, c));
+
 		} catch (IOException e) {
 			Assert.fail("Fail to save rule in db from classpath");
 		}
@@ -166,6 +222,10 @@ public class GameEngineTest {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bikeDistance", 8.43);
 		params.put("walkDistance", 3.100);
+		params.put("bikesharing", true);
+		params.put("sustainable", true);
+		params.put("p+r", true);
+		params.put("park", "MANIFATTURA");
 		p = engine.execute(GAME_ID, p, ACTION, params);
 		// expected 60 greenPoints and earned 10-point 50-point green badges
 		boolean found = false;
@@ -173,7 +233,7 @@ public class GameEngineTest {
 			if (gc instanceof PointConcept
 					&& gc.getName().equals("green leaves")) {
 				found = true;
-				Assert.assertEquals(60d, ((PointConcept) gc).getScore()
+				Assert.assertEquals(70d, ((PointConcept) gc).getScore()
 						.doubleValue(), 0);
 			}
 			if (gc instanceof BadgeCollectionConcept
@@ -197,6 +257,10 @@ public class GameEngineTest {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bikeDistance", 8.43);
 		params.put("walkDistance", 3.100);
+		params.put("bikesharing", true);
+		params.put("sustainable", true);
+		params.put("p+r", true);
+		params.put("park", "MANIFATTURA");
 		p = engine.execute(GAME_ID, p, ACTION, params);
 		// expected 60 greenPoints and earned 10-point 50-point green badges
 		boolean found = false;
@@ -204,7 +268,7 @@ public class GameEngineTest {
 			if (gc instanceof PointConcept
 					&& gc.getName().equals("green leaves")) {
 				found = true;
-				Assert.assertEquals(60d, ((PointConcept) gc).getScore()
+				Assert.assertEquals(70d, ((PointConcept) gc).getScore()
 						.doubleValue(), 0);
 			}
 			if (gc instanceof BadgeCollectionConcept

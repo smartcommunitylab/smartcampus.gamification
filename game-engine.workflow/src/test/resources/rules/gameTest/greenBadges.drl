@@ -2,9 +2,6 @@ package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
 
-global eu.trentorise.game.managers.NotificationManager notificationSrv;
-
-
 rule "10 point green badge"
 	salience -1000
 when
@@ -15,9 +12,7 @@ when
 then
 	log("apply \'10-point-green badge\'");
 	$bc.getBadgeEarned().add('10-point-green');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'10-point-green');
-	notificationSrv.notificate(notification);
-	log("notificate \'10-point-green badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'10-point-green'));
 	update( $bc );
 end
 
@@ -31,9 +26,7 @@ when
 then
 	log("apply \'50-point-green badge\'");
 	$bc.getBadgeEarned().add('50-point-green');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'50-point-green');
-	notificationSrv.notificate(notification);
-	log("notificate \'50-point-green badge\'");
+	insert(new BadgeNotification($gameId,$playerId,'50-point-green'));
 	update( $bc );
 end
 
@@ -47,9 +40,7 @@ when
 then
 	log("apply \'100-point-green badge\'");
 	$bc.getBadgeEarned().add('100-point-green');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'100-point-green');
-	notificationSrv.notificate(notification);
-	log("notificate \'100-point-green badge\'");
+	insert(new BadgeNotification($gameId,$playerId,'100-point-green'));
 	update( $bc );
 end
 
@@ -63,9 +54,7 @@ when
 then
 	log("apply \'250-point-green badge\'");
 	$bc.getBadgeEarned().add('250-point-green');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'250-point-green');
-	notificationSrv.notificate(notification);
-	log("notificate \'250-point-green badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'250-point-green'));
 	update( $bc );
 end
 
@@ -79,9 +68,7 @@ when
 then
 	log("apply \'500-point-green badge\'");
 	$bc.getBadgeEarned().add('500-point-green');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'500-point-green');
-	notificationSrv.notificate(notification);
-	log("notificate \'500-point-green badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'500-point-green'));
 	update( $bc );
 end
 
@@ -95,8 +82,6 @@ when
 then
 	log("apply \'1000-point-green badge\'");
 	$bc.getBadgeEarned().add('1000-point-green');
-	BadgeNotification notification = new BadgeNotification($gameId,$playerId,'1000-point-green');
-	notificationSrv.notificate(notification);
-	log("notificate \'1000-point-green badge\'");
+	insert( new BadgeNotification($gameId,$playerId,'1000-point-green'));
 	update( $bc );
 end

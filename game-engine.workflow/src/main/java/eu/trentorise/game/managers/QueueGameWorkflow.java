@@ -36,8 +36,6 @@ public class QueueGameWorkflow implements Workflow {
 	@Autowired
 	private GameService gameSrv;
 
-	private static int run = 1;
-
 	private static ExecutorService executor = Executors
 			.newSingleThreadExecutor();
 
@@ -65,8 +63,6 @@ public class QueueGameWorkflow implements Workflow {
 
 		public void run() {
 
-			logger.info("run workflow {}", run);
-			run++;
 			String gameId = gameSrv.getGameIdByAction(actionId);
 
 			PlayerState playerState = playerSrv.loadState(userId, gameId);

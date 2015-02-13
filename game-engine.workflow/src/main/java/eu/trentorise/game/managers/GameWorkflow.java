@@ -18,7 +18,6 @@ public class GameWorkflow implements Workflow {
 	private final Logger logger = org.slf4j.LoggerFactory
 			.getLogger(GameWorkflow.class);
 
-	private static int run = 1;
 	@Autowired
 	GameEngine gameEngine;
 
@@ -29,8 +28,6 @@ public class GameWorkflow implements Workflow {
 	GameService gameSrv;
 
 	public void apply(String actionId, String userId, Map<String, Object> data) {
-		logger.info("run workflow {}", run);
-		run++;
 		String gameId = gameSrv.getGameIdByAction(actionId);
 
 		PlayerState playerState = playerSrv.loadState(userId, gameId);

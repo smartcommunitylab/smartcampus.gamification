@@ -9,15 +9,13 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.managers.DBPlayerManager;
-import eu.trentorise.game.managers.QuartzTaskManager;
-import eu.trentorise.game.managers.QueueGameWorkflow;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.services.Workflow;
@@ -76,18 +74,27 @@ public class AppConfig {
 
 	}
 
-	@Bean
-	public PlayerService playerSrv() {
-		return new DBPlayerManager();
-	}
+	@Autowired
+	public PlayerService playerSrv;
 
-	@Bean
-	public TaskService taskSrv() {
-		return new QuartzTaskManager();
-	}
+	@Autowired
+	public TaskService taskSrv;
 
-	@Bean
-	public Workflow workflow() {
-		return new QueueGameWorkflow();
-	}
+	@Autowired
+	public Workflow workflow;
+
+	// @Bean
+	// public PlayerService playerSrv() {
+	// return new DBPlayerManager();
+	// }
+	//
+	// @Bean
+	// public TaskService taskSrv() {
+	// return new QuartzTaskManager();
+	// }
+	//
+	// @Bean
+	// public Workflow workflow() {
+	// return new QueueGameWorkflow();
+	// }
 }

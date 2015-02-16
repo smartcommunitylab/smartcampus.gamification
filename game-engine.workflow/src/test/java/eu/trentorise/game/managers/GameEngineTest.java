@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -39,8 +40,17 @@ import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.ClassificationTask;
 
+/**
+ * 
+ * Actually three test scenario works only using GameWorkflow implementation
+ * (defined in dev profile)
+ * 
+ * @author mirko perillo
+ * 
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
+@ActiveProfiles("dev")
 public class GameEngineTest {
 
 	@Autowired

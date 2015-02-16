@@ -114,22 +114,26 @@ public class DroolsEngine implements GameEngine {
 			String gameId) {
 		// load game constants
 
-		URL costantsFileURL = Thread.currentThread().getContextClassLoader()
+		URL constantsFileURL = Thread.currentThread().getContextClassLoader()
 				.getResource("rules/" + gameId + "/constants");
-		try {
-			PropertiesConfiguration constants = new PropertiesConfiguration(
-					costantsFileURL);
-			constants.setListDelimiter(',');
-			logger.debug("constants file loaded for game {}", gameId);
-			Iterator<String> constantsIter = constants.getKeys();
-			while (constantsIter.hasNext()) {
-				String constant = constantsIter.next();
-				kSession.setGlobal(constant,
-						numberConversion(constants.getProperty(constant)));
-				logger.debug("constant {} loaded", constant);
+		if (constantsFileURL != null) {
+			try {
+				PropertiesConfiguration constants = new PropertiesConfiguration(
+						constantsFileURL);
+				constants.setListDelimiter(',');
+				logger.debug("constants file loaded for game {}", gameId);
+				Iterator<String> constantsIter = constants.getKeys();
+				while (constantsIter.hasNext()) {
+					String constant = constantsIter.next();
+					kSession.setGlobal(constant,
+							numberConversion(constants.getProperty(constant)));
+					logger.debug("constant {} loaded", constant);
+				}
+			} catch (ConfigurationException e) {
+				logger.error("{} loading exception", constantsFileURL);
 			}
-		} catch (ConfigurationException e) {
-			logger.error("{} loading exception", costantsFileURL);
+		} else {
+			logger.info("Rule constants file not found");
 		}
 		return kSession;
 	}
@@ -176,6 +180,8 @@ public class DroolsEngine implements GameEngine {
 			} catch (MalformedURLException e) {
 				logger.error("Malformed URL loading rule {}, rule not loaded",
 						rule);
+			} catch (RuntimeException e) {
+				logger.error("Exception loading rule {}", rule);
 			}
 		}
 		kieServices.newKieBuilder(kfs).buildAll();

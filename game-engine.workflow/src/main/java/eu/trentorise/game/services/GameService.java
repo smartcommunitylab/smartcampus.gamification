@@ -18,7 +18,11 @@ public interface GameService {
 
 	public Game loadGameDefinitionById(String gameId);
 
-	public List<Game> loadGames();
+	public Game loadGameDefinitionByAction(String actionId);
+
+	public List<Game> loadAllGames();
+
+	public List<Game> loadGames(boolean onlyActive);
 
 	public void addRule(Rule rule);
 

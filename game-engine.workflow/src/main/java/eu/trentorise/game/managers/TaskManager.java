@@ -45,4 +45,8 @@ public class TaskManager implements TaskService {
 		}
 
 	}
+
+	public boolean destroyTask(GameTask task, String gameId) {
+		throw new UnsupportedOperationException("method not implemented !!");
+	}
 }

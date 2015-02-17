@@ -1,8 +1,12 @@
 package eu.trentorise.game.api.rest;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,13 +16,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.managers.NotificationManager;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Notification;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.Workflow;
 
 @RestController
 public class MainController {
+
+	private static Logger logger = org.slf4j.LoggerFactory
+			.getLogger(MainController.class);
 
 	@Autowired
 	Workflow workflow;
@@ -27,11 +36,25 @@ public class MainController {
 	PlayerService playerSrv;
 
 	@Autowired
+	GameService gameSrv;
+
+	@Autowired
 	NotificationManager notificationSrv;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/execute")
-	public void executeAction(@RequestBody ExecutionData data) {
-		workflow.apply(data.getActionId(), data.getUserId(), data.getData());
+	public void executeAction(@RequestBody ExecutionData data,
+			HttpServletResponse res) {
+		Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
+		if (game != null && game.isTerminated()) {
+			try {
+				res.sendError(403,
+						String.format("game %s is expired", game.getId()));
+			} catch (IOException e1) {
+				logger.error("Exception sendError to client", e1);
+			}
+		} else {
+			workflow.apply(data.getActionId(), data.getUserId(), data.getData());
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}")

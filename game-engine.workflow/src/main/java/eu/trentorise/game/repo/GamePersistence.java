@@ -32,6 +32,9 @@ public class GamePersistence {
 
 	private Set<String> rules = new HashSet<String>();
 
+	private long expiration;
+	private boolean terminated;
+
 	public GamePersistence() {
 
 	}
@@ -46,6 +49,8 @@ public class GamePersistence {
 				tasks.add(new GenericObjectPersistence(gt));
 			}
 		}
+		expiration = game.getExpiration();
+		terminated = game.isTerminated();
 	}
 
 	public Game toGame() {
@@ -68,6 +73,8 @@ public class GamePersistence {
 			}
 		}
 		game.setTasks(t);
+		game.setExpiration(expiration);
+		game.setTerminated(terminated);
 		return game;
 	}
 
@@ -101,6 +108,22 @@ public class GamePersistence {
 
 	public void setTasks(Set<GenericObjectPersistence> tasks) {
 		this.tasks = tasks;
+	}
+
+	public long getExpiration() {
+		return expiration;
+	}
+
+	public void setExpiration(long expiration) {
+		this.expiration = expiration;
+	}
+
+	public boolean isTerminated() {
+		return terminated;
+	}
+
+	public void setTerminated(boolean terminated) {
+		this.terminated = terminated;
 	}
 
 }

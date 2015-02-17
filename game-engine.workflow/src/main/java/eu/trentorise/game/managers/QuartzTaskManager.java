@@ -151,4 +151,14 @@ public class QuartzTaskManager implements TaskService {
 		return cron;
 	}
 
+	public boolean destroyTask(GameTask task, String gameId) {
+		try {
+			if (scheduler.isStarted()) {
+				return scheduler.deleteJob(new JobKey(task.getName(), gameId));
+			}
+		} catch (SchedulerException e) {
+			logger.error("Scheduler exception removing task");
+		}
+		return false;
+	}
 }

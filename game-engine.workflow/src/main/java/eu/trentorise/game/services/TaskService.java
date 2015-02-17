@@ -9,4 +9,6 @@ import eu.trentorise.game.core.GameTask;
 public interface TaskService {
 
 	public void createTask(GameTask task, GameContext ctx);
+
+	public boolean destroyTask(GameTask task, String gameId);
 }

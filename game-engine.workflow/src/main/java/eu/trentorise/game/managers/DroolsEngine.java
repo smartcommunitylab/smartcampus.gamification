@@ -57,6 +57,12 @@ public class DroolsEngine implements GameEngine {
 	public PlayerState execute(String gameId, PlayerState state, String action,
 			Map<String, Object> data) {
 
+		Game game = gameSrv.loadGameDefinitionById(gameId);
+		if (game != null && game.isTerminated()) {
+			throw new IllegalArgumentException(String.format(
+					"game %s is expired", gameId));
+		}
+
 		loadGameRules(gameId);
 
 		KieContainer kieContainer = kieServices.newKieContainer(kieServices
@@ -83,8 +89,6 @@ public class DroolsEngine implements GameEngine {
 				"getNotifications"));
 
 		kSession = loadGameConstants(kSession, gameId);
-
-		// kSession.setGlobal("notificationSrv", notificationSrv);
 
 		ExecutionResults results = kSession.execute(CommandFactory
 				.newBatchExecution(cmds));

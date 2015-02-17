@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.AppContextProvider;
@@ -45,7 +46,7 @@ public class GameManager implements GameService {
 	@PostConstruct
 	@SuppressWarnings("unused")
 	private void startup() {
-		for (Game game : loadGames()) {
+		for (Game game : loadGames(true)) {
 			startupTasks(game.getId());
 		}
 	}
@@ -75,7 +76,15 @@ public class GameManager implements GameService {
 		return gp == null ? null : gp.toGame();
 	}
 
-	public List<Game> loadGames() {
+	public List<Game> loadGames(boolean onlyActive) {
+		List<Game> result = new ArrayList<Game>();
+		for (GamePersistence gp : gameRepo.findByTerminated(!onlyActive)) {
+			result.add(gp.toGame());
+		}
+		return result;
+	}
+
+	public List<Game> loadAllGames() {
 		List<Game> result = new ArrayList<Game>();
 		for (GamePersistence gp : gameRepo.findAll()) {
 			result.add(gp.toGame());
@@ -131,4 +140,29 @@ public class GameManager implements GameService {
 		return rule;
 	}
 
+	@Scheduled(cron = "0 * * * * *")
+	public void taskDestroyer() {
+		logger.info("task destroyer invocation");
+		long deadline = System.currentTimeMillis();
+
+		List<Game> games = loadGames(true);
+		for (Game game : games) {
+			if (game.getExpiration() > 0 && game.getExpiration() < deadline) {
+				for (GameTask task : game.getTasks()) {
+					if (taskSrv.destroyTask(task, game.getId())) {
+						logger.info("Destroy task - {} - of game {}",
+								task.getName(), game.getId());
+					}
+				}
+				game.setTerminated(true);
+				saveGameDefinition(game);
+			}
+		}
+
+	}
+
+	public Game loadGameDefinitionByAction(String actionId) {
+		GamePersistence gp = gameRepo.findByActions(actionId);
+		return gp != null ? gp.toGame() : null;
+	}
 }

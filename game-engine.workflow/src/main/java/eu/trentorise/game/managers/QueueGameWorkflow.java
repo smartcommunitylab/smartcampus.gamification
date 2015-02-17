@@ -43,7 +43,7 @@ public class QueueGameWorkflow implements Workflow {
 		try {
 			executor.execute(new Execution(actionId, userId, data));
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Exception in game queue execution", e);
 		}
 
 	}

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.trentorise</groupId>
 	<artifactId>game-engine</artifactId>
-	<version>0.1</version>
+	<version>0.5</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

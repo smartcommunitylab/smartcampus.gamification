@@ -60,8 +60,10 @@ public class GameManager implements GameService {
 		Game game = loadGameDefinitionById(gameId);
 		if (game != null) {
 			for (GameTask task : game.getTasks()) {
-				taskSrv.createTask(task, (GameContext) provider
-						.getApplicationContext().getBean("gameCtx", gameId));
+				taskSrv.createTask(
+						task,
+						(GameContext) provider.getApplicationContext().getBean(
+								"gameCtx", gameId, task));
 			}
 		}
 

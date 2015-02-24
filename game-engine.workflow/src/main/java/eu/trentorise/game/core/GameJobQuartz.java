@@ -22,7 +22,7 @@ public class GameJobQuartz extends QuartzJobBean {
 			throws JobExecutionException {
 		try {
 			GameContext gameCtx = (GameContext) arg0.getScheduler()
-					.getContext().get(gameId);
+					.getContext().get(gameId + ":" + taskName);
 			GameTask task = (GameTask) arg0.getScheduler().getContext()
 					.get(taskName);
 			task.execute(gameCtx);

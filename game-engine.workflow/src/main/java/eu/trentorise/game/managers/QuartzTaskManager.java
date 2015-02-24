@@ -28,10 +28,9 @@ import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
-import eu.trentorise.game.services.TaskService;
 
 @Component
-public class QuartzTaskManager implements TaskService {
+public class QuartzTaskManager extends TaskDataManager {
 
 	@Autowired
 	Scheduler scheduler;
@@ -52,13 +51,13 @@ public class QuartzTaskManager implements TaskService {
 				result.add(gp.toGame());
 			}
 			for (Game g : result) {
-				scheduler.getContext().put(
-						g.getId(),
-						(GameContext) provider.getApplicationContext().getBean(
-								"gameCtx", g.getId()));
-				logger.debug("Added gameCtx of game {} to scheduler ctx",
-						g.getId());
 				for (GameTask gt : g.getTasks()) {
+					scheduler.getContext().put(
+							g.getId() + ":" + gt.getName(),
+							(GameContext) provider.getApplicationContext()
+									.getBean("gameCtx", g.getId(), gt));
+					logger.debug("Added gameCtx of game {} to scheduler ctx",
+							g.getId() + ":" + g.getName());
 					scheduler.getContext().put(gt.getName(), gt);
 					logger.debug("Added {} task to scheduler ctx", gt.getName());
 				}

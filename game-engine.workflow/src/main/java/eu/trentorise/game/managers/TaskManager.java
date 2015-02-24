@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
-import eu.trentorise.game.services.TaskService;
 
 @Component
-public class TaskManager implements TaskService {
+public class TaskManager extends TaskDataManager {
 
 	private final Logger logger = LoggerFactory.getLogger(TaskManager.class);
 	@Autowired

@@ -19,21 +19,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
@@ -66,8 +54,7 @@ import eu.trentorise.game.task.ClassificationTask;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigWebContextLoader.class)
-@WebAppConfiguration
+@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
 public class GameEngineTest {
 
 	@Autowired
@@ -84,11 +71,6 @@ public class GameEngineTest {
 
 	@Autowired
 	private AppContextProvider provider;
-
-	@Autowired
-	private WebApplicationContext wac;
-
-	private MockMvc mocker;
 
 	private static final String GAME = "gameTest";
 	private static final String ACTION = "save_itinerary";
@@ -685,31 +667,6 @@ public class GameEngineTest {
 
 	}
 
-	@Test
-	public void gameEndedRest() throws JsonProcessingException {
-		GamePersistence gp = defineGame();
-		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.HOUR_OF_DAY, -2);
-		gp.setExpiration(cal.getTimeInMillis());
-		mongo.save(gp);
-		gameManager.taskDestroyer();
-
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		ObjectMapper mapper = new ObjectMapper();
-		ExecutionData bean = new ExecutionData();
-		bean.setActionId(ACTION);
-		bean.setUserId("1");
-		RequestBuilder builder = MockMvcRequestBuilders.post("/execute")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(bean));
-		try {
-			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
-					.andExpect(MockMvcResultMatchers.status().is(403));
-		} catch (Exception e) {
-			Assert.fail("exception " + e.getMessage());
-		}
-	}
-
 	class ExecutionData {
 		private String actionId;
 		private String userId;
@@ -745,30 +702,36 @@ public class GameEngineTest {
 	}
 
 	private void launchTaskExecution() {
-		new ClassificationTask(null, 3, "green leaves",
-				"final classification green").execute((GameContext) provider
-				.getApplicationContext().getBean("gameCtx", GAME));
-		new ClassificationTask(null, 1, "green leaves",
-				"week classification green").execute((GameContext) provider
-				.getApplicationContext().getBean("gameCtx", GAME));
 
-		new ClassificationTask(null, 1, "health", "week classification health")
-				.execute((GameContext) provider.getApplicationContext()
-						.getBean("gameCtx", GAME));
+		GameTask t = new ClassificationTask(null, 3, "green leaves",
+				"final classification green");
+		t.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, t));
 
-		new ClassificationTask(null, 1, "p+r", "week classification p+r")
-				.execute((GameContext) provider.getApplicationContext()
-						.getBean("gameCtx", GAME));
+		t = new ClassificationTask(null, 1, "green leaves",
+				"week classification green");
+		t.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, t));
+
+		t = new ClassificationTask(null, 1, "health",
+				"week classification health");
+		t.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, t));
+
+		t = new ClassificationTask(null, 1, "p+r", "week classification p+r");
+		t.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, t));
 
 		// final classification
 
-		new ClassificationTask(null, 3, "health", "final classification health")
-				.execute((GameContext) provider.getApplicationContext()
-						.getBean("gameCtx", GAME));
+		t = new ClassificationTask(null, 3, "health",
+				"final classification health");
+		t.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, t));
 
-		new ClassificationTask(null, 3, "p+r", "final classification p+r")
-				.execute((GameContext) provider.getApplicationContext()
-						.getBean("gameCtx", GAME));
+		t = new ClassificationTask(null, 3, "p+r", "final classification p+r");
+		t.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, t));
 
 	}
 

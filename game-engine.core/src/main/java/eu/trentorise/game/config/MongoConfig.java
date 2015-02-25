@@ -16,7 +16,7 @@ import com.mongodb.Mongo;
 
 @Configuration
 @EnableMongoRepositories("eu.trentorise.game.repo")
-@PropertySource("classpath:engine.properties")
+@PropertySource("classpath:engine.core.properties")
 public class MongoConfig {
 
 	private final Logger logger = LoggerFactory.getLogger(MongoConfig.class);

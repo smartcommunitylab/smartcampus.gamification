@@ -1,0 +1,157 @@
+<div class="row vertical-spacing">
+  <div class="col-md-8">
+    <ol class="breadcrumb">
+      <li><a href="#/home">Home</a>
+      </li>
+      <li><a ng-href="#/game/{{game.id}}">{{game.name}}</a>
+      </li>
+      <li class="active">Import and configure game actions</li>
+    </ol>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'msg_load_games_error' | i18next}}</alert>
+  </div>
+</div>
+<div class="row vertical-spacing">
+  <div class="col-md-8">
+    <div class="panel panel-info panel-actions">
+      <div class="panel-heading">
+        <h4>Actions</h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-actions">
+          <table class="table table-striped table-bordered">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>Action 1</td>
+              <td>Desc 1</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Action 2</td>
+              <td>Desc 2</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Action 3</td>
+              <td>Desc 3</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="panel panel-info" ng-class="{'panel-import-actions':!!dataImported}">
+      <div class="panel-heading">
+        <h4>Import new actions</h4>
+      </div>
+      <div class="panel-body">
+        <p>Upload the file compliant to the specifications provided by the Gamification Engine from which it is possible to import the actions that are to be gamified:</p>
+        <form role="form" class="text-center">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="file" ng-model="path" placeholder="Select actions file" />
+              </div>
+              <div class="col-md-4">
+                <span class="btn btn-block btn-default btn-file">
+                  {{'btn_browse' | i18next}}<input type="file">
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <button type="button" class="btn btn-lg btn-primary" ng-click="uploadImport()">{{'btn_upload_import' | i18next}}</button>
+          </div>
+          <div ng-if="!!dataImported" class="table-import-actions">
+            <table class="table table-striped table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Action 1</td>
+                <td>Desc 1</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Action 2</td>
+                <td>Desc 2</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Action 3</td>
+                <td>Desc 3</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Action 1</td>
+                <td>Desc 1</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Action 2</td>
+                <td>Desc 2</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Action 3</td>
+                <td>Desc 3</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Action 1</td>
+                <td>Desc 1</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Action 2</td>
+                <td>Desc 2</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Action 3</td>
+                <td>Desc 3</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>Action 1</td>
+                <td>Desc 1</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Action 2</td>
+                <td>Desc 2</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Action 3</td>
+                <td>Desc 3</td>
+              </tr>
+            </table>
+          </div>
+          <div ng-if="!!dataImported" class="form-group form-inline">
+            <div class="row">
+              <div class="col-md-4">
+                <button type="button" class="btn btn-block btn-default" ng-click="clear()">{{'btn_clear' | i18next}}</button>
+              </div>
+              <div class="col-md-8">
+                <button type="button" class="btn btn-block btn-primary" ng-click="confirm()">{{'btn_confirm' | i18next}}</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,140 @@
+<div class="row">
+  <div class="col-md-8">
+    <ol class="breadcrumb">
+      <li><a href="#/home">Home</a>
+      </li>
+      <li><a ng-href="#/game/{{game.id}}">{{game.name}}</a>
+      </li>
+      <li><a ng-href="#/game/{{game.id}}">Configure gamification plugin</a>
+      </li>
+      <li class="active">{{pluginNames[selectedInstance]}}</li>
+    </ol>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'msg_load_games_error' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.cantCreateLeaderboards" type="danger" close="closeAlert('cantCreateLeaderboards')">{{'msg_leaderboards_error' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_game_settings_edited' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <h2>{{game.name}}</h2>
+  </div>
+  <div class="col-md-4 top-margined">
+    <div class="pull-right">
+      <button type="button" class="btn btn-danger btn-circle right-spaced" ng-click="deleteGame()">
+        <span class="glyphicon glyphicon-remove"></span>
+      </button>
+      <button type="button" class="btn btn-default btn-circle" ng-click="openEditModal()">
+        <span class="glyphicon glyphicon-cog"></span>
+      </button>
+    </div>
+  </div>
+</div>
+<hr />
+<div class="row row-spacing">
+  <div class="col-md-5 col-md-offset-2">
+    <h4 ng-i18next="[i18next]({active: {{countActive(game, selectedInstance)}}, total: {{getLength(game, selectedInstance)}}})game_info"></h4>
+  </div>
+  <div class="col-md-5">
+    <button type="button" class="btn btn-success btn-circle pull-right" ng-click="openAddInstanceModal()">
+      <span class="glyphicon glyphicon-plus"></span>
+    </button>
+  </div>
+</div>
+<div class="row vertical-spacing">
+  <div class="tabs-vertical-left">
+    <tabset>
+      <tab class="clickable" heading="{{'lbl_points' | i18next}}" ng-click="goToTab('points')" active="active.points">
+        <ul class="list-unstyled list-inline">
+          <li class="col-md-4" ng-repeat="points in game.instances.points">
+            <div class="panel panel-default panel-plugin">
+              <div class="panel-body text-center bg-primary">
+                <h4 class="ellipsis">{{points.name}}</h4>
+                <h6>Points</h6>
+                <h5>{{points.typology}}</h5>
+              </div>
+              <div class="panel-footer">
+                <div class="pull-left">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/points/' + points.id)">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button>
+                </div>
+                <div class="pull-right">
+                  <toggle-switch model="points.is_active" ng-click="pointsDeactivationCheck(points)" />
+                </div>
+                <div class="clearfix" />
+              </div>
+            </div>
+          </li>
+        </ul>
+      </tab>
+      <tab class="clickable" heading="{{'lbl_badges_collections' | i18next}}" ng-click="goToTab('badges_collections')" active="active.badges_collections">
+        <ul class="list-unstyled list-inline">
+          <li class="col-md-4" ng-repeat="badges_collection in game.instances.badges_collections">
+            <div class="panel panel-default panel-plugin">
+              <div class="panel-body text-center bg-success">
+                <h4 class="ellipsis">{{badges_collection.name}}</h4>
+                <h6>Badges collection</h6>
+                <div class="text-center">
+                  <div class="badge-bock" ng-repeat="path in badges_collection.badges | limitTo:3">
+                    <img ng-src="{{path}}" class="badge-preview" height="100%" />
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <div class="pull-left">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/badges_collections/' + badges_collection.id + '?tab=rules')">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button>
+                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/badges_collections/' + badges_collection.id + '?tab=badges')">
+                    <span class="glyphicon glyphicon-star"></span>
+                  </button>
+                </div>
+                <div class="pull-right">
+                  <toggle-switch model="badges_collection.is_active" ng-click="badges_collection.is_active = !badges_collection.is_active" />
+                </div>
+                <div class="clearfix" />
+              </div>
+            </div>
+          </li>
+        </ul>
+      </tab>
+      <tab class="clickable" heading="{{'lbl_leaderboards' | i18next}}" ng-click="goToTab('leaderboards')" active="active.leaderboards">
+        <ul class="list-unstyled list-inline">
+          <li class="col-md-4" ng-repeat="leaderboard in game.instances.leaderboards">
+            <div class="panel panel-default panel-plugin">
+              <div class="panel-body text-center bg-warning">
+                <h4 class="ellipsis">{{leaderboard.name}}</h4>
+                <h6>Leaderboard</h6>
+                <h6 class="ellipsis">Points dependency: <strong>{{leaderboard.points_dependency}}</strong></h6>
+                <h6>Update rate: <strong>{{leaderboard.update_rate}}</strong></h6>
+              </div>
+              <div class="panel-footer">
+                <div class="pull-left">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/leaderboards/' + leaderboard.id)">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button>
+                </div>
+                <div class="pull-right">
+                  <toggle-switch model="leaderboard.is_active" ng-click="leaderboardActivationCheck(leaderboard)" />
+                </div>
+                <div class="clearfix" />
+              </div>
+            </div>
+          </li>
+        </ul>
+      </tab>
+    </tabset>
+  </div>
+</div>

@@ -77,8 +77,8 @@
 		<dependency>
 		<groupId>org.springframework.data</groupId>
 		<artifactId>spring-data-mongodb</artifactId>
-		<version>1.6.0.RELEASE</version>
-		</dependency>
+		<version>1.5.4.RELEASE</version>
+		</dependency> 
 
 		<!-- QUARTZ DEP -->
 		<dependency>

@@ -1,10 +1,10 @@
 package eu.trentorise;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,10 +21,11 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
-import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
+import eu.trentorise.game.managers.QueueGameWorkflow;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.ClasspathRule;
+import eu.trentorise.game.model.FSRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
@@ -33,14 +34,14 @@ import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.PlayerService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.services.Workflow;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
-public class GameTest {
+public abstract class GameTest {
 
-	private static final String GAME = "gameTest";
-	private static final String ACTION = "save_itinerary";
+	private String gameId;
+	private List<GameTask> tasks = new ArrayList<GameTask>();
 
 	private static final long WAIT_EXEC = 15 * 1000;
 
@@ -51,372 +52,208 @@ public class GameTest {
 	private PlayerService playerSrv;
 
 	@Autowired
+	private Workflow workflow;
+
+	@Autowired
 	private MongoTemplate mongo;
 
 	@Autowired
 	private AppContextProvider provider;
 
 	@Before
-	public void cleanDB() {
+	@SuppressWarnings("unused")
+	public final void cleanDB() {
 		// clean mongo
 		mongo.dropCollection(StatePersistence.class);
 		mongo.dropCollection(GamePersistence.class);
 		mongo.dropCollection(NotificationPersistence.class);
 	}
 
-	@Test
-	public void simpleScenario() throws InterruptedException {
-		simpleEnv();
-		launchTaskExecution();
-		Thread.sleep(WAIT_EXEC);
-		analyzeSimple();
+	public abstract void initEnv();
 
-	}
+	public abstract void defineGame();
 
-	@Test
-	public void sameResultScenario() throws InterruptedException {
-		sameResultEnv();
-		launchTaskExecution();
-		Thread.sleep(WAIT_EXEC);
-		analyzeSameResult();
-	}
+	public abstract void defineExecData(List<ExecData> execList);
+
+	public abstract void analyzeResult();
 
 	@Test
-	public void sameResultLastElementScenario() throws InterruptedException {
-		sameResultLastElementEnv();
-		launchTaskExecution();
-		Thread.sleep(WAIT_EXEC);
-		analyzeSameResultLastResult();
+	public void run() {
+		defineGame();
+		initEnv();
+		runEngine();
+		if (workflow instanceof QueueGameWorkflow) {
+			try {
+				Thread.sleep(WAIT_EXEC);
+			} catch (InterruptedException e) {
+				Assert.fail("sleep failure");
+			}
+		}
+		analyzeResult();
 	}
 
-	@Test
-	public void simpleEnv() {
+	public void savePlayerState(String gameId, String playerId,
+			List<GameConcept> concepts) {
+		PlayerState player = new PlayerState();
+		player.setGameId(gameId);
+		player.setPlayerId(playerId);
+		player.setState(new HashSet<GameConcept>(concepts));
+		mongo.save(new StatePersistence(player));
+	}
 
-		// define game
-		GamePersistence game = defineGame();
-		mongo.save(game);
+	public void defineGameHelper(String gameId, List<String> actions) {
+		Game g = new Game();
+		g.setId(gameId);
+		g.setName(gameId);
+		g.setActions(new HashSet<String>(actions));
 
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/initState.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/healthBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/healthPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/prBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/prPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/specialBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/weekClassificationBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/finalClassificationBadges.drl"));
+		mongo.save(g);
+		this.gameId = gameId;
+	}
 
-		// define player states
-
-		mongo.save(definePlayerState("1", 15d, 2d, 5d));
-		mongo.save(definePlayerState("2", 12d, 50d, 12d));
-		mongo.save(definePlayerState("11", 112d, 52d, 1d));
-		mongo.save(definePlayerState("122", 2d, 20d, 11d));
-
-		/**
-		 * result after game execution
-		 * 
-		 * player-1 Silver-green Bronze-pr
-		 * 
-		 * player-2 Bronze-green Silver-health Gold-pr
-		 * 
-		 * player-11 Gold-green Gold-health
-		 * 
-		 * player-122 Bronze-health Silver-pr
-		 */
+	public void addGameTask(String gameId, GameTask gt) {
+		tasks.add(gt);
 
 	}
 
-	@Test
-	public void sameResultLastElementEnv() {
-		GamePersistence game = defineGame();
-		mongo.save(game);
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/initState.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/healthBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/healthPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/prBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/prPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/specialBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/weekClassificationBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/finalClassificationBadges.drl"));
+	public void loadClasspathRules(String gameId, List<String> rulesPath) {
+		for (String path : rulesPath) {
+			gameManager.addRule(new ClasspathRule(gameId, path));
+		}
+	}
 
-		mongo.save(definePlayerState("1", 12d, 52d, 5d));
-		mongo.save(definePlayerState("2", 115d, 50d, 12d));
-		mongo.save(definePlayerState("11", 115d, 0d, 1d));
-		mongo.save(definePlayerState("12", 12d, 52d, 11d));
-		mongo.save(definePlayerState("2442", 12d, 52d, 11d));
-		mongo.save(definePlayerState("242", 4d, 52d, 11d));
-		mongo.save(definePlayerState("244", 5d, 52d, 11d));
+	public void loadFilestyemRules(String gameId, List<String> rulesPath) {
+		for (String path : rulesPath) {
+			gameManager.addRule(new FSRule(gameId, path));
+		}
+	}
 
-		/**
-		 * result after game execution
-		 * 
-		 * player-1 Bronze-green Gold-health
-		 * 
-		 * player-2 Gold-green Gold-pr
-		 * 
-		 * player-11 Gold-green
-		 * 
-		 * player-12 Bronze-green Gold-health Silver-pr
-		 * 
-		 * player-2442 Bronze-green Gold-health Silver-pr
-		 * 
-		 * player-242 Gold-health Silver-pr
-		 * 
-		 * player-244 Gold-health Silver-pr
-		 */
+	private void runEngine() {
+		List<ExecData> execList = new ArrayList<GameTest.ExecData>();
+		defineExecData(execList);
+		for (ExecData ex : execList) {
+			workflow.apply(ex.getActionId(), ex.getPlayerId(), ex.getData());
+		}
+
+		// launch Task sequentially
+
+		for (GameTask task : tasks) {
+			task.execute((GameContext) provider.getApplicationContext()
+					.getBean("gameCtx", gameId, task));
+		}
 
 	}
 
-	@Test
-	public void sameResultEnv() {
-		// define game
-		GamePersistence game = defineGame();
-		mongo.save(game);
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/initState.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/healthBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/healthPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/prBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/prPoints.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/specialBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/weekClassificationBadges.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/finalClassificationBadges.drl"));
-
-		mongo.save(definePlayerState("1", 1d, 52d, 5d));
-		mongo.save(definePlayerState("2", 15d, 50d, 12d));
-		mongo.save(definePlayerState("11", 15d, 0d, 1d));
-		mongo.save(definePlayerState("12", 2d, 52d, 11d));
-
-		/**
-		 * result after game execution
-		 * 
-		 * player-1 Gold-health Bronze-pr
-		 * 
-		 * player-2 Gold-green Bronze-health Gold-pr
-		 * 
-		 * player-11 Gold-green
-		 * 
-		 * player-12 Bronze-green Gold-health Silver-pr
-		 */
-	}
-
-	public void analyzeSameResultLastResult()
-
-	{
-
-		// player 1
-		check(new String[] { "10-point-green", "bronze-medal-green" }, "1",
-				"green leaves");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "king-week-health", "gold-medal-health" },
-				"1", "health");
-		check(new String[] {}, "1", "p+r");
-		check(new String[] {}, "1", "special");
-
-		// player 2
-		check(new String[] { "10-point-green", "50-point-green",
-				"100-point-green", "gold-medal-green", "king-week-green" },
-				"2", "green leaves");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health" }, "2", "health");
-		check(new String[] { "10-point-pr", "king-week-pr", "gold-medal-pr" },
-				"2", "p+r");
-		check(new String[] {}, "2", "special");
-
-		// player 11
-		check(new String[] { "10-point-green", "50-point-green",
-				"100-point-green", "gold-medal-green", "king-week-green" },
-				"11", "green leaves");
-		check(new String[] {}, "11", "health");
-		check(new String[] {}, "11", "p+r");
-		check(new String[] {}, "11", "special");
-
-		// player 12
-		check(new String[] { "10-point-green", "bronze-medal-green" }, "12",
-				"green leaves");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "king-week-health", "gold-medal-health" },
-				"12", "health");
-		check(new String[] { "10-point-pr", "silver-medal-pr" }, "12", "p+r");
-		check(new String[] {}, "12", "special");
-
-		// player 2442
-		check(new String[] { "10-point-green", "bronze-medal-green" }, "2442",
-				"green leaves");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "king-week-health", "gold-medal-health" },
-				"2442", "health");
-		check(new String[] { "10-point-pr", "silver-medal-pr" }, "2442", "p+r");
-		check(new String[] {}, "2442", "special");
-
-		// player 242
-		check(new String[] { "bronze-medal-green" }, "242", "green leaves");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "king-week-health", "gold-medal-health" },
-				"242", "health");
-		check(new String[] { "10-point-pr", "silver-medal-pr" }, "242", "p+r");
-		check(new String[] {}, "242", "special");
-
-		// player 244
-		check(new String[] {}, "244", "green leaves");
-		check(new String[] { "king-week-health", "10-point-health",
-				"25-point-health", "50-point-health", "gold-medal-health" },
-				"244", "health");
-		check(new String[] { "10-point-pr", "silver-medal-pr" }, "244", "p+r");
-		check(new String[] {}, "244", "special");
-	}
-
-	private void launchTaskExecution() {
-
-		GameTask t = new ClassificationTask(null, 3, "green leaves",
-				"final classification green");
-		t.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, t));
-
-		t = new ClassificationTask(null, 1, "green leaves",
-				"week classification green");
-		t.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, t));
-
-		t = new ClassificationTask(null, 1, "health",
-				"week classification health");
-		t.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, t));
-
-		t = new ClassificationTask(null, 1, "p+r", "week classification p+r");
-		t.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, t));
-
-		// final classification
-
-		t = new ClassificationTask(null, 3, "health",
-				"final classification health");
-		t.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, t));
-
-		t = new ClassificationTask(null, 3, "p+r", "final classification p+r");
-		t.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, t));
-	}
-
-	public void analyzeSimple() {
-
-		// player 1
-		check(new String[] { "silver-medal-green", "10-point-green" }, "1",
-				"green leaves");
-		check(new String[] { "bronze-medal-pr" }, "1", "p+r");
-		check(new String[] {}, "1", "health");
-		check(new String[] {}, "1", "special");
-
-		// player 2
-		check(new String[] { "bronze-medal-green", "10-point-green" }, "2",
-				"green leaves");
-		check(new String[] { "10-point-pr", "king-week-pr", "gold-medal-pr" },
-				"2", "p+r");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "silver-medal-health" }, "2", "health");
-		check(new String[] {}, "2", "special");
-
-		// player 11
-		check(new String[] { "gold-medal-green", "10-point-green",
-				"50-point-green", "100-point-green", "king-week-green" }, "11",
-				"green leaves");
-		check(new String[] {}, "11", "p+r");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "king-week-health", "gold-medal-health" },
-				"11", "health");
-		check(new String[] {}, "11", "special");
-
-		// player 122
-		check(new String[] {}, "122", "green leaves");
-		check(new String[] { "10-point-pr", "silver-medal-pr" }, "122", "p+r");
-		check(new String[] { "bronze-medal-health", "10-point-health" }, "122",
-				"health");
-		check(new String[] {}, "122", "special");
-
-	}
-
-	private void check(String[] values, String playerId, String conceptName) {
-		List<PlayerState> states = playerSrv.loadStates(GAME);
+	public void assertionBadge(String gameId, List<String> values,
+			String playerId, String conceptName) {
+		List<PlayerState> states = playerSrv.loadStates(gameId);
 		StateAnalyzer analyzer = new StateAnalyzer(states);
-		Assert.assertTrue(String.format("Failure concept %s of  player %s",
-				playerId, conceptName),
-				new HashSet<String>(Arrays.asList(values)).containsAll(analyzer
-						.getBadges(analyzer.findPlayer(playerId), conceptName)));
+		List<String> badgesEarned = analyzer.getBadges(
+				analyzer.findPlayer(playerId), conceptName);
+		Assert.assertTrue(
+				String.format(
+						"Failure badgecollection concept %s for  player %s",
+						conceptName, playerId),
+				new HashSet<String>(values).containsAll(badgesEarned)
+						&& values.size() == badgesEarned.size());
 	}
 
-	public void analyzeSameResult() {
+	public void assertionPoint(String gameId, Double score, String playerId,
+			String conceptName) {
+		List<PlayerState> states = playerSrv.loadStates(gameId);
+		StateAnalyzer analyzer = new StateAnalyzer(states);
+		Assert.assertTrue(String.format(
+				"Failure point concept %s for  player %s", conceptName,
+				playerId), score.equals(analyzer.getScore(
+				analyzer.findPlayer(playerId), conceptName)));
+	}
 
-		// player 1
-		check(new String[] {}, "1", "green leaves");
-		check(new String[] { "king-week-health", "10-point-health",
-				"25-point-health", "50-point-health", "gold-medal-health" },
-				"1", "health");
-		check(new String[] { "bronze-medal-pr" }, "1", "p+r");
-		check(new String[] {}, "1", "special");
+	protected class ExecData {
+		private String actionId;
+		private String playerId;
+		private Map<String, Object> data;
 
-		// player 12
-		check(new String[] { "bronze-medal-green" }, "12", "green leaves");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "king-week-health", "gold-medal-health" },
-				"12", "health");
-		check(new String[] { "10-point-pr", "silver-medal-pr" }, "12", "p+r");
-		check(new String[] {}, "12", "special");
+		public String getActionId() {
+			return actionId;
+		}
 
-		// player 11
-		check(new String[] { "10-point-green", "gold-medal-green",
-				"king-week-green" }, "11", "green leaves");
-		check(new String[] {}, "11", "health");
-		check(new String[] {}, "11", "p+r");
-		check(new String[] {}, "11", "special");
+		public void setActionId(String actionId) {
+			this.actionId = actionId;
+		}
 
-		// player 2
-		check(new String[] { "10-point-green", "gold-medal-green",
-				"king-week-green" }, "2", "green leaves");
-		check(new String[] { "10-point-health", "25-point-health",
-				"50-point-health", "bronze-medal-health" }, "2", "health");
-		check(new String[] { "10-point-pr", "king-week-pr", "gold-medal-pr" },
-				"2", "p+r");
-		check(new String[] {}, "2", "special");
+		public String getPlayerId() {
+			return playerId;
+		}
+
+		public void setPlayerId(String playerId) {
+			this.playerId = playerId;
+		}
+
+		public Map<String, Object> getData() {
+			return data;
+		}
+
+		public void setData(Map<String, Object> data) {
+			this.data = data;
+		}
+
+		public ExecData(String actionId, String playerId,
+				Map<String, Object> data) {
+			this.actionId = actionId;
+			this.playerId = playerId;
+			this.data = data;
+		}
 
 	}
 
-	class StateAnalyzer {
+	protected class PointConceptBuilder {
+		private String name;
+		private Double score;
+
+		public GameConcept build() {
+			PointConcept gc = new PointConcept(name);
+			gc.setScore(score);
+			return gc;
+		}
+
+		public PointConceptBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public PointConceptBuilder setScore(Double score) {
+			this.score = score;
+			return this;
+		}
+	}
+
+	protected class BadgeCollectionConceptBuilder {
+		private String name;
+		private List<String> badges = new ArrayList<String>();
+
+		public BadgeCollectionConceptBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public BadgeCollectionConceptBuilder addBadge(String badge) {
+			badges.add(badge);
+			return this;
+		}
+
+		public BadgeCollectionConceptBuilder setBadges(List<String> badges) {
+			this.badges = badges;
+			return this;
+		}
+
+		public GameConcept build() {
+			BadgeCollectionConcept gc = new BadgeCollectionConcept(name);
+			gc.setBadgeEarned(badges);
+			return gc;
+		}
+	}
+
+	protected class StateAnalyzer {
 		private List<PlayerState> s;
 
 		public StateAnalyzer(List<PlayerState> s) {
@@ -452,89 +289,8 @@ public class GameTest {
 				}
 			}
 
-			return definePlayerState(playerId, 0d, 0d, 0d).toPlayerState();
+			return null;
 		}
 	}
 
-	private StatePersistence definePlayerState(String playerId,
-			Double greenPoint, Double healthPoint, Double prPoint) {
-		PlayerState player = new PlayerState();
-		player.setGameId(GAME);
-		player.setPlayerId(playerId);
-		Set<GameConcept> myState = new HashSet<GameConcept>();
-		PointConcept pc = new PointConcept("green leaves");
-		pc.setScore(greenPoint);
-		myState.add(pc);
-		pc = new PointConcept("health");
-		pc.setScore(healthPoint);
-		myState.add(pc);
-		pc = new PointConcept("p+r");
-		pc.setScore(prPoint);
-		myState.add(pc);
-		BadgeCollectionConcept badge = new BadgeCollectionConcept(
-				"green leaves");
-		myState.add(badge);
-		badge = new BadgeCollectionConcept("health");
-		myState.add(badge);
-		badge = new BadgeCollectionConcept("p+r");
-		myState.add(badge);
-		badge = new BadgeCollectionConcept("special");
-		myState.add(badge);
-		player.setState(myState);
-
-		return new StatePersistence(player);
-	}
-
-	private GamePersistence defineGame() {
-		Game game = new Game();
-
-		game.setId(GAME);
-		game.setName(GAME);
-
-		game.setActions(new HashSet<String>());
-		game.getActions().add(ACTION);
-		game.getActions().add("classification");
-
-		game.setTasks(new HashSet<GameTask>());
-
-		// final classifications
-		TaskSchedule schedule = new TaskSchedule();
-		schedule.setCronExpression("0 20 * * * *");
-		ClassificationTask task1 = new ClassificationTask(schedule, 3,
-				"green leaves", "final classification green");
-		game.getTasks().add(task1);
-
-		// schedule = new TaskSchedule(); //
-		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task2 = new ClassificationTask(schedule, 3,
-				"health", "final classification health");
-		game.getTasks().add(task2);
-
-		// schedule = new TaskSchedule(); //
-		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task3 = new ClassificationTask(schedule, 3, "p+r",
-				"final classification p+r");
-		game.getTasks().add(task3);
-
-		// week classifications // schedule = new TaskSchedule(); //
-		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task4 = new ClassificationTask(schedule, 1,
-				"green leaves", "week classification green");
-		game.getTasks().add(task4);
-
-		// schedule = new TaskSchedule(); //
-		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task5 = new ClassificationTask(schedule, 1,
-				"health", "week classification health");
-		game.getTasks().add(task5);
-
-		// schedule = new TaskSchedule(); //
-		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task6 = new ClassificationTask(schedule, 1, "p+r",
-				"week classification p+r");
-		game.getTasks().add(task6);
-
-		return new GamePersistence(game);
-
-	}
 }

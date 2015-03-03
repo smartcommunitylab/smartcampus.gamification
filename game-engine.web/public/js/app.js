@@ -57,6 +57,6 @@ app.config(
       controller: 'ActionsCtrl'
     })
 
-    $urlRouterProvider.otherwise("/login");
+    $urlRouterProvider.otherwise("/home");
   }
 );

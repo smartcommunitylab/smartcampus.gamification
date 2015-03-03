@@ -43,10 +43,10 @@
 </div>
 <hr />
 <div class="row row-spacing">
-  <div class="col-md-5 col-md-offset-2">
+  <!-- <div class="col-md-5 col-md-offset-2">
     <h4 ng-i18next="[i18next]({active: {{countActive(game, selectedInstance)}}, total: {{getLength(game, selectedInstance)}}})game_info"></h4>
-  </div>
-  <div class="col-md-5">
+  </div> -->
+  <div class="col-md-12">
     <button type="button" class="btn btn-success btn-circle pull-right" ng-click="openAddInstanceModal()">
       <span class="glyphicon glyphicon-plus"></span>
     </button>
@@ -61,8 +61,8 @@
             <div class="panel panel-default panel-plugin">
               <div class="panel-body text-center bg-primary">
                 <h4 class="ellipsis">{{points.name}}</h4>
-                <h6>Points</h6>
-                <h5>{{points.typology}}</h5>
+                <!-- <h6>Points</h6> -->
+               <!--  <h5>{{points.typology}}</h5> -->
               </div>
               <div class="panel-footer">
                 <div class="pull-left">
@@ -70,9 +70,9 @@
                     <span class="glyphicon glyphicon-pencil"></span>
                   </button>
                 </div>
-                <div class="pull-right">
+             <!--    <div class="pull-right">
                   <toggle-switch model="points.is_active" ng-click="pointsDeactivationCheck(points)" />
-                </div>
+                </div> -->
                 <div class="clearfix" />
               </div>
             </div>
@@ -85,32 +85,32 @@
             <div class="panel panel-default panel-plugin">
               <div class="panel-body text-center bg-success">
                 <h4 class="ellipsis">{{badges_collection.name}}</h4>
-                <h6>Badges collection</h6>
+                <!-- <h6>Badges collection</h6>
                 <div class="text-center">
                   <div class="badge-bock" ng-repeat="path in badges_collection.badges | limitTo:3">
                     <img ng-src="{{path}}" class="badge-preview" height="100%" />
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="panel-footer">
-                <div class="pull-left">
+               <div class="pull-left">
                   <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/badges_collections/' + badges_collection.id + '?tab=rules')">
                     <span class="glyphicon glyphicon-pencil"></span>
                   </button>
-                  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/badges_collections/' + badges_collection.id + '?tab=badges')">
+                 <!--  <button type="button" class="btn btn-default btn-edit btn-circle" ng-click="goto('#/game/' + game.id + '/badges_collections/' + badges_collection.id + '?tab=badges')">
                     <span class="glyphicon glyphicon-star"></span>
-                  </button>
+                  </button> -->
                 </div>
-                <div class="pull-right">
+             <!--    <div class="pull-right">
                   <toggle-switch model="badges_collection.is_active" ng-click="badges_collection.is_active = !badges_collection.is_active" />
-                </div>
+                </div> -->
                 <div class="clearfix" />
               </div>
             </div>
           </li>
         </ul>
       </tab>
-      <tab class="clickable" heading="{{'lbl_leaderboards' | i18next}}" ng-click="goToTab('leaderboards')" active="active.leaderboards">
+    <!--   <tab class="clickable" heading="{{'lbl_leaderboards' | i18next}}" ng-click="goToTab('leaderboards')" active="active.leaderboards">
         <ul class="list-unstyled list-inline">
           <li class="col-md-4" ng-repeat="leaderboard in game.instances.leaderboards">
             <div class="panel panel-default panel-plugin">
@@ -134,7 +134,7 @@
             </div>
           </li>
         </ul>
-      </tab>
+      </tab> -->
     </tabset>
   </div>
 </div>

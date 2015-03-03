@@ -59,7 +59,7 @@ public class GameEngineTest {
 	@Autowired
 	private MongoTemplate mongo;
 
-	private static final String GAME = "gameTest";
+	private static final String GAME = "coreGameTest";
 	private static final String ACTION = "save_itinerary";
 	private static final String PLAYER = "iansolo";
 

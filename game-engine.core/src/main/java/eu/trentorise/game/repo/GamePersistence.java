@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameConcept;
 
 @Document(collection = "game")
 public class GamePersistence {
@@ -26,11 +27,15 @@ public class GamePersistence {
 
 	private String name;
 
+	private String owner;
+
 	private Set<String> actions = new HashSet<String>();
 
 	private Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
 
 	private Set<String> rules = new HashSet<String>();
+
+	private Set<GenericObjectPersistence> concepts = new HashSet<GenericObjectPersistence>();
 
 	private long expiration;
 	private boolean terminated;
@@ -42,11 +47,18 @@ public class GamePersistence {
 	public GamePersistence(Game game) {
 		id = game.getId();
 		name = game.getName();
+		owner = game.getOwner();
 		actions = game.getActions();
 		rules = game.getRules();
 		if (game.getTasks() != null) {
 			for (GameTask gt : game.getTasks()) {
 				tasks.add(new GenericObjectPersistence(gt));
+			}
+		}
+
+		if (game.getConcepts() != null) {
+			for (GameConcept gc : game.getConcepts()) {
+				concepts.add(new GenericObjectPersistence(gc));
 			}
 		}
 		expiration = game.getExpiration();
@@ -57,6 +69,7 @@ public class GamePersistence {
 		Game game = new Game();
 		game.setId(id);
 		game.setName(name);
+		game.setOwner(owner);
 		game.setActions(actions);
 		game.setRules(rules);
 		Set<GameTask> t = new HashSet<GameTask>();
@@ -73,6 +86,20 @@ public class GamePersistence {
 			}
 		}
 		game.setTasks(t);
+
+		Set<GameConcept> gc = new HashSet<GameConcept>();
+		for (GenericObjectPersistence obj : concepts) {
+			try {
+				gc.add(mapper.convertValue(
+						obj.getObj(),
+						(Class<? extends GameConcept>) Thread.currentThread()
+								.getContextClassLoader()
+								.loadClass(obj.getType())));
+			} catch (Exception e) {
+				logger.error("Problem to load class {}", obj.getType());
+			}
+		}
+		game.setConcepts(gc);
 		game.setExpiration(expiration);
 		game.setTerminated(terminated);
 		return game;
@@ -124,6 +151,22 @@ public class GamePersistence {
 
 	public void setTerminated(boolean terminated) {
 		this.terminated = terminated;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public Set<String> getRules() {
+		return rules;
+	}
+
+	public void setRules(Set<String> rules) {
+		this.rules = rules;
 	}
 
 }

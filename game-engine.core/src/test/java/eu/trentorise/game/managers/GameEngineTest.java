@@ -34,6 +34,7 @@ import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
+import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.ClassificationTask;
 
 /**
@@ -57,11 +58,18 @@ public class GameEngineTest {
 	private GameEngine engine;
 
 	@Autowired
+	private PlayerService playerSrv;
+
+	@Autowired
 	private MongoTemplate mongo;
+
+	@Autowired
+	private GameWorkflow workflow;
 
 	private static final String GAME = "coreGameTest";
 	private static final String ACTION = "save_itinerary";
 	private static final String PLAYER = "iansolo";
+	private static final String OWNER = "chewbecca";
 
 	private static final long WAIT_EXEC = 15 * 1000;
 
@@ -79,8 +87,8 @@ public class GameEngineTest {
 
 		// add rules
 
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/initState.drl"));
+		// gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
+		// + "/initState.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
@@ -108,15 +116,15 @@ public class GameEngineTest {
 		// add rules
 		try {
 
-			String c = FileUtils
-					.readFileToString(new File(Thread.currentThread()
-							.getContextClassLoader()
-							.getResource("rules/" + GAME + "/initState.drl")
-							.getFile()));
+			// String c = FileUtils
+			// .readFileToString(new File(Thread.currentThread()
+			// .getContextClassLoader()
+			// .getResource("rules/" + GAME + "/initState.drl")
+			// .getFile()));
+			// gameManager.addRule(new DBRule(GAME, c));
 
-			gameManager.addRule(new DBRule(GAME, c));
-			c = FileUtils.readFileToString(new File(Thread.currentThread()
-					.getContextClassLoader()
+			String c = FileUtils.readFileToString(new File(Thread
+					.currentThread().getContextClassLoader()
 					.getResource("rules/" + GAME + "/greenBadges.drl")
 					.getFile()));
 			gameManager.addRule(new DBRule(GAME, c));
@@ -177,7 +185,7 @@ public class GameEngineTest {
 	@Test
 	public void execution() throws InterruptedException {
 		initClasspathRuleGame();
-		PlayerState p = new PlayerState(PLAYER, GAME);
+		PlayerState p = playerSrv.loadState(PLAYER, GAME);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bikeDistance", 8.43);
 		params.put("walkDistance", 3.100);
@@ -211,9 +219,9 @@ public class GameEngineTest {
 	}
 
 	@Test
-	public void mongoExecution() throws InterruptedException {
+	public void dbExecution() throws InterruptedException {
 		initDBRuleGame();
-		PlayerState p = new PlayerState(PLAYER, GAME);
+		PlayerState p = playerSrv.loadState(PLAYER, GAME);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bikeDistance", 8.43);
 		params.put("walkDistance", 3.100);
@@ -282,6 +290,42 @@ public class GameEngineTest {
 	}
 
 	@Test
+	public void gameConcepts() {
+		mongo.save(defineGame());
+		Game g = gameManager.loadGameDefinitionById(GAME);
+		Assert.assertEquals(7, g.getConcepts().size());
+		for (GameConcept gc : g.getConcepts()) {
+			if (gc instanceof PointConcept) {
+				Assert.assertTrue(gc.getName().equals("green leaves")
+						|| gc.getName().equals("health")
+						|| gc.getName().equals("p+r"));
+			}
+
+			if (gc instanceof BadgeCollectionConcept) {
+				Assert.assertTrue(gc.getName().equals("green leaves")
+						|| gc.getName().equals("health")
+						|| gc.getName().equals("p+r")
+						|| gc.getName().equals("special"));
+			}
+		}
+	}
+
+	@Test
+	public void initPlayerState() {
+		initClasspathRuleGame();
+		workflow.apply(ACTION, "25", null);
+		PlayerState p = playerSrv.loadState("25", GAME);
+		Assert.assertEquals(7, p.getState().size());
+	}
+
+	@Test
+	public void owner() {
+		initClasspathRuleGame();
+		Game g = gameManager.loadGameDefinitionById(GAME);
+		Assert.assertEquals(OWNER, g.getOwner());
+	}
+
+	@Test
 	public void gameNotTerminate() {
 		GamePersistence game = defineGame();
 		Calendar cal = new GregorianCalendar();
@@ -292,7 +336,6 @@ public class GameEngineTest {
 		gameManager.taskDestroyer();
 		Game g = gameManager.loadGameDefinitionById(GAME);
 		Assert.assertEquals(false, g.isTerminated());
-
 	}
 
 	class ExecutionData {
@@ -334,10 +377,20 @@ public class GameEngineTest {
 
 		game.setId(GAME);
 		game.setName(GAME);
+		game.setOwner(OWNER);
 
 		game.setActions(new HashSet<String>());
 		game.getActions().add(ACTION);
 		game.getActions().add("classification");
+
+		game.setConcepts(new HashSet<GameConcept>());
+		game.getConcepts().add(new PointConcept("green leaves"));
+		game.getConcepts().add(new PointConcept("health"));
+		game.getConcepts().add(new PointConcept("p+r"));
+		game.getConcepts().add(new BadgeCollectionConcept("green leaves"));
+		game.getConcepts().add(new BadgeCollectionConcept("health"));
+		game.getConcepts().add(new BadgeCollectionConcept("p+r"));
+		game.getConcepts().add(new BadgeCollectionConcept("special"));
 
 		game.setTasks(new HashSet<GameTask>());
 

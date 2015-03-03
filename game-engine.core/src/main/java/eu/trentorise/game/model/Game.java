@@ -7,9 +7,11 @@ import eu.trentorise.game.core.GameTask;
 public class Game {
 	private String id;
 	private String name;
+	private String owner;
 	private Set<String> actions;
 	private Set<GameTask> tasks;
 	private Set<String> rules;
+	private Set<GameConcept> concepts;
 
 	/**
 	 * game expiration time. If game must live forever set a negative value
@@ -79,6 +81,22 @@ public class Game {
 
 	public void setTerminated(boolean terminated) {
 		this.terminated = terminated;
+	}
+
+	public Set<GameConcept> getConcepts() {
+		return concepts;
+	}
+
+	public void setConcepts(Set<GameConcept> concepts) {
+		this.concepts = concepts;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }

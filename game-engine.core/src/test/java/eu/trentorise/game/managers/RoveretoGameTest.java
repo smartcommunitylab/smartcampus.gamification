@@ -94,9 +94,6 @@ public class RoveretoGameTest {
 		// define game
 		GamePersistence game = defineGame();
 		mongo.save(game);
-
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/initState.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
@@ -141,8 +138,6 @@ public class RoveretoGameTest {
 	public void sameResultLastElementEnv() {
 		GamePersistence game = defineGame();
 		mongo.save(game);
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/initState.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
@@ -195,8 +190,6 @@ public class RoveretoGameTest {
 		// define game
 		GamePersistence game = defineGame();
 		mongo.save(game);
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/initState.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
@@ -493,6 +486,15 @@ public class RoveretoGameTest {
 		game.setActions(new HashSet<String>());
 		game.getActions().add(ACTION);
 		game.getActions().add("classification");
+
+		game.setConcepts(new HashSet<GameConcept>());
+		game.getConcepts().add(new PointConcept("green leaves"));
+		game.getConcepts().add(new PointConcept("health"));
+		game.getConcepts().add(new PointConcept("p+r"));
+		game.getConcepts().add(new BadgeCollectionConcept("green leaves"));
+		game.getConcepts().add(new BadgeCollectionConcept("health"));
+		game.getConcepts().add(new BadgeCollectionConcept("p+r"));
+		game.getConcepts().add(new BadgeCollectionConcept("special"));
 
 		game.setTasks(new HashSet<GameTask>());
 

@@ -2,7 +2,10 @@ package eu.trentorise.game.managers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -19,6 +22,7 @@ import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.FSRule;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.Rule;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
@@ -69,8 +73,21 @@ public class GameManager implements GameService {
 
 	}
 
-	public void saveGameDefinition(Game game) {
-		gameRepo.save(new GamePersistence(game));
+	public Game saveGameDefinition(Game game) {
+		GamePersistence pers = null;
+		if (game.getId() != null) {
+			pers = gameRepo.findOne(game.getId());
+			if (pers != null) {
+				pers.setActions(game.getActions());
+				pers.setExpiration(game.getExpiration());
+				pers.setTerminated(game.isTerminated());
+			}
+
+		} else {
+			pers = new GamePersistence(game);
+		}
+		pers = gameRepo.save(pers);
+		return pers.toGame();
 	}
 
 	public Game loadGameDefinitionById(String gameId) {
@@ -166,5 +183,29 @@ public class GameManager implements GameService {
 	public Game loadGameDefinitionByAction(String actionId) {
 		GamePersistence gp = gameRepo.findByActions(actionId);
 		return gp != null ? gp.toGame() : null;
+	}
+
+	@Override
+	public void addConceptInstance(String gameId, GameConcept gc) {
+		Game g = loadGameDefinitionById(gameId);
+		if (g != null) {
+			if (g.getConcepts() == null) {
+				g.setConcepts(new HashSet<GameConcept>());
+			}
+			g.getConcepts().add(gc);
+		}
+
+		saveGameDefinition(g);
+	}
+
+	@Override
+	public Set<GameConcept> readConceptInstances(String gameId) {
+		Game g = loadGameDefinitionById(gameId);
+		if (g != null) {
+			return g.getConcepts() != null ? g.getConcepts() : Collections
+					.<GameConcept> emptySet();
+		} else {
+			return Collections.<GameConcept> emptySet();
+		}
 	}
 }

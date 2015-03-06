@@ -1,10 +1,12 @@
 package eu.trentorise.game.services;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.Rule;
 
 @Service
@@ -14,7 +16,7 @@ public interface GameService {
 
 	public void startupTasks(String gameId);
 
-	public void saveGameDefinition(Game game);
+	public Game saveGameDefinition(Game game);
 
 	public Game loadGameDefinitionById(String gameId);
 
@@ -27,4 +29,8 @@ public interface GameService {
 	public void addRule(Rule rule);
 
 	public Rule loadRule(String gameId, String url);
+
+	public void addConceptInstance(String gameId, GameConcept gc);
+
+	public Set<GameConcept> readConceptInstances(String gameId);
 }

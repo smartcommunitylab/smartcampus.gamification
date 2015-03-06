@@ -159,7 +159,7 @@ public class GameManager implements GameService {
 		return rule;
 	}
 
-	@Scheduled(cron = "0 * * * * *")
+	@Scheduled(cron = "0 0 1 * * *")
 	public void taskDestroyer() {
 		logger.info("task destroyer invocation");
 		long deadline = System.currentTimeMillis();

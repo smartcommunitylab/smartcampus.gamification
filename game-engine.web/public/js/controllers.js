@@ -636,18 +636,55 @@ function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, 
 }
 
 // Actions controller (actions.html)
-function ActionsCtrl($scope, $rootScope, $stateParams, gamesFactory) {
-
-  // TODO: load XML file and then add imported actions to the game actions collection
+function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 
   $rootScope.currentNav = 'actions';
   $rootScope.currentGameId = $stateParams.id;
 
   // Error alerts object
   $scope.alerts = {
-    'loadGameError': false
+    'success': '',
+    'error': ''
   };
 
+  $scope.closeAlert = function (alertName) {
+	    $scope.alerts[alertName] = '';
+	  }
+  
+  //Add action
+  $scope.openAddActionModal = function () {
+	  var modalInstance = $modal.open({
+		  templateUrl: 'templates/modals/modal_action_edit.html',
+	      controller: EditActionModalInstanceCtrl,
+	      resolve: {
+	      game: function () {
+	          return $scope.game;
+	        },
+	      action: function () {
+	    	  return $scope.actionName;
+	      }
+	      }
+	    });
+  };
+  
+  $scope.deleteAction = function (action) {
+	    // Delete a game
+	    var modalInstance = $modal.open({
+	      templateUrl: 'templates/modals/modal_delete_confirm.html',
+	      controller: DeleteActionConfirmModalInstanceCtrl,
+	      resolve: {
+	        game: function () {
+	          return $scope.game;
+	        },
+	        argument: function() {
+	        	return action;
+	        }
+	      }
+	    });
+	  };
+  
+  
+  
   // Load game
   gamesFactory.getGameById($stateParams.id).then(function (game) {
     $scope.game = game;

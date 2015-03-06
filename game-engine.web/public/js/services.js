@@ -9,7 +9,7 @@ app.factory('gamesFactory',
       // If games haven't been already loaded
       if (!$rootScope.games || $rootScope.games.length === 0) {
         // Load games
-        $http.get('data/games.json').success(function (data) {
+        $http.get('/console/game').success(function (data) {
           $rootScope.games = data;
           deferred.resolve();
         }).error(function () {
@@ -70,13 +70,14 @@ app.factory('gamesFactory',
       // Load game
       getGameById(gameId).then(function (game) {
         var found = false;
-        angular.forEach(game.instances[instanceType], function (i) {
+        if(game.concepts) {
+        angular.forEach(game.concepts, function (i) {
           if (!found && i.id == instanceId) {
             inst = i;
             found = true;
           }
         });
-
+        }
         // If i've found the requested instance
         if (!!inst) {
           deferred.resolve({
@@ -97,27 +98,69 @@ app.factory('gamesFactory',
     // Boolean. Returns whether exists or not an instance by its name
     var existsInstanceByName = function (game, instanceName, instanceType) {
       var found = false;
-      angular.forEach(game.instances[instanceType], function (i) {
+      if(game.concepts) {
+      angular.forEach(game.concepts, function (i) {
         if (!found && i.name === instanceName) {
           found = true;
         }
       });
       return found;
+    }
     };
 
     // Get an instance (points / basdges_collection / leaderboard) by its name
     var getInstanceByName = function (game, instanceName, instanceType) {
       var found = false;
       var obj = {};
-      angular.forEach(game.instances[instanceType], function (i) {
+      if(game.concepts) {
+      angular.forEach(game.concepts, function (i) {
         if (!found && i.name === instanceName) {
           found = true;
           obj = i;
         }
       });
       return obj;
+    }
     };
 
+    
+    var addPoint = function(game,pc) {
+    	$http.post('console/game/'+game.id+"/point", pc).
+    	success(function(data, status, headers, config) {
+    		
+        }).
+        error(function(data, status, headers, config) {
+        	
+        });
+    };
+    
+    var addBadge = function(game,badge) {
+    	$http.post('console/game/'+game.id+"/badgecoll", badge).
+    	success(function(data, status, headers, config) {
+    		
+        }).
+        error(function(data, status, headers, config) {
+        	
+        });
+    };
+    
+    var saveGame = function(game) {
+    	var deferred = $q.defer();
+    	// clean game fields to avoid http 400 from backend
+    	game.concepts = [];
+    	game.tasks = [];
+    	
+    	$http.post('console/game', game).
+    	success(function(data, status, headers, config) {
+    		deferred.resolve(data);
+        }).
+        error(function(data, status, headers, config) {
+        	deferred.resolve('Error');
+        });
+    	
+    	 return deferred.promise;
+    };
+    
     // Add or edit game
     var editGame = function (game, name) {
       var deferred = $q.defer();
@@ -131,25 +174,19 @@ app.factory('gamesFactory',
           deferred.reject('msg_game_name_exists_error');
         } else {
           // Create new game
-          var id = -1;
-          angular.forEach($rootScope.games, function (g) {
-            if (g.id > id) {
-              id = g.id;
-            }
-          });
+        game = {};
+        game.name = name;
 
-          game = {
-            'id': id + 1,
-            'name': name,
-            'instances': {
-              'points': [],
-              'badges_collections': [],
-              'leaderboards': []
-            }
-          };
-
-          $rootScope.games.push(game);
-          deferred.resolve(game);
+        $http.post('console/game', game).
+        success(function(data, status, headers, config) {
+        	  $rootScope.games.push(data);
+              deferred.resolve(data);
+        }).
+        error(function(data, status, headers, config) {
+        	 deferred.reject('msg_game_name_error');
+        });
+        
+      
         }
       } else if (!!getGameByName(name)) {
         // User has entered the same name
@@ -157,7 +194,14 @@ app.factory('gamesFactory',
       } else {
         // Edit game
         game.name = name;
-        deferred.resolve();
+        $http.post('console/game', game).
+        success(function(data, status, headers, config) {
+        }).
+        error(function(data, status, headers, config) {
+        	 deferred.reject('msg_game_name_error');
+        });
+        
+        deferred.resolve(game);
       }
 
       return deferred.promise;
@@ -176,41 +220,35 @@ app.factory('gamesFactory',
           deferred.reject('msg_instance_name_exists_error');
         } else {
           // Create new instance
-          var id = -1;
-          angular.forEach(game.instances[instanceType], function (i) {
+          var id = 1;
+          angular.forEach(game.concepts, function (i) {
             if (i.id > id) {
               id = i.id;
             }
+            id++;
           });
 
+          var url = '';
           // Choose instance object structure
           if (instanceType == 'points') {
-            instance = {
-              'id': id + 1,
-              'name': instanceProperties.name,
-              'typology': instanceProperties.typology,
-              'is_active': true
-            };
+        	  url = "console/game/"+game.id+"/point";
           } else if (instanceType == 'badges_collections') {
-            instance = {
-              'id': id + 1,
-              'name': instanceProperties.name,
-              'badges': [],
-              'is_active': true
-            };
-          } else {
-            // instanceType = 'leaderboards'
-            instance = {
-              'id': id + 1,
-              'name': instanceProperties.name,
-              'points_dependency': instanceProperties.points_dependency,
-              'update_rate': instanceProperties.update_rate,
-              'is_active': true
-            };
+        	  url = "console/game/"+game.id+"/badgecoll";
           }
+          instance = {
+        		  'id': id,
+          		  'name': instanceProperties.name
+          };
 
-          game.instances[instanceType].push(instance);
-          deferred.resolve(instance);
+          $http.post(url, instance).success(function(data, status, headers, config) {
+        	  if(!!game.concepts) {
+        		  game.concepts = [];
+        	  }
+        	  game.concepts.push(data);
+        	  deferred.resolve(data);
+          }).error(function(data, status, headers, config){
+        	  deferred.reject('msg_instance_name_error');
+          });
         }
       } else if (!!existsInstanceByName(game, instanceProperties.name, instanceType) && instance.name != instanceProperties.name) {
         // Instance with same name alredy exists
@@ -267,9 +305,9 @@ app.factory('gamesFactory',
     var deleteInstance = function (game, instance, instanceType) {
       var deferred = $q.defer();
 
-      angular.forEach(game.instances[instanceType], function (i, index) {
+      angular.forEach(game.concepts[instanceType], function (i, index) {
         if (i.id == instance.id) {
-          game.instances[instanceType].splice(index, 1);
+          game.concepts[instanceType].splice(index, 1);
           deferred.resolve();
         }
       });
@@ -294,7 +332,7 @@ app.factory('gamesFactory',
     // Check if there are any ACTIVE leaderboards linked to the given points instance, and then return them
     var pointsDeactivationCheck = function (game, points) {
       var leaderboards = [];
-      angular.forEach(game.instances.leaderboards, function (leaderboard) {
+      angular.forEach(game.concepts.leaderboards, function (leaderboard) {
         if (leaderboard.points_dependency == points.name && leaderboard.is_active) {
           leaderboards.push(leaderboard);
         }
@@ -306,7 +344,7 @@ app.factory('gamesFactory',
     // Check if there are any leaderboards linked to the given points instance, and then return them
     var pointsDeleteCheck = function (game, points) {
       var leaderboards = [];
-      angular.forEach(game.instances.leaderboards, function (leaderboard) {
+      angular.forEach(game.concepts.leaderboards, function (leaderboard) {
         if (leaderboard.points_dependency == points.name) {
           leaderboards.push(leaderboard);
         }
@@ -325,10 +363,10 @@ app.factory('gamesFactory',
     // Delete the given leaderboards
     var deleteLeaderboards = function (game, leaderboards) {
       // Using pure JS 'for' instead of 'angular.forEach' due to index trouble in splice operations
-      for (var i = 0; i < game.instances.leaderboards.length; i++) {
+      for (var i = 0; i < game.concepts.leaderboards.length; i++) {
         for (var j = 0; j < leaderboards.length; j++) {
-          if (game.instances.leaderboards[i].id == leaderboards[j].id)
-            game.instances.leaderboards.splice(i, 1);
+          if (game.concepts.leaderboards[i].id == leaderboards[j].id)
+            game.concepts.leaderboards.splice(i, 1);
         }
       }
     };
@@ -345,7 +383,10 @@ app.factory('gamesFactory',
       'pointsDeactivationCheck': pointsDeactivationCheck,
       'pointsDeleteCheck': pointsDeleteCheck,
       'deactivateLeaderboards': deactivateLeaderboards,
-      'deleteLeaderboards': deleteLeaderboards
+      'deleteLeaderboards': deleteLeaderboards,
+      'saveGame': saveGame,
+      'addPoint': addPoint,
+      'addBadge': addBadge
     };
   }
 );
@@ -357,8 +398,8 @@ app.factory('utilsFactory',
     // Count active instances
     var countActive = function (game, type) {
       var count = 0;
-      if (!!game && !!game.instances && !!game.instances[type]) {
-        angular.forEach(game.instances[type], function (value) {
+      if (!!game && !!game.concepts && !!game.concepts[type]) {
+        angular.forEach(game.concepts[type], function (value) {
           if (value.is_active) {
             count++;
           }
@@ -370,8 +411,8 @@ app.factory('utilsFactory',
     // Get given instances lenght
     var getLength = function (game, type) {
       var len = 0;
-      if (!!game && !!game.instances && !!game.instances[type]) {
-        len = game.instances[type].length;
+      if (!!game && !!game.concepts && !!game.concepts[type]) {
+        len = game.concepts[type].length;
       }
       return len;
     };

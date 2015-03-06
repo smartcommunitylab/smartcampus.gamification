@@ -78,7 +78,7 @@ function DeleteInstanceConfirmModalInstanceCtrl($scope, $modalInstance, $window,
 function EditPointsInstanceModalInstanceCtrl($scope, $modalInstance, game, instance, gamesFactory) {
   $scope.points = {};
   $scope.points.name = instance.name;
-  $scope.points.typology = instance.typology || 'Skill points';
+  // $scope.points.typology = instance.typology || 'Skill points';
 
   // Error alerts object
   $scope.alerts = {
@@ -313,6 +313,60 @@ function DeleteRuleConfirmModalInstanceCtrl($scope, $modalInstance, argument, ga
   $scope.delete = function () {
     // TODO: delete rule!
     $modalInstance.close();
+  };
+
+  // CANCEL button click event-handler
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}
+
+function EditActionModalInstanceCtrl($scope, $modalInstance, gamesFactory, game,action) {
+	$scope.input = {};
+	$scope.ok = function() {
+	
+		if( !! $scope.input.actionName && $scope.input.actionName.length > 0){
+				game.actions.push($scope.input.actionName);
+			}
+			
+		gamesFactory.saveGame(game).then(
+      function () {
+        // Settings edited
+	        $modalInstance.close();
+	      },
+	      function (message) {
+	        // Show given error alert
+	        // $scope.alerts.editGameError = message;
+	    	 alert('error');
+	      }
+	    );
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+}
+
+// Delete action modal
+function DeleteActionConfirmModalInstanceCtrl($scope, $modalInstance, argument, game, gamesFactory) {
+  $scope.argument = argument;
+
+  // DELETE button click event-handler
+  $scope.delete = function () {
+	var idx = game.actions.indexOf(argument);
+	if(idx !== -1) {
+		game.actions.splice(idx,1);
+	}
+	
+	 
+	gamesFactory.saveGame(game).then(
+		function () {
+			$modalInstance.close();
+	  	      },
+	  	      function (message) {
+	  	    
+	  	      }
+	  	    );
   };
 
   // CANCEL button click event-handler

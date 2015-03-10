@@ -15,12 +15,6 @@ app.config(function ($i18nextProvider) {
 app.config(
   function ($stateProvider, $urlRouterProvider) {
     $stateProvider
-//      .state('login', {
-//        url: '/login',
-//        templateUrl: 'templates/login.html',
-//        controller: 'LoginCtrl'
-//      })
-
     .state('home', {
       url: '/home',
       templateUrl: 'templates/home.html',

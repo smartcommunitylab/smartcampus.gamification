@@ -50,6 +50,7 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
+    
     // Get game by name
     var getGameByName = function (name) {
       var found = false;
@@ -98,14 +99,20 @@ app.factory('gamesFactory',
     // Boolean. Returns whether exists or not an instance by its name
     var existsInstanceByName = function (game, instanceName, instanceType) {
       var found = false;
-      if(game.concepts) {
-      angular.forEach(game.concepts, function (i) {
+      var a = [];
+      if(instanceType === 'points') {
+    		  a = game.pointConcept;
+      }
+      
+      if(instanceType === 'badge_collections') {
+    		  a = game.badgeCollectionConcept;
+      }
+      angular.forEach(a, function (i) {
         if (!found && i.name === instanceName) {
           found = true;
         }
       });
       return found;
-    }
     };
 
     // Get an instance (points / basdges_collection / leaderboard) by its name
@@ -124,15 +131,42 @@ app.factory('gamesFactory',
     };
 
     
+    var getPoints = function(gameId) {
+    	var deferred = $q.defer();
+    
+    	$http.get('console/game/'+gameId+"/point").
+    	success(function(data, status, headers, config) {
+    		deferred.resolve(data);
+        }).
+        error(function(data, status, headers, config) {
+        	deferred.reject();
+        });
+        
+        return deferred.promise;
+    }
+    
     var addPoint = function(game,pc) {
     	$http.post('console/game/'+game.id+"/point", pc).
     	success(function(data, status, headers, config) {
     		
         }).
         error(function(data, status, headers, config) {
-        	
         });
     };
+    
+    var getBadges = function(gameId) {
+    	var deferred = $q.defer();
+    
+    	$http.get('console/game/'+gameId+"/badgecoll").
+    	success(function(data, status, headers, config) {
+    		deferred.resolve(data);
+        }).
+        error(function(data, status, headers, config) {
+        	deferred.reject();
+        });
+        
+        return deferred.promise;
+    }
     
     var addBadge = function(game,badge) {
     	$http.post('console/game/'+game.id+"/badgecoll", badge).
@@ -146,9 +180,6 @@ app.factory('gamesFactory',
     
     var saveGame = function(game) {
     	var deferred = $q.defer();
-    	// clean game fields to avoid http 400 from backend
-    	game.concepts = [];
-    	game.tasks = [];
     	
     	$http.post('console/game', game).
     	success(function(data, status, headers, config) {
@@ -229,22 +260,19 @@ app.factory('gamesFactory',
           });
 
           var url = '';
-          // Choose instance object structure
-          if (instanceType == 'points') {
-        	  url = "console/game/"+game.id+"/point";
-          } else if (instanceType == 'badges_collections') {
-        	  url = "console/game/"+game.id+"/badgecoll";
-          }
+         
           instance = {
         		  'id': id,
           		  'name': instanceProperties.name
           };
-
-          $http.post(url, instance).success(function(data, status, headers, config) {
-        	  if(!!game.concepts) {
-        		  game.concepts = [];
-        	  }
-        	  game.concepts.push(data);
+          // Choose instance object structure
+          if (instanceType == 'points') {
+        	  game.pointConcept.push(instance);
+          } else if (instanceType == 'badges_collections') {
+        	  game.badgeCollectionConcept.push(instance);
+          }
+          
+          $http.post('console/game', game).success(function(data, status, headers, config) {
         	  deferred.resolve(data);
           }).error(function(data, status, headers, config){
         	  deferred.reject('msg_instance_name_error');
@@ -384,9 +412,11 @@ app.factory('gamesFactory',
       'pointsDeleteCheck': pointsDeleteCheck,
       'deactivateLeaderboards': deactivateLeaderboards,
       'deleteLeaderboards': deleteLeaderboards,
-      'saveGame': saveGame,
-      'addPoint': addPoint,
-      'addBadge': addBadge
+      'saveGame' : saveGame,
+      'addPoint' : addPoint,
+      'addBadge' : addBadge,
+      'getPoints' : getPoints,
+      'getBadges' : getBadges,
     };
   }
 );

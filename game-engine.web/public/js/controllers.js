@@ -101,6 +101,16 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     $scope.alerts.loadGameError = true;
   });
 
+  
+  gamesFactory.getPoints($rootScope.currentGameId).then(function (points) {
+	  $scope.points = points;
+  });
+  
+  gamesFactory.getBadges($rootScope.currentGameId).then(function (badges) {
+	  $scope.badges = badges;
+  });
+  
+  
   $scope.closeAlert = function (alertName) {
     $scope.alerts[alertName] = false;
   };
@@ -148,9 +158,6 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     case 'badges_collections':
       $scope.openAddBadgesCollectionsInstanceModal();
       break;
-    case 'leaderboards':
-      $scope.openAddLeaderboardsInstanceModal();
-      break;
     }
   };
 
@@ -185,28 +192,25 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
       }
     });
   };
-
-  $scope.openAddLeaderboardsInstanceModal = function () {
-    // Add a new leaderboard instance, after have checked for points instances to refer to
-    if ($scope.game.instances.points.length == 0) {
-      // Show error alert
-      $scope.alerts.cantCreateLeaderboards = true;
-    } else {
-      // Add instance
-      var modalInstance = $modal.open({
-        templateUrl: 'templates/modals/modal_leaderboard_instance_edit.html',
-        controller: EditLeaderboardInstanceModalInstanceCtrl,
-        resolve: {
-          game: function () {
-            return $scope.game;
-          },
-          instance: function () {
-            return {};
-          }
-        }
-      });
-    }
-  };
+  
+  $scope.deleteConcept = function (instance,type) {
+	    // Delete a game
+	    var modalInstance = $modal.open({
+	      templateUrl: 'templates/modals/modal_delete_confirm.html',
+	      controller: DeleteConceptConfirmModalInstanceCtrl,
+	      resolve: {
+	        game: function () {
+	          return $scope.game;
+	        },
+	        instance: function () {
+	          return instance;
+	        },
+	        type: function () {
+	          return type;
+	        }
+	      }
+	    });
+	  };
 
   $scope.deleteGame = function () {
     // Delete a game
@@ -539,101 +543,6 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
   };
 }
 
-// Leaderboard instance controller (game_leaderboard.html)
-function GameLeaderboardCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
-  $rootScope.currentNav = 'configure';
-  $rootScope.currentGameId = $stateParams.id;
-
-  // Error alerts object
-  $scope.alerts = {
-    'loadGameError': false,
-    'settingsEdited': false
-  };
-
-  // Load game and leaderboard instance
-  gamesFactory.getInstanceById($stateParams.id, 'leaderboards', $stateParams.idLeaderboard).then(function (response) {
-    $scope.game = response.game;
-    $scope.leaderboard = response.inst;
-  }, function () {
-    // Show error alert
-    $scope.alerts.loadGameError = true;
-  });
-
-  $scope.closeAlert = function (alertName) {
-    $scope.alerts[alertName] = false;
-  };
-
-  $scope.openEditInstanceModal = function () {
-    // Edit leaderboard instance
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_leaderboard_instance_edit.html',
-      controller: EditLeaderboardInstanceModalInstanceCtrl,
-      resolve: {
-        game: function () {
-          return $scope.game;
-        },
-        instance: function () {
-          return $scope.leaderboard;
-        }
-      }
-    });
-
-    modalInstance.result.then(function () {
-      // Show 'settings successfully edited' alert
-      $scope.alerts.settingsEdited = true;
-    });
-  };
-
-  $scope.deleteInstance = function () {
-    // Delete leaderboard instance
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_delete_confirm.html',
-      controller: DeleteInstanceConfirmModalInstanceCtrl,
-      resolve: {
-        game: function () {
-          return $scope.game;
-        },
-        instance: function () {
-          return $scope.leaderboard;
-        },
-        instanceType: function () {
-          return 'leaderboards';
-        }
-      }
-    });
-  };
-
-  $scope.deleteRule = function () {
-    // Delete rule
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_delete_confirm.html',
-      controller: DeleteRuleConfirmModalInstanceCtrl,
-      resolve: {
-        argument: function () {
-          return "TODO";
-        }
-      }
-    });
-  };
-
-  // Edit rule
-  $scope.openEditRuleModal = function () {
-    // TODO: adjust to pass parameters
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_rule_edit.html',
-      controller: EditRuleModalInstanceCtrl,
-    });
-  };
-
-  // Add rule
-  $scope.openAddRuleModal = function () {
-    // TODO: adjust to pass parameters
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_rule_edit.html',
-      controller: EditRuleModalInstanceCtrl,
-    });
-  };
-}
 
 // Actions controller (actions.html)
 function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {

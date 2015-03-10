@@ -156,73 +156,73 @@ function EditBadgesCollectionInstanceModalInstanceCtrl($scope, $modalInstance, g
 }
 
 // Edit leaderboard instance modal
-function EditLeaderboardInstanceModalInstanceCtrl($scope, $modalInstance, game, instance, gamesFactory) {
-  $scope.leaderboard = {};
-  $scope.leaderboard.name = instance.name;
-  $scope.leaderboard.points_dependency = instance.points_dependency || game.instances.points[0].name;
-  $scope.leaderboard.update_rate = instance.update_rate || 'Weekly';
-
-  $scope.gamePoints = game.instances.points;
-
-  // Error alerts object
-  $scope.alerts = {
-    'editInstanceError': ''
-  };
-
-  $scope.closeAlert = function (alertName) {
-    $scope.alerts[alertName] = '';
-  }
-
-  // Functions to manage dropdown buttons
-
-  $scope.dropdownPointsDependency = {
-    isOpen: false
-  };
-
-  $scope.toggleDropdownPointsDependency = function ($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
-    $scope.dropdownPointsDependency.isOpen = !$scope.dropdownPointsDependency.isOpen;
-
-  }
-
-  $scope.setPointsDependency = function (pointsDependency, $event) {
-    $scope.leaderboard.points_dependency = pointsDependency;
-    $scope.toggleDropdownPointsDependency($event);
-  };
-
-  $scope.dropdownUpdateRate = {
-    isOpen: false
-  };
-
-  $scope.toggleDropdownUpdateRate = function ($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
-    $scope.dropdownUpdateRate.isOpen = !$scope.dropdownUpdateRate.isOpen;
-
-  }
-
-  $scope.setUpdateRate = function (updateRate, $event) {
-    $scope.leaderboard.update_rate = updateRate;
-    $scope.toggleDropdownUpdateRate($event);
-  };
-
-  // SAVE button click event-handler
-  $scope.save = function () {
-    gamesFactory.editInstance(game, instance, 'leaderboards', $scope.leaderboard).then(function () {
-      // Leaderboard instance edited
-      $modalInstance.close();
-    }, function (message) {
-      // Show error alert
-      $scope.alerts.editInstanceError = message;
-    });
-  };
-
-  // CANCEL button click event-handler
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-}
+//function EditLeaderboardInstanceModalInstanceCtrl($scope, $modalInstance, game, instance, gamesFactory) {
+//  $scope.leaderboard = {};
+//  $scope.leaderboard.name = instance.name;
+//  $scope.leaderboard.points_dependency = instance.points_dependency || game.instances.points[0].name;
+//  $scope.leaderboard.update_rate = instance.update_rate || 'Weekly';
+//
+//  $scope.gamePoints = game.instances.points;
+//
+//  // Error alerts object
+//  $scope.alerts = {
+//    'editInstanceError': ''
+//  };
+//
+//  $scope.closeAlert = function (alertName) {
+//    $scope.alerts[alertName] = '';
+//  }
+//
+//  // Functions to manage dropdown buttons
+//
+//  $scope.dropdownPointsDependency = {
+//    isOpen: false
+//  };
+//
+//  $scope.toggleDropdownPointsDependency = function ($event) {
+//    $event.preventDefault();
+//    $event.stopPropagation();
+//    $scope.dropdownPointsDependency.isOpen = !$scope.dropdownPointsDependency.isOpen;
+//
+//  }
+//
+//  $scope.setPointsDependency = function (pointsDependency, $event) {
+//    $scope.leaderboard.points_dependency = pointsDependency;
+//    $scope.toggleDropdownPointsDependency($event);
+//  };
+//
+//  $scope.dropdownUpdateRate = {
+//    isOpen: false
+//  };
+//
+//  $scope.toggleDropdownUpdateRate = function ($event) {
+//    $event.preventDefault();
+//    $event.stopPropagation();
+//    $scope.dropdownUpdateRate.isOpen = !$scope.dropdownUpdateRate.isOpen;
+//
+//  }
+//
+//  $scope.setUpdateRate = function (updateRate, $event) {
+//    $scope.leaderboard.update_rate = updateRate;
+//    $scope.toggleDropdownUpdateRate($event);
+//  };
+//
+//  // SAVE button click event-handler
+//  $scope.save = function () {
+//    gamesFactory.editInstance(game, instance, 'leaderboards', $scope.leaderboard).then(function () {
+//      // Leaderboard instance edited
+//      $modalInstance.close();
+//    }, function (message) {
+//      // Show error alert
+//      $scope.alerts.editInstanceError = message;
+//    });
+//  };
+//
+//  // CANCEL button click event-handler
+//  $scope.cancel = function () {
+//    $modalInstance.dismiss('cancel');
+//  };
+//}
 
 // Poins activation confirmation modal
 function ActivatePointsConfirmModalInstanceCtrl($scope, $modalInstance, points) {
@@ -346,6 +346,44 @@ function EditActionModalInstanceCtrl($scope, $modalInstance, gamesFactory, game,
 		$modalInstance.dismiss('cancel');
 	};
 }
+
+
+function DeleteConceptConfirmModalInstanceCtrl($scope, $modalInstance, instance, game,type, gamesFactory) {
+	  $scope.argument = instance.name;
+
+	  // DELETE button click event-handler
+	  $scope.delete = function () {
+		  var idx = 0;
+		  var a = [];
+		  if(type === 'point') {
+			  a  = game.pointConcept
+		  }
+		  if(type === 'badge') {
+			  a = game.badgeCollectionConcept;
+		  }
+		  a.forEach(function(c) {
+			 if(c.id === instance.id && c.name === instance.name) {
+				 a.splice(idx,1);
+			 }
+			 idx++;
+		  });
+		 
+		gamesFactory.saveGame(game).then(
+			function () {
+				
+				$modalInstance.close();
+		  	      },
+		  	      function (message) {
+		  	    
+		  	      }
+		  	    );
+	  };
+
+	  // CANCEL button click event-handler
+	  $scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	  };
+	}
 
 // Delete action modal
 function DeleteActionConfirmModalInstanceCtrl($scope, $modalInstance, argument, game, gamesFactory) {

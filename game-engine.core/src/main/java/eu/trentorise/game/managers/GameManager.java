@@ -26,6 +26,7 @@ import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.Rule;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
+import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.RuleRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.TaskService;
@@ -81,6 +82,26 @@ public class GameManager implements GameService {
 				pers.setActions(game.getActions());
 				pers.setExpiration(game.getExpiration());
 				pers.setTerminated(game.isTerminated());
+
+				if (game.getConcepts() != null) {
+					Set<GenericObjectPersistence> concepts = new HashSet<GenericObjectPersistence>();
+					for (GameConcept c : game.getConcepts()) {
+						concepts.add(new GenericObjectPersistence(c));
+					}
+					pers.setConcepts(concepts);
+				} else {
+					pers.setConcepts(null);
+				}
+
+				if (game.getTasks() != null) {
+					Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
+					for (GameTask t : game.getTasks()) {
+						tasks.add(new GenericObjectPersistence(t));
+					}
+					pers.setTasks(tasks);
+				} else {
+					pers.setTasks(null);
+				}
 			}
 
 		} else {

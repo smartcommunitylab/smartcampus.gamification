@@ -169,4 +169,12 @@ public class GamePersistence {
 		this.rules = rules;
 	}
 
+	public Set<GenericObjectPersistence> getConcepts() {
+		return concepts;
+	}
+
+	public void setConcepts(Set<GenericObjectPersistence> concepts) {
+		this.concepts = concepts;
+	}
+
 }

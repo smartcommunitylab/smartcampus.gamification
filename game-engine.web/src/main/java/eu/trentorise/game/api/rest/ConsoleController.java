@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
@@ -25,18 +26,24 @@ public class ConsoleController {
 	GameService gameSrv;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game")
-	public Game saveGame(@RequestBody Game game) {
-		return gameSrv.saveGameDefinition(game);
+	public GameDTO saveGame(@RequestBody GameDTO game) {
+		Game res = gameSrv.saveGameDefinition(game.toGame());
+		return new GameDTO(res);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}")
-	public Game readGame(@PathVariable String gameId) {
-		return gameSrv.loadGameDefinitionById(gameId);
+	public GameDTO readGame(@PathVariable String gameId) {
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		return g == null ? null : new GameDTO(g);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game")
-	public List<Game> readGames() {
-		return gameSrv.loadAllGames();
+	public List<GameDTO> readGames() {
+		List<GameDTO> r = new ArrayList<GameDTO>();
+		for (Game g : gameSrv.loadAllGames()) {
+			r.add(new GameDTO(g));
+		}
+		return r;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/point")
@@ -58,6 +65,12 @@ public class ConsoleController {
 		}
 
 		return points;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/badgecoll")
+	public void addBadge(@PathVariable String gameId,
+			@RequestBody BadgeCollectionConcept badge) {
+		gameSrv.addConceptInstance(gameId, badge);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/badgecoll")

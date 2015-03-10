@@ -441,8 +441,14 @@ app.factory('utilsFactory',
     // Get given instances lenght
     var getLength = function (game, type) {
       var len = 0;
-      if (!!game && !!game.concepts && !!game.concepts[type]) {
-        len = game.concepts[type].length;
+      if (!!game) {
+    	  if(type === 'points') {
+    		  len = game.pointConcept.length;
+    	  }
+    	  if(type === 'badges_collections') {
+    		  len = game.badgeCollectionConcept.length;
+    	  }
+    	  
       }
       return len;
     };

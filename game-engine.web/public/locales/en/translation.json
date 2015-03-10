@@ -12,7 +12,7 @@
   "lbl_enter_name": "Enter name",
   "btn_cancel": "Cancel",
   "btn_ok": "OK",
-  "game_info": "__active__ active out of __total__",
+  "game_info": "__total__ defined",
   "lbl_edit_game": "Edit game settings",
   "lbl_new_name": "Game name",
   "lbl_enter_new_name": "Enter new name",

@@ -69,20 +69,18 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   $scope.pluginNames = {
     'points': 'points',
     'badges_collections': 'badges collections',
-    'leaderboards': 'leaderboards'
   };
 
   // Tab switching
   $scope.active = {
     'points': false,
     'badges_collections': false,
-    'leaderboards': false
   };
 
   // Read the tab param to select the right tab. If it isn't given, choose the dafualt tab
   var tab = $stateParams.tab;
 
-  if (!!tab && (tab == 'points' || tab == 'badges_collections' || tab == 'leaderboards')) {
+  if (!!tab && (tab == 'points' || tab == 'badges_collections')) {
     // User choice (tab)
     $scope.active[tab] = true;
     $scope.selectedInstance = tab;

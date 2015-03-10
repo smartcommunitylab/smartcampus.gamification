@@ -25,9 +25,8 @@ Text will be soon placed in the middle of the panel-body
         </div>
         <div class="panel-body">
           <p>
-            <strong>{{'lbl_points' | i18next}}:</strong> <span ng-i18next="[i18next]({active: {{countActive(game, 'points')}}, total: {{getLength(game, 'points')}}})game_info"></span>
-            <br/><strong>{{'lbl_badges_collections' | i18next}}:</strong> <span ng-i18next="[i18next]({active: {{countActive(game, 'badges_collections')}}, total: {{getLength(game, 'badges_collections')}}})game_info"></span>
-            <!-- <br/><strong>{{'lbl_leaderboards' | i18next}}:</strong> <span ng-i18next="[i18next]({active: {{countActive(game, 'leaderboards')}}, total: {{getLength(game, 'leaderboards')}}})game_info"></span> -->
+            <strong>{{'lbl_points' | i18next}}:</strong> <span ng-i18next="[i18next]({total: {{getLength(game, 'points')}}})game_info"></span>
+            <br/><strong>{{'lbl_badges_collections' | i18next}}:</strong> <span ng-i18next="[i18next]({total: {{getLength(game, 'badges_collections')}}})game_info"></span>
           </p>
         </div>
       </div>

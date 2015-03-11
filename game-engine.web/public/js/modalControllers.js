@@ -289,38 +289,6 @@ function EditBadgesModalInstanceCtrl($scope, $modalInstance, gamesFactory) {
   };
 }
 
-// Edit rule modal
-function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory) {
-  // TODO: complete add / edit rule operations!
-
-  // DELETE button click event-handler
-  $scope.save = function () {
-    // TODO: edit rule!
-    $modalInstance.close();
-  };
-
-  // CANCEL button click event-handler
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-}
-
-// Delete rule modal
-function DeleteRuleConfirmModalInstanceCtrl($scope, $modalInstance, argument, gamesFactory) {
-  $scope.argument = argument;
-
-  // DELETE button click event-handler
-  $scope.delete = function () {
-    // TODO: delete rule!
-    $modalInstance.close();
-  };
-
-  // CANCEL button click event-handler
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-}
-
 function EditActionModalInstanceCtrl($scope, $modalInstance, gamesFactory, game,action) {
 	$scope.input = {};
 	$scope.ok = function() {
@@ -411,4 +379,84 @@ function DeleteActionConfirmModalInstanceCtrl($scope, $modalInstance, argument, 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
+}
+
+function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, rule) {
+	$scope.input = {};
+	$scope.alerts = {};
+	
+	$scope.save = function() {
+	
+		if( !! $scope.input.ruleContent && $scope.input.ruleContent.length > 0){
+			var rule = {};
+			rule.content = $scope.input.ruleContent;
+			var id = 1;
+			if(game.rules) {
+				game.rules.sort(function(a,b) {
+					return a.id > b.id;
+				});
+				
+				var last = game.rules.slice(-1)[0];
+				if(last) {
+					var name = last.name;
+				}
+				
+				var idx = 0;
+				if(name) {
+					idx = name.substring(5);
+				}
+			}
+			rule.name = 'rule ' + (parseInt(idx) + 1);
+			gamesFactory.addRule(game,rule).then(
+				function (data) {
+					if(! game.rules) {
+						game.rules = [];
+					} 
+					game.rules.push(data);
+					$modalInstance.close();
+				},
+				 function (message) {
+			        // Show given error alert
+			        $scope.alerts.ruleError = message;
+			      })		
+			}
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+}
+
+function DeleteRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, rule) {
+	$scope.alerts = {
+			'deleteError' : '',
+	};
+	$scope.argument = rule.name;
+	
+	$scope.closeAlert = function(alertName) {
+		    $scope.alerts[alertName] = '';
+	};
+	
+	$scope.delete = function() {
+		gamesFactory.deleteRule(game,rule.id).then(
+				function (data) {
+					if(data) {
+						var idx = 0;
+						for(idx = 0; idx < game.rules.length; idx ++) {
+							if(game.rules[idx].id == rule.id) {
+								break;
+							}
+						}
+						game.rules.splice(idx,1);
+						$modalInstance.close();
+					}
+				 },
+				 function (message) {
+			        $scope.alerts.deleteError = message;
+			      })		
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
 }

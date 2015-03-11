@@ -3,10 +3,16 @@
 </div>
 <form role="form">
   <div class="modal-body text-center">
-    <p>TODO: add/edit rule</p>
+   <div class="row">
+      <div class="col-md-12 text-center">
+        <alert ng-if="!!alerts.ruleError" type="danger" close="closeAlert('ruleError')">{{alerts.ruleError | i18next}}</alert>
+      </div>
+    </div>
+    
+    <textarea data-ng-model="input.ruleContent"></textarea>
   </div>
   <div class="modal-footer">
-    <button type="reset" class="btn btn-default" ng-click="cancel()">{{'btn_cancel' | i18next}}</button>
-    <button type="submit" class="btn btn-primary" ng-click="save()">{{'btn_save' | i18next}}</button>
+    <button type="reset" class="btn btn-default" data-ng-click="cancel()">{{'btn_cancel' | i18next}}</button>
+    <button type="submit" class="btn btn-primary" data-ng-click="save()">{{'btn_save' | i18next}}</button>
   </div>
 </form>

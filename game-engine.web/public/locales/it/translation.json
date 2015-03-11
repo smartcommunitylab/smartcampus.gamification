@@ -60,5 +60,6 @@
   "btn_deactivate": "Disattiva",
   "lbl_delete_leaderboards": "Elimina classifiche",
   "lbl_badges_configuration": "Configurazione distintivi",
-  "lbl_rules_configuration": "Configurazione regole"
+  "lbl_rules_configuration": "Configurazione regole",
+  "msg_delete_error": "Error durante la cancellazione"
 }

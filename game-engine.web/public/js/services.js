@@ -343,32 +343,30 @@ app.factory('gamesFactory',
       return deferred.promise;
     };
 
-    // Check if leaderboard points dependency is actived befoer allow leaderboard activation
-    var leaderboardActivationCheck = function (game, leaderboard) {
-      var deferred = $q.defer();
-      var points = getInstanceByName(game, leaderboard.points_dependency, 'points');
-
-      if (points.is_active) {
-        deferred.resolve();
-      } else {
-        deferred.reject(points);
-      }
-
-      return deferred.promise;
-    };
-
-    // Check if there are any ACTIVE leaderboards linked to the given points instance, and then return them
-    var pointsDeactivationCheck = function (game, points) {
-      var leaderboards = [];
-      angular.forEach(game.concepts.leaderboards, function (leaderboard) {
-        if (leaderboard.points_dependency == points.name && leaderboard.is_active) {
-          leaderboards.push(leaderboard);
-        }
-      });
-
-      return leaderboards;
-    };
-
+    var addRule = function (game, rule) {
+    	var deferred = $q.defer();
+    	
+    	$http.post('console/game/'+game.id+"/rule", rule).success(function(data, status, headers, config) {
+      	  deferred.resolve(data);
+        }).error(function(data, status, headers, config){
+      	  deferred.reject('msg_instance_name_error');
+        });
+    	return deferred.promise;
+    }
+    
+    var deleteRule = function (game, ruleId) {
+    	var deferred = $q.defer();
+    	var rule = {};
+    	ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
+    	$http.delete('console/game/'+game.id+"/rule/db/"+ruleId).success(function(data, status, headers, config) {
+      	  deferred.resolve(data);
+        }).error(function(data, status, headers, config){
+      	  deferred.reject('msg_delete_error');
+        });
+    	return deferred.promise;
+    }
+    
+    
     // Check if there are any leaderboards linked to the given points instance, and then return them
     var pointsDeleteCheck = function (game, points) {
       var leaderboards = [];
@@ -381,23 +379,6 @@ app.factory('gamesFactory',
       return leaderboards;
     };
 
-    // Deactivate the given leaderboards
-    var deactivateLeaderboards = function (leaderboards) {
-      angular.forEach(leaderboards, function (leaderboard) {
-        leaderboard.is_active = false;
-      });
-    };
-
-    // Delete the given leaderboards
-    var deleteLeaderboards = function (game, leaderboards) {
-      // Using pure JS 'for' instead of 'angular.forEach' due to index trouble in splice operations
-      for (var i = 0; i < game.concepts.leaderboards.length; i++) {
-        for (var j = 0; j < leaderboards.length; j++) {
-          if (game.concepts.leaderboards[i].id == leaderboards[j].id)
-            game.concepts.leaderboards.splice(i, 1);
-        }
-      }
-    };
 
     return {
       'getGames': getGames,
@@ -407,16 +388,14 @@ app.factory('gamesFactory',
       'editInstance': editInstance,
       'deleteGame': deleteGame,
       'deleteInstance': deleteInstance,
-      'leaderboardActivationCheck': leaderboardActivationCheck,
-      'pointsDeactivationCheck': pointsDeactivationCheck,
       'pointsDeleteCheck': pointsDeleteCheck,
-      'deactivateLeaderboards': deactivateLeaderboards,
-      'deleteLeaderboards': deleteLeaderboards,
       'saveGame' : saveGame,
       'addPoint' : addPoint,
       'addBadge' : addBadge,
       'getPoints' : getPoints,
       'getBadges' : getBadges,
+      'addRule' : addRule,
+      'deleteRule' : deleteRule,
     };
   }
 );

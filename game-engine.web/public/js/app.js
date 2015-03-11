@@ -39,16 +39,15 @@ app.config(
       controller: 'GameBadgesCollectionCtrl'
     })
 
-    .state('leaderboard', {
-      url: '/game/:id/leaderboards/:idLeaderboard',
-      templateUrl: 'templates/game_leaderboard.html',
-      controller: 'GameLeaderboardCtrl'
-    })
-
     .state('actions', {
       url: '/game/:id/actions',
       templateUrl: 'templates/actions.html',
       controller: 'ActionsCtrl'
+    })
+    .state('rules', {
+      url: '/game/:id/rules',
+      templateUrl: 'templates/rules.html',
+      controller: 'RulesCtrl'
     })
 
     $urlRouterProvider.otherwise("/home");

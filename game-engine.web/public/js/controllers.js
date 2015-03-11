@@ -618,3 +618,94 @@ function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 
   $scope.confirm = function () {};
 }
+
+function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
+	 $rootScope.currentNav = 'actions';
+	  $rootScope.currentGameId = $stateParams.id;
+
+	  // Error alerts object
+	  $scope.alerts = {
+	    'success': '',
+	    'error': ''
+	  };
+
+	  $scope.closeAlert = function (alertName) {
+		    $scope.alerts[alertName] = '';
+		  }
+	  
+	  //Add action
+	  $scope.openAddRuleModal = function () {
+		  var modalInstance = $modal.open({
+			  templateUrl: 'templates/modals/modal_rule_edit.html',
+		      controller: EditRuleModalInstanceCtrl,
+		      resolve: {
+		      game: function () {
+		          return $scope.game;
+		      },
+		      rule: function() {
+		      }
+		    }
+		  });
+	  };
+	  
+	  
+	  //Add action
+	  $scope.editRule = function (ruleId) {
+		  var modalInstance = $modal.open({
+			  templateUrl: 'templates/modals/modal_rule_edit.html',
+		      controller: EditRuleModalInstanceCtrl,
+		      resolve: {
+		      game: function () {
+		          return $scope.game;
+		      },
+		      rule: function() {
+		    	  return ruleId;
+		      }
+		    }
+		  });
+	  };
+	  
+	  $scope.deleteRule = function (rule) {
+		    // Delete a game
+		    var modalInstance = $modal.open({
+		      templateUrl: 'templates/modals/modal_delete_confirm.html',
+		      controller: DeleteRuleModalInstanceCtrl,
+		      resolve: {
+		        game: function () {
+		          return $scope.game;
+		        },
+		        rule: function () {
+		        	return rule;
+		        }
+		      }
+		    });
+		  };
+	  
+	  
+	  
+	  // Load game
+	  gamesFactory.getGameById($stateParams.id).then(function (game) {
+	    $scope.game = game;
+	  }, function () {
+	    // Show error alert
+	    $scope.alerts.loadGameError = true;
+	  });
+
+	  $scope.closeAlert = function (alertName) {
+	    $scope.alerts[alertName] = false;
+	  }
+
+	  $scope.choose = function () {
+	    $scope.path = "OK";
+	  };
+
+	  $scope.uploadImport = function () {
+	    $scope.dataImported = {};
+	  };
+
+	  $scope.clear = function () {
+	    $scope.dataImported = undefined;
+	  };
+
+	  $scope.confirm = function () {};
+}

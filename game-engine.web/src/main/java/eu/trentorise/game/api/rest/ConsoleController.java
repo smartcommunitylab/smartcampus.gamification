@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.utils.Converter;
 
 @RestController
 @RequestMapping(value = "/console")
@@ -25,23 +28,26 @@ public class ConsoleController {
 	@Autowired
 	GameService gameSrv;
 
+	@Autowired
+	Converter converter;
+
 	@RequestMapping(method = RequestMethod.POST, value = "/game")
 	public GameDTO saveGame(@RequestBody GameDTO game) {
-		Game res = gameSrv.saveGameDefinition(game.toGame());
-		return new GameDTO(res);
+		Game res = gameSrv.saveGameDefinition(converter.convertGame(game));
+		return converter.convertGame(res);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}")
 	public GameDTO readGame(@PathVariable String gameId) {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
-		return g == null ? null : new GameDTO(g);
+		return g == null ? null : converter.convertGame(g);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game")
 	public List<GameDTO> readGames() {
 		List<GameDTO> r = new ArrayList<GameDTO>();
 		for (Game g : gameSrv.loadAllGames()) {
-			r.add(new GameDTO(g));
+			r.add(converter.convertGame(g));
 		}
 		return r;
 	}
@@ -85,8 +91,24 @@ public class ConsoleController {
 				}
 			}
 		}
-
 		return badgeColl;
 	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/rule")
+	public RuleDTO addRule(@PathVariable String gameId,
+			@RequestBody RuleDTO rule) {
+		DBRule r = new DBRule(gameId, rule.getContent());
+		r.setName(rule.getName());
+		String ruleUrl = gameSrv.addRule(r);
+		rule.setId(ruleUrl);
+		return rule;
+
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/rule/db/{ruleUrl}")
+	public boolean deleteDbRule(@PathVariable String gameId,
+			@PathVariable String ruleUrl) {
+		ruleUrl = "db://" + ruleUrl;
+		return gameSrv.deleteRule(gameId, ruleUrl);
+	}
 }

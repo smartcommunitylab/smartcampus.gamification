@@ -1,12 +1,8 @@
 package eu.trentorise.game.bean;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.task.ClassificationTask;
 
@@ -15,7 +11,7 @@ public class GameDTO {
 	private String name;
 	private String owner;
 	private Set<String> actions;
-	private Set<String> rules;
+	private Set<RuleDTO> rules;
 	private long expiration;
 	private boolean terminated;
 
@@ -55,11 +51,11 @@ public class GameDTO {
 		this.actions = actions;
 	}
 
-	public Set<String> getRules() {
+	public Set<RuleDTO> getRules() {
 		return rules;
 	}
 
-	public void setRules(Set<String> rules) {
+	public void setRules(Set<RuleDTO> rules) {
 		this.rules = rules;
 	}
 
@@ -108,67 +104,4 @@ public class GameDTO {
 
 	}
 
-	public GameDTO(Game g) {
-		if (g != null) {
-			id = g.getId();
-			actions = g.getActions();
-			expiration = g.getExpiration();
-			name = g.getName();
-			owner = g.getOwner();
-			rules = g.getRules();
-			terminated = g.isTerminated();
-
-			if (g.getConcepts() != null) {
-				pointConcept = new HashSet<PointConcept>();
-				badgeCollectionConcept = new HashSet<BadgeCollectionConcept>();
-				for (GameConcept gc : g.getConcepts()) {
-					if (gc instanceof PointConcept) {
-						pointConcept.add((PointConcept) gc);
-					}
-
-					if (gc instanceof BadgeCollectionConcept) {
-						badgeCollectionConcept.add((BadgeCollectionConcept) gc);
-					}
-				}
-			}
-
-			if (g.getTasks() != null) {
-				classificationTask = new HashSet<ClassificationTask>();
-				for (GameTask gt : g.getTasks()) {
-					classificationTask.add((ClassificationTask) gt);
-				}
-			}
-		}
-	}
-
-	public Game toGame() {
-		Game g = new Game();
-		g.setId(id);
-		g.setActions(actions);
-		g.setExpiration(expiration);
-		g.setName(name);
-		g.setOwner(owner);
-		g.setRules(rules);
-		g.setTerminated(terminated);
-
-		if (pointConcept != null) {
-			g.setConcepts(new HashSet<GameConcept>());
-			g.getConcepts().addAll(pointConcept);
-		}
-
-		if (badgeCollectionConcept != null) {
-			if (g.getConcepts() == null) {
-				g.setConcepts(new HashSet<GameConcept>());
-			}
-			g.getConcepts().addAll(badgeCollectionConcept);
-
-		}
-
-		if (classificationTask != null) {
-			g.setTasks(new HashSet<GameTask>());
-			g.getTasks().addAll(classificationTask);
-		}
-
-		return g;
-	}
 }

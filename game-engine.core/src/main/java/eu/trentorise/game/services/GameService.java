@@ -26,9 +26,11 @@ public interface GameService {
 
 	public List<Game> loadGames(boolean onlyActive);
 
-	public void addRule(Rule rule);
+	public String addRule(Rule rule);
 
 	public Rule loadRule(String gameId, String url);
+
+	public boolean deleteRule(String gameId, String url);
 
 	public void addConceptInstance(String gameId, GameConcept gc);
 

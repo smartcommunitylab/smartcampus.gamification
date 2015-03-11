@@ -82,6 +82,7 @@ public class GameManager implements GameService {
 				pers.setActions(game.getActions());
 				pers.setExpiration(game.getExpiration());
 				pers.setTerminated(game.isTerminated());
+				pers.setRules(game.getRules());
 
 				if (game.getConcepts() != null) {
 					Set<GenericObjectPersistence> concepts = new HashSet<GenericObjectPersistence>();
@@ -102,8 +103,9 @@ public class GameManager implements GameService {
 				} else {
 					pers.setTasks(null);
 				}
+			} else {
+				pers = new GamePersistence(game);
 			}
-
 		} else {
 			pers = new GamePersistence(game);
 		}
@@ -132,29 +134,31 @@ public class GameManager implements GameService {
 		return result;
 	}
 
-	public void addRule(Rule rule) {
+	public String addRule(Rule rule) {
+		String ruleUrl = null;
 		if (rule != null) {
 			Game game = loadGameDefinitionById(rule.getGameId());
 			if (game != null) {
 				if (rule instanceof ClasspathRule) {
-					game.getRules().add(
-							"classpath://" + ((ClasspathRule) rule).getUrl());
+					ruleUrl = "classpath://" + ((ClasspathRule) rule).getUrl();
 				}
 
 				if (rule instanceof FSRule) {
-					game.getRules().add("file://" + ((FSRule) rule).getUrl());
+					ruleUrl = "file://" + ((FSRule) rule).getUrl();
 				}
 
 				if (rule instanceof DBRule) {
 					rule = ruleRepo.save((DBRule) rule);
-					game.getRules().add("db://" + ((DBRule) rule).getId());
+					ruleUrl = "db://" + ((DBRule) rule).getId();
 				}
 
+				game.getRules().add(ruleUrl);
 				saveGameDefinition(game);
 			} else {
 				logger.error("Game {} not found", rule.getGameId());
 			}
 		}
+		return ruleUrl;
 	}
 
 	public Rule loadRule(String gameId, String url) {
@@ -228,5 +232,19 @@ public class GameManager implements GameService {
 		} else {
 			return Collections.<GameConcept> emptySet();
 		}
+	}
+
+	@Override
+	public boolean deleteRule(String gameId, String url) {
+		Game g = loadGameDefinitionById(gameId);
+		boolean res = false;
+		if (g != null && url != null && url.indexOf("db://") != -1) {
+			String id = url.substring(5);
+			ruleRepo.delete(id);
+			res = g.getRules().remove(url);
+			saveGameDefinition(g);
+		}
+
+		return res;
 	}
 }

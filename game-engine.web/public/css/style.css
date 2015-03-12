@@ -110,3 +110,9 @@ button.btn-default.btn-edit:focus {
 .right-spaced {
   margin-right: 10px;
 }
+
+
+.rule-textarea {
+	width: 100%;
+	height: 30em;
+}

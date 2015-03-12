@@ -620,7 +620,7 @@ function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 }
 
 function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
-	 $rootScope.currentNav = 'actions';
+	 $rootScope.currentNav = 'rules';
 	  $rootScope.currentGameId = $stateParams.id;
 
 	  // Error alerts object

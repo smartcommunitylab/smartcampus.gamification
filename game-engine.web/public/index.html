@@ -28,21 +28,18 @@
           <li ng-if="currentNav == 'login'" ng-class="{'active':currentNav == 'login'}">
             <a href="#/login">{{'btn_login' | i18next}}</a>
           </li>
-          <li ng-if="currentNav == 'home' || currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'home'}">
+          <li ng-if="currentNav == 'home' || currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'home'}">
             <a ng-href="#/home">{{'btn_home' | i18next}}</a>
           </li>
-          <li ng-if="currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'configure'}">
+          <li ng-if="currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'configure'}">
             <a ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
           </li>
-          <li ng-if="currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'actions'}">
+          <li ng-if="currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'actions'}">
             <a ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18next}}</a>
           </li>
-           <li ng-if="currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'rules'}">
+           <li ng-if="currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'rules'}">
             <a ng-href="#/game/{{currentGameId}}/rules">{{'btn_rules' | i18next}}</a>
           </li>
-          <!-- <li ng-if="currentNav == 'home' || currentNav == 'configure' || currentNav == 'actions'" ng-class="{'active':currentNav == 'logout'}">
-            <a ng-href="#">{{'btn_logout' | i18next}}</a>
-          </li> -->
         </ul>
       </div>
     </div>

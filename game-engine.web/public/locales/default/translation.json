@@ -62,5 +62,6 @@
   "lbl_badges_configuration": "Badges configuration",
   "lbl_rules_configuration": "Rules configuration",
   "msg_rule_error": "Error saving rule",
-  "msg_delete_error": "Error deleting element"
+  "msg_delete_error": "Error deleting element",
+  "msg_rule_error": "Error during rule operation"
 }

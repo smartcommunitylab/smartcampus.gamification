@@ -385,11 +385,27 @@ function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, r
 	$scope.input = {};
 	$scope.alerts = {};
 	
+	if(rule) {
+		gamesFactory.getRule(game,rule.id).then(
+				function (data) {
+					if(data) {
+						$scope.input.ruleContent = data.content;
+					}
+				},
+				 function (message) {
+			        // Show given error alert
+			        $scope.alerts.ruleError = message;
+			      });		
+	}
+	
+	
 	$scope.save = function() {
 	
 		if( !! $scope.input.ruleContent && $scope.input.ruleContent.length > 0){
-			var rule = {};
-			rule.content = $scope.input.ruleContent;
+			var r = {};
+			if(rule) {
+				r = rule;
+			} else {
 			var id = 1;
 			if(game.rules) {
 				game.rules.sort(function(a,b) {
@@ -406,13 +422,17 @@ function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, r
 					idx = name.substring(5);
 				}
 			}
-			rule.name = 'rule ' + (parseInt(idx) + 1);
-			gamesFactory.addRule(game,rule).then(
+			r.name = 'rule ' + (parseInt(idx) + 1);
+			}
+			r.content = $scope.input.ruleContent;
+			gamesFactory.addRule(game,r).then(
 				function (data) {
 					if(! game.rules) {
 						game.rules = [];
 					} 
-					game.rules.push(data);
+					if(!rule) {
+						game.rules.push(data);
+					}
 					$modalInstance.close();
 				},
 				 function (message) {

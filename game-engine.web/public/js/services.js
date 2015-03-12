@@ -346,7 +346,7 @@ app.factory('gamesFactory',
     var addRule = function (game, rule) {
     	var deferred = $q.defer();
     	
-    	$http.post('console/game/'+game.id+"/rule", rule).success(function(data, status, headers, config) {
+    	$http.post('console/game/'+game.id+"/rule/db", rule).success(function(data, status, headers, config) {
       	  deferred.resolve(data);
         }).error(function(data, status, headers, config){
       	  deferred.reject('msg_instance_name_error');
@@ -364,6 +364,17 @@ app.factory('gamesFactory',
       	  deferred.reject('msg_delete_error');
         });
     	return deferred.promise;
+    }
+    
+    var getRule = function(game,ruleId) {
+    	var deferred = $q.defer();
+    	ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
+    	$http.get('console/game/'+game.id+"/rule/db/"+ruleId).success(function(data, status, headers, config) {
+        	  deferred.resolve(data);
+          }).error(function(data, status, headers, config){
+        	  deferred.reject('msg_rule_error');
+          });
+      	return deferred.promise;
     }
     
     
@@ -396,6 +407,7 @@ app.factory('gamesFactory',
       'getBadges' : getBadges,
       'addRule' : addRule,
       'deleteRule' : deleteRule,
+      'getRule' : getRule,
     };
   }
 );

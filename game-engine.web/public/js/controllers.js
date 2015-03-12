@@ -650,7 +650,7 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	  
 	  
 	  //Add action
-	  $scope.editRule = function (ruleId) {
+	  $scope.editRule = function (rule) {
 		  var modalInstance = $modal.open({
 			  templateUrl: 'templates/modals/modal_rule_edit.html',
 		      controller: EditRuleModalInstanceCtrl,
@@ -659,7 +659,7 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		          return $scope.game;
 		      },
 		      rule: function() {
-		    	  return ruleId;
+		    	  return rule;
 		      }
 		    }
 		  });

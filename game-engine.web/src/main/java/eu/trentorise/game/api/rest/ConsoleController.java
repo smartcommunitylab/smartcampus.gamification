@@ -94,11 +94,12 @@ public class ConsoleController {
 		return badgeColl;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/rule")
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/rule/db")
 	public RuleDTO addRule(@PathVariable String gameId,
 			@RequestBody RuleDTO rule) {
 		DBRule r = new DBRule(gameId, rule.getContent());
 		r.setName(rule.getName());
+		r.setId(rule.getId());
 		String ruleUrl = gameSrv.addRule(r);
 		rule.setId(ruleUrl);
 		return rule;
@@ -111,4 +112,17 @@ public class ConsoleController {
 		ruleUrl = "db://" + ruleUrl;
 		return gameSrv.deleteRule(gameId, ruleUrl);
 	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/rule/db/{ruleUrl}")
+	public RuleDTO loadDbRule(@PathVariable String gameId,
+			@PathVariable String ruleUrl) {
+		ruleUrl = "db://" + ruleUrl;
+		DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
+		RuleDTO res = new RuleDTO();
+		res.setId(r.getId());
+		res.setName(r.getName());
+		res.setContent(r.getContent());
+		return res;
+	}
+
 }

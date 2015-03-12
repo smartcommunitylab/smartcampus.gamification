@@ -148,6 +148,10 @@ public class GameManager implements GameService {
 				}
 
 				if (rule instanceof DBRule) {
+					if (((DBRule) rule).getId() != null) {
+						((DBRule) rule).setId(((DBRule) rule).getId().replace(
+								"db://", ""));
+					}
 					rule = ruleRepo.save((DBRule) rule);
 					ruleUrl = "db://" + ((DBRule) rule).getId();
 				}

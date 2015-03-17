@@ -49,6 +49,11 @@ app.config(
       templateUrl: 'templates/rules.html',
       controller: 'RulesCtrl'
     })
+     .state('tasks', {
+      url: '/game/:id/tasks',
+      templateUrl: 'templates/tasks.html',
+      controller: 'TasksCtrl'
+    })
 
     $urlRouterProvider.otherwise("/home");
   }

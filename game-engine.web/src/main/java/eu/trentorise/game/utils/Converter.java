@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.RuleDTO;
+import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.core.GameTask;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
@@ -106,6 +108,37 @@ public class Converter {
 		}
 
 		return g;
+	}
+
+	public TaskDTO convertClassificationTask(ClassificationTask t) {
+		TaskDTO task = null;
+		if (t != null) {
+			task = new TaskDTO();
+			task.setClassificationName(t.getClassificationName());
+			task.setCronExpression(t.getSchedule() != null ? t.getSchedule()
+					.getCronExpression() : null);
+			task.setItemsToNotificate(t.getItemsToNotificate());
+			task.setItemType(t.getItemType());
+			task.setName(t.getName());
+		}
+		return task;
+	}
+
+	public ClassificationTask convertClassificationTask(TaskDTO t) {
+		ClassificationTask task = null;
+		if (t != null) {
+			task = new ClassificationTask();
+			task.setClassificationName(t.getClassificationName());
+			if (t.getCronExpression() != null) {
+				TaskSchedule sched = new TaskSchedule();
+				sched.setCronExpression(t.getCronExpression());
+				task.setSchedule(sched);
+			}
+			task.setItemsToNotificate(t.getItemsToNotificate());
+			task.setItemType(t.getItemType());
+			task.setName(t.getName());
+		}
+		return task;
 	}
 
 }

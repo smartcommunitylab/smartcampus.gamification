@@ -4,6 +4,7 @@
   "btn_configure": "Configura",
   "btn_actions": "Azioni",
   "btn_rules": "Regole",
+  "btn_tasks": "Task",
   "btn_logout": "Disconnetti",
   "btn_login": "Accedi",
   "btn_add_game": "Aggiungi un nuovo gioco",
@@ -61,6 +62,18 @@
   "lbl_delete_leaderboards": "Elimina classifiche",
   "lbl_badges_configuration": "Configurazione distintivi",
   "lbl_rules_configuration": "Configurazione regole",
-  "msg_delete_error": "Error durante la cancellazione",
-  "msg_rule_error": "Errore durante l'operazione sulla regola"
+  "msg_delete_error": "Errore durante la cancellazione",
+  "msg_rule_error": "Errore durante l'operazione sulla regola",
+  "lbl_classification": "Task per classifiche",
+  "lbl_edit_task": "Configura Task"
+  "lbl_task_schedule" : "Cron expression",
+  "lbl_task_itemToNotificate" : "Numero elementi in classifica",
+  "lbl_task_itemType" : "Tipo di punto",
+  "lbl_task_classificationName" : "Nome della classifica",
+  "msg_task_error" : "Errore nell'operazione sul task",
+  "tool_delete" elimina",
+  "tool_edit" : "modifica",
+  "tool_add" : "nuovo",
+  "msg_error_integer" : "Il valore deve essere un intero"
+  
 }

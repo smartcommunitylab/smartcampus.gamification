@@ -1,6 +1,7 @@
 package eu.trentorise.game.api.rest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.RuleDTO;
+import eu.trentorise.game.bean.TaskDTO;
+import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.task.ClassificationTask;
 import eu.trentorise.game.utils.Converter;
 
 @RestController
@@ -114,7 +118,7 @@ public class ConsoleController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/rule/db/{ruleUrl}")
-	public RuleDTO loadDbRule(@PathVariable String gameId,
+	public RuleDTO readDbRule(@PathVariable String gameId,
 			@PathVariable String ruleUrl) {
 		ruleUrl = "db://" + ruleUrl;
 		DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
@@ -125,4 +129,68 @@ public class ConsoleController {
 		return res;
 	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task")
+	public TaskDTO addClassificationTask(@PathVariable String gameId,
+			@RequestBody TaskDTO task) {
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		if (g != null) {
+			if (g.getTasks() == null) {
+				g.setTasks(new HashSet<GameTask>());
+			}
+			ClassificationTask t = converter.convertClassificationTask(task);
+			t.setName(task.getName());
+			if (g.getTasks().contains(t)) {
+				throw new IllegalArgumentException("task name already exist");
+			} else {
+				g.getTasks().add(t);
+				gameSrv.saveGameDefinition(g);
+			}
+			task.setGameId(gameId);
+			return task;
+		} else {
+			throw new IllegalArgumentException("game not exist");
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task/del")
+	public void deleteClassificationTask(@PathVariable String gameId,
+			@RequestBody TaskDTO task) {
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		if (g != null) {
+			if (g.getTasks() != null) {
+				ClassificationTask t = converter
+						.convertClassificationTask(task);
+				t.setName(task.getName());
+				g.getTasks().remove(t);
+				gameSrv.saveGameDefinition(g);
+			}
+		} else {
+			throw new IllegalArgumentException("game not exist");
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/task")
+	public void editClassificationTask(@PathVariable String gameId,
+			@RequestBody TaskDTO task) {
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		if (g != null) {
+			if (g.getTasks() != null) {
+				for (GameTask gt : g.getTasks()) {
+					if (gt instanceof ClassificationTask
+							&& gt.getName().equals(task.getName())) {
+						ClassificationTask t = converter
+								.convertClassificationTask(task);
+						ClassificationTask ct = (ClassificationTask) gt;
+						ct.setItemsToNotificate(t.getItemsToNotificate());
+						ct.setClassificationName(t.getClassificationName());
+						ct.setItemType(t.getItemType());
+						ct.setSchedule(t.getSchedule());
+					}
+				}
+				gameSrv.saveGameDefinition(g);
+			}
+		} else {
+			throw new IllegalArgumentException("game not exist");
+		}
+	}
 }

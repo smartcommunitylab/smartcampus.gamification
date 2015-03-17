@@ -31,7 +31,7 @@
 			<div class="row">
 			<div class="col-md-12 top-margined">
 				<div class="pull-right">
-					 <button type="button" class="btn btn-success btn-circle pull-right" data-ng-click="openAddRuleModal()">
+					 <button type="button" class="btn btn-success btn-circle pull-right" data-ng-click="openAddRuleModal()" data-tooltip="{{'tool_add' | i18next}}">
 			          <span class="glyphicon glyphicon-plus"></span>
 			        </button>
 				</div>
@@ -47,10 +47,10 @@
 									{{rule.name ? rule.name : rule.id}}
 								</td>
 								<td>
-								 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteRule(rule)">
+								 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteRule(rule)" data-tooltip="{{'tool_delete' | i18next}}">
 			         				 <span class="glyphicon glyphicon-remove"></span>
 			        			</button>
-								 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editRule(rule)">
+								 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editRule(rule)" data-tooltip="{{'tool_edit' | i18next}}">
 			         				 <span class="glyphicon glyphicon-pencil"></span>
 			        			 </button>
 								</td>

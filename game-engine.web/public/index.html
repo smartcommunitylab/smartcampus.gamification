@@ -28,17 +28,20 @@
           <li ng-if="currentNav == 'login'" ng-class="{'active':currentNav == 'login'}">
             <a href="#/login">{{'btn_login' | i18next}}</a>
           </li>
-          <li ng-if="currentNav == 'home' || currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'home'}">
-            <a ng-href="#/home">{{'btn_home' | i18next}}</a>
+          <li data-ng-show="currentNav == 'home'" data-ng-class="{'active':currentNav == 'home'}">
+            <a data-ng-href="#/home">{{'btn_home' | i18next}}</a>
           </li>
-          <li ng-if="currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'configure'}">
-            <a ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
+          <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'configure'}">
+            <a data-ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
           </li>
-          <li ng-if="currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'actions'}">
-            <a ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18next}}</a>
+          <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'actions'}">
+            <a data-ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18next}}</a>
           </li>
-           <li ng-if="currentNav == 'configure' || currentNav == 'actions' || currentNav == 'rules'" ng-class="{'active':currentNav == 'rules'}">
-            <a ng-href="#/game/{{currentGameId}}/rules">{{'btn_rules' | i18next}}</a>
+           <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'rules'}">
+            <a data-ng-href="#/game/{{currentGameId}}/rules">{{'btn_rules' | i18next}}</a>
+          </li>
+            <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'tasks'}">
+            <a data-ng-href="#/game/{{currentGameId}}/tasks">{{'btn_tasks' | i18next}}</a>
           </li>
         </ul>
       </div>

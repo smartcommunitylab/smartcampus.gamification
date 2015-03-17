@@ -480,3 +480,109 @@ function DeleteRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game,
 		$modalInstance.dismiss('cancel');
 	};
 }
+
+function EditTaskModalInstanceCtrl($scope, $modalInstance, gamesFactory,game, task) {
+	$scope.alerts = {
+			'taskErr' : '',
+	};
+	
+	var t = {};
+	$scope.input = {};
+	
+	// default value
+	$scope.input.itemToNotificate = 3;
+	
+	if(task) {
+		$scope.input.name = task.name;
+		$scope.input.itemType = task.itemType;
+		$scope.input.classificationName = task.classificationName;
+		$scope.input.schedule = task.schedule ? task.schedule.cronExpression : task.cronExpression;
+		$scope.input.itemToNotificate = task.itemsToNotificate;
+		$scope.input.edit = true;
+	}
+	
+	
+	$scope.closeAlert = function(alertName) {
+		    $scope.alerts[alertName] = '';
+	};
+	
+	$scope.ok = function() {
+		var valid = $scope.input.name && $scope.input.itemType && $scope.input.classificationName &&  $scope.input.schedule &&  $scope.input.itemToNotificate;
+		if(valid) {
+			t.name = $scope.input.name;
+			t.itemType = $scope.input.itemType;
+			t.classificationName = $scope.input.classificationName;
+			t.cronExpression = $scope.input.schedule;
+			t.itemsToNotificate = $scope.input.itemToNotificate;
+			
+			if(!task) {
+			gamesFactory.addTask(game,t).then(function(data){
+				if(! game.classificationTask) {
+					game.classificationTask = [];
+				}
+				game.classificationTask.push(data);
+				$modalInstance.close();
+			},function(msg) {
+				$scope.alerts.taskErr = msg;
+			});
+			} else {
+				gamesFactory.editTask(game,t).then(function(){
+					var idx = -1;
+					for(var i = 0; i < game.classificationTask.length; i++) {
+						if(game.classificationTask[i].name === t.name) {
+							idx = i;
+							break;
+						}
+					}
+					if(idx > -1) {
+						game.classificationTask.splice(idx,1,t);
+					}
+					$modalInstance.close();
+				},function(msg) {
+					$scope.alerts.taskErr = msg;
+				});
+				
+			}
+				
+			
+		}
+		
+	};
+	
+	$scope.cancel = function() {
+		$modalInstance.dismiss('cancel');
+	};
+}
+
+function DeleteTaskModalInstanceCtrl($scope, $modalInstance, task, game, gamesFactory) {
+	  $scope.argument = task.name;
+
+	  // DELETE button click event-handler
+	  $scope.delete = function () {
+		 if(game.classificationTask) {
+			 var idx = -1;
+			 for(var i = 0; i < game.classificationTask.length; i++) {
+				 if(game.classificationTask[i].name === task.name) {
+					 idx = i;
+					 break;
+				 }
+			 }
+			 if(idx > -1) {
+				 game.classificationTask.splice(idx,1);
+			 }
+		 }
+		gamesFactory.saveGame(game).then(
+			function () {
+				$modalInstance.close();
+		  	      },
+		  	      function (message) {
+		  	    
+		  	      }
+		  	    );
+	  };
+
+	  // CANCEL button click event-handler
+	  $scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	  };
+	}

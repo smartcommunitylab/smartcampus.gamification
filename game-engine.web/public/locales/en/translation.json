@@ -4,6 +4,7 @@
   "btn_configure": "Configure",
   "btn_actions": "Actions",
   "btn_rules": "Rules",
+  "btn_tasks": "Tasks",
   "btn_logout": "Logout",
   "btn_login": "Login",
   "btn_add_game": "Add new game",
@@ -62,5 +63,16 @@
   "lbl_badges_configuration": "Badges configuration",
   "lbl_rules_configuration": "Rules configuration",
   "msg_delete_error": "Error deleting element",
-  "msg_rule_error": "Error during rule operation"
+  "msg_rule_error": "Error during rule operation",
+  "lbl_classification": "Classification Task",
+  "lbl_edit_task": "Task settings",
+  "lbl_task_schedule" : "Cron expression",
+  "lbl_task_itemToNotificate" : "Number elements in classification",
+  "lbl_task_itemType" : "Point concept name",
+  "lbl_task_classificationName" : "Classification name",
+  "msg_task_error" : "Error in task operation",
+  "tool_delete" : "delete",
+  "tool_edit" : "edit",
+  "tool_add" : "new",
+  "msg_error_integer" : "Non a valid integer"
 }

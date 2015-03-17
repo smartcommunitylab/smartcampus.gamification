@@ -30,11 +30,11 @@
   </div>
   <div class="col-md-4 top-margined">
     <div class="pull-right">
-      <button type="button" class="btn btn-danger btn-circle right-spaced" ng-click="deleteGame()">
-        <span class="glyphicon glyphicon-remove"></span>
+      <button type="button" class="btn btn-success btn-circle" ng-click="openEditModal()" data-tooltip="{{'tool_edit' | i18next}}">
+        <span class="glyphicon glyphicon-pencil"></span>
       </button>
-      <button type="button" class="btn btn-default btn-circle" ng-click="openEditModal()">
-        <span class="glyphicon glyphicon-cog"></span>
+      <button type="button" class="btn btn-danger btn-circle right-spaced" ng-click="deleteGame()" data-tooltip="{{'tool_delete' | i18next}}">
+        <span class="glyphicon glyphicon-remove"></span>
       </button>
     </div>
   </div>
@@ -42,7 +42,7 @@
 <hr />
 <div class="row row-spacing">
   <div class="col-md-12">
-    <button type="button" class="btn btn-success btn-circle pull-right" ng-click="openAddInstanceModal()">
+    <button type="button" class="btn btn-success btn-circle pull-right" ng-click="openAddInstanceModal()" data-tooltip="{{'tool_add' | i18next}}">
       <span class="glyphicon glyphicon-plus"></span>
     </button>
   </div>
@@ -59,7 +59,7 @@
               </div>
               <div class="panel-footer">
                 <div class="pull-left">
-                  <button type="button" class="btn btn-default btn-edit btn-circle" data-ng-click="deleteConcept(point,'point')">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" data-ng-click="deleteConcept(point,'point')" data-tooltip="{{'tool_delete' | i18next}}">
                     <span class="glyphicon glyphicon-remove"></span>
                   </button>
                 </div>
@@ -78,7 +78,7 @@
               </div>
               <div class="panel-footer">
                <div class="pull-left">
-                  <button type="button" class="btn btn-default btn-edit btn-circle" data-ng-click="deleteConcept(badges_collection,'badge')">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" data-ng-click="deleteConcept(badges_collection,'badge')" data-tooltip="{{'tool_delete' | i18next}}">
                     <span class="glyphicon glyphicon-remove"></span>
                   </button>
                 </div>

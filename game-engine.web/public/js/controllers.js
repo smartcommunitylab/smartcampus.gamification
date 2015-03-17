@@ -709,3 +709,72 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 
 	  $scope.confirm = function () {};
 }
+
+function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
+	  $rootScope.currentNav = 'tasks';
+	  $rootScope.currentGameId = $stateParams.id;
+
+	  // Error alerts object
+	  $scope.alerts = {
+	    'success': '',
+	    'error': ''
+	  };
+	  
+	  $scope.openAddTaskModal = function () {
+		  var modalInstance = $modal.open({
+		      templateUrl: 'templates/modals/modal_task_edit.html',
+		      controller: EditTaskModalInstanceCtrl,
+		      resolve: {
+		        game: function () {
+		          return $scope.game;
+		        },
+		        task: function () {
+		        	return;
+		        }
+		      }
+		    });
+	  };
+	  
+	  $scope.editTask = function (task) {
+		  var modalInstance = $modal.open({
+		      templateUrl: 'templates/modals/modal_task_edit.html',
+		      controller: EditTaskModalInstanceCtrl,
+		      resolve: {
+		        game: function () {
+		          return $scope.game;
+		        },
+		        task: function () {
+		        	return task;
+		        }
+		      }
+		    });
+	  };
+	  
+	  $scope.deleteTask = function (task) {
+		    // Delete a game
+		    var modalInstance = $modal.open({
+		      templateUrl: 'templates/modals/modal_delete_confirm.html',
+		      controller: DeleteTaskModalInstanceCtrl,
+		      resolve: {
+		        game: function () {
+		          return $scope.game;
+		        },
+		        task: function () {
+		        	return task;
+		        }
+		      }
+		    });
+		  };
+	  
+	  
+	  
+	  
+	// Load game
+	  gamesFactory.getGameById($stateParams.id).then(function (game) {
+	    $scope.game = game;
+	  }, function () {
+	    // Show error alert
+	    //$scope.alerts.loadGameError = true;
+	  });
+
+}

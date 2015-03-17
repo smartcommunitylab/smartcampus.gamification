@@ -36,7 +36,16 @@ function EditGameModalInstanceCtrl($scope, $modalInstance, game, gamesFactory) {
 // Delete game modal
 function DeleteGameConfirmModalInstanceCtrl($scope, $modalInstance, $window, game, gamesFactory) {
   $scope.argument = game.name;
+  $scope.isGame = true;
 
+  $scope.alerts = {
+		  'deleteError' : '',
+  }
+  
+  $scope.closeAlert = function (alertName) {
+	    $scope.alerts[alertName] = '';
+	  }
+  
   // DELETE button click event-handler
   $scope.delete = function () {
     // Delete game
@@ -45,6 +54,8 @@ function DeleteGameConfirmModalInstanceCtrl($scope, $modalInstance, $window, gam
       // Redirect to homepage
       $window.location.href = '#/home';
       $modalInstance.close();
+    },function(data) {
+    	$scope.alerts.deleteError = data;
     });
   };
 

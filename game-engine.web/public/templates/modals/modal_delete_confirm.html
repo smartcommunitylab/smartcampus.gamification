@@ -6,6 +6,7 @@
         <alert  ng-if="!!alerts.deleteError" type="danger" close="closeAlert('deleteError')">{{alerts.deleteError | i18next}}</alert>
       </div>
  	 <p>Are you sure you want to delete '{{argument}}'?</p>
+ 	 <p data-ng-show="isGame"><strong>Attention: Be sure that game is not actually active</strong></p>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-ng-click="cancel()">{{'btn_cancel' | i18next}}</button>

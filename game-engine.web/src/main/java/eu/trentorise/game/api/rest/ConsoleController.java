@@ -47,6 +47,11 @@ public class ConsoleController {
 		return g == null ? null : converter.convertGame(g);
 	}
 
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}")
+	public void deleteGame(@PathVariable String gameId) {
+		gameSrv.deleteGame(gameId);
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "/game")
 	public List<GameDTO> readGames() {
 		List<GameDTO> r = new ArrayList<GameDTO>();

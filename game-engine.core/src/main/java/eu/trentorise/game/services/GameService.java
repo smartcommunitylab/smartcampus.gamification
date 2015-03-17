@@ -22,6 +22,8 @@ public interface GameService {
 
 	public Game loadGameDefinitionByAction(String actionId);
 
+	public boolean deleteGame(String gameId);
+
 	public List<Game> loadAllGames();
 
 	public List<Game> loadGames(boolean onlyActive);

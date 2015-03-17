@@ -251,4 +251,14 @@ public class GameManager implements GameService {
 
 		return res;
 	}
+
+	@Override
+	public boolean deleteGame(String gameId) {
+		boolean res = false;
+		if (gameId != null) {
+			gameRepo.delete(gameId);
+			res = true;
+		}
+		return res;
+	}
 }

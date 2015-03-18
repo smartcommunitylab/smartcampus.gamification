@@ -8,9 +8,7 @@
   "btn_logout": "Disconnetti",
   "btn_login": "Accedi",
   "btn_add_game": "Aggiungi un nuovo gioco",
-  "lbl_add_game": "Aggiungi un nuovo gioco",
-  "lbl_game_name": "Nome",
-  "lbl_game_expiration": "Chiusura",
+  "lbl_name": "Nome",
   "lbl_enter_name": "Inserisci nome",
   "btn_cancel": "Annulla",
   "btn_ok": "OK",
@@ -78,6 +76,8 @@
   "tool_delete" elimina",
   "tool_edit" : "modifica",
   "tool_add" : "nuovo",
-  "msg_error_integer" : "Il valore deve essere un intero"
+  "msg_error_integer" : "Il valore deve essere un intero",
+  "lbl_rule_content" : "Contenuto",
+  "msg_error_exist" : "L'elemento esiste già"
   
 }

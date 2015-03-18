@@ -410,6 +410,7 @@ function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, r
 		gamesFactory.getRule(game,rule.id).then(
 				function (data) {
 					if(data) {
+						$scope.input.name = data.name;
 						$scope.input.ruleContent = data.content;
 					}
 				},
@@ -422,29 +423,56 @@ function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, r
 	
 	$scope.save = function() {
 	
-		if( !! $scope.input.ruleContent && $scope.input.ruleContent.length > 0){
+		if( !! $scope.input.ruleContent && $scope.input.ruleContent.length > 0) {
+
+			//check if already exist
+			var found = false;
+			if(game.rules && $scope.input.name && (!rule  || rule && rule.name !== $scope.input.name)) {
+				for(var i = 0; i < game.rules.length; i++) {
+					found = game.rules[i].name == $scope.input.name;
+					if(found) break;
+				}
+			}
+			
+			if(found) {
+				$scope.alerts.ruleError = 'msg_error_exist';
+				return;
+			}
+			
 			var r = {};
+			
 			if(rule) {
 				r = rule;
-			} else {
+			}
 			var id = 1;
-			if(game.rules) {
-				game.rules.sort(function(a,b) {
-					return a.id > b.id;
-				});
-				
-				var last = game.rules.slice(-1)[0];
-				if(last) {
-					var name = last.name;
+			if(! $scope.input.name) {
+				if(game.rules) {
+					var a = [];
+					game.rules.forEach(function(r) {
+						if(r.name.indexOf('rule ') === 0) {
+							a.push(r);
+						}
+					});
+					
+					a.sort(function(a,b) {
+						return a.id > b.id;
+					});
+					
+					var last = a.slice(-1)[0];
+					if(last) {
+						var name = last.name;
+					}
+					
+					var idx = 0;
+					if(name) {
+						idx = name.substring(5);
+					}
 				}
-				
-				var idx = 0;
-				if(name) {
-					idx = name.substring(5);
-				}
+				r.name = 'rule ' + (parseInt(idx) + 1);
+			} else {
+				r.name = $scope.input.name;
 			}
-			r.name = 'rule ' + (parseInt(idx) + 1);
-			}
+			
 			r.content = $scope.input.ruleContent;
 			gamesFactory.addRule(game,r).then(
 				function (data) {
@@ -460,7 +488,8 @@ function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, r
 			        // Show given error alert
 			        $scope.alerts.ruleError = message;
 			      })		
-			}
+			
+		}
 	};
 	
 	$scope.cancel = function() {

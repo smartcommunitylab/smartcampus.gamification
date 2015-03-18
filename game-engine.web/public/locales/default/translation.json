@@ -8,7 +8,6 @@
   "btn_logout": "Logout",
   "btn_login": "Login",
   "btn_add_game": "Add new game",
-  "lbl_add_game": "Add new game",
   "lbl_name": "Name",
   "lbl_enter_name": "Enter name",
   "btn_cancel": "Cancel",
@@ -78,5 +77,7 @@
   "tool_delete" : "delete",
   "tool_edit" : "edit",
   "tool_add" : "new",
-  "msg_error_integer" : "Non a valid integer"
+  "msg_error_integer" : "Non a valid integer",
+  "lbl_rule_content" : "Content",
+  "msg_error_exist" : "Element already exist"
   }

@@ -2,14 +2,20 @@
   <h4 class="modal-title">{{'lbl_rules_configuration' | i18next}}</h4>
 </div>
 <form role="form">
-  <div class="modal-body text-center">
+  <div class="modal-body">
    <div class="row">
       <div class="col-md-12 text-center">
         <alert ng-if="!!alerts.ruleError" type="danger" close="closeAlert('ruleError')">{{alerts.ruleError | i18next}}</alert>
       </div>
     </div>
-    
-    <textarea class="rule-textarea" data-ng-model="input.ruleContent"></textarea>
+      <div class="form-group">
+      <label for="name">{{'lbl_name' | i18next}}</label>
+      <input type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'lbl_enter_new_name' | i18next}}" />
+    </div>
+      <div class="form-group">
+      <label for="name">{{'lbl_rule_content' | i18next}}</label>
+    <textarea class="rule-textarea form-control" data-ng-model="input.ruleContent"></textarea>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="reset" class="btn btn-default" data-ng-click="cancel()">{{'btn_cancel' | i18next}}</button>

@@ -2,7 +2,13 @@
 function EditGameModalInstanceCtrl($scope, $modalInstance, game, gamesFactory) {
   $scope.newGame = {};
   $scope.newGame.name = game.name;
-
+  
+  if(game.expiration) {
+	  $scope.newGame.expiration = new Date(game.expiration);
+  } else {
+	  $scope.newGame.neverending = true;
+	  $scope.newGame.expiration = new Date();
+  }
   // Error alerts object
   $scope.alerts = {
     'editGameError': ''
@@ -14,8 +20,13 @@ function EditGameModalInstanceCtrl($scope, $modalInstance, game, gamesFactory) {
 
   // OK button click event-handler
   $scope.ok = function () {
-    // Edit game
-    gamesFactory.editGame(game, $scope.newGame.name).then(
+	
+	var fields = {};
+	fields.name = $scope.newGame.name;
+	fields.expiration = $scope.newGame.expiration && !$scope.newGame.neverending ? $scope.newGame.expiration.getTime() : undefined;
+
+	// Edit game
+    gamesFactory.editGame(game,fields).then(
       function () {
         // Settings edited
         $modalInstance.close();
@@ -316,7 +327,6 @@ function EditActionModalInstanceCtrl($scope, $modalInstance, gamesFactory, game,
 	      function (message) {
 	        // Show given error alert
 	        // $scope.alerts.editGameError = message;
-	    	 alert('error');
 	      }
 	    );
 	};

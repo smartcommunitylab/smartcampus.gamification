@@ -19,7 +19,12 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
   };
 
   // Load games
-  gamesFactory.getGames().then(function () {}, function () {
+  gamesFactory.getGames().then(function () {
+	  $rootScope.games.forEach(function(g) {
+		 g.terminated = g.expiration && g.expiration <= new Date().getTime();
+	  });
+	  
+  }, function () {
     // Reject: show error alert
     $scope.alerts.loadGameError = true;
   });

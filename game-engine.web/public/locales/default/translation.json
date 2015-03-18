@@ -15,7 +15,9 @@
   "btn_ok": "OK",
   "game_info": "__total__ defined",
   "lbl_edit_game": "Edit game settings",
-  "lbl_new_name": "Game name",
+  "lbl_game_name": "Name",
+  "lbl_game_expiration": "Expiration",
+  "lbl_game_neverending" : "never",
   "lbl_enter_new_name": "Enter new name",
   "btn_delete": "Delete",
   "lbl_points": "Points",
@@ -50,6 +52,7 @@
   "lbl_badges": "Badges",
   "lbl_delete_confirm": "Delete confirm",
   "msg_game_name_error": "Insert a valid game name!",
+  "msg_generic_error": "Error during operation",
   "msg_game_name_exists_error": "A game with this name alredy exists!",
   "msg_same_name_error": "Enter a different name!",
   "msg_instance_name_error": "Insert a valid instance name!",
@@ -71,9 +74,9 @@
   "lbl_task_itemToNotificate" : "Number elements in classification",
   "lbl_task_itemType" : "Point concept name",
   "lbl_task_classificationName" : "Classification name",
-   "msg_task_error" : "Error in task operation",
-   "tool_delete" : "delete",
-   "tool_edit" : "edit",
-   "tool_add" : "new",
-   "msg_error_integer" : "Non a valid integer"
+  "msg_task_error" : "Error in task operation",
+  "tool_delete" : "delete",
+  "tool_edit" : "edit",
+  "tool_add" : "new",
+  "msg_error_integer" : "Non a valid integer"
   }

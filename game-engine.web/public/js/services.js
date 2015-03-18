@@ -228,55 +228,38 @@ app.factory('gamesFactory',
     		deferred.resolve(data);
         }).
         error(function(data, status, headers, config) {
-        	deferred.resolve('Error');
+        	deferred.resolve('msg_generic_error');
         });
     	
     	 return deferred.promise;
     };
     
     // Add or edit game
-    var editGame = function (game, name) {
+    var editGame = function (game,fields) {
       var deferred = $q.defer();
 
-      if (!name) {
+      if (! fields.name) {
         deferred.reject('msg_game_name_error');
-      } else if (!game.id) {
-        // New game
-        if (!!getGameByName(name)) {
-          // Game with same name alredy exists
-          deferred.reject('msg_game_name_exists_error');
-        } else {
-          // Create new game
-        game = {};
-        game.name = name;
-
-        $http.post('console/game', game).
-        success(function(data, status, headers, config) {
-        	  $rootScope.games.push(data);
-              deferred.resolve(data);
-        }).
-        error(function(data, status, headers, config) {
-        	 deferred.reject('msg_game_name_error');
-        });
-        
-      
-        }
-      } else if (!!getGameByName(name)) {
-        // User has entered the same name
-        deferred.reject('msg_same_name_error');
-      } else {
-        // Edit game
-        game.name = name;
-        $http.post('console/game', game).
-        success(function(data, status, headers, config) {
-        }).
-        error(function(data, status, headers, config) {
-        	 deferred.reject('msg_game_name_error');
-        });
-        
-        deferred.resolve(game);
-      }
-
+      } else if(!! getGameByName(fields.name) && game.name !== fields.name) {
+    	  deferred.reject('msg_game_name_exists_error');
+      	} else {
+      		if(! game.id) {
+      			game = {};
+      		}
+      		 game.name = fields.name;
+             game.expiration = fields.expiration;
+             
+             $http.post('console/game', game).
+             success(function(data, status, headers, config) {
+             	 if(!	game.id) { 
+             		 $rootScope.games.push(data);
+             	 }
+                   deferred.resolve(data);
+             }).
+             error(function(data, status, headers, config) {
+             	 deferred.reject('msg_generic_error');
+             });
+      	}
       return deferred.promise;
     };
 

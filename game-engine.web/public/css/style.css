@@ -27,6 +27,10 @@ body {
   margin-bottom: 40px;
   overflow: hidden;
 }
+
+.terminated {
+	background-color: rgba(126, 113, 113, 0.52) !important;
+}
 .clickable {
   cursor: pointer;
 }

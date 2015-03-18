@@ -1,4 +1,4 @@
-var app = angular.module('gamificationEngine', ['ui.router', 'ui.bootstrap', 'jm.i18next', 'toggle-switch']);
+var app = angular.module('gamificationEngine', ['ui.router', 'ui.bootstrap', 'jm.i18next', 'toggle-switch','ui.bootstrap.datetimepicker']);
 
 // Load and set up the translation library i18next
 app.config(function ($i18nextProvider) {

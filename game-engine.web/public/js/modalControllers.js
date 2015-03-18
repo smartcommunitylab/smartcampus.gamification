@@ -542,6 +542,8 @@ function EditTaskModalInstanceCtrl($scope, $modalInstance, gamesFactory,game, ta
 	// default value
 	$scope.input.itemToNotificate = 3;
 	
+	$scope.game = game;
+	
 	if(task) {
 		$scope.input.name = task.name;
 		$scope.input.itemType = task.itemType;

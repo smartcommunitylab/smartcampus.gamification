@@ -23,7 +23,9 @@
     </div>
     <div class="form-group">
       <label for="itemType">{{'lbl_task_itemType' | i18next}}</label>
-      <input type="text" class="form-control" id="itemType" data-ng-model="input.itemType" placeholder="{{'lbl_enter_new_name' | i18next}}" required />
+      <!-- <input type="text" class="form-control" id="itemType" data-ng-model="input.itemType" placeholder="{{'lbl_enter_new_name' | i18next}}" required /> -->
+       <select id="itemType" class="form-control" data-ng-model="input.itemType" data-ng-options="point.name as point.name for point in game.pointConcept" required>
+       </select>
     </div>
     <div class="form-group">
       <label for="className">{{'lbl_task_classificationName' | i18next}}</label>

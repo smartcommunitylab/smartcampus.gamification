@@ -24,6 +24,7 @@ import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.Workflow;
 
 @RestController
+@RequestMapping(value = "/gengine")
 public class MainController {
 
 	private static Logger logger = org.slf4j.LoggerFactory

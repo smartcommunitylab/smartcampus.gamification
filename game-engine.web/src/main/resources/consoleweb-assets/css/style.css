@@ -1,0 +1,121 @@
+body {
+  /* Needed if navbar-fixed-top and/or navbar-fixed-bottom */
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+.navbar-brand.navbar-brand-logo {
+  padding-top: 0px;
+}
+.navbar-brand.navbar-brand-bigger {
+  font-size: 36px;
+}
+.vertical-aligned {
+  vertical-align: middle;
+}
+.vertical-spacing {
+  margin-bottom: 20px;
+}
+.pull-center {
+  margin-top: 50%;
+}
+.top-margined {
+  margin-top: 20px;
+}
+.panel.panel-games {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.terminated {
+	background-color: rgba(126, 113, 113, 0.52) !important;
+}
+.clickable {
+  cursor: pointer;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 16px;
+  line-height: 1.42;
+  border-radius: 15px;
+}
+button.btn-default.btn-edit {
+  color: #d9534f;
+}
+button.btn-default.btn-edit:focus {
+  outline: none;
+}
+.panel-actions {
+  min-height: 290px;
+  max-height: 700px;
+}
+.table-actions {
+  max-height: 600px;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+.panel-import-actions {
+  min-height: 700px;
+  max-height: 700px;
+}
+.table-import-actions {
+  max-height: 350px;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 999px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+.panel.panel-plugin {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+.switch .switch-left {
+  background: #428bca;
+}
+.badge-bock {
+  display: inline-block;
+  padding-left: 10px;
+  padding-rigth: 10px;
+}
+.badge-preview {
+  height: 40px;
+}
+.badge-item {
+  height: 100px;
+}
+.right-spaced {
+  margin-right: 10px;
+}
+
+
+.rule-textarea {
+	height: 30em !important;
+}

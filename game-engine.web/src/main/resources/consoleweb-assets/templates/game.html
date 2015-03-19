@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="col-md-8">
+    <ol class="breadcrumb">
+      <li><a href="#/home">Home</a>
+      </li>
+      <li><a ng-href="#/game/{{game.id}}">{{game.name}}</a>
+      </li>
+      <li class="active">{{pluginNames[selectedInstance]}}</li>
+    </ol>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'msg_load_games_error' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.cantCreateLeaderboards" type="danger" close="closeAlert('cantCreateLeaderboards')">{{'msg_leaderboards_error' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_game_settings_edited' | i18next}}</alert>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <h2>{{game.name}}</h2>
+  </div>
+  <div class="col-md-4 top-margined">
+    <div class="pull-right">
+      <button type="button" class="btn btn-success btn-circle" ng-click="openEditModal()" data-tooltip="{{'tool_edit' | i18next}}">
+        <span class="glyphicon glyphicon-pencil"></span>
+      </button>
+      <button type="button" class="btn btn-danger btn-circle right-spaced" ng-click="deleteGame()" data-tooltip="{{'tool_delete' | i18next}}">
+        <span class="glyphicon glyphicon-remove"></span>
+      </button>
+    </div>
+  </div>
+</div>
+<hr />
+<div class="row row-spacing">
+  <div class="col-md-12">
+    <button type="button" class="btn btn-success btn-circle pull-right" ng-click="openAddInstanceModal()" data-tooltip="{{'tool_add' | i18next}}">
+      <span class="glyphicon glyphicon-plus"></span>
+    </button>
+  </div>
+</div>
+<div class="row vertical-spacing">
+  <div class="tabs-vertical-left">
+    <tabset>
+      <tab class="clickable" heading="{{'lbl_points' | i18next}}" ng-click="goToTab('points')" active="active.points">
+        <ul class="list-unstyled list-inline">
+          <li class="col-md-4" data-ng-repeat="point in game.pointConcept">
+            <div class="panel panel-default panel-plugin">
+              <div class="panel-body text-center bg-primary">
+                <h4 class="ellipsis">{{point.name}}</h4>
+              </div>
+              <div class="panel-footer">
+                <div class="pull-left">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" data-ng-click="deleteConcept(point,'point')" data-tooltip="{{'tool_delete' | i18next}}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </tab>
+      <tab class="clickable" heading="{{'lbl_badges_collections' | i18next}}" ng-click="goToTab('badges_collections')" active="active.badges_collections">
+        <ul class="list-unstyled list-inline">
+          <li class="col-md-4" data-ng-repeat="badges_collection in game.badgeCollectionConcept">
+            <div class="panel panel-default panel-plugin">
+              <div class="panel-body text-center bg-success">
+                <h4 class="ellipsis">{{badges_collection.name}}</h4>
+              </div>
+              <div class="panel-footer">
+               <div class="pull-left">
+                  <button type="button" class="btn btn-default btn-edit btn-circle" data-ng-click="deleteConcept(badges_collection,'badge')" data-tooltip="{{'tool_delete' | i18next}}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button>
+                </div>
+                <div class="clearfix" ></div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </tab>
+    </tabset>
+  </div>
+</div>

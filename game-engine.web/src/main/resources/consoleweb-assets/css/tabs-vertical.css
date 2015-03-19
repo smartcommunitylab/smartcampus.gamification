@@ -1,0 +1,106 @@
+/*!
+ * tabs-vertical
+ * modified from
+ * https://dbtek.github.io/bootstrap-vertical-tabs
+ * 2014-06-19
+ * Copyright (c) 2014 İsmail Demirbilek
+ * License: MIT
+ */
+
+.tabs-vertical-left>div>div,
+.tabs-vertical-right>div>div {
+  width: 83.33333333%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+}
+.tabs-vertical-left>div>ul,
+.tabs-vertical-right>div>ul {
+  border-bottom: none;
+  padding-top: 2px;
+  width: 16.66666667%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+}
+.tabs-vertical-left>div>ul {
+  border-right: 1px solid #ddd;
+}
+.tabs-vertical-right>div>ul {
+  border-left: 1px solid #ddd;
+}
+.tabs-vertical-left>div>ul>li,
+.tabs-vertical-right>div>ul>li {
+  float: none;
+  margin-bottom: 2px;
+}
+.tabs-vertical-left>div>ul>li {
+  margin-right: -1px;
+}
+.tabs-vertical-right>div>ul>li {
+  margin-left: -1px;
+}
+.tabs-vertical-left>div>ul>li.active>a,
+.tabs-vertical-left>div>ul>li.active>a:hover,
+.tabs-vertical-left>div>ul>li.active>a:focus {
+  border-bottom-color: #ddd;
+  border-right-color: transparent;
+}
+.tabs-vertical-right>div>ul>li.active>a,
+.tabs-vertical-right>div>ul>li.active>a:hover,
+.tabs-vertical-right>div>ul>li.active>a:focus {
+  border-bottom: 1px solid #ddd;
+  border-left-color: transparent;
+}
+.tabs-vertical-left>div>ul>li>a {
+  border-radius: 4px 0 0 4px;
+  margin-right: 0;
+  display: block;
+}
+.tabs-vertical-right>div>ul>li>a {
+  border-radius: 0 4px 4px 0;
+  margin-right: 0;
+}
+.vertical-text {
+  margin-top: 50px;
+  border: none;
+  position: relative;
+}
+.vertical-text>li {
+  height: 20px;
+  width: 120px;
+  margin-bottom: 100px;
+}
+.vertical-text>li>a {
+  border-bottom: 1px solid #ddd;
+  border-right-color: transparent;
+  text-align: center;
+  border-radius: 4px 4px 0px 0px;
+}
+.vertical-text>li.active>a,
+.vertical-text>li.active>a:hover,
+.vertical-text>li.active>a:focus {
+  border-bottom-color: transparent;
+  border-right-color: #ddd;
+  border-left-color: #ddd;
+}
+.vertical-text.tabs-vertical-left>div>ul {
+  left: -50px;
+}
+.vertical-text.tabs-vertical-right>div>ul {
+  right: -50px;
+}
+.vertical-text.tabs-vertical-right>div>ul>li {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.vertical-text.tabs-vertical-left>div>ul>li {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}

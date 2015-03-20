@@ -261,4 +261,16 @@ public class GameManager implements GameService {
 		}
 		return res;
 	}
+
+	@Override
+	public List<Game> loadGameByOwner(String user) {
+		List<Game> result = new ArrayList<Game>();
+		if (user != null) {
+			for (GamePersistence gp : gameRepo.findByOwner(user)) {
+				result.add(gp.toGame());
+			}
+		}
+		return result;
+
+	}
 }

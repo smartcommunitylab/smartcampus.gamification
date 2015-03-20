@@ -28,6 +28,8 @@ public interface GameService {
 
 	public List<Game> loadGames(boolean onlyActive);
 
+	public List<Game> loadGameByOwner(String user);
+
 	public String addRule(Rule rule);
 
 	public Rule loadRule(String gameId, String url);

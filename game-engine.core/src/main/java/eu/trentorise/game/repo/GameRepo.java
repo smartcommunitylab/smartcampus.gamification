@@ -10,6 +10,8 @@ public interface GameRepo extends CrudRepository<GamePersistence, String> {
 
 	public GamePersistence findByActions(String action);
 
+	public List<GamePersistence> findByOwner(String user);
+
 	public List<GamePersistence> findByTerminated(boolean value);
 
 }

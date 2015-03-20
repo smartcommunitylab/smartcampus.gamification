@@ -1,7 +1,9 @@
 package eu.trentorise.game.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,13 +11,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import eu.trentorise.game.service.IdentityLookupService;
+import eu.trentorise.game.service.SpringSecurityIdentityLookup;
+
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:engine.web.properties")
+@Profile({ "sec" })
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	Environment env;
+
+	@Bean
+	public IdentityLookupService identityLookup() {
+		return new SpringSecurityIdentityLookup();
+	}
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth)

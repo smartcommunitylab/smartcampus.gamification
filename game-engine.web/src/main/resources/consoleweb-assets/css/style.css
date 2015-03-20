@@ -119,3 +119,13 @@ button.btn-default.btn-edit:focus {
 .rule-textarea {
 	height: 30em !important;
 }
+
+/*
+ override tab selected background
+*/
+
+.tabs-vertical-left > div > ul > li.active > a, .tabs-vertical-left > div > ul > li.active > a:hover, .tabs-vertical-left > div > ul > li.active > a:focus {
+	background-color: rgba(201, 190, 190, 0.28);
+} 
+
+

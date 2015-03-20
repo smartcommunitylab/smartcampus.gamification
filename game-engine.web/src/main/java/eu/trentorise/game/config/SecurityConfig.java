@@ -24,6 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.withUser(env.getProperty("consoleweb.admin.username", "admin"))
 				.password(env.getProperty("consoleweb.admin.password", "admin"))
 				.roles("ADMIN");
+
+		/*
+		 * user for test scope only
+		 */
+		// auth.inMemoryAuthentication().withUser("user").password("password")
+		// .roles("ADMIN");
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,10 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game")
 	public GameDTO saveGame(@RequestBody GameDTO game) {
+		// set creator
+		String user = SecurityContextHolder.getContext().getAuthentication()
+				.getName();
+		game.setOwner(user);
 		Game res = gameSrv.saveGameDefinition(converter.convertGame(game));
 		return converter.convertGame(res);
 	}
@@ -54,6 +59,7 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game")
 	public List<GameDTO> readGames() {
+
 		List<GameDTO> r = new ArrayList<GameDTO>();
 		for (Game g : gameSrv.loadAllGames()) {
 			r.add(converter.convertGame(g));

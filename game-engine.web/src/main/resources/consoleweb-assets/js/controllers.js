@@ -228,62 +228,62 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     });
   };
 
-  $scope.pointsDeactivationCheck = function (points) {
-    // Before points deactivation, tell the user that linked leaderboard will be deactivated too
-    if (points.is_active) {
-      // Check for linked leaderboards
-      var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, points);
+//  $scope.pointsDeactivationCheck = function (points) {
+//    // Before points deactivation, tell the user that linked leaderboard will be deactivated too
+//    if (points.is_active) {
+//      // Check for linked leaderboards
+//      var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, points);
+//
+//      if (leaderboards.length != 0) {
+//        // There are some linked leaderboards
+//        var modalInstance = $modal.open({
+//          templateUrl: 'templates/modals/modal_deactivate_leaderboards_confirm.html',
+//          controller: DeactivateLeaderboardsConfirmModalInstanceCtrl,
+//          resolve: {
+//            leaderboards: function () {
+//              return leaderboards;
+//            }
+//          }
+//        });
+//
+//        modalInstance.result.then(function () {
+//          points.is_active = !points.is_active;
+//        });
+//      } else {
+//        // There are no linked leaderboards
+//        points.is_active = !points.is_active;
+//      }
+//    } else {
+//      points.is_active = !points.is_active;
+//    }
+//  };
 
-      if (leaderboards.length != 0) {
-        // There are some linked leaderboards
-        var modalInstance = $modal.open({
-          templateUrl: 'templates/modals/modal_deactivate_leaderboards_confirm.html',
-          controller: DeactivateLeaderboardsConfirmModalInstanceCtrl,
-          resolve: {
-            leaderboards: function () {
-              return leaderboards;
-            }
-          }
-        });
-
-        modalInstance.result.then(function () {
-          points.is_active = !points.is_active;
-        });
-      } else {
-        // There are no linked leaderboards
-        points.is_active = !points.is_active;
-      }
-    } else {
-      points.is_active = !points.is_active;
-    }
-  };
-
-  $scope.leaderboardActivationCheck = function (leaderboard) {
-    // Before leaderboard activation, check its dependency. Points dependency MUST be active too
-    if (!leaderboard.is_active) {
-      gamesFactory.leaderboardActivationCheck($scope.game, leaderboard).then(function () {
-        // Points dependency is alredy active
-        leaderboard.is_active = !leaderboard.is_active;
-      }, function (points) {
-        // Ask for dependency activation
-        var modalInstance = $modal.open({
-          templateUrl: 'templates/modals/modal_activate_points_confirm.html',
-          controller: ActivatePointsConfirmModalInstanceCtrl,
-          resolve: {
-            points: function () {
-              return points;
-            }
-          }
-        });
-
-        modalInstance.result.then(function () {
-          leaderboard.is_active = !leaderboard.is_active;
-        });
-      });
-    } else {
-      leaderboard.is_active = !leaderboard.is_active;
-    }
-  };
+//  $scope.leaderboardActivationCheck = function (leaderboard) {
+//    // Before leaderboard activation, check its dependency. Points dependency MUST be active too
+//    if (!leaderboard.is_active) {
+//      gamesFactory.leaderboardActivationCheck($scope.game, leaderboard).then(function () {
+//        // Points dependency is alredy active
+//        leaderboard.is_active = !leaderboard.is_active;
+//      }, function (points) {
+//        // Ask for dependency activation
+//        var modalInstance = $modal.open({
+//          templateUrl: 'templates/modals/modal_activate_points_confirm.html',
+//          controller: ActivatePointsConfirmModalInstanceCtrl,
+//          resolve: {
+//            points: function () {
+//              return points;
+//            }
+//          }
+//        });
+//
+//        modalInstance.result.then(function () {
+//          leaderboard.is_active = !leaderboard.is_active;
+//        });
+//      });
+//    } else {
+//      leaderboard.is_active = !leaderboard.is_active;
+//    }
+//  };
 }
 
 // Points instance controller (game_points.html)

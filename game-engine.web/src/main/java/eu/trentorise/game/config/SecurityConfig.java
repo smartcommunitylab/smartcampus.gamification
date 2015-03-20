@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/console/**")
+				.access("hasRole('ROLE_ADMIN')").antMatchers("/gengine/**")
 				.access("hasRole('ROLE_ADMIN')").antMatchers("/consoleweb/**")
 				.access("hasRole('ROLE_ADMIN')").and().httpBasic();
 

@@ -59,9 +59,10 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game")
 	public List<GameDTO> readGames() {
-
+		String user = SecurityContextHolder.getContext().getAuthentication()
+				.getName();
 		List<GameDTO> r = new ArrayList<GameDTO>();
-		for (Game g : gameSrv.loadAllGames()) {
+		for (Game g : gameSrv.loadGameByOwner(user)) {
 			r.add(converter.convertGame(g));
 		}
 		return r;

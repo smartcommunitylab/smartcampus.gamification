@@ -78,6 +78,7 @@
   "tool_add" : "nuovo",
   "msg_error_integer" : "Il valore deve essere un intero",
   "lbl_rule_content" : "Contenuto",
-  "msg_error_exist" : "L'elemento esiste già"
+  "msg_error_exist" : "L'elemento esiste già",
+  "lbl_edit_action" : "Configura azione"
   
 }

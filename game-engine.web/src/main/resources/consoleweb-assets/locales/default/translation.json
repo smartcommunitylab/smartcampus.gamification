@@ -79,5 +79,6 @@
   "tool_add" : "new",
   "msg_error_integer" : "Non a valid integer",
   "lbl_rule_content" : "Content",
-  "msg_error_exist" : "Element already exist"
+  "msg_error_exist" : "Element already exist",
+  "lbl_edit_action" : "Action settings"
   }

@@ -29,7 +29,7 @@
           <li ng-if="currentNav == 'login'" ng-class="{'active':currentNav == 'login'}">
             <a href="#/login">{{'btn_login' | i18next}}</a>
           </li>
-          <li data-ng-show="currentNav == 'home'" data-ng-class="{'active':currentNav == 'home'}">
+          <li data-ng-class="{'active':currentNav == 'home'}">
             <a data-ng-href="#/home">{{'btn_home' | i18next}}</a>
           </li>
           <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'configure'}">

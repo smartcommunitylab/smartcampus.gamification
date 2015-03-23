@@ -28,7 +28,7 @@ app.config(
       controller: 'GameCtrl'
     })
 
-    .state('points', {
+    /*.state('points', {
       url: '/game/:id/points/:idPoints',
       templateUrl: 'templates/game_points.html',
       controller: 'GamePointsCtrl'
@@ -54,8 +54,8 @@ app.config(
       url: '/game/:id/tasks',
       templateUrl: 'templates/tasks.html',
       controller: 'TasksCtrl'
-    })
+    })*/
 
-    $urlRouterProvider.otherwise("/home");
+    //$urlRouterProvider.otherwise("/home");
   }
 );

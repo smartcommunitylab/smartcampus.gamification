@@ -124,8 +124,26 @@ button.btn-default.btn-edit:focus {
  override tab selected background
 */
 
-.tabs-vertical-left > div > ul > li.active > a, .tabs-vertical-left > div > ul > li.active > a:hover, .tabs-vertical-left > div > ul > li.active > a:focus {
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
 	background-color: rgba(201, 190, 190, 0.28);
-} 
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+	background-color: rgba(201, 190, 190, 0.28);
+	color: #428BCA;
+}
 
 
+.panel-heading.table-style {
+    display: table;
+    width: 100%;
+}
+.panel-heading.table-style .game-title {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: left;
+}
+.panel-heading.table-style .game-btn {
+    display: table-cell;
+    vertical-align: middle;
+}

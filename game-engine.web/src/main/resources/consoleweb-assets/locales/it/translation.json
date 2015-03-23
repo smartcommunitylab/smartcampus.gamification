@@ -79,6 +79,11 @@
   "msg_error_integer" : "Il valore deve essere un intero",
   "lbl_rule_content" : "Contenuto",
   "msg_error_exist" : "L'elemento esiste già",
-  "lbl_edit_action" : "Configura azione"
+  "lbl_edit_action" : "Configura azione",
+  "lbl_edit_game_menu" : "Configura",
+  "lbl_actions_menu" : "Azioni",
+  "lbl_rules_menu" : "Regole",
+  "lbl_tasks_menu" : "Tasks",
+  "lbl_concepts_menu" : "Concetti"
   
 }

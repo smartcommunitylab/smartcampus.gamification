@@ -26,13 +26,13 @@
       </div>
       <div class="pull-right">
         <ul class="nav navbar-nav">
-          <li ng-if="currentNav == 'login'" ng-class="{'active':currentNav == 'login'}">
+        <!--   <li ng-if="currentNav == 'login'" ng-class="{'active':currentNav == 'login'}">
             <a href="#/login">{{'btn_login' | i18next}}</a>
-          </li>
+          </li> -->
           <li data-ng-class="{'active':currentNav == 'home'}">
             <a data-ng-href="#/home">{{'btn_home' | i18next}}</a>
           </li>
-          <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'configure'}">
+         <!--  <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'configure'}">
             <a data-ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
           </li>
           <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'actions'}">
@@ -43,7 +43,7 @@
           </li>
             <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'tasks'}">
             <a data-ng-href="#/game/{{currentGameId}}/tasks">{{'btn_tasks' | i18next}}</a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>

@@ -45,6 +45,19 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
       }
     });
   };
+  
+  $scope.deleteGame = function (game) {
+	    // Delete a game
+	    var modalInstance = $modal.open({
+	      templateUrl: 'templates/modals/modal_delete_confirm.html',
+	      controller: DeleteGameConfirmModalInstanceCtrl,
+	      resolve: {
+	        game: function () {
+	          return game;
+	        }
+	      }
+	    });
+	  };
 
   $scope.countActive = function (game, type) {
     return utilsFactory.countActive(game, type);
@@ -104,6 +117,9 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     $scope.alerts.loadGameError = true;
   });
 
+  // default
+  $scope.viewName = 'concepts';
+  $scope.menuItem = 'concepts';
   
   gamesFactory.getPoints($rootScope.currentGameId).then(function (points) {
 	  $scope.points = points;
@@ -119,7 +135,8 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
   };
 
   $scope.goto = function (path) {
-    $window.location.href = path;
+	$scope.viewName = path;
+	$scope.menuItem = path;
   };
 
   $scope.goToTab = function (tab) {
@@ -215,18 +232,18 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
 	    });
 	  };
 
-  $scope.deleteGame = function () {
-    // Delete a game
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_delete_confirm.html',
-      controller: DeleteGameConfirmModalInstanceCtrl,
-      resolve: {
-        game: function () {
-          return $scope.game;
-        }
-      }
-    });
-  };
+//  $scope.deleteGame = function () {
+//    // Delete a game
+//    var modalInstance = $modal.open({
+//      templateUrl: 'templates/modals/modal_delete_confirm.html',
+//      controller: DeleteGameConfirmModalInstanceCtrl,
+//      resolve: {
+//        game: function () {
+//          return $scope.game;
+//        }
+//      }
+//    });
+//  };
 
 //  $scope.pointsDeactivationCheck = function (points) {
 //    // Before points deactivation, tell the user that linked leaderboard will be deactivated too

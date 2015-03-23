@@ -80,5 +80,10 @@
   "msg_error_integer" : "Non a valid integer",
   "lbl_rule_content" : "Content",
   "msg_error_exist" : "Element already exist",
-  "lbl_edit_action" : "Action settings"
+  "lbl_edit_action" : "Action settings",
+  "lbl_edit_game_menu" : "Edit settings",
+  "lbl_actions_menu" : "Actions",
+  "lbl_rules_menu" : "Rules",
+  "lbl_tasks_menu" : "Tasks",
+  "lbl_concepts_menu" : "Concepts"
   }

@@ -1,4 +1,5 @@
-<div class="row vertical-spacing">
+<div data-ng-controller="TasksCtrl">
+<!-- <div class="row vertical-spacing">
 	<div class="col-md-8">
 		<ol class="breadcrumb">
 			<li><a href="#/home">Home</a></li>
@@ -6,7 +7,7 @@
 			<li class="active">tasks</li>
 		</ol>
 	</div>
-</div>
+</div> -->
 <div class="row">
 	<div class="col-md-12 text-center">
 		<alert ng-if="alerts.error" type="danger"
@@ -24,10 +25,10 @@
 	
 <div class="row vertical-spacing">
 	<div class="col-md-12">
-		<div class="panel panel-info panel-actions">
-			<div class="panel-heading">
+		<!-- <div class="panel panel-info panel-actions"> -->
+			<!-- <div class="panel-heading">
 				<h4>Tasks</h4>
-			</div>
+			</div> -->
 			<div class="row">
 			<div class="col-md-12 top-margined">
 				<div class="pull-right">
@@ -38,7 +39,6 @@
 			</div>
 			</div>
 		<div class="row vertical-spacing">
-		  <div class="tabs-vertical-left">
 		    <tabset>
 		      <tab class="clickable" heading="{{'lbl_classification' | i18next}}" ng-click="goToTab('classification')" active="active.classification">
 		        <ul class="list-unstyled list-inline">
@@ -62,6 +62,7 @@
 		          </li>
 		        </ul>
 		      </tab>
-				</div>
 			</div>
+   </div>
+</div>
 </div>

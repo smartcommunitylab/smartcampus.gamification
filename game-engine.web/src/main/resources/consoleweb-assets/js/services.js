@@ -9,7 +9,7 @@ app.factory('gamesFactory',
       // If games haven't been already loaded
       if (!$rootScope.games || $rootScope.games.length === 0) {
         // Load games
-        $http.get('/ /console/game').success(function (data) {
+        $http.get('/console/game').success(function (data) {
           $rootScope.games = data;
           deferred.resolve();
         }).error(function () {
@@ -395,6 +395,16 @@ app.factory('gamesFactory',
     	return deferred.promise;
     }
     
+    var validateRule = function(ruleContent) {
+    	var deferred = $q.defer();
+    	$http.post(' /console/rule/validate', ruleContent).success(function(data, status, headers, config) {
+        	  deferred.resolve(data);
+          }).error(function(data, status, headers, config){
+        	  deferred.reject('msg_generic_error');
+          });
+      	return deferred.promise;
+    }
+    
     var getRule = function(game,ruleId) {
     	var deferred = $q.defer();
     	ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
@@ -441,6 +451,7 @@ app.factory('gamesFactory',
       'addTask' : addTask,
       'deleteTask' : deleteTask,
       'editTask' : editTask,
+      'validateRule' : validateRule,
     };
   }
 );

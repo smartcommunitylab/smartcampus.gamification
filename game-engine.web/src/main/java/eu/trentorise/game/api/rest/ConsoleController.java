@@ -22,6 +22,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.service.IdentityLookupService;
+import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.ClassificationTask;
 import eu.trentorise.game.utils.Converter;
@@ -32,6 +33,9 @@ public class ConsoleController {
 
 	@Autowired
 	GameService gameSrv;
+
+	@Autowired
+	GameEngine gameEngine;
 
 	@Autowired
 	Converter converter;
@@ -205,5 +209,10 @@ public class ConsoleController {
 		} else {
 			throw new IllegalArgumentException("game not exist");
 		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/rule/validate")
+	public List<String> validateRule(@RequestBody String ruleContent) {
+		return gameEngine.validateRule(ruleContent);
 	}
 }

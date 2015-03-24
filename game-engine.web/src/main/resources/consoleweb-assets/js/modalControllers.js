@@ -340,20 +340,29 @@ function EditRuleModalInstanceCtrl($scope, $modalInstance, gamesFactory, game, r
 			}
 			
 			r.content = $scope.input.ruleContent;
-			gamesFactory.addRule(game,r).then(
-				function (data) {
-					if(! game.rules) {
-						game.rules = [];
-					} 
-					if(!rule) {
-						game.rules.push(data);
-					}
-					$modalInstance.close();
-				},
-				 function (message) {
-			        // Show given error alert
-			        $scope.alerts.ruleError = message;
-			      })		
+			
+			gamesFactory.validateRule($scope.input.ruleContent).then(function(data) {
+				if(data.length > 0 ) {
+					$scope.alerts.ruleValidation = data;
+					return;
+				}
+				gamesFactory.addRule(game,r).then(
+						function (data) {
+							if(! game.rules) {
+								game.rules = [];
+							} 
+							if(!rule) {
+								game.rules.push(data);
+							}
+							$modalInstance.close();
+						},
+						 function (message) {
+					        // Show given error alert
+					        $scope.alerts.ruleError = message;
+					      });
+			}, function(msg) {$scope.alerts.ruleError = msg;})
+			
+			
 			
 		}
 	};

@@ -1,7 +1,9 @@
 package eu.trentorise.game.managers;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +21,13 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
+import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.FSRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
+import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Rule;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
@@ -54,6 +59,10 @@ public class GameManager implements GameService {
 		for (Game game : loadGames(true)) {
 			startupTasks(game.getId());
 		}
+
+		// save demo game
+		new DemoGameFactory().createGame();
+
 	}
 
 	public String getGameIdByAction(String actionId) {
@@ -71,7 +80,6 @@ public class GameManager implements GameService {
 								"gameCtx", gameId, task));
 			}
 		}
-
 	}
 
 	public Game saveGameDefinition(Game game) {
@@ -272,5 +280,131 @@ public class GameManager implements GameService {
 		}
 		return result;
 
+	}
+
+	private class DemoGameFactory {
+
+		private static final String GAME_ID = "demo-game";
+		private static final String GAME_NAME = "demo-game";
+		private static final String GAME_OWNER = "sco_master";
+
+		public void createGame() {
+			Game g = loadGameDefinitionById(GAME_ID);
+			if (g != null) {
+				logger.info("demo-game already loaded");
+			} else {
+				logger.info("demo-game not loaded..start loading");
+				Game game = new Game(GAME_ID);
+				game.setName(GAME_NAME);
+				game.setOwner(GAME_OWNER);
+
+				game.setActions(new HashSet<String>(Arrays
+						.asList("save_itinerary")));
+
+				game.setConcepts(new HashSet<GameConcept>(Arrays.asList(
+						new PointConcept("green leaves"), new PointConcept(
+								"health"), new PointConcept("p+r"),
+						new BadgeCollectionConcept("green leaves"),
+						new BadgeCollectionConcept("health"),
+						new BadgeCollectionConcept("p+r"),
+						new BadgeCollectionConcept("special"))));
+
+				saveGameDefinition(game);
+
+				// add rules
+				try {
+					String c = FileUtils.readFileToString(new File(Thread
+							.currentThread()
+							.getContextClassLoader()
+							.getResource(
+									"rules/" + GAME_ID + "/greenBadges.drl")
+							.getFile()));
+					DBRule rule = new DBRule(GAME_ID, c);
+					rule.setName("greenBadges");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread()
+							.getContextClassLoader()
+							.getResource(
+									"rules/" + GAME_ID + "/greenPoints.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("greenPoints");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread()
+							.getContextClassLoader()
+							.getResource(
+									"rules/" + GAME_ID + "/healthPoints.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("healthPoints");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread()
+							.getContextClassLoader()
+							.getResource(
+									"rules/" + GAME_ID + "/healthBadges.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("healthBadges");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread().getContextClassLoader()
+							.getResource("rules/" + GAME_ID + "/prPoints.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("prPoints");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread().getContextClassLoader()
+							.getResource("rules/" + GAME_ID + "/prBadges.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("prBadges");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread()
+							.getContextClassLoader()
+							.getResource(
+									"rules/" + GAME_ID + "/specialBadges.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("specialBadges");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread()
+							.getContextClassLoader()
+							.getResource(
+									"rules/" + GAME_ID
+											+ "/weekClassificationBadges.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("weekClassificationBadges");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
+							.currentThread()
+							.getContextClassLoader()
+							.getResource(
+									"rules/" + GAME_ID
+											+ "/finalClassificationBadges.drl")
+							.getFile()));
+					rule = new DBRule(GAME_ID, c);
+					rule.setName("finalClassificationBadges");
+					addRule(rule);
+					logger.info("demo-game saved");
+				} catch (IOException e) {
+					logger.error("Error loading demo-game rules");
+				}
+			}
+		}
 	}
 }

@@ -24,26 +24,23 @@
     <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_game_settings_edited' | i18next}}</alert>
   </div>
 </div>
-<div class="row">
+<!-- <div class="row">
   <div class="col-md-8">
     <h2>Game : {{game.name}}</h2>
   </div>
- <!--  <div class="col-md-4 top-margined">
-    <div class="pull-right">
-      <button type="button" class="btn btn-success btn-circle" ng-click="openEditModal()" data-tooltip="{{'tool_edit' | i18next}}">
-        <span class="glyphicon glyphicon-pencil"></span>
-      </button>
-      <button type="button" class="btn btn-danger btn-circle right-spaced" ng-click="deleteGame()" data-tooltip="{{'tool_delete' | i18next}}">
-        <span class="glyphicon glyphicon-remove"></span>
-      </button>
-    </div>
-  </div> -->
 </div>
-<hr />
+<hr /> -->
 
 <div class="row">
-<div class="col-md-2" data-ng-include="'templates/game-menu.html'">
+<div class="col-md-2" style="background-color: rgba(21, 53, 110, 0.94); height:100vh; border-radius: 0.7em;" data-ng-include="'templates/game-menu.html'">
 </div>
 
-<div class="col-md-10" data-ng-include="'templates/'+viewName+'.html'"></div>
+<div class="col-md-10">
+<h3>Game : {{game.name}}</h3>
+<h4 data-ng-show="viewName == 'concepts'">{{'lbl_concepts_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'actions'">{{'lbl_actions_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'rules'">{{'lbl_rules_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'tasks'">{{'lbl_tasks_menu' | i18next}}</h4>
+<div style="margin-left: 1em;" data-ng-include="'templates/'+viewName+'.html'"></div>
+</div>
 </div>

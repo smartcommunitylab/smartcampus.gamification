@@ -14,10 +14,16 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.VerifierError;
+import org.drools.verifier.builder.VerifierBuilder;
+import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
@@ -226,4 +232,25 @@ public class DroolsEngine implements GameEngine {
 		}
 	}
 
+	@Override
+	public List<String> validateRule(String content) {
+		List<String> result = new ArrayList<String>();
+		if (content != null) {
+			VerifierBuilder vBuilder = VerifierBuilderFactory
+					.newVerifierBuilder();
+			// Check that the builder works.
+			if (!vBuilder.hasErrors()) {
+				Verifier verifier = vBuilder.newVerifier();
+				verifier.addResourcesToVerify(
+						new ByteArrayResource(content.getBytes())
+								.setTargetPath("/t.drl"), ResourceType.DRL);
+				for (VerifierError err : verifier.getErrors()) {
+					result.add(err.getMessage());
+				}
+			} else {
+				logger.error("Drools verifier instantiation exception");
+			}
+		}
+		return result;
+	}
 }

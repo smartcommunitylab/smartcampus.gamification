@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierError;
@@ -107,6 +108,24 @@ public class DroolsSample {
 		for (VerifierError err : verifier.getErrors()) {
 			System.out.println(err.getMessage());
 		}
+	}
+
+	@Test
+	public void validator5() {
+		String rule = "package eu.trentorise.drools " + "rule \"valid sample\""
+				+ " when" + " evaltrue)" + " then"
+				+ " insert(new SampleModel('ciao'));" + " end";
+		VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
+		// Check that the builder works.
+		Assert.assertFalse(vBuilder.hasErrors());
+		Assert.assertEquals(0, vBuilder.getErrors().size());
+		Verifier verifier = vBuilder.newVerifier();
+		verifier.addResourcesToVerify(new ByteArrayResource(rule.getBytes())
+				.setTargetPath("/fake.drl"), ResourceType.DRL);
+		for (VerifierError err : verifier.getErrors()) {
+			System.out.println(err.getMessage());
+		}
+		Assert.assertFalse(verifier.hasErrors());
 	}
 
 	@Test

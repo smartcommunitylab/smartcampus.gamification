@@ -52,11 +52,15 @@
 			<artifactId>drools-compiler</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-verifier</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.2</version>
 		</dependency>
-		 <dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.2.4</version>
@@ -75,10 +79,10 @@
 
 		<!-- USE spring-boot mongo dep -->
 		<dependency>
-		<groupId>org.springframework.data</groupId>
-		<artifactId>spring-data-mongodb</artifactId>
-		<version>1.5.4.RELEASE</version>
-		</dependency> 
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>1.5.4.RELEASE</version>
+		</dependency>
 
 		<!-- QUARTZ DEP -->
 		<dependency>

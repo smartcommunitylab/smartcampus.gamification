@@ -1,0 +1,9 @@
+package eu.trentorise.drools
+ 
+
+rule "valid sample"
+when
+    eval(true)
+then
+	insert(new SampleModel('ciao');    
+end

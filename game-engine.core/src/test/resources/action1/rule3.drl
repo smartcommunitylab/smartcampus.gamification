@@ -1,0 +1,9 @@
+package eu.trentorise.drools
+ 
+
+rule "valid sample"
+when
+    $p : SampleModel( hello == 'ciao')
+then
+	$p.setValid(true);    
+end

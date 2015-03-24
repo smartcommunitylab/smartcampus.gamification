@@ -16,4 +16,12 @@ public class SampleModel {
 		this.valid = valid;
 	}
 
+	public String getHello() {
+		return hello;
+	}
+
+	public void setHello(String hello) {
+		this.hello = hello;
+	}
+
 }

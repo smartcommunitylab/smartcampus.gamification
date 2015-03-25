@@ -50,9 +50,10 @@ public class GreenGameTest extends GameTest {
 		 */
 		defineGameHelper(GAME, Arrays.asList(ACTION, TASK_ACTION));
 
-		loadClasspathRules(GAME, Arrays.asList("rules/" + GAME
-				+ "/initState.drl", "rules/" + GAME + "/greenBadges.drl",
-				"rules/" + GAME + "/greenPoints.drl", "rules/" + GAME
+		loadClasspathRules(GAME, Arrays.asList("rules/" + GAME + "/constants",
+				"rules/" + GAME + "/initState.drl", "rules/" + GAME
+						+ "/greenBadges.drl", "rules/" + GAME
+						+ "/greenPoints.drl", "rules/" + GAME
 						+ "/healthBadges.drl", "rules/" + GAME
 						+ "/healthPoints.drl", "rules/" + GAME
 						+ "/prBadges.drl", "rules/" + GAME + "/prPoints.drl",

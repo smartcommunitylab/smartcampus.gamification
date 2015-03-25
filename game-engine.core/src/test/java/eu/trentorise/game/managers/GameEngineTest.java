@@ -86,9 +86,10 @@ public class GameEngineTest {
 		gameManager.saveGameDefinition(defineGame().toGame());
 
 		// add rules
-
-		// gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
-		// + "/initState.drl"));
+		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
+				+ "/constants");
+		rule.setName("constants");
+		gameManager.addRule(rule);
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
@@ -116,15 +117,15 @@ public class GameEngineTest {
 		// add rules
 		try {
 
-			// String c = FileUtils
-			// .readFileToString(new File(Thread.currentThread()
-			// .getContextClassLoader()
-			// .getResource("rules/" + GAME + "/initState.drl")
-			// .getFile()));
-			// gameManager.addRule(new DBRule(GAME, c));
-
 			String c = FileUtils.readFileToString(new File(Thread
 					.currentThread().getContextClassLoader()
+					.getResource("rules/" + GAME + "/constants").getFile()));
+			DBRule rule = new DBRule(GAME, c);
+			rule.setName("constants");
+			gameManager.addRule(rule);
+
+			c = FileUtils.readFileToString(new File(Thread.currentThread()
+					.getContextClassLoader()
 					.getResource("rules/" + GAME + "/greenBadges.drl")
 					.getFile()));
 			gameManager.addRule(new DBRule(GAME, c));

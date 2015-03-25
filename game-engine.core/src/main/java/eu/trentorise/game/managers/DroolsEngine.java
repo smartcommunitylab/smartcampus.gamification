@@ -1,8 +1,11 @@
 package eu.trentorise.game.managers;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,7 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Action;
+import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.DBRule;
+import eu.trentorise.game.model.FSRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.InputData;
@@ -122,14 +127,48 @@ public class DroolsEngine implements GameEngine {
 
 	private StatelessKieSession loadGameConstants(StatelessKieSession kSession,
 			String gameId) {
-		// load game constants
 
-		URL constantsFileURL = Thread.currentThread().getContextClassLoader()
-				.getResource("rules/" + gameId + "/constants");
-		if (constantsFileURL != null) {
+		// load game constants
+		InputStream constantsFileStream = null;
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		if (g != null && g.getRules() != null) {
+			for (String ruleUrl : g.getRules()) {
+				Rule r = gameSrv.loadRule(gameId, ruleUrl);
+				if (r != null && r.getName() != null
+						&& r.getName().equals("constants")) {
+					if (r instanceof DBRule) {
+						constantsFileStream = new ByteArrayInputStream(
+								((DBRule) r).getContent().getBytes());
+					}
+				}
+				if (r instanceof ClasspathRule
+						&& ((ClasspathRule) r).getUrl().contains("constants")) {
+					String url = ((ClasspathRule) r).getUrl();
+					url = url.replace("classpath://", "");
+					constantsFileStream = Thread.currentThread()
+							.getContextClassLoader().getResourceAsStream(url);
+				}
+
+				if (r instanceof FSRule
+						&& ((FSRule) r).getUrl().contains("constants")) {
+					String url = ((FSRule) r).getUrl();
+					url = url.replace("file://", "");
+					try {
+						constantsFileStream = new FileInputStream(url);
+					} catch (FileNotFoundException e) {
+						logger.error(String.format(
+								"error opening constants %s of game %s", url,
+								gameId));
+					}
+				}
+
+			}
+		}
+
+		if (constantsFileStream != null) {
 			try {
-				PropertiesConfiguration constants = new PropertiesConfiguration(
-						constantsFileURL);
+				PropertiesConfiguration constants = new PropertiesConfiguration();
+				constants.load(constantsFileStream);
 				constants.setListDelimiter(',');
 				logger.debug("constants file loaded for game {}", gameId);
 				Iterator<String> constantsIter = constants.getKeys();
@@ -140,7 +179,7 @@ public class DroolsEngine implements GameEngine {
 					logger.debug("constant {} loaded", constant);
 				}
 			} catch (ConfigurationException e) {
-				logger.error("{} loading exception", constantsFileURL);
+				logger.error("constants loading exception");
 			}
 		} else {
 			logger.info("Rule constants file not found");
@@ -185,8 +224,11 @@ public class DroolsEngine implements GameEngine {
 			Resource r1;
 			try {
 				r1 = ruleLoader.load(rule);
-				kfs.write(r1);
-				logger.debug("{} loaded", rule);
+				// fix to not load constant file
+				if (r1 != null) {
+					kfs.write(r1);
+					logger.debug("{} loaded", rule);
+				}
 			} catch (MalformedURLException e) {
 				logger.error("Malformed URL loading rule {}, rule not loaded",
 						rule);
@@ -206,9 +248,27 @@ public class DroolsEngine implements GameEngine {
 			this.gameId = gameId;
 		}
 
+		public boolean isConstantsRule(String ruleUrl) {
+			boolean classpathCheck = ruleUrl.startsWith("classpath://")
+					&& ruleUrl.contains("/constants");
+			boolean fsCheck = ruleUrl.startsWith("file://")
+					&& ruleUrl.contains("/constants");
+			boolean dbCheck = ruleUrl.startsWith("db://");
+			if (dbCheck) {
+				Rule r = gameSrv.loadRule(gameId, ruleUrl);
+				dbCheck = r != null && r.getName() != null
+						&& r.getName().equals("constants");
+			}
+
+			return classpathCheck || fsCheck || dbCheck;
+		}
+
 		public Resource load(String ruleUrl) throws MalformedURLException {
 			Resource res = null;
 			String url = null;
+			if (isConstantsRule(ruleUrl)) {
+				return null;
+			}
 			if (ruleUrl.startsWith("classpath://")) {
 				url = ruleUrl.substring("classpath://".length());
 				res = kieServices.getResources().newClassPathResource(url);

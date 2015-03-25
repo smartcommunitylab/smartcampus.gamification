@@ -94,6 +94,11 @@ public class RoveretoGameTest {
 		// define game
 		GamePersistence game = defineGame();
 		mongo.save(game);
+
+		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
+				+ "/constants");
+		rule.setName("constants");
+		gameManager.addRule(rule);
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
@@ -138,6 +143,11 @@ public class RoveretoGameTest {
 	public void sameResultLastElementEnv() {
 		GamePersistence game = defineGame();
 		mongo.save(game);
+
+		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
+				+ "/constants");
+		rule.setName("constants");
+		gameManager.addRule(rule);
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
@@ -190,6 +200,11 @@ public class RoveretoGameTest {
 		// define game
 		GamePersistence game = defineGame();
 		mongo.save(game);
+
+		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
+				+ "/constants");
+		rule.setName("constants");
+		gameManager.addRule(rule);
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME
 				+ "/greenBadges.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME

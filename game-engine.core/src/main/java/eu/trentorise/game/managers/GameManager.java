@@ -313,13 +313,22 @@ public class GameManager implements GameService {
 
 				// add rules
 				try {
+
 					String c = FileUtils.readFileToString(new File(Thread
+							.currentThread().getContextClassLoader()
+							.getResource("rules/" + GAME_ID + "/constants")
+							.getFile()));
+					DBRule rule = new DBRule(GAME_ID, c);
+					rule.setName("constants");
+					addRule(rule);
+
+					c = FileUtils.readFileToString(new File(Thread
 							.currentThread()
 							.getContextClassLoader()
 							.getResource(
 									"rules/" + GAME_ID + "/greenBadges.drl")
 							.getFile()));
-					DBRule rule = new DBRule(GAME_ID, c);
+					rule = new DBRule(GAME_ID, c);
 					rule.setName("greenBadges");
 					addRule(rule);
 

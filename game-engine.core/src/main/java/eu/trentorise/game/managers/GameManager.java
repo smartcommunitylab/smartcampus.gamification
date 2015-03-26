@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.DBRule;
@@ -35,6 +36,7 @@ import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.RuleRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.TaskService;
+import eu.trentorise.game.task.ClassificationTask;
 
 @Component
 public class GameManager implements GameService {
@@ -56,12 +58,12 @@ public class GameManager implements GameService {
 	@PostConstruct
 	@SuppressWarnings("unused")
 	private void startup() {
+		// save demo game
+		new DemoGameFactory().createGame();
+
 		for (Game game : loadGames(true)) {
 			startupTasks(game.getId());
 		}
-
-		// save demo game
-		new DemoGameFactory().createGame();
 
 	}
 
@@ -288,6 +290,9 @@ public class GameManager implements GameService {
 		private static final String GAME_NAME = "demo-game";
 		private static final String GAME_OWNER = "sco_master";
 
+		private static final String WEEK_CLASS_CRONEXP = "0 0/15 * * * *";
+		private static final String FINAL_CLASS_CRONEXP = "0 5/15 * * * *";
+
 		public void createGame() {
 			Game g = loadGameDefinitionById(GAME_ID);
 			if (g != null) {
@@ -298,8 +303,8 @@ public class GameManager implements GameService {
 				game.setName(GAME_NAME);
 				game.setOwner(GAME_OWNER);
 
-				game.setActions(new HashSet<String>(Arrays
-						.asList("save_itinerary")));
+				game.setActions(new HashSet<String>(Arrays.asList(
+						"save_itinerary", "classification")));
 
 				game.setConcepts(new HashSet<GameConcept>(Arrays.asList(
 						new PointConcept("green leaves"), new PointConcept(
@@ -308,6 +313,46 @@ public class GameManager implements GameService {
 						new BadgeCollectionConcept("health"),
 						new BadgeCollectionConcept("p+r"),
 						new BadgeCollectionConcept("special"))));
+
+				// add tasks
+				game.setTasks(new HashSet<GameTask>());
+
+				// final classifications
+				TaskSchedule weekClassSchedule = new TaskSchedule();
+				weekClassSchedule.setCronExpression(WEEK_CLASS_CRONEXP);
+
+				TaskSchedule finalClassSchedule = new TaskSchedule();
+				finalClassSchedule.setCronExpression(FINAL_CLASS_CRONEXP);
+
+				ClassificationTask task1 = new ClassificationTask(
+						finalClassSchedule, 3, "green leaves",
+						"final classification green");
+				game.getTasks().add(task1);
+
+				ClassificationTask task2 = new ClassificationTask(
+						finalClassSchedule, 3, "health",
+						"final classification health");
+				game.getTasks().add(task2);
+
+				ClassificationTask task3 = new ClassificationTask(
+						finalClassSchedule, 3, "p+r",
+						"final classification p+r");
+				game.getTasks().add(task3);
+
+				// week classifications
+				ClassificationTask task4 = new ClassificationTask(
+						weekClassSchedule, 1, "green leaves",
+						"week classification green");
+				game.getTasks().add(task4);
+
+				ClassificationTask task5 = new ClassificationTask(
+						weekClassSchedule, 1, "health",
+						"week classification health");
+				game.getTasks().add(task5);
+
+				ClassificationTask task6 = new ClassificationTask(
+						weekClassSchedule, 1, "p+r", "week classification p+r");
+				game.getTasks().add(task6);
 
 				saveGameDefinition(game);
 
@@ -409,6 +454,7 @@ public class GameManager implements GameService {
 					rule = new DBRule(GAME_ID, c);
 					rule.setName("finalClassificationBadges");
 					addRule(rule);
+
 					logger.info("demo-game saved");
 				} catch (IOException e) {
 					logger.error("Error loading demo-game rules");

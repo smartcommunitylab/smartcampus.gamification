@@ -314,7 +314,7 @@ public class GameEngineTest {
 	@Test
 	public void initPlayerState() {
 		initClasspathRuleGame();
-		workflow.apply(ACTION, "25", null);
+		workflow.apply(GAME, ACTION, "25", null);
 		PlayerState p = playerSrv.loadState("25", GAME);
 		Assert.assertEquals(7, p.getState().size());
 	}

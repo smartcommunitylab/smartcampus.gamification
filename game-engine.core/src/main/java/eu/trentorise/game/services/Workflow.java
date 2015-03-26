@@ -7,5 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface Workflow {
 
-	public void apply(String actionId, String userId, Map<String, Object> data);
+	public void apply(String gameId, String actionId, String userId,
+			Map<String, Object> data);
 }

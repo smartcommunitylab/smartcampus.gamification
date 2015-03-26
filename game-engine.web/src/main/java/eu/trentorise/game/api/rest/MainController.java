@@ -3,7 +3,6 @@ package eu.trentorise.game.api.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.trentorise.game.bean.ExecutionDataDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.Game;
@@ -49,7 +49,7 @@ public class MainController {
 	Converter converter;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/execute")
-	public void executeAction(@RequestBody ExecutionData data,
+	public void executeAction(@RequestBody ExecutionDataDTO data,
 			HttpServletResponse res) {
 		Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
 		if (game != null && game.isTerminated()) {
@@ -60,7 +60,8 @@ public class MainController {
 				logger.error("Exception sendError to client", e1);
 			}
 		} else {
-			workflow.apply(data.getActionId(), data.getUserId(), data.getData());
+			workflow.apply(data.getGameId(), data.getActionId(),
+					data.getUserId(), data.getData());
 		}
 	}
 
@@ -100,40 +101,6 @@ public class MainController {
 		} else {
 			return notificationSrv.readNotifications(gameId, playerId);
 		}
-	}
-
-}
-
-class ExecutionData {
-	private String actionId;
-	private String userId;
-	private Map<String, Object> data;
-
-	public ExecutionData() {
-	}
-
-	public String getActionId() {
-		return actionId;
-	}
-
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public Map<String, Object> getData() {
-		return data;
-	}
-
-	public void setData(Map<String, Object> data) {
-		this.data = data;
 	}
 
 }

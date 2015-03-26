@@ -132,7 +132,8 @@ public abstract class GameTest {
 		List<ExecData> execList = new ArrayList<GameTest.ExecData>();
 		defineExecData(execList);
 		for (ExecData ex : execList) {
-			workflow.apply(ex.getActionId(), ex.getPlayerId(), ex.getData());
+			workflow.apply(ex.gameId, ex.getActionId(), ex.getPlayerId(),
+					ex.getData());
 		}
 
 		// launch Task sequentially
@@ -169,6 +170,7 @@ public abstract class GameTest {
 	}
 
 	protected class ExecData {
+		private String gameId;
 		private String actionId;
 		private String playerId;
 		private Map<String, Object> data;
@@ -202,6 +204,14 @@ public abstract class GameTest {
 			this.actionId = actionId;
 			this.playerId = playerId;
 			this.data = data;
+		}
+
+		public String getGameId() {
+			return gameId;
+		}
+
+		public void setGameId(String gameId) {
+			this.gameId = gameId;
 		}
 
 	}

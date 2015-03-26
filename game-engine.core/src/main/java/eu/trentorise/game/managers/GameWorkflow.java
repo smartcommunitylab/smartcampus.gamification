@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
@@ -19,19 +20,26 @@ public class GameWorkflow implements Workflow {
 			.getLogger(GameWorkflow.class);
 
 	@Autowired
-	GameEngine gameEngine;
+	protected GameEngine gameEngine;
 
 	@Autowired
-	PlayerService playerSrv;
+	protected PlayerService playerSrv;
 
 	@Autowired
-	GameService gameSrv;
+	protected GameService gameSrv;
 
-	public void apply(String actionId, String userId, Map<String, Object> data) {
-		logger.info("actionId: {}, playerId: {}, data: {}", actionId, userId,
-				data);
+	protected void workflowExec(String gameId, String actionId, String userId,
+			Map<String, Object> data) {
+		logger.info("gameId:{}, actionId: {}, playerId: {}, data: {}", gameId,
+				actionId, userId, data);
 
-		String gameId = gameSrv.getGameIdByAction(actionId);
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		if (g == null || g.getActions() == null
+				|| !g.getActions().contains(actionId)) {
+			throw new IllegalArgumentException(String.format(
+					"game %s not exist or action %s not belong to it", gameId,
+					actionId));
+		}
 
 		PlayerState playerState = playerSrv.loadState(userId, gameId);
 
@@ -41,6 +49,11 @@ public class GameWorkflow implements Workflow {
 		boolean result = playerSrv.saveState(newState);
 
 		logger.info("Process terminated: {}", result);
+	}
+
+	public void apply(String gameId, String actionId, String userId,
+			Map<String, Object> data) {
+		workflowExec(gameId, actionId, userId, data);
 
 	}
 }

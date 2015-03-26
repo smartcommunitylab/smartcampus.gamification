@@ -220,20 +220,23 @@ public class DroolsEngine implements GameEngine {
 
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 
-		for (String rule : game.getRules()) {
-			Resource r1;
-			try {
-				r1 = ruleLoader.load(rule);
-				// fix to not load constant file
-				if (r1 != null) {
-					kfs.write(r1);
-					logger.debug("{} loaded", rule);
+		if (game != null && game.getRules() != null) {
+			for (String rule : game.getRules()) {
+				Resource r1;
+				try {
+					r1 = ruleLoader.load(rule);
+					// fix to not load constant file
+					if (r1 != null) {
+						kfs.write(r1);
+						logger.debug("{} loaded", rule);
+					}
+				} catch (MalformedURLException e) {
+					logger.error(
+							"Malformed URL loading rule {}, rule not loaded",
+							rule);
+				} catch (RuntimeException e) {
+					logger.error("Exception loading rule {}", rule);
 				}
-			} catch (MalformedURLException e) {
-				logger.error("Malformed URL loading rule {}, rule not loaded",
-						rule);
-			} catch (RuntimeException e) {
-				logger.error("Exception loading rule {}", rule);
 			}
 		}
 		kieServices.newKieBuilder(kfs).buildAll();

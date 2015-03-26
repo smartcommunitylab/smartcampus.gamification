@@ -50,7 +50,7 @@ public class GameContext {
 
 	public synchronized void sendAction(String action, String playerId,
 			Map<String, Object> params) {
-		workflow.apply(action, playerId, params);
+		workflow.apply(gameRefId, action, playerId, params);
 	}
 
 	public PlayerState readStatus(String playerId) {

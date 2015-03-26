@@ -38,6 +38,7 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_game_edit.html',
       controller: EditGameModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         game: function () {
           return {};
@@ -51,6 +52,7 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
 	    var modalInstance = $modal.open({
 	      templateUrl: 'templates/modals/modal_delete_confirm.html',
 	      controller: DeleteGameConfirmModalInstanceCtrl,
+	      backdrop: "static",
 	      resolve: {
 	        game: function () {
 	          return game;
@@ -156,6 +158,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_game_edit.html',
       controller: EditGameModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         game: function () {
           return $scope.game;
@@ -186,6 +189,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_points_instance_edit.html',
       controller: EditPointsInstanceModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         game: function () {
           return $scope.game;
@@ -202,6 +206,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_badges_collection_instance_edit.html',
       controller: EditBadgesCollectionInstanceModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         game: function () {
           return $scope.game;
@@ -218,6 +223,7 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
 	    var modalInstance = $modal.open({
 	      templateUrl: 'templates/modals/modal_delete_confirm.html',
 	      controller: DeleteConceptConfirmModalInstanceCtrl,
+	      backdrop: "static",
 	      resolve: {
 	        game: function () {
 	          return $scope.game;
@@ -231,76 +237,6 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
 	      }
 	    });
 	  };
-
-//  $scope.deleteGame = function () {
-//    // Delete a game
-//    var modalInstance = $modal.open({
-//      templateUrl: 'templates/modals/modal_delete_confirm.html',
-//      controller: DeleteGameConfirmModalInstanceCtrl,
-//      resolve: {
-//        game: function () {
-//          return $scope.game;
-//        }
-//      }
-//    });
-//  };
-
-//  $scope.pointsDeactivationCheck = function (points) {
-//    // Before points deactivation, tell the user that linked leaderboard will be deactivated too
-//    if (points.is_active) {
-//      // Check for linked leaderboards
-//      var leaderboards = gamesFactory.pointsDeactivationCheck($scope.game, points);
-//
-//      if (leaderboards.length != 0) {
-//        // There are some linked leaderboards
-//        var modalInstance = $modal.open({
-//          templateUrl: 'templates/modals/modal_deactivate_leaderboards_confirm.html',
-//          controller: DeactivateLeaderboardsConfirmModalInstanceCtrl,
-//          resolve: {
-//            leaderboards: function () {
-//              return leaderboards;
-//            }
-//          }
-//        });
-//
-//        modalInstance.result.then(function () {
-//          points.is_active = !points.is_active;
-//        });
-//      } else {
-//        // There are no linked leaderboards
-//        points.is_active = !points.is_active;
-//      }
-//    } else {
-//      points.is_active = !points.is_active;
-//    }
-//  };
-
-//  $scope.leaderboardActivationCheck = function (leaderboard) {
-//    // Before leaderboard activation, check its dependency. Points dependency MUST be active too
-//    if (!leaderboard.is_active) {
-//      gamesFactory.leaderboardActivationCheck($scope.game, leaderboard).then(function () {
-//        // Points dependency is alredy active
-//        leaderboard.is_active = !leaderboard.is_active;
-//      }, function (points) {
-//        // Ask for dependency activation
-//        var modalInstance = $modal.open({
-//          templateUrl: 'templates/modals/modal_activate_points_confirm.html',
-//          controller: ActivatePointsConfirmModalInstanceCtrl,
-//          resolve: {
-//            points: function () {
-//              return points;
-//            }
-//          }
-//        });
-//
-//        modalInstance.result.then(function () {
-//          leaderboard.is_active = !leaderboard.is_active;
-//        });
-//      });
-//    } else {
-//      leaderboard.is_active = !leaderboard.is_active;
-//    }
-//  };
 }
 
 // Points instance controller (game_points.html)
@@ -333,6 +269,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_points_instance_edit.html',
       controller: EditPointsInstanceModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         game: function () {
           return $scope.game;
@@ -359,6 +296,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
       var modalInstance = $modal.open({
         templateUrl: 'templates/modals/modal_delete_leaderboards_confirm.html',
         controller: DeleteLeaderboardsConfirmModalInstanceCtrl,
+        backdrop: "static",
         resolve: {
           game: function () {
             return $scope.game;
@@ -373,6 +311,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
         var secondModalInstance = $modal.open({
           templateUrl: 'templates/modals/modal_delete_confirm.html',
           controller: DeleteInstanceConfirmModalInstanceCtrl,
+          backdrop: "static",
           resolve: {
             game: function () {
               return $scope.game;
@@ -391,6 +330,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
       var secondModalInstance = $modal.open({
         templateUrl: 'templates/modals/modal_delete_confirm.html',
         controller: DeleteInstanceConfirmModalInstanceCtrl,
+        backdrop: "static",
         resolve: {
           game: function () {
             return $scope.game;
@@ -411,6 +351,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_delete_confirm.html',
       controller: DeleteRuleConfirmModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         argument: function () {
           return "TODO";
@@ -425,6 +366,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_rule_edit.html',
       controller: EditRuleModalInstanceCtrl,
+      backdrop: "static",
     });
   };
 
@@ -434,6 +376,7 @@ function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, games
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_rule_edit.html',
       controller: EditRuleModalInstanceCtrl,
+      backdrop: "static",
     });
   };
 }
@@ -488,6 +431,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_badges_collection_instance_edit.html',
       controller: EditBadgesCollectionInstanceModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         game: function () {
           return $scope.game;
@@ -509,6 +453,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_delete_confirm.html',
       controller: DeleteInstanceConfirmModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         game: function () {
           return $scope.game;
@@ -527,7 +472,8 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     // Add badge
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_badges_edit.html',
-      controller: EditBadgesModalInstanceCtrl
+      controller: EditBadgesModalInstanceCtrl,
+      backdrop: "static",
     });
   };
 
@@ -536,6 +482,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_delete_confirm.html',
       controller: DeleteRuleConfirmModalInstanceCtrl,
+      backdrop: "static",
       resolve: {
         argument: function () {
           return "TODO";
@@ -550,6 +497,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_rule_edit.html',
       controller: EditRuleModalInstanceCtrl,
+      backdrop: "static",
     });
   };
 
@@ -559,6 +507,7 @@ function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $win
     var modalInstance = $modal.open({
       templateUrl: 'templates/modals/modal_rule_edit.html',
       controller: EditRuleModalInstanceCtrl,
+      backdrop: "static",
     });
   };
 }
@@ -585,6 +534,7 @@ function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	  var modalInstance = $modal.open({
 		  templateUrl: 'templates/modals/modal_action_edit.html',
 	      controller: EditActionModalInstanceCtrl,
+	      backdrop: "static",
 	      resolve: {
 	      game: function () {
 	          return $scope.game;
@@ -601,6 +551,7 @@ function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	    var modalInstance = $modal.open({
 	      templateUrl: 'templates/modals/modal_delete_confirm.html',
 	      controller: DeleteActionConfirmModalInstanceCtrl,
+	      backdrop: "static",
 	      resolve: {
 	        game: function () {
 	          return $scope.game;
@@ -660,6 +611,7 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		  var modalInstance = $modal.open({
 			  templateUrl: 'templates/modals/modal_rule_edit.html',
 		      controller: EditRuleModalInstanceCtrl,
+		      backdrop: "static",
 		      resolve: {
 		      game: function () {
 		          return $scope.game;
@@ -676,6 +628,7 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		  var modalInstance = $modal.open({
 			  templateUrl: 'templates/modals/modal_rule_edit.html',
 		      controller: EditRuleModalInstanceCtrl,
+		      backdrop: "static",
 		      resolve: {
 		      game: function () {
 		          return $scope.game;
@@ -692,6 +645,7 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		    var modalInstance = $modal.open({
 		      templateUrl: 'templates/modals/modal_delete_confirm.html',
 		      controller: DeleteRuleModalInstanceCtrl,
+		      backdrop: "static",
 		      resolve: {
 		        game: function () {
 		          return $scope.game;
@@ -746,6 +700,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		  var modalInstance = $modal.open({
 		      templateUrl: 'templates/modals/modal_task_edit.html',
 		      controller: EditTaskModalInstanceCtrl,
+		      backdrop: "static",
 		      resolve: {
 		        game: function () {
 		          return $scope.game;
@@ -761,6 +716,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		  var modalInstance = $modal.open({
 		      templateUrl: 'templates/modals/modal_task_edit.html',
 		      controller: EditTaskModalInstanceCtrl,
+		      backdrop: "static",
 		      resolve: {
 		        game: function () {
 		          return $scope.game;
@@ -777,6 +733,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		    var modalInstance = $modal.open({
 		      templateUrl: 'templates/modals/modal_delete_confirm.html',
 		      controller: DeleteTaskModalInstanceCtrl,
+		      backdrop: "static",
 		      resolve: {
 		        game: function () {
 		          return $scope.game;

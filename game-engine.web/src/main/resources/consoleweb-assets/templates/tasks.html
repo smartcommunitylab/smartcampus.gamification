@@ -1,68 +1,46 @@
 <div data-ng-controller="TasksCtrl">
-<!-- <div class="row vertical-spacing">
-	<div class="col-md-8">
-		<ol class="breadcrumb">
-			<li><a href="#/home">Home</a></li>
-			<li><a data-ng-href="#/game/{{game.id}}">{{game.name}}</a></li>
-			<li class="active">tasks</li>
-		</ol>
-	</div>
-</div> -->
 <div class="row">
-	<div class="col-md-12 text-center">
+	<div class="text-center">
 		<alert ng-if="alerts.error" type="danger"
 			close="closeAlert('loadGameError')">{{ msg_code
 		| i18next}}</alert>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-12 text-center">
+	<div class="text-center">
 		<alert ng-if="alerts.success" type="success"
 			close="closeAlert('loadGameError')">{{ msg_code
 		| i18next}}</alert>
 	</div>
 </div>
 	
-<div class="row vertical-spacing">
-	<div class="col-md-12">
-		<!-- <div class="panel panel-info panel-actions"> -->
-			<!-- <div class="panel-heading">
-				<h4>Tasks</h4>
-			</div> -->
-			<div class="row">
-			<div class="col-md-12 top-margined">
-				<div class="pull-right">
+			<div class="row top-margined">
 					 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddTaskModal()" data-tooltip="{{'tool_add' | i18next}}">
 			          <span class="glyphicon glyphicon-plus"></span>
 			        </button>
-				</div>
-			</div>
 			</div>
 		<div class="row vertical-spacing">
 		    <tabset>
 		      <tab class="clickable" heading="{{'lbl_classification' | i18next}}" ng-click="goToTab('classification')" active="active.classification">
-		        <ul class="list-unstyled list-inline">
-		          <li class="col-md-4" data-ng-repeat="task in game.classificationTask">
-		            <div class="panel panel-default panel-plugin">
-		              <div class="panel-body text-center bg-primary">
-		                <h4 class="ellipsis">{{task.name}}</h4>
-		              </div>
-		              <div class="panel-footer">
-		                <div class="pull-left">
-		                  <button type="button" class="btn btn-success btn-edit btn-circle" data-ng-click="editTask(task)" data-tooltip="{{'tool_edit' | i18next}}">
-		                    <span class="glyphicon glyphicon-pencil"></span>
-		                  </button>
-		                  <button type="button" class="btn btn-danger btn-edit btn-circle" data-ng-click="deleteTask(task)" data-tooltip="{{'tool_delete' | i18next}}">
-		                    <span class="glyphicon glyphicon-remove"></span>
-		                  </button>
-		                </div>
-		                <div class="clearfix"></div>
-		              </div>
-		            </div>
-		          </li>
-		        </ul>
+		      	<div class="table-actions">
+					<table class="table table-striped table-bordered">
+						<tbody>
+							<tr data-ng-repeat="task in game.classificationTask">
+								<td>
+									{{task.name}}
+		                  			  <button type="button" class="btn btn-danger btn-edit btn-circle pull-right" data-ng-click="deleteTask(task)" data-tooltip="{{'tool_delete' | i18next}}">
+		                    			<span class="glyphicon glyphicon-remove"></span>
+		                  			  </button>
+									  <button type="button" class="btn btn-success btn-edit btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editTask(task)" data-tooltip="{{'tool_edit' | i18next}}">
+		                    			<span class="glyphicon glyphicon-pencil"></span>
+		                  			  </button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		      
+		      
 		      </tab>
 			</div>
-   </div>
-</div>
 </div>

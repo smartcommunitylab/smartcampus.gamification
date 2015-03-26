@@ -1,6 +1,7 @@
 package eu.trentorise.game.api.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Notification;
@@ -22,6 +24,7 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.Workflow;
+import eu.trentorise.game.utils.Converter;
 
 @RestController
 @RequestMapping(value = "/gengine")
@@ -42,6 +45,9 @@ public class MainController {
 	@Autowired
 	NotificationManager notificationSrv;
 
+	@Autowired
+	Converter converter;
+
 	@RequestMapping(method = RequestMethod.POST, value = "/execute")
 	public void executeAction(@RequestBody ExecutionData data,
 			HttpServletResponse res) {
@@ -59,14 +65,19 @@ public class MainController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}")
-	public PlayerState readPlayerState(@PathVariable String gameId,
+	public PlayerStateDTO readPlayerState(@PathVariable String gameId,
 			@PathVariable String playerId) {
-		return playerSrv.loadState(playerId, gameId);
+		return converter.convertPlayerState(playerSrv.loadState(playerId,
+				gameId));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}")
-	public List<PlayerState> readPlayerState(@PathVariable String gameId) {
-		return playerSrv.loadStates(gameId);
+	public List<PlayerStateDTO> readPlayerState(@PathVariable String gameId) {
+		List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
+		for (PlayerState ps : playerSrv.loadStates(gameId)) {
+			resList.add(converter.convertPlayerState(ps));
+		}
+		return resList;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}")

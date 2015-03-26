@@ -1,11 +1,14 @@
 package eu.trentorise.game.utils;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.core.GameTask;
@@ -13,6 +16,7 @@ import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Rule;
 import eu.trentorise.game.services.GameService;
@@ -141,4 +145,27 @@ public class Converter {
 		return task;
 	}
 
+	public PlayerStateDTO convertPlayerState(PlayerState ps) {
+		PlayerStateDTO res = null;
+		if (ps != null) {
+			res = new PlayerStateDTO();
+			res.setGameId(ps.getGameId());
+			res.setPlayerId(ps.getPlayerId());
+
+			res.setState(new HashMap<String, Set<GameConcept>>());
+			if (ps.getState() != null) {
+				for (GameConcept gc : ps.getState()) {
+					String conceptType = gc.getClass().getSimpleName();
+					Set<GameConcept> gcSet = res.getState().get(conceptType);
+					if (gcSet == null) {
+						gcSet = new HashSet<GameConcept>();
+						res.getState().put(conceptType, gcSet);
+					}
+					gcSet.add(gc);
+				}
+			}
+		}
+
+		return res;
+	}
 }

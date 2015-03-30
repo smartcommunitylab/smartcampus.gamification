@@ -16,8 +16,8 @@
 
 package eu.trentorise.game.config;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.quartz.Scheduler;
@@ -25,9 +25,12 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -42,9 +45,13 @@ import eu.trentorise.game.services.Workflow;
 @ComponentScan("eu.trentorise.game")
 @Configuration
 @EnableScheduling
+@PropertySource("classpath:engine.core.properties")
 public class AppConfig {
 
 	private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
+
+	@Autowired
+	private Environment env;
 
 	@Bean
 	public ThreadPoolTaskScheduler scheduler() {
@@ -59,25 +66,26 @@ public class AppConfig {
 	@Bean
 	public Scheduler quartzScheduler() {
 		try {
-			InputStream propIn = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("task.persistence.properties");
-			boolean activatePersistence = false;
-			Properties props = new Properties();
-			if (propIn != null) {
-				logger.info("quartz.properties founded");
-				props.load(propIn);
-				if ("true".equalsIgnoreCase(props.getProperty(
-						"task.persistence.activate", "false"))) {
-					activatePersistence = true;
-					logger.info("task.persistence.activate conf setted to TRUE");
-				} else {
-					logger.info("task.persistence.activate conf setted to FALSE or not setted");
-				}
-			} else {
-				logger.info("quartz.properties not found");
-			}
+			boolean activatePersistence = env.getProperty(
+					"task.persistence.activate", Boolean.class, false);
 			if (activatePersistence) {
-				logger.info("task persistence active");
+				logger.info("task persistence active..load quartz properties");
+				Properties props = new Properties();
+				Map<String, Object> propsMap = new HashMap<String, Object>();
+				propsMap.put("org.quartz.jobStore.class", env.getProperty(
+						"org.quartz.jobStore.class",
+						"com.novemberain.quartz.mongodb.MongoDBJobStore"));
+				propsMap.put("org.quartz.jobStore.addresses", env.getProperty(
+						"org.quartz.jobStore.addresses", "localhost"));
+				propsMap.put("org.quartz.jobStore.dbName", env
+						.getProperty("org.quartz.jobStore.dbName",
+								"gamification_task_store"));
+				propsMap.put("org.quartz.jobStore.collectionPrefix", env
+						.getProperty("org.quartz.jobStore.collectionPrefix",
+								"quartz"));
+				propsMap.put("org.quartz.threadPool.threadCount", env
+						.getProperty("org.quartz.threadPool.threadCount", "10"));
+				props.putAll(propsMap);
 				return new StdSchedulerFactory(props).getScheduler();
 			} else {
 				logger.info("task persistence unactive");
@@ -86,9 +94,6 @@ public class AppConfig {
 			}
 		} catch (SchedulerException e) {
 			logger.error("Error creating scheduler");
-			return null;
-		} catch (IOException e) {
-			logger.error("Error loading scheduler props");
 			return null;
 		}
 

@@ -84,6 +84,8 @@
   "lbl_actions_menu" : "Azioni",
   "lbl_rules_menu" : "Regole",
   "lbl_tasks_menu" : "Tasks",
-  "lbl_concepts_menu" : "Concetti"
+  "lbl_concepts_menu" : "Concetti",
+  "lbl_monitor_menu" : "Monitor del gioco",
+  "tool_details" : "dettagli"
   
 }

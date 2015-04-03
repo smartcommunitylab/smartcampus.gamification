@@ -773,3 +773,25 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	  });
 
 }
+
+function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
+	$scope.playerStates = [];
+	
+	var json = "{\"playerId\":\"1\",\"gameId\":\"demo-game\",\"state\":{\"BadgeCollectionConcept\":[{\"name\":\"special\",\"badgeEarned\":[\"zero-impact\"]},{\"name\":\"p+r\",\"badgeEarned\":[\"gold-medal-pr\",\"king-week-pr\"]},{\"name\":\"green leaves\",\"badgeEarned\":[\"gold-medal-green\",\"king-week-green\"]},{\"name\":\"health\",\"badgeEarned\":[\"gold-medal-health\",\"king-week-health\"]}],\"PointConcept\":[{\"name\":\"p+r\",\"score\":0.0},{\"name\":\"health\",\"score\":3.5},{\"name\":\"green leaves\",\"score\":5.0}]}}";
+	var json1 = "{\"playerId\":\"2\",\"gameId\":\"demo-game\",\"state\":{\"BadgeCollectionConcept\":[{\"name\":\"special\",\"badgeEarned\":[\"zero-impact\"]},{\"name\":\"p+r\",\"badgeEarned\":[\"gold-medal-pr\",\"king-week-pr\"]},{\"name\":\"green leaves\",\"badgeEarned\":[\"gold-medal-green\",\"king-week-green\"]},{\"name\":\"health\",\"badgeEarned\":[\"gold-medal-health\",\"king-week-health\"]}],\"PointConcept\":[{\"name\":\"p+r\",\"score\":0.0},{\"name\":\"health\",\"score\":3.5},{\"name\":\"green leaves\",\"score\":5.0}]}}";
+	var json2 = "{\"playerId\":\"piero pelu'\",\"gameId\":\"demo-game\",\"state\":{\"BadgeCollectionConcept\":[{\"name\":\"special\",\"badgeEarned\":[\"zero-impact\"]},{\"name\":\"p+r\",\"badgeEarned\":[\"gold-medal-pr\",\"king-week-pr\"]},{\"name\":\"green leaves\",\"badgeEarned\":[\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\",\"gold-medal-green\",\"king-week-green\"]},{\"name\":\"health\",\"badgeEarned\":[\"gold-medal-health\",\"king-week-health\"]}],\"PointConcept\":[{\"name\":\"p+r\",\"score\":0.0},{\"name\":\"health\",\"score\":3.5},{\"name\":\"green leaves\",\"score\":5.0}]}}";
+	
+	$scope.playerStates.push(JSON.parse(json));
+	$scope.playerStates.push(JSON.parse(json1));
+	$scope.playerStates.push(JSON.parse(json2));
+	
+	$scope.expand = false;
+	$scope.openDetails = function(idx) {
+		if(idx != $scope.expandIdx) {
+			$scope.expandIdx = idx;
+		} else {
+			$scope.expandIdx = -1000;
+		}
+	};
+	
+}

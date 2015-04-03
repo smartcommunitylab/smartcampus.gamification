@@ -163,3 +163,62 @@ button.btn-default.btn-edit:focus {
     display: table-cell;
     vertical-align: middle;
 }
+
+
+/*
+
+STATE MONITOR
+*/
+
+.monitor-row {
+	/* border:1px solid black;  */
+	background-color: #E6E6E6; 
+	margin-bottom: 0.3em;
+	min-height: 5.2em;
+}
+.monitor-box {
+	display: inline-block;
+	min-height: 5em;
+}
+
+.player-box {
+	width: 10em;
+	text-align: center;
+}
+
+.point-box {
+	width: 10em;
+	text-align: center;
+	margin-right: 0.3em;
+	background: linear-gradient(#E6E6E6, #FFF);
+}
+
+.badge-box {
+	min-height: 2em;
+	width: 100%;
+	/* background: linear-gradient(#E6E6E6, #FFF); */
+	border-right: 1px solid #FFF;
+	margin-bottom: 0.1em;
+}
+
+.badge-box td {
+	border: 0.1em solid #FFF; 
+	padding: 0.4em;
+}
+
+.badge-elem {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-align: center;
+    background-color: #999;
+    border-radius: 10px;
+	margin-right: 0.3em;
+	color: #4A3B3B;
+}
+

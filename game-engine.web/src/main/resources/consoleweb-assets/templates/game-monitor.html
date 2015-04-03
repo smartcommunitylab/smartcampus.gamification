@@ -1,4 +1,9 @@
 <div data-ng-controller="MonitorCtrl">
+	<div class="row">
+	  <div class="col-md-12 text-center">
+	    <alert ng-if="err" type="danger" close="closeAlert()">{{err | i18next}}</alert>
+	  </div>
+	</div>
 	<div class="monitor-row" data-ng-repeat="player in playerStates">
 			<div class="monitor-box">{{player.playerId}} llfgkfglfgkflgkflgklfhjklfghjlfjhflgjflghjglhjlfg</div>
 			<div data-ng-repeat="elem in player.state['PointConcept']" class="monitor-box point-box">
@@ -11,7 +16,7 @@
 		<div id="player-details-{{$index}}" class="monitor-row collapse" data-ng-class="{'in': expandIdx == $index}">
 			<table class="badge-box">
 				<tr data-ng-repeat="elem in player.state['BadgeCollectionConcept']">
-					<td style="width:20%;">{{elem.name}} <span style="color:#4A3B3B; font-size: 10px;">(6)</span> </td>
+					<td style="width:20%;">{{elem.name}} <span style="color:#4A3B3B; font-size: 10px;">({{elem.badgeEarned.length}})</span> </td>
 					<td style="width:80%;"><span class="badge-elem" data-ng-repeat="badge in elem.badgeEarned  track by $index">{{badge}}</span></td>
 				</tr>
 			

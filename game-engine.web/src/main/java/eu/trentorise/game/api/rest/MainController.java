@@ -24,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,12 +92,19 @@ public class MainController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}")
-	public List<PlayerStateDTO> readPlayerState(@PathVariable String gameId) {
+	public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId,
+			Pageable pageable) {
+
 		List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
-		for (PlayerState ps : playerSrv.loadStates(gameId)) {
+		Page<PlayerState> page = playerSrv.loadStates(gameId, pageable);
+		for (PlayerState ps : page) {
 			resList.add(converter.convertPlayerState(ps));
 		}
-		return resList;
+
+		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList,
+				pageable, page.getTotalElements());
+
+		return res;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}")
@@ -118,5 +128,4 @@ public class MainController {
 			return notificationSrv.readNotifications(gameId, playerId);
 		}
 	}
-
 }

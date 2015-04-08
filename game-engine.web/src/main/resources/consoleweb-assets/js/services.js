@@ -432,9 +432,9 @@ app.factory('gamesFactory',
       	return deferred.promise;
     }
     
-    var getPlayersState = function(gameId) {
+    var getPlayersState = function(gameId,pageRequest, pageSize) {
     	var deferred = $q.defer();
-    	$http.get('/gengine/state/'+gameId).success(function(data, status, headers, config) {
+    	$http.get('/gengine/state/'+gameId, {params: {page:pageRequest, size: pageSize}}).success(function(data, status, headers, config) {
       	  deferred.resolve(data);
         }).error(function(data, status, headers, config){
       	  deferred.reject('msg_generic_error');

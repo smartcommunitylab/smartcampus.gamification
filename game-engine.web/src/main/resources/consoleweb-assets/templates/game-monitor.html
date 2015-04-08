@@ -4,8 +4,14 @@
 	    <alert ng-if="err" type="danger" close="closeAlert()">{{err | i18next}}</alert>
 	  </div>
 	</div>
-	<div class="monitor-row" data-ng-repeat="player in playerStates">
-			<div class="monitor-box">{{player.playerId}} llfgkfglfgkflgkflgklfhjklfghjlfjhflgjflghjglhjlfg</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-4">
+			<pagination boundary-links="true" total-items="totalItems" items-per-page="items4Page" data-ng-change="update()" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+		</div>
+	</div>
+	
+	<div class="monitor-row" data-ng-repeat="player in playerStates.content">
+			<div class="monitor-box player-box">{{player.playerId}}</div>
 			<div data-ng-repeat="elem in player.state['PointConcept']" class="monitor-box point-box">
 			    {{elem.name}} 
 				<div style="font-size: 2.5em; display:block;">{{elem.score}}</div>
@@ -21,6 +27,11 @@
 				</tr>
 			
 			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-4">
+			<pagination boundary-links="true" total-items="totalItems" items-per-page="items4Page" data-ng-change="update()" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
 		</div>
 	</div>
 </div>

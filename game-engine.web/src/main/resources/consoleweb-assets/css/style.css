@@ -171,9 +171,8 @@ STATE MONITOR
 */
 
 .monitor-row {
-	/* border:1px solid black;  */
 	background-color: #E6E6E6; 
-	margin-bottom: 0.3em;
+	margin-bottom: 0.1em;
 	min-height: 5.2em;
 }
 .monitor-box {
@@ -182,8 +181,9 @@ STATE MONITOR
 }
 
 .player-box {
-	width: 10em;
-	text-align: center;
+	width: 12em;
+	text-align: left;
+	vertical-align:middle;
 }
 
 .point-box {
@@ -196,7 +196,6 @@ STATE MONITOR
 .badge-box {
 	min-height: 2em;
 	width: 100%;
-	/* background: linear-gradient(#E6E6E6, #FFF); */
 	border-right: 1px solid #FFF;
 	margin-bottom: 0.1em;
 }

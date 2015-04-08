@@ -29,6 +29,8 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -124,7 +126,19 @@ public class PlayerManager implements PlayerService {
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
+	public Page<PlayerState> loadStates(String gameId, Pageable pageable) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
 	public List<PlayerState> loadStates(String gameId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public Page<String> readPlayers(String gameId, Pageable pageable) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}

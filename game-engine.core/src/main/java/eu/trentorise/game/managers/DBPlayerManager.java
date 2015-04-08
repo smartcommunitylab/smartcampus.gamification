@@ -23,6 +23,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -91,6 +94,30 @@ public class DBPlayerManager implements PlayerService {
 		return result;
 	}
 
+	@Override
+	public Page<String> readPlayers(String gameId, Pageable pageable) {
+		Page<StatePersistence> states = repo.findByGameId(gameId, pageable);
+		List<String> result = new ArrayList<String>();
+		for (StatePersistence state : states) {
+			result.add(state.getPlayerId());
+		}
+		PageImpl<String> res = new PageImpl<String>(result, pageable,
+				states.getTotalElements());
+		return res;
+	}
+
+	public Page<PlayerState> loadStates(String gameId, Pageable pageable) {
+		Page<StatePersistence> states = repo.findByGameId(gameId, pageable);
+		List<PlayerState> result = new ArrayList<PlayerState>();
+		for (StatePersistence state : states) {
+			result.add(state.toPlayerState());
+		}
+		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
+				states.getTotalElements());
+		return res;
+	}
+
+	@Override
 	public List<PlayerState> loadStates(String gameId) {
 		List<StatePersistence> states = repo.findByGameId(gameId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
@@ -110,4 +137,5 @@ public class DBPlayerManager implements PlayerService {
 
 		return p;
 	}
+
 }

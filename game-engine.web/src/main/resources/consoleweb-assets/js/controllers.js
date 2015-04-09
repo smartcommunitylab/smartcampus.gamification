@@ -775,6 +775,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 }
 
 function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
+	$rootScope.currentGameId = $stateParams.id;
 	$scope.currentPage = 1;
 	$scope.items4Page = 10;
  	
@@ -782,6 +783,14 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		$scope.playerIdFilter = $rootScope.monitorFilter; 
 	}
 	
+	
+	 // Load games
+	  gamesFactory.getGameById($stateParams.id).then(function (game) {
+	    $scope.game = game;
+	  }, function () {
+	    // Show error alert
+		  $scope.err = 'msg_generic_error';
+	  });
 	
 	gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
 		$scope.playerStates = data;

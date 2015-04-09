@@ -1,4 +1,8 @@
 <div data-ng-controller="MonitorCtrl">
+<div class="row">
+	<h3>Game : {{game.name}}</h3>
+	<h4>{{'lbl_monitor_menu' | i18next}}</h4>
+</div>
 	<div class="row">
 	  <div class="col-md-12 text-center">
 	    <alert ng-if="err" type="danger" close="closeAlert()">{{'err' | i18next}}</alert>

@@ -44,6 +44,12 @@ app.config(
       controller: 'GameCtrl'
     })
     
+    .state('game-monitor', {
+      url: '/game-monitor/:id',
+      templateUrl: 'templates/game-monitor.html',
+      controller: 'MonitorCtrl'
+    })
+    
     /*.state('points', {
       url: '/game/:id/points/:idPoints',
       templateUrl: 'templates/game_points.html',

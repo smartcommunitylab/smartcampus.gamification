@@ -778,7 +778,12 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	$scope.currentPage = 1;
 	$scope.items4Page = 10;
  	
-	gamesFactory.getPlayersState($rootScope.currentGameId,$scope.currentPage, $scope.items4Page).then(function(data){
+	if($rootScope.monitorFilter) {
+		$scope.playerIdFilter = $rootScope.monitorFilter; 
+	}
+	
+	
+	gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
 		$scope.playerStates = data;
 		$scope.totalItems = data.totalElements;
 	}, function(msg){
@@ -786,6 +791,16 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	});
 	
 	$scope.expand = false;
+	
+	$scope.filter = function() {
+		$rootScope.monitorFilter = $scope.playerIdFilter;
+		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
+			$scope.playerStates = data;
+			$scope.totalItems = data.totalElements;
+		}, function(msg){
+			$scope.err = msg;
+		});
+	}
 	$scope.openDetails = function(idx) {
 		if(idx != $scope.expandIdx) {
 			$scope.expandIdx = idx;
@@ -795,7 +810,7 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	};
 	
 	$scope.update = function() {
-		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.currentPage, $scope.items4Page).then(function(data){
+		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
 			$scope.playerStates = data;
 			$scope.totalItems = data.totalElements;
 		}, function(msg){

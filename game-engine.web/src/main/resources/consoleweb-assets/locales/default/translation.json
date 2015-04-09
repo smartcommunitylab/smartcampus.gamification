@@ -87,5 +87,7 @@
   "lbl_tasks_menu" : "Tasks",
   "lbl_concepts_menu" : "Concepts",
   "lbl_monitor_menu" : "Game monitor",
-  "tool_details" : "details"
+  "tool_details" : "details",
+  "btn_filter" : "Filter",
+  "lbl_filter" : "Filter by player ID"
   }

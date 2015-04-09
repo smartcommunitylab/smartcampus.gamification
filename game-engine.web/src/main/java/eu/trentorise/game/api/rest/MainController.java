@@ -93,10 +93,16 @@ public class MainController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}")
 	public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId,
-			Pageable pageable) {
+			Pageable pageable,
+			@RequestParam(required = false) String playerFilter) {
 
 		List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
-		Page<PlayerState> page = playerSrv.loadStates(gameId, pageable);
+		Page<PlayerState> page = null;
+		if (playerFilter == null) {
+			page = playerSrv.loadStates(gameId, pageable);
+		} else {
+			page = playerSrv.loadStates(gameId, playerFilter, pageable);
+		}
 		for (PlayerState ps : page) {
 			resList.add(converter.convertPlayerState(ps));
 		}

@@ -52,11 +52,11 @@
   "lbl_delete_confirm": "Conferma eliminazione",
   "msg_game_name_error": "Inserisci un nome di gioco valido!",
   "msg_generic_error": "Errore durante l'operazione",
-  "msg_game_name_exists_error": "Esiste gia' un gioco con lo stesso nome!",
+  "msg_game_name_exists_error": "Esiste già un gioco con lo stesso nome!",
   "msg_same_name_error": "Inserisci un nome diverso!",
   "msg_instance_name_error": "Inserisci un nome di istanza valido!",
-  "msg_instance_name_exists_error": "Esiste gia' un'istanza con lo stesso nome!",
-  "msg_instance_unchanged_error": "Cambia almeno una proprieta'",
+  "msg_instance_name_exists_error": "Esiste già un'istanza con lo stesso nome!",
+  "msg_instance_unchanged_error": "Cambia almeno una proprietà",
   "lbl_activate_point": "Attiva punti",
   "btn_activate": "Attiva",
   "lbl_deactivate_leaderboards": "Disattiva classifiche",
@@ -67,13 +67,13 @@
   "msg_delete_error": "Errore durante la cancellazione",
   "msg_rule_error": "Errore durante l'operazione sulla regola",
   "lbl_classification": "Task per classifiche",
-  "lbl_edit_task": "Configura Task"
+  "lbl_edit_task": "Configura Task",
   "lbl_task_schedule" : "Cron expression",
   "lbl_task_itemToNotificate" : "Numero elementi in classifica",
   "lbl_task_itemType" : "Tipo di punto",
   "lbl_task_classificationName" : "Nome della classifica",
   "msg_task_error" : "Errore nell'operazione sul task",
-  "tool_delete" elimina",
+  "tool_delete": "elimina",
   "tool_edit" : "modifica",
   "tool_add" : "nuovo",
   "msg_error_integer" : "Il valore deve essere un intero",
@@ -86,6 +86,7 @@
   "lbl_tasks_menu" : "Tasks",
   "lbl_concepts_menu" : "Concetti",
   "lbl_monitor_menu" : "Monitor del gioco",
-  "tool_details" : "dettagli"
-  
+  "tool_details" : "dettagli",
+  "btn_filter" : "Filtra",
+  "lbl_filter" : "Filtra per ID giocatore"
 }

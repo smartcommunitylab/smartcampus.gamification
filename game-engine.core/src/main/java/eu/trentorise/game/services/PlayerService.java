@@ -33,6 +33,11 @@ public interface PlayerService {
 
 	public List<PlayerState> loadStates(String gameId);
 
+	public Page<PlayerState> loadStates(String gameId, String userId,
+			Pageable pageable);
+
+	public List<PlayerState> loadStates(String gameId, String userId);
+
 	public boolean saveState(PlayerState state);
 
 	public Page<String> readPlayers(String gameId, Pageable pageable);

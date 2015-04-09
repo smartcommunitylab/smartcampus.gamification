@@ -142,6 +142,19 @@ public class PlayerManager implements PlayerService {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
+
+	@Override
+	public Page<PlayerState> loadStates(String gameId, String userId,
+			Pageable pageable) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public List<PlayerState> loadStates(String gameId, String userId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
 }
 
 class ConceptPersistence {

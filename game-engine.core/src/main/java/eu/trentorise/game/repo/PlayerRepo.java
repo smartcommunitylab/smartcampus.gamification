@@ -37,4 +37,10 @@ public interface PlayerRepo extends
 
 	public StatePersistence findByGameIdAndPlayerId(String game, String player);
 
+	public List<StatePersistence> findByGameIdAndPlayerIdLike(String id,
+			String player);
+
+	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String id,
+			String player, Pageable pageable);
+
 }

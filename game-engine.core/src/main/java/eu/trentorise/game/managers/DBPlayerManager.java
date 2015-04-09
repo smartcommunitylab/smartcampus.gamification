@@ -128,6 +128,32 @@ public class DBPlayerManager implements PlayerService {
 		return result;
 	}
 
+	@Override
+	public Page<PlayerState> loadStates(String gameId, String userId,
+			Pageable pageable) {
+		Page<StatePersistence> states = repo.findByGameIdAndPlayerIdLike(
+				gameId, userId, pageable);
+		List<PlayerState> result = new ArrayList<PlayerState>();
+		for (StatePersistence state : states) {
+			result.add(state.toPlayerState());
+		}
+		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
+				states.getTotalElements());
+		return res;
+	}
+
+	@Override
+	public List<PlayerState> loadStates(String gameId, String userId) {
+		List<StatePersistence> states = repo.findByGameIdAndPlayerIdLike(
+				gameId, userId);
+		List<PlayerState> result = new ArrayList<PlayerState>();
+		for (StatePersistence state : states) {
+			result.add(state.toPlayerState());
+		}
+
+		return result;
+	}
+
 	private PlayerState init(String playerId, String gameId) {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		PlayerState p = new PlayerState(playerId, gameId);

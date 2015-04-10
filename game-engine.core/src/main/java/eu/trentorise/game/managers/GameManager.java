@@ -105,6 +105,7 @@ public class GameManager implements GameService {
 		if (game.getId() != null) {
 			pers = gameRepo.findOne(game.getId());
 			if (pers != null) {
+				pers.setName(game.getName());
 				pers.setActions(game.getActions());
 				pers.setExpiration(game.getExpiration());
 				pers.setTerminated(game.isTerminated());

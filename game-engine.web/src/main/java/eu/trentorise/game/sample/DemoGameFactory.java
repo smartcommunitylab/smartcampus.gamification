@@ -16,13 +16,12 @@
 
 package eu.trentorise.game.sample;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,6 +44,8 @@ public class DemoGameFactory {
 
 	@Autowired
 	private GameService gameSrv;
+
+	private static final String DEMO_PACKAGE = "eu/trentorise/game/sample";
 
 	private static final String DEMO_GAME = "demo-game";
 	private static final String GAME_NAME = "demo-game";
@@ -135,96 +136,101 @@ public class DemoGameFactory {
 			// add rules
 			try {
 
-				String c = FileUtils.readFileToString(new File(Thread
-						.currentThread().getContextClassLoader()
-						.getResource("rules/" + DEMO_GAME + "/constants")
-						.getFile()));
+				String c = IOUtils.toString(Thread
+						.currentThread()
+						.getContextClassLoader()
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME + "/constants"));
 				DBRule rule = new DBRule(gameId, c);
 				rule.setName("constants");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(Thread.currentThread()
+				c = IOUtils.toString(Thread
+						.currentThread()
 						.getContextClassLoader()
-						.getResource("rules/" + DEMO_GAME + "/greenBadges.drl")
-						.getFile()));
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/greenBadges.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("greenBadges");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(Thread.currentThread()
+				c = IOUtils.toString(Thread
+						.currentThread()
 						.getContextClassLoader()
-						.getResource("rules/" + DEMO_GAME + "/greenPoints.drl")
-						.getFile()));
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/greenPoints.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("greenPoints");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(
-						Thread.currentThread()
-								.getContextClassLoader()
-								.getResource(
-										"rules/" + DEMO_GAME
-												+ "/healthPoints.drl")
-								.getFile()));
+				c = IOUtils.toString(Thread
+						.currentThread()
+						.getContextClassLoader()
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/healthPoints.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("healthPoints");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(
-						Thread.currentThread()
-								.getContextClassLoader()
-								.getResource(
-										"rules/" + DEMO_GAME
-												+ "/healthBadges.drl")
-								.getFile()));
+				c = IOUtils.toString(Thread
+						.currentThread()
+						.getContextClassLoader()
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/healthBadges.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("healthBadges");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(Thread.currentThread()
+				c = IOUtils.toString(Thread
+						.currentThread()
 						.getContextClassLoader()
-						.getResource("rules/" + DEMO_GAME + "/prPoints.drl")
-						.getFile()));
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/prPoints.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("prPoints");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(Thread.currentThread()
+				c = IOUtils.toString(Thread
+						.currentThread()
 						.getContextClassLoader()
-						.getResource("rules/" + DEMO_GAME + "/prBadges.drl")
-						.getFile()));
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/prBadges.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("prBadges");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(Thread
+				c = IOUtils.toString(Thread
 						.currentThread()
 						.getContextClassLoader()
-						.getResource(
-								"rules/" + DEMO_GAME + "/specialBadges.drl")
-						.getFile()));
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/specialBadges.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("specialBadges");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(Thread
+				c = IOUtils.toString(Thread
 						.currentThread()
 						.getContextClassLoader()
-						.getResource(
-								"rules/" + DEMO_GAME
-										+ "/weekClassificationBadges.drl")
-						.getFile()));
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/weekClassificationBadges.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("weekClassificationBadges");
 				gameSrv.addRule(rule);
 
-				c = FileUtils.readFileToString(new File(Thread
+				c = IOUtils.toString(Thread
 						.currentThread()
 						.getContextClassLoader()
-						.getResource(
-								"rules/" + DEMO_GAME
-										+ "/finalClassificationBadges.drl")
-						.getFile()));
+						.getResourceAsStream(
+								DEMO_PACKAGE + "/" + DEMO_GAME
+										+ "/finalClassificationBadges.drl"));
 				rule = new DBRule(gameId, c);
 				rule.setName("finalClassificationBadges");
 				gameSrv.addRule(rule);

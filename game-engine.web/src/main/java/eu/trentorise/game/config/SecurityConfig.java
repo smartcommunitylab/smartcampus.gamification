@@ -16,28 +16,30 @@
 
 package eu.trentorise.game.config;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import eu.trentorise.game.model.AuthUser;
+import eu.trentorise.game.sec.UsersProvider;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.service.SpringSecurityIdentityLookup;
 
 @Configuration
 @EnableWebSecurity
-@PropertySource("classpath:engine.web.properties")
 @Profile({ "sec" })
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	private static final Logger logger = org.slf4j.LoggerFactory
+			.getLogger(SecurityConfig.class);
 	@Autowired
-	Environment env;
+	private UsersProvider usersProvider;
 
 	@Bean
 	public IdentityLookupService identityLookup() {
@@ -47,21 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth)
 			throws Exception {
-		auth.inMemoryAuthentication()
-				.withUser(env.getProperty("consoleweb.admin.username", "admin"))
-				.password(env.getProperty("consoleweb.admin.password", "admin"))
-				.roles("ADMIN");
 
-		/*
-		 * user for test scope only
-		 */
-		// auth.inMemoryAuthentication().withUser("user").password("password")
-		// .roles("ADMIN");
-
-		// demo user
-		auth.inMemoryAuthentication().withUser("sco_master")
-				.password("sco_master").roles("ADMIN");
-
+		for (AuthUser user : usersProvider.getUsers()) {
+			auth.inMemoryAuthentication().withUser(user.getUsername())
+					.password(user.getPassword()).roles(user.getRole());
+			logger.info("Loaded auth user {}", user.getUsername());
+		}
 	}
 
 	@Override

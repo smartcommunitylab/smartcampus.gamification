@@ -98,39 +98,4 @@ public class GameContext {
 		return converter.convert(readTaskData(), classType);
 	}
 
-	// public Object readTaskDataById(String id) {
-	// return taskSrv.readData(gameRefId, task.getName(),
-	// new TaskDataQueryBuilder().setTaskDataId(id).build());
-	// }
-	//
-	// public <T> T readTaskDataById(String id, Class<T> classType) {
-	// return converter.convert(readTaskDataById(id), classType);
-	// }
-	//
-	// public List<Object> readTaskDataByTimestamp(long timestamp, Order order)
-	// {
-	// switch (order) {
-	// case ASC:
-	// default:
-	// return taskSrv.readData(gameRefId, task.getName(),
-	// new TaskDataQueryBuilder().setTimestamp(timestamp).build());
-	// case DESC:
-	// return taskSrv.readData(gameRefId, task.getName(),
-	// new TaskDataQueryBuilder().setTimestamp(timestamp).build());
-	//
-	// }
-	// }
-	//
-	// /*
-	// * public List<?> readTaskDataByClassname(String classname) { return
-	// * taskSrv.readData(gameRefId, task.getName(), new
-	// * TaskDataQueryBuilder().setTaskDataClassname(classname) .build()); }
-	// */
-	//
-	// public <T> List<T> readTaskDataByClassname(Class<T> classtype) {
-	// return converter.convert(taskSrv.readData(gameRefId, task.getName(),
-	// new TaskDataQueryBuilder().setTaskDataClassname(classtype)
-	// .build()), classtype);
-	// }
-
 }

@@ -24,7 +24,7 @@ app.config(function ($i18nextProvider) {
     useLocalStorage: false,
     fallbackLng: 'default',
     // attention change resGetPath if http console mapping changing
-    resGetPath: '/consoleweb/locales/__lng__/__ns__.json'
+    resGetPath: 'locales/__lng__/__ns__.json'
   };
 });
 

@@ -434,7 +434,7 @@ app.factory('gamesFactory',
     
     var getPlayersState = function(gameId,playerFilter,pageRequest, pageSize) {
     	var deferred = $q.defer();
-    	$http.get('/gengine/state/'+gameId, {params: {page:pageRequest, size: pageSize, playerFilter: playerFilter}}).success(function(data, status, headers, config) {
+    	$http.get('../gengine/state/'+gameId, {params: {page:pageRequest, size: pageSize, playerFilter: playerFilter}}).success(function(data, status, headers, config) {
       	  deferred.resolve(data);
         }).error(function(data, status, headers, config){
       	  deferred.reject('msg_generic_error');

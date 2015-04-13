@@ -14,18 +14,35 @@
  *    limitations under the License.
  */
 
-package eu.trentorise.game.service;
+package eu.trentorise.game.model;
 
-import org.springframework.stereotype.Component;
+public class AuthUser {
+	private String username;
+	private String password;
+	private String role;
 
-@Component
-public class DefaultIdentityLookup implements IdentityLookupService {
+	public String getUsername() {
+		return username;
+	}
 
-	public static final String DEFAULT_USER = "sco_master";
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-	@Override
-	public String getName() {
-		return DEFAULT_USER;
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

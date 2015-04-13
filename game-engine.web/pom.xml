@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.trentorise</groupId>
 	<artifactId>game-engine.web</artifactId>
-	<version>0.2</version>
+	<version>0.3</version>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>eu.trentorise</groupId>
 			<artifactId>game-engine.core</artifactId>
-			<version>0.7</version>
+			<version>0.7.1</version>
 		</dependency>
 
 
@@ -68,6 +68,11 @@
 		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -141,5 +146,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>${project.artifactId}</finalName>
 	</build>
 </project>

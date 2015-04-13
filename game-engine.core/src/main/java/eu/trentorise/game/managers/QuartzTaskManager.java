@@ -104,6 +104,22 @@ public class QuartzTaskManager extends TaskDataManager {
 				init();
 			}
 
+			// check scheduler context data
+			if (!scheduler.getContext().containsKey(
+					ctx.getGameRefId() + ":" + task.getName())) {
+				scheduler.getContext().put(
+						ctx.getGameRefId() + ":" + task.getName(),
+						(GameContext) provider.getApplicationContext().getBean(
+								"gameCtx", ctx.getGameRefId(), task));
+				logger.debug("Added gameCtx {} to scheduler ctx",
+						ctx.getGameRefId() + ":" + task.getName());
+			}
+			if (!scheduler.getContext().containsKey(task.getName())) {
+				scheduler.getContext().put(task.getName(), task);
+				logger.debug("Added {} task to scheduler ctx", task.getName());
+			}
+
+			// schedule task
 			if (!scheduler.checkExists(new JobKey(task.getName(), ctx
 					.getGameRefId()))
 					&& !scheduler.checkExists(new TriggerKey(task.getName(),

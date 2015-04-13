@@ -22,7 +22,7 @@ app.config(function ($i18nextProvider) {
   $i18nextProvider.options = {
     useCookie: false,
     useLocalStorage: false,
-    fallbackLng: 'default',
+    fallbackLng: 'en',
     // attention change resGetPath if http console mapping changing
     resGetPath: 'locales/__lng__/__ns__.json'
   };

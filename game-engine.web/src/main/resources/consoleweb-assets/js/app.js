@@ -23,8 +23,11 @@ app.config(function ($i18nextProvider) {
     useCookie: false,
     useLocalStorage: false,
     fallbackLng: 'en',
-    // attention change resGetPath if http console mapping changing
-    resGetPath: 'locales/__lng__/__ns__.json'
+    resGetPath: 'locales/__lng__/__ns__.json',
+    ns: { 
+        namespaces: ['messages', 'labels'], 
+        defaultNs: 'labels'
+      } 
   };
 });
 

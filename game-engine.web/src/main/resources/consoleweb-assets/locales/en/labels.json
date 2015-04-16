@@ -69,6 +69,9 @@
   "lbl_concepts_menu" : "Concepts",
   "lbl_monitor_menu" : "Game monitor",
   "tool_details" : "details",
-  "btn_filter" : "Filter",
-  "lbl_filter" : "Filter by player ID"
+  "lbl_player" : "Player",
+  "tool_filter" : "filter",
+  "lbl_filter_ph" : "ID player",
+  "lbl_summary_score" : "Total score",
+  "lbl_summary_badge" : "Total badges"
 }

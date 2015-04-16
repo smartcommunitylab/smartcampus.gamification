@@ -792,7 +792,28 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		  $scope.err = 'msg_generic_error';
 	  });
 	
+	 var enrichData = function(data) {
+		 data.forEach(function(p) {
+			var badges = p.state['BadgeCollectionConcept'];
+			var score = p.state['PointConcept'];
+			p.totalBadges = 0;
+			p.totalScore = 0;
+			badges.forEach(function(b) {
+				p.totalBadges += b.badgeEarned.length;
+			});
+			
+			score.forEach(function(s) {
+				p.totalScore += s.score;
+			});
+		 });
+		 
+		 return data;
+	 }
+	 
+	
+	 
 	gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
+		data.content = enrichData(data.content);
 		$scope.playerStates = data;
 		$scope.totalItems = data.totalElements;
 	}, function(msg){
@@ -804,6 +825,7 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	$scope.filter = function() {
 		$rootScope.monitorFilter = $scope.playerIdFilter;
 		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
+			data.content = enrichData(data.content);
 			$scope.playerStates = data;
 			$scope.totalItems = data.totalElements;
 		}, function(msg){
@@ -820,6 +842,7 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	
 	$scope.update = function() {
 		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
+			data.content = enrichData(data.content);
 			$scope.playerStates = data;
 			$scope.totalItems = data.totalElements;
 		}, function(msg){

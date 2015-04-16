@@ -38,49 +38,30 @@ app.config(
     .state('home', {
       url: '/home',
       templateUrl: 'templates/home.html',
-      controller: 'HomeCtrl'
+      controller: 'HomeCtrl',
+      data : {
+    	  page : 'home'
+      }
     })
 
     .state('game', {
       url: '/game/:id?tab',
       templateUrl: 'templates/game.html',
-      controller: 'GameCtrl'
+      controller: 'GameCtrl',
+      data : {
+    	  page : 'game'
+      }
     })
     
     .state('game-monitor', {
       url: '/game-monitor/:id',
       templateUrl: 'templates/game-monitor.html',
-      controller: 'MonitorCtrl'
+      controller: 'MonitorCtrl',
+      data : {
+    	  page : 'monitor'
+      }
     })
     
-    /*.state('points', {
-      url: '/game/:id/points/:idPoints',
-      templateUrl: 'templates/game_points.html',
-      controller: 'GamePointsCtrl'
-    })
-
-    .state('badges_collection', {
-      url: '/game/:id/badges_collections/:idBadgesCollection?tab',
-      templateUrl: 'templates/game_badges_collection.html',
-      controller: 'GameBadgesCollectionCtrl'
-    })
-
-    .state('actions', {
-      url: '/game/:id/actions',
-      templateUrl: 'templates/actions.html',
-      controller: 'ActionsCtrl'
-    })
-    .state('rules', {
-      url: '/game/:id/rules',
-      templateUrl: 'templates/rules.html',
-      controller: 'RulesCtrl'
-    })
-     .state('tasks', {
-      url: '/game/:id/tasks',
-      templateUrl: 'templates/tasks.html',
-      controller: 'TasksCtrl'
-    })*/
-
     $urlRouterProvider.otherwise("/home");
   }
 );

@@ -182,6 +182,7 @@ STATE MONITOR
 
 .summary-row p {
 	font-size: 1.3em;
+	vertical-align : middle;
 }
 .detail-row {
 	background-color: #FFF;

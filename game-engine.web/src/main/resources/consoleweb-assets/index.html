@@ -36,34 +36,19 @@
 
 </head>
 
-<body ng-controller="MainCtrl">
+<body data-ng-controller="MainCtrl">
   <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand navbar-brand-bigger" href="#/home">Gamification engine</a>
+      <div class="row">
+        <a class="navbar-brand navbar-brand-bigger" data-ng-click="goHome()" href="#/home">Gamification engine</a>
       </div>
-      <div class="pull-right">
+      <div class="row">
+      <h4 style="display:block" data-ng-show="page == 'monitor'">{{'lbl_monitor_menu' | i18next}}</h4>
+      </div>
+     <!--  <div class="pull-right">
         <ul class="nav navbar-nav">
-        <!--   <li ng-if="currentNav == 'login'" ng-class="{'active':currentNav == 'login'}">
-            <a href="#/login">{{'btn_login' | i18next}}</a>
-          </li> -->
-        <!--   <li data-ng-class="{'active':currentNav == 'home'}">
-            <a data-ng-href="#/home">{{'btn_home' | i18next}}</a>
-          </li> -->
-         <!--  <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'configure'}">
-            <a data-ng-href="#/game/{{currentGameId}}">{{'btn_configure' | i18next}}</a>
-          </li>
-          <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'actions'}">
-            <a data-ng-href="#/game/{{currentGameId}}/actions">{{'btn_actions' | i18next}}</a>
-          </li>
-           <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'rules'}">
-            <a data-ng-href="#/game/{{currentGameId}}/rules">{{'btn_rules' | i18next}}</a>
-          </li>
-            <li data-ng-hide="currentNav == 'home'" data-ng-class="{'active':currentNav == 'tasks'}">
-            <a data-ng-href="#/game/{{currentGameId}}/tasks">{{'btn_tasks' | i18next}}</a>
-          </li> -->
         </ul>
-      </div>
+      </div> -->
     </div>
   </div>
   <div class="container">

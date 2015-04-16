@@ -15,8 +15,15 @@
  */
 
 // Main controller (index.html)
-function MainCtrl($scope, $rootScope) {
+function MainCtrl($scope, $rootScope,$state) {
   $rootScope.games = [];
+  if($state.current.data) {
+	  $rootScope.page = $state.current.data.page;
+  }
+  
+  $scope.goHome = function() {
+	  $rootScope.page = 'home';
+  }
 }
 
 // Login controller (login.html)
@@ -63,6 +70,7 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
     });
   };
   
+  
   $scope.deleteGame = function (game) {
 	    // Delete a game
 	    var modalInstance = $modal.open({
@@ -90,10 +98,14 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
   };
 }
 // Game controller (game.html)
-function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactory, utilsFactory) {
+function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactory, utilsFactory,$state) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $stateParams.id;
 
+  if($state.current.data) {
+	  $rootScope.page = $state.current.data.page;
+  }
+  
   // Error alerts object
   $scope.alerts = {
     'cantCreateLeaderboards': false,
@@ -774,11 +786,15 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 
 }
 
-function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
+function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory,$state) {
 	$rootScope.currentGameId = $stateParams.id;
 	$scope.currentPage = 1;
 	$scope.items4Page = 10;
  	
+	  if($state.current.data) {
+		  $rootScope.page = $state.current.data.page;
+	  }
+	  
 	if($rootScope.monitorFilter) {
 		$scope.playerIdFilter = $rootScope.monitorFilter; 
 	}

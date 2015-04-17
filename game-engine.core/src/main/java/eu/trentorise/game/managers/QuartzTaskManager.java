@@ -49,13 +49,13 @@ import eu.trentorise.game.repo.GameRepo;
 public class QuartzTaskManager extends TaskDataManager {
 
 	@Autowired
-	Scheduler scheduler;
+	private Scheduler scheduler;
 
 	@Autowired
-	GameRepo gameRepo;
+	private GameRepo gameRepo;
 
 	@Autowired
-	AppContextProvider provider;
+	private AppContextProvider provider;
 
 	private final Logger logger = LoggerFactory
 			.getLogger(QuartzTaskManager.class);
@@ -68,10 +68,8 @@ public class QuartzTaskManager extends TaskDataManager {
 			}
 			for (Game g : result) {
 				for (GameTask gt : g.getTasks()) {
-					scheduler.getContext().put(
-							g.getId() + ":" + gt.getName(),
-							(GameContext) provider.getApplicationContext()
-									.getBean("gameCtx", g.getId(), gt));
+					scheduler.getContext().put(g.getId() + ":" + gt.getName(),
+							createGameCtx(g.getId(), gt));
 					logger.debug("Added gameCtx of game {} to scheduler ctx",
 							g.getId() + ":" + g.getName());
 					scheduler.getContext().put(gt.getName(), gt);
@@ -86,6 +84,11 @@ public class QuartzTaskManager extends TaskDataManager {
 		}
 	}
 
+	private GameContext createGameCtx(String gameId, GameTask task) {
+		return (GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", gameId, task);
+	}
+
 	@PreDestroy
 	@SuppressWarnings("unused")
 	private void shutdown() {
@@ -96,7 +99,7 @@ public class QuartzTaskManager extends TaskDataManager {
 		}
 	}
 
-	public void createTask(GameTask task, GameContext ctx) {
+	public void createTask(GameTask task, String gameId) {
 		try {
 
 			// start the scheduler
@@ -104,13 +107,12 @@ public class QuartzTaskManager extends TaskDataManager {
 				init();
 			}
 
+			GameContext ctx = createGameCtx(gameId, task);
 			// check scheduler context data
 			if (!scheduler.getContext().containsKey(
 					ctx.getGameRefId() + ":" + task.getName())) {
 				scheduler.getContext().put(
-						ctx.getGameRefId() + ":" + task.getName(),
-						(GameContext) provider.getApplicationContext().getBean(
-								"gameCtx", ctx.getGameRefId(), task));
+						ctx.getGameRefId() + ":" + task.getName(), ctx);
 				logger.debug("Added gameCtx {} to scheduler ctx",
 						ctx.getGameRefId() + ":" + task.getName());
 			}

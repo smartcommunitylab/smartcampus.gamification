@@ -32,7 +32,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.DBRule;
@@ -83,10 +82,7 @@ public class GameManager implements GameService {
 		Game game = loadGameDefinitionById(gameId);
 		if (game != null) {
 			for (GameTask task : game.getTasks()) {
-				taskSrv.createTask(
-						task,
-						(GameContext) provider.getApplicationContext().getBean(
-								"gameCtx", gameId, task));
+				taskSrv.createTask(task, gameId);
 			}
 		}
 	}

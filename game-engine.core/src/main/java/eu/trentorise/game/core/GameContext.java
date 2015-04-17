@@ -49,7 +49,7 @@ public class GameContext {
 	@Autowired
 	private TaskService taskSrv;
 
-	TaskDataConverter converter = new TaskDataConverter();
+	private TaskDataConverter converter = new TaskDataConverter();
 
 	public enum Order {
 		ASC, DESC

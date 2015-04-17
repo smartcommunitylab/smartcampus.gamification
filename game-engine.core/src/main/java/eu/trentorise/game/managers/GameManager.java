@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.DBRule;
@@ -52,16 +51,13 @@ public class GameManager implements GameService {
 	private final Logger logger = LoggerFactory.getLogger(GameManager.class);
 
 	@Autowired
-	TaskService taskSrv;
+	private TaskService taskSrv;
 
 	@Autowired
-	AppContextProvider provider;
+	private GameRepo gameRepo;
 
 	@Autowired
-	GameRepo gameRepo;
-
-	@Autowired
-	RuleRepo ruleRepo;
+	private RuleRepo ruleRepo;
 
 	@PostConstruct
 	@SuppressWarnings("unused")

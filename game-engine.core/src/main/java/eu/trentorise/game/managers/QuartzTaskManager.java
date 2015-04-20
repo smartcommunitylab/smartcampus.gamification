@@ -16,6 +16,7 @@
 
 package eu.trentorise.game.managers;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -193,5 +194,36 @@ public class QuartzTaskManager extends TaskDataManager {
 			logger.error("Scheduler exception removing task");
 		}
 		return false;
+	}
+
+	@Override
+	public void updateTask(GameTask task, String gameId) {
+		JobDetail job;
+		try {
+			job = scheduler.getJobDetail(new JobKey(task.getName(), gameId));
+			if (job != null) {
+				CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
+				String cronExpression = task.getSchedule().getCronExpression();
+				// fix for version 2.2.1 of CronTrigger
+				triggerFactory
+						.setCronExpression(fixCronExpression(cronExpression));
+				triggerFactory.setName(task.getName());
+				triggerFactory.setGroup(gameId);
+				triggerFactory.setJobDetail(job);
+				triggerFactory.afterPropertiesSet();
+				Trigger trigger = triggerFactory.getObject();
+				scheduler.rescheduleJob(new TriggerKey(task.getName(), gameId),
+						trigger);
+				logger.info("task {} updated", task.getName());
+			} else {
+				logger.warn("job task {} not found, task not updated",
+						task.getName());
+			}
+		} catch (SchedulerException e) {
+			logger.error("SchedulerException: task {} not updated",
+					task.getName());
+		} catch (ParseException e) {
+			logger.error("ParseException: task {} not updated", task.getName());
+		}
 	}
 }

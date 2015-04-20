@@ -724,6 +724,15 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	    'error': ''
 	  };
 	  
+	  var convertTask = function(task) {
+		  // convert in taskDto
+			 if(task.schedule) {
+				 task.cronExpression = task.schedule.cronExpression;
+				 task.schedule = undefined;
+			 }
+		return task;
+	  }
+	  
 	  $scope.openAddTaskModal = function () {
 		  var modalInstance = $modal.open({
 		      templateUrl: 'templates/modals/modal_task_edit.html',
@@ -750,7 +759,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		          return $scope.game;
 		        },
 		        task: function () {
-		        	return task;
+		        	return convertTask(task);
 		        }
 		      }
 		    });
@@ -767,7 +776,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		          return $scope.game;
 		        },
 		        task: function () {
-		        	return task;
+		        	return convertTask(task);
 		        }
 		      }
 		    });

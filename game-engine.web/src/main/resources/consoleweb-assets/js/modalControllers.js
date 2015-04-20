@@ -516,6 +516,9 @@ function EditTaskModalInstanceCtrl($scope, $modalInstance, gamesFactory,game, ta
 function DeleteTaskModalInstanceCtrl($scope, $modalInstance, task, game, gamesFactory) {
 	  $scope.argument = task.name;
 
+	  $scope.alerts = {
+				'deleteError' : '',
+		};
 	  // DELETE button click event-handler
 	  $scope.delete = function () {
 		 if(game.classificationTask) {
@@ -526,18 +529,20 @@ function DeleteTaskModalInstanceCtrl($scope, $modalInstance, task, game, gamesFa
 					 break;
 				 }
 			 }
-			 if(idx > -1) {
-				 game.classificationTask.splice(idx,1);
-			 }
 		 }
-		gamesFactory.saveGame(game).then(
+		 
+		 
+		gamesFactory.deleteTask(game,task).then(
 			function () {
 				$modalInstance.close();
-		  	      },
-		  	      function (message) {
-		  	    
-		  	      }
-		  	    );
+				if(idx > -1) {
+					 game.classificationTask.splice(idx,1);
+				 }
+		  	},
+		  	function (message) {
+		  	    $scope.alerts.deleteError = message;
+		  	}
+		);
 	  };
 
 	  // CANCEL button click event-handler

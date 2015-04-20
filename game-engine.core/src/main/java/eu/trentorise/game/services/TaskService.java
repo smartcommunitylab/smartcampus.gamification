@@ -29,6 +29,8 @@ public interface TaskService {
 
 	public boolean destroyTask(GameTask task, String gameId);
 
+	public void updateTask(GameTask task, String gameId);
+
 	public String saveData(String gameId, String taskName, Object data);
 
 	public List<Object> readData(String gameId, String taskName);

@@ -228,6 +228,7 @@ app.factory('gamesFactory',
     	var deferred = $q.defer();
     	$http.post(' ../console/game/'+game.id+"/task/del", task).
     	success(function(data, status, headers, config) {
+    		deferred.resolve();
         }).
         error(function(data, status, headers, config) {
         	deferred.reject('msg_task_error');

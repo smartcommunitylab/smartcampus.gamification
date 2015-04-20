@@ -51,6 +51,11 @@ public class TaskManager extends TaskDataManager {
 
 	}
 
+	@Override
+	public void updateTask(GameTask task, String gameId) {
+		throw new UnsupportedOperationException("method not implemented !!");
+	}
+
 	class TaskRun implements Runnable {
 
 		private GameTask gameTask;
@@ -71,4 +76,5 @@ public class TaskManager extends TaskDataManager {
 	public boolean destroyTask(GameTask task, String gameId) {
 		throw new UnsupportedOperationException("method not implemented !!");
 	}
+
 }

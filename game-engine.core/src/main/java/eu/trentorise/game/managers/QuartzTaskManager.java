@@ -64,7 +64,7 @@ public class QuartzTaskManager extends TaskDataManager {
 	private void init() {
 		try {
 			List<Game> result = new ArrayList<Game>();
-			for (GamePersistence gp : gameRepo.findAll()) {
+			for (GamePersistence gp : gameRepo.findByTerminated(false)) {
 				result.add(gp.toGame());
 			}
 			for (Game g : result) {
@@ -104,6 +104,8 @@ public class QuartzTaskManager extends TaskDataManager {
 		try {
 
 			// start the scheduler
+			// init in postcontruct not possible cause circolar reference of
+			// gameCtx
 			if (!scheduler.isStarted()) {
 				init();
 			}

@@ -66,20 +66,7 @@ public class QueueGameWorkflow extends GameWorkflow {
 		}
 
 		public void run() {
-
 			workflowExec(gameId, actionId, userId, data);
-			// logger.info("actionId: {}, playerId: {}, data: {}", actionId,
-			// userId, data);
-			// String gameId = gameSrv.getGameIdByAction(actionId);
-			//
-			// PlayerState playerState = playerSrv.loadState(userId, gameId);
-			//
-			// PlayerState newState = gameEngine.execute(gameId, playerState,
-			// actionId, data);
-			//
-			// boolean result = playerSrv.saveState(newState);
-			//
-			// logger.info("Process terminated: {}", result);
 		}
 
 	}

@@ -17,6 +17,7 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +35,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
@@ -58,8 +60,9 @@ public class DBPlayerManager implements PlayerService {
 	public PlayerState loadState(String userId, String gameId) {
 		eu.trentorise.game.repo.StatePersistence state = repo
 				.findByGameIdAndPlayerId(gameId, userId);
-
-		return state == null ? init(userId, gameId) : state.toPlayerState();
+		PlayerState res = state == null ? new PlayerState(userId, gameId)
+				: state.toPlayerState();
+		return updateConcepts(res, gameId);
 	}
 
 	public boolean saveState(PlayerState state) {
@@ -154,14 +157,33 @@ public class DBPlayerManager implements PlayerService {
 		return result;
 	}
 
-	private PlayerState init(String playerId, String gameId) {
-		Game g = gameSrv.loadGameDefinitionById(gameId);
-		PlayerState p = new PlayerState(playerId, gameId);
-		if (g != null) {
-			p.setState(g.getConcepts());
+	private PlayerState updateConcepts(PlayerState ps, String gameId) {
+		if (ps != null) {
+			Game g = gameSrv.loadGameDefinitionById(gameId);
+			if (ps.getState() == null) {
+				ps.setState(new HashSet<GameConcept>());
+			}
+			if (g != null) {
+				List<GameConcept> toAppend = new ArrayList<GameConcept>();
+				if (g.getConcepts() != null) {
+					for (GameConcept gc : g.getConcepts()) {
+						boolean found = false;
+						for (GameConcept pgc : ps.getState()) {
+							found = gc.getName().equals(pgc.getName())
+									&& gc.getClass().equals(pgc.getClass());
+							if (found) {
+								break;
+							}
+						}
+						if (!found) {
+							toAppend.add(gc);
+						}
+					}
+				}
+				ps.getState().addAll(toAppend);
+			}
 		}
-
-		return p;
+		return ps;
 	}
 
 }

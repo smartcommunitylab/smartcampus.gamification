@@ -61,7 +61,7 @@ public class Application {
 		// data.put("sustainable", true);
 		// data.put("p+r", true);
 		// data.put("park", "MANIFATTURA");
-		gameWorkflow.apply("demo-game", "save_itinerary", "1", data);
+		gameWorkflow.apply("demo-game", "save_itinerary", "1", data, null);
 	}
 
 }

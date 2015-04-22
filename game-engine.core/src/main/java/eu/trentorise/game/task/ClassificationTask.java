@@ -17,12 +17,11 @@
 package eu.trentorise.game.task;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -47,9 +46,6 @@ public class ClassificationTask extends GameTask {
 	private static final int DEFAULT_VALUE = 3;
 
 	private static final String ACTION_CLASSIFICATION = "classification";
-	private static final String K_POSITION = "classification_position";
-	private static final String K_CLASSIFICATION_NAME = "classification_name";
-	private static final String K_CLASSIFICATION_TYPE = "classification_point_type";
 
 	public ClassificationTask(TaskSchedule schedule, String itemType,
 			String classificationName) {
@@ -92,7 +88,7 @@ public class ClassificationTask extends GameTask {
 			states.add(ctx.readStatus(p));
 		}
 
-		Classification classification = new Classification(states);
+		ClassificationList classification = new ClassificationList(states);
 
 		// debug logging
 		if (logger.isDebugEnabled()) {
@@ -114,19 +110,24 @@ public class ClassificationTask extends GameTask {
 			if (index >= itemsToNotificate && !sameScore) {
 				break;
 			}
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put(K_CLASSIFICATION_NAME, classificationName);
-			params.put(K_CLASSIFICATION_TYPE, itemType);
+
+			Classification c = new Classification();
+
+			c.setName(classificationName);
+			c.setScoreType(itemType);
 			if (sameScore) {
-				params.put(K_POSITION, position);
+				c.setPosition(position);
 			} else {
-				params.put(K_POSITION, nextPosition);
+				c.setPosition(nextPosition);
 				position = nextPosition;
 			}
 			lastScore = item.getScore();
 			nextPosition++;
 
-			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), params);
+			List<Object> factObjs = new ArrayList<Object>();
+			factObjs.add(c);
+			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), null,
+					factObjs);
 		}
 
 	}
@@ -142,10 +143,10 @@ public class ClassificationTask extends GameTask {
 		return null;
 	}
 
-	private class Classification implements Iterable<ClassificationItem> {
+	private class ClassificationList implements Iterable<ClassificationItem> {
 		private List<ClassificationItem> classification;
 
-		public Classification(List<PlayerState> states) {
+		public ClassificationList(List<PlayerState> states) {
 			init(states);
 		}
 
@@ -235,5 +236,10 @@ public class ClassificationTask extends GameTask {
 
 	public void setClassificationName(String classificationName) {
 		this.classificationName = classificationName;
+	}
+
+	@Override
+	protected List<String> getExecutionActions() {
+		return Arrays.asList(ACTION_CLASSIFICATION);
 	}
 }

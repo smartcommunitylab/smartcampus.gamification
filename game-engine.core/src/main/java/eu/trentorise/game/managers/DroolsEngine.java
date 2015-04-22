@@ -82,7 +82,7 @@ public class DroolsEngine implements GameEngine {
 	private KieServices kieServices = KieServices.Factory.get();
 
 	public PlayerState execute(String gameId, PlayerState state, String action,
-			Map<String, Object> data) {
+			Map<String, Object> data, List<Object> factObjects) {
 
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 		if (game != null && game.isTerminated()) {
@@ -104,6 +104,10 @@ public class DroolsEngine implements GameEngine {
 		}
 		if (!StringUtils.isBlank(action)) {
 			cmds.add(CommandFactory.newInsert(new Action(action)));
+		}
+
+		if (factObjects != null) {
+			cmds.add(CommandFactory.newInsertElements(factObjects));
 		}
 
 		cmds.add(CommandFactory.newInsert(new Game(gameId)));

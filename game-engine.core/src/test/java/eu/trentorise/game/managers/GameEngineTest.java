@@ -210,7 +210,7 @@ public class GameEngineTest {
 		params.put("sustainable", true);
 		params.put("p+r", true);
 		params.put("park", "MANIFATTURA");
-		p = engine.execute(GAME, p, ACTION, params);
+		p = engine.execute(GAME, p, ACTION, params, null);
 		Thread.sleep(WAIT_EXEC);
 		// expected 60 greenPoints and earned 10-point 50-point green badges
 		boolean found = false;
@@ -246,7 +246,7 @@ public class GameEngineTest {
 		params.put("sustainable", true);
 		params.put("p+r", true);
 		params.put("park", "MANIFATTURA");
-		p = engine.execute(GAME, p, ACTION, params);
+		p = engine.execute(GAME, p, ACTION, params, null);
 		// expected 60 greenPoints and earned 10-point 50-point green badges
 		Thread.sleep(WAIT_EXEC);
 		boolean found = false;
@@ -330,7 +330,7 @@ public class GameEngineTest {
 	@Test
 	public void initPlayerState() {
 		initClasspathRuleGame();
-		workflow.apply(GAME, ACTION, "25", null);
+		workflow.apply(GAME, ACTION, "25", null, null);
 		PlayerState p = playerSrv.loadState("25", GAME);
 		Assert.assertEquals(7, p.getState().size());
 	}
@@ -398,7 +398,6 @@ public class GameEngineTest {
 
 		game.setActions(new HashSet<String>());
 		game.getActions().add(ACTION);
-		game.getActions().add("classification");
 
 		game.setConcepts(new HashSet<GameConcept>());
 		game.getConcepts().add(new PointConcept("green leaves"));

@@ -16,6 +16,7 @@
 
 package eu.trentorise.game.managers;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -45,9 +46,10 @@ public class GameWorkflow implements Workflow {
 	protected GameService gameSrv;
 
 	protected void workflowExec(String gameId, String actionId, String userId,
-			Map<String, Object> data) {
-		logger.info("gameId:{}, actionId: {}, playerId: {}, data: {}", gameId,
-				actionId, userId, data);
+			Map<String, Object> data, List<Object> factObjects) {
+		logger.info(
+				"gameId:{}, actionId: {}, playerId: {}, data: {}, factObjs: {}",
+				gameId, actionId, userId, data, factObjects);
 
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g == null || g.getActions() == null
@@ -60,7 +62,7 @@ public class GameWorkflow implements Workflow {
 		PlayerState playerState = playerSrv.loadState(userId, gameId);
 
 		PlayerState newState = gameEngine.execute(gameId, playerState,
-				actionId, data);
+				actionId, data, factObjects);
 
 		boolean result = playerSrv.saveState(newState);
 
@@ -68,8 +70,8 @@ public class GameWorkflow implements Workflow {
 	}
 
 	public void apply(String gameId, String actionId, String userId,
-			Map<String, Object> data) {
-		workflowExec(gameId, actionId, userId, data);
+			Map<String, Object> data, List<Object> factObjects) {
+		workflowExec(gameId, actionId, userId, data, factObjects);
 
 	}
 }

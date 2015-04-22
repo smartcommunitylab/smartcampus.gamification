@@ -50,6 +50,8 @@ public class GameManager implements GameService {
 
 	private final Logger logger = LoggerFactory.getLogger(GameManager.class);
 
+	public static final String INTERNAL_ACTION_PREFIX = "scogei_";
+
 	@Autowired
 	private TaskService taskSrv;
 
@@ -89,7 +91,17 @@ public class GameManager implements GameService {
 			pers = gameRepo.findOne(game.getId());
 			if (pers != null) {
 				pers.setName(game.getName());
-				pers.setActions(game.getActions());
+				pers.setActions(new HashSet<String>());
+
+				// add all external actions
+				if (game.getActions() != null) {
+					for (String a : game.getActions()) {
+						if (!a.startsWith(INTERNAL_ACTION_PREFIX)) {
+							pers.getActions().add(a);
+						}
+
+					}
+				}
 				pers.setExpiration(game.getExpiration());
 				pers.setTerminated(game.isTerminated());
 				pers.setRules(game.getRules());
@@ -108,6 +120,8 @@ public class GameManager implements GameService {
 					Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
 					for (GameTask t : game.getTasks()) {
 						tasks.add(new GenericObjectPersistence(t));
+						// set internal actions
+						pers.getActions().addAll(t.retrieveActions());
 					}
 					pers.setTasks(tasks);
 				} else {
@@ -119,6 +133,7 @@ public class GameManager implements GameService {
 		} else {
 			pers = new GamePersistence(game);
 		}
+
 		pers = gameRepo.save(pers);
 		return pers.toGame();
 	}

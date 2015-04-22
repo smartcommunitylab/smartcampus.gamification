@@ -27,8 +27,6 @@ public class GreenGameTest extends GameTest {
 	private static final String GAME = "gameTest";
 	private static final String ACTION = "save_itinerary";
 
-	private static final String TASK_ACTION = "classification";
-
 	@Override
 	public void initEnv() {
 		savePlayerState(GAME, "1", Arrays.asList(new PointConceptBuilder()
@@ -64,7 +62,7 @@ public class GreenGameTest extends GameTest {
 		 * IMPORTANT: if you use ClassificationTask in your game, you have to
 		 * insert 'classification' into your game actions.
 		 */
-		defineGameHelper(GAME, Arrays.asList(ACTION, TASK_ACTION));
+		defineGameHelper(GAME, Arrays.asList(ACTION));
 
 		loadClasspathRules(GAME, Arrays.asList("rules/" + GAME + "/constants",
 				"rules/" + GAME + "/initState.drl", "rules/" + GAME

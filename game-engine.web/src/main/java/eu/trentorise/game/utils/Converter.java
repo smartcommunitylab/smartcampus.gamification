@@ -18,6 +18,7 @@ package eu.trentorise.game.utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.managers.GameManager;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
@@ -53,6 +55,16 @@ public class Converter {
 			gDTO.setExpiration(game.getExpiration());
 			gDTO.setName(game.getName());
 			gDTO.setOwner(game.getOwner());
+
+			// remove internal actions
+			Iterator<String> iter = gDTO.getActions() != null ? gDTO
+					.getActions().iterator() : null;
+
+			while (iter != null && iter.hasNext()) {
+				if (iter.next().startsWith(GameManager.INTERNAL_ACTION_PREFIX)) {
+					iter.remove();
+				}
+			}
 
 			if (game.getRules() != null) {
 				gDTO.setRules(new HashSet<RuleDTO>());

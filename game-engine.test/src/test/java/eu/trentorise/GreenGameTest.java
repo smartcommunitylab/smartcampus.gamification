@@ -16,10 +16,14 @@
 
 package eu.trentorise;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.GameConcept;
+import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.task.ClassificationTask;
 
 public class GreenGameTest extends GameTest {
@@ -58,15 +62,19 @@ public class GreenGameTest extends GameTest {
 	@Override
 	public void defineGame() {
 
-		/**
-		 * IMPORTANT: if you use ClassificationTask in your game, you have to
-		 * insert 'classification' into your game actions.
-		 */
-		defineGameHelper(GAME, Arrays.asList(ACTION));
+		List<GameConcept> concepts = new ArrayList<GameConcept>();
+		concepts.add(new PointConcept("green leaves"));
+		concepts.add(new PointConcept("health"));
+		concepts.add(new PointConcept("p+r"));
+		concepts.add(new BadgeCollectionConcept("green leaves"));
+		concepts.add(new BadgeCollectionConcept("health"));
+		concepts.add(new BadgeCollectionConcept("p+r"));
+		concepts.add(new BadgeCollectionConcept("special"));
+
+		defineGameHelper(GAME, Arrays.asList(ACTION), concepts);
 
 		loadClasspathRules(GAME, Arrays.asList("rules/" + GAME + "/constants",
-				"rules/" + GAME + "/initState.drl", "rules/" + GAME
-						+ "/greenBadges.drl", "rules/" + GAME
+				"rules/" + GAME + "/greenBadges.drl", "rules/" + GAME
 						+ "/greenPoints.drl", "rules/" + GAME
 						+ "/healthBadges.drl", "rules/" + GAME
 						+ "/healthPoints.drl", "rules/" + GAME

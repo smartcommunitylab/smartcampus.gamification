@@ -116,11 +116,20 @@ public abstract class GameTest {
 		mongo.save(new StatePersistence(player));
 	}
 
-	public void defineGameHelper(String gameId, List<String> actions) {
+	public void defineGameHelper(String gameId, List<String> actions,
+			List<GameConcept> concepts) {
 		Game g = new Game();
 		g.setId(gameId);
 		g.setName(gameId);
 		g.setActions(new HashSet<String>(actions));
+
+		g.setConcepts(new HashSet<GameConcept>());
+		if (concepts != null) {
+			for (GameConcept gc : concepts) {
+				g.getConcepts().add(gc);
+			}
+
+		}
 		gameManager.saveGameDefinition(g);
 		this.gameId = gameId;
 	}

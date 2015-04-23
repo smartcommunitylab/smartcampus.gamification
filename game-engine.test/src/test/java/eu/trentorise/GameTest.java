@@ -155,7 +155,7 @@ public abstract class GameTest {
 		}
 	}
 
-	public void loadFilestyemRules(String gameId, List<String> rulesPath) {
+	public void loadFilesystemRules(String gameId, List<String> rulesPath) {
 		for (String path : rulesPath) {
 			gameManager.addRule(new FSRule(gameId, path));
 		}

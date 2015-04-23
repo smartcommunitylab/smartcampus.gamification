@@ -16,8 +16,6 @@
 
 package eu.trentorise.game.managers;
 
-import java.util.concurrent.ScheduledFuture;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
 
@@ -32,16 +31,29 @@ import eu.trentorise.game.core.GameTask;
 public class TaskManager extends TaskDataManager {
 
 	private final Logger logger = LoggerFactory.getLogger(TaskManager.class);
-	@Autowired
-	ThreadPoolTaskScheduler scheduler;
 
-	public void createTask(GameTask task, GameContext ctx) {
+	@Autowired
+	private ThreadPoolTaskScheduler scheduler;
+
+	@Autowired
+	private AppContextProvider provider;
+
+	private GameContext createGameCtx(String gameId, GameTask task) {
+		return (GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", gameId, task);
+	}
+
+	public void createTask(GameTask task, String gameId) {
 		CronTrigger trigger = new CronTrigger(task.getSchedule()
 				.getCronExpression());
+		GameContext ctx = createGameCtx(gameId, task);
+		scheduler.schedule(new TaskRun(task, ctx), trigger);
 
-		ScheduledFuture schedulefuture = scheduler.schedule(new TaskRun(task,
-				ctx), trigger);
+	}
 
+	@Override
+	public void updateTask(GameTask task, String gameId) {
+		throw new UnsupportedOperationException("method not implemented !!");
 	}
 
 	class TaskRun implements Runnable {
@@ -64,4 +76,5 @@ public class TaskManager extends TaskDataManager {
 	public boolean destroyTask(GameTask task, String gameId) {
 		throw new UnsupportedOperationException("method not implemented !!");
 	}
+
 }

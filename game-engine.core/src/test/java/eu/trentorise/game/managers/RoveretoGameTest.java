@@ -108,8 +108,8 @@ public class RoveretoGameTest {
 	public void simpleEnv() {
 
 		// define game
-		GamePersistence game = defineGame();
-		mongo.save(game);
+		Game game = defineGame();
+		gameManager.saveGameDefinition(game);
 
 		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
 				+ "/constants");
@@ -157,8 +157,8 @@ public class RoveretoGameTest {
 
 	@Test
 	public void sameResultLastElementEnv() {
-		GamePersistence game = defineGame();
-		mongo.save(game);
+		Game game = defineGame();
+		gameManager.saveGameDefinition(game);
 
 		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
 				+ "/constants");
@@ -214,8 +214,8 @@ public class RoveretoGameTest {
 	@Test
 	public void sameResultEnv() {
 		// define game
-		GamePersistence game = defineGame();
-		mongo.save(game);
+		Game game = defineGame();
+		gameManager.saveGameDefinition(game);
 
 		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
 				+ "/constants");
@@ -508,7 +508,7 @@ public class RoveretoGameTest {
 		return new StatePersistence(player);
 	}
 
-	private GamePersistence defineGame() {
+	private Game defineGame() {
 		Game game = new Game();
 
 		game.setId(GAME);
@@ -516,7 +516,6 @@ public class RoveretoGameTest {
 
 		game.setActions(new HashSet<String>());
 		game.getActions().add(ACTION);
-		game.getActions().add("classification");
 
 		game.setConcepts(new HashSet<GameConcept>());
 		game.getConcepts().add(new PointConcept("green leaves"));
@@ -566,7 +565,7 @@ public class RoveretoGameTest {
 				"week classification p+r");
 		game.getTasks().add(task6);
 
-		return new GamePersistence(game);
+		return game;
 
 	}
 }

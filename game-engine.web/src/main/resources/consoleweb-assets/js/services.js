@@ -228,6 +228,7 @@ app.factory('gamesFactory',
     	var deferred = $q.defer();
     	$http.post(' ../console/game/'+game.id+"/task/del", task).
     	success(function(data, status, headers, config) {
+    		deferred.resolve();
         }).
         error(function(data, status, headers, config) {
         	deferred.reject('msg_task_error');
@@ -432,20 +433,16 @@ app.factory('gamesFactory',
       	return deferred.promise;
     }
     
-    
-    // Check if there are any leaderboards linked to the given points instance,
-	// and then return them
-    var pointsDeleteCheck = function (game, points) {
-      var leaderboards = [];
-      angular.forEach(game.concepts.leaderboards, function (leaderboard) {
-        if (leaderboard.points_dependency == points.name) {
-          leaderboards.push(leaderboard);
-        }
-      });
-
-      return leaderboards;
-    };
-
+    var getPlayersState = function(gameId,playerFilter,pageRequest, pageSize) {
+    	var deferred = $q.defer();
+    	$http.get('../gengine/state/'+gameId, {params: {page:pageRequest, size: pageSize, playerFilter: playerFilter}}).success(function(data, status, headers, config) {
+      	  deferred.resolve(data);
+        }).error(function(data, status, headers, config){
+      	  deferred.reject('msg_generic_error');
+        });
+    	
+    	return deferred.promise;
+    }
 
     return {
       'getGames': getGames,
@@ -455,7 +452,6 @@ app.factory('gamesFactory',
       'editInstance': editInstance,
       'deleteGame': deleteGame,
       'deleteInstance': deleteInstance,
-      'pointsDeleteCheck': pointsDeleteCheck,
       'saveGame' : saveGame,
       'addPoint' : addPoint,
       'addBadge' : addBadge,
@@ -468,6 +464,7 @@ app.factory('gamesFactory',
       'deleteTask' : deleteTask,
       'editTask' : editTask,
       'validateRule' : validateRule,
+      'getPlayersState' : getPlayersState,
     };
   }
 );

@@ -43,6 +43,9 @@ Text will be soon placed in the middle of the panel-body
            <button type="button" class="pull-right game-btn btn btn-danger btn-circle right-spaced" data-ng-click="deleteGame(game)" data-tooltip="{{'tool_delete' | i18next}}">
         		<span class="glyphicon glyphicon-remove"></span>
       		</button>
+      		<a class="pull-right game-btn btn btn-default btn-circle right-spaced" href="#/game-monitor/{{game.id}}" data-tooltip="{{'lbl_monitor_menu' | i18next}}">
+        		<span class="glyphicon glyphicon-stats"></span>
+      		</a>
           </div>
          
         <div class="panel-body">

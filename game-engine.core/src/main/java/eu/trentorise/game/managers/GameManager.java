@@ -31,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.DBRule;
@@ -52,17 +50,16 @@ public class GameManager implements GameService {
 
 	private final Logger logger = LoggerFactory.getLogger(GameManager.class);
 
-	@Autowired
-	TaskService taskSrv;
+	public static final String INTERNAL_ACTION_PREFIX = "scogei_";
 
 	@Autowired
-	AppContextProvider provider;
+	private TaskService taskSrv;
 
 	@Autowired
-	GameRepo gameRepo;
+	private GameRepo gameRepo;
 
 	@Autowired
-	RuleRepo ruleRepo;
+	private RuleRepo ruleRepo;
 
 	@PostConstruct
 	@SuppressWarnings("unused")
@@ -83,10 +80,7 @@ public class GameManager implements GameService {
 		Game game = loadGameDefinitionById(gameId);
 		if (game != null) {
 			for (GameTask task : game.getTasks()) {
-				taskSrv.createTask(
-						task,
-						(GameContext) provider.getApplicationContext().getBean(
-								"gameCtx", gameId, task));
+				taskSrv.createTask(task, gameId);
 			}
 		}
 	}
@@ -97,7 +91,17 @@ public class GameManager implements GameService {
 			pers = gameRepo.findOne(game.getId());
 			if (pers != null) {
 				pers.setName(game.getName());
-				pers.setActions(game.getActions());
+				pers.setActions(new HashSet<String>());
+
+				// add all external actions
+				if (game.getActions() != null) {
+					for (String a : game.getActions()) {
+						if (!a.startsWith(INTERNAL_ACTION_PREFIX)) {
+							pers.getActions().add(a);
+						}
+
+					}
+				}
 				pers.setExpiration(game.getExpiration());
 				pers.setTerminated(game.isTerminated());
 				pers.setRules(game.getRules());
@@ -116,6 +120,8 @@ public class GameManager implements GameService {
 					Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
 					for (GameTask t : game.getTasks()) {
 						tasks.add(new GenericObjectPersistence(t));
+						// set internal actions
+						pers.getActions().addAll(t.retrieveActions());
 					}
 					pers.setTasks(tasks);
 				} else {
@@ -127,6 +133,7 @@ public class GameManager implements GameService {
 		} else {
 			pers = new GamePersistence(game);
 		}
+
 		pers = gameRepo.save(pers);
 		return pers.toGame();
 	}

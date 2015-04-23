@@ -40,6 +40,7 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.ClassificationTask;
 import eu.trentorise.game.utils.Converter;
 
@@ -48,16 +49,19 @@ import eu.trentorise.game.utils.Converter;
 public class ConsoleController {
 
 	@Autowired
-	GameService gameSrv;
+	private GameService gameSrv;
 
 	@Autowired
-	GameEngine gameEngine;
+	private TaskService taskSrv;
 
 	@Autowired
-	Converter converter;
+	private GameEngine gameEngine;
 
 	@Autowired
-	IdentityLookupService identityLookup;
+	private Converter converter;
+
+	@Autowired
+	private IdentityLookupService identityLookup;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game")
 	public GameDTO saveGame(@RequestBody GameDTO game) {
@@ -177,6 +181,7 @@ public class ConsoleController {
 			} else {
 				g.getTasks().add(t);
 				gameSrv.saveGameDefinition(g);
+				taskSrv.createTask(t, gameId);
 			}
 			task.setGameId(gameId);
 			return task;
@@ -196,6 +201,7 @@ public class ConsoleController {
 				t.setName(task.getName());
 				g.getTasks().remove(t);
 				gameSrv.saveGameDefinition(g);
+				taskSrv.destroyTask(t, gameId);
 			}
 		} else {
 			throw new IllegalArgumentException("game not exist");
@@ -218,6 +224,7 @@ public class ConsoleController {
 						ct.setClassificationName(t.getClassificationName());
 						ct.setItemType(t.getItemType());
 						ct.setSchedule(t.getSchedule());
+						taskSrv.updateTask(gt, gameId);
 					}
 				}
 				gameSrv.saveGameDefinition(g);

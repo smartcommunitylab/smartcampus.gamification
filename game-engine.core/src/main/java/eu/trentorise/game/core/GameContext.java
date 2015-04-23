@@ -19,12 +19,11 @@ package eu.trentorise.game.core;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.managers.GameManager;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TaskDataConverter;
 import eu.trentorise.game.services.PlayerService;
@@ -34,8 +33,6 @@ import eu.trentorise.game.services.Workflow;
 @Component("gameCtx")
 @Scope("prototype")
 public class GameContext {
-
-	private final Logger logger = LoggerFactory.getLogger(GameContext.class);
 
 	private String gameRefId;
 	private GameTask task;
@@ -49,7 +46,7 @@ public class GameContext {
 	@Autowired
 	private TaskService taskSrv;
 
-	TaskDataConverter converter = new TaskDataConverter();
+	private TaskDataConverter converter = new TaskDataConverter();
 
 	public enum Order {
 		ASC, DESC
@@ -66,7 +63,19 @@ public class GameContext {
 
 	public synchronized void sendAction(String action, String playerId,
 			Map<String, Object> params) {
-		workflow.apply(gameRefId, action, playerId, params);
+		// transform in internalAction
+		action = action.startsWith(GameManager.INTERNAL_ACTION_PREFIX) ? action
+				: GameManager.INTERNAL_ACTION_PREFIX + action;
+		workflow.apply(gameRefId, action, playerId, params, null);
+	}
+
+	public synchronized void sendAction(String action, String playerId,
+			Map<String, Object> params, List<Object> workingMemoryObjects) {
+		// transform in internalAction
+		action = action.startsWith(GameManager.INTERNAL_ACTION_PREFIX) ? action
+				: GameManager.INTERNAL_ACTION_PREFIX + action;
+		workflow.apply(gameRefId, action, playerId, params,
+				workingMemoryObjects);
 	}
 
 	public PlayerState readStatus(String playerId) {

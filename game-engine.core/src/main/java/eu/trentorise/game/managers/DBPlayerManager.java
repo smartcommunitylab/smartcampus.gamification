@@ -17,12 +17,16 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -31,6 +35,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
@@ -55,8 +60,9 @@ public class DBPlayerManager implements PlayerService {
 	public PlayerState loadState(String userId, String gameId) {
 		eu.trentorise.game.repo.StatePersistence state = repo
 				.findByGameIdAndPlayerId(gameId, userId);
-
-		return state == null ? init(userId, gameId) : state.toPlayerState();
+		PlayerState res = state == null ? new PlayerState(userId, gameId)
+				: state.toPlayerState();
+		return updateConcepts(res, gameId);
 	}
 
 	public boolean saveState(PlayerState state) {
@@ -91,6 +97,30 @@ public class DBPlayerManager implements PlayerService {
 		return result;
 	}
 
+	@Override
+	public Page<String> readPlayers(String gameId, Pageable pageable) {
+		Page<StatePersistence> states = repo.findByGameId(gameId, pageable);
+		List<String> result = new ArrayList<String>();
+		for (StatePersistence state : states) {
+			result.add(state.getPlayerId());
+		}
+		PageImpl<String> res = new PageImpl<String>(result, pageable,
+				states.getTotalElements());
+		return res;
+	}
+
+	public Page<PlayerState> loadStates(String gameId, Pageable pageable) {
+		Page<StatePersistence> states = repo.findByGameId(gameId, pageable);
+		List<PlayerState> result = new ArrayList<PlayerState>();
+		for (StatePersistence state : states) {
+			result.add(state.toPlayerState());
+		}
+		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
+				states.getTotalElements());
+		return res;
+	}
+
+	@Override
 	public List<PlayerState> loadStates(String gameId) {
 		List<StatePersistence> states = repo.findByGameId(gameId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
@@ -101,13 +131,59 @@ public class DBPlayerManager implements PlayerService {
 		return result;
 	}
 
-	private PlayerState init(String playerId, String gameId) {
-		Game g = gameSrv.loadGameDefinitionById(gameId);
-		PlayerState p = new PlayerState(playerId, gameId);
-		if (g != null) {
-			p.setState(g.getConcepts());
+	@Override
+	public Page<PlayerState> loadStates(String gameId, String userId,
+			Pageable pageable) {
+		Page<StatePersistence> states = repo.findByGameIdAndPlayerIdLike(
+				gameId, userId, pageable);
+		List<PlayerState> result = new ArrayList<PlayerState>();
+		for (StatePersistence state : states) {
+			result.add(state.toPlayerState());
+		}
+		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
+				states.getTotalElements());
+		return res;
+	}
+
+	@Override
+	public List<PlayerState> loadStates(String gameId, String userId) {
+		List<StatePersistence> states = repo.findByGameIdAndPlayerIdLike(
+				gameId, userId);
+		List<PlayerState> result = new ArrayList<PlayerState>();
+		for (StatePersistence state : states) {
+			result.add(state.toPlayerState());
 		}
 
-		return p;
+		return result;
 	}
+
+	private PlayerState updateConcepts(PlayerState ps, String gameId) {
+		if (ps != null) {
+			Game g = gameSrv.loadGameDefinitionById(gameId);
+			if (ps.getState() == null) {
+				ps.setState(new HashSet<GameConcept>());
+			}
+			if (g != null) {
+				List<GameConcept> toAppend = new ArrayList<GameConcept>();
+				if (g.getConcepts() != null) {
+					for (GameConcept gc : g.getConcepts()) {
+						boolean found = false;
+						for (GameConcept pgc : ps.getState()) {
+							found = gc.getName().equals(pgc.getName())
+									&& gc.getClass().equals(pgc.getClass());
+							if (found) {
+								break;
+							}
+						}
+						if (!found) {
+							toAppend.add(gc);
+						}
+					}
+				}
+				ps.getState().addAll(toAppend);
+			}
+		}
+		return ps;
+	}
+
 }

@@ -1,0 +1,20 @@
+{
+  "msg_load_games_error": "There has been an error during the game loading process!",
+  "msg_leaderboards_error": "It's not possible to create leaderboards without any points collection to refer to!",
+  "msg_game_settings_edited": "Game settings have been successfully edited",
+  "msg_points_settings_edited": "Points instance settings have been successfully edited",
+  "msg_badges_collection_settings_edited": "Badges collection instance settings have been successfully edited",
+  "msg_leaderboard_settings_edited": "Leaderboard instance settings have been successfully edited",
+  "msg_game_name_error": "Insert a valid game name!",
+  "msg_generic_error": "Error during operation",
+  "msg_game_name_exists_error": "A game with this name alredy exists!",
+  "msg_same_name_error": "Enter a different name!",
+  "msg_instance_name_error": "Insert a valid instance name!",
+  "msg_instance_name_exists_error": "An instance with this name alredy exists!",
+  "msg_instance_unchanged_error": "Change at least one property",
+  "msg_delete_error": "Error deleting element",
+  "msg_rule_error": "Error during rule operation",
+  "msg_task_error" : "Error in task operation",
+  "msg_error_integer" : "Non a valid integer",
+  "msg_error_exist" : "Element already exist"
+}

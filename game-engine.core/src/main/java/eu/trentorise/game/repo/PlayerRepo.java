@@ -18,15 +18,29 @@ package eu.trentorise.game.repo;
 
 import java.util.List;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PlayerRepo extends CrudRepository<StatePersistence, String> {
+public interface PlayerRepo extends
+		PagingAndSortingRepository<StatePersistence, String> {
 
 	public List<StatePersistence> findByGameId(String id);
 
+	public Page<StatePersistence> findByGameId(String id, Pageable pageable);
+
 	public List<StatePersistence> findByPlayerId(String id);
 
+	public Page<StatePersistence> findByPlayerId(String id, Pageable pageable);
+
 	public StatePersistence findByGameIdAndPlayerId(String game, String player);
+
+	public List<StatePersistence> findByGameIdAndPlayerIdLike(String id,
+			String player);
+
+	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String id,
+			String player, Pageable pageable);
+
 }

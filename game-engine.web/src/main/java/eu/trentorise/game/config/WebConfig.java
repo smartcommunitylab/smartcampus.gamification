@@ -16,8 +16,12 @@
 
 package eu.trentorise.game.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -58,6 +62,17 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(authInterceptor).addPathPatterns(
 				"/console/game/**");
+	}
+
+	@Override
+	public void addArgumentResolvers(
+			List<HandlerMethodArgumentResolver> argumentResolvers) {
+		PageableHandlerMethodArgumentResolver pageResolver = new PageableHandlerMethodArgumentResolver();
+		pageResolver.setPrefix("");
+		pageResolver.setOneIndexedParameters(true);
+
+		argumentResolvers.add(pageResolver);
+		super.addArgumentResolvers(argumentResolvers);
 	}
 
 }

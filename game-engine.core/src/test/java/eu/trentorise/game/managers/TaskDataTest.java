@@ -48,6 +48,11 @@ public class TaskDataTest {
 
 			public void execute(GameContext ctx) {
 			}
+
+			@Override
+			public List<String> getExecutionActions() {
+				return null;
+			}
 		};
 
 		GameContext ctx = (GameContext) provider.getApplicationContext()

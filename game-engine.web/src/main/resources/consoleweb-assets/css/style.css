@@ -163,3 +163,57 @@ button.btn-default.btn-edit:focus {
     display: table-cell;
     vertical-align: middle;
 }
+
+
+/*
+
+STATE MONITOR
+*/
+
+.monitor-row {
+	background-color: #E6E6E6; 
+	margin-bottom: 0.1em;
+	/* min-height: 5.2em; */
+}
+.monitor-box {
+	display: inline-block;
+	/* min-height: 5em; */
+}
+
+.summary-row p {
+	font-size: 1.3em;
+	vertical-align : middle;
+}
+.detail-row {
+	background-color: #FFF;
+	border: 1px solid #E6E6E6;
+}
+
+.point-box {
+	width: 10em;
+	text-align: center;
+	margin-right: 0.3em;
+}
+
+.point-box .point-type {
+	
+}
+
+.point-box .score {
+	display: block;
+	font-size: 2.0em;
+	color: #4DA9C2;
+}
+.badge-box {
+	width: 100%;
+}
+
+.badge-box td {
+	padding: 0.4em;
+}
+
+ .badge-elem {
+	margin-right: 0.3em;
+	color: #4DA9C2;
+} 
+

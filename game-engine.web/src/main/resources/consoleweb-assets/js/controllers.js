@@ -15,8 +15,15 @@
  */
 
 // Main controller (index.html)
-function MainCtrl($scope, $rootScope) {
+function MainCtrl($scope, $rootScope,$state) {
   $rootScope.games = [];
+  if($state.current.data) {
+	  $rootScope.page = $state.current.data.page;
+  }
+  
+  $scope.goHome = function() {
+	  $rootScope.page = 'home';
+  }
 }
 
 // Login controller (login.html)
@@ -63,6 +70,7 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
     });
   };
   
+  
   $scope.deleteGame = function (game) {
 	    // Delete a game
 	    var modalInstance = $modal.open({
@@ -90,10 +98,14 @@ function HomeCtrl($scope, $rootScope, $window, $modal, gamesFactory, utilsFactor
   };
 }
 // Game controller (game.html)
-function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactory, utilsFactory) {
+function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactory, utilsFactory,$state) {
   $rootScope.currentNav = 'configure';
   $rootScope.currentGameId = $stateParams.id;
 
+  if($state.current.data) {
+	  $rootScope.page = $state.current.data.page;
+  }
+  
   // Error alerts object
   $scope.alerts = {
     'cantCreateLeaderboards': false,
@@ -712,6 +724,15 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	    'error': ''
 	  };
 	  
+	  var convertTask = function(task) {
+		  // convert in taskDto
+			 if(task.schedule) {
+				 task.cronExpression = task.schedule.cronExpression;
+				 task.schedule = undefined;
+			 }
+		return task;
+	  }
+	  
 	  $scope.openAddTaskModal = function () {
 		  var modalInstance = $modal.open({
 		      templateUrl: 'templates/modals/modal_task_edit.html',
@@ -738,7 +759,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		          return $scope.game;
 		        },
 		        task: function () {
-		        	return task;
+		        	return convertTask(task);
 		        }
 		      }
 		    });
@@ -755,7 +776,7 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 		          return $scope.game;
 		        },
 		        task: function () {
-		        	return task;
+		        	return convertTask(task);
 		        }
 		      }
 		    });
@@ -772,4 +793,86 @@ function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	    //$scope.alerts.loadGameError = true;
 	  });
 
+}
+
+function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory,$state) {
+	$rootScope.currentGameId = $stateParams.id;
+	$scope.currentPage = 1;
+	$scope.items4Page = 10;
+ 	
+	  if($state.current.data) {
+		  $rootScope.page = $state.current.data.page;
+	  }
+	  
+	if($rootScope.monitorFilter) {
+		$scope.playerIdFilter = $rootScope.monitorFilter; 
+	}
+	
+	
+	 // Load games
+	  gamesFactory.getGameById($stateParams.id).then(function (game) {
+	    $scope.game = game;
+	  }, function () {
+	    // Show error alert
+		  $scope.err = 'msg_generic_error';
+	  });
+	
+	 var enrichData = function(data) {
+		 data.forEach(function(p) {
+			var badges = p.state['BadgeCollectionConcept'];
+			var score = p.state['PointConcept'];
+			p.totalBadges = 0;
+			p.totalScore = 0;
+			badges.forEach(function(b) {
+				p.totalBadges += b.badgeEarned.length;
+			});
+			
+			score.forEach(function(s) {
+				p.totalScore += s.score;
+			});
+		 });
+		 
+		 return data;
+	 }
+	 
+	
+	 
+	gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
+		data.content = enrichData(data.content);
+		$scope.playerStates = data;
+		$scope.totalItems = data.totalElements;
+	}, function(msg){
+		$scope.err = msg;
+	});
+	
+	$scope.expand = false;
+	
+	$scope.filter = function() {
+		$rootScope.monitorFilter = $scope.playerIdFilter;
+		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
+			data.content = enrichData(data.content);
+			$scope.playerStates = data;
+			$scope.totalItems = data.totalElements;
+		}, function(msg){
+			$scope.err = msg;
+		});
+	}
+	$scope.openDetails = function(idx) {
+		if(idx != $scope.expandIdx) {
+			$scope.expandIdx = idx;
+		} else {
+			$scope.expandIdx = -1000;
+		}
+	};
+	
+	$scope.update = function() {
+		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
+			data.content = enrichData(data.content);
+			$scope.playerStates = data;
+			$scope.totalItems = data.totalElements;
+		}, function(msg){
+			$scope.err = msg;
+		});
+	};
+	
 }

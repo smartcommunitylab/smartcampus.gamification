@@ -18,6 +18,8 @@ package eu.trentorise.game.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.PlayerState;
@@ -27,9 +29,18 @@ public interface PlayerService {
 
 	public PlayerState loadState(String userId, String gameId);
 
+	public Page<PlayerState> loadStates(String gameId, Pageable pageable);
+
 	public List<PlayerState> loadStates(String gameId);
 
+	public Page<PlayerState> loadStates(String gameId, String userId,
+			Pageable pageable);
+
+	public List<PlayerState> loadStates(String gameId, String userId);
+
 	public boolean saveState(PlayerState state);
+
+	public Page<String> readPlayers(String gameId, Pageable pageable);
 
 	public List<String> readPlayers(String gameId);
 }

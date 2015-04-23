@@ -129,7 +129,7 @@ public class DroolsSample {
 	@Test
 	public void validator5() {
 		String rule = "package eu.trentorise.drools " + "rule \"valid sample\""
-				+ " when" + " evaltrue)" + " then"
+				+ " when" + " eval(true)" + " then"
 				+ " insert(new SampleModel('ciao'));" + " end";
 		VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 		// Check that the builder works.

@@ -20,15 +20,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameTask;
 
 @Service
 public interface TaskService {
 
-	public void createTask(GameTask task, GameContext ctx);
+	public void createTask(GameTask task, String gameId);
 
 	public boolean destroyTask(GameTask task, String gameId);
+
+	public void updateTask(GameTask task, String gameId);
 
 	public String saveData(String gameId, String taskName, Object data);
 

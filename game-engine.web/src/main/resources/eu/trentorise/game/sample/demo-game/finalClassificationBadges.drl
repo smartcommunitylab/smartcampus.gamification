@@ -1,6 +1,7 @@
 package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.task.Classification;
 
 
 /* ***************************************************************************
@@ -10,9 +11,7 @@ GREEN FINAL CLASSIFICATION
 rule "final classification gold badge green"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification green')
-    InputData( data['classification_position'] == 1)
+	Classification( name == 'final classification green', position == 1)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green')
@@ -26,9 +25,7 @@ end
 rule "final classification silver badge green"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification green')
-    InputData( data['classification_position'] == 2)
+	Classification( name == 'final classification green', position == 2)	
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'silver-medal-green')
@@ -42,9 +39,7 @@ end
 rule "final classification bronze badge green"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification green')
-    InputData( data['classification_position'] == 3)
+	Classification( name == 'final classification green', position == 3)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'bronze-medal-green')
@@ -62,9 +57,7 @@ HEALTH FINAL CLASSIFICATION
 rule "final classification gold badge health"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification health')
-    InputData( data['classification_position'] == 1)
+	Classification( name == 'final classification health', position == 1)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'gold-medal-health')
@@ -78,9 +71,7 @@ end
 rule "final classification silver badge health"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification health')
-    InputData( data['classification_position'] == 2)
+    Classification( name == 'final classification health', position == 2)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'silver-medal-health')
@@ -94,9 +85,7 @@ end
 rule "final classification bronze badge health"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification health')
-    InputData( data['classification_position'] == 3)
+    Classification( name == 'final classification health', position == 3)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'bronze-medal-health')
@@ -114,9 +103,7 @@ P+R FINAL CLASSIFICATION
 rule "final classification gold badge p+r"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification p+r')
-    InputData( data['classification_position'] == 1)
+    Classification( name == 'final classification p+r', position == 1)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'gold-medal-pr')
@@ -130,9 +117,7 @@ end
 rule "final classification silver badge p+r"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification p+r')
-    InputData( data['classification_position'] == 2)
+    Classification( name == 'final classification p+r', position == 2)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'silver-medal-pr')
@@ -146,9 +131,7 @@ end
 rule "final classification bronze badge p+r"
 	salience -1000
 when
-    Action( id == 'classification')
-    InputData( data['classification_name'] == 'final classification p+r')
-    InputData( data['classification_position'] == 3)
+    Classification( name == 'final classification p+r', position == 3)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'bronze-medal-pr')

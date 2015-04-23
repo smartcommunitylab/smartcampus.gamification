@@ -16,6 +16,7 @@
 
 package eu.trentorise.game.managers;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,9 +42,10 @@ public class QueueGameWorkflow extends GameWorkflow {
 
 	@Override
 	public void apply(String gameId, String actionId, String userId,
-			Map<String, Object> data) {
+			Map<String, Object> data, List<Object> factObjects) {
 		try {
-			executor.execute(new Execution(gameId, actionId, userId, data));
+			executor.execute(new Execution(gameId, actionId, userId, data,
+					factObjects));
 		} catch (Exception e) {
 			logger.error("Exception in game queue execution", e);
 		}
@@ -56,30 +58,19 @@ public class QueueGameWorkflow extends GameWorkflow {
 		private String actionId;
 		private String userId;
 		private Map<String, Object> data;
+		private List<Object> factObjects;
 
 		public Execution(String gameId, String actionId, String userId,
-				Map<String, Object> data) {
+				Map<String, Object> data, List<Object> factObjects) {
 			this.gameId = gameId;
 			this.actionId = actionId;
 			this.userId = userId;
 			this.data = data;
+			this.factObjects = factObjects;
 		}
 
 		public void run() {
-
-			workflowExec(gameId, actionId, userId, data);
-			// logger.info("actionId: {}, playerId: {}, data: {}", actionId,
-			// userId, data);
-			// String gameId = gameSrv.getGameIdByAction(actionId);
-			//
-			// PlayerState playerState = playerSrv.loadState(userId, gameId);
-			//
-			// PlayerState newState = gameEngine.execute(gameId, playerState,
-			// actionId, data);
-			//
-			// boolean result = playerSrv.saveState(newState);
-			//
-			// logger.info("Process terminated: {}", result);
+			workflowExec(gameId, actionId, userId, data, factObjects);
 		}
 
 	}

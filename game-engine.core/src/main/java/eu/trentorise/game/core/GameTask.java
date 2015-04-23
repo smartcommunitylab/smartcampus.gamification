@@ -16,6 +16,11 @@
 
 package eu.trentorise.game.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.trentorise.game.managers.GameManager;
+
 public abstract class GameTask {
 
 	private String name;
@@ -23,6 +28,20 @@ public abstract class GameTask {
 	private TaskSchedule schedule;
 
 	public abstract void execute(GameContext ctx);
+
+	protected abstract List<String> getExecutionActions();
+
+	public List<String> retrieveActions() {
+		List<String> list = getExecutionActions();
+		List<String> res = new ArrayList<String>();
+		if (list != null) {
+			for (String a : list) {
+				res.add(GameManager.INTERNAL_ACTION_PREFIX + a);
+			}
+		}
+
+		return res;
+	}
 
 	public GameTask(String name, TaskSchedule schedule) {
 		this.name = name;

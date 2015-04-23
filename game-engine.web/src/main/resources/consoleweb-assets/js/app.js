@@ -22,9 +22,12 @@ app.config(function ($i18nextProvider) {
   $i18nextProvider.options = {
     useCookie: false,
     useLocalStorage: false,
-    fallbackLng: 'default',
-    // attention change resGetPath if http console mapping changing
-    resGetPath: 'locales/__lng__/__ns__.json'
+    fallbackLng: 'en',
+    resGetPath: 'locales/__lng__/__ns__.json',
+    ns: { 
+        namespaces: ['messages', 'labels'], 
+        defaultNs: 'labels'
+      } 
   };
 });
 
@@ -35,43 +38,30 @@ app.config(
     .state('home', {
       url: '/home',
       templateUrl: 'templates/home.html',
-      controller: 'HomeCtrl'
+      controller: 'HomeCtrl',
+      data : {
+    	  page : 'home'
+      }
     })
 
     .state('game', {
       url: '/game/:id?tab',
       templateUrl: 'templates/game.html',
-      controller: 'GameCtrl'
+      controller: 'GameCtrl',
+      data : {
+    	  page : 'game'
+      }
     })
     
-    /*.state('points', {
-      url: '/game/:id/points/:idPoints',
-      templateUrl: 'templates/game_points.html',
-      controller: 'GamePointsCtrl'
+    .state('game-monitor', {
+      url: '/game-monitor/:id',
+      templateUrl: 'templates/game-monitor.html',
+      controller: 'MonitorCtrl',
+      data : {
+    	  page : 'monitor'
+      }
     })
-
-    .state('badges_collection', {
-      url: '/game/:id/badges_collections/:idBadgesCollection?tab',
-      templateUrl: 'templates/game_badges_collection.html',
-      controller: 'GameBadgesCollectionCtrl'
-    })
-
-    .state('actions', {
-      url: '/game/:id/actions',
-      templateUrl: 'templates/actions.html',
-      controller: 'ActionsCtrl'
-    })
-    .state('rules', {
-      url: '/game/:id/rules',
-      templateUrl: 'templates/rules.html',
-      controller: 'RulesCtrl'
-    })
-     .state('tasks', {
-      url: '/game/:id/tasks',
-      templateUrl: 'templates/tasks.html',
-      controller: 'TasksCtrl'
-    })*/
-
+    
     $urlRouterProvider.otherwise("/home");
   }
 );

@@ -77,7 +77,6 @@ public abstract class GameTest {
 	private AppContextProvider provider;
 
 	@Before
-	@SuppressWarnings("unused")
 	public final void cleanDB() {
 		// clean mongo
 		mongo.dropCollection(StatePersistence.class);
@@ -117,19 +116,37 @@ public abstract class GameTest {
 		mongo.save(new StatePersistence(player));
 	}
 
-	public void defineGameHelper(String gameId, List<String> actions) {
+	public void defineGameHelper(String gameId, List<String> actions,
+			List<GameConcept> concepts) {
 		Game g = new Game();
 		g.setId(gameId);
 		g.setName(gameId);
 		g.setActions(new HashSet<String>(actions));
 
-		mongo.save(g);
+		g.setConcepts(new HashSet<GameConcept>());
+		if (concepts != null) {
+			for (GameConcept gc : concepts) {
+				g.getConcepts().add(gc);
+			}
+
+		}
+		gameManager.saveGameDefinition(g);
 		this.gameId = gameId;
 	}
 
 	public void addGameTask(String gameId, GameTask gt) {
+		Game g = gameManager.loadGameDefinitionById(gameId);
+		if (g != null) {
+			if (g.getTasks() == null) {
+				g.setTasks(new HashSet<GameTask>());
+			}
+			g.getTasks().add(gt);
+			gameManager.saveGameDefinition(g);
+		} else {
+			throw new IllegalArgumentException(String.format(
+					"please create game {} before call addGameTask", gameId));
+		}
 		tasks.add(gt);
-
 	}
 
 	public void loadClasspathRules(String gameId, List<String> rulesPath) {
@@ -138,7 +155,7 @@ public abstract class GameTest {
 		}
 	}
 
-	public void loadFilestyemRules(String gameId, List<String> rulesPath) {
+	public void loadFilesystemRules(String gameId, List<String> rulesPath) {
 		for (String path : rulesPath) {
 			gameManager.addRule(new FSRule(gameId, path));
 		}
@@ -149,7 +166,7 @@ public abstract class GameTest {
 		defineExecData(execList);
 		for (ExecData ex : execList) {
 			workflow.apply(ex.gameId, ex.getActionId(), ex.getPlayerId(),
-					ex.getData());
+					ex.getData(), null);
 		}
 
 		// launch Task sequentially

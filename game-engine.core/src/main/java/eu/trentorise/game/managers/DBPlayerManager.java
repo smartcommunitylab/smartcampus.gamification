@@ -80,6 +80,7 @@ public class DBPlayerManager implements PlayerService {
 		Query query = new Query(criteria);
 		Update update = new Update();
 		update.set("concepts", toSave.getConcepts());
+		update.set("customData", toSave.getCustomData());
 		FindAndModifyOptions options = new FindAndModifyOptions();
 		options.upsert(true);
 		mongoTemplate.findAndModify(query, update, options,

@@ -29,6 +29,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 
@@ -46,6 +47,8 @@ public class StatePersistence {
 
 	private List<GenericObjectPersistence> concepts = new ArrayList<GenericObjectPersistence>();
 
+	private List<CustomData> customData = new ArrayList<CustomData>();
+
 	public StatePersistence(PlayerState state) {
 		playerId = state.getPlayerId();
 		gameId = state.getGameId();
@@ -53,6 +56,8 @@ public class StatePersistence {
 		for (GameConcept gc : state.getState()) {
 			concepts.add(new GenericObjectPersistence(gc));
 		}
+
+		customData.addAll(state.getCustomData());
 	}
 
 	public StatePersistence() {
@@ -63,6 +68,7 @@ public class StatePersistence {
 		PlayerState p = new PlayerState();
 		p.setGameId(gameId);
 		p.setPlayerId(playerId);
+		p.getCustomData().addAll(customData);
 		Set<GameConcept> state = new HashSet<GameConcept>();
 		for (GenericObjectPersistence obj : concepts) {
 			try {
@@ -111,5 +117,13 @@ public class StatePersistence {
 
 	public void setGameId(String gameId) {
 		this.gameId = gameId;
+	}
+
+	public List<CustomData> getCustomData() {
+		return customData;
+	}
+
+	public void setCustomData(List<CustomData> customData) {
+		this.customData = customData;
 	}
 }

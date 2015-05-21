@@ -8,6 +8,10 @@ query "getNotifications"
 	$notifications: Notification()
 end
 
+query "getCustomData"
+	$data: CustomData()
+end
+
 function void log(String msg) {
 	System.out.println(msg);
 }

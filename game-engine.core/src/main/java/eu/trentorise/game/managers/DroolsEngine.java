@@ -56,6 +56,7 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Action;
 import eu.trentorise.game.model.ClasspathRule;
+import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.FSRule;
 import eu.trentorise.game.model.Game;
@@ -114,10 +115,12 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
 
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
+		cmds.add(CommandFactory.newInsertElements(state.getCustomData()));
 		cmds.add(CommandFactory.newFireAllRules());
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
 		cmds.add(CommandFactory.newQuery("retrieveNotifications",
 				"getNotifications"));
+		cmds.add(CommandFactory.newQuery("retrieveCustomData", "getCustomData"));
 
 		kSession = loadGameConstants(kSession, gameId);
 
@@ -132,6 +135,15 @@ public class DroolsEngine implements GameEngine {
 			newState.add((GameConcept) iter.next().get("$result"));
 		}
 
+		List<CustomData> customData = new ArrayList<CustomData>();
+
+		iter = ((QueryResults) results.getValue("retrieveCustomData"))
+				.iterator();
+		while (iter.hasNext()) {
+			CustomData stateCustomData = (CustomData) iter.next().get("$data");
+			customData.add(stateCustomData);
+		}
+
 		iter = ((QueryResults) results.getValue("retrieveNotifications"))
 				.iterator();
 		while (iter.hasNext()) {
@@ -142,6 +154,7 @@ public class DroolsEngine implements GameEngine {
 		}
 
 		state.setState(newState);
+		state.setCustomData(customData);
 		return state;
 	}
 

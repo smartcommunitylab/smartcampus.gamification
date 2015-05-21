@@ -1,0 +1,20 @@
+package eu.trentorise.game.model
+
+rule "write customData"
+when
+    Action( id == 'write-data')
+then
+	CustomData cd = new CustomData();
+	cd.getData().put("counter",1000);
+	insert(cd);	
+end
+
+rule "edit customData"
+when
+    Action( id == 'edit-data')
+    $cd : CustomData( $counter : data["counter"] != null )
+then
+	Integer c = (Integer) $counter;
+	$cd.getData().put("counter", c + 10);
+end
+

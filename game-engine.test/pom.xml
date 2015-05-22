@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.trentorise</groupId>
 	<artifactId>game-engine.test</artifactId>
-	<version>0.3</version>
+	<version>0.4</version>
 
 	<dependencies>
 		<dependency>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>eu.trentorise</groupId>
 			<artifactId>game-engine.core</artifactId>
-			<version>0.8</version>
+			<version>0.9</version>
 		</dependency>
 
 	</dependencies>

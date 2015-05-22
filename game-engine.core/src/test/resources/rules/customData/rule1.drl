@@ -3,12 +3,13 @@ package eu.trentorise.game.model
 
 rule "init customData"
 when
-    Action( id == 'init-data')
+    Action( $actionId: id == 'init-data')
     $cd : CustomData(this["counter"] == null)
 then
 	$cd.put("counter",1000);
 	$cd.put("areas", new java.util.ArrayList<String>()); 
 	update($cd);	
+	log("Action: " + $actionId);
 end
 
 rule "edit counter"

@@ -47,7 +47,7 @@ public class StatePersistence {
 
 	private List<GenericObjectPersistence> concepts = new ArrayList<GenericObjectPersistence>();
 
-	private List<CustomData> customData = new ArrayList<CustomData>();
+	private CustomData customData;
 
 	public StatePersistence(PlayerState state) {
 		playerId = state.getPlayerId();
@@ -57,7 +57,7 @@ public class StatePersistence {
 			concepts.add(new GenericObjectPersistence(gc));
 		}
 
-		customData.addAll(state.getCustomData());
+		customData = state.getCustomData();
 	}
 
 	public StatePersistence() {
@@ -68,7 +68,7 @@ public class StatePersistence {
 		PlayerState p = new PlayerState();
 		p.setGameId(gameId);
 		p.setPlayerId(playerId);
-		p.getCustomData().addAll(customData);
+		p.setCustomData(customData);
 		Set<GameConcept> state = new HashSet<GameConcept>();
 		for (GenericObjectPersistence obj : concepts) {
 			try {
@@ -119,11 +119,11 @@ public class StatePersistence {
 		this.gameId = gameId;
 	}
 
-	public List<CustomData> getCustomData() {
+	public CustomData getCustomData() {
 		return customData;
 	}
 
-	public void setCustomData(List<CustomData> customData) {
+	public void setCustomData(CustomData customData) {
 		this.customData = customData;
 	}
 }

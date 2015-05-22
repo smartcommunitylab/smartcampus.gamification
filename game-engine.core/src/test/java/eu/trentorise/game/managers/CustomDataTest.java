@@ -1,6 +1,7 @@
 package eu.trentorise.game.managers;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +23,6 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
-import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,11 +31,9 @@ public class CustomDataTest {
 
 	private static final String GAME = "customData";
 	private static final String PLAYER = "player1";
+	private static final int TIMEOUT = 2000;
 	@Autowired
 	private GameManager gameManager;
-
-	@Autowired
-	private GameEngine engine;
 
 	@Autowired
 	private PlayerService playerSrv;
@@ -53,8 +51,9 @@ public class CustomDataTest {
 		game.setName(GAME);
 
 		game.setActions(new HashSet<String>());
-		game.getActions().add("write-data");
+		game.getActions().add("init-data");
 		game.getActions().add("edit-data");
+		game.getActions().add("add-area");
 
 		game.setConcepts(new HashSet<GameConcept>());
 		game.setTasks(new HashSet<GameTask>());
@@ -70,6 +69,7 @@ public class CustomDataTest {
 		mongo.dropCollection(NotificationPersistence.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void workflow() throws InterruptedException {
 		Game game = gameManager.saveGameDefinition(defineGame());
@@ -79,25 +79,38 @@ public class CustomDataTest {
 
 		PlayerState state = playerSrv.loadState(PLAYER, game.getId());
 		Assert.assertEquals(0, state.getCustomData().size());
-		workflow.apply(game.getId(), "write-data", PLAYER, null, null);
-		Thread.sleep(5000);
+		workflow.apply(game.getId(), "init-data", PLAYER, null, null);
+
+		Thread.sleep(TIMEOUT);
 		state = playerSrv.loadState(PLAYER, game.getId());
-		Assert.assertEquals(1, state.getCustomData().size());
-		Assert.assertEquals(1000,
-				state.getCustomData().get(0).getData().get("counter"));
+		Assert.assertEquals(2, state.getCustomData().size());
+		Assert.assertEquals(1000, state.getCustomData().get("counter"));
+		Assert.assertEquals(0,
+				((List<String>) state.getCustomData().get("areas")).size());
 
 		workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
-		Thread.sleep(5000);
+		Thread.sleep(TIMEOUT);
 		state = playerSrv.loadState(PLAYER, game.getId());
-		Assert.assertEquals(1, state.getCustomData().size());
-		Assert.assertEquals(1010,
-				state.getCustomData().get(0).getData().get("counter"));
+		Assert.assertEquals(2, state.getCustomData().size());
+		Assert.assertEquals(1010, state.getCustomData().get("counter"));
 
 		workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
-		Thread.sleep(5000);
+		Thread.sleep(TIMEOUT);
 		state = playerSrv.loadState(PLAYER, game.getId());
-		Assert.assertEquals(1, state.getCustomData().size());
-		Assert.assertEquals(1020,
-				state.getCustomData().get(0).getData().get("counter"));
+		Assert.assertEquals(2, state.getCustomData().size());
+		Assert.assertEquals(1020, state.getCustomData().get("counter"));
+
+		workflow.apply(game.getId(), "add-area", PLAYER, null, null);
+		Thread.sleep(TIMEOUT);
+		state = playerSrv.loadState(PLAYER, game.getId());
+		Assert.assertEquals(2, state.getCustomData().size());
+		Assert.assertEquals(1,
+				((List<String>) state.getCustomData().get("areas")).size());
+
+		workflow.apply(game.getId(), "add-area", PLAYER, null, null);
+		Thread.sleep(TIMEOUT);
+		state = playerSrv.loadState(PLAYER, game.getId());
+		Assert.assertEquals(1,
+				((List<String>) state.getCustomData().get("areas")).size());
 	}
 }

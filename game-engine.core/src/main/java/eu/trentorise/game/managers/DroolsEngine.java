@@ -115,7 +115,7 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
 
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
-		cmds.add(CommandFactory.newInsertElements(state.getCustomData()));
+		cmds.add(CommandFactory.newInsert(state.getCustomData()));
 		cmds.add(CommandFactory.newFireAllRules());
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
 		cmds.add(CommandFactory.newQuery("retrieveNotifications",
@@ -154,7 +154,7 @@ public class DroolsEngine implements GameEngine {
 		}
 
 		state.setState(newState);
-		state.setCustomData(customData);
+		state.setCustomData(customData.get(0));
 		return state;
 	}
 

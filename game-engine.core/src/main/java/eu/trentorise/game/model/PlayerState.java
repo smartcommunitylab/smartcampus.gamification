@@ -16,9 +16,7 @@
 
 package eu.trentorise.game.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class PlayerState {
@@ -28,7 +26,7 @@ public class PlayerState {
 
 	private Set<GameConcept> state = new HashSet<GameConcept>();
 
-	private List<CustomData> customData = new ArrayList<CustomData>();
+	private CustomData customData = new CustomData();
 
 	public PlayerState() {
 	}
@@ -62,11 +60,11 @@ public class PlayerState {
 		this.gameId = gameId;
 	}
 
-	public List<CustomData> getCustomData() {
+	public CustomData getCustomData() {
 		return customData;
 	}
 
-	public void setCustomData(List<CustomData> customData) {
+	public void setCustomData(CustomData customData) {
 		this.customData = customData;
 	}
 

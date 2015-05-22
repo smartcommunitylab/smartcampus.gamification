@@ -1,20 +1,35 @@
 package eu.trentorise.game.model
 
-rule "write customData"
+
+rule "init customData"
 when
-    Action( id == 'write-data')
+    Action( id == 'init-data')
+    $cd : CustomData(this["counter"] == null)
 then
-	CustomData cd = new CustomData();
-	cd.getData().put("counter",1000);
-	insert(cd);	
+	$cd.put("counter",1000);
+	$cd.put("areas", new java.util.ArrayList<String>()); 
+	update($cd);	
 end
 
-rule "edit customData"
+rule "edit counter"
 when
     Action( id == 'edit-data')
-    $cd : CustomData( $counter : data["counter"] != null )
+    $cd : CustomData()
 then
-	Integer c = (Integer) $counter;
-	$cd.getData().put("counter", c + 10);
+	Integer c = (Integer) $cd.get("counter");
+	$cd.put("counter", c + 10);
 end
+
+rule "edit areas"
+when
+    Action( id == 'add-area')
+    $cd : CustomData(this["areas"] != null, this["areas"] not contains 'area-51')
+then
+	java.util.List<String> areas = (java.util.List<String>) $cd.get("areas"); 
+	areas.add('area-51');
+	log('added area-51');
+	update($cd);
+end
+
+
 

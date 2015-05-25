@@ -80,8 +80,7 @@ public class DemoGameFactory {
 			game.setName(gameName);
 			game.setOwner(gameOwner);
 
-			game.setActions(new HashSet<String>(Arrays.asList("save_itinerary",
-					"classification")));
+			game.setActions(new HashSet<String>(Arrays.asList("save_itinerary")));
 
 			game.setConcepts(new HashSet<GameConcept>(Arrays.asList(
 					new PointConcept("green leaves"),

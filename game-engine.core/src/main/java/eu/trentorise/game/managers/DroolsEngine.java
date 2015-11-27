@@ -154,7 +154,9 @@ public class DroolsEngine implements GameEngine {
 		}
 
 		state.setState(newState);
-		state.setCustomData(customData.get(0));
+		// fix for previous dataset versions
+		state.setCustomData(customData.isEmpty() ? new CustomData()
+				: customData.get(0));
 		return state;
 	}
 

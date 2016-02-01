@@ -28,16 +28,16 @@ import eu.trentorise.game.model.Team;
 @Service
 public interface PlayerService {
 
-	public PlayerState loadState(String userId, String gameId);
+	public PlayerState loadState(String playerId, String gameId);
 
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable);
 
 	public List<PlayerState> loadStates(String gameId);
 
-	public Page<PlayerState> loadStates(String gameId, String userId,
+	public Page<PlayerState> loadStates(String gameId, String playerId,
 			Pageable pageable);
 
-	public List<PlayerState> loadStates(String gameId, String userId);
+	public List<PlayerState> loadStates(String gameId, String playerId);
 
 	public boolean saveState(PlayerState state);
 
@@ -47,7 +47,7 @@ public interface PlayerService {
 
 	public List<String> readPlayers(String gameId);
 
-	public Team saveTeam(Team t);
+	public Team saveTeam(Team team);
 
 	public List<Team> readTeams(String gameId);
 

@@ -28,21 +28,21 @@ import org.springframework.stereotype.Repository;
 public interface PlayerRepo extends
 		PagingAndSortingRepository<StatePersistence, String> {
 
-	public List<StatePersistence> findByGameId(String id);
+	public List<StatePersistence> findByGameId(String gameId);
 
-	public Page<StatePersistence> findByGameId(String id, Pageable pageable);
+	public Page<StatePersistence> findByGameId(String gameId, Pageable pageable);
 
-	public List<StatePersistence> findByPlayerId(String id);
+	public List<StatePersistence> findByPlayerId(String playerId);
 
-	public Page<StatePersistence> findByPlayerId(String id, Pageable pageable);
+	public Page<StatePersistence> findByPlayerId(String playerId, Pageable pageable);
 
-	public StatePersistence findByGameIdAndPlayerId(String game, String player);
+	public StatePersistence findByGameIdAndPlayerId(String gameId, String playerId);
 
-	public List<StatePersistence> findByGameIdAndPlayerIdLike(String id,
-			String player);
+	public List<StatePersistence> findByGameIdAndPlayerIdLike(String gameId,
+			String playerId);
 
-	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String id,
-			String player, Pageable pageable);
+	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String gameId,
+			String playerId, Pageable pageable);
 
 	@Query("{gameId:?0, metadata.name:{$exists:true}}")
 	public List<StatePersistence> findTeamsByGameId(String gameId);

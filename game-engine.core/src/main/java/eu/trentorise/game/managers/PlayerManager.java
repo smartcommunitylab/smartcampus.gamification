@@ -67,8 +67,8 @@ public class PlayerManager implements PlayerService {
 		}
 	}
 
-	public PlayerState loadState(String userId, String gameId) {
-		String key = userId + "-" + gameId;
+	public PlayerState loadState(String playerId, String gameId) {
+		String key = playerId + "-" + gameId;
 		return data.get(key) != null ? convert(mapper.convertValue(
 				data.get(key), StatePersistence.class)) : new PlayerState();
 	}
@@ -145,20 +145,20 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Page<PlayerState> loadStates(String gameId, String userId,
+	public Page<PlayerState> loadStates(String gameId, String playerId,
 			Pageable pageable) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public List<PlayerState> loadStates(String gameId, String userId) {
+	public List<PlayerState> loadStates(String gameId, String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public Team saveTeam(Team t) {
+	public Team saveTeam(Team team) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}

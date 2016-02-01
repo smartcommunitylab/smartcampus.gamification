@@ -59,10 +59,10 @@ public class DBPlayerManager implements PlayerService {
 	@Autowired
 	private GameService gameSrv;
 
-	public PlayerState loadState(String userId, String gameId) {
+	public PlayerState loadState(String playerId, String gameId) {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
-				.findByGameIdAndPlayerId(gameId, userId);
-		PlayerState res = state == null ? new PlayerState(userId, gameId)
+				.findByGameIdAndPlayerId(gameId, playerId);
+		PlayerState res = state == null ? new PlayerState(playerId, gameId)
 				: state.toPlayerState();
 		return updateConcepts(res, gameId);
 	}
@@ -142,10 +142,10 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Page<PlayerState> loadStates(String gameId, String userId,
+	public Page<PlayerState> loadStates(String gameId, String playerId,
 			Pageable pageable) {
 		Page<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(
-				gameId, userId, pageable);
+				gameId, playerId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
 			result.add(state.toPlayerState());
@@ -156,9 +156,9 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public List<PlayerState> loadStates(String gameId, String userId) {
+	public List<PlayerState> loadStates(String gameId, String playerId) {
 		List<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(
-				gameId, userId);
+				gameId, playerId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
 			result.add(state.toPlayerState());
@@ -197,8 +197,8 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Team saveTeam(Team t) {
-		TeamPersistence tp = new TeamPersistence(t);
+	public Team saveTeam(Team team) {
+		TeamPersistence tp = new TeamPersistence(team);
 		StatePersistence saved = persist(tp);
 		return new Team(saved);
 	}

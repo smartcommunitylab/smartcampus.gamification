@@ -34,9 +34,11 @@ public interface PlayerRepo extends
 
 	public List<StatePersistence> findByPlayerId(String playerId);
 
-	public Page<StatePersistence> findByPlayerId(String playerId, Pageable pageable);
+	public Page<StatePersistence> findByPlayerId(String playerId,
+			Pageable pageable);
 
-	public StatePersistence findByGameIdAndPlayerId(String gameId, String playerId);
+	public StatePersistence findByGameIdAndPlayerId(String gameId,
+			String playerId);
 
 	public List<StatePersistence> findByGameIdAndPlayerIdLike(String gameId,
 			String playerId);
@@ -44,7 +46,7 @@ public interface PlayerRepo extends
 	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String gameId,
 			String playerId, Pageable pageable);
 
-	@Query("{gameId:?0, metadata.name:{$exists:true}}")
+	@Query("{gameId:?0, metadata.name:{$exists:true},metadata.members:{$exists:true}}")
 	public List<StatePersistence> findTeamsByGameId(String gameId);
 
 	public List<StatePersistence> deleteByGameIdAndPlayerId(String gameId,

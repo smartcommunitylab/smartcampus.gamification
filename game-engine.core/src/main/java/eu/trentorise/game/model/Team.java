@@ -1,5 +1,6 @@
 package eu.trentorise.game.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.trentorise.game.repo.StatePersistence;
@@ -22,7 +23,7 @@ public class Team extends PlayerState {
 
 	private String name;
 
-	private List<String> members;
+	private List<String> members = new ArrayList<>();
 
 	private MemberType memberType;
 

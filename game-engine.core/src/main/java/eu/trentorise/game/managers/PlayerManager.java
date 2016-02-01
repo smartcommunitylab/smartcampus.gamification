@@ -174,6 +174,12 @@ public class PlayerManager implements PlayerService {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
+
+	@Override
+	public List<Team> readTeams(String gameId, String playerId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
 }
 
 class ConceptPersistence {

@@ -51,4 +51,6 @@ public interface PlayerService {
 
 	public List<Team> readTeams(String gameId);
 
+	public List<Team> readTeams(String gameId, String playerId);
+
 }

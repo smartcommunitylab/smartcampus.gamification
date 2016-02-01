@@ -52,4 +52,8 @@ public interface PlayerRepo extends
 	public List<StatePersistence> deleteByGameIdAndPlayerId(String gameId,
 			String playerId);
 
+	@Query("{gameId:?0, metadata.members:?1}")
+	public List<StatePersistence> findTeamByMemberId(String gameId,
+			String memberId);
+
 }

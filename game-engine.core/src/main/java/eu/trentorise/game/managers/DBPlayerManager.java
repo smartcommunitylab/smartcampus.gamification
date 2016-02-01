@@ -219,4 +219,16 @@ public class DBPlayerManager implements PlayerService {
 		playerRepo.deleteByGameIdAndPlayerId(gameId, playerId);
 	}
 
+	@Override
+	public List<Team> readTeams(String gameId, String playerId) {
+		List<StatePersistence> result = playerRepo.findTeamByMemberId(gameId,
+				playerId);
+		List<Team> converted = new ArrayList<>();
+		for (StatePersistence sp : result) {
+			converted.add(new Team(sp));
+		}
+
+		return converted;
+	}
+
 }

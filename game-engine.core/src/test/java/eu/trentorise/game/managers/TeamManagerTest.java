@@ -96,6 +96,36 @@ public class TeamManagerTest {
 
 		Assert.assertEquals(1, playerSrv.readTeams("game1").size());
 		Assert.assertEquals(4, playerSrv.readPlayers("game1").size());
+	}
 
+	@Test
+	public void findMyTeams() {
+		PlayerState me = new PlayerState("p1", "game1");
+		playerSrv.saveState(me);
+
+		Team t = new Team();
+		t.setGameId("game1");
+		t.setPlayerId("t1");
+		t.getMembers().add("p1");
+		t.setName("team1");
+		playerSrv.saveTeam(t);
+
+		t = new Team();
+		t.setGameId("game1");
+		t.setPlayerId("t2");
+		t.getMembers().add("p1");
+		t.getMembers().add("p13");
+		t.getMembers().add("p21");
+		t.setName("team2");
+		playerSrv.saveTeam(t);
+
+		t = new Team();
+		t.setGameId("game1");
+		t.setPlayerId("t3");
+		t.getMembers().add("p211");
+		t.setName("team3");
+		playerSrv.saveTeam(t);
+
+		Assert.assertEquals(2, playerSrv.readTeams("game1", "p1").size());
 	}
 }

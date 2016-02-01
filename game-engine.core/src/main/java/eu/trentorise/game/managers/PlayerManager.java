@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.services.PlayerService;
 
 @Component
@@ -152,6 +153,24 @@ public class PlayerManager implements PlayerService {
 
 	@Override
 	public List<PlayerState> loadStates(String gameId, String userId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public Team saveTeam(Team t) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public List<Team> readTeams(String gameId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public void deleteState(String gameId, String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}

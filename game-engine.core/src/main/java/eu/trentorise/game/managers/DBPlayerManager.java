@@ -37,8 +37,10 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
+import eu.trentorise.game.repo.TeamPersistence;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
@@ -49,7 +51,7 @@ public class DBPlayerManager implements PlayerService {
 			.getLogger(DBPlayerManager.class);
 
 	@Autowired
-	private PlayerRepo repo;
+	private PlayerRepo playerRepo;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -58,7 +60,7 @@ public class DBPlayerManager implements PlayerService {
 	private GameService gameSrv;
 
 	public PlayerState loadState(String userId, String gameId) {
-		eu.trentorise.game.repo.StatePersistence state = repo
+		eu.trentorise.game.repo.StatePersistence state = playerRepo
 				.findByGameIdAndPlayerId(gameId, userId);
 		PlayerState res = state == null ? new PlayerState(userId, gameId)
 				: state.toPlayerState();
@@ -67,7 +69,11 @@ public class DBPlayerManager implements PlayerService {
 
 	public boolean saveState(PlayerState state) {
 		StatePersistence toSave = new StatePersistence(state);
+		persist(toSave);
+		return true;
+	}
 
+	private StatePersistence persist(StatePersistence state) {
 		if (StringUtils.isBlank(state.getGameId())
 				|| StringUtils.isBlank(state.getPlayerId())) {
 			throw new IllegalArgumentException(
@@ -79,17 +85,18 @@ public class DBPlayerManager implements PlayerService {
 				.is(state.getPlayerId());
 		Query query = new Query(criteria);
 		Update update = new Update();
-		update.set("concepts", toSave.getConcepts());
-		update.set("customData", toSave.getCustomData());
+		update.set("concepts", state.getConcepts());
+		update.set("customData", state.getCustomData());
+		update.set("metadata", state.getMetadata());
 		FindAndModifyOptions options = new FindAndModifyOptions();
 		options.upsert(true);
-		mongoTemplate.findAndModify(query, update, options,
+		options.returnNew(true);
+		return mongoTemplate.findAndModify(query, update, options,
 				StatePersistence.class);
-		return true;
 	}
 
 	public List<String> readPlayers(String gameId) {
-		List<StatePersistence> states = repo.findByGameId(gameId);
+		List<StatePersistence> states = playerRepo.findByGameId(gameId);
 		List<String> result = new ArrayList<String>();
 		for (StatePersistence state : states) {
 			result.add(state.getPlayerId());
@@ -100,7 +107,8 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public Page<String> readPlayers(String gameId, Pageable pageable) {
-		Page<StatePersistence> states = repo.findByGameId(gameId, pageable);
+		Page<StatePersistence> states = playerRepo.findByGameId(gameId,
+				pageable);
 		List<String> result = new ArrayList<String>();
 		for (StatePersistence state : states) {
 			result.add(state.getPlayerId());
@@ -111,7 +119,8 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable) {
-		Page<StatePersistence> states = repo.findByGameId(gameId, pageable);
+		Page<StatePersistence> states = playerRepo.findByGameId(gameId,
+				pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
 			result.add(state.toPlayerState());
@@ -123,7 +132,7 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public List<PlayerState> loadStates(String gameId) {
-		List<StatePersistence> states = repo.findByGameId(gameId);
+		List<StatePersistence> states = playerRepo.findByGameId(gameId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
 			result.add(state.toPlayerState());
@@ -135,7 +144,7 @@ public class DBPlayerManager implements PlayerService {
 	@Override
 	public Page<PlayerState> loadStates(String gameId, String userId,
 			Pageable pageable) {
-		Page<StatePersistence> states = repo.findByGameIdAndPlayerIdLike(
+		Page<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(
 				gameId, userId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
@@ -148,7 +157,7 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public List<PlayerState> loadStates(String gameId, String userId) {
-		List<StatePersistence> states = repo.findByGameIdAndPlayerIdLike(
+		List<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(
 				gameId, userId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
@@ -185,6 +194,29 @@ public class DBPlayerManager implements PlayerService {
 			}
 		}
 		return ps;
+	}
+
+	@Override
+	public Team saveTeam(Team t) {
+		TeamPersistence tp = new TeamPersistence(t);
+		StatePersistence saved = persist(tp);
+		return new Team(saved);
+	}
+
+	@Override
+	public List<Team> readTeams(String gameId) {
+		List<StatePersistence> result = playerRepo.findTeamsByGameId(gameId);
+		List<Team> converted = new ArrayList<>();
+		for (StatePersistence sp : result) {
+			converted.add(new Team(sp));
+		}
+
+		return converted;
+	}
+
+	@Override
+	public void deleteState(String gameId, String playerId) {
+		playerRepo.deleteByGameIdAndPlayerId(gameId, playerId);
 	}
 
 }

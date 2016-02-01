@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Team;
 
 @Service
 public interface PlayerService {
@@ -40,7 +41,14 @@ public interface PlayerService {
 
 	public boolean saveState(PlayerState state);
 
+	public void deleteState(String gameId, String playerId);
+
 	public Page<String> readPlayers(String gameId, Pageable pageable);
 
 	public List<String> readPlayers(String gameId);
+
+	public Team saveTeam(Team t);
+
+	public List<Team> readTeams(String gameId);
+
 }

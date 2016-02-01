@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -42,5 +43,11 @@ public interface PlayerRepo extends
 
 	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String id,
 			String player, Pageable pageable);
+
+	@Query("{gameId:?0, metadata.name:{$exists:true}}")
+	public List<StatePersistence> findTeamsByGameId(String gameId);
+
+	public List<StatePersistence> deleteByGameIdAndPlayerId(String gameId,
+			String playerId);
 
 }

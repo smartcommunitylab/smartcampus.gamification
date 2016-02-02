@@ -180,6 +180,24 @@ public class PlayerManager implements PlayerService {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
+
+	@Override
+	public Team addToTeam(String gameId, String teamId, String playerId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public Team removeFromTeam(String gameId, String teamId, String playerId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public Team readTeam(String gameId, String teamId) {
+		logger.warn("method not implemented");
+		throw new UnsupportedOperationException("method not implemented");
+	}
 }
 
 class ConceptPersistence {

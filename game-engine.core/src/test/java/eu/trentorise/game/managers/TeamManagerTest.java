@@ -128,4 +128,29 @@ public class TeamManagerTest {
 
 		Assert.assertEquals(2, playerSrv.readTeams("game1", "p1").size());
 	}
+
+	@Test
+	public void membership() {
+		Team t = new Team();
+		t.setGameId("game1");
+		t.setPlayerId("t1");
+		t.getMembers().add("p1");
+		t.setName("team1");
+		playerSrv.saveTeam(t);
+
+		playerSrv.addToTeam("game1", "t1", "p12");
+
+		t = playerSrv.readTeam("game1", "t1");
+
+		Assert.assertArrayEquals(new String[] { "p1", "p12" }, t.getMembers()
+				.toArray(new String[0]));
+
+		playerSrv.removeFromTeam("game1", "t1", "p1");
+
+		t = playerSrv.readTeam("game1", "t1");
+
+		Assert.assertArrayEquals(new String[] { "p12" }, t.getMembers()
+				.toArray(new String[0]));
+
+	}
 }

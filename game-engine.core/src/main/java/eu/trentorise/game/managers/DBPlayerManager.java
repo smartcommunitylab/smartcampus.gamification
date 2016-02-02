@@ -231,4 +231,48 @@ public class DBPlayerManager implements PlayerService {
 		return converted;
 	}
 
+	@Override
+	public Team addToTeam(String gameId, String teamId, String playerId) {
+		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
+				teamId);
+		if (state != null) {
+			List<String> members = (List<String>) state.getMetadata().get(
+					"members");
+			if (members != null) {
+				members.add(playerId);
+				state.getMetadata().put("members", members);
+				playerRepo.save(state);
+			}
+		}
+
+		return new Team(state);
+	}
+
+	@Override
+	public Team removeFromTeam(String gameId, String teamId, String playerId) {
+		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
+				teamId);
+		if (state != null) {
+			List<String> members = (List<String>) state.getMetadata().get(
+					"members");
+			if (members != null) {
+				members.remove(playerId);
+				state.getMetadata().put("members", members);
+				playerRepo.save(state);
+			}
+		}
+
+		return new Team(state);
+	}
+
+	@Override
+	public Team readTeam(String gameId, String teamId) {
+		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
+				teamId);
+		if (state != null) {
+			return new Team(state);
+		}
+		return null;
+	}
+
 }

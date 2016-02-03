@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
@@ -39,10 +40,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.bean.ExecutionDataDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.WebConfig;
@@ -66,8 +69,10 @@ import eu.trentorise.game.task.ClassificationTask;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
-		WebConfig.class }, loader = AnnotationConfigWebContextLoader.class)
+		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
+@ActiveProfiles("sec")
+// used sec profile beacause actually no-sec profile not work in test env
 public class RestAPITest {
 
 	@Autowired
@@ -103,10 +108,12 @@ public class RestAPITest {
 
 		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
 		ObjectMapper mapper = new ObjectMapper();
-		ExecutionData bean = new ExecutionData();
+		ExecutionDataDTO bean = new ExecutionDataDTO();
 		bean.setActionId(ACTION);
 		bean.setUserId("1");
-		RequestBuilder builder = MockMvcRequestBuilders.post("/execute")
+		bean.setGameId(gp.getId());
+		RequestBuilder builder = MockMvcRequestBuilders
+				.post("/gengine/execute")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(bean));
 		try {
@@ -203,5 +210,18 @@ public class RestAPITest {
 		return new GamePersistence(game);
 
 	}
+
+}
+
+/**
+ * Without @EnablaWebMvc MockMvc not work correctly to simulate controller
+ * Cannot add annotation to WebConfig to conflict with WebMvcConfigurerAdapter
+ * extension
+ * 
+ * @author mirko perillo
+ * 
+ */
+@EnableWebMvc
+class TestMVCConfiguration extends WebConfig {
 
 }

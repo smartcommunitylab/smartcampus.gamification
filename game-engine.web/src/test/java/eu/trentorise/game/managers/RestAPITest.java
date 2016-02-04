@@ -232,6 +232,21 @@ public class RestAPITest {
 			Assert.assertArrayEquals(new String[] { "p1", "p2", "p3" }, team
 					.getMembers().toArray(new String[0]));
 
+			builder = MockMvcRequestBuilders
+					.post("/console/game/" + GAME + "/team/"
+							+ team.getPlayerId() + "/members")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content("[\"p20\",\"p22\"]");
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			team = playerSrv.readTeam(GAME, "t1");
+			Assert.assertNotNull(team);
+			Assert.assertEquals("hunter", team.getCustomData().get("level"));
+			Assert.assertArrayEquals(new String[] { "p20", "p22" }, team
+					.getMembers().toArray(new String[0]));
+
 			builder = MockMvcRequestBuilders.delete("/console/game/" + GAME
 					+ "/team/" + team.getPlayerId());
 

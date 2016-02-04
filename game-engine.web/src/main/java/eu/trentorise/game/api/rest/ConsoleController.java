@@ -269,9 +269,9 @@ public class ConsoleController {
 			@RequestBody TeamDTO team) {
 
 		// check if player already exists
-		if (playerSrv.loadState(gameId, team.getPlayerId(), false) != null) {
+		if (playerSrv.readTeam(gameId, team.getPlayerId()) != null) {
 			throw new IllegalArgumentException(String.format(
-					"Player %s already exists in game %s", team.getPlayerId(),
+					"Team %s already exists in game %s", team.getPlayerId(),
 					gameId));
 		}
 
@@ -284,6 +284,16 @@ public class ConsoleController {
 	public void deleteTeam(@PathVariable String gameId,
 			@PathVariable String teamId) {
 		deletePlayer(gameId, teamId);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team/{teamId}/members")
+	public void updateTeamMembers(@PathVariable String gameId,
+			@PathVariable String teamId, @RequestBody List<String> members) {
+		Team team = playerSrv.readTeam(gameId, teamId);
+		if (team != null) {
+			team.setMembers(members);
+			playerSrv.saveTeam(team);
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/rule/validate")

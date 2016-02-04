@@ -244,7 +244,7 @@
 	<repositories>
 		<repository>
 			<id>SmartCampus</id>
-			<url>http://http://repository.smartcommunitylab.it/content/groups/public/</url>
+			<url>http://repository.smartcommunitylab.it/content/groups/public/</url>
 		</repository>
 		<repository>
             <id>spring-releases</id>

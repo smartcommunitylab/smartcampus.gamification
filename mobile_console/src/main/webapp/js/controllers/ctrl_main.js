@@ -326,24 +326,32 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     $scope.getProfile = function(gameId) {
-    	
-    	$scope.getNiks();
-    	
     	if(gameId == null){
     		gameId = $scope.gameId;
     	}
-    	//window.location.reload(true);	// To force the page refresh - this goes in a loop
     	$scope.setLoading(true);
+    	var nicksList = sharedDataService.getPlayersList();
+    	if(nicksList != null && nicksList.length != null && nicksList.length > 0){
+    		$scope.myNick = $scope.getPlayerNameById($scope.userId);
+    		$scope.getProfilesData(gameId);
+    	} else {
+	    	$scope.getNiks($scope.userId).then(function(result){	// wait until the nickname function return	        	
+	    		$scope.getProfilesData(gameId);
+	    	});
+    	}
+    };
+    
+    // Method getPrifilesData: used to retrieve the user profile data from DB
+    $scope.getProfilesData = function(gameId){
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId + "/" + $scope.userId;
     	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
-    		//$scope.userProfile = result.state;
     		$scope.correctProfileData(result);
     		$scope.showProfile();
     	});
-    };
+    }
     
     $scope.getClassification = function(gameId) {
     	//window.location.reload(true);	// To force the page refresh - this goes in a loop
@@ -360,26 +368,32 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     // Method used to retrieve all users niks
-    $scope.getNiks = function() {
-    	//window.location.reload(true);	// To force the page refresh - this goes in a loop
+    $scope.getNiks = function(id) {
     	$scope.setLoading(true);
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "niks/";
     	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
-    		//$scope.GameClassification = result;
-    		//$scope.correctClassificationData(result);
-    		//$scope.showClassification();
     		if(result != null){
     			sharedDataService.setPlayerList(result.players);
+    			var name = "";
+    			var find = false;
+    			for(var i = 0; (i < result.players.length) && !find; i++){
+    				if(result.players[i].socialId == id){
+    					name = result.players[i].nikName;
+    					find = true;
+    				}	
+    			}
+    			$scope.myNick = name;
     		}
     	});
+    	return myDataPromise;
     };
     
     // Method used to load only the used data from the players list
     $scope.correctProfileData = function(profile){
-    	if(profile != null && profile != "" && profile.state.length > 0){
+    	if(profile != null && profile != "" && profile.state != null){
     		//var badge = (profile.state[0].badgeEarned != null) ? profile.state[0].badgeEarned : profile.state[1].badgeEarned;
     		//var badge = $scope.getBadgesList(profile.state);
     		//var badgeEarned = badge[0].badgeEarned;
@@ -398,7 +412,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     // Method used to load only the used data from the players list
-    $scope.correctClassificationData = function(list){
+    $scope.correctClassificationData = function(object){
+    	var list = (object) ? object.content : [];
     	$scope.GameClassification = [];
     	if(list != null && list.length > 0){
     		for(var i = 0; i < list.length; i++){
@@ -434,25 +449,27 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     // Method used to load the different badges in a list
-    $scope.getBadgesList = function(badge_list){
+    $scope.getBadgesList = function(object){
+    	var badge_list = (object) ? object.BadgeCollectionConcept : [];
     	var badges = [];
     	var badges_green = {};
     	var badges_health = {};
     	var badges_pr = {};
     	var badges_special = {};
-    	
-    	for(var i = 0; i < badge_list.length; i++){
-    		if(badge_list[i].badgeEarned != null){
-    			if(badge_list[i].name == "green leaves"){
-    				badges_green = badge_list[i];
-    			} else if(badge_list[i].name == "health"){
-    				badges_health = badge_list[i];
-    			} else if(badge_list[i].name == "p+r"){
-    				badges_pr = badge_list[i];
-    			} else if(badge_list[i].name == "special"){
-    				badges_special = badge_list[i];
-    			}
-    		}
+    	if(badge_list){
+	    	for(var i = 0; i < badge_list.length; i++){
+	    		if(badge_list[i].badgeEarned != null){ 
+	    			if(badge_list[i].name == "green leaves"){
+	    				badges_green = badge_list[i];
+	    			} else if(badge_list[i].name == "health"){
+	    				badges_health = badge_list[i];
+	    			} else if(badge_list[i].name == "p+r"){
+	    				badges_pr = badge_list[i];
+	    			} else if(badge_list[i].name == "special"){
+	    				badges_special = badge_list[i];
+	    			}
+	    		}
+	    	}
     	}
     	
     	badges.splice(0, 0, badges_green);
@@ -464,33 +481,36 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     // Method used to load the different score category in a list
-    $scope.getStateList = function(state_list){
+    $scope.getStateList = function(object){
+    	var state_list = (object) ? object.PointConcept : [];
     	var states = [];
     	var state_greenL = {};
     	var state_health = {};
     	var state_pr = {}; 
-    	for(var i = 0; i < state_list.length; i++){
-    		if(state_list[i].score != null){
-    			if(state_list[i].name == "green leaves"){
-	    			state_greenL = {
-	    					id : state_list[i].id,
-	    					name : state_list[i].name,
-	    					score : state_list[i].score
-	    			};
-    			} else if (state_list[i].name == "health"){
-	    			state_health = {
-	    					id : state_list[i].id,
-	    					name : state_list[i].name,
-	    					score : state_list[i].score
-	    			};
-    			} else {
-	    			state_pr = {
-	    					id : state_list[i].id,
-	    					name : state_list[i].name,
-	    					score : state_list[i].score
-	    			};
-    			}
-    		}
+    	if(state_list){
+	    	for(var i = 0; i < state_list.length; i++){
+	    		if(state_list[i].score != null){	//.score
+	    			if(state_list[i].name == "green leaves"){
+		    			state_greenL = {
+		    					id : state_list[i].id,
+		    					name : state_list[i].name,
+		    					score : state_list[i].score
+		    			};
+	    			} else if (state_list[i].name == "health"){
+		    			state_health = {
+		    					id : state_list[i].id,
+		    					name : state_list[i].name,
+		    					score : state_list[i].score
+		    			};
+	    			} else {
+		    			state_pr = {
+		    					id : state_list[i].id,
+		    					name : state_list[i].name,
+		    					score : state_list[i].score
+		    			};
+	    			}
+	    		}
+	    	}
     	}
     	states.splice(0, 0, state_greenL);
     	states.splice(1, 0, state_health);
@@ -589,7 +609,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     $scope.checkBadges = function(list){
-    	
     	$scope.userShowGreenGoldMedal = false;
     	$scope.userShowGreenSilverMedal = false;
     	$scope.userShowGreenBronzeMedal = false;
@@ -617,100 +636,107 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userNoSpecialBadge = false;
     	
     	if(list != null && list.length > 0){
-    		
-    		for(var i = 0; i < list[0].badgeEarned.length; i++){
-    			switch(list[0].badgeEarned[i]){
-    				case "gold-medal-green" :
-    					$scope.userShowGreenGoldMedal = true;
-    					break;
-    				case "silver-medal-green" :
-    					$scope.userShowGreenSilverMedal = true;
-    					break;
-    				case "bronze-medal-green" :
-    					$scope.userShowGreenBronzeMedal = true;
-    					break;
-    				case "king-week-green" :
-    					$scope.userShowGreenKingWeek = true;
-    					break;	
-    				default: 
-    					break;
-    			}
+    		if(list[0].badgeEarned){
+	    		for(var i = 0; i < list[0].badgeEarned.length; i++){
+	    			switch(list[0].badgeEarned[i]){
+	    				case "gold-medal-green" :
+	    					$scope.userShowGreenGoldMedal = true;
+	    					break;
+	    				case "silver-medal-green" :
+	    					$scope.userShowGreenSilverMedal = true;
+	    					break;
+	    				case "bronze-medal-green" :
+	    					$scope.userShowGreenBronzeMedal = true;
+	    					break;
+	    				case "king-week-green" :
+	    					$scope.userShowGreenKingWeek = true;
+	    					break;	
+	    				default: 
+	    					break;
+	    			}
+	    		}
     		}
-    		for(var i = 0; i < list[1].badgeEarned.length; i++){
-    			switch(list[1].badgeEarned[i]){
-    				case "gold-medal-health" :
-    					$scope.userShowHealthGoldMedal = true;
-    					break;
-    				case "silver-medal-health" :
-    					$scope.userShowHealthSilverMedal = true;
-    					break;
-    				case "bronze-medal-health" :
-    					$scope.userShowHealthBronzeMedal = true;
-    					break;
-    				case "king-week-health" :
-    					$scope.userShowHealthKingWeek = true;
-    					break;	
-    				default: 
-    					break;
-    			}
+    		if(list[1].badgeEarned){
+	    		for(var i = 0; i < list[1].badgeEarned.length; i++){
+	    			switch(list[1].badgeEarned[i]){
+	    				case "gold-medal-health" :
+	    					$scope.userShowHealthGoldMedal = true;
+	    					break;
+	    				case "silver-medal-health" :
+	    					$scope.userShowHealthSilverMedal = true;
+	    					break;
+	    				case "bronze-medal-health" :
+	    					$scope.userShowHealthBronzeMedal = true;
+	    					break;
+	    				case "king-week-health" :
+	    					$scope.userShowHealthKingWeek = true;
+	    					break;	
+	    				default: 
+	    					break;
+	    			}
+	    		}
     		}
-    		for(var i = 0; i < list[2].badgeEarned.length; i++){
-    			switch(list[2].badgeEarned[i]){
-    				case "gold-medal-pr" :
-    					$scope.userShowPRGoldMedal = true;
-    					break;
-    				case "silver-medal-pr" :
-    					$scope.userShowPRSilverMedal = true;
-    					break;
-    				case "bronze-medal-pr" :
-    					$scope.userShowPRBronzeMedal = true;
-    					break;
-    				case "king-week-pr" :
-    					$scope.userShowPRKingWeek = true;
-    					break;	
-    				default: 
-    					break;
-    			}
+    		if(list[2].badgeEarned){
+	    		for(var i = 0; i < list[2].badgeEarned.length; i++){
+	    			switch(list[2].badgeEarned[i]){
+	    				case "gold-medal-pr" :
+	    					$scope.userShowPRGoldMedal = true;
+	    					break;
+	    				case "silver-medal-pr" :
+	    					$scope.userShowPRSilverMedal = true;
+	    					break;
+	    				case "bronze-medal-pr" :
+	    					$scope.userShowPRBronzeMedal = true;
+	    					break;
+	    				case "king-week-pr" :
+	    					$scope.userShowPRKingWeek = true;
+	    					break;	
+	    				default: 
+	    					break;
+	    			}
+	    		}
     		}
-    		for(var i = 0; i < list[3].badgeEarned.length; i++){
-    			switch(list[3].badgeEarned[i]){
-    				case "e-motion" :
-    					$scope.userShowEMotion = true;
-    					break;
-    				case "zero-impact" :
-    					$scope.userShowZeroImpact = true;
-    					break;
-    				case "bike" :
-    					$scope.userShowSpecialBike = true;
-    					break;
-    				case "walking" :
-    					$scope.userShowSpecialWalking = true;
-    					break;
-    				case "Ex Manifattura-park" :
-    					$scope.userShowManifatturaPark = true;
-    					break;
-    				case "Stadio-park" :
-    					$scope.userShowQuerciaPark = true;
-    					break;
-    				case "Centro Storico-park" :
-    					$scope.userShowCentroStoricoPark = true;
-    					break;
-    				case "Parcheggio Centro-park" :
-    			    	$scope.userShowParcheggioCentroPark = true;
-    					break;
-    				case "P.le A.Leoni-park" :
-    			    	$scope.userShowALeoniPark = true;
-    				default: 
-//    					if(list[3].badgeEarned[i].indexOf("-park") > -1){
-//    						$scope.userShowPark = true;
-//    						var tmpParkName = list[3].badgeEarned[i].split("-");
-//    						$scope.userParkName = tmpParkName[0];
-//    					}
-    					break;
-    			}
-    		}
-    		if(list[3].badgeEarned.length == 0){
-    			$scope.userNoSpecialBadge = true;
+    		if(list[3].badgeEarned){
+	    		for(var i = 0; i < list[3].badgeEarned.length; i++){
+	    			switch(list[3].badgeEarned[i]){
+	    				case "e-motion" :
+	    					$scope.userShowEMotion = true;
+	    					break;
+	    				case "zero-impact" :
+	    					$scope.userShowZeroImpact = true;
+	    					break;
+	    				case "bike" :
+	    					$scope.userShowSpecialBike = true;
+	    					break;
+	    				case "walking" :
+	    					$scope.userShowSpecialWalking = true;
+	    					break;
+	    				case "Ex Manifattura-park" :
+	    					$scope.userShowManifatturaPark = true;
+	    					break;
+	    				case "Stadio-park" :
+	    					$scope.userShowQuerciaPark = true;
+	    					break;
+	    				case "Centro Storico-park" :
+	    					$scope.userShowCentroStoricoPark = true;
+	    					break;
+	    				case "Parcheggio Centro-park" :
+	    			    	$scope.userShowParcheggioCentroPark = true;
+	    					break;
+	    				case "P.le A.Leoni-park" :
+	    			    	$scope.userShowALeoniPark = true;
+	    				default: 
+	//    					if(list[3].badgeEarned[i].indexOf("-park") > -1){
+	//    						$scope.userShowPark = true;
+	//    						var tmpParkName = list[3].badgeEarned[i].split("-");
+	//    						$scope.userParkName = tmpParkName[0];
+	//    					}
+	    					break;
+	    			}
+	    		}
+	    		if(list[3].badgeEarned.length == 0){
+	    			$scope.userNoSpecialBadge = true;
+	    		}
     		}
     	}
     };

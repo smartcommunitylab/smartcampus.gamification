@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.jar.Attributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -135,13 +139,19 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.mail.send}")
     private String mailSend;
+    @Autowired
+    @Value("${gamification.mailredirect.url}")
+    private String mailRedirectUrl;
+    @Autowired
+    @Value("${gamification.useAuthorizationTable}")
+    private String authorizationTable;
     
 	
 	/*
 	 * OAUTH2
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/")
-	public ModelAndView index_myweb(HttpServletRequest request) throws SecurityException, ProfileServiceException {
+	public ModelAndView index_gameweb(HttpServletRequest request) throws SecurityException, ProfileServiceException {
 		Map<String, Object> model = new HashMap<String, Object>();
 		BasicProfile user = null;
 		try {
@@ -155,21 +165,42 @@ public class PortalController extends SCController{
 			AccountProfile account = profileService.getAccountProfile(getToken(request));
 			Object[] objectArray = account.getAccountNames().toArray();
 			Map <String, String> mappaAttributi = account.getAccountAttributes(objectArray[0].toString());
+			String mailKey = "";
+			String nick = "";
+			boolean mailFind = false;
+			for(String key : mappaAttributi.keySet()){
+				if(mailFind)break;
+				if(key.contains("email")){
+					mailKey = key;
+					mailFind = true;
+				}
+			}
+			JSONObject attributes = new JSONObject(mappaAttributi);
+			String attribute_mail = attributes.getString(mailKey);
 			
 			if(isTest.compareTo("true") == 0){
 				// Check if the user belongs to the list of the testers (in test)
-				Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());
+				Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());	// app user table
 				if(player_check == null){
-					String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
-					logger.info(String.format("Add player: mail %s.", attribute_mail));
+					//String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
+					logger.info(String.format("Player to add: mail %s.", attribute_mail));
 					if(attribute_mail != null){
-						AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
-						if(auth_p != null){
-							logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+						if(authorizationTable.compareTo("true") == 0){
+							AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
+							if(auth_p != null){
+								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+								playerRepositoryDao.save(new_p);
+								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
+							} else {
+								return new ModelAndView("redirect:/logout");	// user not allowed - logout
+							}
+						} else {
+							// case of no authentication table and user not in user table: I add the user
+							nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
+							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail);
 							playerRepositoryDao.save(new_p);
-							logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
-							//playerRepositoryDao.();
+							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
 				}
@@ -177,16 +208,25 @@ public class PortalController extends SCController{
 				// Check if the user belongs to the list of the testers (in test)
 				PlayerProd player_check = playerProdRepositoryDao.findBySocialId(user.getUserId());
 				if(player_check == null){
-					String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
-					logger.info(String.format("Add player: mail %s.", attribute_mail));
+					//String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
+					logger.info(String.format("Player to add: mail %s.", attribute_mail));
 					if(attribute_mail != null){
-						AuthPlayerProd auth_p = authPlayerProdRepositoryDao.findByMail(attribute_mail);
-						if(auth_p != null){
-							logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+						if(authorizationTable.compareTo("true") == 0){
+							AuthPlayerProd auth_p = authPlayerProdRepositoryDao.findByMail(attribute_mail);
+							if(auth_p != null){
+								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+								PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+								playerProdRepositoryDao.save(new_p);
+								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
+							} else {
+								return new ModelAndView("redirect:/logout");	// user not allowed - logout
+							}
+						} else {
+							// case of no authentication table and user not in user table: I add the user
+							nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
+							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail);
 							playerProdRepositoryDao.save(new_p);
-							logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
-							//playerRepositoryDao.();
+							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
 				}
@@ -258,7 +298,7 @@ public class PortalController extends SCController{
 	public ModelAndView secure(HttpServletRequest request) {
 		String redirectUri = mainURL + "/check";
 		String redirectAacService = aacService.generateAuthorizationURIForCodeFlow(redirectUri, "/google",
-				"smartcampus.profile.basicprofile.me,smartcampus.profile.accountprofile.me", null);
+				"profile.basicprofile.me,profile.accountprofile.me", null);	//"smartcampus.profile.basicprofile.me,smartcampus.profile.accountprofile.me"
 		//logger.error(String.format("Redirect url : %s", redirectAacService));
 		return new ModelAndView(
 				"redirect:"
@@ -280,6 +320,15 @@ public class PortalController extends SCController{
 		logger.error(String.format("I am in cookie info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("cookie_info");
+		return model;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/cookie_licence")
+	public ModelAndView preSecureCookieLicence(HttpServletRequest request) {
+		//String redirectUri = mainURL + "/check";
+		logger.error(String.format("I am in cookie licence info page"));
+		ModelAndView model = new ModelAndView();
+		model.setViewName("cookie_licence");
 		return model;
 	}
 	
@@ -326,9 +375,10 @@ public class PortalController extends SCController{
 	}
 	
 	// Here I insert a task that invoke the WS notification
-	//@Scheduled(fixedRate = 3*60*1000) // Repeat once a minute
+	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
 	//@Scheduled(cron="0 0 0/2 * * *") // Repeat every hours at 00:00 min/sec
-	@Scheduled(cron="0 0 8 * * *") // Repeat every two hours starting from 00:00 to 23:59 - 0 0 0-23/2 * * *
+	@Scheduled(cron="0 0 8 1-8 12 *") 		// Repeat every day at 8 AM from 1 to 8 dec
+	//@Scheduled(cron="0 23 17 1-8 2 *") 		// Repeat every day at 8 AM from 1 to 8 dec
 	public synchronized void checkNotification() throws IOException{
 		
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
@@ -410,15 +460,15 @@ public class PortalController extends SCController{
 						try {
 							if(notifications != null){
 								if(states != null && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							}
 						} catch (MessagingException e) {
@@ -483,15 +533,15 @@ public class PortalController extends SCController{
 						try {
 							if(notifications != null){
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							}
 						} catch (MessagingException e) {
@@ -774,7 +824,7 @@ public class PortalController extends SCController{
 	}
 	
 	/**
-	 * Method checlNotification: convert the result JSON string in an array of objects
+	 * Method checkNotification: convert the result JSON string in an array of objects
 	 * @param result: input string with the json of the ws
 	 * @return Notification ArrayList
 	 */
@@ -782,7 +832,26 @@ public class PortalController extends SCController{
 		ArrayList<State> stateList = new ArrayList<State>();
 		logger.error(String.format("Result from WS: %s", result));
 		
-			// Here I have to convert string in a list of notifications
+		try {
+			JSONObject JOStates = new JSONObject(result);
+			JSONObject JOMyState = JOStates.getJSONObject("state");
+			JSONArray JScores = (!JOMyState.isNull("PointConcept")) ? JOMyState.getJSONArray("PointConcept") : null;
+			if(JScores != null){
+				for(int i = 0; i < JScores.length(); i++){
+					String id = ""+i;
+					JSONObject JOScore = JScores.getJSONObject(i);
+					String name = JOScore.getString("name");
+					String score = cleanStringFieldScore(JOScore.getString("score"));
+					State state = new State(id, name, score);
+					stateList.add(state);
+				}
+			}		
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+			/*// Here I have to convert string in a list of notifications
 			String[] firtsStateStrings = result.split("\"state\":\\[");
 			String[] stateStrings = firtsStateStrings[1].split("}");
 			for(int i = 0; i < stateStrings.length-1; i++){
@@ -798,7 +867,7 @@ public class PortalController extends SCController{
 					State state = new State(id, name, score);
 					stateList.add(state);
 				}
-			}
+			}*/
 		
 		return orderState(stateList);
 	}
@@ -814,6 +883,14 @@ public class PortalController extends SCController{
 		Float score_num_f = Float.valueOf(field);
 		int score_num_i = score_num_f.intValue();
 		
+		String cleanedScore = Integer.toString(score_num_i);
+		return cleanedScore;
+	}
+	
+	private String cleanStringFieldScore(String fieldString){
+		String field = fieldString.trim();
+		Float score_num_f = Float.valueOf(field);
+		int score_num_i = score_num_f.intValue();
 		String cleanedScore = Integer.toString(score_num_i);
 		return cleanedScore;
 	}
@@ -863,6 +940,19 @@ public class PortalController extends SCController{
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Method generateNik: used to concatenate name, surname and social id to generate a univoke nik
+	 * @param name: name of user
+	 * @param surname: surname of user
+	 * @param socialId: socialId of user from aac
+	 * @return string of the generated nickname
+	 */
+	private String generateNick(String name, String surname, String socialId){
+		String nick_n = "";
+		nick_n = name.toLowerCase() + surname.toUpperCase().substring(0,1) + socialId;
+		return nick_n;
 	}
 
 }

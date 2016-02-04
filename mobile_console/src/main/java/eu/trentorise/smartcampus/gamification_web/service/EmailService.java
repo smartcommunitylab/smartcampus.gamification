@@ -148,7 +148,7 @@ public class EmailService {
             final String position, 
             final ArrayList<BagesData> badges,
             final ArrayList<MailImage> standardImages,
-            final String recipientEmail, final Locale locale)
+            final String recipientEmail, final String greengame_url, final Locale locale)
             throws MessagingException {
         
     	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
@@ -162,6 +162,7 @@ public class EmailService {
         ctx.setVariable("n_badge", badge);
         ctx.setVariable("n_badges", badges);
         ctx.setVariable("u_position", position);
+        ctx.setVariable("greengame_url", greengame_url);
         ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNFoglie04", standardImages.get(1).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNGreenScore", standardImages.get(2).getImageName()); // so that we can reference it from HTML

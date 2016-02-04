@@ -118,6 +118,15 @@
 	}
 </script>
 
+<!-- Codice per accettazione cookie - Inizio -->
+<script src="js/cookiechoices.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function(event) {
+    cookieChoices.showCookieConsentBar("I cookie ci aiutano ad erogare servizi di qualita'. Utilizzando i nostri servizi, l'utente accetta le nostre modalita' d'uso dei cookie.",
+      'OK', 'MAGGIORI INFORMAZIONI', 'cookie_licence');
+  });
+</script>
+
 </body>
 
 </html>

@@ -9,6 +9,7 @@ cp.service('sharedDataService', function(){
 	this.usedLanguage = 'ita';
 	this.name = '';
 	this.surname = '';
+	this.nickname = '';
 	this.ueCitizen = false;
 	this.familyAllowances = false;
 	this.loading = false;
@@ -193,7 +194,7 @@ cp.service('sharedDataService', function(){
          'VOLANO'
     ];
     
-    this.playersList = [
+    /*this.playersList = [
          {pid:"1", socialId:"1", name:"Raman", surname:"Kazhamiakin", nikname:"Raman1", mail:"kashamiakin@gmail.com"},
          {pid:"43", socialId:"43", name:"Mattia", surname:"Bortolamedi", nikname:"Regolo85", mail:"regolo85@gmail.com"},
          {pid:"67", socialId:"67", name:"Raman", surname:"Kazhamiakin", nikname:"Raman2", mail:"kashamiakin@gmail.com"},
@@ -201,7 +202,8 @@ cp.service('sharedDataService', function(){
          {pid:"157", socialId:"157", name:"Paola", surname:"Rampelotto", nikname:"PaolaR", mail:"paola.rampelotto@gmail.com"},
          {pid:"167", socialId:"167", name:"Annapaola", surname:"Marconi", nikname:"AnnaPaolaM", mail:"annapaola.marconi@gmail.com"},
          {pid:"208", socialId:"208", name:"Mirko", surname:"Perillo", nikname:"MirkoP", mail:"mirko.perillo@gmail.com"}
-    ];
+    ];*/
+    this.playerList = [];
 	
 	// Get and Set methods
 	this.getUsedLanguage = function(){
@@ -236,6 +238,14 @@ cp.service('sharedDataService', function(){
 	
 	this.setSurname = function(value){
 		this.surname = value;
+	};
+	
+	this.getNickName = function(){
+		return this.nickname;
+	};
+	
+	this.setNickName = function(value){
+		this.nickname = value;
 	};
 	
 	this.getUeCitizen = function(){

@@ -10,7 +10,7 @@
 <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
 <link href="css/xeditable.css" rel="stylesheet" />
 <link href="css/modaldialog.css" rel="stylesheet" />
-<link href="img/myweb.ico" rel="shortcut icon" type="image/x-icon" />
+<link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
 <script src="js/jquery.min.js"></script>
@@ -35,7 +35,7 @@
 <script src="lib/angular-route.min.js"></script>
 <script src="lib/xeditable.min.js"></script>
 <script src="lib/angular-base64.min.js"></script>
-<base href="/myweb/" />
+<base href="/gamificationweb/" />
 </head>
 <body>
 	<div class="container">
@@ -47,7 +47,7 @@
 							<div style="margin: 20px" align="center">
 								<table width="100%">
 							    	<tr>
-							    		<td width="45%" align="right"><img src="img/myweb4_small.png" alt="Logo myWeb" title="Logo myWeb" height="90" width="180" /></td>
+							    		<td width="45%" align="right"><img src="img/foglia.svg" alt="Logo GreenGame" title="Logo GreenGame" height="90" width="180" /></td>
 							    		<td width="55%" valign="middle"><h2>Come abilitare i cookie</h2></td>
 							    	</tr>
 							    </table>

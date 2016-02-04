@@ -75,6 +75,7 @@
 	<sec:http pattern="/**" disable-url-rewriting="true" auto-config="false">
 	    <sec:intercept-url pattern="/prelogin" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 	    <sec:intercept-url pattern="/cookie_info" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+	    <sec:intercept-url pattern="/cookie_licence" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 		<sec:session-management invalid-session-url="/prelogin" session-fixation-protection="newSession" />
 		<sec:form-login login-page="/prelogin" />

@@ -32,6 +32,7 @@ import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
+import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.DBRule;
@@ -39,6 +40,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
@@ -260,6 +262,28 @@ public class ConsoleController {
 	public void deletePlayer(@PathVariable String gameId,
 			@PathVariable String playerId) {
 		playerSrv.deleteState(gameId, playerId);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team")
+	public void createTeam(@PathVariable String gameId,
+			@RequestBody TeamDTO team) {
+
+		// check if player already exists
+		if (playerSrv.loadState(gameId, team.getPlayerId(), false) != null) {
+			throw new IllegalArgumentException(String.format(
+					"Player %s already exists in game %s", team.getPlayerId(),
+					gameId));
+		}
+
+		team.setGameId(gameId);
+		Team t = converter.convertTeam(team);
+		playerSrv.saveTeam(t);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/team/{teamId}")
+	public void deleteTeam(@PathVariable String gameId,
+			@PathVariable String teamId) {
+		deletePlayer(gameId, teamId);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/rule/validate")

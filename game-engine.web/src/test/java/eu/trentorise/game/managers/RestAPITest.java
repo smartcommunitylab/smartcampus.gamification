@@ -16,6 +16,7 @@
 
 package eu.trentorise.game.managers;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -45,6 +46,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.bean.ExecutionDataDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
+import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.WebConfig;
@@ -53,6 +55,7 @@ import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
@@ -195,6 +198,52 @@ public class RestAPITest {
 		} catch (Exception e) {
 			Assert.fail("exception " + e.getMessage());
 		}
+	}
+
+	@Test
+	public void teamAPI() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
+		TeamDTO t = new TeamDTO();
+		t.setGameId(GAME);
+		t.setName("muppet");
+		t.setMembers(Arrays.asList("p1", "p2", "p3"));
+		t.setPlayerId("t1");
+		CustomData c = new CustomData();
+		c.put("level", "hunter");
+		t.setCustomData(c);
+
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		ObjectMapper mapper = new ObjectMapper();
+		Assert.assertNull(playerSrv.readTeam(GAME, "t1"));
+
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders
+					.post("/console/game/" + GAME + "/team")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(t));
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			Team team = playerSrv.readTeam(GAME, "t1");
+			Assert.assertNotNull(team);
+			Assert.assertEquals("hunter", team.getCustomData().get("level"));
+			Assert.assertArrayEquals(new String[] { "p1", "p2", "p3" }, team
+					.getMembers().toArray(new String[0]));
+
+			builder = MockMvcRequestBuilders.delete("/console/game/" + GAME
+					+ "/team/" + team.getPlayerId());
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			Assert.assertNull(playerSrv.readTeam(GAME, "t1"));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+
 	}
 
 	private GamePersistence defineGame() {

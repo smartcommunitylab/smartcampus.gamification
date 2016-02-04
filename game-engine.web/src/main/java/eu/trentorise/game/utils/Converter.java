@@ -29,6 +29,7 @@ import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
+import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
@@ -38,6 +39,7 @@ import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Rule;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.ClassificationTask;
 
@@ -212,5 +214,23 @@ public class Converter {
 		}
 
 		return res;
+	}
+
+	public Team convertTeam(TeamDTO t) {
+		Team team = null;
+		if (t != null) {
+			team = new Team();
+			team.setName(t.getName());
+			team.setGameId(t.getGameId());
+			team.setCustomData(t.getCustomData());
+			team.setMembers(t.getMembers());
+			team.setPlayerId(t.getPlayerId());
+			Collection<Set<GameConcept>> concepts = t.getState().values();
+			for (Set<GameConcept> s : concepts) {
+				team.getState().addAll(s);
+			}
+		}
+
+		return team;
 	}
 }

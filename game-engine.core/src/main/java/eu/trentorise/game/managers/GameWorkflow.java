@@ -59,7 +59,7 @@ public class GameWorkflow implements Workflow {
 					actionId));
 		}
 
-		PlayerState playerState = playerSrv.loadState(userId, gameId);
+		PlayerState playerState = playerSrv.loadState(userId, gameId, true);
 
 		PlayerState newState = gameEngine.execute(gameId, playerState,
 				actionId, data, factObjects);

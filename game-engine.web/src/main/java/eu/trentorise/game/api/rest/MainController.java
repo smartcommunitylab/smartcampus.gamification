@@ -88,7 +88,7 @@ public class MainController {
 	public PlayerStateDTO readPlayerState(@PathVariable String gameId,
 			@PathVariable String playerId) {
 		return converter.convertPlayerState(playerSrv.loadState(playerId,
-				gameId));
+				gameId, true));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}")

@@ -28,7 +28,12 @@ import eu.trentorise.game.model.Team;
 @Service
 public interface PlayerService {
 
-	public PlayerState loadState(String playerId, String gameId);
+	/**
+	 * upsert operation: it create new state if it doesn't exist
+	 * @param upsert TODO
+	 * 
+	 */
+	public PlayerState loadState(String playerId, String gameId, boolean upsert);
 
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable);
 

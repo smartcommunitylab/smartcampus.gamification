@@ -16,6 +16,7 @@
 
 package eu.trentorise.game.utils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -171,6 +172,22 @@ public class Converter {
 			task.setName(t.getName());
 		}
 		return task;
+	}
+
+	public PlayerState convertPlayerState(PlayerStateDTO ps) {
+		PlayerState res = null;
+		if (ps != null) {
+			res = new PlayerState();
+			res.setPlayerId(ps.getPlayerId());
+			res.setGameId(ps.getGameId());
+			res.setCustomData(ps.getCustomData());
+			Collection<Set<GameConcept>> concepts = ps.getState().values();
+			for (Set<GameConcept> s : concepts) {
+				res.getState().addAll(s);
+			}
+		}
+
+		return res;
 	}
 
 	public PlayerStateDTO convertPlayerState(PlayerState ps) {

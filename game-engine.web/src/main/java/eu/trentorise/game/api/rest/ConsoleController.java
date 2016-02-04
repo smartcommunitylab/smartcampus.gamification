@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.core.GameTask;
@@ -36,10 +37,12 @@ import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.ClassificationTask;
 import eu.trentorise.game.utils.Converter;
@@ -56,6 +59,9 @@ public class ConsoleController {
 
 	@Autowired
 	private GameEngine gameEngine;
+
+	@Autowired
+	private PlayerService playerSrv;
 
 	@Autowired
 	private Converter converter;
@@ -232,6 +238,28 @@ public class ConsoleController {
 		} else {
 			throw new IllegalArgumentException("game not exist");
 		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/player")
+	public void createPlayer(@PathVariable String gameId,
+			@RequestBody PlayerStateDTO player) {
+
+		// check if player already exists
+		if (playerSrv.loadState(player.getPlayerId(), gameId, false) != null) {
+			throw new IllegalArgumentException(String.format(
+					"Player %s already exists in game %s",
+					player.getPlayerId(), gameId));
+		}
+
+		player.setGameId(gameId);
+		PlayerState p = converter.convertPlayerState(player);
+		playerSrv.saveState(p);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/player/{playerId}")
+	public void deletePlayer(@PathVariable String gameId,
+			@PathVariable String playerId) {
+		playerSrv.deleteState(gameId, playerId);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/rule/validate")

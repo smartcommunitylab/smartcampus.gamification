@@ -202,7 +202,7 @@ public class GameEngineTest {
 	@Test
 	public void execution() throws InterruptedException {
 		initClasspathRuleGame();
-		PlayerState p = playerSrv.loadState(PLAYER, GAME);
+		PlayerState p = playerSrv.loadState(PLAYER, GAME, true);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bikeDistance", 8.43);
 		params.put("walkDistance", 3.100);
@@ -238,7 +238,7 @@ public class GameEngineTest {
 	@Test
 	public void dbExecution() throws InterruptedException {
 		initDBRuleGame();
-		PlayerState p = playerSrv.loadState(PLAYER, GAME);
+		PlayerState p = playerSrv.loadState(PLAYER, GAME, true);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bikeDistance", 8.43);
 		params.put("walkDistance", 3.100);
@@ -331,7 +331,7 @@ public class GameEngineTest {
 	public void initPlayerState() {
 		initClasspathRuleGame();
 		workflow.apply(GAME, ACTION, "25", null, null);
-		PlayerState p = playerSrv.loadState("25", GAME);
+		PlayerState p = playerSrv.loadState("25", GAME, true);
 		Assert.assertEquals(7, p.getState().size());
 	}
 

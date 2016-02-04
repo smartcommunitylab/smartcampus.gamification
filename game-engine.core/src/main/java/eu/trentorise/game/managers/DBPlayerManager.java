@@ -59,11 +59,11 @@ public class DBPlayerManager implements PlayerService {
 	@Autowired
 	private GameService gameSrv;
 
-	public PlayerState loadState(String playerId, String gameId) {
+	public PlayerState loadState(String playerId, String gameId, boolean upsert) {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
 				.findByGameIdAndPlayerId(gameId, playerId);
-		PlayerState res = state == null ? new PlayerState(playerId, gameId)
-				: state.toPlayerState();
+		PlayerState res = state == null ? (upsert ? new PlayerState(playerId,
+				gameId) : null) : state.toPlayerState();
 		return updateConcepts(res, gameId);
 	}
 

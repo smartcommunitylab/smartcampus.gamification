@@ -245,7 +245,7 @@ public class ConsoleController {
 			@RequestBody PlayerStateDTO player) {
 
 		// check if player already exists
-		if (playerSrv.loadState(player.getPlayerId(), gameId, false) != null) {
+		if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
 			throw new IllegalArgumentException(String.format(
 					"Player %s already exists in game %s",
 					player.getPlayerId(), gameId));

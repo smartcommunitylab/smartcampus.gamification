@@ -79,7 +79,7 @@ public class GameContext {
 	}
 
 	public PlayerState readStatus(String playerId) {
-		return playerSrv.loadState(playerId, gameRefId, true);
+		return playerSrv.loadState(gameRefId, playerId, true);
 	}
 
 	public List<String> readPlayers() {

@@ -67,7 +67,7 @@ public class PlayerManager implements PlayerService {
 		}
 	}
 
-	public PlayerState loadState(String playerId, String gameId, boolean upsert) {
+	public PlayerState loadState(String gameId, String playerId, boolean upsert) {
 		String key = playerId + "-" + gameId;
 		return data.get(key) != null ? convert(mapper.convertValue(
 				data.get(key), StatePersistence.class)) : new PlayerState();

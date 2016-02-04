@@ -140,7 +140,7 @@ public class RestAPITest {
 
 		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
 		ObjectMapper mapper = new ObjectMapper();
-		Assert.assertNull(playerSrv.loadState("play1", GAME, false));
+		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
 
 		try {
 			RequestBuilder builder = MockMvcRequestBuilders
@@ -151,7 +151,7 @@ public class RestAPITest {
 			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
 					.andExpect(MockMvcResultMatchers.status().is(200));
 
-			PlayerState play = playerSrv.loadState("play1", GAME, false);
+			PlayerState play = playerSrv.loadState(GAME, "play1", false);
 			Assert.assertNotNull(play);
 			Assert.assertEquals(21, play.getCustomData().get("level"));
 
@@ -165,7 +165,7 @@ public class RestAPITest {
 			Assert.fail("exception " + e.getMessage());
 		}
 
-		Assert.assertNull(playerSrv.loadState("play1", GAME, false));
+		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
 	}
 
 	@Test
@@ -177,7 +177,7 @@ public class RestAPITest {
 
 		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
 		ObjectMapper mapper = new ObjectMapper();
-		Assert.assertNull(playerSrv.loadState("play1", GAME, false));
+		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
 
 		try {
 			RequestBuilder builder = MockMvcRequestBuilders

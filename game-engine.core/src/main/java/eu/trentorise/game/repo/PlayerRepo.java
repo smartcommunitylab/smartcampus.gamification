@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -27,20 +28,32 @@ import org.springframework.stereotype.Repository;
 public interface PlayerRepo extends
 		PagingAndSortingRepository<StatePersistence, String> {
 
-	public List<StatePersistence> findByGameId(String id);
+	public List<StatePersistence> findByGameId(String gameId);
 
-	public Page<StatePersistence> findByGameId(String id, Pageable pageable);
+	public Page<StatePersistence> findByGameId(String gameId, Pageable pageable);
 
-	public List<StatePersistence> findByPlayerId(String id);
+	public List<StatePersistence> findByPlayerId(String playerId);
 
-	public Page<StatePersistence> findByPlayerId(String id, Pageable pageable);
+	public Page<StatePersistence> findByPlayerId(String playerId,
+			Pageable pageable);
 
-	public StatePersistence findByGameIdAndPlayerId(String game, String player);
+	public StatePersistence findByGameIdAndPlayerId(String gameId,
+			String playerId);
 
-	public List<StatePersistence> findByGameIdAndPlayerIdLike(String id,
-			String player);
+	public List<StatePersistence> findByGameIdAndPlayerIdLike(String gameId,
+			String playerId);
 
-	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String id,
-			String player, Pageable pageable);
+	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String gameId,
+			String playerId, Pageable pageable);
+
+	@Query("{gameId:?0, metadata.name:{$exists:true},metadata.members:{$exists:true}}")
+	public List<StatePersistence> findTeamsByGameId(String gameId);
+
+	public List<StatePersistence> deleteByGameIdAndPlayerId(String gameId,
+			String playerId);
+
+	@Query("{gameId:?0, metadata.members:?1}")
+	public List<StatePersistence> findTeamByMemberId(String gameId,
+			String memberId);
 
 }

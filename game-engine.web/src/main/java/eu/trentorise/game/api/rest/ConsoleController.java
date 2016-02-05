@@ -29,17 +29,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
+import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GameConcept;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.ClassificationTask;
 import eu.trentorise.game.utils.Converter;
@@ -56,6 +61,9 @@ public class ConsoleController {
 
 	@Autowired
 	private GameEngine gameEngine;
+
+	@Autowired
+	private PlayerService playerSrv;
 
 	@Autowired
 	private Converter converter;
@@ -231,6 +239,71 @@ public class ConsoleController {
 			}
 		} else {
 			throw new IllegalArgumentException("game not exist");
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/player")
+	public void createPlayer(@PathVariable String gameId,
+			@RequestBody PlayerStateDTO player) {
+
+		// check if player already exists
+		if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
+			throw new IllegalArgumentException(String.format(
+					"Player %s already exists in game %s",
+					player.getPlayerId(), gameId));
+		}
+
+		player.setGameId(gameId);
+		PlayerState p = converter.convertPlayerState(player);
+		playerSrv.saveState(p);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/player/{playerId}")
+	public void deletePlayer(@PathVariable String gameId,
+			@PathVariable String playerId) {
+		playerSrv.deleteState(gameId, playerId);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team")
+	public void createTeam(@PathVariable String gameId,
+			@RequestBody TeamDTO team) {
+
+		// check if player already exists
+		if (playerSrv.readTeam(gameId, team.getPlayerId()) != null) {
+			throw new IllegalArgumentException(String.format(
+					"Team %s already exists in game %s", team.getPlayerId(),
+					gameId));
+		}
+
+		team.setGameId(gameId);
+		Team t = converter.convertTeam(team);
+		playerSrv.saveTeam(t);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/team/{teamId}")
+	public void deleteTeam(@PathVariable String gameId,
+			@PathVariable String teamId) {
+		deletePlayer(gameId, teamId);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/player/{playerId}/teams")
+	public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
+			@PathVariable String playerId) {
+		List<Team> result = playerSrv.readTeams(gameId, playerId);
+		List<TeamDTO> converted = new ArrayList<>();
+		for (Team r : result) {
+			converted.add(converter.convertTeam(r));
+		}
+		return converted;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team/{teamId}/members")
+	public void updateTeamMembers(@PathVariable String gameId,
+			@PathVariable String teamId, @RequestBody List<String> members) {
+		Team team = playerSrv.readTeam(gameId, teamId);
+		if (team != null) {
+			team.setMembers(members);
+			playerSrv.saveTeam(team);
 		}
 	}
 

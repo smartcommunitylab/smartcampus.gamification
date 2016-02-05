@@ -17,8 +17,10 @@
 package eu.trentorise.game.repo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -44,6 +46,8 @@ public class StatePersistence {
 
 	private String playerId;
 	private String gameId;
+
+	protected Map<String, Object> metadata = new HashMap<String, Object>();
 
 	private List<GenericObjectPersistence> concepts = new ArrayList<GenericObjectPersistence>();
 
@@ -125,5 +129,13 @@ public class StatePersistence {
 
 	public void setCustomData(CustomData customData) {
 		this.customData = customData;
+	}
+
+	public Map<String, Object> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Map<String, Object> metadata) {
+		this.metadata = metadata;
 	}
 }

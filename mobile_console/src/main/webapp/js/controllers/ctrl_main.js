@@ -386,17 +386,52 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				}	
     			}
     			$scope.myNick = name;
+    			if($scope.myNick == null || $scope.myNick == ""){
+    				// manageNick for player
+    				$scope.retrieveNickForPlayer(result.players);
+    			}
     		}
     	});
     	return myDataPromise;
     };
     
+    // Method used to retrieve all users niks
+    $scope.updateNiks = function(nick) {
+    	var method = 'POST';
+    	var params = null;
+    	var wsRestUrl = "updateNick/";
+    	var data = {
+    		id: $scope.userId,
+    		nickname: nick
+    	};
+    	var value = JSON.stringify(data);
+    	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, value);
+    	myDataPromise.then(function(result){
+    		if(result != null){
+    			console.log("Updated user nick" + result);
+    			var playerList = sharedDataService.getPlayersList();
+    			for(var i = 0; i < playerList.length; i++){
+    				if(playerList[i].socialId == result.socialId){
+    					playerList[i].nikName = result.nikName;
+    				}
+    			}
+    			sharedDataService.setPlayerList(playerList);
+    		}
+    	});
+    	return myDataPromise;
+    };    
+    
+    $scope.retrieveNickForPlayer = function(nickList){
+    	var dlg = $dialogs.create('/dialogs/nickinput.html','nicknameDialogCtrl',nickList,'lg');
+		dlg.result.then(function(name){
+			$scope.myNick = name;
+			$scope.updateNiks(name);
+		});
+    };
+    
     // Method used to load only the used data from the players list
     $scope.correctProfileData = function(profile){
     	if(profile != null && profile != "" && profile.state != null){
-    		//var badge = (profile.state[0].badgeEarned != null) ? profile.state[0].badgeEarned : profile.state[1].badgeEarned;
-    		//var badge = $scope.getBadgesList(profile.state);
-    		//var badgeEarned = badge[0].badgeEarned;
     		var badges = $scope.getBadgesList(profile.state);
     		var scores = $scope.getStateList(profile.state);
     		var playerData = {
@@ -417,9 +452,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.GameClassification = [];
     	if(list != null && list.length > 0){
     		for(var i = 0; i < list.length; i++){
-    			//var badge = (list[i].state[0].badgeEarned != null) ? list[i].state[0].badgeEarned : list[i].state[1].badgeEarned;
-    			//var badge = $scope.getBadgesList(list[i].state);
-    			//var badgeEarned = badge[0].badgeEarned;
     			var badges = $scope.getBadgesList(list[i].state);
     			var scores = $scope.getStateList(list[i].state);
     			var playerData = {
@@ -575,6 +607,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return 0;
     };
     
+    // -- Methods used to correct the user position: if a user has the same score of another user I keep the position of previous user --
     $scope.setCorrectPosGreen = function(list){
     	for(var i = 1; i < list.length; i++){
     		if(list[i].score[0].score < list[i-1].score[0].score){
@@ -607,6 +640,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	}
     	return list;
     };
+    // ------------------------------------------------------------------------------------------------------------------------------------
     
     $scope.checkBadges = function(list){
     	$scope.userShowGreenGoldMedal = false;
@@ -822,7 +856,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	
 	$scope.numberOfPages = function(){
 		if($scope.GameClassification == null){
-			return 0;
+			return 1;
 		}
 		return Math.ceil($scope.GameClassification.length/$scope.maxPlayers);
 	};
@@ -844,3 +878,47 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.utenteCS = sharedDataService.getUtente();
                   			
 }]);
+cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
+	//-- Variables --//
+
+	$scope.user = {nickname : ''};
+	$scope.showMessages = false;
+
+	//-- Methods --//
+	
+	$scope.cancel = function(){
+		$modalInstance.dismiss('Canceled');
+	}; // end cancel
+	
+	$scope.save = function(){
+		$scope.errorMessages = "";
+		// check if nick already present
+		if(!$scope.checkIfNickAlreadyPresent($scope.user.nickname)){
+			$modalInstance.close($scope.user.nickname);
+		} else {
+			$scope.showMessages = true;
+			$scope.errorMessages = "Nickname gia' usato da un altro utente. Scegli un altro nick che ti rappresenti."
+		}
+	}; // end save
+	
+	$scope.hitEnter = function(evt){
+		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.nickname,null) || angular.equals($scope.user.nickname,'')))
+			$scope.save();
+	};
+	
+	$scope.clearErroMessages = function(){
+		$scope.errorMessages = "";
+		$scope.showMessages = false;
+	}
+	
+	$scope.checkIfNickAlreadyPresent = function(nick){
+		for(var i = 0; i < data.length; i++){
+			if(data[i].nikName == nick){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+}) // end controller(customDialogCtrl)

@@ -548,12 +548,35 @@ var base64="<%=request.getAttribute("base64")%>";
 							<img src="img/footer/caire.svg" width="150" alt="" title="" />
 						</div>
 						<br>
-						
 						<!-- <p>&copy; SmartCampus 2013</p> -->
 					</footer>
 			</div>
 		</div>
 	</div>	
 </body>
+<script type="text/ng-template" id="/dialogs/nickinput.html">
+<div class="modal">
+	<form role="form" name="form">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Crea Nickname</h4>
+				</div>
+				<div class="modal-body">
+						<div class="form-group" ng-class="{true: 'has-error'}[form.reportname.$dirty && form.reportname.$invalid]">
+							<label class="control-label" for="username">Nick name:</label>
+							<input type="text" class="form-control" name="nickname" id="nickname" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
+							<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
+						</div>
+				</div>
+				<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
+					<button type="button" class="btn btn-primary" ng-click="save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+</script>
 
 </html>

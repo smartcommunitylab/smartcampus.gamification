@@ -111,5 +111,28 @@ public class WsProxyController {
 		return result;	
 	}
 	
+	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateNick")
+	public @ResponseBody
+	String updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
+		RestTemplate restTemplate = new RestTemplate();
+		logger.error("WS-POST. Method " + urlWS + ". Passed data : " + data); //Added for log ws calls info in preliminary phase of portal
+		String result = "";
+		String name = data.get("nickname").toString();
+		String id = data.get("id").toString();
+		if(isTest.compareTo("true") == 0){
+			Player p = playerRepositoryDao.findBySocialId(id);
+			p.setNikName(name);
+			playerRepositoryDao.save(p);
+			result = p.toJSONString();
+		} else {
+			PlayerProd p = playerProdRepositoryDao.findBySocialId(id);
+			p.setNikName(name);
+			playerProdRepositoryDao.save(p);
+			result = p.toJSONString();
+		}
+		
+		return result;	
+	}
+	
 	
 }

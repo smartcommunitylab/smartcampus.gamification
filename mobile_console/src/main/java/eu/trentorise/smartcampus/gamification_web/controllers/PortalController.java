@@ -146,6 +146,14 @@ public class PortalController extends SCController{
     @Value("${gamification.useAuthorizationTable}")
     private String authorizationTable;
     
+    private final String JSON_STATE = "state";
+    private final String JSON_POINTCONCEPT = "PointConcept";
+    private final String JSON_NAME = "name";
+    private final String JSON_SCORE = "score";
+    private final String JSON_GAMEID = "gameId";
+    private final String JSON_PLAYERID = "playerId";
+    private final String JSON_TIMESTAMP = "timestamp";
+    private final String JSON_BADGE = "badge";
 	
 	/*
 	 * OAUTH2
@@ -197,7 +205,7 @@ public class PortalController extends SCController{
 							}
 						} else {
 							// case of no authentication table and user not in user table: I add the user
-							nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
+							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
 							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail);
 							playerRepositoryDao.save(new_p);
 							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
@@ -223,7 +231,7 @@ public class PortalController extends SCController{
 							}
 						} else {
 							// case of no authentication table and user not in user table: I add the user
-							nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
+							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
 							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail);
 							playerProdRepositoryDao.save(new_p);
 							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
@@ -377,13 +385,12 @@ public class PortalController extends SCController{
 	// Here I insert a task that invoke the WS notification
 	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
 	//@Scheduled(cron="0 0 0/2 * * *") // Repeat every hours at 00:00 min/sec
-	@Scheduled(cron="0 0 8 1-8 12 *") 		// Repeat every day at 8 AM from 1 to 8 dec
-	//@Scheduled(cron="0 23 17 1-8 2 *") 		// Repeat every day at 8 AM from 1 to 8 dec
+	@Scheduled(cron="0 0 8 * * *") 		// Repeat every day at 8 AM from 1 to 8 dec
 	public synchronized void checkNotification() throws IOException{
 		
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		
-		long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of 24 hours
+		long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of 24 hours	//long millis = 1415660400000L; (for test)
 		String timestamp = "?timestamp=" + millis;
 		//String timestamp = "";
 		
@@ -572,63 +579,6 @@ public class PortalController extends SCController{
 			} catch (MessagingException e) {
 				logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
 			}
-			
-			// Old method
-			
-//			String urlWS = "notification/" + gameName;
-//			
-//			RestTemplate restTemplate = new RestTemplate();
-//			logger.error("Notification WS GET " + urlWS);
-//			
-//			//long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of one day
-//			//long millis = System.currentTimeMillis() - (2*60*60*1000);	// Delta in millis of 2 hours
-//			long millis = System.currentTimeMillis() - (2*60*1000);	// Delta in millis of 2 hours
-//			String timestamp = "?timestamp=" + millis;
-//			//String timestamp = "";
-//			String result = "";
-//			try {
-//				result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
-//			} catch (Exception ex){
-//				logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
-//				//restTemplate.getErrorHandler();
-//			}
-//			
-//			if(result != null){
-//				logger.error(String.format("Notification Result Ok: %s", result));
-//				ArrayList<Notification> notifications = chekNotification(result);
-//				
-//				if(!notifications.isEmpty()){
-//					for(int i = 0; i < notifications.size(); i++){
-//						//Convert the playerid in a mail
-//						logger.error(String.format("Player %s", notifications.get(i).getPlayerId()));
-//						
-//						Player player = playerRepositoryDao.findBySocialId(notifications.get(i).getPlayerId());	
-//						//Player player = new Player("43", "Mattia", "Bortolamedi", "regolo85", "regolo85@gmail.com");
-//						
-//						String mailto = null;
-//						String playerName = notifications.get(i).getPlayerId();
-//						if(player != null){
-//							mailto = player.getMail();
-//							playerName = player.getName();
-//						}
-//						if(mailto == null || mailto.compareTo("") == 0){
-//							mailto = mailTo;
-//						}
-//						
-//						if(mailSend.compareTo("true") == 0){
-//							try {
-//								this.emailService.sendMailGamification(playerName, null, notifications.get(i).getBadge(), null, "np", mailto, Locale.ITALIAN);
-//							} catch (MessagingException e) {
-//								logger.error(String.format("Errore invio mail : %s", e.getMessage()));
-//							}
-//							logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.get(i).toString()));
-//						}
-//					}
-//				}		
-//				
-//			} else {
-//				logger.error(String.format("Notification Result Fail: %s", result));
-//			}
 		//}
 	}
 	
@@ -805,21 +755,22 @@ public class PortalController extends SCController{
 		ArrayList<Notification> notificationList = new ArrayList<Notification>();
 		logger.error(String.format("Result from WS: %s", result));
 		
-		// Here I have to convert string in a list of notifications
-		String[] notificationStrings = result.split("}");
-		for(int i = 0; i < notificationStrings.length-1; i++){
-			if(notificationStrings[i].charAt(0) == ','){
-				notificationStrings[i] = notificationStrings[i].substring(1);
+		// Here I have to convert result string in a list of notifications
+		try {
+			JSONArray JNotifics = new JSONArray(result);
+			for(int i = 0; i < JNotifics.length(); i++){
+				JSONObject fields = JNotifics.getJSONObject(i);
+				String gameId = fields.getString(JSON_GAMEID);
+				String playerId = fields.getString(JSON_PLAYERID);
+				Long timestamp = fields.getLong(JSON_TIMESTAMP);
+				String badge = fields.getString(JSON_BADGE);
+				Notification notification = new Notification(gameId, playerId, timestamp, badge);
+				notificationList.add(notification);
 			}
-			String fieldStrings[] = notificationStrings[i].split(",");
-			String gameId = cleanField(fieldStrings[0].split(":"));
-			String playerId = cleanField(fieldStrings[1].split(":"));
-			Long timestamp = Long.parseLong(cleanField(fieldStrings[2].split(":")));
-			String badge = cleanField(fieldStrings[3].split(":"));
-			Notification notification = new Notification(gameId, playerId, timestamp, badge);
-			notificationList.add(notification);
+			
+		} catch (JSONException e) {
+			logger.error(String.format("Exception in parsing notification: %s", e.getMessage()));
 		}
-		
 		return notificationList;
 	}
 	
@@ -834,40 +785,21 @@ public class PortalController extends SCController{
 		
 		try {
 			JSONObject JOStates = new JSONObject(result);
-			JSONObject JOMyState = JOStates.getJSONObject("state");
-			JSONArray JScores = (!JOMyState.isNull("PointConcept")) ? JOMyState.getJSONArray("PointConcept") : null;
+			JSONObject JOMyState = JOStates.getJSONObject(JSON_STATE);
+			JSONArray JScores = (!JOMyState.isNull(JSON_POINTCONCEPT)) ? JOMyState.getJSONArray(JSON_POINTCONCEPT) : null;
 			if(JScores != null){
 				for(int i = 0; i < JScores.length(); i++){
 					String id = ""+i;
 					JSONObject JOScore = JScores.getJSONObject(i);
-					String name = JOScore.getString("name");
-					String score = cleanStringFieldScore(JOScore.getString("score"));
+					String name = JOScore.getString(JSON_NAME);
+					String score = cleanStringFieldScore(JOScore.getString(JSON_SCORE));
 					State state = new State(id, name, score);
 					stateList.add(state);
 				}
 			}		
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(String.format("Exception in parsing player state: %s", e.getMessage()));
 		}
-		
-			/*// Here I have to convert string in a list of notifications
-			String[] firtsStateStrings = result.split("\"state\":\\[");
-			String[] stateStrings = firtsStateStrings[1].split("}");
-			for(int i = 0; i < stateStrings.length-1; i++){
-				if(stateStrings[i].contains("\"score\":")){
-					if(stateStrings[i].charAt(0) == ','){	// used to remove the ',' char at the start of the block
-						stateStrings[i] = stateStrings[i].substring(1);
-					}
-					String fieldStrings[] = stateStrings[i].split(",");
-					logger.error(String.format("Array of fields : %s, %s, %s", fieldStrings[0], fieldStrings[1], fieldStrings[2]));
-					String id = cleanField(fieldStrings[0].split(":"));
-					String name = cleanField(fieldStrings[1].split(":"));
-					String score = cleanFieldScore(fieldStrings[2].split(":"));
-					State state = new State(id, name, score);
-					stateList.add(state);
-				}
-			}*/
 		
 		return orderState(stateList);
 	}

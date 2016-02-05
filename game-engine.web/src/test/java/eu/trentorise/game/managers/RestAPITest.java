@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -255,6 +256,57 @@ public class RestAPITest {
 
 			Assert.assertNull(playerSrv.readTeam(GAME, "t1"));
 
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void getTeamsByMember() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
+
+		playerSrv.saveState(new PlayerState("p1", GAME));
+		playerSrv.saveState(new PlayerState("p2", GAME));
+
+		Team t = new Team();
+		t.setGameId(GAME);
+		t.setPlayerId("t1");
+		t.getMembers().add("p1");
+		t.getMembers().add("p2");
+		playerSrv.saveTeam(t);
+
+		t = new Team();
+		t.setGameId(GAME);
+		t.setPlayerId("t2");
+		t.getMembers().add("p2");
+		playerSrv.saveTeam(t);
+
+		t = new Team();
+		t.setGameId(GAME);
+		t.setPlayerId("t3");
+		t.getMembers().add("p1");
+		playerSrv.saveTeam(t);
+
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		ObjectMapper mapper = new ObjectMapper();
+
+		RequestBuilder builder;
+		try {
+			builder = MockMvcRequestBuilders
+					.get("/console/game/" + GAME + "/player/" + "p1" + "/teams")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(t));
+			mocker.perform(builder)
+					.andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath("$",
+									Matchers.hasSize(2)))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath("$[1].playerId",
+									Matchers.is("t3")));
 		} catch (Exception e) {
 			Assert.fail("exception " + e.getMessage());
 		}

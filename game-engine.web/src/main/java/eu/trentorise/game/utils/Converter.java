@@ -233,4 +233,29 @@ public class Converter {
 
 		return team;
 	}
+
+	public TeamDTO convertTeam(Team t) {
+		TeamDTO team = null;
+		if (t != null) {
+			team = new TeamDTO();
+			team.setName(t.getName());
+			team.setGameId(t.getGameId());
+			team.setCustomData(t.getCustomData());
+			team.setMembers(t.getMembers());
+			team.setPlayerId(t.getPlayerId());
+			if (t.getState() != null) {
+				for (GameConcept gc : t.getState()) {
+					String conceptType = gc.getClass().getSimpleName();
+					Set<GameConcept> gcSet = team.getState().get(conceptType);
+					if (gcSet == null) {
+						gcSet = new HashSet<GameConcept>();
+						team.getState().put(conceptType, gcSet);
+					}
+					gcSet.add(gc);
+				}
+			}
+		}
+
+		return team;
+	}
 }

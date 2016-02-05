@@ -286,6 +286,17 @@ public class ConsoleController {
 		deletePlayer(gameId, teamId);
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/player/{playerId}/teams")
+	public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
+			@PathVariable String playerId) {
+		List<Team> result = playerSrv.readTeams(gameId, playerId);
+		List<TeamDTO> converted = new ArrayList<>();
+		for (Team r : result) {
+			converted.add(converter.convertTeam(r));
+		}
+		return converted;
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team/{teamId}/members")
 	public void updateTeamMembers(@PathVariable String gameId,
 			@PathVariable String teamId, @RequestBody List<String> members) {

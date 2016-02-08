@@ -16,11 +16,12 @@
 
 package eu.trentorise.game.managers;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,19 +40,27 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.bean.ExecutionDataDTO;
+import eu.trentorise.game.bean.PlayerStateDTO;
+import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.WebConfig;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
+import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.ClassificationTask;
 
 /**
@@ -66,12 +75,15 @@ import eu.trentorise.game.task.ClassificationTask;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
-		WebConfig.class }, loader = AnnotationConfigWebContextLoader.class)
+		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class RestAPITest {
 
 	@Autowired
 	private GameManager gameManager;
+
+	@Autowired
+	private PlayerService playerSrv;
 
 	@Autowired
 	private MongoTemplate mongo;
@@ -103,10 +115,12 @@ public class RestAPITest {
 
 		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
 		ObjectMapper mapper = new ObjectMapper();
-		ExecutionData bean = new ExecutionData();
+		ExecutionDataDTO bean = new ExecutionDataDTO();
 		bean.setActionId(ACTION);
 		bean.setUserId("1");
-		RequestBuilder builder = MockMvcRequestBuilders.post("/execute")
+		bean.setGameId(gp.getId());
+		RequestBuilder builder = MockMvcRequestBuilders
+				.post("/gengine/execute")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(bean));
 		try {
@@ -117,36 +131,184 @@ public class RestAPITest {
 		}
 	}
 
-	class ExecutionData {
-		private String actionId;
-		private String userId;
-		private Map<String, Object> data;
+	@Test
+	public void createPlayer() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
+		PlayerStateDTO player = new PlayerStateDTO();
+		player.setPlayerId("play1");
+		CustomData c = new CustomData();
+		c.put("playername", "sid");
+		c.put("level", 21);
+		player.setCustomData(c);
 
-		public ExecutionData() {
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		ObjectMapper mapper = new ObjectMapper();
+		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
+
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders
+					.post("/console/game/" + GAME + "/player")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(player));
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			PlayerState play = playerSrv.loadState(GAME, "play1", false);
+			Assert.assertNotNull(play);
+			Assert.assertEquals(21, play.getCustomData().get("level"));
+
+			builder = MockMvcRequestBuilders.delete("/console/game/" + GAME
+					+ "/player/" + play.getPlayerId());
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
 		}
 
-		public String getActionId() {
-			return actionId;
+		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
+	}
+
+	@Test
+	public void playerAlreadyExist() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
+		PlayerStateDTO player = new PlayerStateDTO();
+		player.setPlayerId("play1");
+
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		ObjectMapper mapper = new ObjectMapper();
+		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
+
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders
+					.post("/console/game/" + GAME + "/player")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(player));
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			// try to recreate player
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(400));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void teamAPI() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
+		TeamDTO t = new TeamDTO();
+		t.setGameId(GAME);
+		t.setName("muppet");
+		t.setMembers(Arrays.asList("p1", "p2", "p3"));
+		t.setPlayerId("t1");
+		CustomData c = new CustomData();
+		c.put("level", "hunter");
+		t.setCustomData(c);
+
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		ObjectMapper mapper = new ObjectMapper();
+		Assert.assertNull(playerSrv.readTeam(GAME, "t1"));
+
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders
+					.post("/console/game/" + GAME + "/team")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(t));
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			Team team = playerSrv.readTeam(GAME, "t1");
+			Assert.assertNotNull(team);
+			Assert.assertEquals("hunter", team.getCustomData().get("level"));
+			Assert.assertArrayEquals(new String[] { "p1", "p2", "p3" }, team
+					.getMembers().toArray(new String[0]));
+
+			builder = MockMvcRequestBuilders
+					.post("/console/game/" + GAME + "/team/"
+							+ team.getPlayerId() + "/members")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content("[\"p20\",\"p22\"]");
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			team = playerSrv.readTeam(GAME, "t1");
+			Assert.assertNotNull(team);
+			Assert.assertEquals("hunter", team.getCustomData().get("level"));
+			Assert.assertArrayEquals(new String[] { "p20", "p22" }, team
+					.getMembers().toArray(new String[0]));
+
+			builder = MockMvcRequestBuilders.delete("/console/game/" + GAME
+					+ "/team/" + team.getPlayerId());
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			Assert.assertNull(playerSrv.readTeam(GAME, "t1"));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
 		}
 
-		public void setActionId(String actionId) {
-			this.actionId = actionId;
-		}
+	}
 
-		public String getUserId() {
-			return userId;
-		}
+	@Test
+	public void getTeamsByMember() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
 
-		public void setUserId(String userId) {
-			this.userId = userId;
-		}
+		playerSrv.saveState(new PlayerState("p1", GAME));
+		playerSrv.saveState(new PlayerState("p2", GAME));
 
-		public Map<String, Object> getData() {
-			return data;
-		}
+		Team t = new Team();
+		t.setGameId(GAME);
+		t.setPlayerId("t1");
+		t.getMembers().add("p1");
+		t.getMembers().add("p2");
+		playerSrv.saveTeam(t);
 
-		public void setData(Map<String, Object> data) {
-			this.data = data;
+		t = new Team();
+		t.setGameId(GAME);
+		t.setPlayerId("t2");
+		t.getMembers().add("p2");
+		playerSrv.saveTeam(t);
+
+		t = new Team();
+		t.setGameId(GAME);
+		t.setPlayerId("t3");
+		t.getMembers().add("p1");
+		playerSrv.saveTeam(t);
+
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		ObjectMapper mapper = new ObjectMapper();
+
+		RequestBuilder builder;
+		try {
+			builder = MockMvcRequestBuilders
+					.get("/console/game/" + GAME + "/player/" + "p1" + "/teams")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(t));
+			mocker.perform(builder)
+					.andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath("$",
+									Matchers.hasSize(2)))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath("$[1].playerId",
+									Matchers.is("t3")));
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
 		}
 
 	}
@@ -203,5 +365,18 @@ public class RestAPITest {
 		return new GamePersistence(game);
 
 	}
+
+}
+
+/**
+ * Without @EnablaWebMvc MockMvc not work correctly to simulate controller
+ * Cannot add annotation to WebConfig to conflict with WebMvcConfigurerAdapter
+ * extension
+ * 
+ * @author mirko perillo
+ * 
+ */
+@EnableWebMvc
+class TestMVCConfiguration extends WebConfig {
 
 }

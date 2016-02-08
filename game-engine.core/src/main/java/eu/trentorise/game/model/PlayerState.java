@@ -19,7 +19,17 @@ package eu.trentorise.game.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import eu.trentorise.game.repo.GenericObjectPersistence;
+import eu.trentorise.game.repo.StatePersistence;
+
 public class PlayerState {
+
+	private final Logger logger = LoggerFactory.getLogger(PlayerState.class);
 
 	private String playerId;
 	private String gameId;
@@ -34,6 +44,25 @@ public class PlayerState {
 	public PlayerState(String playerId, String gameId) {
 		this.playerId = playerId;
 		this.gameId = gameId;
+	}
+
+	public PlayerState(StatePersistence statePersistence) {
+		ObjectMapper mapper = new ObjectMapper();
+		gameId = statePersistence.getGameId();
+		playerId = statePersistence.getPlayerId();
+		customData = statePersistence.getCustomData();
+		state = new HashSet<GameConcept>();
+		for (GenericObjectPersistence obj : statePersistence.getConcepts()) {
+			try {
+				state.add(mapper.convertValue(
+						obj.getObj(),
+						(Class<? extends GameConcept>) Thread.currentThread()
+								.getContextClassLoader()
+								.loadClass(obj.getType())));
+			} catch (Exception e) {
+				logger.error("Problem to load class {}", obj.getType());
+			}
+		}
 	}
 
 	public Set<GameConcept> getState() {

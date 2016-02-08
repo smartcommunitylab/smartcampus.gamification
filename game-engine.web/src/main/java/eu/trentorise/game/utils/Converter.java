@@ -16,6 +16,7 @@
 
 package eu.trentorise.game.utils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
+import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
@@ -37,6 +39,7 @@ import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Rule;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.ClassificationTask;
 
@@ -173,6 +176,22 @@ public class Converter {
 		return task;
 	}
 
+	public PlayerState convertPlayerState(PlayerStateDTO ps) {
+		PlayerState res = null;
+		if (ps != null) {
+			res = new PlayerState();
+			res.setPlayerId(ps.getPlayerId());
+			res.setGameId(ps.getGameId());
+			res.setCustomData(ps.getCustomData());
+			Collection<Set<GameConcept>> concepts = ps.getState().values();
+			for (Set<GameConcept> s : concepts) {
+				res.getState().addAll(s);
+			}
+		}
+
+		return res;
+	}
+
 	public PlayerStateDTO convertPlayerState(PlayerState ps) {
 		PlayerStateDTO res = null;
 		if (ps != null) {
@@ -195,5 +214,48 @@ public class Converter {
 		}
 
 		return res;
+	}
+
+	public Team convertTeam(TeamDTO t) {
+		Team team = null;
+		if (t != null) {
+			team = new Team();
+			team.setName(t.getName());
+			team.setGameId(t.getGameId());
+			team.setCustomData(t.getCustomData());
+			team.setMembers(t.getMembers());
+			team.setPlayerId(t.getPlayerId());
+			Collection<Set<GameConcept>> concepts = t.getState().values();
+			for (Set<GameConcept> s : concepts) {
+				team.getState().addAll(s);
+			}
+		}
+
+		return team;
+	}
+
+	public TeamDTO convertTeam(Team t) {
+		TeamDTO team = null;
+		if (t != null) {
+			team = new TeamDTO();
+			team.setName(t.getName());
+			team.setGameId(t.getGameId());
+			team.setCustomData(t.getCustomData());
+			team.setMembers(t.getMembers());
+			team.setPlayerId(t.getPlayerId());
+			if (t.getState() != null) {
+				for (GameConcept gc : t.getState()) {
+					String conceptType = gc.getClass().getSimpleName();
+					Set<GameConcept> gcSet = team.getState().get(conceptType);
+					if (gcSet == null) {
+						gcSet = new HashSet<GameConcept>();
+						team.getState().put(conceptType, gcSet);
+					}
+					gcSet.add(gc);
+				}
+			}
+		}
+
+		return team;
 	}
 }

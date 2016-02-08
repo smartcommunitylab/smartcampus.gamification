@@ -23,24 +23,44 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Team;
 
 @Service
 public interface PlayerService {
 
-	public PlayerState loadState(String userId, String gameId);
+	/**
+	 * upsert operation: it create new state if it doesn't exist
+	 * 
+	 */
+	public PlayerState loadState(String gameId, String playerId, boolean upsert);
 
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable);
 
 	public List<PlayerState> loadStates(String gameId);
 
-	public Page<PlayerState> loadStates(String gameId, String userId,
+	public Page<PlayerState> loadStates(String gameId, String playerId,
 			Pageable pageable);
 
-	public List<PlayerState> loadStates(String gameId, String userId);
+	public List<PlayerState> loadStates(String gameId, String playerId);
 
 	public boolean saveState(PlayerState state);
+
+	public void deleteState(String gameId, String playerId);
 
 	public Page<String> readPlayers(String gameId, Pageable pageable);
 
 	public List<String> readPlayers(String gameId);
+
+	public Team saveTeam(Team team);
+
+	public List<Team> readTeams(String gameId);
+
+	public Team readTeam(String gameId, String teamId);
+
+	public List<Team> readTeams(String gameId, String playerId);
+
+	public Team addToTeam(String gameId, String teamId, String playerId);
+
+	public Team removeFromTeam(String gameId, String teamId, String playerId);
+
 }

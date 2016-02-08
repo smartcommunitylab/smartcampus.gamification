@@ -9,6 +9,7 @@
 <link href="css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="css/xeditable.css" rel="stylesheet">
 <link href="css/modaldialog.css" rel="stylesheet">
+<link href="css/gg_style.css" rel="stylesheet">
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
@@ -157,182 +158,7 @@ var base64="<%=request.getAttribute("base64")%>";
 	        event.preventDefault();
 	    }
 	});
-
-  
   </script>
-  <style>
-  
-  	.myheader{
-    	text-align: left;
-     	padding: 1em;
-	}
-  
-	.navbar-default {
-		background: #c2c2c2;
-		font-weight: bold;
-	}
-	
-	.navbar-default .navbar-text {
-  		color: #2a2a2a;
-	}
-	.navbar-default .navbar-nav > li > a {
-	  	color: #2a2a2a;
-	}
-	.navbar-default .navbar-nav
-	
-/* 	.navbar-default .navbar-nav > .active { */
-/* 	  	color: #00984a; /*#555555;*/ */
-/* 	  	background-color: #c2c2c2; */
-/* 	} */
-	
-	.navbar-default .navbar-nav > .active > a, 
-	.navbar-default .navbar-nav > .active > a:hover, 
-	.navbar-default .navbar-nav > .active > a:focus {
-	 	color: #00984a; /*#555555;*/
-	  	background: #c2c2c2;
-	}
-	
-	.dropdown-menu .open {
- 		width: 100px;
- 		display: inline-block;
- 	}
-	
-	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
-		color: #2a2a2a; /*#555555;*/
-		font-size: 24px;
-	}
-	
-	.navbar-default .navbar-nav .open .dropdown-menu {
-		color: #2a2a2a; /*#555555;*/
-	  	background: #c2c2c2;
-/* 	  	display: inline-block; */
-	}
-	
-	.navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-	.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-	.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-		color: #00984a; /*#555555;*/
-	  	background: #c2c2c2;
-	}
-
-  	.tab-content {
-    	border-left: 3px solid #c2c2c2;
-    	border-right: 3px solid #c2c2c2;
-    	border-bottom: 3px solid #c2c2c2;
-    	background-color: #e5e4e2;
-    	padding: 25px;
-	}
-	.nav-tabs {
-		font-weight: bold;
-        color: #2a2a2a;
-        background-color: #e5e4e2;
-    }
-	
-	.nav-tabs.nav-justified > li > a,
-    .nav-tabs.nav-justified > li > a:hover,
-    .nav-tabs.nav-justified > li > a:focus {
-        color: #2a2a2a;
-        background-color: #e5e4e2;
-        border-top: 3px solid #c2c2c2;
-        border-right: 3px solid #c2c2c2;
-      	border-left: 3px solid #c2c2c2;
-     	border-bottom: 3px solid #c2c2c2;
-/* 		border-bottom-color: transparent; */
-    } 
-	
-	.nav-tabs.nav-justified > li.active > a,
-    .nav-tabs.nav-justified > li.active > a:hover,
-    .nav-tabs.nav-justified > li.active > a:focus {
-        color: #00984a;
-        background-color: #e5e4e2;
-        border-top: 3px solid #c2c2c2;
-        border-right: 3px solid #c2c2c2;
-      	border-left: 3px solid #c2c2c2;
-		border-bottom: 3px solid #e5e4e2;
-    } 
-    
-    #prof-nav.tab-content {
-    	background-color: trasparent;
-    	padding: 25px;
-	}
-	
-	.panel-success {
-		background-color: #e5e4e2;
-        border-top: 3px solid #c2c2c2;
-        border-right: 3px solid #c2c2c2;
-      	border-left: 3px solid #c2c2c2;
-		border-bottom: 3px solid #c2c2c2;
-	}
-
-	#my-small-menu { display: block; }   /* hide it elsewhere */
-  	#my-big-menu { display: none; }   /* show it elsewhere */
-  	#my-small-footer { display: block; }
-  	#my-big-footer { display: none; }
-  	/* Block for green score */
-  	#green-small-score { display: block; }
-	#green-big-score { display: none; }
-	#green-small-score-king { display: block; }
-	#green-big-score-king { display: none; }
-	/* Block for health score */
-  	#health-small-score { display: block; }
-	#health-big-score { display: none; }
-	#health-small-score-king { display: block; }
-	#health-big-score-king { display: none; }
-	/* Block for pr score */
-  	#pr-small-score { display: block; }
-	#pr-big-score { display: none; }
-	#pr-small-score-king { display: block; }
-	#pr-big-score-king { display: none; }
-	/* Block for page head titles */
-	#my-prof-head-title { 
-		display: block;
-		color: gray;
-		font-size: 32px;
-		font-weight: bold;
-	}
-	#my-class-head-title { 
-		display: block;
-		color: gray;
-		font-size: 32px;
-		font-weight: bold;
-	}
-	#my-rules-head-title { 
-		display: block;
-		color: gray;
-		font-size: 32px;
-		font-weight: bold;
-	}
-	
-
-	@media (min-width:768px) {
-		#my-small-menu { display: none; }   /* hide it elsewhere */
-  		#my-big-menu { display: block; }   /* show it elsewhere */
-  		#my-small-footer { display: none; }
-  		#my-big-footer { display: block; }
-/*   	#my-small-tabs { dispaly: none; } */
-/*   	#my-big-tabs { dispaly: block; } */
-		/* Block for green score */
-		#green-small-score { display: none; }
-		#green-big-score { display: block; }
-		#green-small-score-king { display: none; }
-		#green-big-score-king { display: block; }
-		/* Block for health score */
-  		#health-small-score { display: none; }
-		#health-big-score { display: block; }
-		#health-small-score-king { display: none; }
-		#health-big-score-king { display: block; }
-		/* Block for pr score */
-  		#pr-small-score { display: none; }
-		#pr-big-score { display: block; }
-		#pr-small-score-king { display: none; }
-		#pr-big-score-king { display: block; }
-		/* Block for page head titles */
-		#my-prof-head-title { display: none; }
-		#my-class-head-title { display: none; }
-		#my-rules-head-title { display: none; }
-	}
-	
-  </style>
 
 </head>
 
@@ -378,12 +204,7 @@ var base64="<%=request.getAttribute("base64")%>";
       <div class="container">
       	<div class="row">
 			<div class="col-md-8 col-md-offset-2">
-			    <div class="navbar-header">
-<!-- 			    		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_col" aria-expanded="false" aria-controls="navbar"> -->
-<!-- 			              <span class="sr-only">Toggle navigation</span> -->
-<!-- 							<img height="22" src="img/navMobile.svg"> -->
-<!-- 			            </button> -->
-			    	
+			    <div class="navbar-header">	
 				    <ul class="nav navbar-nav">
 <!-- 						<li class="active"><a href="#/" ng-click="home()">{{ 'menu_bar-home' | i18n }}</a></li> -->
 			            <li class="dropdown">

@@ -114,7 +114,7 @@ public class WsProxyController {
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateNick")
 	public @ResponseBody
 	String updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
-		RestTemplate restTemplate = new RestTemplate();
+		//RestTemplate restTemplate = new RestTemplate();
 		logger.error("WS-POST. Method " + urlWS + ". Passed data : " + data); //Added for log ws calls info in preliminary phase of portal
 		String result = "";
 		String name = data.get("nickname").toString();

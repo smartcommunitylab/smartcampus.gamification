@@ -154,7 +154,7 @@ public class PortalController extends SCController{
     private final String JSON_PLAYERID = "playerId";
     private final String JSON_TIMESTAMP = "timestamp";
     private final String JSON_BADGE = "badge";
-	
+    
 	/*
 	 * OAUTH2
 	 */
@@ -390,7 +390,7 @@ public class PortalController extends SCController{
 		
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		
-		long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of 24 hours	//long millis = 1415660400000L; (for test)
+		long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of 24 hours //long millis = 1415660400000L; //(for test)
 		String timestamp = "?timestamp=" + millis;
 		//String timestamp = "";
 		

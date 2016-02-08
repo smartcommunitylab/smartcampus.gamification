@@ -84,10 +84,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	} else if (lan == "en-US"){
     		lan_uri = 'i18n/angular-locale_en-EN.js';
     	}
-//    	$http.get(lan_uri).then(function(results){
-//    		console.log("Risultato get locale " + results);
-//    		angular.copy(results.data, $locale);
-//    	});
     	$http.get(lan_uri)
     		.success(function(results){
     			console.log("Success get locale " + results);
@@ -387,7 +383,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			}
     			$scope.myNick = name;
     			if($scope.myNick == null || $scope.myNick == ""){
-    				// manageNick for player
+    				// manage Nick for player
     				$scope.retrieveNickForPlayer(result.players);
     			}
     		}
@@ -911,9 +907,11 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 		$scope.showMessages = false;
 	}
 	
+	// Method checkIfNickAlreadyPresent: used to control if a nickname is already used in the player's table
+	// (added lower case transformation to consider string with same chars but different formatting
 	$scope.checkIfNickAlreadyPresent = function(nick){
 		for(var i = 0; i < data.length; i++){
-			if(data[i].nikName == nick){
+			if(data[i].nikName.toLowerCase() == nick.toLowerCase()){
 				return true;
 			}
 		}

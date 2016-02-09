@@ -414,7 +414,7 @@ app.factory('gamesFactory',
     
     var validateRule = function(ruleContent) {
     	var deferred = $q.defer();
-    	$http.post(' /console/rule/validate', ruleContent).success(function(data, status, headers, config) {
+    	$http.post(' ../console/rule/validate', ruleContent).success(function(data, status, headers, config) {
         	  deferred.resolve(data);
           }).error(function(data, status, headers, config){
         	  deferred.reject('msg_generic_error');

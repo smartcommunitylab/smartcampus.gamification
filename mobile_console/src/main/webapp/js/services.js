@@ -811,6 +811,21 @@ cp.factory('invokeWSNiksServiceProxy', function($http, $q) {
 				console.log("Returned data FAIL: " + JSON.stringify(data));
 				deferred.resolve(data);
 			});
+		} else {
+			$http({
+				method : method,
+				url : 'rest/updateNick',
+				params : {
+					"urlWS" : urlWS,
+				},
+				headers : headers,
+				data : data
+			}).success(function(data) {
+				deferred.resolve(data);
+			}).error(function(data) {
+				console.log("Returned data FAIL: " + JSON.stringify(data));
+				deferred.resolve(data);
+			});
 		}
 		return deferred.promise;
 	};

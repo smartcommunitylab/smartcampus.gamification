@@ -819,8 +819,8 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory,$sta
 	
 	 var enrichData = function(data) {
 		 data.forEach(function(p) {
-			var badges = p.state['BadgeCollectionConcept'];
-			var score = p.state['PointConcept'];
+			var badges = p.state['BadgeCollectionConcept'] ? p.state['BadgeCollectionConcept'] : [];
+			var score = p.state['PointConcept'] ? p.state['PointConcept'] : [];
 			p.totalBadges = 0;
 			p.totalScore = 0;
 			badges.forEach(function(b) {

@@ -1,5 +1,9 @@
 package eu.trentorise.game.model
 
+import java.util.Map;
+
+// ***************************************** queries 
+
 query "getGameConcepts"
 	$result: GameConcept()
 end
@@ -11,6 +15,12 @@ end
 query "getCustomData"
 	$data: CustomData()
 end
+
+query "getUpdateTeam"
+	$data: UpdateTeam()
+end
+
+// ****************************************** global functions 	
 
 function void log(String msg) {
 	System.out.println(msg);

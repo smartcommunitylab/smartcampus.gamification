@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -66,8 +67,13 @@ import eu.trentorise.game.model.Notification;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Rule;
+import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.UpdateTeam;
+import eu.trentorise.game.model.Updating;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.Workflow;
 
 @Component
 public class DroolsEngine implements GameEngine {
@@ -75,10 +81,16 @@ public class DroolsEngine implements GameEngine {
 	private final Logger logger = LoggerFactory.getLogger(DroolsEngine.class);
 
 	@Autowired
-	NotificationManager notificationSrv;
+	private NotificationManager notificationSrv;
 
 	@Autowired
-	GameService gameSrv;
+	private GameService gameSrv;
+
+	@Autowired
+	private PlayerService playerSrv;
+
+	@Autowired
+	private Workflow workflow;
 
 	private KieServices kieServices = KieServices.Factory.get();
 
@@ -112,15 +124,24 @@ public class DroolsEngine implements GameEngine {
 		}
 
 		cmds.add(CommandFactory.newInsert(new Game(gameId)));
-		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
+
+		if (state.isTeam()) {
+			Team team = playerSrv.readTeam(gameId, state.getPlayerId());
+			cmds.add(CommandFactory.newInsert(team));
+		} else {
+			cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
+		}
 
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newInsert(state.getCustomData()));
 		cmds.add(CommandFactory.newFireAllRules());
+
+		// queries
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
 		cmds.add(CommandFactory.newQuery("retrieveNotifications",
 				"getNotifications"));
 		cmds.add(CommandFactory.newQuery("retrieveCustomData", "getCustomData"));
+		cmds.add(CommandFactory.newQuery("retrieveUpdateTeam", "getUpdateTeam"));
 
 		kSession = loadGameConstants(kSession, gameId);
 
@@ -153,8 +174,28 @@ public class DroolsEngine implements GameEngine {
 			logger.info("send notification: {}", note.toString());
 		}
 
+		iter = ((QueryResults) results.getValue("retrieveUpdateTeam"))
+				.iterator();
+		while (iter.hasNext()) {
+			UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
+
+			List<Team> playerTeams = playerSrv.readTeams(gameId,
+					updateCalls.getPlayerId());
+			logger.info("Player {} belongs to {} teams", updateCalls
+					.getPlayerId(), playerTeams.size(), updateCalls
+					.getInputData().getData());
+			if (playerTeams.size() > 0) {
+				logger.info("call for update with data {}", updateCalls
+						.getInputData().getData());
+			}
+			for (Team team : playerTeams) {
+				workflow.apply(gameId, action, team.getPlayerId(), data,
+						Arrays.<Object> asList(new Updating()));
+			}
+		}
+
 		state.setState(newState);
-		// fix for previous dataset versions
+		// fix for dataset prior than 0.9 version
 		state.setCustomData(customData.isEmpty() ? new CustomData()
 				: customData.get(0));
 		return state;

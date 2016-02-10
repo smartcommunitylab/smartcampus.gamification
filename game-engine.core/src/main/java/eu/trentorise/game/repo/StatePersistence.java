@@ -88,6 +88,13 @@ public class StatePersistence {
 
 		p.setState(state);
 
+		// FIXME temp variable
+		// type of state has to be understand using class instantiation
+		// introduce abstract class State and PlayerState and Team have to
+		// extend it
+		p.setTeam(metadata.get("name") != null
+				&& metadata.get("members") != null);
+
 		return p;
 	}
 

@@ -63,12 +63,18 @@ public class DBPlayerManager implements PlayerService {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
 				.findByGameIdAndPlayerId(gameId, playerId);
 		PlayerState res = state == null ? (upsert ? new PlayerState(playerId,
-				gameId) : null) : state.toPlayerState();
+				gameId) : null) : state.toPlayerState().isTeam() ? new Team(
+				state) : state.toPlayerState();
 		return updateConcepts(res, gameId);
 	}
 
 	public boolean saveState(PlayerState state) {
-		StatePersistence toSave = new StatePersistence(state);
+		StatePersistence toSave = null;
+		if (state instanceof Team) {
+			toSave = new TeamPersistence((Team) state);
+		} else {
+			toSave = new StatePersistence(state);
+		}
 		persist(toSave);
 		return true;
 	}

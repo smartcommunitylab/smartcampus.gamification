@@ -1,0 +1,49 @@
+package eu.trentorise.game.model
+
+
+global Integer steps_per_100m;
+
+rule "R1-update individual steps"
+when // here we need to understand better how InputData will be structured
+    $inputData: InputData( $distance : data["meters-walked"])
+    $pc : PointConcept(name == "steps")
+    Player($playerId: id)
+then
+	log("apply \'R1\'");
+    Integer steps = steps_per_100m *  (Integer) $distance / 100;  
+    $pc.setScore($pc.getScore() + steps); 
+    log("Player " +$playerId + " increases of "+steps+" steps");
+    update($pc);
+    // here generate the internal event with two parameters: $playerId and $distance (to fire R2)
+    insert(new UpdateTeam($playerId,$inputData));
+end
+
+
+rule "R2-propagation to team"
+when
+	Updating()
+    Team($playerId: playerId)
+    $inputData: InputData( $distance : data["meters-walked"])
+    $pc : PointConcept(name == "steps")
+then
+    log("apply \'R2\'");
+    Integer steps = steps_per_100m *  (Integer) $distance / 100;
+    $pc.setScore($pc.getScore() + steps/2); 
+    log("Team " +$playerId + " increases of "+steps/2+" steps");  
+    update($pc);
+end
+
+rule "R3-update team rule"
+when
+	not Updating()
+    Team($playerId: playerId)
+    $inputData: InputData( $distance : data["meters-walked"])
+    $pc : PointConcept(name == "steps")
+then
+    log("apply \'R3\'");
+    Integer steps = steps_per_100m *  (Integer) $distance / 100;  
+    $pc.setScore($pc.getScore() + steps); 
+    log("Team " +$playerId + " increases of "+steps+" steps");
+    update($pc);
+end
+

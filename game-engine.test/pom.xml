@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>eu.trentorise</groupId>
 			<artifactId>game-engine.core</artifactId>
-			<version>0.9</version>
+			<version>1.0</version>
 		</dependency>
 
 	</dependencies>

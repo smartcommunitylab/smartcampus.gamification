@@ -38,6 +38,11 @@ public class PlayerState {
 
 	private CustomData customData = new CustomData();
 
+	// FIXME temp variable
+	// type of state has to be understand using class instantiation
+	// introduce abstract class State and PlayerState and Team have to extend it
+	private boolean isTeam;
+
 	public PlayerState() {
 	}
 
@@ -63,6 +68,14 @@ public class PlayerState {
 				logger.error("Problem to load class {}", obj.getType());
 			}
 		}
+
+		// FIXME temp variable
+		// type of state has to be understand using class instantiation
+		// introduce abstract class State and PlayerState and Team have to
+		// extend it
+		isTeam = statePersistence.getMetadata().get("name") != null
+				&& statePersistence.getMetadata().get("members") != null;
+
 	}
 
 	public Set<GameConcept> getState() {
@@ -95,6 +108,14 @@ public class PlayerState {
 
 	public void setCustomData(CustomData customData) {
 		this.customData = customData;
+	}
+
+	public boolean isTeam() {
+		return isTeam;
+	}
+
+	public void setTeam(boolean isTeam) {
+		this.isTeam = isTeam;
 	}
 
 }

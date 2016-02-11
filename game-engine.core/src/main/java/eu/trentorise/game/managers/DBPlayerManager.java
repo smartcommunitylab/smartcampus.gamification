@@ -63,8 +63,8 @@ public class DBPlayerManager implements PlayerService {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
 				.findByGameIdAndPlayerId(gameId, playerId);
 		PlayerState res = state == null ? (upsert ? new PlayerState(playerId,
-				gameId) : null) : state.toPlayerState().isTeam() ? new Team(
-				state) : state.toPlayerState();
+				gameId) : null) : new PlayerState(state).isTeam() ? new Team(
+				state) : new PlayerState(state);
 		return updateConcepts(res, gameId);
 	}
 
@@ -129,7 +129,7 @@ public class DBPlayerManager implements PlayerService {
 				pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(state.toPlayerState(), gameId));
+			result.add(updateConcepts(new PlayerState(state), gameId));
 		}
 		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
 				states.getTotalElements());
@@ -141,7 +141,7 @@ public class DBPlayerManager implements PlayerService {
 		List<StatePersistence> states = playerRepo.findByGameId(gameId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(state.toPlayerState(), gameId));
+			result.add(updateConcepts(new PlayerState(state), gameId));
 		}
 
 		return result;
@@ -154,7 +154,7 @@ public class DBPlayerManager implements PlayerService {
 				gameId, playerId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(state.toPlayerState(), gameId));
+			result.add(updateConcepts(new PlayerState(state), gameId));
 		}
 		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
 				states.getTotalElements());
@@ -167,7 +167,7 @@ public class DBPlayerManager implements PlayerService {
 				gameId, playerId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(state.toPlayerState(), gameId));
+			result.add(updateConcepts(new PlayerState(state), gameId));
 		}
 
 		return result;

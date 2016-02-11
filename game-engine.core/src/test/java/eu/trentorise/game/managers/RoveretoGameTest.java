@@ -475,7 +475,7 @@ public class RoveretoGameTest {
 				}
 			}
 
-			return definePlayerState(playerId, 0d, 0d, 0d).toPlayerState();
+			return new PlayerState(definePlayerState(playerId, 0d, 0d, 0d));
 		}
 	}
 

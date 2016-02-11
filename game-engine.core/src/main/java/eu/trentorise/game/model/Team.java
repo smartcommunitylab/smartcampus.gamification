@@ -17,8 +17,10 @@ public class Team extends PlayerState {
 
 	public Team(StatePersistence state) {
 		super(state);
-		name = (String) state.getMetadata().get("name");
-		members = (List<String>) state.getMetadata().get("members");
+		if (state != null) {
+			name = (String) state.getMetadata().get("name");
+			members = (List<String>) state.getMetadata().get("members");
+		}
 	}
 
 	private String name;

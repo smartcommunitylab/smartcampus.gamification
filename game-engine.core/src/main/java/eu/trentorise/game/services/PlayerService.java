@@ -43,7 +43,7 @@ public interface PlayerService {
 
 	public List<PlayerState> loadStates(String gameId, String playerId);
 
-	public boolean saveState(PlayerState state);
+	public PlayerState saveState(PlayerState state);
 
 	public void deleteState(String gameId, String playerId);
 

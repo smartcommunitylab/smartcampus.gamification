@@ -73,7 +73,7 @@ public class PlayerManager implements PlayerService {
 				data.get(key), StatePersistence.class)) : new PlayerState();
 	}
 
-	public boolean saveState(PlayerState state) {
+	public PlayerState saveState(PlayerState state) {
 
 		if (StringUtils.isBlank(state.getGameId())
 				|| StringUtils.isBlank(state.getPlayerId())) {
@@ -86,11 +86,11 @@ public class PlayerManager implements PlayerService {
 
 		try {
 			mapper.writeValue(new FileOutputStream("playerstorage"), data);
-			return true;
+			return state;
 		} catch (Exception e) {
 			logger.error("Error persisting playerstorage {}: {}", e.getClass()
 					.getName(), e.getMessage());
-			return false;
+			return null;
 		}
 	}
 

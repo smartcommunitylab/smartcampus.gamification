@@ -64,7 +64,7 @@ public class GameWorkflow implements Workflow {
 		PlayerState newState = gameEngine.execute(gameId, playerState,
 				actionId, data, factObjects);
 
-		boolean result = playerSrv.saveState(newState);
+		boolean result = playerSrv.saveState(newState) != null;
 
 		logger.info("Process terminated: {}", result);
 	}

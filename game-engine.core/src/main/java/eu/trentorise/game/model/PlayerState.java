@@ -52,30 +52,30 @@ public class PlayerState {
 	}
 
 	public PlayerState(StatePersistence statePersistence) {
-		ObjectMapper mapper = new ObjectMapper();
-		gameId = statePersistence.getGameId();
-		playerId = statePersistence.getPlayerId();
-		customData = statePersistence.getCustomData();
-		state = new HashSet<GameConcept>();
-		for (GenericObjectPersistence obj : statePersistence.getConcepts()) {
-			try {
-				state.add(mapper.convertValue(
-						obj.getObj(),
-						(Class<? extends GameConcept>) Thread.currentThread()
-								.getContextClassLoader()
-								.loadClass(obj.getType())));
-			} catch (Exception e) {
-				logger.error("Problem to load class {}", obj.getType());
+		if (statePersistence != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			gameId = statePersistence.getGameId();
+			playerId = statePersistence.getPlayerId();
+			customData = statePersistence.getCustomData();
+			state = new HashSet<GameConcept>();
+			for (GenericObjectPersistence obj : statePersistence.getConcepts()) {
+				try {
+					state.add(mapper.convertValue(obj.getObj(),
+							(Class<? extends GameConcept>) Thread
+									.currentThread().getContextClassLoader()
+									.loadClass(obj.getType())));
+				} catch (Exception e) {
+					logger.error("Problem to load class {}", obj.getType());
+				}
 			}
+
+			// FIXME temp variable
+			// type of state has to be understand using class instantiation
+			// introduce abstract class State and PlayerState and Team have to
+			// extend it
+			isTeam = statePersistence.getMetadata().get("name") != null
+					&& statePersistence.getMetadata().get("members") != null;
 		}
-
-		// FIXME temp variable
-		// type of state has to be understand using class instantiation
-		// introduce abstract class State and PlayerState and Team have to
-		// extend it
-		isTeam = statePersistence.getMetadata().get("name") != null
-				&& statePersistence.getMetadata().get("members") != null;
-
 	}
 
 	public Set<GameConcept> getState() {

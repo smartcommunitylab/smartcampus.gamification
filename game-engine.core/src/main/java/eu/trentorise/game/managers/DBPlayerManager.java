@@ -68,15 +68,19 @@ public class DBPlayerManager implements PlayerService {
 		return updateConcepts(res, gameId);
 	}
 
-	public boolean saveState(PlayerState state) {
-		StatePersistence toSave = null;
-		if (state instanceof Team) {
-			toSave = new TeamPersistence((Team) state);
-		} else {
-			toSave = new StatePersistence(state);
+	public PlayerState saveState(PlayerState state) {
+		PlayerState saved = null;
+		if (state != null) {
+			StatePersistence toSave = null;
+			if (state instanceof Team) {
+				toSave = new TeamPersistence((Team) state);
+				saved = new Team(persist(toSave));
+			} else {
+				toSave = new StatePersistence(state);
+				saved = new PlayerState(persist(toSave));
+			}
 		}
-		persist(toSave);
-		return true;
+		return saved;
 	}
 
 	private StatePersistence persist(StatePersistence state) {
@@ -204,9 +208,7 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public Team saveTeam(Team team) {
-		TeamPersistence tp = new TeamPersistence(team);
-		StatePersistence saved = persist(tp);
-		return new Team(saved);
+		return (Team) saveState(team);
 	}
 
 	@Override
@@ -249,9 +251,11 @@ public class DBPlayerManager implements PlayerService {
 				state.getMetadata().put("members", members);
 				playerRepo.save(state);
 			}
+			return new Team(state);
 		}
 
-		return new Team(state);
+		return null;
+
 	}
 
 	@Override
@@ -273,11 +277,6 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public Team readTeam(String gameId, String teamId) {
-		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
-				teamId);
-		if (state != null) {
-			return (Team) updateConcepts(new Team(state), gameId);
-		}
-		return null;
+		return (Team) loadState(gameId, teamId, false);
 	}
 }

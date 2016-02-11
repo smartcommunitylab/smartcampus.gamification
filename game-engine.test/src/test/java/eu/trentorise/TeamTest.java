@@ -47,13 +47,13 @@ public class TeamTest extends GameTest {
 	@Override
 	public void defineExecData(List<ExecData> execList) {
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("meters-walked", 500);
+		data.put("meters-walked", 500d);
 		ExecData input = new ExecData(ACTION, "prowler", data);
 		input.setGameId(GAME);
 		execList.add(input);
 
 		data = new HashMap<String, Object>();
-		data.put("meters-walked", 100);
+		data.put("meters-walked", 100d);
 		input = new ExecData(ACTION, "fuorileggeId", data);
 		input.setGameId(GAME);
 		execList.add(input);

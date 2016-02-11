@@ -125,9 +125,8 @@ public class DroolsEngine implements GameEngine {
 
 		cmds.add(CommandFactory.newInsert(new Game(gameId)));
 
-		if (state.isTeam()) {
-			Team team = playerSrv.readTeam(gameId, state.getPlayerId());
-			cmds.add(CommandFactory.newInsert(team));
+		if (state instanceof Team) {
+			cmds.add(CommandFactory.newInsert((Team) state));
 		} else {
 			cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
 		}

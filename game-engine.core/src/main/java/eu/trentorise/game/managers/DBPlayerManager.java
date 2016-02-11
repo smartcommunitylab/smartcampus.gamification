@@ -63,8 +63,8 @@ public class DBPlayerManager implements PlayerService {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
 				.findByGameIdAndPlayerId(gameId, playerId);
 		PlayerState res = state == null ? (upsert ? new PlayerState(playerId,
-				gameId) : null) : new PlayerState(state).isTeam() ? new Team(
-				state) : new PlayerState(state);
+				gameId) : null) : isTeam(state) ? new Team(state)
+				: new PlayerState(state);
 		return initConceptsStructure(res, gameId);
 	}
 
@@ -81,6 +81,11 @@ public class DBPlayerManager implements PlayerService {
 			}
 		}
 		return saved;
+	}
+
+	private boolean isTeam(StatePersistence state) {
+		return state != null && state.getMetadata().get("name") != null
+				&& state.getMetadata().get("members") != null;
 	}
 
 	private StatePersistence persist(StatePersistence state) {

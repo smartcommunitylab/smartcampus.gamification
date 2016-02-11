@@ -46,13 +46,13 @@ public interface PlayerRepo extends
 	public Page<StatePersistence> findByGameIdAndPlayerIdLike(String gameId,
 			String playerId, Pageable pageable);
 
-	@Query("{gameId:?0, metadata.name:{$exists:true},metadata.members:{$exists:true}}")
+	@Query("{gameId:?0, metadata.team-name:{$exists:true},metadata.team-members:{$exists:true}}")
 	public List<StatePersistence> findTeamsByGameId(String gameId);
 
 	public List<StatePersistence> deleteByGameIdAndPlayerId(String gameId,
 			String playerId);
 
-	@Query("{gameId:?0, metadata.members:?1}")
+	@Query("{gameId:?0, metadata.team-members:?1}")
 	public List<StatePersistence> findTeamByMemberId(String gameId,
 			String memberId);
 

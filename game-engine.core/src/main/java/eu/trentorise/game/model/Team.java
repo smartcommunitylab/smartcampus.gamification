@@ -7,6 +7,10 @@ import eu.trentorise.game.repo.StatePersistence;
 
 public class Team extends PlayerState {
 
+	public static final String NAME_METADATA = "team-name";
+
+	public static final String MEMBERS_METADATA = "team-members";
+
 	public static enum MemberType {
 		PLAYER, TEAM
 	};
@@ -18,8 +22,8 @@ public class Team extends PlayerState {
 	public Team(StatePersistence state) {
 		super(state);
 		if (state != null) {
-			name = (String) state.getMetadata().get("name");
-			members = (List<String>) state.getMetadata().get("members");
+			name = (String) state.getMetadata().get(NAME_METADATA);
+			members = (List<String>) state.getMetadata().get(MEMBERS_METADATA);
 		}
 	}
 

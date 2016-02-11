@@ -84,8 +84,9 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	private boolean isTeam(StatePersistence state) {
-		return state != null && state.getMetadata().get("name") != null
-				&& state.getMetadata().get("members") != null;
+		return state != null
+				&& state.getMetadata().get(Team.NAME_METADATA) != null
+				&& state.getMetadata().get(Team.MEMBERS_METADATA) != null;
 	}
 
 	private StatePersistence persist(StatePersistence state) {
@@ -250,10 +251,10 @@ public class DBPlayerManager implements PlayerService {
 				teamId);
 		if (state != null) {
 			List<String> members = (List<String>) state.getMetadata().get(
-					"members");
+					Team.MEMBERS_METADATA);
 			if (members != null) {
 				members.add(playerId);
-				state.getMetadata().put("members", members);
+				state.getMetadata().put(Team.MEMBERS_METADATA, members);
 				playerRepo.save(state);
 			}
 			return new Team(state);
@@ -269,10 +270,10 @@ public class DBPlayerManager implements PlayerService {
 				teamId);
 		if (state != null) {
 			List<String> members = (List<String>) state.getMetadata().get(
-					"members");
+					Team.MEMBERS_METADATA);
 			if (members != null) {
 				members.remove(playerId);
-				state.getMetadata().put("members", members);
+				state.getMetadata().put(Team.MEMBERS_METADATA, members);
 				playerRepo.save(state);
 			}
 		}

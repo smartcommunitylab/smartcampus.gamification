@@ -8,7 +8,7 @@ public class TeamPersistence extends StatePersistence {
 		super(t);
 
 		// set specific team data
-		metadata.put("name", t.getName());
-		metadata.put("members", t.getMembers());
+		metadata.put(Team.NAME_METADATA, t.getName());
+		metadata.put(Team.MEMBERS_METADATA, t.getMembers());
 	}
 }

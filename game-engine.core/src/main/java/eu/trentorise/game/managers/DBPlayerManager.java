@@ -65,7 +65,7 @@ public class DBPlayerManager implements PlayerService {
 		PlayerState res = state == null ? (upsert ? new PlayerState(playerId,
 				gameId) : null) : new PlayerState(state).isTeam() ? new Team(
 				state) : new PlayerState(state);
-		return updateConcepts(res, gameId);
+		return initConceptsStructure(res, gameId);
 	}
 
 	public PlayerState saveState(PlayerState state) {
@@ -133,7 +133,7 @@ public class DBPlayerManager implements PlayerService {
 				pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(new PlayerState(state), gameId));
+			result.add(initConceptsStructure(new PlayerState(state), gameId));
 		}
 		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
 				states.getTotalElements());
@@ -145,7 +145,7 @@ public class DBPlayerManager implements PlayerService {
 		List<StatePersistence> states = playerRepo.findByGameId(gameId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(new PlayerState(state), gameId));
+			result.add(initConceptsStructure(new PlayerState(state), gameId));
 		}
 
 		return result;
@@ -158,7 +158,7 @@ public class DBPlayerManager implements PlayerService {
 				gameId, playerId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(new PlayerState(state), gameId));
+			result.add(initConceptsStructure(new PlayerState(state), gameId));
 		}
 		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
 				states.getTotalElements());
@@ -171,13 +171,13 @@ public class DBPlayerManager implements PlayerService {
 				gameId, playerId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(updateConcepts(new PlayerState(state), gameId));
+			result.add(initConceptsStructure(new PlayerState(state), gameId));
 		}
 
 		return result;
 	}
 
-	private PlayerState updateConcepts(PlayerState ps, String gameId) {
+	private PlayerState initConceptsStructure(PlayerState ps, String gameId) {
 		if (ps != null) {
 			Game g = gameSrv.loadGameDefinitionById(gameId);
 			if (ps.getState() == null) {

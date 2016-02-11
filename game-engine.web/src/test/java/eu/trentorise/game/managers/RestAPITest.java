@@ -53,9 +53,11 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.WebConfig;
 import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
@@ -307,6 +309,54 @@ public class RestAPITest {
 					.andExpect(
 							MockMvcResultMatchers.jsonPath("$[1].playerId",
 									Matchers.is("t3")));
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void readAPI() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
+		PlayerState p = new PlayerState("p1", GAME);
+		p.getState().add(new PointConcept("points"));
+		p.getState().add(new BadgeCollectionConcept("badges"));
+		p.getCustomData().put("myattr", "I'm the winner");
+		playerSrv.saveState(p);
+
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+
+		RequestBuilder builder;
+		try {
+			builder = MockMvcRequestBuilders.get("/gengine/state/" + GAME + "/"
+					+ p.getPlayerId());
+			mocker.perform(builder)
+					.andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath("$.playerId",
+									Matchers.is("p1")))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath(
+									"$.customData.myattr",
+									Matchers.is("I\'m the winner")));
+
+			builder = MockMvcRequestBuilders.get("/gengine/state/" + GAME);
+			mocker.perform(builder)
+					.andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath("$.content",
+									Matchers.hasSize(1)))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath(
+									"$.content.[0].playerId", Matchers.is("p1")))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath(
+									"$.content.[0].customData.myattr",
+									Matchers.is("I\'m the winner")));
+
 		} catch (Exception e) {
 			Assert.fail("exception " + e.getMessage());
 		}

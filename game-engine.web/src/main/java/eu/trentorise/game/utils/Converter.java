@@ -198,6 +198,7 @@ public class Converter {
 			res = new PlayerStateDTO();
 			res.setGameId(ps.getGameId());
 			res.setPlayerId(ps.getPlayerId());
+			res.setCustomData(ps.getCustomData());
 
 			res.setState(new HashMap<String, Set<GameConcept>>());
 			if (ps.getState() != null) {

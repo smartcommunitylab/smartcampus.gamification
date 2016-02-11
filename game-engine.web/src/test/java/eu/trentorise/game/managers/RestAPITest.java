@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
+import javax.annotation.PostConstruct;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -96,8 +98,16 @@ public class RestAPITest {
 
 	private MockMvc mocker;
 
+	private ObjectMapper mapper;
+
 	private static final String GAME = "gameTest";
 	private static final String ACTION = "save_itinerary";
+
+	@PostConstruct
+	public void init() {
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		mapper = new ObjectMapper();
+	}
 
 	@Before
 	public void cleanDB() {
@@ -116,8 +126,6 @@ public class RestAPITest {
 		mongo.save(gp);
 		gameManager.taskDestroyer();
 
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		ObjectMapper mapper = new ObjectMapper();
 		ExecutionDataDTO bean = new ExecutionDataDTO();
 		bean.setActionId(ACTION);
 		bean.setUserId("1");
@@ -145,8 +153,6 @@ public class RestAPITest {
 		c.put("level", 21);
 		player.setCustomData(c);
 
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		ObjectMapper mapper = new ObjectMapper();
 		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
 
 		try {
@@ -182,8 +188,6 @@ public class RestAPITest {
 		PlayerStateDTO player = new PlayerStateDTO();
 		player.setPlayerId("play1");
 
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		ObjectMapper mapper = new ObjectMapper();
 		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
 
 		try {
@@ -217,8 +221,6 @@ public class RestAPITest {
 		c.put("level", "hunter");
 		t.setCustomData(c);
 
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		ObjectMapper mapper = new ObjectMapper();
 		Assert.assertNull(playerSrv.readTeam(GAME, "t1"));
 
 		try {
@@ -294,15 +296,10 @@ public class RestAPITest {
 		t.getMembers().add("p1");
 		playerSrv.saveTeam(t);
 
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		ObjectMapper mapper = new ObjectMapper();
-
 		RequestBuilder builder;
 		try {
-			builder = MockMvcRequestBuilders
-					.get("/console/game/" + GAME + "/player/" + "p1" + "/teams")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(mapper.writeValueAsString(t));
+			builder = MockMvcRequestBuilders.get("/console/game/" + GAME
+					+ "/player/" + "p1" + "/teams");
 			mocker.perform(builder)
 					.andDo(MockMvcResultHandlers.print())
 					.andExpect(MockMvcResultMatchers.status().is(200))
@@ -331,8 +328,6 @@ public class RestAPITest {
 		team.setGameId(GAME);
 		team.setMembers(Arrays.asList("p1"));
 		playerSrv.saveTeam(team);
-
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
 
 		RequestBuilder builder;
 		try {

@@ -45,7 +45,6 @@ public class TeamManagerTest {
 		t.setGameId("game1");
 		t.setPlayerId("team1");
 		t.setName("muppet");
-		t.setMemberType(Team.MemberType.PLAYER);
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 
 		t = playerSrv.saveTeam(t);
@@ -59,7 +58,6 @@ public class TeamManagerTest {
 		t.setGameId("game1");
 		t.setPlayerId("team1");
 		t.setName("muppet");
-		t.setMemberType(Team.MemberType.PLAYER);
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		playerSrv.saveTeam(t);
 
@@ -74,7 +72,6 @@ public class TeamManagerTest {
 		t.setGameId("game2");
 		t.setPlayerId("team2");
 		t.setName("muppet1");
-		t.setMemberType(Team.MemberType.PLAYER);
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		playerSrv.saveTeam(t);
 
@@ -85,7 +82,6 @@ public class TeamManagerTest {
 		t.setGameId("game1");
 		t.setPlayerId("team2");
 		t.setName("muppet1");
-		t.setMemberType(Team.MemberType.PLAYER);
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		t = playerSrv.saveTeam(t);
 

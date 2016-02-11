@@ -129,7 +129,7 @@ public class DBPlayerManager implements PlayerService {
 				pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(state.toPlayerState());
+			result.add(updateConcepts(state.toPlayerState(), gameId));
 		}
 		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
 				states.getTotalElements());
@@ -141,7 +141,7 @@ public class DBPlayerManager implements PlayerService {
 		List<StatePersistence> states = playerRepo.findByGameId(gameId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(state.toPlayerState());
+			result.add(updateConcepts(state.toPlayerState(), gameId));
 		}
 
 		return result;
@@ -154,7 +154,7 @@ public class DBPlayerManager implements PlayerService {
 				gameId, playerId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(state.toPlayerState());
+			result.add(updateConcepts(state.toPlayerState(), gameId));
 		}
 		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
 				states.getTotalElements());
@@ -167,7 +167,7 @@ public class DBPlayerManager implements PlayerService {
 				gameId, playerId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
-			result.add(state.toPlayerState());
+			result.add(updateConcepts(state.toPlayerState(), gameId));
 		}
 
 		return result;
@@ -276,9 +276,8 @@ public class DBPlayerManager implements PlayerService {
 		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
 				teamId);
 		if (state != null) {
-			return new Team(state);
+			return (Team) updateConcepts(new Team(state), gameId);
 		}
 		return null;
 	}
-
 }

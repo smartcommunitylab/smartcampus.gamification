@@ -56,6 +56,7 @@ import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Team;
@@ -234,6 +235,8 @@ public class RestAPITest {
 			Assert.assertEquals("hunter", team.getCustomData().get("level"));
 			Assert.assertArrayEquals(new String[] { "p1", "p2", "p3" }, team
 					.getMembers().toArray(new String[0]));
+			Assert.assertNotNull(team.getState());
+			Assert.assertEquals(3, team.getState().size());
 
 			builder = MockMvcRequestBuilders
 					.post("/console/game/" + GAME + "/team/"
@@ -320,10 +323,14 @@ public class RestAPITest {
 		GamePersistence gp = defineGame();
 		mongo.save(gp);
 		PlayerState p = new PlayerState("p1", GAME);
-		p.getState().add(new PointConcept("points"));
-		p.getState().add(new BadgeCollectionConcept("badges"));
 		p.getCustomData().put("myattr", "I'm the winner");
 		playerSrv.saveState(p);
+
+		Team team = new Team();
+		team.setPlayerId("t1");
+		team.setGameId(GAME);
+		team.setMembers(Arrays.asList("p1"));
+		playerSrv.saveTeam(team);
 
 		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
 
@@ -348,14 +355,18 @@ public class RestAPITest {
 					.andExpect(MockMvcResultMatchers.status().is(200))
 					.andExpect(
 							MockMvcResultMatchers.jsonPath("$.content",
-									Matchers.hasSize(1)))
+									Matchers.hasSize(2)))
 					.andExpect(
 							MockMvcResultMatchers.jsonPath(
 									"$.content.[0].playerId", Matchers.is("p1")))
 					.andExpect(
 							MockMvcResultMatchers.jsonPath(
 									"$.content.[0].customData.myattr",
-									Matchers.is("I\'m the winner")));
+									Matchers.is("I\'m the winner")))
+					.andExpect(
+							MockMvcResultMatchers.jsonPath(
+									"$.content.[1].state",
+									Matchers.notNullValue()));
 
 		} catch (Exception e) {
 			Assert.fail("exception " + e.getMessage());
@@ -372,6 +383,11 @@ public class RestAPITest {
 		game.setActions(new HashSet<String>());
 		game.getActions().add(ACTION);
 		game.getActions().add("classification");
+
+		game.setConcepts(new HashSet<GameConcept>());
+		game.getConcepts().add(new PointConcept("points"));
+		game.getConcepts().add(new PointConcept("scores"));
+		game.getConcepts().add(new BadgeCollectionConcept("badges"));
 
 		game.setTasks(new HashSet<GameTask>());
 

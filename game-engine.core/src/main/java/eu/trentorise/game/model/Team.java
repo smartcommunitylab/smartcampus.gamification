@@ -11,10 +11,6 @@ public class Team extends PlayerState {
 
 	public static final String MEMBERS_METADATA = "team-members";
 
-	public static enum MemberType {
-		PLAYER, TEAM
-	};
-
 	public Team() {
 
 	}
@@ -31,8 +27,6 @@ public class Team extends PlayerState {
 
 	private List<String> members = new ArrayList<>();
 
-	private MemberType memberType;
-
 	public String getName() {
 		return name;
 	}
@@ -47,14 +41,6 @@ public class Team extends PlayerState {
 
 	public void setMembers(List<String> members) {
 		this.members = members;
-	}
-
-	public MemberType getMemberType() {
-		return memberType;
-	}
-
-	public void setMemberType(MemberType memberType) {
-		this.memberType = memberType;
 	}
 
 }

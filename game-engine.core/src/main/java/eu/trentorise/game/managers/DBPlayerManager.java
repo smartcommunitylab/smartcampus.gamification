@@ -62,8 +62,8 @@ public class DBPlayerManager implements PlayerService {
 	public PlayerState loadState(String gameId, String playerId, boolean upsert) {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
 				.findByGameIdAndPlayerId(gameId, playerId);
-		PlayerState res = state == null ? (upsert ? new PlayerState(playerId,
-				gameId) : null) : isTeam(state) ? new Team(state)
+		PlayerState res = state == null ? (upsert ? new PlayerState(gameId,
+				playerId) : null) : isTeam(state) ? new Team(state)
 				: new PlayerState(state);
 		return initConceptsStructure(res, gameId);
 	}

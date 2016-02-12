@@ -4,6 +4,10 @@ import eu.trentorise.game.model.Team;
 
 public class TeamPersistence extends StatePersistence {
 
+	public TeamPersistence(String gameId, String playerId) {
+		super(gameId, playerId);
+	}
+
 	public TeamPersistence(Team t) {
 		super(t);
 

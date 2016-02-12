@@ -481,9 +481,7 @@ public class RoveretoGameTest {
 
 	private StatePersistence definePlayerState(String playerId,
 			Double greenPoint, Double healthPoint, Double prPoint) {
-		PlayerState player = new PlayerState();
-		player.setGameId(GAME);
-		player.setPlayerId(playerId);
+		PlayerState player = new PlayerState(GAME, playerId);
 		Set<GameConcept> myState = new HashSet<GameConcept>();
 		PointConcept pc = new PointConcept("green leaves");
 		pc.setScore(greenPoint);

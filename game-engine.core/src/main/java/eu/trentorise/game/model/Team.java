@@ -11,8 +11,8 @@ public class Team extends PlayerState {
 
 	public static final String MEMBERS_METADATA = "team-members";
 
-	public Team() {
-
+	public Team(String gameId, String playerId) {
+		super(gameId, playerId);
 	}
 
 	public Team(StatePersistence state) {

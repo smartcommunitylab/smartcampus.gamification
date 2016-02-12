@@ -41,9 +41,7 @@ public class TeamManagerTest {
 
 	@Test
 	public void createTeam() {
-		Team t = new Team();
-		t.setGameId("game1");
-		t.setPlayerId("team1");
+		Team t = new Team("game1", "team1");
 		t.setName("muppet");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 
@@ -54,23 +52,19 @@ public class TeamManagerTest {
 
 	@Test
 	public void readAndDeleteTeams() {
-		Team t = new Team();
-		t.setGameId("game1");
-		t.setPlayerId("team1");
+		Team t = new Team("game1", "team1");
 		t.setName("muppet");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		playerSrv.saveTeam(t);
 
-		playerSrv.saveState(new PlayerState("23", "game1"));
-		playerSrv.saveState(new PlayerState("24", "game1"));
-		playerSrv.saveState(new PlayerState("25", "game1"));
+		playerSrv.saveState(new PlayerState("game1", "23"));
+		playerSrv.saveState(new PlayerState("game1", "24"));
+		playerSrv.saveState(new PlayerState("game1", "25"));
 
 		Assert.assertEquals(1, playerSrv.readTeams("game1").size());
 		Assert.assertEquals(4, playerSrv.readPlayers("game1").size());
 
-		t = new Team();
-		t.setGameId("game2");
-		t.setPlayerId("team2");
+		t = new Team("game2", "team2");
 		t.setName("muppet1");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		playerSrv.saveTeam(t);
@@ -78,9 +72,7 @@ public class TeamManagerTest {
 		Assert.assertEquals(1, playerSrv.readTeams("game1").size());
 		Assert.assertEquals(4, playerSrv.readPlayers("game1").size());
 
-		t = new Team();
-		t.setGameId("game1");
-		t.setPlayerId("team2");
+		t = new Team("game1", "team2");
 		t.setName("muppet1");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		t = playerSrv.saveTeam(t);
@@ -96,28 +88,22 @@ public class TeamManagerTest {
 
 	@Test
 	public void findMyTeams() {
-		PlayerState me = new PlayerState("p1", "game1");
+		PlayerState me = new PlayerState("game1", "p1");
 		playerSrv.saveState(me);
 
-		Team t = new Team();
-		t.setGameId("game1");
-		t.setPlayerId("t1");
+		Team t = new Team("game1", "t1");
 		t.getMembers().add("p1");
 		t.setName("team1");
 		playerSrv.saveTeam(t);
 
-		t = new Team();
-		t.setGameId("game1");
-		t.setPlayerId("t2");
+		t = new Team("game1", "t2");
 		t.getMembers().add("p1");
 		t.getMembers().add("p13");
 		t.getMembers().add("p21");
 		t.setName("team2");
 		playerSrv.saveTeam(t);
 
-		t = new Team();
-		t.setGameId("game1");
-		t.setPlayerId("t3");
+		t = new Team("game1", "t3");
 		t.getMembers().add("p211");
 		t.setName("team3");
 		playerSrv.saveTeam(t);
@@ -127,9 +113,7 @@ public class TeamManagerTest {
 
 	@Test
 	public void membership() {
-		Team t = new Team();
-		t.setGameId("game1");
-		t.setPlayerId("t1");
+		Team t = new Team("game1", "t1");
 		t.getMembers().add("p1");
 		t.setName("team1");
 		playerSrv.saveTeam(t);

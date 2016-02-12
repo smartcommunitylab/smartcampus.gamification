@@ -13,7 +13,7 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.services.PlayerService;
 
-public class TeamTest extends GameTest {
+public class TeamGameTest extends GameTest {
 
 	@Autowired
 	PlayerService playerSrv;
@@ -23,10 +23,8 @@ public class TeamTest extends GameTest {
 
 	@Override
 	public void initEnv() {
-		Team team = new Team();
+		Team team = new Team(GAME, "fuorileggeId");
 		team.setName("fuorilegge");
-		team.setGameId(GAME);
-		team.setPlayerId("fuorileggeId");
 		team.setMembers(Arrays.asList("prowler"));
 		playerSrv.saveTeam(team);
 	}

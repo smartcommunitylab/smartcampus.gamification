@@ -179,9 +179,7 @@ public class Converter {
 	public PlayerState convertPlayerState(PlayerStateDTO ps) {
 		PlayerState res = null;
 		if (ps != null) {
-			res = new PlayerState();
-			res.setPlayerId(ps.getPlayerId());
-			res.setGameId(ps.getGameId());
+			res = new PlayerState(ps.getGameId(), ps.getPlayerId());
 			res.setCustomData(ps.getCustomData());
 			Collection<Set<GameConcept>> concepts = ps.getState().values();
 			for (Set<GameConcept> s : concepts) {
@@ -220,12 +218,10 @@ public class Converter {
 	public Team convertTeam(TeamDTO t) {
 		Team team = null;
 		if (t != null) {
-			team = new Team();
+			team = new Team(t.getGameId(), t.getPlayerId());
 			team.setName(t.getName());
-			team.setGameId(t.getGameId());
 			team.setCustomData(t.getCustomData());
 			team.setMembers(t.getMembers());
-			team.setPlayerId(t.getPlayerId());
 			Collection<Set<GameConcept>> concepts = t.getState().values();
 			for (Set<GameConcept> s : concepts) {
 				team.getState().addAll(s);

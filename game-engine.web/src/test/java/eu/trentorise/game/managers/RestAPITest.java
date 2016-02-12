@@ -274,25 +274,19 @@ public class RestAPITest {
 		GamePersistence gp = defineGame();
 		mongo.save(gp);
 
-		playerSrv.saveState(new PlayerState("p1", GAME));
-		playerSrv.saveState(new PlayerState("p2", GAME));
+		playerSrv.saveState(new PlayerState(GAME, "p1"));
+		playerSrv.saveState(new PlayerState(GAME, "p2"));
 
-		Team t = new Team();
-		t.setGameId(GAME);
-		t.setPlayerId("t1");
+		Team t = new Team(GAME, "t1");
 		t.getMembers().add("p1");
 		t.getMembers().add("p2");
 		playerSrv.saveTeam(t);
 
-		t = new Team();
-		t.setGameId(GAME);
-		t.setPlayerId("t2");
+		t = new Team(GAME, "t2");
 		t.getMembers().add("p2");
 		playerSrv.saveTeam(t);
 
-		t = new Team();
-		t.setGameId(GAME);
-		t.setPlayerId("t3");
+		t = new Team(GAME, "t3");
 		t.getMembers().add("p1");
 		playerSrv.saveTeam(t);
 
@@ -319,13 +313,11 @@ public class RestAPITest {
 	public void readAPI() {
 		GamePersistence gp = defineGame();
 		mongo.save(gp);
-		PlayerState p = new PlayerState("p1", GAME);
+		PlayerState p = new PlayerState(GAME, "p1");
 		p.getCustomData().put("myattr", "I'm the winner");
 		playerSrv.saveState(p);
 
-		Team team = new Team();
-		team.setPlayerId("t1");
-		team.setGameId(GAME);
+		Team team = new Team(GAME, "t1");
 		team.setMembers(Arrays.asList("p1"));
 		playerSrv.saveTeam(team);
 

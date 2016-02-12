@@ -49,6 +49,10 @@ public class StatePersistence {
 
 	private CustomData customData;
 
+	public StatePersistence() {
+
+	}
+
 	public StatePersistence(PlayerState state) {
 		playerId = state.getPlayerId();
 		gameId = state.getGameId();
@@ -60,7 +64,9 @@ public class StatePersistence {
 		customData = state.getCustomData();
 	}
 
-	public StatePersistence() {
+	public StatePersistence(String gameId, String playerId) {
+		this.gameId = gameId;
+		this.playerId = playerId;
 	}
 
 	public List<GenericObjectPersistence> getConcepts() {

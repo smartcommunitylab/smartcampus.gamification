@@ -109,9 +109,7 @@ public abstract class GameTest {
 
 	public void savePlayerState(String gameId, String playerId,
 			List<GameConcept> concepts) {
-		PlayerState player = new PlayerState();
-		player.setGameId(gameId);
-		player.setPlayerId(playerId);
+		PlayerState player = new PlayerState(gameId, playerId);
 		player.setState(new HashSet<GameConcept>(concepts));
 		mongo.save(new StatePersistence(player));
 	}

@@ -38,10 +38,7 @@ public class PlayerState {
 
 	private CustomData customData = new CustomData();
 
-	public PlayerState() {
-	}
-
-	public PlayerState(String playerId, String gameId) {
+	public PlayerState(String gameId, String playerId) {
 		this.playerId = playerId;
 		this.gameId = gameId;
 	}

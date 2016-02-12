@@ -80,7 +80,7 @@ public class MainController {
 			}
 		} else {
 			workflow.apply(data.getGameId(), data.getActionId(),
-					data.getUserId(), data.getData(), null);
+					data.getPlayerId(), data.getData(), null);
 		}
 	}
 

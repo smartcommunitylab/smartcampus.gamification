@@ -128,7 +128,7 @@ public class RestAPITest {
 
 		ExecutionDataDTO bean = new ExecutionDataDTO();
 		bean.setActionId(ACTION);
-		bean.setUserId("1");
+		bean.setPlayerId("1");
 		bean.setGameId(gp.getId());
 		RequestBuilder builder = MockMvcRequestBuilders
 				.post("/gengine/execute")

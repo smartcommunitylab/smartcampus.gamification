@@ -21,7 +21,7 @@ import java.util.Map;
 public class ExecutionDataDTO {
 	public String gameId;
 	public String actionId;
-	public String userId;
+	public String playerId;
 	public Map<String, Object> data;
 
 	public ExecutionDataDTO() {
@@ -43,12 +43,12 @@ public class ExecutionDataDTO {
 		this.actionId = actionId;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getPlayerId() {
+		return playerId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setPlayerId(String playerId) {
+		this.playerId = playerId;
 	}
 
 	public Map<String, Object> getData() {

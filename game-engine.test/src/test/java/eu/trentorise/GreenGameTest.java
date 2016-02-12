@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.task.ClassificationTask;
 
 public class GreenGameTest extends GameTest {

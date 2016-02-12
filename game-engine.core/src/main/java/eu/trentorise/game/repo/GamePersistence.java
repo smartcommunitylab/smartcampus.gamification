@@ -27,9 +27,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GameConcept;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.GameTask;
 
 @Document(collection = "game")
 public class GamePersistence {

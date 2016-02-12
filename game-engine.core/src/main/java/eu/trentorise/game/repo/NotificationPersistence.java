@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.trentorise.game.model.Notification;
+import eu.trentorise.game.model.core.Notification;
 
 @Document(collection = "notification")
 public class NotificationPersistence extends GenericObjectPersistence {

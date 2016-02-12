@@ -31,11 +31,11 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
-import eu.trentorise.game.core.GameTask;
-import eu.trentorise.game.model.ClasspathRule;
 import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.core.ClasspathRule;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;

@@ -26,13 +26,13 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.DBRule;
 import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.DBRule;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.ClassificationTask;
 

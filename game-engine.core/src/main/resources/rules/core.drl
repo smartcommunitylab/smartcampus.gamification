@@ -1,5 +1,8 @@
 package eu.trentorise.game.model
 
+import eu.trentorise.game.model.core.GameConcept
+import eu.trentorise.game.model.core.Notification
+
 import java.util.Map;
 
 // ***************************************** queries 

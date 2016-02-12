@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eu.trentorise.game.model.CustomData;
-import eu.trentorise.game.model.GameConcept;
+import eu.trentorise.game.model.core.GameConcept;
 
 @JsonInclude(Include.NON_NULL)
 public class PlayerStateDTO {

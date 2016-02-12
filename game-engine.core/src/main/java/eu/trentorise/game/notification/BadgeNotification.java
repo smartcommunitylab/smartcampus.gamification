@@ -16,7 +16,7 @@
 
 package eu.trentorise.game.notification;
 
-import eu.trentorise.game.model.Notification;
+import eu.trentorise.game.model.core.Notification;
 
 public class BadgeNotification extends Notification {
 

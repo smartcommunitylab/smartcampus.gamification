@@ -8,9 +8,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
 public class TeamGameTest extends GameTest {

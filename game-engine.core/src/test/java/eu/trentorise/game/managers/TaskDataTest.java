@@ -31,7 +31,7 @@ import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
-import eu.trentorise.game.core.GameTask;
+import eu.trentorise.game.model.core.GameTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)

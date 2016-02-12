@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import eu.trentorise.game.core.GameTask;
+import eu.trentorise.game.model.core.GameTask;
 
 @Service
 public interface TaskService {

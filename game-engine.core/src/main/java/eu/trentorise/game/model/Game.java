@@ -18,7 +18,8 @@ package eu.trentorise.game.model;
 
 import java.util.Set;
 
-import eu.trentorise.game.core.GameTask;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.GameTask;
 
 public class Game {
 	private String id;

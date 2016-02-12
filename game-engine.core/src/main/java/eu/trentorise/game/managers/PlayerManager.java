@@ -35,9 +35,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
 @Component

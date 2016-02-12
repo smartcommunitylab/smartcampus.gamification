@@ -18,6 +18,8 @@ package eu.trentorise.game.model;
 
 import org.kie.api.definition.type.PropertyReactive;
 
+import eu.trentorise.game.model.core.GameConcept;
+
 @PropertyReactive
 public class PointConcept extends GameConcept {
 

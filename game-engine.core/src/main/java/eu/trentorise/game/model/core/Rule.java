@@ -14,22 +14,15 @@
  *    limitations under the License.
  */
 
-package eu.trentorise.game.model;
+package eu.trentorise.game.model.core;
 
-public abstract class Notification {
+public abstract class Rule {
 
 	private String gameId;
-	private String playerId;
-	private long timestamp;
+	private String name;
 
-	public Notification(String gameId, String playerId) {
+	public Rule(String gameId) {
 		this.gameId = gameId;
-		this.playerId = playerId;
-		timestamp = System.currentTimeMillis();
-	}
-
-	public Notification() {
-		timestamp = System.currentTimeMillis();
 	}
 
 	public String getGameId() {
@@ -40,22 +33,12 @@ public abstract class Notification {
 		this.gameId = gameId;
 	}
 
-	public String getPlayerId() {
-		return playerId;
+	public String getName() {
+		return name;
 	}
 
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
+	public void setName(String name) {
+		this.name = name;
 	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public abstract String toString();
 
 }

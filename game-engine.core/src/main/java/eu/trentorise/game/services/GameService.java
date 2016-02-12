@@ -22,8 +22,8 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GameConcept;
-import eu.trentorise.game.model.Rule;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.Rule;
 
 @Service
 public interface GameService {

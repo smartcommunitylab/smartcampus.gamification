@@ -14,23 +14,35 @@
  *    limitations under the License.
  */
 
-package eu.trentorise.game.model;
+package eu.trentorise.game.model.core;
 
-public class FSRule extends Rule {
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-	private String url;
+@Document(collection = "rule")
+public class DBRule extends Rule {
+	@Id
+	private String id;
+	private String content;
 
-	public FSRule(String gameId, String url) {
+	public DBRule(String gameId, String content) {
 		super(gameId);
-		this.url = url;
+		this.content = content;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getId() {
+		return id;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setId(String id) {
+		this.id = id;
 	}
 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 }

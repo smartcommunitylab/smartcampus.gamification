@@ -22,7 +22,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.trentorise.game.model.Notification;
+import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.NotificationRepo;
 

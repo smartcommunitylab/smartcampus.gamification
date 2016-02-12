@@ -14,11 +14,13 @@
  *    limitations under the License.
  */
 
-package eu.trentorise.game.core;
+package eu.trentorise.game.model.core;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.trentorise.game.core.GameContext;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
 
 public abstract class GameTask {

@@ -28,8 +28,8 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import eu.trentorise.game.model.CustomData;
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.core.GameConcept;
 
 @Document(collection = "playerState")
 public class StatePersistence {

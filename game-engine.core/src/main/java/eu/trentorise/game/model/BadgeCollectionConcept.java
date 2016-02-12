@@ -19,6 +19,8 @@ package eu.trentorise.game.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.trentorise.game.model.core.GameConcept;
+
 public class BadgeCollectionConcept extends GameConcept {
 
 	private List<String> badgeEarned;

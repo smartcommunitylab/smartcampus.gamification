@@ -16,6 +16,8 @@
 
 package eu.trentorise.game.model;
 
+import eu.trentorise.game.model.core.GameConcept;
+
 public class BadgeConcept extends GameConcept {
 	private String icon;
 

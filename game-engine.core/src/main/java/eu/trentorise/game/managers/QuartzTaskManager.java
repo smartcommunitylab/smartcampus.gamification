@@ -41,8 +41,8 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameJobQuartz;
-import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
 

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package eu.trentorise.game.model;
+package eu.trentorise.game.model.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

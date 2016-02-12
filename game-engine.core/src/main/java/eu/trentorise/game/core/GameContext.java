@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.managers.GameManager;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TaskDataConverter;
+import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.services.Workflow;

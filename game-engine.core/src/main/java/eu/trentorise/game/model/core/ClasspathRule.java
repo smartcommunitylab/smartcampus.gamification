@@ -14,31 +14,23 @@
  *    limitations under the License.
  */
 
-package eu.trentorise.game.model;
+package eu.trentorise.game.model.core;
 
-public abstract class Rule {
+public class ClasspathRule extends Rule {
 
-	private String gameId;
-	private String name;
+	private String url;
 
-	public Rule(String gameId) {
-		this.gameId = gameId;
+	public ClasspathRule(String gameId, String url) {
+		super(gameId);
+		this.url = url;
 	}
 
-	public String getGameId() {
-		return gameId;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setGameId(String gameId) {
-		this.gameId = gameId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 

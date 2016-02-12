@@ -35,9 +35,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.repo.TeamPersistence;

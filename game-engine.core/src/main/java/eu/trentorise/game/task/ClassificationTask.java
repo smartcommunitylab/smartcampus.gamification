@@ -28,11 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.core.GameContext;
-import eu.trentorise.game.core.GameTask;
 import eu.trentorise.game.core.TaskSchedule;
-import eu.trentorise.game.model.GameConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.GameTask;
 
 public class ClassificationTask extends GameTask {
 

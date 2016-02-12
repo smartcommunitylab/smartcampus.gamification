@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import eu.trentorise.game.model.core.GameTask;
+
 public class GameJobQuartz extends QuartzJobBean {
 
 	private final Logger logger = LoggerFactory.getLogger(GameJobQuartz.class);

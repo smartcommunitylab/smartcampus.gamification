@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.LoggingRuleListener;
 import eu.trentorise.game.model.Action;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
@@ -109,6 +110,7 @@ public class DroolsEngine implements GameEngine {
 				.getRepository().getDefaultReleaseId());
 
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
+		kSession.addEventListener(new LoggingRuleListener());
 
 		List<Command> cmds = new ArrayList<Command>();
 

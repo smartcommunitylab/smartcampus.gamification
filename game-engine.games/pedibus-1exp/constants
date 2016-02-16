@@ -1,0 +1,20 @@
+# insert your constants to use in game rules
+# 
+# SAMPLE USAGE 
+# 
+# constants file
+# var_name = var_value
+# 
+#
+# usage in rule
+# global VALUE_TYPE var_name;
+#
+# supported VALUE_TYPE
+# Integer (i.e. var=1)
+# Double  (i.e. var=2.3)
+# String  (i.e. var=park)
+# java.util.ArrayList (i.e var=park,street,bikestation)
+
+
+steps_per_100m=150
+

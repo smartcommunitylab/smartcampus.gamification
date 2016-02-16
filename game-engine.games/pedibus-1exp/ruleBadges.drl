@@ -1,0 +1,13 @@
+rule "R4-add leg badge X" // X is just a placeholder for the number of steps associated to a leg
+when 
+PointConcept(name == 'steps', score >= X)
+    $bc : BadgeCollectionConcept(name ==”SomeItineraryName”, badgeEarned not contains 'SomeLegName') // Leg “SomeLegName” requires X steps
+    Game( $gameId: id)
+    Team( $teamId : id)
+then
+    log("apply \'R4-add leg badge X\'");
+    $bc.getBadgeEarned().add('SomeLegName');
+    insert( new BadgeNotification($gameId,$teamId,'SomeLegName'));
+    update( $bc );
+end
+

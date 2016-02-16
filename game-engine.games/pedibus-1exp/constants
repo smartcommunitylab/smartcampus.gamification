@@ -18,3 +18,12 @@
 
 steps_per_100m=150
 
+#points needed for each leg badge
+steps_leg_1=17333
+steps_leg_2=38333
+steps_leg_3=23333
+steps_leg_4=33066
+steps_leg_5=17600
+steps_leg_6=11533
+steps_leg_7=20800
+

@@ -12,7 +12,7 @@ global Integer steps_leg_7;
 rule "R-add-badge leg-1"
 when 
 PointConcept(name == 'steps', score >= steps_leg_1)
-    $bc : BadgeCollectionConcept(name ==”Meano-FliessItinerary”, badgeEarned not contains 'Fai della Paganella') 
+    $bc : BadgeCollectionConcept(name =="Meano-FliessItinerary", badgeEarned not contains 'Fai della Paganella') 
     Game( $gameId: id)
     Team( $teamId : id)
 then
@@ -25,7 +25,7 @@ end
 rule "R-add-badge leg-2"
 when 
 PointConcept(name == 'steps', score >= steps_leg_1 + steps_leg_2)
-    $bc : BadgeCollectionConcept(name ==”Meano-FliessItinerary”, badgeEarned not contains 'Bolzano') 
+    $bc : BadgeCollectionConcept(name =="Meano-FliessItinerary", badgeEarned not contains 'Bolzano') 
     Game( $gameId: id)
     Team( $teamId : id)
 then
@@ -38,7 +38,7 @@ end
 rule "R-add-badge leg-3"
 when 
 PointConcept(name == 'steps', score >= steps_leg_1 + steps_leg_2 + steps_leg_3)
-    $bc : BadgeCollectionConcept(name ==”Meano-FliessItinerary”, badgeEarned not contains 'Merano') 
+    $bc : BadgeCollectionConcept(name =="Meano-FliessItinerary", badgeEarned not contains 'Merano') 
     Game( $gameId: id)
     Team( $teamId : id)
 then
@@ -51,7 +51,7 @@ end
 rule "R-add-badge leg-4"
 when 
 PointConcept(name == 'steps', score >= steps_leg_1 + steps_leg_2 + steps_leg_3 + steps_leg_4)
-    $bc : BadgeCollectionConcept(name ==”Meano-FliessItinerary”, badgeEarned not contains 'Prato allo Stelvio') 
+    $bc : BadgeCollectionConcept(name =="Meano-FliessItinerary", badgeEarned not contains 'Prato allo Stelvio') 
     Game( $gameId: id)
     Team( $teamId : id)
 then
@@ -64,7 +64,7 @@ end
 rule "R-add-badge leg-5"
 when 
 PointConcept(name == 'steps', score >= steps_leg_1 + steps_leg_2 + steps_leg_3 + steps_leg_4 + steps_leg_5)
-    $bc : BadgeCollectionConcept(name ==”Meano-FliessItinerary”, badgeEarned not contains 'Curon Venosta') 
+    $bc : BadgeCollectionConcept(name =="Meano-FliessItinerary", badgeEarned not contains 'Curon Venosta') 
     Game( $gameId: id)
     Team( $teamId : id)
 then
@@ -78,7 +78,7 @@ rule "R-add-badge leg-6"
 when 
 PointConcept(name == 'steps', score >= steps_leg_1 + steps_leg_2 + steps_leg_3 + steps_leg_4 + steps_leg_5 + 
 		steps_leg_6)
-    $bc : BadgeCollectionConcept(name ==”Meano-FliessItinerary”, badgeEarned not contains 'Hoch') 
+    $bc : BadgeCollectionConcept(name =="Meano-FliessItinerary", badgeEarned not contains 'Hoch') 
     Game( $gameId: id)
     Team( $teamId : id)
 then
@@ -92,7 +92,7 @@ rule "R-add-badge leg-7"
 when 
 PointConcept(name == 'steps', score >= steps_leg_1 + steps_leg_2 + steps_leg_3 + steps_leg_4 + steps_leg_5 + 
 		steps_leg_6 + steps_leg_7)
-    $bc : BadgeCollectionConcept(name ==”Meano-FliessItinerary”, badgeEarned not contains 'Fliess') 
+    $bc : BadgeCollectionConcept(name =="Meano-FliessItinerary", badgeEarned not contains 'Fliess') 
     Game( $gameId: id)
     Team( $teamId : id)
 then

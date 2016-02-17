@@ -114,6 +114,16 @@ public abstract class GameTest {
 		mongo.save(new StatePersistence(player));
 	}
 
+	public void savePlayerState(String gameId, String playerId,
+			List<GameConcept> concepts, Map<String, Object> customData) {
+		PlayerState player = new PlayerState(gameId, playerId);
+		player.setState(new HashSet<GameConcept>(concepts));
+		if (customData != null) {
+			player.getCustomData().putAll(customData);
+		}
+		mongo.save(new StatePersistence(player));
+	}
+
 	public void defineGameHelper(String gameId, List<String> actions,
 			List<GameConcept> concepts) {
 		Game g = new Game();

@@ -240,8 +240,9 @@ public abstract class GameTest {
 			this.data = data;
 		}
 
-		public ExecData(String actionId, String playerId,
+		public ExecData(String gameId, String actionId, String playerId,
 				Map<String, Object> data) {
+			this.gameId = gameId;
 			this.actionId = actionId;
 			this.playerId = playerId;
 			this.data = data;

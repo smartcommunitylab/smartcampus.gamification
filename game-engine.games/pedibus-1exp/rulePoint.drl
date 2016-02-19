@@ -5,6 +5,7 @@ global Integer steps_per_100m;
 
 rule "R1-update individual steps"
 when // here we need to understand better how InputData will be structured
+    Action(id == "increase_score")
     $inputData: InputData( $distance : data["meters-walked"])
     $pc : PointConcept(name == "steps")
     Player($playerId: id)
@@ -36,6 +37,7 @@ end
 rule "R3-update team rule"
 when
 	  not Updating()
+    Action(id == "increase_score")
     Team($playerId: playerId)
     $inputData: InputData( $distance : data["meters-walked"])
     $pc : PointConcept(name == "steps")
@@ -46,4 +48,3 @@ then
     log("Team " +$playerId + " increases of "+steps+" steps");
     update($pc);
 end
-

@@ -16,6 +16,9 @@
 
 package eu.trentorise.game.model.core;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class ClasspathRule extends Rule {
 
 	private String url;
@@ -31,6 +34,17 @@ public class ClasspathRule extends Rule {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Override
+	public InputStream getInputStream() throws IOException {
+		try {
+			url = url.replace("classpath://", "");
+			return Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream(url);
+		} catch (NullPointerException e) {
+			throw new IOException("null url");
+		}
 	}
 
 }

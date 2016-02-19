@@ -16,6 +16,10 @@
 
 package eu.trentorise.game.model.core;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -44,5 +48,14 @@ public class DBRule extends Rule {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	@Override
+	public InputStream getInputStream() throws IOException {
+		try {
+			return new ByteArrayInputStream(content.getBytes());
+		} catch (NullPointerException e) {
+			throw new IOException("null content");
+		}
 	}
 }

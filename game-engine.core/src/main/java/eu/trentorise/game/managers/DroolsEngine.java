@@ -16,9 +16,7 @@
 
 package eu.trentorise.game.managers;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -213,29 +211,27 @@ public class DroolsEngine implements GameEngine {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
 				if (r != null && r.getName() != null
 						&& r.getName().equals("constants")) {
-					if (r instanceof DBRule) {
-						constantsFileStream = new ByteArrayInputStream(
-								((DBRule) r).getContent().getBytes());
+					try {
+						constantsFileStream = r.getInputStream();
+					} catch (IOException e) {
+						logger.error("Exception loading constants file", e);
 					}
 				}
 				if (r instanceof ClasspathRule
 						&& ((ClasspathRule) r).getUrl().contains("constants")) {
-					String url = ((ClasspathRule) r).getUrl();
-					url = url.replace("classpath://", "");
-					constantsFileStream = Thread.currentThread()
-							.getContextClassLoader().getResourceAsStream(url);
+					try {
+						constantsFileStream = r.getInputStream();
+					} catch (IOException e) {
+						logger.error("Exception loading constants file", e);
+					}
 				}
 
 				if (r instanceof FSRule
 						&& ((FSRule) r).getUrl().contains("constants")) {
-					String url = ((FSRule) r).getUrl();
-					url = url.replace("file://", "");
 					try {
-						constantsFileStream = new FileInputStream(url);
-					} catch (FileNotFoundException e) {
-						logger.error(String.format(
-								"error opening constants %s of game %s", url,
-								gameId));
+						constantsFileStream = r.getInputStream();
+					} catch (IOException e) {
+						logger.error("Exception loading constants file", e);
 					}
 				}
 

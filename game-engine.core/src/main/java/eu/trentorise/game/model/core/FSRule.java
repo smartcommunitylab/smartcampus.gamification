@@ -16,6 +16,11 @@
 
 package eu.trentorise.game.model.core;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class FSRule extends Rule {
 
 	private String url;
@@ -33,4 +38,18 @@ public class FSRule extends Rule {
 		this.url = url;
 	}
 
+	@Override
+	public InputStream getInputStream() throws IOException {
+		try {
+			url = url.replace("file://", "");
+			return new FileInputStream(url);
+		} catch (NullPointerException e) {
+			throw new IOException("null url");
+		} catch (FileNotFoundException e) {
+			throw e;
+			// logger.error(String.format(
+			// "error opening constants %s of game %s", url,
+			// gameId));
+		}
+	}
 }

@@ -1,0 +1,44 @@
+package eu.trentorise.game.model
+
+
+// CH1variant - Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus
+
+/*
+ CustomData to have   []=used by
+    ID is a unique string that identifies the challenge instance
+    
+  - ch-ID-startChTs [rule] [presentation]
+  - ch-ID-endChTs [rule] [presentation]
+  - ch-ID-Km_walked_during_challenge [rule] [presentation]
+  - ch-ID-target [rule] [presentation]
+  - ch-ID-bonus [presentation]
+  - ch-ID-type [presentation]
+*/
+rule 'ch-ID-trace'
+no-loop
+when
+	InputData($walk : data["walkDistance"])
+	$c: CustomData($now: System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now)
+	Player(id == 'bruce_wayne') 
+then
+
+	Double o = (Double) $c.get('ch-ID-Km_walked_during_challenge');
+	if(o == null) {
+		$c.put('ch-ID-Km_walked_during_challenge',(Double) $walk);	
+	}else {
+		$c.put('ch-ID-Km_walked_during_challenge', o + (Double) $walk);
+	}
+	log('ch-ID update');
+	update($c); 
+end
+
+rule 'ch-ID-check'
+when
+	Player(id == 'bruce_wayne')
+	$c: CustomData($now: System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, this['ch-ID-Km_walked_during_challenge'] >= this['ch-ID-target'])
+	$pc : PointConcept(name == "green leaves")
+then
+	$pc.setScore($pc.getScore() + 50);
+	log('ch-ID success');
+	update($pc); 
+end

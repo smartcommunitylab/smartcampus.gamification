@@ -1,0 +1,15 @@
+package eu.trentorise.game.model
+
+/*
+ATTENTION: rule only for DEV environment, don't use it in production !!!
+*/
+
+rule 'reset'
+when
+	Action(id == "reset")
+	$pc:PointConcept()
+	$bc:BadgeCollectionConcept()
+then
+	$pc.setScore(0d);
+	$bc.getBadgeEarned().clear(); 
+end

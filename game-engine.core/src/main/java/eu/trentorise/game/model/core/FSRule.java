@@ -21,35 +21,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FSRule extends Rule {
-
-	private String url;
+public class FSRule extends UrlRule {
 
 	public FSRule(String gameId, String url) {
-		super(gameId);
-		this.url = url;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+		super(gameId, url);
 	}
 
 	@Override
 	public InputStream getInputStream() throws IOException {
 		try {
-			url = url.replace("file://", "");
-			return new FileInputStream(url);
+			return new FileInputStream(getUrl().replace("file://", ""));
 		} catch (NullPointerException e) {
 			throw new IOException("null url");
 		} catch (FileNotFoundException e) {
 			throw e;
-			// logger.error(String.format(
-			// "error opening constants %s of game %s", url,
-			// gameId));
 		}
 	}
 }

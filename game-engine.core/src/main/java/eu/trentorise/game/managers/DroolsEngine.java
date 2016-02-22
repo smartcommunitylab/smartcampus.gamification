@@ -63,12 +63,11 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.UpdateTeam;
 import eu.trentorise.game.model.Updating;
-import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
-import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.Rule;
+import eu.trentorise.game.model.core.UrlRule;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -209,32 +208,16 @@ public class DroolsEngine implements GameEngine {
 		if (g != null && g.getRules() != null) {
 			for (String ruleUrl : g.getRules()) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
-				if (r != null && r.getName() != null
-						&& r.getName().equals("constants")) {
+				if ((r != null && r.getName() != null && r.getName().equals(
+						"constants"))
+						|| r instanceof UrlRule
+						&& ((UrlRule) r).getUrl().contains("constants")) {
 					try {
 						constantsFileStream = r.getInputStream();
 					} catch (IOException e) {
 						logger.error("Exception loading constants file", e);
 					}
 				}
-				if (r instanceof ClasspathRule
-						&& ((ClasspathRule) r).getUrl().contains("constants")) {
-					try {
-						constantsFileStream = r.getInputStream();
-					} catch (IOException e) {
-						logger.error("Exception loading constants file", e);
-					}
-				}
-
-				if (r instanceof FSRule
-						&& ((FSRule) r).getUrl().contains("constants")) {
-					try {
-						constantsFileStream = r.getInputStream();
-					} catch (IOException e) {
-						logger.error("Exception loading constants file", e);
-					}
-				}
-
 			}
 		}
 

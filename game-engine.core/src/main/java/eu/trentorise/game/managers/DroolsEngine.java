@@ -63,7 +63,9 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.UpdateTeam;
 import eu.trentorise.game.model.Updating;
+import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
+import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.Rule;
@@ -308,11 +310,12 @@ public class DroolsEngine implements GameEngine {
 		}
 
 		public boolean isConstantsRule(String ruleUrl) {
-			boolean classpathCheck = ruleUrl.startsWith("classpath://")
+			boolean classpathCheck = ruleUrl
+					.startsWith(ClasspathRule.URL_PROTOCOL)
 					&& ruleUrl.contains("/constants");
-			boolean fsCheck = ruleUrl.startsWith("file://")
+			boolean fsCheck = ruleUrl.startsWith(FSRule.URL_PROTOCOL)
 					&& ruleUrl.contains("/constants");
-			boolean dbCheck = ruleUrl.startsWith("db://");
+			boolean dbCheck = ruleUrl.startsWith(DBRule.URL_PROTOCOL);
 			if (dbCheck) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
 				dbCheck = r != null && r.getName() != null
@@ -328,13 +331,13 @@ public class DroolsEngine implements GameEngine {
 			if (isConstantsRule(ruleUrl)) {
 				return null;
 			}
-			if (ruleUrl.startsWith("classpath://")) {
-				url = ruleUrl.substring("classpath://".length());
+			if (ruleUrl.startsWith(ClasspathRule.URL_PROTOCOL)) {
+				url = ruleUrl.substring(ClasspathRule.URL_PROTOCOL.length());
 				res = kieServices.getResources().newClassPathResource(url);
-			} else if (ruleUrl.startsWith("file://")) {
-				url = ruleUrl.substring("file://".length());
+			} else if (ruleUrl.startsWith(FSRule.URL_PROTOCOL)) {
+				url = ruleUrl.substring(FSRule.URL_PROTOCOL.length());
 				res = kieServices.getResources().newFileSystemResource(url);
-			} else if (ruleUrl.startsWith("db://")) {
+			} else if (ruleUrl.startsWith(DBRule.URL_PROTOCOL)) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
 				if (r != null) {
 					res = kieServices.getResources().newReaderResource(

@@ -25,6 +25,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "rule")
 public class DBRule extends Rule {
+
+	public static final String URL_PROTOCOL = "db://";
+
 	@Id
 	private String id;
 	private String content;
@@ -58,4 +61,5 @@ public class DBRule extends Rule {
 			throw new IOException("null content");
 		}
 	}
+
 }

@@ -21,6 +21,8 @@ import java.io.InputStream;
 
 public class ClasspathRule extends UrlRule {
 
+	public static final String URL_PROTOCOL = "classpath://";
+
 	public ClasspathRule(String gameId, String url) {
 		super(gameId, url);
 	}
@@ -29,7 +31,7 @@ public class ClasspathRule extends UrlRule {
 	public InputStream getInputStream() throws IOException {
 		try {
 			return Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream(getUrl().replace("classpath://", ""));
+					.getResourceAsStream(getUrl().replace(URL_PROTOCOL, ""));
 		} catch (NullPointerException e) {
 			throw new IOException("null url");
 		}

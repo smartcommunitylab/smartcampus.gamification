@@ -23,6 +23,8 @@ import java.io.InputStream;
 
 public class FSRule extends UrlRule {
 
+	public static final String URL_PROTOCOL = "file://";
+
 	public FSRule(String gameId, String url) {
 		super(gameId, url);
 	}
@@ -30,11 +32,12 @@ public class FSRule extends UrlRule {
 	@Override
 	public InputStream getInputStream() throws IOException {
 		try {
-			return new FileInputStream(getUrl().replace("file://", ""));
+			return new FileInputStream(getUrl().replace(URL_PROTOCOL, ""));
 		} catch (NullPointerException e) {
 			throw new IOException("null url");
 		} catch (FileNotFoundException e) {
 			throw e;
 		}
 	}
+
 }

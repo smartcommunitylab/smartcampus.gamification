@@ -165,20 +165,26 @@ public class GameManager implements GameService {
 			Game game = loadGameDefinitionById(rule.getGameId());
 			if (game != null) {
 				if (rule instanceof ClasspathRule) {
-					ruleUrl = "classpath://" + ((ClasspathRule) rule).getUrl();
+					ClasspathRule r = (ClasspathRule) rule;
+					if (!(r.getUrl().startsWith(ClasspathRule.URL_PROTOCOL))) {
+						ruleUrl = ClasspathRule.URL_PROTOCOL + r.getUrl();
+					}
 				}
 
 				if (rule instanceof FSRule) {
-					ruleUrl = "file://" + ((FSRule) rule).getUrl();
+					FSRule r = (FSRule) rule;
+					if (!(r.getUrl().startsWith(FSRule.URL_PROTOCOL))) {
+						ruleUrl = FSRule.URL_PROTOCOL + r.getUrl();
+					}
 				}
 
 				if (rule instanceof DBRule) {
-					if (((DBRule) rule).getId() != null) {
-						((DBRule) rule).setId(((DBRule) rule).getId().replace(
-								"db://", ""));
+					DBRule r = (DBRule) rule;
+					if (r.getId() != null) {
+						r.setId(r.getId().replace(DBRule.URL_PROTOCOL, ""));
 					}
-					rule = ruleRepo.save((DBRule) rule);
-					ruleUrl = "db://" + ((DBRule) rule).getId();
+					rule = ruleRepo.save(r);
+					ruleUrl = DBRule.URL_PROTOCOL + r.getId();
 				}
 
 				game.getRules().add(ruleUrl);
@@ -193,18 +199,18 @@ public class GameManager implements GameService {
 	public Rule loadRule(String gameId, String url) {
 		Rule rule = null;
 		if (url != null) {
-			if (url.startsWith("db://")) {
-				url = url.substring("db://".length());
+			if (url.startsWith(DBRule.URL_PROTOCOL)) {
+				url = url.substring(DBRule.URL_PROTOCOL.length());
 				return ruleRepo.findOne(url);
-			} else if (url.startsWith("classpath://")) {
-				url = url.substring("classpath://".length());
+			} else if (url.startsWith(ClasspathRule.URL_PROTOCOL)) {
+				url = url.substring(ClasspathRule.URL_PROTOCOL.length());
 				if (Thread.currentThread().getContextClassLoader()
 						.getResource(url) != null) {
 					return new ClasspathRule(gameId, url);
 				}
 
-			} else if (url.startsWith("file://")) {
-				url = url.substring("file://".length());
+			} else if (url.startsWith(FSRule.URL_PROTOCOL)) {
+				url = url.substring(FSRule.URL_PROTOCOL.length());
 				if (new File(url).exists()) {
 					return new FSRule(gameId, url);
 				}
@@ -267,7 +273,7 @@ public class GameManager implements GameService {
 	public boolean deleteRule(String gameId, String url) {
 		Game g = loadGameDefinitionById(gameId);
 		boolean res = false;
-		if (g != null && url != null && url.indexOf("db://") != -1) {
+		if (g != null && url != null && url.indexOf(DBRule.URL_PROTOCOL) != -1) {
 			String id = url.substring(5);
 			ruleRepo.delete(id);
 			res = g.getRules().remove(url);

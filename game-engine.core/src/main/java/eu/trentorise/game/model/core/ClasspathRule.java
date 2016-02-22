@@ -16,21 +16,25 @@
 
 package eu.trentorise.game.model.core;
 
-public class ClasspathRule extends Rule {
+import java.io.IOException;
+import java.io.InputStream;
 
-	private String url;
+public class ClasspathRule extends UrlRule {
+
+	public static final String URL_PROTOCOL = "classpath://";
 
 	public ClasspathRule(String gameId, String url) {
-		super(gameId);
-		this.url = url;
+		super(gameId, url);
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+	@Override
+	public InputStream getInputStream() throws IOException {
+		try {
+			return Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream(getUrl().replace(URL_PROTOCOL, ""));
+		} catch (NullPointerException e) {
+			throw new IOException("null url");
+		}
 	}
 
 }

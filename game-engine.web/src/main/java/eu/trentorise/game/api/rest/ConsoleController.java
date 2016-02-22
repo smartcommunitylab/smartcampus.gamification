@@ -158,14 +158,14 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/rule/db/{ruleUrl}")
 	public boolean deleteDbRule(@PathVariable String gameId,
 			@PathVariable String ruleUrl) {
-		ruleUrl = "db://" + ruleUrl;
+		ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
 		return gameSrv.deleteRule(gameId, ruleUrl);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/rule/db/{ruleUrl}")
 	public RuleDTO readDbRule(@PathVariable String gameId,
 			@PathVariable String ruleUrl) {
-		ruleUrl = "db://" + ruleUrl;
+		ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
 		DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
 		RuleDTO res = new RuleDTO();
 		res.setId(r.getId());

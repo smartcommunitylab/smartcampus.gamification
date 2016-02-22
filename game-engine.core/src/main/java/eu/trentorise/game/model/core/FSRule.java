@@ -16,21 +16,28 @@
 
 package eu.trentorise.game.model.core;
 
-public class FSRule extends Rule {
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
-	private String url;
+public class FSRule extends UrlRule {
+
+	public static final String URL_PROTOCOL = "file://";
 
 	public FSRule(String gameId, String url) {
-		super(gameId);
-		this.url = url;
+		super(gameId, url);
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+	@Override
+	public InputStream getInputStream() throws IOException {
+		try {
+			return new FileInputStream(getUrl().replace(URL_PROTOCOL, ""));
+		} catch (NullPointerException e) {
+			throw new IOException("null url");
+		} catch (FileNotFoundException e) {
+			throw e;
+		}
 	}
 
 }

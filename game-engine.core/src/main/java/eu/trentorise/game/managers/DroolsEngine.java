@@ -16,9 +16,7 @@
 
 package eu.trentorise.game.managers;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -71,6 +69,7 @@ import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.Rule;
+import eu.trentorise.game.model.core.UrlRule;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -211,34 +210,16 @@ public class DroolsEngine implements GameEngine {
 		if (g != null && g.getRules() != null) {
 			for (String ruleUrl : g.getRules()) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
-				if (r != null && r.getName() != null
-						&& r.getName().equals("constants")) {
-					if (r instanceof DBRule) {
-						constantsFileStream = new ByteArrayInputStream(
-								((DBRule) r).getContent().getBytes());
-					}
-				}
-				if (r instanceof ClasspathRule
-						&& ((ClasspathRule) r).getUrl().contains("constants")) {
-					String url = ((ClasspathRule) r).getUrl();
-					url = url.replace("classpath://", "");
-					constantsFileStream = Thread.currentThread()
-							.getContextClassLoader().getResourceAsStream(url);
-				}
-
-				if (r instanceof FSRule
-						&& ((FSRule) r).getUrl().contains("constants")) {
-					String url = ((FSRule) r).getUrl();
-					url = url.replace("file://", "");
+				if ((r != null && r.getName() != null && r.getName().equals(
+						"constants"))
+						|| r instanceof UrlRule
+						&& ((UrlRule) r).getUrl().contains("constants")) {
 					try {
-						constantsFileStream = new FileInputStream(url);
-					} catch (FileNotFoundException e) {
-						logger.error(String.format(
-								"error opening constants %s of game %s", url,
-								gameId));
+						constantsFileStream = r.getInputStream();
+					} catch (IOException e) {
+						logger.error("Exception loading constants file", e);
 					}
 				}
-
 			}
 		}
 
@@ -329,11 +310,12 @@ public class DroolsEngine implements GameEngine {
 		}
 
 		public boolean isConstantsRule(String ruleUrl) {
-			boolean classpathCheck = ruleUrl.startsWith("classpath://")
+			boolean classpathCheck = ruleUrl
+					.startsWith(ClasspathRule.URL_PROTOCOL)
 					&& ruleUrl.contains("/constants");
-			boolean fsCheck = ruleUrl.startsWith("file://")
+			boolean fsCheck = ruleUrl.startsWith(FSRule.URL_PROTOCOL)
 					&& ruleUrl.contains("/constants");
-			boolean dbCheck = ruleUrl.startsWith("db://");
+			boolean dbCheck = ruleUrl.startsWith(DBRule.URL_PROTOCOL);
 			if (dbCheck) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
 				dbCheck = r != null && r.getName() != null
@@ -349,13 +331,13 @@ public class DroolsEngine implements GameEngine {
 			if (isConstantsRule(ruleUrl)) {
 				return null;
 			}
-			if (ruleUrl.startsWith("classpath://")) {
-				url = ruleUrl.substring("classpath://".length());
+			if (ruleUrl.startsWith(ClasspathRule.URL_PROTOCOL)) {
+				url = ruleUrl.substring(ClasspathRule.URL_PROTOCOL.length());
 				res = kieServices.getResources().newClassPathResource(url);
-			} else if (ruleUrl.startsWith("file://")) {
-				url = ruleUrl.substring("file://".length());
+			} else if (ruleUrl.startsWith(FSRule.URL_PROTOCOL)) {
+				url = ruleUrl.substring(FSRule.URL_PROTOCOL.length());
 				res = kieServices.getResources().newFileSystemResource(url);
-			} else if (ruleUrl.startsWith("db://")) {
+			} else if (ruleUrl.startsWith(DBRule.URL_PROTOCOL)) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
 				if (r != null) {
 					res = kieServices.getResources().newReaderResource(

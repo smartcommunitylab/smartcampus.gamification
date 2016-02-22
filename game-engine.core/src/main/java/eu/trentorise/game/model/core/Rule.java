@@ -16,6 +16,9 @@
 
 package eu.trentorise.game.model.core;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public abstract class Rule {
 
 	private String gameId;
@@ -24,6 +27,8 @@ public abstract class Rule {
 	public Rule(String gameId) {
 		this.gameId = gameId;
 	}
+
+	public abstract InputStream getInputStream() throws IOException;
 
 	public String getGameId() {
 		return gameId;

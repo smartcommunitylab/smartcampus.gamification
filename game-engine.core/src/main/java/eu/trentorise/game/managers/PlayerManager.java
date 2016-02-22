@@ -29,6 +29,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,14 @@ import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
+/**
+ * ATTENTION: this class is not managed actually, please don't use it!
+ * 
+ * @author mirko perillo
+ * 
+ */
+
+@Profile("standalone")
 @Component
 public class PlayerManager implements PlayerService {
 

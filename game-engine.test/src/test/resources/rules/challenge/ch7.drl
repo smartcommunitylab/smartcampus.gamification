@@ -9,6 +9,7 @@ package eu.trentorise.game.model
   - ch-ID-endChTs [rule] [presentation]
   - ch-ID-bonus [presentation]
   - ch-ID-type [presentation]
+  - ch-ID-target [rule] [presentation]
 */
 rule 'ch-ID'
 when

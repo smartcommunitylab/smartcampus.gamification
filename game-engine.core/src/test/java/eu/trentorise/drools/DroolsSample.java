@@ -16,12 +16,17 @@
 
 package eu.trentorise.drools;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
+import org.drools.template.ObjectDataCompiler;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilder;
@@ -214,4 +219,60 @@ public class DroolsSample {
 		Assert.assertFalse(verifier.hasErrors());
 	}
 
+	@Test
+	public void templatingRule() throws IOException {
+		ObjectDataCompiler compiler = new ObjectDataCompiler();
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("chid", "RANDOM_VALUE");
+		params.put("player", "bruce_wayne");
+		params.put("bonus", 50);
+
+		String ruleResult = "package eu.trentorise.game.model\n"
+				+ "// CH1variant - Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus\n"
+				+ "/*\n"
+				+ " CustomData to have   []=used by\n"
+				+ "    ID is a unique string that identifies the challenge instance\n"
+				+ "  - chid-startChTs [rule] [presentation]\n"
+				+ "  - chid-endChTs [rule] [presentation]\n"
+				+ "  - chid-Km_walked_during_challenge [rule] [presentation]\n"
+				+ "  - chid-target [rule] [presentation]\n"
+				+ "  - chid-bonus [presentation]\n"
+				+ "  - chid-type [presentation]\n"
+				+ "*/\n"
+				+ "\n"
+				+ "rule 'ch-RANDOM_VALUE-trace'\n"
+				+ "no-loop\n"
+				+ "when\n"
+				+ "	InputData($walk : data[\"walkDistance\"])\n"
+				+ "	$c: CustomData($now: System.currentTimeMillis(), this['ch-RANDOM_VALUE-startChTs'] <= $now, this['ch-RANDOM_VALUE-endChTs'] > $now)\n"
+				+ "	Player(id == 'bruce_wayne') \n"
+				+ "then\n"
+				+ "	Double o = (Double) $c.get('ch-RANDOM_VALUE-Km_walked_during_challenge');\n"
+				+ "	if(o == null) {\n"
+				+ "		$c.put('ch-RANDOM_VALUE-Km_walked_during_challenge',(Double) $walk);	\n"
+				+ "	}else {\n"
+				+ "		$c.put('ch-RANDOM_VALUE-Km_walked_during_challenge', o + (Double) $walk);\n"
+				+ "	}\n"
+				+ "	log('RANDOM_VALUE update');\n"
+				+ "	update($c); \n"
+				+ "end\n"
+				+ "rule 'ch-RANDOM_VALUE-check'\n"
+				+ "when\n"
+				+ "	Player(id == 'bruce_wayne')\n"
+				+ "	$c: CustomData($now: System.currentTimeMillis(), this['ch-RANDOM_VALUE-startChTs'] <= $now, this['ch-RANDOM_VALUE-endChTs'] > $now, this['ch-RANDOM_VALUE-Km_walked_during_challenge'] >= this['ch-RANDOM_VALUE-target'])\n"
+				+ "	$pc : PointConcept(name == \"green leaves\")\n" + "then\n"
+				+ "	$pc.setScore($pc.getScore() + 50);\n"
+				+ "	log('RANDOM_VALUE success');\n" + "	update($pc); \n"
+				+ "end";
+
+		System.out
+				.println(compiler.compile(
+						Arrays.asList(params),
+						Thread.currentThread()
+								.getContextClassLoader()
+								.getResourceAsStream(
+										"rules/templates/ruleTemplate.drl")));
+
+	}
 }

@@ -8,7 +8,33 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 
     //$rootScope.frameOpened = false;
 	var cod_ente = "24";
-    
+	$scope.TRAIN_TRANS = 0;
+	$scope.BUS_TRANS = 1;
+	$scope.SAUTO_TRANS = 2;
+	$scope.SBIKE_TRANS = 3;
+	$scope.AUTO_PRIVAT = 4;
+	$scope.BIKE_PRIVAT = 5;
+	$scope.WALK_PRIVAT = 6;
+	$scope.MINOR_20 = 1;
+	$scope.FROM_20_TO_40 = 2;
+	$scope.FROM_40_TO_70 = 3;
+	$scope.MAIOR_70 = 4;
+	// challeng_keys
+	$scope.CHAL_K = "ch-";
+	$scope.CHAL_K_TYPE = "-type";
+	$scope.CHAL_K_STS = "-startChTs";
+	$scope.CHAL_K_ETS = "-endChTs";
+	$scope.CHAL_K_WALKED_KM = "-Km_walked_during_challenge";
+	$scope.CHAL_K_TARGET = "-target";
+	$scope.CHAL_K_BONUS = "-bonus";
+	$scope.CHAL_K_RECOM = "-recommandation";
+	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km a piedi e avrai BONUS punti bonus";
+	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con il Bike sharing e vinci un bonus di BONUS Green Points";
+	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS Green Points";
+	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS Green Points";
+    $scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24;	// millis in a day
+    var show_ch_details = false;
+	
     $scope.setFrameOpened = function(value){
     	$rootScope.frameOpened = value;
     };
@@ -106,29 +132,44 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     // for services selection
     var activeLinkProfile = "active";
+    var activeLinkChalleng = "";
     var activeLinkClassification = "";
     var activeLinkRules = "";
     
     $scope.showProfile = function(){
     	activeLinkProfile = "active";
+    	activeLinkChalleng = "";
+    	activeLinkClassification = "";
+    	activeLinkRules = "";
+    };
+    
+    $scope.showChalleng = function(){
+    	activeLinkProfile = "";
+    	activeLinkChalleng = "active";
     	activeLinkClassification = "";
     	activeLinkRules = "";
     };
     
     $scope.showClassification = function(){
     	activeLinkProfile = "";
+    	activeLinkChalleng = "";
     	activeLinkClassification = "active";
     	activeLinkRules = "";
     };
     
     $scope.showRules = function(){
     	activeLinkProfile = "";
+    	activeLinkChalleng = "";
     	activeLinkClassification = "";
     	activeLinkRules = "active";
     };
     
     $scope.isActiveProfile = function(){
     	return activeLinkProfile;
+    };
+    
+    $scope.isActiveChalleng = function(){
+    	return activeLinkChalleng;
     };
     
     $scope.isActiveClassification = function(){
@@ -169,8 +210,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     sharedDataService.setSurname(user_surname);
     sharedDataService.setUserId(userId);
     sharedDataService.setBase64(base64);
-    //sharedDataService.setBase64('MIIE6TCCA9GgAwIBAgIDBzMlMA0GCSqGSIb3DQEBBQUAMIGBMQswCQYDVQQGEwJJVDEYMBYGA1UECgwPUG9zdGVjb20gUy5wLkEuMSIwIAYDVQQLDBlTZXJ2aXppIGRpIENlcnRpZmljYXppb25lMTQwMgYDVQQDDCtQcm92aW5jaWEgQXV0b25vbWEgZGkgVHJlbnRvIC0gQ0EgQ2l0dGFkaW5pMB4XDTExMTEyMzAwMjQ0MloXDTE3MTEyMjAwNTk1OVowgY4xCzAJBgNVBAYTAklUMQ8wDQYDVQQKDAZUUy1DTlMxJTAjBgNVBAsMHFByb3ZpbmNpYSBBdXRvbm9tYSBkaSBUcmVudG8xRzBFBgNVBAMMPkJSVE1UVDg1TDAxTDM3OFMvNjA0MjExMDE5NzU3MTAwNy53aTRldjVNeCtFeWJtWnJkTllhMVA3ZUtkY1U9MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCsF81BDJjAQat9Lfo/1weA0eePTsEbwTe/0QqlArfOTG3hfLEiSd+mDNsBUJo+cRXZMp677y9a1kYlB+IDY3LGH36Bs1QxM14KA6WB67KX4ZaXENew6Qm7NnkMRboKQiIOUmw1l4OiTETfqKWyFqfAtnyLHd8ZZ6qfjgSsJoSHoQIDAQABo4IB3TCCAdkwge0GA1UdIASB5TCB4jCBrAYFK0wQAgEwgaIwgZ8GCCsGAQUFBwICMIGSDIGPSWRlbnRpZmllcyBYLjUwOSBhdXRoZW50aWNhdGlvbiBjZXJ0aWZpY2F0ZXMgaXNzdWVkIGZvciB0aGUgaXRhbGlhbiBOYXRpb25hbCBTZXJ2aWNlIENhcmQgKENOUykgcHJvamVjdCBpbiBhY2NvcmRpbmcgdG8gdGhlIGl0YWxpYW4gcmVndWxhdGlvbiAwMQYGK0wLAQMBMCcwJQYIKwYBBQUHAgEWGWh0dHA6Ly9wb3N0ZWNlcnQucG9zdGUuaXQwOgYIKwYBBQUHAQEELjAsMCoGCCsGAQUFBzABhh5odHRwOi8vcG9zdGVjZXJ0LnBvc3RlLml0L29jc3AwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFO5h8R6jQnz/4EeFe3FeW6ksaogHMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9wb3N0ZWNlcnQucG9zdGUuaXQvY25zL3Byb3ZpbmNpYXRyZW50by9jcmwuY3JsMB0GA1UdDgQWBBRF3Z13QZAmn85HIYPyIg3QE8WM2DANBgkqhkiG9w0BAQUFAAOCAQEAErn/asyA6AhJAwOBmxu90umMNF9ti9SX5X+3+pcqLbvKOgCNfjhGJZ02ruuTMO9uIi0DIDvR/9z8Usyf1aDktYvyrMeDZER+TyjviA3ntYpFWWIh1DiRnAxuGYf6Pt6HNehodf1lhR7TP+iejH24kS2LkqUyiP4J/45sTK6JNMXPVT3dk/BAGE1cFCO9FI3QyckstPp64SEba2+LTunEEA4CKPbTQe7iG4FKpuU6rqxLQlSXiPVWZkFK57bAUpVL/CLc7unlFzIccjG/MMvjWcym9L3LaU//46AV2hR8pUfZevh440wAP/WYtomffkITrMNYuD1nWxL7rUTUMkvykw==');
-    //sharedDataService.setMail(user_mail);
     sharedDataService.setUtente(nome, cognome, sesso, dataNascita, provinciaNascita, luogoNascita, codiceFiscale, cellulare, email, indirizzoRes, capRes, cittaRes, provinciaRes );
     
     $scope.gameId = sharedDataService.getGameId();
@@ -178,6 +217,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     $scope.getUserName = function(){
   	  return sharedDataService.getName();
+    };
+    
+    $scope.getNikName = function(){
+    	  return sharedDataService.getNickName();
     };
     
     $scope.getUserSurname = function(){
@@ -337,6 +380,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	}
     };
     
+    $scope.getChalleng = function(gameId){
+    	$scope.setLoading(true);
+    	$scope.getChallengData(gameId);
+    };
+    
     // Method getPrifilesData: used to retrieve the user profile data from DB
     $scope.getProfilesData = function(gameId){
     	var method = 'GET';
@@ -349,15 +397,28 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	});
     }
     
+    // Method getChallengData: used to retrieve the user challeng customData from DB
+    $scope.getChallengData = function(gameId){
+    	var method = 'GET';
+    	var params = null;
+    	var wsRestUrl = "state/" + gameId + "/" + $scope.userId;
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
+    	myDataPromise.then(function(result){
+    		if(result.customData){
+    			$scope.correctCustomData(result.customData);
+    		}
+    		$scope.showChalleng();
+    	});
+    }
+    
+    // Method getClassification: used to retrieve the classificaton data from DB
     $scope.getClassification = function(gameId) {
-    	//window.location.reload(true);	// To force the page refresh - this goes in a loop
     	$scope.setLoading(true);
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId;
     	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
-    		//$scope.GameClassification = result;
     		$scope.correctClassificationData(result);
     		$scope.showClassification();
     	});
@@ -382,6 +443,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				}	
     			}
     			$scope.myNick = name;
+    			if(name != null && name != ''){
+    				sharedDataService.setNickName(name);
+    			}
     			if($scope.myNick == null || $scope.myNick == ""){
     				// manage Nick for player
     				$scope.retrieveNickForPlayer(result.players);
@@ -419,9 +483,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     $scope.retrieveNickForPlayer = function(nickList){
     	var dlg = $dialogs.create('/dialogs/nickinput.html','nicknameDialogCtrl',nickList,'lg');
-		dlg.result.then(function(name){
-			$scope.myNick = name;
-			$scope.updateNiks(name);
+		dlg.result.then(function(user){
+			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
+			$scope.myNick = user.nickname;
+			sharedDataService.setNickName(user.nickname);
+			$scope.updateNiks(user.nickname);		// commented for test
 		});
     };
     
@@ -440,6 +506,180 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		$scope.checkBadges($scope.userProfile.badges);
     	}
     	$scope.setLoading(false);
+    };
+    
+    // Method used to load only the custom data from the user profile data
+    $scope.correctCustomData = function(customdata){
+    	var challIndxArray = [];
+    	$scope.challenges = [];
+    	if(customdata != null && customdata != ""){
+    		
+    		for(var keyName in customdata){
+    			var key = keyName;
+    			var value = customdata[keyName];
+    			if(key.indexOf('ch-') > -1){
+    				// case key is a challeng key
+    				var challangeString = key.substring(3);
+    				var partialIndex = challangeString.split("-");
+    				var chal_Indx = partialIndex[0];
+    				if(challIndxArray.length == 0){
+    					challIndxArray.push(chal_Indx);
+    				} else {
+    					if($scope.isNewInArray(challIndxArray, chal_Indx)){
+    						challIndxArray.push(chal_Indx);
+    					}
+    				}
+    			}
+    			console.log("key: " + key + ", value: " + value );
+    		}
+    		for(var i = 0; i < challIndxArray.length; i++){
+    			var ch_id = challIndxArray[i];
+    			var ch_type = customdata[$scope.CHAL_K+ch_id+$scope.CHAL_K_TYPE];
+    			var target = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_TARGET];
+				var bonus = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_BONUS];
+				var endChTs = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_ETS];
+				var now = new Date().getTime();
+				var active = (now < endChTs);
+				var status = 0;
+    			var tmp_chall = {};
+    			switch(ch_type){
+    				case 'ch1':
+    					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
+    					status = walked_km * 100 / target;
+    					if(status > 100)status = 100;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: "img/health/healthLeavesTesto.svg",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
+    						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
+    						endChTs: endChTs,
+    						Km_walked_during_challenge: walked_km,
+    						target: target,
+    						bonus: bonus,
+    						status: status,
+    						active: active,
+    						type: ch_type,
+    						details: false
+    					};
+    					break;
+    				case 'ch3':
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: "img/green/greenLeavesTesto.svg",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus), //"Fai almeno un viaggio con il Bike sharing e vinci un bonus di 50 Green Points",
+    						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
+    						endChTs: endChTs,
+    						target: target,
+    						bonus: bonus,
+    						status: status,
+    						active: active,
+    						type: ch_type,
+    						details: false
+    					};
+    					break;
+    				case 'ch7':
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: "img/green/greenLeavesTesto.svg",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_7, target, bonus), //"completa una Badge Collection e vinci un bonus di 50 Green Points",
+    						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
+    						endChTs: endChTs,
+    						target: target,
+    						bonus: bonus,
+    						status: status,
+    						active: active,
+    						type: ch_type,
+    						details: false
+    					};
+    					break;
+    				case 'ch9':
+    					var recommandation = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_RECOM];
+    					status = recommandation * 100 / target;
+    					if(status > 100)status = 100;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: "img/green/greenLeavesTesto.svg",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_9, target, bonus), //"raccomanda la App ad almeno 10 utenti e guadagni 50 Green Points",
+    						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
+    						endChTs: endChTs,
+    						recommandation: recommandation,
+    						target: target,
+    						bonus: bonus,
+    						status: status,
+    						active: active,
+    						type: ch_type,
+    						details: false
+    					};
+    					break;	
+    				default: break;
+    			}
+    			if(now < (endChTs + $scope.CHAL_TS_OFFSET)){
+    				$scope.challenges.push(tmp_chall);
+    			}
+    		}
+    	}
+    	$scope.setLoading(false);
+    };
+    
+    $scope.getChallStyle = function(active, status){
+    	if(status == 100){
+    		return "panel panel-success success";
+    	} else { 
+    		if(active){
+    			return "panel panel-success";
+    		}
+    		if(!active){
+    			return "panel panel-success failed";
+    		}
+    	}
+    };
+    
+    $scope.showDetails = function(challeng){
+    	for(var i = 0; i < $scope.challenges.length; i++){
+    		if(challeng.id == $scope.challenges[i].id){
+    			$scope.challenges[i].details = true;
+    		}
+    	}
+    };
+    
+    $scope.hideDetails = function(challeng){
+    	for(var i = 0; i < $scope.challenges.length; i++){
+    		if(challeng.id == $scope.challenges[i].id){
+    			$scope.challenges[i].details = false;
+    		}
+    	}
+    };
+    
+    $scope.isShowedDetails = function(challengid){
+    	var isshowed = false;
+    	var found = false;
+    	for(var i = 0; (i < $scope.challenges.length && !found); i++){
+    		if(challengid == $scope.challenges[i].id){
+    			isshowed = $scope.challenges[i].details;
+    			found = true;
+    		}
+    	}
+    	return isshowed;
+    };
+    
+    $scope.isNewInArray = function(arr, elem){
+    	var contained = false;
+    	for(var i = 0; (i < arr.length) && !contained; i++){
+    		if(arr[i] == elem){
+    			contained = true;
+    		}
+    	}
+    	return !contained;
+    };
+    
+    $scope.correctDesc = function(desc, target, bonus){
+    	if(desc.indexOf("TARGET") > -1){
+    		desc = desc.replace("TARGET", target);
+    	}
+    	if(desc.indexOf("BONUS") > -1){
+    		desc = desc.replace("BONUS", bonus);
+    	}
+    	return desc;
     };
     
     // Method used to load only the used data from the players list
@@ -876,8 +1116,31 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 }]);
 cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	//-- Variables --//
-
-	$scope.user = {nickname : ''};
+	$scope.submitNumber = 0;
+	
+	$scope.ages = [
+	    {val: 1, label: '< 20 anni'},
+	    {val: 2, label: '20 - 40 anni'},
+	    {val: 3, label: '40 - 70 anni'},
+	    {val: 4, label: '> 70 anni'}
+	];
+	
+	$scope.user = {
+		nickname : '',
+		age: '',
+		transport: null,
+		vehicle: [
+		   false,
+		   false,
+		   false,
+		   false,
+		   false,
+		   false,
+		   false
+		   ],
+		averagekm: 0,
+		invitation: ''
+	};
 	$scope.showMessages = false;
 
 	//-- Methods --//
@@ -886,14 +1149,16 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 		$modalInstance.dismiss('Canceled');
 	}; // end cancel
 	
-	$scope.save = function(){
-		$scope.errorMessages = "";
-		// check if nick already present
-		if(!$scope.checkIfNickAlreadyPresent($scope.user.nickname)){
-			$modalInstance.close($scope.user.nickname);
-		} else {
-			$scope.showMessages = true;
-			$scope.errorMessages = "Nickname gia' usato da un altro utente. Scegli un altro nick che ti rappresenti."
+	$scope.save = function(form){
+		if(form.$valid){
+			$scope.errorMessages = "";
+			// check if nick already present
+			if(!$scope.checkIfNickAlreadyPresent($scope.user.nickname)){
+				$modalInstance.close($scope.user);	// pass all the form data to the main controller
+			} else {
+				$scope.showMessages = true;
+				$scope.errorMessages = "Nickname gia' usato da un altro utente. Scegli un altro nick che ti rappresenti."
+			}
 		}
 	}; // end save
 	
@@ -916,6 +1181,54 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 			}
 		}
 		return false;
+	}
+	
+	$scope.checkAllUnselected = function(check_group){
+		if(check_group){
+			if(check_group.train != null){
+				if(!check_group.train && !check_group.bus && !check_group.sauto && !check_group.sbike){
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				if(!check_group.auto && !check_group.bike && !check_group.walk){
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	$scope.clearVehicle = function(){
+		$scope.user.vehicle = [false, false, false, false, false, false, false];
+	};
+	
+	$scope.someSelectedTrans = function (object) {
+		var somes = false;
+		if(object){
+			for(var i = 0; i < object.length; i++){
+				if(object[i]){
+					somes = true;
+				}
+			}
+		}
+		return somes;
+	}
+	
+	$scope.someSelectedPrivat = function (object) {
+		var somes = false;
+		if(object){
+			for(var i = 0; i < object.length; i++){
+				if(object[i]){
+					somes = true;
+				}
+			}
+		}
+		return somes;
 	}
 	
 	

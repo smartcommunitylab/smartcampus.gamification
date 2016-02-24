@@ -59,6 +59,10 @@
 	"value": "Profilo",
 	"description": "Link profilo"
 }, {
+	"key": "left_menu-challeng",
+	"value": "Sfida",
+	"description": "Link sfida"
+}, {
 	"key": "left_menu-classification",
 	"value": "Classifica",
 	"description": "Link classifica"
@@ -314,6 +318,10 @@
 	"key": "datepicker_button_canc",
 	"value": "Cancella",
 	"description": "Testo pulsante datapicker per cancella"
+}, {
+	"key": "label_challeng_title_h4",
+	"value": "Controlla le sfide a cui stai partecipando",
+	"description": "Testo label titolo sfida"
 }, {
 	"key": "datepicker_button_close",
 	"value": "Chiudi",

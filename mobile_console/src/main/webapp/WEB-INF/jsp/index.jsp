@@ -179,6 +179,7 @@ var base64="<%=request.getAttribute("base64")%>";
             </li> 
             
             <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li>
+            <li class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
             <li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li>
             <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
             
@@ -213,6 +214,7 @@ var base64="<%=request.getAttribute("base64")%>";
 			            	</a>
 			            	<ul class="dropdown-menu" role="menu">
 			            		<li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li>
+			            		<li class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
 			            		<li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" ><strong>{{ 'left_menu-classification' | i18n }}</strong></a></li>
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
 								<!-- <li class="divider"></li> -->
@@ -236,34 +238,8 @@ var base64="<%=request.getAttribute("base64")%>";
 <!-- 		            <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
 <!-- 		          </ul> -->
 <!--         		</div> -->
-<!-- 			    <div class="navbar-header pull-right"> -->
-<!-- 			    	<ul class="nav navbar-nav"> -->
-<!-- 			         	<li class="active" ng-show="isActiveProfile() == 'active'">{{ 'left_menu-profile' | i18n }}</li> -->
-<!-- 			            <li class="active" ng-show="isActiveClassification() == 'active'">{{ 'left_menu-classification' | i18n }}</li> -->
-<!-- 			            <li class="active" ng-show="isActiveRules() == 'active'">{{ 'left_menu-rules' | i18n }}</li>  -->
-<!-- 			         </ul> -->
-<!-- 			    </div>      -->
 	    	</div>
 	    </div>
-<!--         <div class="collapse navbar-collapse"> -->
-<!--           <ul class="nav navbar-nav"> -->
-<!--             <li class="dropdown"> -->
-<!--             	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> -->
-<!--             		<img height="22" src="img/navMobile.svg"> -->
-<!--             	</a> -->
-<!--             	<ul class="dropdown-menu" role="menu"> -->
-<!--             		<li><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li> -->
-<!--             		<li><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li> -->
-<!--             		<li><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li> -->
-<!--             		<li class="divider"></li> -->
-<!--             		<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
-<!--           			<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
-<!--           			<li class="divider"></li> -->
-<!--           			<li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
-<!--             	</ul> -->
-<!--             </li>   -->
-<!--           </ul> -->
-<!--         </div> -->
       </div><!-- /.container -->
     </div><!-- /.navbar -->
     
@@ -376,23 +352,85 @@ var base64="<%=request.getAttribute("base64")%>";
 	</div>	
 </body>
 <script type="text/ng-template" id="/dialogs/nickinput.html">
-<div class="modal">
+<div class="modal" id="variablesModal" role="dialog"> <!-- aria-labelledby="modalTitle" aria-hidden="true" -->
 	<form role="form" name="form">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Crea Nickname</h4>
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Benvenuto</h4>
 				</div>
 				<div class="modal-body">
-						<div class="form-group" ng-class="{true: 'has-error'}[form.reportname.$dirty && form.reportname.$invalid]">
-							<label class="control-label" for="username">Nick name:</label>
-							<input type="text" class="form-control" name="nickname" id="nickname" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
-							<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
-						</div>
+					<div>
+					Rispondi a queste veloci e semplici domande per accedere alla console. Questo permetter&agrave; al sistema di recuperare informazioni utili per offrire
+					un servizio pi&ugrave; personalizzato e adatto alle tue abitudini.
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
+						<label class="control-label" for="username">Nick name:</label>
+						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
+						<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
+					</div>
+					<div ng-class="{true: 'has-error'}[form.age.$dirty && form.age.$invalid]"><!-- class="form-group" -->
+						<label class="control-label">Et&agrave;:</label>
+						<select type="text" name="age" class="form-control" ng-model="user.age" required><!--  ng-options="a as a.label for a in ages" required -->
+							<option value="">Seleziona una facia d'eta'</option>
+							<option value="1">< 20 anni</option>
+							<option value="2">20 - 40 anni</option>
+							<option value="3">40 - 70 anni</option>
+							<option value="4">> 70 anni</option>
+						</select>
+						<div ng-show="submitNumber && form.age.$error.required" class="alert alert-danger" role="alert">Valore eta' oggligatorio. Selezionare un valore</div>
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.transport.$dirty && form.transport.$invalid]">
+						<label class="control-label" for="username">Utilizzi quotidianamente i mezzi pubblici? </label>
+						<table width="100%">
+							<tr><td><label><input type="radio" name="transport" value="yes" ng-model="user.transport" ng-change="clearVehicle()" required> Si</label></td></tr>
+							<tr><td><label><input type="radio" name="transport" value="no" ng-model="user.transport" ng-change="clearVehicle()" required> No</label></td></tr>
+						</table>
+						<div ng-show="submitNumber && form.transport.$error.required" class="alert alert-danger" role="alert">Valore obbligatorio, selezionare si o no</div>
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.vehicle.$dirty && form.vehicle.$invalid || form.vehicle.$error.required]">
+						<label class="control-label" for="username">Mezzi usati abitualmente per gli spostamenti: </label>
+						<table width="100%">
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="0" name="vehicle" ng-model="user.vehicle[0]" ng-required="!someSelectedTrans(user.vehicle)"> treno</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="1" name="vehicle" ng-model="user.vehicle[1]" ng-required="!someSelectedTrans(user.vehicle)"> autobus</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="2" name="vehicle" ng-model="user.vehicle[2]" ng-required="!someSelectedTrans(user.vehicle)"> auto condivisa</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="3" name="vehicle" ng-model="user.vehicle[3]" ng-required="!someSelectedTrans(user.vehicle)"> bici condivisa</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="4" name="vehicle" ng-model="user.vehicle[4]" ng-required="!someSelectedPrivat(user.vehicle)"> auto privata</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="5" name="vehicle" ng-model="user.vehicle[5]" ng-required="!someSelectedPrivat(user.vehicle)"> bici privata</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="6" name="vehicle" ng-model="user.vehicle[6]" ng-required="!someSelectedPrivat(user.vehicle)"> a piedi</label></td>
+							</tr>
+							<tr>
+								<td><div ng-show="submitNumber && form.vehicle.$error.required" class="alert alert-danger" role="alert">Veicolo obbligatorio. Selezionare almeno un elemento</div></td>
+							</tr>
+						</table>
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
+						<label class="control-label" for="averagekm">Km medi percorsi giornalmente </label>
+						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" required>
+						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">Valore non permesso nel campo km</div>
+						<div ng-show="submitNumber && form.averagekm.$error.required" class="alert alert-danger" role="alert">Valore km medi obbligatorio</div>
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.invitation_person.$dirty && form.invitation_person.$invalid]">
+						<label class="control-label" for="invitation">Chi ti ha proposto il link a questo gioco?</label>
+						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="Inserisci il nome di chi ti ha invitato al gioco" ng-model="user.invitation">
+					</div>
 				</div>
 				<div class="modal-footer">
 					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
-					<button type="button" class="btn btn-primary" ng-click="save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
+					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
 				</div>
 			</div>
 		</div>

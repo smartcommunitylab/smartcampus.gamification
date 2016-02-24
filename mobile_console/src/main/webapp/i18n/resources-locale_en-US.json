@@ -59,6 +59,10 @@
 	"value": "Profilo",
 	"description": "Link profilo"
 }, {
+	"key": "left_menu-challeng",
+	"value": "Sfida",
+	"description": "Link sfida"
+}, {
 	"key": "left_menu-classification",
 	"value": "Classifica",
 	"description": "Link classifica"
@@ -314,6 +318,10 @@
 	"key": "label_profile_title_h4",
 	"value": "Scopri i badge che hai guadagnato",
 	"description": "Testo label titolo profilo"
+}, {
+	"key": "label_challeng_title_h4",
+	"value": "Controlla le sfide a cui stai partecipando",
+	"description": "Testo label titolo sfida"
 }, {
 	"key": "green_leaves_tab_title",
 	"value": "Green",

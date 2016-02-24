@@ -1,0 +1,169 @@
+<div class="container-fluid" ng-init="getChalleng(params.id)">
+
+	<div id="my-prof-head-title" align="center">
+		{{ 'left_menu-challeng' | i18n }}
+	</div>
+
+	<div align="center">
+		<h1>{{ getUserName() }} {{ getUserSurname() }} - {{ getNikName() }}</h1>
+		<h4>{{ 'label_challeng_title_h4' | i18n }}</h4>
+	</div>
+		
+		<!-- <div class="row">
+		    <ul class="nav nav-tabs nav-justified">
+		        <li class="nav active"><a data-target="#G" data-toggle="tab">{{ 'green_leaves_tab_title' | i18n }}</a></li>
+		        <li class="nav"><a data-target="#H" data-toggle="tab">{{ 'health_tab_title' | i18n }}</a></li>
+		        <li class="nav"><a data-target="#P" data-toggle="tab">{{ 'pr_tab_title' | i18n }}</a></li>
+		        <li class="nav"><a data-target="#S" data-toggle="tab">{{ 'special_tab_title' | i18n }}</a></li>
+		    </ul>
+		
+		    Tab panes
+		    <div class="tab-content">
+		        <div class="tab-pane fade in active" id="G" ng-include="profTabs[0].content"></div>
+		        <div class="tab-pane fade" id="H" ng-include="profTabs[1].content"></div>
+		        <div class="tab-pane fade" id="P" ng-include="profTabs[2].content"></div>
+		        <div class="tab-pane fade" id="S" ng-include="profTabs[3].content"></div>
+		    </div>
+		</div> -->
+		
+		<div ng-repeat="ch in challenges | orderBy:'-endChTs' ">
+			<div class="{{ getChallStyle(ch.active, ch.status) }}" ng-show="!isShowedDetails(ch.id)">
+			   	<div class="panel-body">
+			  		<div id="ch-big-block" align="justify">
+			  			<div class="row">
+							<div class="col-md-1 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-md-9 headercol"><strong>{{ ch.desc }}</strong></div>
+							<div class="col-md-1 headercol"><a href ng-click="showDetails(ch)"><i class="glyphicon glyphicon-info-sign"></i></a></div>
+						</div>
+						<div class="row">
+							<!--<div class="col-md-1"></div> <label>Stato: </label> -->
+							<div class="col-md-11 progresscol">
+								<div class="progress">
+									<div ng-if="ch.active || (!ch.active && ch.status == 100)" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+								    	{{ ch.status }} %
+									</div>
+									<div ng-if="!ch.active && ch.status < 100" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+								    	{{ ch.status }} %
+									</div>
+								</div>
+							</div>
+						</div>
+			  		</div>
+			  		<div id="ch-small-block" align="justify">
+			  			<div class="row">
+							<div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-xs-7 iconcol"><strong>{{ ch.desc }}</strong></div>
+							<div class="col-xs-1 headercolsmall"><a href ng-click="showDetails(ch)"><i class="glyphicon glyphicon-info-sign"></i></a></div>
+						</div>
+						<div class="row">
+							<!--<div class="col-xs-1"></div> <label>Stato: </label> -->
+							<div class="col-xs-11 progresscol">
+								<div class="progress">
+									<div ng-if="ch.active || (!ch.active && ch.status == 100)" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+								    	{{ ch.status }} %
+									</div>
+									<div ng-if="!ch.active && ch.status < 100" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+								    	{{ ch.status }} %
+									</div>
+								</div>
+							</div>
+						</div>
+			  		</div>
+			  	</div>
+			</div>  		
+			<div class="{{ getChallStyle(ch.active, ch.status) }}" align="justify" ng-show="isShowedDetails(ch.id)">
+			   	<div class="panel-body">
+<!-- 			  		<h4>{{ 'left_menu-challeng' | i18n }} {{ ch.type }}</h4> -->
+					<div id="ch-big-details-block">
+						<div class="row">
+							<div class="col-md-1 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-md-9 headercol"><strong>{{ ch.desc }}</strong></div>
+							<div class="col-md-1 headercol"><a href ng-click="hideDetails(ch)"><i class="glyphicon glyphicon-remove-sign"></i></a></div>
+						</div>
+						<!-- <div class="row">
+							<div class="col-md-10"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-md-1 headerleftcol"><a href ng-click="hideDetails(ch)"><i class="glyphicon glyphicon-remove-sign"></i></a></div>
+						</div> -->
+						<div align="justify">
+							<div class="row">
+								<div class="col-md-2 iconcol"><label>Validita': </label></div>
+								<div class="col-md-9">{{ ch.startChTs | date }} - {{ ch.endChTs | date }}</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2 iconcol"><label>Target: </label></div>
+								<div class="col-md-9">{{ ch.target }}</div>
+							</div>
+							<div class="row">
+								<div ng-if="ch.type == 'ch1'" class="col-md-2 iconcol"><label>Km fatti: </label></div>
+								<div class="col-md-9">{{ ch.Km_walked_during_challenge }}</div>
+							</div>
+							<div class="row">
+								<div ng-if="ch.type == 'ch9'" class="col-md-2 iconcol"><label>Segnalazioni: </label></div>
+								<div class="col-md-9">{{ ch.recommandation }}</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2 iconcol"><label>Bonus: </label></div>
+								<div class="col-md-9">{{ ch.bonus }}</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2 iconcol"><label>Stato: </label></div>
+								<div class="col-md-9">
+									<div class="progress">
+										<div ng-if="ch.active || (!ch.active && ch.status == 100)" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+									    	{{ ch.status }} %
+										</div>
+										<div ng-if="!ch.active && ch.status < 100" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+									    	{{ ch.status }} %
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="ch-small-details-block" align="justify">
+			  			<div class="row">
+							<div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-xs-7 iconcol"><strong>{{ ch.desc }}</strong></div>
+							<div class="col-xs-1 headercolsmall"><a href ng-click="hideDetails(ch)"><i class="glyphicon glyphicon-remove-sign"></i></a></div>
+						</div>
+						<div align="justify">
+							<div class="row">
+								<div class="col-xs-2 iconcol"><label>Validita': </label></div>
+								<div class="col-xs-8">{{ ch.startChTs | date }} - {{ ch.endChTs | date }}</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-2 iconcol"><label>Target: </label></div>
+								<div class="col-xs-8">{{ ch.target }}</div>
+							</div>
+							<div class="row">
+								<div ng-if="ch.type == 'ch1'" class="col-xs-2 iconcol"><label>Km fatti: </label></div>
+								<div class="col-xs-8">{{ ch.Km_walked_during_challenge }}</div>
+							</div>
+							<div class="row">
+								<div ng-if="ch.type == 'ch9'" class="col-xs-2 iconcol"><label>Segnalazioni: </label></div>
+								<div class="col-xs-8">{{ ch.recommandation }}</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-2 iconcol"><label>Bonus: </label></div>
+								<div class="col-xs-8">{{ ch.bonus }}</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-2 iconcol"><label>Stato: </label></div>
+								<div class="col-xs-8">
+									<div class="progress">
+										<div ng-if="ch.active || (!ch.active && ch.status == 100)" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+									    	{{ ch.status }} %
+										</div>
+										<div ng-if="!ch.active && ch.status < 100" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
+									    	{{ ch.status }} %
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+			  		</div>
+				</div>
+			</div>		
+		</div>
+			
+</div>

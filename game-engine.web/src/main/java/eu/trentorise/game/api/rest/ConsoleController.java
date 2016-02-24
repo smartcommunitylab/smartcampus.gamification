@@ -16,6 +16,8 @@
 
 package eu.trentorise.game.api.rest;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -82,12 +84,26 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}")
 	public GameDTO readGame(@PathVariable String gameId) {
+
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		return g == null ? null : converter.convertGame(g);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}")
 	public void deleteGame(@PathVariable String gameId) {
+
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		gameSrv.deleteGame(gameId);
 	}
 
@@ -104,11 +120,24 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/point")
 	public void addPoint(@PathVariable String gameId,
 			@RequestBody PointConcept point) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		gameSrv.addConceptInstance(gameId, point);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/point")
 	public List<PointConcept> readPoints(@PathVariable String gameId) {
+
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
 		List<PointConcept> points = new ArrayList<PointConcept>();
 		if (concepts != null) {
@@ -125,12 +154,24 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/badgecoll")
 	public void addBadge(@PathVariable String gameId,
 			@RequestBody BadgeCollectionConcept badge) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		gameSrv.addConceptInstance(gameId, badge);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/badgecoll")
 	public List<BadgeCollectionConcept> readBadgeCollections(
 			@PathVariable String gameId) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
 		List<BadgeCollectionConcept> badgeColl = new ArrayList<BadgeCollectionConcept>();
 		if (concepts != null) {
@@ -146,6 +187,12 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/rule/db")
 	public RuleDTO addRule(@PathVariable String gameId,
 			@RequestBody RuleDTO rule) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		DBRule r = new DBRule(gameId, rule.getContent());
 		r.setName(rule.getName());
 		r.setId(rule.getId());
@@ -158,6 +205,12 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/rule/db/{ruleUrl}")
 	public boolean deleteDbRule(@PathVariable String gameId,
 			@PathVariable String ruleUrl) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
 		return gameSrv.deleteRule(gameId, ruleUrl);
 	}
@@ -165,6 +218,12 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/rule/db/{ruleUrl}")
 	public RuleDTO readDbRule(@PathVariable String gameId,
 			@PathVariable String ruleUrl) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
 		DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
 		RuleDTO res = new RuleDTO();
@@ -177,6 +236,13 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task")
 	public TaskDTO addClassificationTask(@PathVariable String gameId,
 			@RequestBody TaskDTO task) {
+
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
 			if (g.getTasks() == null) {
@@ -201,6 +267,12 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task/del")
 	public void deleteClassificationTask(@PathVariable String gameId,
 			@RequestBody TaskDTO task) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
 			if (g.getTasks() != null) {
@@ -219,6 +291,12 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/task")
 	public void editClassificationTask(@PathVariable String gameId,
 			@RequestBody TaskDTO task) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
 			if (g.getTasks() != null) {
@@ -245,6 +323,11 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/player")
 	public void createPlayer(@PathVariable String gameId,
 			@RequestBody PlayerStateDTO player) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
 
 		// check if player already exists
 		if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
@@ -261,12 +344,28 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/player/{playerId}")
 	public void deletePlayer(@PathVariable String gameId,
 			@PathVariable String playerId) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			playerId = URLDecoder.decode(playerId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+		}
 		playerSrv.deleteState(gameId, playerId);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team")
 	public void createTeam(@PathVariable String gameId,
 			@RequestBody TeamDTO team) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
 
 		// check if player already exists
 		if (playerSrv.readTeam(gameId, team.getPlayerId()) != null) {
@@ -283,12 +382,34 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/team/{teamId}")
 	public void deleteTeam(@PathVariable String gameId,
 			@PathVariable String teamId) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			teamId = URLDecoder.decode(teamId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+		}
 		deletePlayer(gameId, teamId);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/player/{playerId}/teams")
 	public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
 			@PathVariable String playerId) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			playerId = URLDecoder.decode(playerId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+		}
 		List<Team> result = playerSrv.readTeams(gameId, playerId);
 		List<TeamDTO> converted = new ArrayList<>();
 		for (Team r : result) {
@@ -300,6 +421,17 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team/{teamId}/members")
 	public void updateTeamMembers(@PathVariable String gameId,
 			@PathVariable String teamId, @RequestBody List<String> members) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			teamId = URLDecoder.decode(teamId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+		}
 		Team team = playerSrv.readTeam(gameId, teamId);
 		if (team != null) {
 			team.setMembers(members);

@@ -17,6 +17,7 @@
 package eu.trentorise.game.services;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +41,9 @@ public interface PlayerService {
 	public List<PlayerState> loadStates(String gameId, String playerId);
 
 	public PlayerState saveState(PlayerState state);
+
+	public PlayerState updateCustomData(String gameId, String playerId,
+			Map<String, Object> data);
 
 	public void deleteState(String gameId, String playerId);
 

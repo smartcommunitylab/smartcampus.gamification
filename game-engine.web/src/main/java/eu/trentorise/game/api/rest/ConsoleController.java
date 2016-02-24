@@ -19,6 +19,7 @@ package eu.trentorise.game.api.rest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,6 +263,21 @@ public class ConsoleController {
 	public void deletePlayer(@PathVariable String gameId,
 			@PathVariable String playerId) {
 		playerSrv.deleteState(gameId, playerId);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/player/{playerId}")
+	public PlayerStateDTO updateCustomData(@PathVariable String gameId,
+			@PathVariable String playerId,
+			@RequestBody Map<String, Object> customData) {
+
+		PlayerState state = playerSrv.updateCustomData(gameId, playerId,
+				customData);
+		if (state == null) {
+			throw new IllegalArgumentException(String.format(
+					"player %s doesn't exist in game %s", playerId, gameId));
+		} else {
+			return converter.convertPlayerState(state);
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team")

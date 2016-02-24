@@ -19,6 +19,7 @@ package eu.trentorise.game.managers;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -284,5 +285,17 @@ public class DBPlayerManager implements PlayerService {
 	@Override
 	public Team readTeam(String gameId, String teamId) {
 		return (Team) loadState(gameId, teamId, false);
+	}
+
+	@Override
+	public PlayerState updateCustomData(String gameId, String playerId,
+			Map<String, Object> data) {
+		PlayerState state = loadState(gameId, playerId, false);
+		if (state != null) {
+			state.getCustomData().putAll(data);
+			state = saveState(state);
+		}
+		return state;
+
 	}
 }

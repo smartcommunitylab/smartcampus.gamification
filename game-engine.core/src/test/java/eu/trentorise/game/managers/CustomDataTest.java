@@ -98,7 +98,7 @@ public class CustomDataTest {
 		workflow.apply(game.getId(), "init-data", PLAYER, null, null);
 
 		Thread.sleep(TIMEOUT);
-		state = playerSrv.loadState(game.getId(), PLAYER, true);
+		state = playerSrv.loadState(game.getId(), PLAYER, false);
 		Assert.assertEquals(2, state.getCustomData().size());
 		Assert.assertEquals(1000, state.getCustomData().get("counter"));
 		Assert.assertEquals(0,
@@ -106,26 +106,26 @@ public class CustomDataTest {
 
 		workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
 		Thread.sleep(TIMEOUT);
-		state = playerSrv.loadState(game.getId(), PLAYER, true);
+		state = playerSrv.loadState(game.getId(), PLAYER, false);
 		Assert.assertEquals(2, state.getCustomData().size());
 		Assert.assertEquals(1010, state.getCustomData().get("counter"));
 
 		workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
 		Thread.sleep(TIMEOUT);
-		state = playerSrv.loadState(game.getId(), PLAYER, true);
+		state = playerSrv.loadState(game.getId(), PLAYER, false);
 		Assert.assertEquals(2, state.getCustomData().size());
 		Assert.assertEquals(1020, state.getCustomData().get("counter"));
 
 		workflow.apply(game.getId(), "add-area", PLAYER, null, null);
 		Thread.sleep(TIMEOUT);
-		state = playerSrv.loadState(game.getId(), PLAYER, true);
+		state = playerSrv.loadState(game.getId(), PLAYER, false);
 		Assert.assertEquals(2, state.getCustomData().size());
 		Assert.assertEquals(1,
 				((List<String>) state.getCustomData().get("areas")).size());
 
 		workflow.apply(game.getId(), "add-area", PLAYER, null, null);
 		Thread.sleep(TIMEOUT);
-		state = playerSrv.loadState(game.getId(), PLAYER, true);
+		state = playerSrv.loadState(game.getId(), PLAYER, false);
 		Assert.assertEquals(1,
 				((List<String>) state.getCustomData().get("areas")).size());
 	}

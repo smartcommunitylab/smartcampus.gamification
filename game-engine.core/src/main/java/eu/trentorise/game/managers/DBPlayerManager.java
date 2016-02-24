@@ -19,6 +19,7 @@ package eu.trentorise.game.managers;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -34,10 +35,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.repo.TeamPersistence;
@@ -90,20 +93,54 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	private StatePersistence persist(StatePersistence state) {
-		if (StringUtils.isBlank(state.getGameId())
-				|| StringUtils.isBlank(state.getPlayerId())) {
+		return persist(state.getGameId(), state.getPlayerId(),
+				state.getConcepts(), state.getCustomData(), state.getMetadata());
+	}
+
+	private StatePersistence persistConcepts(String gameId, String playerId,
+			List<GenericObjectPersistence> concepts) {
+		return persist(gameId, playerId, concepts, null, null);
+	}
+
+	private StatePersistence persistCustomData(String gameId, String playerId,
+			CustomData data) {
+		return persist(gameId, playerId, null, data, null);
+	}
+
+	private StatePersistence persistCustomData(String gameId, String playerId,
+			Map<String, Object> customData) {
+		CustomData c = new CustomData();
+		c.putAll(customData);
+		return persist(gameId, playerId, null, c, null);
+	}
+
+	private StatePersistence persistMetadata(String gameId, String playerId,
+			Map<String, Object> metadata) {
+		return persist(gameId, playerId, null, null, metadata);
+	}
+
+	private StatePersistence persist(String gameId, String playerId,
+			List<GenericObjectPersistence> concepts, CustomData customData,
+			Map<String, Object> metadata) {
+		if (StringUtils.isBlank(gameId) || StringUtils.isBlank(playerId)) {
 			throw new IllegalArgumentException(
 					"field gameId and playerId of PlayerState MUST be set");
 		}
 
 		Criteria criteria = new Criteria();
-		criteria = criteria.and("gameId").is(state.getGameId()).and("playerId")
-				.is(state.getPlayerId());
+		criteria = criteria.and("gameId").is(gameId).and("playerId")
+				.is(playerId);
 		Query query = new Query(criteria);
 		Update update = new Update();
-		update.set("concepts", state.getConcepts());
-		update.set("customData", state.getCustomData());
-		update.set("metadata", state.getMetadata());
+		if (concepts != null) {
+			update.set("concepts", concepts);
+		}
+		if (customData != null) {
+			update.set("customData", customData);
+		}
+		if (metadata != null) {
+			update.set("metadata", metadata);
+		}
 		FindAndModifyOptions options = new FindAndModifyOptions();
 		options.upsert(true);
 		options.returnNew(true);
@@ -284,5 +321,15 @@ public class DBPlayerManager implements PlayerService {
 	@Override
 	public Team readTeam(String gameId, String teamId) {
 		return (Team) loadState(gameId, teamId, false);
+	}
+
+	@Override
+	public PlayerState updateCustomData(String gameId, String playerId,
+			Map<String, Object> data) {
+		// findAndModify only customdata to avoid concurrent accesses on same
+		// data
+		StatePersistence state = persistCustomData(gameId, playerId, data);
+		return new PlayerState(state);
+
 	}
 }

@@ -1,11 +1,16 @@
 package eu.trentorise.smartcampus.gamification_web.controllers;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
@@ -107,16 +113,45 @@ public class WsProxyController {
 	String updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
 		logger.info("WS-POST. Method " + urlWS + ". Passed data : " + data);
 		String result = "";
-		String name = data.get("nickname").toString();
+		String name = "";//data.get("nickname").toString();
 		String id = data.get("id").toString();
+		PersonalData pdata = null;
+		// part for personalData
+		if(data.get("personalData") != null){
+			pdata = new PersonalData();
+			//JSONObject allData = new JSONObject(data);
+			try {
+				JSONObject personalData = new JSONObject(data.get("personalData").toString());
+				name = personalData.getString("nickname");
+				String age = personalData.getString("age");
+				boolean transport = personalData.getBoolean("transport");
+				JSONArray vehicles = personalData.getJSONArray("vehicle");
+				List<String> vehicle_list = new ArrayList<String>();
+				for(int i = 0; i < vehicles.length(); i++){
+					vehicle_list.add(vehicles.get(i).toString());
+				}
+				int averagekm = personalData.getInt("averagekm");
+				String nick_recommandation = personalData.getString("invitation");
+				pdata.setAge_range(age);
+				pdata.setUse_transport(transport);
+				pdata.setVehicles(vehicle_list);
+				pdata.setAveragekm(averagekm);
+				pdata.setNick_recommandation(nick_recommandation);
+			} catch (JSONException e) {
+				logger.error("JSON exception " + e.getMessage());
+			}
+		}
+		
 		if(isTest.compareTo("true") == 0){
 			Player p = playerRepositoryDao.findBySocialId(id);
 			p.setNikName(name);
+			p.setPersonalData(pdata);
 			playerRepositoryDao.save(p);
 			result = p.toJSONString();
 		} else {
 			PlayerProd p = playerProdRepositoryDao.findBySocialId(id);
 			p.setNikName(name);
+			p.setPersonalData(pdata);
 			playerProdRepositoryDao.save(p);
 			result = p.toJSONString();
 		}

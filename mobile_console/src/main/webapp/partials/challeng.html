@@ -31,7 +31,7 @@
 			   	<div class="panel-body">
 			  		<div id="ch-big-block" align="justify">
 			  			<div class="row">
-							<div class="col-md-1 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-md-1 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
 							<div class="col-md-9 headercol"><strong>{{ ch.desc }}</strong></div>
 							<div class="col-md-1 headercol"><a href ng-click="showDetails(ch)"><i class="glyphicon glyphicon-info-sign"></i></a></div>
 						</div>
@@ -51,7 +51,7 @@
 			  		</div>
 			  		<div id="ch-small-block" align="justify">
 			  			<div class="row">
-							<div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
 							<div class="col-xs-7 iconcol"><strong>{{ ch.desc }}</strong></div>
 							<div class="col-xs-1 headercolsmall"><a href ng-click="showDetails(ch)"><i class="glyphicon glyphicon-info-sign"></i></a></div>
 						</div>
@@ -76,7 +76,7 @@
 <!-- 			  		<h4>{{ 'left_menu-challeng' | i18n }} {{ ch.type }}</h4> -->
 					<div id="ch-big-details-block">
 						<div class="row">
-							<div class="col-md-1 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-md-1 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
 							<div class="col-md-9 headercol"><strong>{{ ch.desc }}</strong></div>
 							<div class="col-md-1 headercol"><a href ng-click="hideDetails(ch)"><i class="glyphicon glyphicon-remove-sign"></i></a></div>
 						</div>
@@ -122,7 +122,7 @@
 					</div>
 					<div id="ch-small-details-block" align="justify">
 			  			<div class="row">
-							<div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
+							<div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div>
 							<div class="col-xs-7 iconcol"><strong>{{ ch.desc }}</strong></div>
 							<div class="col-xs-1 headercolsmall"><a href ng-click="hideDetails(ch)"><i class="glyphicon glyphicon-remove-sign"></i></a></div>
 						</div>

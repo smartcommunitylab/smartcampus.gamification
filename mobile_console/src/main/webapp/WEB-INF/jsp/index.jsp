@@ -357,30 +357,29 @@ var base64="<%=request.getAttribute("base64")%>";
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Benvenuto</h4>
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ 'modal_title_value' | i18n }}</h4>
 				</div>
 				<div class="modal-body">
 					<div>
-					Rispondi a queste veloci e semplici domande per accedere alla console. Questo permetter&agrave; al sistema di recuperare informazioni utili per offrire
-					un servizio pi&ugrave; personalizzato e adatto alle tue abitudini.
+					{{ 'modal_desc_label' | i18n }}
 					</div>
-					<div class="form-group" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
-						<label class="control-label" for="username">Nick name:</label>
-						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
+						<label class="control-label" for="username">{{ 'modal_nick_label' | i18n }}:</label>
+						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="{{ 'modal_nick_placeholder' | i18n }}" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
 						<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
 					</div>
-					<div ng-class="{true: 'has-error'}[form.age.$dirty && form.age.$invalid]"><!-- class="form-group" -->
-						<label class="control-label">Et&agrave;:</label>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.age.$dirty && form.age.$invalid]"><!--  -->
+						<label class="control-label">{{ 'modal_age_label' | i18n }}:</label>
 						<select type="text" name="age" class="form-control" ng-model="user.age" required><!--  ng-options="a as a.label for a in ages" required -->
-							<option value="">Seleziona una facia d'eta'</option>
-							<option value="1">< 20 anni</option>
-							<option value="2">20 - 40 anni</option>
-							<option value="3">40 - 70 anni</option>
-							<option value="4">> 70 anni</option>
+							<option value="">{{ 'modal_age_placeholder' | i18n }}</option>
+							<option value="1">{{ 'modal_age_value_1' | i18n }}</option>
+							<option value="2">{{ 'modal_age_value_2' | i18n }}</option>
+							<option value="3">{{ 'modal_age_value_3' | i18n }}</option>
+							<option value="4">{{ 'modal_age_value_4' | i18n }}</option>
 						</select>
-						<div ng-show="submitNumber && form.age.$error.required" class="alert alert-danger" role="alert">Valore eta' oggligatorio. Selezionare un valore</div>
+						<div ng-show="submitNumber && form.age.$error.required" class="alert alert-danger" role="alert">{{ 'modal_age_error_required' | i18n }}</div>
 					</div>
-					<div class="form-group" ng-class="{true: 'has-error'}[form.transport.$dirty && form.transport.$invalid]">
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.transport.$dirty && form.transport.$invalid]">
 						<label class="control-label" for="username">Utilizzi quotidianamente i mezzi pubblici? </label>
 						<table width="100%">
 							<tr><td><label><input type="radio" name="transport" value="yes" ng-model="user.transport" ng-change="clearVehicle()" required> Si</label></td></tr>
@@ -388,7 +387,7 @@ var base64="<%=request.getAttribute("base64")%>";
 						</table>
 						<div ng-show="submitNumber && form.transport.$error.required" class="alert alert-danger" role="alert">Valore obbligatorio, selezionare si o no</div>
 					</div>
-					<div class="form-group" ng-class="{true: 'has-error'}[form.vehicle.$dirty && form.vehicle.$invalid || form.vehicle.$error.required]">
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.vehicle.$dirty && form.vehicle.$invalid || form.vehicle.$error.required]">
 						<label class="control-label" for="username">Mezzi usati abitualmente per gli spostamenti: </label>
 						<table width="100%">
 							<tr>
@@ -417,7 +416,7 @@ var base64="<%=request.getAttribute("base64")%>";
 							</tr>
 						</table>
 					</div>
-					<div class="form-group" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
 						<label class="control-label" for="averagekm">Km medi percorsi giornalmente </label>
 						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" required>
 						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">Valore non permesso nel campo km</div>
@@ -428,6 +427,7 @@ var base64="<%=request.getAttribute("base64")%>";
 						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="Inserisci il nome di chi ti ha invitato al gioco" ng-model="user.invitation">
 					</div>
 				</div>
+				<div class="required_desc"><p>Il simbolo * indica un campo obbligatorio</p></div>
 				<div class="modal-footer">
 					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
 					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>

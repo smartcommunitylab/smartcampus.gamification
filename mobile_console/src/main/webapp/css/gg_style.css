@@ -150,6 +150,25 @@
 	.headercolsmall > a:focus {
 		color: #00984a;
 	}
+	
+	.required label.control-label:after {
+    	color: #000;
+    	content: ' *';
+    	display:inline;
+	}
+	
+	.required_desc {
+		margin: 0 0 7px 20px;
+	}
+	.required_desc > p{
+		font-size: small;
+		font-weight: bold;
+		margin: 0;
+	}
+	
+	.modal-body {
+		padding-bottom: 8px;
+	}
 
 	#my-small-menu { display: block; }   /* hide it elsewhere */
   	#my-big-menu { display: none; }   /* show it elsewhere */

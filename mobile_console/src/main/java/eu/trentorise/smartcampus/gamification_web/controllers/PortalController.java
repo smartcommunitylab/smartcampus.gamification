@@ -197,7 +197,7 @@ public class PortalController extends SCController{
 							AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
 							if(auth_p != null){
 								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerRepositoryDao.save(new_p);
 								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
@@ -206,7 +206,7 @@ public class PortalController extends SCController{
 						} else {
 							// case of no authentication table and user not in user table: I add the user
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
-							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail);
+							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null);
 							playerRepositoryDao.save(new_p);
 							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
@@ -223,7 +223,7 @@ public class PortalController extends SCController{
 							AuthPlayerProd auth_p = authPlayerProdRepositoryDao.findByMail(attribute_mail);
 							if(auth_p != null){
 								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-								PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail());
+								PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerProdRepositoryDao.save(new_p);
 								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
@@ -232,7 +232,7 @@ public class PortalController extends SCController{
 						} else {
 							// case of no authentication table and user not in user table: I add the user
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
-							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail);
+							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null);
 							playerProdRepositoryDao.save(new_p);
 							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}

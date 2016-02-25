@@ -342,5 +342,49 @@
 	"key": "no_special_badge",
 	"value": "Non possiedi badge Speciali",
 	"description": "Messaggio No Badge Speciali"
+}, {
+	"key": "modal_title_value",
+	"value": "Benvenuto",
+	"description": "Valore del titolo del panello modale"
+}, {
+	"key": "modal_desc_label",
+	"value": "Rispondi a queste veloci e semplici domande per accedere alla console. Questo permetterà al sistema di recuperare informazioni utili per offrire un servizio più personalizzato e adatto alle tue abitudini.",
+	"description": "Valore del titolo del panello modale"
+}, {
+	"key": "modal_nick_label",
+	"value": "Nick name",
+	"description": "Valore della label per il nick name"
+}, {
+	"key": "modal_nick_placeholder",
+	"value": "Inserisci un nickname che ti rappresenti nel gioco",
+	"description": "Valore del placeholder per il nick name"
+}, {
+	"key": "modal_age_label",
+	"value": "Età",
+	"description": "Valore della label per l' eta'"
+}, {
+	"key": "modal_age_placeholder",
+	"value": "Seleziona una facia d'età",
+	"description": "Valore del placeholder per l' età"
+}, {
+	"key": "modal_age_value_1",
+	"value": "< 20 anni",
+	"description": "Valore label age 1"
+}, {
+	"key": "modal_age_value_2",
+	"value": "20 - 40 anni",
+	"description": "Valore label age 2"
+}, {
+	"key": "modal_age_value_3",
+	"value": "40 - 70 anni",
+	"description": "Valore label age 3"
+}, {
+	"key": "modal_age_value_4",
+	"value": "> 70 anni",
+	"description": "Valore label age 4"
+}, {
+	"key": "modal_age_error_required",
+	"value": "Valore età obbligatorio. Selezionare un valore",
+	"description": "Valore del placeholder per l' età"
 }
 ]

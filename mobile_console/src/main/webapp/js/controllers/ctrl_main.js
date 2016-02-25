@@ -32,7 +32,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con il Bike sharing e vinci un bonus di BONUS Green Points";
 	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS Green Points";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS Green Points";
-    $scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24;	// millis in a day
+    $scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 2;	// millis in a day (for test I use 2 days)
     var show_ch_details = false;
 	
     $scope.setFrameOpened = function(value){
@@ -456,19 +456,19 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     // Method used to retrieve all users niks
-    $scope.updateNiks = function(nick) {
+    $scope.updateNiks = function(personalData) {
     	var method = 'POST';
     	var params = null;
     	var wsRestUrl = "updateNick/";
     	var data = {
     		id: $scope.userId,
-    		nickname: nick
+    		personalData: $scope.correctPersonalDataBeforeSave(personalData)
     	};
     	var value = JSON.stringify(data);
     	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, value);
     	myDataPromise.then(function(result){
     		if(result != null){
-    			console.log("Updated user nick" + result);
+    			console.log("Updated user nick" + JSON.stringify(result));
     			var playerList = sharedDataService.getPlayersList();
     			for(var i = 0; i < playerList.length; i++){
     				if(playerList[i].socialId == result.socialId){
@@ -479,7 +479,66 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		}
     	});
     	return myDataPromise;
-    };    
+    };  
+    
+    // Method correctPersonalDataBeforeSave: used to correct personal data object before post ws call
+    $scope.correctPersonalDataBeforeSave = function(personaldata){
+    	var correctedData = {
+    	    nickname: personaldata.nickname,
+    		age: $scope.correctAgeRange(personaldata.age),
+    		transport : (personaldata.transport == "yes") ? true : false,
+    		vehicle: $scope.correctVehicleArray(personaldata.vehicle),
+    		averagekm: personaldata.averagekm,
+    		invitation: personaldata.invitation
+    	}
+    	return correctedData;
+    };
+    	
+    // Method correctAgeRange: used to correct the age value to a descriptive string
+    $scope.correctAgeRange = function(ageval){
+    	var age_range = ""
+    	switch(ageval){
+    		case "1": age_range = "0-20";
+    			break;
+    		case "2": age_range = "20-40";
+    			break;
+    		case "3": age_range = "40-70";
+    			break;
+    		case "4": age_range = "70-100";
+    			break;
+    		default: break;
+    	}
+    	return age_range;
+    };
+    
+    $scope.correctVehicleArray = function(vehiclearr){
+    	var corr_vehicle_arr = [];
+    	//for(var i = 0;i < vehiclearr.length; i++){
+    		if(vehiclearr[0]){
+    			corr_vehicle_arr.push("train");
+    		}
+    		if(vehiclearr[1]){
+    			corr_vehicle_arr.push("bus");
+    		}
+    		if(vehiclearr[2]){
+    			corr_vehicle_arr.push("shared car");
+    		}
+    		if(vehiclearr[3]){
+    			corr_vehicle_arr.push("shared bike");
+    		}
+    		if(vehiclearr[4]){
+    			corr_vehicle_arr.push("private car");
+    		}
+    		if(vehiclearr[5]){
+    			corr_vehicle_arr.push("private bike");
+    		}
+    		if(vehiclearr[6]){
+    			corr_vehicle_arr.push("walk");
+    		}
+    	//}
+    	
+    	return corr_vehicle_arr;
+    };
     
     $scope.retrieveNickForPlayer = function(nickList){
     	var dlg = $dialogs.create('/dialogs/nickinput.html','nicknameDialogCtrl',nickList,'lg');
@@ -487,7 +546,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
 			$scope.myNick = user.nickname;
 			sharedDataService.setNickName(user.nickname);
-			$scope.updateNiks(user.nickname);		// commented for test
+			$scope.updateNiks(user);		// commented for test
 		});
     };
     
@@ -549,7 +608,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],
-    						icon: "img/health/healthLeavesTesto.svg",
+    						icon: "img/green/greenLeavesTesto.svg", //"img/health/healthLeavesTesto.svg",
     						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,

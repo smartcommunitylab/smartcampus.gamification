@@ -8,33 +8,34 @@ package eu.trentorise.game.model
   
   - ch-ID-startChTs [rule] [presentation]
   - ch-ID-endChTs [rule] [presentation]
-  - ch-ID-recommandation [rule] [presentation]
+  - ch-ID-recommendation [rule] [presentation]
   - ch-ID-target [rule] [presentation]
   - ch-ID-bonus [presentation]
   - ch-ID-type [presentation]
+  - ch-ID-success [rule] [presentation]
 */
 rule 'ch-ID-trace'
 no-loop
 when
 	Action(id == 'app_recommended')
-	$c: CustomData($now: System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now)
 	Player(id == 'damian_wayne') 
 then
 	
-	Integer i = (Integer) $c.get("ch-ID-recommandation");
+	Integer i = (Integer) $c.get("ch-ID-recommendation");
 	if(i == null) {
 		i = new Integer(0);
 	}
 	log('ch-ID trace');
-	$c.put("ch-ID-recommandation",i+1);
+	$c.put("ch-ID-recommendation",i+1);
 	update($c);
 end
 
 rule 'ch-ID-check'
 when
 	Player(id == 'damian_wayne')
-	$c: CustomData($now: System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, this['ch-ID-recommandation'] >= this['ch-ID-target'], this['ch-ID-success'] == null)
-	$pc: PointConcept(name == 'green leaves')
+	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, this['ch-ID-recommendation'] >= this['ch-ID-target'], this['ch-ID-success'] == null)
+	$pc : PointConcept(name == 'green leaves')
 then
 	$pc.setScore($pc.getScore() + 50);
 	log('ch-ID success');

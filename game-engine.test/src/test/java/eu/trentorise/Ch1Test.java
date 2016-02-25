@@ -30,7 +30,6 @@ public class Ch1Test extends GameTest {
 		calendar.add(Calendar.DAY_OF_MONTH, 2);
 		customData.put("ch-ID-endChTs", calendar.getTimeInMillis());
 
-		customData.put("ch-ID-endChTs", calendar.getTimeInMillis());
 		customData.put("ch-ID-target", 10);
 		savePlayerState(
 				GAME,
@@ -60,10 +59,19 @@ public class Ch1Test extends GameTest {
 		data.put("walkDistance", 10d);
 		ExecData input = new ExecData(GAME, ACTION, PLAYER_1, data);
 		execList.add(input);
+
+		data = new HashMap<String, Object>();
+		data.put("walkDistance", 5d);
+		input = new ExecData(GAME, ACTION, PLAYER_1, data);
+		execList.add(input);
+
+		data = new HashMap<String, Object>();
+		input = new ExecData(GAME, ACTION, PLAYER_1, data);
+		execList.add(input);
 	}
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 100d, PLAYER_1, "green leaves");
+		assertionPoint(GAME, 125d, PLAYER_1, "green leaves");
 	}
 }

@@ -18,6 +18,7 @@ public class Ch9Test extends GameTest {
 	private static final String ACTION = "app_recommended";
 
 	private static final String PLAYER_1 = "damian_wayne";
+	private static final Integer TARGET = 10;
 
 	@Override
 	public void initEnv() {
@@ -29,9 +30,7 @@ public class Ch9Test extends GameTest {
 
 		calendar.add(Calendar.DAY_OF_MONTH, 2);
 		customData.put("ch-ID-endChTs", calendar.getTimeInMillis());
-
-		customData.put("ch-ID-endChTs", calendar.getTimeInMillis());
-		customData.put("ch-ID-target", 10);
+		customData.put("ch-ID-target", TARGET);
 		savePlayerState(
 				GAME,
 				PLAYER_1,
@@ -57,7 +56,7 @@ public class Ch9Test extends GameTest {
 	@Override
 	public void defineExecData(List<ExecData> execList) {
 		Map<String, Object> data = new HashMap<String, Object>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < TARGET + 5; i++) {
 			ExecData input = new ExecData(GAME, ACTION, PLAYER_1, data);
 			execList.add(input);
 		}

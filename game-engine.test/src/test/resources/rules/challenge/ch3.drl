@@ -10,15 +10,17 @@ package eu.trentorise.game.model
   - ch-ID-endChTs [rule] [presentation]
   - ch-ID-bonus [presentation]
   - ch-ID-type [presentation]
+  - ch-ID-success [rule] [presentation]
 */
 rule 'ch-ID'
 when
 	InputData(data['bikesharing'] == true)
-	CustomData($now: System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, this['ch-ID-success'] == null)
 	$pc : PointConcept(name == "green leaves")
 	Player(id == 'dick_grayson') 
 then
 	$pc.setScore($pc.getScore() + 50);
+	$c.put('ch-ID-success',true);
 	log('ch-ID success');
 	update($pc); 
 end

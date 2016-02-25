@@ -18,16 +18,15 @@ rule 'ch-ID-trace'
 no-loop
 when
 	Action(id == 'app_recommended')
-	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, $counter : this['ch-ID-recommendation'])
 	Player(id == 'damian_wayne') 
 then
-	
-	Integer i = (Integer) $c.get("ch-ID-recommendation");
-	if(i == null) {
-		i = new Integer(0);
+	if($counter == null) {
+		$c.put("ch-ID-recommendation", 1);
+	} else { 
+		$c.put("ch-ID-recommendation", (Integer) $counter + 1);
 	}
 	log('ch-ID trace');
-	$c.put("ch-ID-recommendation",i+1);
 	update($c);
 end
 

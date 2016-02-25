@@ -18,6 +18,7 @@ public class Ch3Test extends GameTest {
 	private static final String ACTION = "myAction";
 
 	private static final String PLAYER_1 = "dick_grayson";
+	private static final Integer TARGET = 3;
 
 	@Override
 	public void initEnv() {
@@ -29,6 +30,8 @@ public class Ch3Test extends GameTest {
 
 		calendar.add(Calendar.DAY_OF_MONTH, 2);
 		customData.put("ch-ID-endChTs", calendar.getTimeInMillis());
+
+		customData.put("ch-ID-target", TARGET);
 
 		savePlayerState(
 				GAME,
@@ -75,10 +78,16 @@ public class Ch3Test extends GameTest {
 		data.put("walkDistance", 2d);
 		input = new ExecData(GAME, ACTION, PLAYER_1, data);
 		execList.add(input);
+
+		data = new HashMap<String, Object>();
+		data.put("bikeDistance", 1d);
+		data.put("bikesharing", true);
+		input = new ExecData(GAME, ACTION, PLAYER_1, data);
+		execList.add(input);
 	}
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 210d, PLAYER_1, "green leaves");
+		assertionPoint(GAME, 215d, PLAYER_1, "green leaves");
 	}
 }

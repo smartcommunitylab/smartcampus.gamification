@@ -19,15 +19,14 @@ rule 'ch-ID-trace'
 no-loop
 when
 	InputData($walk : data["walkDistance"] != null)
-	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, $counter : this['ch-ID-Km_walked_during_challenge'])
 	Player(id == 'bruce_wayne') 
 then
 
-	Double o = (Double) $c.get('ch-ID-Km_walked_during_challenge');
-	if(o == null) {
+	if($counter == null) {
 		$c.put('ch-ID-Km_walked_during_challenge',(Double) $walk);	
 	}else {
-		$c.put('ch-ID-Km_walked_during_challenge', o + (Double) $walk);
+		$c.put('ch-ID-Km_walked_during_challenge', (Double) $counter + (Double) $walk);
 	}
 	log('ch-ID update');
 	update($c); 

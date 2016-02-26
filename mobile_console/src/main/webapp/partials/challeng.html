@@ -86,27 +86,27 @@
 						</div> -->
 						<div align="justify">
 							<div class="row">
-								<div class="col-md-2 iconcol"><label>Validita': </label></div>
+								<div class="col-md-2 iconcol"><label>{{ 'ch_validity_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.startChTs | date }} - {{ ch.endChTs | date }}</div>
 							</div>
 							<div class="row">
-								<div class="col-md-2 iconcol"><label>Target: </label></div>
+								<div class="col-md-2 iconcol"><label>{{ 'ch_target_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.target }}</div>
 							</div>
 							<div class="row">
-								<div ng-if="ch.type == 'ch1'" class="col-md-2 iconcol"><label>Km fatti: </label></div>
+								<div ng-if="ch.type == 'ch1'" class="col-md-2 iconcol"><label>{{ 'ch_walked_km_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.Km_walked_during_challenge }}</div>
 							</div>
 							<div class="row">
-								<div ng-if="ch.type == 'ch9'" class="col-md-2 iconcol"><label>Segnalazioni: </label></div>
+								<div ng-if="ch.type == 'ch9'" class="col-md-2 iconcol"><label>{{ 'ch_recommandation_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.recommandation }}</div>
 							</div>
 							<div class="row">
-								<div class="col-md-2 iconcol"><label>Bonus: </label></div>
+								<div class="col-md-2 iconcol"><label>{{ 'ch_bonus_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.bonus }}</div>
 							</div>
 							<div class="row">
-								<div class="col-md-2 iconcol"><label>Stato: </label></div>
+								<div class="col-md-2 iconcol"><label>{{ 'ch_status_label' | i18n }}: </label></div>
 								<div class="col-md-9">
 									<div class="progress">
 										<div ng-if="ch.active || (!ch.active && ch.status == 100)" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">
@@ -128,27 +128,27 @@
 						</div>
 						<div align="justify">
 							<div class="row">
-								<div class="col-xs-2 iconcol"><label>Validita': </label></div>
+								<div class="col-xs-2 iconcol"><label>{{ 'ch_validity_label' | i18n }}: </label></div>
 								<div class="col-xs-8">{{ ch.startChTs | date }} - {{ ch.endChTs | date }}</div>
 							</div>
 							<div class="row">
-								<div class="col-xs-2 iconcol"><label>Target: </label></div>
+								<div class="col-xs-2 iconcol"><label>{{ 'ch_target_label' | i18n }}: </label></div>
 								<div class="col-xs-8">{{ ch.target }}</div>
 							</div>
 							<div class="row">
-								<div ng-if="ch.type == 'ch1'" class="col-xs-2 iconcol"><label>Km fatti: </label></div>
+								<div ng-if="ch.type == 'ch1'" class="col-xs-2 iconcol"><label>{{ 'ch_walked_km_label' | i18n }}: </label></div>
 								<div class="col-xs-8">{{ ch.Km_walked_during_challenge }}</div>
 							</div>
 							<div class="row">
-								<div ng-if="ch.type == 'ch9'" class="col-xs-2 iconcol"><label>Segnalazioni: </label></div>
+								<div ng-if="ch.type == 'ch9'" class="col-xs-2 iconcol"><label>{{ 'ch_recommandation_label' | i18n }}: </label></div>
 								<div class="col-xs-8">{{ ch.recommandation }}</div>
 							</div>
 							<div class="row">
-								<div class="col-xs-2 iconcol"><label>Bonus: </label></div>
+								<div class="col-xs-2 iconcol"><label>{{ 'ch_bonus_label' | i18n }}: </label></div>
 								<div class="col-xs-8">{{ ch.bonus }}</div>
 							</div>
 							<div class="row">
-								<div class="col-xs-2 iconcol"><label>Stato: </label></div>
+								<div class="col-xs-2 iconcol"><label>{{ 'ch_status_label' | i18n }}: </label></div>
 								<div class="col-xs-8">
 									<div class="progress">
 										<div ng-if="ch.active || (!ch.active && ch.status == 100)" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ ch.status }}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{ ch.status }}%">

@@ -394,5 +394,113 @@
 	"key": "modal_age_error_required",
 	"value": "Valore età obbligatorio. Selezionare un valore",
 	"description": "Valore del placeholder per l' età"
+}, {
+	"key": "modal_transport_label",
+	"value": "Utilizzi quotidianamente i mezzi pubblici",
+	"description": "Valore della label per i mezzi pubblici"
+}, {
+	"key": "modal_transport_yes",
+	"value": "Sì",
+	"description": "Valore positivo uso trasporti in modale"
+}, {
+	"key": "modal_transport_no",
+	"value": "No",
+	"description": "Valore negativo uso trasporti in modale"
+}, {
+	"key": "modal_transport_error_required",
+	"value": "Valore obbligatorio, selezionare sì o no",
+	"description": "Valore errore per trasporto obbligatorio"
+}, {
+	"key": "modal_vehicle_label",
+	"value": "Mezzi usati abitualmente per gli spostamenti",
+	"description": "Valore della label per i veicoli usati"
+}, {
+	"key": "modal_train_label",
+	"value": "treno",
+	"description": "Valore label treno"
+}, {
+	"key": "modal_bus_label",
+	"value": "autobus",
+	"description": "Valore label autobus"
+}, {
+	"key": "modal_shared_car_label",
+	"value": "auto condivisa",
+	"description": "Valore label auto condivisa"
+}, {
+	"key": "modal_shared_bike_label",
+	"value": "bici condivisa",
+	"description": "Valore label bici condivisa"
+}, {
+	"key": "modal_private_car_label",
+	"value": "auto privata",
+	"description": "Valore label auto privata"
+}, {
+	"key": "modal_private_bike_label",
+	"value": "bici privata",
+	"description": "Valore label bici privata"
+}, {
+	"key": "modal_walk_label",
+	"value": "a piedi",
+	"description": "Valore label a piedi"
+}, {
+	"key": "modal_vehicle_error_required",
+	"value": "Veicolo obbligatorio. Selezionare almeno un elemento",
+	"description": "Valore errore per scelta veicolo obbligatorio"
+}, {
+	"key": "modal_average_daily_km_label",
+	"value": "Km medi percorsi giornalmente",
+	"description": "Valore label km medi giornalieri"
+}, {
+	"key": "modal_average_daily_km_error_required",
+	"value": "Valore km medi obbligatorio",
+	"description": "Valore errore per campo km medi obbligatorio"
+}, {
+	"key": "modal_average_daily_km_error_value",
+	"value": "Valore non permesso nel campo km",
+	"description": "Valore errore per campo km medi non corretto"
+}, {
+	"key": "modal_invitation_nickname_label",
+	"value": "Chi ti ha invitato a questo gioco? (nickname)",
+	"description": "Valore label per campo nickname che ha suggerito il gioco"
+}, {
+	"key": "modal_invitation_nickname_placeholder",
+	"value": "Inserisci il nickname di chi ti ha invitato al gioco",
+	"description": "Valore placeholder per campo nickname che ha suggerito il gioco"
+}, {
+	"key": "modal_required_field_label",
+	"value": "Il simbolo * indica un campo obbligatorio",
+	"description": "Valore label per descrizione campo obbligatorio"
+}, {
+	"key": "modal_cancel_button_label",
+	"value": "Annulla",
+	"description": "Valore label per descrizione campo obbligatorio"
+}, {
+	"key": "modal_ok_button_label",
+	"value": "OK",
+	"description": "Valore label per descrizione campo obbligatorio"
+}, {
+	"key": "ch_validity_label",
+	"value": "Validità",
+	"description": "label per validità sfida in pagina challenges"
+}, {
+	"key": "ch_target_label",
+	"value": "Target",
+	"description": "label per target sfida in pagina challenges"
+}, {
+	"key": "ch_walked_km_label",
+	"value": "Km fatti",
+	"description": "label per km fatti a piedi in pagina challenges"
+}, {
+	"key": "ch_recommandation_label",
+	"value": "Segnalazioni",
+	"description": "label per segnalazioni in pagina challenges"
+}, {
+	"key": "ch_bonus_label",
+	"value": "Bonus",
+	"description": "label per segnalazioni in pagina challenges"
+}, {
+	"key": "ch_status_label",
+	"value": "Stato",
+	"description": "label per stato sfida in pagina challenges"
 }
 ]

@@ -32,7 +32,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con il Bike sharing e vinci un bonus di BONUS Green Points";
 	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS Green Points";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS Green Points";
-    $scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 2;	// millis in a day (for test I use 2 days)
+    $scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in a day (for test I use 7 days)
     var show_ch_details = false;
 	
     $scope.setFrameOpened = function(value){
@@ -484,13 +484,24 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     // Method correctPersonalDataBeforeSave: used to correct personal data object before post ws call
     $scope.correctPersonalDataBeforeSave = function(personaldata){
-    	var correctedData = {
-    	    nickname: personaldata.nickname,
-    		age: $scope.correctAgeRange(personaldata.age),
-    		transport : (personaldata.transport == "yes") ? true : false,
-    		vehicle: $scope.correctVehicleArray(personaldata.vehicle),
-    		averagekm: personaldata.averagekm,
-    		invitation: personaldata.invitation
+    	var correctedData = {};
+    	if(personaldata.invitation != null && personaldata.invitation != ""){
+	    	correctedData = {
+	    	    nickname: personaldata.nickname,
+	    		age: $scope.correctAgeRange(personaldata.age),
+	    		transport : (personaldata.transport == "yes") ? true : false,
+	    		vehicle: $scope.correctVehicleArray(personaldata.vehicle),
+	    		averagekm: personaldata.averagekm,
+	    		invitation: personaldata.invitation
+	    	}
+    	} else {
+    		correctedData = {
+    	    	nickname: personaldata.nickname,
+    	    	age: $scope.correctAgeRange(personaldata.age),
+    	    	transport : (personaldata.transport == "yes") ? true : false,
+    	    	vehicle: $scope.correctVehicleArray(personaldata.vehicle),
+    	    	averagekm: personaldata.averagekm
+    	    }
     	}
     	return correctedData;
     };

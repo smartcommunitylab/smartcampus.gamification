@@ -72,6 +72,10 @@ public class PersonalData {
 	
 	public String toJSONString() {
 		String vehicle_strings = "[";
+		String nick_recomm = null;
+		if(nick_recommandation != null && nick_recommandation.compareTo("")!= 0){
+			nick_recomm = nick_recommandation;
+		}
 		for(int i = 0; i < vehicles.size(); i++){
 			vehicle_strings += "\"" + vehicles.get(i) + "\",";
 		}
@@ -81,9 +85,15 @@ public class PersonalData {
 		} else {
 			vehicle_strings = null;
 		}
-		return "{\"age_range\":\"" + age_range + "\", \"use_transport\":" + use_transport + ", \"vehicles\":"
-				+ vehicle_strings + ", \"averagekm\":" + averagekm + ", \"nick_recommandation\":\"" + nick_recommandation
-				+ "\"}";
+		if(nick_recomm != null){
+			return "{\"age_range\":\"" + age_range + "\", \"use_transport\":" + use_transport + ", \"vehicles\":"
+					+ vehicle_strings + ", \"averagekm\":" + averagekm + ", \"nick_recommandation\":\"" + nick_recommandation
+					+ "\"}";
+		} else {
+			return "{\"age_range\":\"" + age_range + "\", \"use_transport\":" + use_transport + ", \"vehicles\":"
+					+ vehicle_strings + ", \"averagekm\":" + averagekm + "}";
+		}
+		
 	}
 
 }

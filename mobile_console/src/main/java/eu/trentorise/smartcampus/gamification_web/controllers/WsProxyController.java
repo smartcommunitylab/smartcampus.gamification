@@ -118,6 +118,7 @@ public class WsProxyController {
 		PersonalData pdata = null;
 		// part for personalData
 		if(data.get("personalData") != null){
+			String nick_recommandation = null;
 			pdata = new PersonalData();
 			//JSONObject allData = new JSONObject(data);
 			try {
@@ -131,7 +132,7 @@ public class WsProxyController {
 					vehicle_list.add(vehicles.get(i).toString());
 				}
 				int averagekm = personalData.getInt("averagekm");
-				String nick_recommandation = personalData.getString("invitation");
+				nick_recommandation = (!personalData.isNull("invitation")) ? personalData.getString("invitation") : null;
 				pdata.setAge_range(age);
 				pdata.setUse_transport(transport);
 				pdata.setVehicles(vehicle_list);

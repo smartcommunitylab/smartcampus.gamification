@@ -162,9 +162,10 @@ public class WsProxyController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/checkuser/{socialId}")
 	public @ResponseBody
-	boolean getUserData(HttpServletRequest request, @PathVariable String socialId){
+	String getUserData(HttpServletRequest request, @PathVariable String socialId){
 		logger.info("WS-get checkuser " + socialId);
 		boolean result = false;
+		String correctResult = "{";
 		
 		if(isTest.compareTo("true") == 0){
 			Player p = playerRepositoryDao.findBySocialId(socialId);
@@ -180,8 +181,9 @@ public class WsProxyController {
 			}
 		}
 		
+		correctResult += "\"registered\":" + result + "}";
 		logger.info(String.format("WS-get check if user %s already access app: %s", socialId, result));
-		return result;	
+		return correctResult;
 	}
 	
 	

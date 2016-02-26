@@ -56,6 +56,7 @@ var token="<%=request.getAttribute("token")%>";
 var userId="<%=request.getAttribute("user_id")%>";
 var user_name="<%=request.getAttribute("user_name")%>";
 var user_surname="<%=request.getAttribute("user_surname")%>";
+var conf_gameid="<%=request.getAttribute("gameid")%>";
 var user_mail="<%=request.getAttribute("e_mail")%>";
 var nome="<%=request.getAttribute("nome")%>";
 var cognome="<%=request.getAttribute("cognome")%>";

@@ -56,6 +56,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.params = $routeParams;
     
     $scope.userCF = sharedDataService.getUserIdentity(); 
+    sharedDataService.setGameId(conf_gameid);
     
     $scope.app ;
                   			

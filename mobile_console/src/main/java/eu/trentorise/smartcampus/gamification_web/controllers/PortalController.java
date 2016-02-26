@@ -145,6 +145,9 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.useAuthorizationTable}")
     private String authorizationTable;
+    @Autowired
+    @Value("${smartcampus.gamification.gamename}")
+    private String gameid;
     
     private final String JSON_STATE = "state";
     private final String JSON_POINTCONCEPT = "PointConcept";
@@ -168,6 +171,7 @@ public class PortalController extends SCController{
 			model.put("user_id", user.getUserId());
 			model.put("user_name", user.getName());
 			model.put("user_surname", user.getSurname());
+			model.put("gameid", gameid);
 			logger.info(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));

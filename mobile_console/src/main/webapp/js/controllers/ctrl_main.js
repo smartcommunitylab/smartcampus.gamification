@@ -28,11 +28,14 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_TARGET = "-target";
 	$scope.CHAL_K_BONUS = "-bonus";
 	$scope.CHAL_K_RECOM = "-recommandation";
+	$scope.CHAL_K_SUCCESS = "-success";
+	$scope.CHAL_K_COUNTER = "-counter";
 	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km a piedi e avrai BONUS punti bonus";
 	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con il Bike sharing e vinci un bonus di BONUS Green Points";
 	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS Green Points";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS Green Points";
     $scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in a day (for test I use 7 days)
+    $scope.MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
     var show_ch_details = false;
 	
     $scope.setFrameOpened = function(value){
@@ -610,6 +613,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 				var bonus = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_BONUS];
 				var endChTs = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_ETS];
 				var now = new Date().getTime();
+				var daysToEnd = $scope.calculateRemainingDays(endChTs, now);
+				var success = (customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] != null) ? customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] : false;
 				var active = (now < endChTs);
 				var status = 0;
     			var tmp_chall = {};
@@ -624,42 +629,55 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
     						Km_walked_during_challenge: walked_km,
     						target: target,
     						bonus: bonus,
     						status: status,
     						active: active,
     						type: ch_type,
+    						success: success,
     						details: false
     					};
     					break;
     				case 'ch3':
+    					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					status = count * 100 / target;
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: "img/green/greenLeavesTesto.svg",
-    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus), //"Fai almeno un viaggio con il Bike sharing e vinci un bonus di 50 Green Points",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus), //"Fai almeno N viaggio/i con il Bike sharing e vinci un bonus di 50 Green Points",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
     						target: target,
     						bonus: bonus,
+    						counter: count,
     						status: status,
     						active: active,
     						type: ch_type,
+    						success: success,
     						details: false
     					};
     					break;
     				case 'ch7':
+    					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
+    					if(success){
+    						status = 100;
+    					}
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: "img/green/greenLeavesTesto.svg",
     						desc: $scope.correctDesc($scope.CHAL_DESC_7, target, bonus), //"completa una Badge Collection e vinci un bonus di 50 Green Points",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
     						target: target,
     						bonus: bonus,
     						status: status,
     						active: active,
     						type: ch_type,
+    						success: success,
     						details: false
     					};
     					break;
@@ -673,12 +691,14 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						desc: $scope.correctDesc($scope.CHAL_DESC_9, target, bonus), //"raccomanda la App ad almeno 10 utenti e guadagni 50 Green Points",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
     						recommandation: recommandation,
     						target: target,
     						bonus: bonus,
     						status: status,
     						active: active,
     						type: ch_type,
+    						success: success,
     						details: false
     					};
     					break;	
@@ -692,8 +712,17 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.setLoading(false);
     };
     
-    $scope.getChallStyle = function(active, status){
-    	if(status == 100){
+    $scope.calculateRemainingDays = function(endTimeMillis, now){
+    	var remainingDays = 0;
+    	if(now < endTimeMillis){
+    		var tmpMillis = endTimeMillis - now;
+    		remainingDays = Math.ceil(tmpMillis / $scope.MILLIS_IN_DAY);
+    	}
+    	return remainingDays;
+    };
+    
+    $scope.getChallStyle = function(active, status, success){
+    	if(success || status == 100){
     		return "panel panel-success success";
     	} else { 
     		if(active){
@@ -746,6 +775,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.correctDesc = function(desc, target, bonus){
     	if(desc.indexOf("TARGET") > -1){
     		desc = desc.replace("TARGET", target);
+    	}
+    	if(target > 1 && desc.indexOf('viaggio') > -1){
+    		desc = desc.replace("viaggio", "viaggi");
     	}
     	if(desc.indexOf("BONUS") > -1){
     		desc = desc.replace("BONUS", bonus);

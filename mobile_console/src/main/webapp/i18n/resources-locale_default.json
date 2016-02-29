@@ -483,6 +483,10 @@
 	"value": "Km fatti",
 	"description": "label per km fatti a piedi in pagina challenges"
 }, {
+	"key": "ch_journey_number_label",
+	"value": "Viaggi fatti",
+	"description": "label per viaggi fatti in pagina challenges"
+}, {
 	"key": "ch_recommandation_label",
 	"value": "Segnalazioni",
 	"description": "label per segnalazioni in pagina challenges"
@@ -494,5 +498,9 @@
 	"key": "ch_status_label",
 	"value": "Stato",
 	"description": "label per stato sfida in pagina challenges"
+}, {
+	"key": "ch_dayToEnd_label",
+	"value": "Giorni al termine",
+	"description": "label per giorni al termine in pagina challenges"
 }
 ]

@@ -27,7 +27,7 @@
 		</div> -->
 		
 		<div ng-repeat="ch in challenges | orderBy:'-endChTs' ">
-			<div class="{{ getChallStyle(ch.active, ch.status) }}" ng-show="!isShowedDetails(ch.id)">
+			<div class="{{ getChallStyle(ch.active, ch.status, ch.success) }}" ng-show="!isShowedDetails(ch.id)">
 			   	<div class="panel-body">
 			  		<div id="ch-big-block" align="justify">
 			  			<div class="row">
@@ -71,7 +71,7 @@
 			  		</div>
 			  	</div>
 			</div>  		
-			<div class="{{ getChallStyle(ch.active, ch.status) }}" align="justify" ng-show="isShowedDetails(ch.id)">
+			<div class="{{ getChallStyle(ch.active, ch.status, ch.success) }}" align="justify" ng-show="isShowedDetails(ch.id)">
 			   	<div class="panel-body">
 <!-- 			  		<h4>{{ 'left_menu-challeng' | i18n }} {{ ch.type }}</h4> -->
 					<div id="ch-big-details-block">
@@ -89,6 +89,10 @@
 								<div class="col-md-2 iconcol"><label>{{ 'ch_validity_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.startChTs | date }} - {{ ch.endChTs | date }}</div>
 							</div>
+							<div class="row" ng-if="ch.daysToEnd > 0">
+								<div class="col-md-2 iconcol"><label>{{ 'ch_dayToEnd_label' | i18n }}: </label></div>
+								<div class="col-md-9">{{ ch.daysToEnd }}</div>
+							</div>
 							<div class="row">
 								<div class="col-md-2 iconcol"><label>{{ 'ch_target_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.target }}</div>
@@ -96,6 +100,10 @@
 							<div class="row">
 								<div ng-if="ch.type == 'ch1'" class="col-md-2 iconcol"><label>{{ 'ch_walked_km_label' | i18n }}: </label></div>
 								<div class="col-md-9">{{ ch.Km_walked_during_challenge }}</div>
+							</div>
+							<div class="row">
+								<div ng-if="ch.type == 'ch3'" class="col-md-2 iconcol"><label>{{ 'ch_journey_number_label' | i18n }}: </label></div>
+								<div class="col-md-9">{{ ch.counter }}</div>
 							</div>
 							<div class="row">
 								<div ng-if="ch.type == 'ch9'" class="col-md-2 iconcol"><label>{{ 'ch_recommandation_label' | i18n }}: </label></div>
@@ -130,6 +138,10 @@
 							<div class="row">
 								<div class="col-xs-2 iconcol"><label>{{ 'ch_validity_label' | i18n }}: </label></div>
 								<div class="col-xs-8">{{ ch.startChTs | date }} - {{ ch.endChTs | date }}</div>
+							</div>
+							<div class="row" ng-if="ch.daysToEnd > 0">
+								<div class="col-xs-2 iconcol"><label>{{ 'ch_dayToEnd_label' | i18n }}: </label></div>
+								<div class="col-xs-8">{{ ch.daysToEnd }}</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-2 iconcol"><label>{{ 'ch_target_label' | i18n }}: </label></div>

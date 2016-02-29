@@ -8,7 +8,7 @@ package eu.trentorise.game.model
   
   - ch-ID-startChTs [rule] [presentation]
   - ch-ID-endChTs [rule] [presentation]
-  - ch-ID-recommendation [rule] [presentation]
+  - ch-ID-recommendations_sent_during_challenges [rule] [presentation]
   - ch-ID-target [rule] [presentation]
   - ch-ID-bonus [presentation]
   - ch-ID-type [presentation]
@@ -17,14 +17,14 @@ package eu.trentorise.game.model
 rule 'ch-ID-trace'
 no-loop
 when
-	Action(id == 'app_recommended')
-	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, $counter : this['ch-ID-recommendation'])
+	Action(id == 'app_sent_recommendation')
+	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, $counter : this['ch-ID-recommendations_sent_during_challenges'])
 	Player(id == 'damian_wayne') 
 then
 	if($counter == null) {
-		$c.put("ch-ID-recommendation", 1);
+		$c.put("ch-ID-recommendations_sent_during_challenges", 1);
 	} else { 
-		$c.put("ch-ID-recommendation", (Integer) $counter + 1);
+		$c.put("ch-ID-recommendations_sent_during_challenges", (Integer) $counter + 1);
 	}
 	log('ch-ID trace');
 	update($c);
@@ -33,7 +33,7 @@ end
 rule 'ch-ID-check'
 when
 	Player(id == 'damian_wayne')
-	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, this['ch-ID-recommendation'] >= this['ch-ID-target'], this['ch-ID-success'] == null)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, this['ch-ID-recommendations_sent_during_challenges'] >= this['ch-ID-target'], this['ch-ID-success'] == null)
 	$pc : PointConcept(name == 'green leaves')
 then
 	$pc.setScore($pc.getScore() + 50);

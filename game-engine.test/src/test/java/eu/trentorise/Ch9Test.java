@@ -15,7 +15,7 @@ import eu.trentorise.game.model.core.GameConcept;
 public class Ch9Test extends GameTest {
 
 	private static final String GAME = "challenge";
-	private static final String ACTION = "app_recommended";
+	private static final String ACTION = "app_sent_recommendation";
 
 	private static final String PLAYER_1 = "damian_wayne";
 	private static final Integer TARGET = 10;

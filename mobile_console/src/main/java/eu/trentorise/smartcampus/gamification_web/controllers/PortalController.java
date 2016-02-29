@@ -578,10 +578,13 @@ public class PortalController extends SCController{
 			}
 			
 			// Send summary mail
-			try {
-				this.emailService.sendMailSummary("Mattia", "0", "0", "0", summaryMail, standardImages, mailTo, Locale.ITALIAN);
-			} catch (MessagingException e) {
-				logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
+			if(mailSend.compareTo("true") == 0){
+				// Here I send the summary mail (only if the sendMail parameter is true)
+				try {
+					this.emailService.sendMailSummary("Mattia", "0", "0", "0", summaryMail, standardImages, mailTo, Locale.ITALIAN);
+				} catch (MessagingException e) {
+					logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
+				}
 			}
 		//}
 	}

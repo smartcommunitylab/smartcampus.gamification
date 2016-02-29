@@ -1,0 +1,89 @@
+package eu.trentorise.game.model
+
+rule "update walk counter"
+lock-on-active
+when
+    InputData( $km : data["walkDistance"] != null)
+    $c : CustomData($counter : this["km-walk"])
+then
+	if($counter == null) {
+		$c.put("km-walk", (Double) $km);
+	} else {
+		$c.put("km-walk", (Double) $counter + (Double) $km);
+	}
+    update($c);
+end
+
+
+rule "update bike counter"
+lock-on-active
+when
+    InputData( $km : data["bikeDistance"] != null)
+    $c : CustomData($counter : this["km-bike"])
+then
+	if($counter == null) {
+		$c.put("km-bike", (Double) $km);
+	} else {
+		$c.put("km-bike", (Double) $counter + (Double) $km);
+	}
+    update($c);
+end
+
+
+rule "update bikesharing counter"
+lock-on-active
+when
+    InputData( $km : data["bikeDistance"] != null, data["bikesharing"] == true)
+    $c : CustomData($counter : this["km-bikesharing"])
+then
+	if($counter == null) {
+		$c.put("km-bikesharing", (Double) $km);
+	} else {
+		$c.put("km-bikesharing", (Double) $counter + (Double) $km);
+	}
+    update($c);
+end
+
+
+rule "update bus counter"
+lock-on-active
+when
+    InputData( $km : data["busDistance"] != null)
+    $c : CustomData($counter : this["km-bus"])
+then
+	if($counter == null) {
+		$c.put("km-bus", (Double) $km);
+	} else {
+		$c.put("km-bus", (Double) $counter + (Double) $km);
+	}
+    update($c);
+end
+
+
+rule "update train counter"
+lock-on-active
+when
+    InputData( $km : data["trainDistance"] != null)
+    $c : CustomData($counter : this["km-train"])
+then
+	if($counter == null) {
+		$c.put("km-train", (Double) $km);
+	} else {
+		$c.put("km-train", (Double) $counter + (Double) $km);
+	}
+    update($c);
+end
+
+rule "update car counter"
+lock-on-active
+when
+    InputData( $km : data["carDistance"] != null)
+    $c : CustomData($counter : this["km-car"])
+then
+	if($counter == null) {
+		$c.put("km-car", (Double) $km);
+	} else {
+		$c.put("km-car", (Double) $counter + (Double) $km);
+	}
+    update($c);
+end

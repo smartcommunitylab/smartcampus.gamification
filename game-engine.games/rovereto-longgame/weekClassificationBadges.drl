@@ -1,0 +1,22 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.task.Classification;
+
+/* ***************************************************************************
+GREEN WEEK CLASSIFICATION
+  
+*************************************************************************** */
+rule "week classification badge green"
+	salience -1000
+when
+    Classification( name == 'week classification green', position == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'king-week-green')
+then
+	log("apply \'king-week-green badge\'");
+	$bc.getBadgeEarned().add('king-week-green');
+	insert( new BadgeNotification($gameId,$playerId,'king-week-green'));
+	update( $bc );
+end

@@ -50,6 +50,10 @@
 		color: #00984a; /*#555555;*/
 	  	background: #c2c2c2;
 	}
+	
+	.progress-bar-success {
+		background-image: linear-gradient(to bottom, #50d090 0, #449d44 100%);	/* aligned to green used in app */
+	}
 
   	.tab-content {
     	border-left: 3px solid #c2c2c2;
@@ -99,6 +103,72 @@
       	border-left: 3px solid #c2c2c2;
 		border-bottom: 3px solid #c2c2c2;
 	}
+	
+	.panel-success.success{
+		background-color: #e5e4e2;
+        border-top: 3px solid #00984a;
+        border-right: 3px solid #00984a;
+      	border-left: 3px solid #00984a;
+		border-bottom: 3px solid #00984a;
+	}
+	
+	.panel-success.failed{
+		background-color: #e5e4e2;
+        border-top: 3px solid #ff7f7f;
+        border-right: 3px solid #ff7f7f;
+      	border-left: 3px solid #ff7f7f;
+		border-bottom: 3px solid #ff7f7f;
+	}
+	
+	.headercol {
+		margin-top: 15px;
+		margin-left: 15px;
+	}
+	.progresscol {
+		margin-top: 15px;
+		margin-left: 15px;
+	}
+	.iconcol {
+		margin-left: 15px;
+	}
+	.headerleftcol {
+		margin-top: 15px;
+		margin-left: 45px;
+	}
+	.headercolsmall{
+		margin-top: 15px;
+	}
+	
+	.headercol > a,
+	.headercol > a:hover,
+	.headercol > a:focus {
+		color: #00984a;
+	}
+	
+	.headercolsmall > a,
+	.headercolsmall > a:hover,
+	.headercolsmall > a:focus {
+		color: #00984a;
+	}
+	
+	.required label.control-label:after {
+    	color: #000;
+    	content: ' *';
+    	display:inline;
+	}
+	
+	.required_desc {
+		margin: 0 0 7px 20px;
+	}
+	.required_desc > p{
+		font-size: small;
+		font-weight: bold;
+		margin: 0;
+	}
+	
+	.modal-body {
+		padding-bottom: 8px;
+	}
 
 	#my-small-menu { display: block; }   /* hide it elsewhere */
   	#my-big-menu { display: none; }   /* show it elsewhere */
@@ -119,6 +189,12 @@
 	#pr-big-score { display: none; }
 	#pr-small-score-king { display: block; }
 	#pr-big-score-king { display: none; }
+	/* Block for challeng */
+	#ch-small-block {display: block; }
+	#ch-big-block {display: none; }
+	#ch-small-details-block {display: block; }
+	#ch-big-details-block {display: none; }
+	
 	/* Block for page head titles */
 	#my-prof-head-title { 
 		display: block;
@@ -166,4 +242,9 @@
 		#my-prof-head-title { display: none; }
 		#my-class-head-title { display: none; }
 		#my-rules-head-title { display: none; }
+		/* Block for challeng */
+		#ch-small-block {display: none; }
+		#ch-big-block {display: block; }
+		#ch-small-details-block {display: none; }
+		#ch-big-details-block {display: block; }
 	}

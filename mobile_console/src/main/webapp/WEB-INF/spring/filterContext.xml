@@ -48,6 +48,8 @@
 		pattern="/prelogin" security="none" />
 	<http xmlns="http://www.springframework.org/schema/security"
 		pattern="/pdf/**" security="none" />
+	<http xmlns="http://www.springframework.org/schema/security"
+		pattern="/out/rest/**" security="none" />
 	
 	<sec:http pattern="/rest/**" entry-point-ref="forbEntryPoint"
 		use-expressions="true" create-session="stateless"> <!-- ifRequired -->

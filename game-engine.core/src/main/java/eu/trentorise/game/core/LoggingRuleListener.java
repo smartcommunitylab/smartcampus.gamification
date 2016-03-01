@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.notification.BadgeNotification;
 
@@ -47,6 +48,12 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 					insertEvent.getRule() != null ? insertEvent.getRule()
 							.getName() : "-", bn.getBadge());
 		}
+
+		if (workingObj instanceof CustomData) {
+			logger.info("rule \'{}\' added CustomData",
+					insertEvent.getRule() != null ? insertEvent.getRule()
+							.getName() : "-");
+		}
 	}
 
 	@Override
@@ -67,6 +74,12 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 					updateEvent.getRule() != null ? updateEvent.getRule()
 							.getName() : "-", bcc.getName(), bcc
 							.getBadgeEarned());
+		}
+
+		if (workingObj instanceof CustomData) {
+			logger.info("rule \'{}\' updated CustomData",
+					updateEvent.getRule() != null ? updateEvent.getRule()
+							.getName() : "-");
 		}
 	}
 

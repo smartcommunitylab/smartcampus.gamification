@@ -29,3 +29,8 @@ health_bike_points=3
 
 # P+R BONUS
 pr_points=10
+
+#soglie di rilevanza
+walk-min=0.1
+bike-min=0.2
+train-max=15.0

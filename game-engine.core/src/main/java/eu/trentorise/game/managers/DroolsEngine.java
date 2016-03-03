@@ -61,6 +61,7 @@ import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.UpdateMembers;
 import eu.trentorise.game.model.UpdateTeam;
 import eu.trentorise.game.model.Updating;
 import eu.trentorise.game.model.core.ClasspathRule;
@@ -142,6 +143,8 @@ public class DroolsEngine implements GameEngine {
 				"getNotifications"));
 		cmds.add(CommandFactory.newQuery("retrieveCustomData", "getCustomData"));
 		cmds.add(CommandFactory.newQuery("retrieveUpdateTeam", "getUpdateTeam"));
+		cmds.add(CommandFactory.newQuery("retrieveUpdateMembers",
+				"getUpdateMembers"));
 
 		kSession = loadGameConstants(kSession, gameId);
 
@@ -189,8 +192,25 @@ public class DroolsEngine implements GameEngine {
 						.getInputData().getData());
 			}
 			for (Team team : playerTeams) {
-				workflow.apply(gameId, action, team.getPlayerId(), data,
-						Arrays.<Object> asList(new Updating()));
+				workflow.apply(gameId, action, team.getPlayerId(), data, Arrays
+						.<Object> asList(new Updating(updateCalls
+								.getUpdateTag())));
+			}
+		}
+
+		iter = ((QueryResults) results.getValue("retrieveUpdateMembers"))
+				.iterator();
+		UpdateMembers updateCall = iter.hasNext() ? (UpdateMembers) iter.next()
+				.get("$data") : null;
+
+		// check if a propagation to team members is needed
+		if (updateCall != null) {
+			Team team = playerSrv.readTeam(gameId, updateCall.getTeamId());
+			List<String> members = team.getMembers();
+			for (String member : members) {
+				workflow.apply(gameId, action, member, data,
+						Arrays.<Object> asList(new Updating(updateCall
+								.getUpdateTag())));
 			}
 		}
 

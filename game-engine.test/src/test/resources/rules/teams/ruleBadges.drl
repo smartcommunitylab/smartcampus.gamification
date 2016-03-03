@@ -1,0 +1,40 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+
+rule "R-add-badge leg-1"
+when 
+    PointConcept(name == 'steps', score >= 1000)
+    $bc : BadgeCollectionConcept($b : 'poi_1', name =="itinerary", badgeEarned not contains $b) 
+    Team( $teamId : playerId)
+then
+    log("apply \'R-add-badge leg-1\'");
+    $bc.getBadgeEarned().add($b);
+    update( $bc );
+end
+
+rule "R-add-badge leg-2"
+when 
+    PointConcept(name == 'steps', score >= 2000)
+    $bc : BadgeCollectionConcept($b : 'poi_2', name =="itinerary", badgeEarned not contains $b) 
+    Team( $teamId : playerId)
+    $input: InputData()
+then
+    log("apply \'R-add-badge leg-2\'");
+    $bc.getBadgeEarned().add($b);
+    update( $bc );
+    insert(new UpdateMembers($teamId, $input, "gain-badge-2"));
+end
+
+rule "R-add-badge leg-3"
+when 
+    PointConcept(name == 'steps', score >= 3000)
+    $bc : BadgeCollectionConcept($b : 'poi_3', name =="itinerary", badgeEarned not contains $b) 
+    Team( $teamId : playerId)
+    $input: InputData()
+then
+    log("apply \'R-add-badge leg-3\'");
+    $bc.getBadgeEarned().add($b);
+    insert(new UpdateMembers($teamId, $input, "gain-badge-3"));
+    update( $bc );
+end

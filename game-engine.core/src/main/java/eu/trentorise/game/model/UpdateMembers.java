@@ -1,30 +1,30 @@
 package eu.trentorise.game.model;
 
-public class UpdateTeam {
-	private String playerId;
+public class UpdateMembers {
+	private String teamId;
 	private InputData inputData;
 	private String updateTag;
 
-	public UpdateTeam() {
+	public UpdateMembers() {
 	}
 
-	public UpdateTeam(String playerId, InputData inputData) {
-		this.playerId = playerId;
+	public UpdateMembers(String teamId, InputData inputData) {
+		this.teamId = teamId;
 		this.inputData = inputData;
 	}
 
-	public UpdateTeam(String playerId, InputData inputData, String updateTag) {
-		this.playerId = playerId;
+	public UpdateMembers(String teamId, InputData inputData, String updateTag) {
+		this.teamId = teamId;
 		this.inputData = inputData;
 		this.updateTag = updateTag;
 	}
 
-	public String getPlayerId() {
-		return playerId;
+	public String getTeamId() {
+		return teamId;
 	}
 
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
 	}
 
 	public InputData getInputData() {

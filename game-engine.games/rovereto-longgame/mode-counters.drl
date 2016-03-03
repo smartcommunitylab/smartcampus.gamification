@@ -1,11 +1,14 @@
 package eu.trentorise.game.model
 
+global Integer walk_min;
+global Integer bike_min;
+global Integer train_max;
+
 rule "update walk counters"
 lock-on-active
 when
-    InputData( $km : data["walkDistance"] != null, $km >= walk-min)
-    $c : CustomData($counterKm : this["walk-km"])
-    $counterTrips : CustomData(this["walk-trips"])
+    InputData( $km : data["walkDistance"] != null, $km >= walk_min)
+    $c : CustomData($counterKm : this["walk-km"], $counterTrips: this["walk-trips"])
 then
 	if($counterKm == null) {
 		$c.put("walk-km", (Double) $km);
@@ -15,7 +18,7 @@ then
 	if($counterTrips == null) {
 		$c.put("walk-trips", 1);
 	} else {
-		$c.put("walk-trips", $counterTrips + 1);
+		$c.put("walk-trips", (Integer) $counterTrips + 1);
 	}
     update($c);
 end
@@ -24,9 +27,8 @@ end
 rule "update bike counters"
 lock-on-active
 when
-    InputData( $km : data["bikeDistance"] != null, $km >= bike-min)
-    $c : CustomData($counterKm : this["bike-km"])
-    $counterTrips : CustomData(this["bike-trips"])
+    InputData( $km : data["bikeDistance"] != null, $km >= bike_min)
+    $c : CustomData($counterKm : this["bike-km"], $counterTrips : this["bike-trips"])
 then
 	if($counterKm == null) {
 		$c.put("bike-km", (Double) $km);
@@ -36,7 +38,7 @@ then
 	if($counterTrips == null) {
 		$c.put("bike-trips", 1);
 	} else {
-		$c.put("bike-trips", $counterTrips + 1);
+		$c.put("bike-trips", (Integer) $counterTrips + 1);
 	}
     update($c);
 end
@@ -45,9 +47,8 @@ end
 rule "update bikesharing counters"
 lock-on-active
 when
-    InputData( $km : data["bikeDistance"] != null, data["bikesharing"] == true, $km >= bike-min)
-    $c : CustomData($counterKm : this["bikesharing-km"])
-    $counterTrips : CustomData(this["bikesharing-trips"])
+    InputData( $km : data["bikeDistance"] != null, data["bikesharing"] == true, $km >= bike_min)
+    $c : CustomData($counterKm : this["bikesharing-km"], $counterTrips : this["bikesharing-trips"])
 then
 	if($counterKm == null) {
 		$c.put("bikesharing-km", (Double) $km);
@@ -57,7 +58,7 @@ then
 	if($counterTrips == null) {
 		$c.put("bikesharing-trips", 1);
 	} else {
-		$c.put("bikesharing-trips", $counterTrips + 1);
+		$c.put("bikesharing-trips", (Integer) $counterTrips + 1);
 	}
     update($c);
 end
@@ -67,8 +68,7 @@ rule "update bus counters"
 lock-on-active
 when
     InputData( $km : data["busDistance"] != null)
-    $c : CustomData($counterKm : this["bus-km"])
-    $counterTrips : CustomData(this["bus-trips"])
+    $c : CustomData($counterKm : this["bus-km"], $counterTrips : this["bus-trips"])
 then
 	if($counterKm == null) {
 		$c.put("bus-km", (Double) $km);
@@ -78,7 +78,7 @@ then
 	if($counterTrips == null) {
 		$c.put("bus-trips", 1);
 	} else {
-		$c.put("bus-trips", $counterTrips + 1);
+		$c.put("bus-trips", (Integer) $counterTrips + 1);
 	}
     update($c);
 end
@@ -88,8 +88,7 @@ rule "update train counters"
 lock-on-active
 when
     InputData( $km : data["trainDistance"] != null)
-    $c : CustomData($counterKm : this["train-km"])
-    $counterTrips : CustomData(this["train-trips"])
+    $c : CustomData($counterKm : this["train-km"], $counterTrips : this["train-trips"])
 then
 	if($counterKm == null) {
 		$c.put("train-km", (Double) $km);
@@ -99,7 +98,7 @@ then
 	if($counterTrips == null) {
 		$c.put("train-trips", 1);
 	} else {
-		$c.put("train-trips", $counterTrips + 1);
+		$c.put("train-trips", (Integer) $counterTrips + 1);
 	}
     update($c);
 end
@@ -108,18 +107,17 @@ rule "update car counters"
 lock-on-active
 when
     InputData( $km : data["carDistance"] != null)
-    $c : CustomData($counterKm : this["car-km"])
-    $counterTrips : CustomData(this["train-trips"])
+    $c : CustomData($counterKm : this["car-km"],$counterTrips : this["car-trips"])
 then
 	if($counterKm == null) {
 		$c.put("car-km", (Double) $km);
 	} else {
-		$c.put("car-km", (Double) $counter + (Double) $km);
+		$c.put("car-km", (Double) $counterKm + (Double) $km);
 	}
 	if($counterTrips == null) {
 		$c.put("car-trips", 1);
 	} else {
-		$c.put("car-trips", $counterTrips + 1);
+		$c.put("car-trips", (Integer) $counterTrips + 1);
 	}
     update($c);
 end

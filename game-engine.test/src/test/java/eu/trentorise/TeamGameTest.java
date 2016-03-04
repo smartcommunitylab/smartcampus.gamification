@@ -2,7 +2,6 @@ package eu.trentorise;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,11 @@ public class TeamGameTest extends GameTest {
 		team.setName("spider-man friends");
 		team.setMembers(Arrays.asList("prowler"));
 		playerSrv.saveTeam(team);
+
+		team = new Team(GAME, "marvel");
+		team.setName("marvel");
+		team.setMembers(Arrays.asList("fuorilegge", "spider-man friends"));
+		playerSrv.saveTeam(team);
 	}
 
 	@Override
@@ -53,43 +57,48 @@ public class TeamGameTest extends GameTest {
 	@Override
 	public void defineExecData(List<ExecData> execList) {
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("meters-walked", 500d);
+		data.put("meters-walked", 500d); // 750steps
 		ExecData input = new ExecData(GAME, ACTION, "prowler", data);
 		execList.add(input);
 
 		data = new HashMap<String, Object>();
-		data.put("meters-walked", 1000d);
+		data.put("meters-walked", 1000d); // 1500steps
 		input = new ExecData(GAME, ACTION, "fuorilegge", data);
-		execList.add(input);
+		// execList.add(input);
 
 		data = new HashMap<String, Object>();
-		data.put("meters-walked", 400d);
+		data.put("meters-walked", 400d); // 600steps
 		input = new ExecData(GAME, ACTION, "prowler", data);
-		execList.add(input);
+		// execList.add(input);
 
 		data = new HashMap<String, Object>();
-		data.put("meters-walked", 100d);
+		data.put("meters-walked", 100d); // 150steps
 		input = new ExecData(GAME, ACTION, "rocket racer", data);
-		execList.add(input);
+		// execList.add(input);
 	}
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 1450d, "prowler", "steps");
-		assertionPoint(GAME, 250d, "rocket racer", "steps");
-		assertionPoint(GAME, 2250d, "fuorilegge", "steps");
-		assertionPoint(GAME, 675d, "spider-man friends", "steps");
+		assertionPoint(GAME, 750d, "prowler", "steps");
+		// assertionPoint(GAME, 0d, "rocket racer", "steps");
+		assertionPoint(GAME, 375d, "fuorilegge", "steps");
+		assertionPoint(GAME, 375d, "spider-man friends", "steps");
 
-		assertionBadge(GAME, Arrays.asList("poi_1", "poi_2"), "fuorilegge",
-				"itinerary");
-		assertionBadge(GAME, Collections.<String> emptyList(), "fuorilegge",
-				"my-badges");
+		// assertionPoint(GAME, 1450d, "prowler", "steps");
+		// assertionPoint(GAME, 250d, "rocket racer", "steps");
+		// assertionPoint(GAME, 2250d, "fuorilegge", "steps");
+		// assertionPoint(GAME, 675d, "spider-man friends", "steps");
 
-		assertionBadge(GAME, Arrays.asList("badge-hero"), "prowler",
-				"my-badges");
-
-		assertionBadge(GAME, Arrays.asList("badge-hero"), "rocket racer",
-				"my-badges");
+		// assertionBadge(GAME, Arrays.asList("poi_1", "poi_2"), "fuorilegge",
+		// "itinerary");
+		// assertionBadge(GAME, Collections.<String> emptyList(), "fuorilegge",
+		// "my-badges");
+		//
+		// assertionBadge(GAME, Arrays.asList("badge-hero"), "prowler",
+		// "my-badges");
+		//
+		// assertionBadge(GAME, Arrays.asList("badge-hero"), "rocket racer",
+		// "my-badges");
 
 	}
 

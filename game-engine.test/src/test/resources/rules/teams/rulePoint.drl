@@ -33,6 +33,7 @@ then
     $pc.setScore($pc.getScore() + steps/2); 
     log("Team " +$playerId + " increases of "+steps/2+" steps");  
     update($pc);
+    insert(new UpdateTeam($playerId,$inputData));
 end
 
 rule "R3-update team rule"
@@ -67,6 +68,8 @@ then
     $b.getBadgeEarned().add("badge-hero");
     log("Player " +$playerId + " gains badge \'badge-hero\'");
     update($b);
+     // propagate rule to team members
+    insert(new UpdateMembers($playerId,$inputData));
     
 end
 
@@ -76,13 +79,16 @@ when
     $b : BadgeCollectionConcept($badge : "complete-itinerary-collection", name == "my-badges" , badgeEarned not contains $badge)
     Player($playerId: id)
     Updating(tag == "gain-badge-3")
+    $inputData: InputData()
 then
-	log("apply \'R4\'");
+	log("apply \'R5\'");
     $pc.setScore($pc.getScore() + 300); 
     log("Player " +$playerId + " increases of 300 steps");
     update($pc);
     $b.getBadgeEarned().add($badge);
     log("Player " +$playerId + " gains badge " +$badge);
     update($b);
+     // propagate rule to team members
+    insert(new UpdateMembers($playerId,$inputData));
     
 end

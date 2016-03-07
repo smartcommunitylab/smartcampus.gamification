@@ -20,15 +20,15 @@ package eu.trentorise.game.model
 rule 'ch_ID_trace'
 no-loop
 when
-	InputData($walk : data["walkDistance"] != null)
+	InputData($distance : data["walkDistance"] != null)
 	$c : CustomData($now : System.currentTimeMillis(), this['ch_ID_startChTs'] <= $now, this['ch_ID_endChTs'] > $now, $counter : this['ch_ID_Km_walked_during_challenge'])
 	Player(id == 'bruce_wayne') 
 then
 
 	if($counter == null) {
-		$c.put('ch_ID_Km_traveled_during_challenge',(Double) $walk);	
+		$c.put('ch_ID_Km_traveled_during_challenge',(Double) $distance);	
 	}else {
-		$c.put('ch_ID_Km_traveled_during_challenge', (Double) $counter + (Double) $walk);
+		$c.put('ch_ID_Km_traveled_during_challenge', (Double) $counter + (Double) $distance);
 	}
 	log('ch_ID update');
 	update($c); 

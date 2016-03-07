@@ -33,6 +33,9 @@ public class Ch9Test extends GameTest {
 		customData.put("ch_ID_endChTs", calendar.getTimeInMillis());
 		customData.put("ch_ID_target", TARGET);
 		customData.put("ch_ID_bonus", BONUS);
+
+		// it MUST be defined
+		customData.put("ch_ID_success", false);
 		savePlayerState(
 				GAME,
 				PLAYER_1,

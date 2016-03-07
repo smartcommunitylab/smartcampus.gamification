@@ -15,7 +15,7 @@ package eu.trentorise.game.model
 */
 rule 'ch_ID'
 when
-	$c : CustomData($now : System.currentTimeMillis(), this['ch_ID_startChTs'] <= $now, this['ch_ID_endChTs'] > $now, $final_badge: this['ch_ID_target'], this['ch_ID_success'] == null)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch_ID_startChTs'] <= $now, this['ch_ID_endChTs'] > $now, $final_badge: this['ch_ID_target'], this['ch_ID_success'] == false)
 	Player(id == 'jason_todd')
 	BadgeCollectionConcept(name == "green leaves", badgeEarned contains $final_badge) 
 	$pc : PointConcept(name == "green leaves")

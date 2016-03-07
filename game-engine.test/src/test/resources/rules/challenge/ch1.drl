@@ -37,7 +37,7 @@ end
 rule 'ch_ID_check'
 when
 	Player(id == 'bruce_wayne')
-	$c : CustomData($now : System.currentTimeMillis(), this['ch_ID_startChTs'] <= $now, this['ch_ID_endChTs'] > $now, this['ch_ID_Km_traveled_during_challenge'] >= this['ch_ID_target'], this['ch_ID_success'] == null)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch_ID_startChTs'] <= $now, this['ch_ID_endChTs'] > $now, this['ch_ID_Km_traveled_during_challenge'] >= this['ch_ID_target'], this['ch_ID_success'] == false)
 	$pc : PointConcept(name == "green leaves")
 then
 	$pc.setScore($pc.getScore() + (Integer) $c.get("ch_ID_bonus"));

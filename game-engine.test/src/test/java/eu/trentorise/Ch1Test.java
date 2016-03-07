@@ -34,6 +34,10 @@ public class Ch1Test extends GameTest {
 
 		customData.put("ch_ID_target", 10);
 		customData.put("ch_ID_bonus", BONUS);
+
+		// it MUST be defined
+		customData.put("ch_ID_success", false);
+
 		savePlayerState(
 				GAME,
 				PLAYER_1,

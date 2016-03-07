@@ -35,6 +35,9 @@ public class Ch3Test extends GameTest {
 		customData.put("ch_ID_bonus", BONUS);
 		customData.put("ch_ID_target", TARGET);
 
+		// it MUST be defined
+		customData.put("ch_ID_success", false);
+
 		savePlayerState(
 				GAME,
 				PLAYER_1,

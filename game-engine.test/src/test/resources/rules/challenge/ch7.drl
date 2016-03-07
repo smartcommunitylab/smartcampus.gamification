@@ -5,22 +5,23 @@ package eu.trentorise.game.model
  CustomData to have   []=used by
     ID is a unique string that identifies the challenge instance
   
-  - ch-ID-startChTs [rule] [presentation]
-  - ch-ID-endChTs [rule] [presentation]
-  - ch-ID-bonus [presentation]
-  - ch-ID-type [presentation]
-  - ch-ID-target [rule] [presentation]
-  - ch-ID-success [rule] [presentation]
+  - ch_ID_startChTs [rule] [presentation]
+  - ch_ID_endChTs [rule] [presentation]
+  - ch_ID_bonus [presentation]
+  - ch_ID_type [presentation]
+  - ch_ID_target [rule] [presentation]
+  - ch_ID_success [rule] [presentation]
+  - ch_ID_point_type [presentation] type of bonus point -> it must contain the name of PointConcept ("green leaves" for example)
 */
-rule 'ch-ID'
+rule 'ch_ID'
 when
-	$c : CustomData($now : System.currentTimeMillis(), this['ch-ID-startChTs'] <= $now, this['ch-ID-endChTs'] > $now, $final_badge: this['ch-ID-target'], this['ch-ID-success'] == null)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch_ID_startChTs'] <= $now, this['ch_ID_endChTs'] > $now, $final_badge: this['ch_ID_target'], this['ch_ID_success'] == null)
 	Player(id == 'jason_todd')
 	BadgeCollectionConcept(name == "green leaves", badgeEarned contains $final_badge) 
 	$pc : PointConcept(name == "green leaves")
 then
 	$pc.setScore($pc.getScore() + 50);
-	$c.put("ch-ID-success",true);
-	log('ch-ID success');
+	$c.put("ch_ID_success",true);
+	log('ch_ID success');
 	update($pc); 
 end

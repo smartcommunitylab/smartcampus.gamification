@@ -26,11 +26,11 @@ public class Ch9Test extends GameTest {
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
 
-		customData.put("ch-ID-startChTs", calendar.getTimeInMillis());
+		customData.put("ch_ID_startChTs", calendar.getTimeInMillis());
 
 		calendar.add(Calendar.DAY_OF_MONTH, 2);
-		customData.put("ch-ID-endChTs", calendar.getTimeInMillis());
-		customData.put("ch-ID-target", TARGET);
+		customData.put("ch_ID_endChTs", calendar.getTimeInMillis());
+		customData.put("ch_ID_target", TARGET);
 		savePlayerState(
 				GAME,
 				PLAYER_1,

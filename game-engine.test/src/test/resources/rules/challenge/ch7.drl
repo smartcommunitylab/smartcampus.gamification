@@ -20,7 +20,7 @@ when
 	BadgeCollectionConcept(name == "green leaves", badgeEarned contains $final_badge) 
 	$pc : PointConcept(name == "green leaves")
 then
-	$pc.setScore($pc.getScore() + 50);
+	$pc.setScore($pc.getScore() + (Integer) $c.get("ch_ID_bonus"));
 	$c.put("ch_ID_success",true);
 	log('ch_ID success');
 	update($pc); 

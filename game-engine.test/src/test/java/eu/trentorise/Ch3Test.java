@@ -19,6 +19,7 @@ public class Ch3Test extends GameTest {
 
 	private static final String PLAYER_1 = "dick_grayson";
 	private static final Integer TARGET = 3;
+	private static final Integer BONUS = 35;
 
 	@Override
 	public void initEnv() {
@@ -31,6 +32,7 @@ public class Ch3Test extends GameTest {
 		calendar.add(Calendar.DAY_OF_MONTH, 2);
 		customData.put("ch_ID_endChTs", calendar.getTimeInMillis());
 
+		customData.put("ch_ID_bonus", BONUS);
 		customData.put("ch_ID_target", TARGET);
 
 		savePlayerState(
@@ -88,6 +90,6 @@ public class Ch3Test extends GameTest {
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 215d, PLAYER_1, "green leaves");
+		assertionPoint(GAME, 165d + BONUS, PLAYER_1, "green leaves");
 	}
 }

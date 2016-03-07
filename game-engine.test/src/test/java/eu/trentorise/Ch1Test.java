@@ -19,6 +19,8 @@ public class Ch1Test extends GameTest {
 
 	private static final String PLAYER_1 = "bruce_wayne";
 
+	private static final Integer BONUS = 40;
+
 	@Override
 	public void initEnv() {
 		Map<String, Object> customData = new HashMap<String, Object>();
@@ -31,6 +33,7 @@ public class Ch1Test extends GameTest {
 		customData.put("ch_ID_endChTs", calendar.getTimeInMillis());
 
 		customData.put("ch_ID_target", 10);
+		customData.put("ch_ID_bonus", BONUS);
 		savePlayerState(
 				GAME,
 				PLAYER_1,
@@ -72,6 +75,6 @@ public class Ch1Test extends GameTest {
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 125d, PLAYER_1, "green leaves");
+		assertionPoint(GAME, 75d + BONUS, PLAYER_1, "green leaves");
 	}
 }

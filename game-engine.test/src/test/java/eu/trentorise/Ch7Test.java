@@ -19,6 +19,7 @@ public class Ch7Test extends GameTest {
 
 	private static final String PLAYER_1 = "jason_todd";
 	private static final String FINAL_BADGE = "50-point-green";
+	private static final Integer BONUS = 20;
 
 	@Override
 	public void initEnv() {
@@ -32,6 +33,7 @@ public class Ch7Test extends GameTest {
 		customData.put("ch_ID_endChTs", calendar.getTimeInMillis());
 
 		customData.put("ch_ID_target", FINAL_BADGE);
+		customData.put("ch_ID_bonus", BONUS);
 		savePlayerState(
 				GAME,
 				PLAYER_1,
@@ -73,7 +75,7 @@ public class Ch7Test extends GameTest {
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 102d, PLAYER_1, "green leaves");
+		assertionPoint(GAME, 52d + BONUS, PLAYER_1, "green leaves");
 		assertionBadge(GAME, Arrays.asList("10-point-green", FINAL_BADGE),
 				PLAYER_1, "green leaves");
 	}

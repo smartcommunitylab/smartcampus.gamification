@@ -1,0 +1,46 @@
+template header
+
+ch_ID
+ch_player
+ch_badge_collection
+ch_point_type
+
+package eu.trentorise.game.model
+
+// CH7variant - completa una Badge Collection e vinci un bonus di <X> Green Points
+/* Parameters for the template
+ch_ID = unique Challenge ID (ALWAYS!): obtained via UUID
+ch_player = unique Player ID - for now simply Object.toString()
+ch_badge_collection
+ch_point_type
+*/
+
+/*
+ CustomData to have   []=used by
+    ID is a unique string that identifies the challenge instance
+  
+  - ch_ID_startChTs [rule] [presentation]
+  - ch_ID_endChTs [rule] [presentation]
+  - ch_ID_bonus [presentation]
+  - ch_ID_type [presentation]
+  - ch_ID_target [rule] [presentation]
+  - ch_ID_success [rule] [presentation]
+  - ch_ID_point_type [presentation] type of bonus point -> it must contain the name of PointConcept ("green leaves" for example)
+*/
+
+template "BadgeCollectionCompletion"
+
+rule 'ch_@{ch_ID}'
+when
+	$c : CustomData($now : System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, $final_badge: this['ch_@{ch_ID}_target'], this['ch_@{ch_ID}_success'] == false)
+	Player(id == '@{ch_player}')
+	BadgeCollectionConcept(name == '@{ch_badge_collection}', badgeEarned contains $final_badge) 
+	$pc : PointConcept(name == "@{ch_point_type}")
+then
+	$pc.setScore($pc.getScore() + (Integer) $c.get("ch_@{ch_ID}_bonus"));
+	$c.put("ch_@{ch_ID}_success",true);
+	log('ch_@{ch_ID} success');
+	update($pc); 
+end
+
+end template

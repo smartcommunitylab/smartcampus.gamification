@@ -88,6 +88,11 @@ public class LongGameTest extends GameTest {
 		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
 		execList.add(ex);
 
+		/*
+		 * this "reset" action is a fake action used in
+		 * combination with a stub rule in the .drl file to force
+		 * a rese4t of the "-past" counters.
+		 */
 		data = new HashMap<String, Object>();
 		data.put("reset", new Boolean(true));
 		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);

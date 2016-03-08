@@ -4,6 +4,31 @@ global Integer walk_min;
 global Integer bike_min;
 global Integer train_max;
 
+rule "clear past counters"
+lock-on-active
+when
+	InputData($reset : data["reset"] != null, $reset == true)
+	$c : CustomData()
+then
+	log("resetting all past counters to 0");
+	
+	$c.put("walk-km-past", (Double) 0.0);
+	$c.put("bike-km-past", (Double) 0.0);
+	$c.put("bikesharing-km-past", (Double) 0.0);
+	$c.put("bus-km-past", (Double) 0.0);
+	$c.put("train-km-past", (Double) 0.0);
+	$c.put("car-km-past", (Double) 0.0);
+	
+	$c.put("walk-trips-past", 0);
+	$c.put("bike-trips-past", 0);
+	$c.put("bikesharing-trips-past", 0);
+	$c.put("bus-trips-past", 0);
+	$c.put("train-trips-past", 0);
+	$c.put("car-trips-past", 0);
+	
+	update($c);
+end
+
 rule "update walk counters"
 lock-on-active
 when

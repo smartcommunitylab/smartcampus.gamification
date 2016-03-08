@@ -89,6 +89,11 @@ public class LongGameTest extends GameTest {
 		execList.add(ex);
 
 		data = new HashMap<String, Object>();
+		data.put("reset", new Boolean(true));
+		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
+		execList.add(ex);
+		
+		data = new HashMap<String, Object>();
 		data.put("bikeDistance", 1d);
 		data.put("bikesharing", true);
 		data.put("walkDistance", 2d);
@@ -113,14 +118,6 @@ public class LongGameTest extends GameTest {
 		Assert.assertEquals(20d, s.getCustomData().get("bus-km"));
 		Assert.assertEquals(66d, s.getCustomData().get("train-km"));
 		
-		//Check period counters for Km
-		Assert.assertEquals(26d, s.getCustomData().get("walk-km-past"));
-		Assert.assertEquals(41.1d, s.getCustomData().get("bike-km-past"));
-		Assert.assertEquals(11d, s.getCustomData().get("bikesharing-km-past"));
-		Assert.assertEquals(5d, s.getCustomData().get("car-km-past"));
-		Assert.assertEquals(20d, s.getCustomData().get("bus-km-past"));
-		Assert.assertEquals(66d, s.getCustomData().get("train-km-past"));
-		
 		//Check cumulative counters for trips
 		Assert.assertEquals(4, s.getCustomData().get("walk-trips"));
 		Assert.assertEquals(4, s.getCustomData().get("bike-trips"));
@@ -129,13 +126,21 @@ public class LongGameTest extends GameTest {
 		Assert.assertEquals(2, s.getCustomData().get("bus-trips"));
 		Assert.assertEquals(2, s.getCustomData().get("train-trips"));
 
+		//Check period counters for Km
+		Assert.assertEquals(2d, s.getCustomData().get("walk-km-past"));
+		Assert.assertEquals(1d, s.getCustomData().get("bike-km-past"));
+		Assert.assertEquals(1d, s.getCustomData().get("bikesharing-km-past"));
+		Assert.assertEquals(3d, s.getCustomData().get("car-km-past"));
+		Assert.assertEquals(5d, s.getCustomData().get("bus-km-past"));
+		Assert.assertEquals(40d, s.getCustomData().get("train-km-past"));
+
 		//Check period counters for trips
-		Assert.assertEquals(4, s.getCustomData().get("walk-trips-past"));
-		Assert.assertEquals(4, s.getCustomData().get("bike-trips-past"));
-		Assert.assertEquals(2, s.getCustomData().get("bikesharing-trips-past"));
-		Assert.assertEquals(2, s.getCustomData().get("car-trips-past"));
-		Assert.assertEquals(2, s.getCustomData().get("bus-trips-past"));
-		Assert.assertEquals(2, s.getCustomData().get("train-trips-past"));
+		Assert.assertEquals(1, s.getCustomData().get("walk-trips-past"));
+		Assert.assertEquals(1, s.getCustomData().get("bike-trips-past"));
+		Assert.assertEquals(1, s.getCustomData().get("bikesharing-trips-past"));
+		Assert.assertEquals(1, s.getCustomData().get("car-trips-past"));
+		Assert.assertEquals(1, s.getCustomData().get("bus-trips-past"));
+		Assert.assertEquals(1, s.getCustomData().get("train-trips-past"));
 						
 	}
 }

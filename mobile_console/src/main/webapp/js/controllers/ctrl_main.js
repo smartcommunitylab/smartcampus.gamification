@@ -24,7 +24,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_TYPE = "_type";
 	$scope.CHAL_K_STS = "_startChTs";
 	$scope.CHAL_K_ETS = "_endChTs";
-	$scope.CHAL_K_WALKED_KM = "_Km_walked_during_challenge";
+	$scope.CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
 	$scope.CHAL_K_TARGET = "_target";
 	$scope.CHAL_K_BONUS = "_bonus";
 	$scope.CHAL_K_RECOM = "_recommendations_sent_during_challenges";

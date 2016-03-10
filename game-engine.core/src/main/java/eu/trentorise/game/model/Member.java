@@ -32,4 +32,10 @@ public class Member {
 	public void setPlayerId(String playerId) {
 		this.playerId = playerId;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s(playerId=%s, inputData=%s)", getClass()
+				.getSimpleName(), playerId, inputData);
+	}
 }

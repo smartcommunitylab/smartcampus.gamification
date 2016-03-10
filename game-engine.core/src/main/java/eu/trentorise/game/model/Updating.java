@@ -44,4 +44,8 @@ public class Updating {
 		return hash;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s(tag=%s)", getClass().getSimpleName(), tag);
+	}
 }

@@ -128,11 +128,8 @@ public class DroolsEngine implements GameEngine {
 
 		cmds.add(CommandFactory.newInsert(new Game(gameId)));
 
-		if (state instanceof Team) {
-			cmds.add(CommandFactory.newInsert((Team) state));
-		} else {
-			cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
-		}
+		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId(),
+				state instanceof Team)));
 
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newInsert(state.getCustomData()));

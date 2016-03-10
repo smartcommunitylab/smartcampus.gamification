@@ -25,4 +25,23 @@ public class Updating {
 		this.tag = tag;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Updating) {
+			Updating o2 = (Updating) obj;
+			return o2.getTag() == null && tag == null
+					|| o2.getTag().equals(tag);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		if (tag != null) {
+			hash = hash * 17 + tag.hashCode();
+		}
+		return hash;
+	}
+
 }

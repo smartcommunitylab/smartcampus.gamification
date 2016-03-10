@@ -58,6 +58,7 @@ import eu.trentorise.game.model.Action;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.InputData;
+import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
@@ -179,25 +180,28 @@ public class DroolsEngine implements GameEngine {
 
 		iter = ((QueryResults) results.getValue("retrieveUpdateTeam"))
 				.iterator();
-		while (iter.hasNext()) {
-			UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
+
+		if (iter.hasNext()) {
+			Set<Object> facts = new HashSet<>();
+			while (iter.hasNext()) {
+				UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
+				facts.add(new Updating(updateCalls.getUpdateTag()));
+			}
 
 			List<Team> playerTeams = playerSrv.readTeams(gameId,
-					updateCalls.getPlayerId());
-			logger.info("Player {} belongs to {} teams", updateCalls
-					.getPlayerId(), playerTeams.size(), updateCalls
-					.getInputData().getData());
+					state.getPlayerId());
+			logger.info("Player {} belongs to {} teams", state.getPlayerId(),
+					playerTeams.size(), data);
 			if (playerTeams.size() > 0) {
-				logger.info("call for update with data {}", updateCalls
-						.getInputData().getData());
+				logger.info("call for update with data {}", data);
 			}
+
+			facts.add(new Member(state.getPlayerId(), data));
 			for (Team team : playerTeams) {
-				workflow.apply(gameId, action, team.getPlayerId(), data, Arrays
-						.<Object> asList(new Updating(updateCalls
-								.getUpdateTag())));
+				workflow.apply(gameId, action, team.getPlayerId(), null,
+						new ArrayList<>(facts));
 			}
 		}
-
 		iter = ((QueryResults) results.getValue("retrieveUpdateMembers"))
 				.iterator();
 		UpdateMembers updateCall = iter.hasNext() ? (UpdateMembers) iter.next()

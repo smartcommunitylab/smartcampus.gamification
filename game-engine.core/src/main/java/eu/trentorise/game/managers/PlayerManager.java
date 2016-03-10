@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
@@ -168,13 +168,13 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Team saveTeam(Team team) {
+	public TeamState saveTeam(TeamState team) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public List<Team> readTeams(String gameId) {
+	public List<TeamState> readTeams(String gameId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -186,25 +186,25 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public List<Team> readTeams(String gameId, String playerId) {
+	public List<TeamState> readTeams(String gameId, String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public Team addToTeam(String gameId, String teamId, String playerId) {
+	public TeamState addToTeam(String gameId, String teamId, String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public Team removeFromTeam(String gameId, String teamId, String playerId) {
+	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public Team readTeam(String gameId, String teamId) {
+	public TeamState readTeam(String gameId, String teamId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}

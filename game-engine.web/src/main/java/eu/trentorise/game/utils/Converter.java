@@ -36,7 +36,7 @@ import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
@@ -215,10 +215,10 @@ public class Converter {
 		return res;
 	}
 
-	public Team convertTeam(TeamDTO t) {
-		Team team = null;
+	public TeamState convertTeam(TeamDTO t) {
+		TeamState team = null;
 		if (t != null) {
-			team = new Team(t.getGameId(), t.getPlayerId());
+			team = new TeamState(t.getGameId(), t.getPlayerId());
 			team.setName(t.getName());
 			team.setCustomData(t.getCustomData());
 			team.setMembers(t.getMembers());
@@ -231,7 +231,7 @@ public class Converter {
 		return team;
 	}
 
-	public TeamDTO convertTeam(Team t) {
+	public TeamDTO convertTeam(TeamState t) {
 		TeamDTO team = null;
 		if (t != null) {
 			team = new TeamDTO();

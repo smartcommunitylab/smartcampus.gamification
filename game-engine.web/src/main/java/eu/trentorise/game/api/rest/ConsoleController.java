@@ -37,7 +37,7 @@ import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -276,7 +276,7 @@ public class ConsoleController {
 		}
 
 		team.setGameId(gameId);
-		Team t = converter.convertTeam(team);
+		TeamState t = converter.convertTeam(team);
 		playerSrv.saveTeam(t);
 	}
 
@@ -289,9 +289,9 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/player/{playerId}/teams")
 	public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
 			@PathVariable String playerId) {
-		List<Team> result = playerSrv.readTeams(gameId, playerId);
+		List<TeamState> result = playerSrv.readTeams(gameId, playerId);
 		List<TeamDTO> converted = new ArrayList<>();
-		for (Team r : result) {
+		for (TeamState r : result) {
 			converted.add(converter.convertTeam(r));
 		}
 		return converted;
@@ -300,7 +300,7 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team/{teamId}/members")
 	public void updateTeamMembers(@PathVariable String gameId,
 			@PathVariable String teamId, @RequestBody List<String> members) {
-		Team team = playerSrv.readTeam(gameId, teamId);
+		TeamState team = playerSrv.readTeam(gameId, teamId);
 		if (team != null) {
 			team.setMembers(members);
 			playerSrv.saveTeam(team);

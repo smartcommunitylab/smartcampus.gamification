@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
@@ -24,17 +24,17 @@ public class TeamGameTest extends GameTest {
 
 	@Override
 	public void initEnv() {
-		Team team = new Team(GAME, "fuorilegge");
+		TeamState team = new TeamState(GAME, "fuorilegge");
 		team.setName("fuorilegge");
 		team.setMembers(Arrays.asList("prowler", "rocket racer"));
 		playerSrv.saveTeam(team);
 
-		team = new Team(GAME, "spider-man friends");
+		team = new TeamState(GAME, "spider-man friends");
 		team.setName("spider-man friends");
 		team.setMembers(Arrays.asList("prowler"));
 		playerSrv.saveTeam(team);
 
-		team = new Team(GAME, "marvel");
+		team = new TeamState(GAME, "marvel");
 		team.setName("marvel");
 		team.setMembers(Arrays.asList("fuorilegge", "spider-man friends"));
 		playerSrv.saveTeam(team);

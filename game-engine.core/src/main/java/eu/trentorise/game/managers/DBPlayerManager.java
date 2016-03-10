@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
@@ -63,7 +63,7 @@ public class DBPlayerManager implements PlayerService {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
 				.findByGameIdAndPlayerId(gameId, playerId);
 		PlayerState res = state == null ? (upsert ? new PlayerState(gameId,
-				playerId) : null) : isTeam(state) ? new Team(state)
+				playerId) : null) : isTeam(state) ? new TeamState(state)
 				: new PlayerState(state);
 		return initConceptsStructure(res, gameId);
 	}
@@ -72,9 +72,9 @@ public class DBPlayerManager implements PlayerService {
 		PlayerState saved = null;
 		if (state != null) {
 			StatePersistence toSave = null;
-			if (state instanceof Team) {
-				toSave = new TeamPersistence((Team) state);
-				saved = new Team(persist(toSave));
+			if (state instanceof TeamState) {
+				toSave = new TeamPersistence((TeamState) state);
+				saved = new TeamState(persist(toSave));
 			} else {
 				toSave = new StatePersistence(state);
 				saved = new PlayerState(persist(toSave));
@@ -85,8 +85,8 @@ public class DBPlayerManager implements PlayerService {
 
 	private boolean isTeam(StatePersistence state) {
 		return state != null
-				&& state.getMetadata().get(Team.NAME_METADATA) != null
-				&& state.getMetadata().get(Team.MEMBERS_METADATA) != null;
+				&& state.getMetadata().get(TeamState.NAME_METADATA) != null
+				&& state.getMetadata().get(TeamState.MEMBERS_METADATA) != null;
 	}
 
 	private StatePersistence persist(StatePersistence state) {
@@ -213,16 +213,16 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Team saveTeam(Team team) {
-		return (Team) saveState(team);
+	public TeamState saveTeam(TeamState team) {
+		return (TeamState) saveState(team);
 	}
 
 	@Override
-	public List<Team> readTeams(String gameId) {
+	public List<TeamState> readTeams(String gameId) {
 		List<StatePersistence> result = playerRepo.findTeamsByGameId(gameId);
-		List<Team> converted = new ArrayList<>();
+		List<TeamState> converted = new ArrayList<>();
 		for (StatePersistence sp : result) {
-			converted.add(new Team(sp));
+			converted.add(new TeamState(sp));
 		}
 
 		return converted;
@@ -234,30 +234,30 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public List<Team> readTeams(String gameId, String playerId) {
+	public List<TeamState> readTeams(String gameId, String playerId) {
 		List<StatePersistence> result = playerRepo.findTeamByMemberId(gameId,
 				playerId);
-		List<Team> converted = new ArrayList<>();
+		List<TeamState> converted = new ArrayList<>();
 		for (StatePersistence sp : result) {
-			converted.add(new Team(sp));
+			converted.add(new TeamState(sp));
 		}
 
 		return converted;
 	}
 
 	@Override
-	public Team addToTeam(String gameId, String teamId, String playerId) {
+	public TeamState addToTeam(String gameId, String teamId, String playerId) {
 		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
 				teamId);
 		if (state != null) {
 			List<String> members = (List<String>) state.getMetadata().get(
-					Team.MEMBERS_METADATA);
+					TeamState.MEMBERS_METADATA);
 			if (members != null) {
 				members.add(playerId);
-				state.getMetadata().put(Team.MEMBERS_METADATA, members);
+				state.getMetadata().put(TeamState.MEMBERS_METADATA, members);
 				playerRepo.save(state);
 			}
-			return new Team(state);
+			return new TeamState(state);
 		}
 
 		return null;
@@ -265,24 +265,24 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Team removeFromTeam(String gameId, String teamId, String playerId) {
+	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
 		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
 				teamId);
 		if (state != null) {
 			List<String> members = (List<String>) state.getMetadata().get(
-					Team.MEMBERS_METADATA);
+					TeamState.MEMBERS_METADATA);
 			if (members != null) {
 				members.remove(playerId);
-				state.getMetadata().put(Team.MEMBERS_METADATA, members);
+				state.getMetadata().put(TeamState.MEMBERS_METADATA, members);
 				playerRepo.save(state);
 			}
 		}
 
-		return new Team(state);
+		return new TeamState(state);
 	}
 
 	@Override
-	public Team readTeam(String gameId, String teamId) {
-		return (Team) loadState(gameId, teamId, false);
+	public TeamState readTeam(String gameId, String teamId) {
+		return (TeamState) loadState(gameId, teamId, false);
 	}
 }

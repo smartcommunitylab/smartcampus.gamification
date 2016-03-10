@@ -59,7 +59,7 @@ import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.repo.GamePersistence;
@@ -232,7 +232,7 @@ public class RestAPITest {
 			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
 					.andExpect(MockMvcResultMatchers.status().is(200));
 
-			Team team = playerSrv.readTeam(GAME, "t1");
+			TeamState team = playerSrv.readTeam(GAME, "t1");
 			Assert.assertNotNull(team);
 			Assert.assertEquals("hunter", team.getCustomData().get("level"));
 			Assert.assertArrayEquals(new String[] { "p1", "p2", "p3" }, team
@@ -277,16 +277,16 @@ public class RestAPITest {
 		playerSrv.saveState(new PlayerState(GAME, "p1"));
 		playerSrv.saveState(new PlayerState(GAME, "p2"));
 
-		Team t = new Team(GAME, "t1");
+		TeamState t = new TeamState(GAME, "t1");
 		t.getMembers().add("p1");
 		t.getMembers().add("p2");
 		playerSrv.saveTeam(t);
 
-		t = new Team(GAME, "t2");
+		t = new TeamState(GAME, "t2");
 		t.getMembers().add("p2");
 		playerSrv.saveTeam(t);
 
-		t = new Team(GAME, "t3");
+		t = new TeamState(GAME, "t3");
 		t.getMembers().add("p1");
 		playerSrv.saveTeam(t);
 
@@ -317,7 +317,7 @@ public class RestAPITest {
 		p.getCustomData().put("myattr", "I'm the winner");
 		playerSrv.saveState(p);
 
-		Team team = new Team(GAME, "t1");
+		TeamState team = new TeamState(GAME, "t1");
 		team.setMembers(Arrays.asList("p1"));
 		playerSrv.saveTeam(team);
 

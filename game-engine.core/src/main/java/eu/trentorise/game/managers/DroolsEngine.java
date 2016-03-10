@@ -61,7 +61,7 @@ import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.UpdateMembers;
 import eu.trentorise.game.model.UpdateTeam;
 import eu.trentorise.game.model.Updating;
@@ -129,7 +129,7 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newInsert(new Game(gameId)));
 
 		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId(),
-				state instanceof Team)));
+				state instanceof TeamState)));
 
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newInsert(state.getCustomData()));
@@ -185,7 +185,7 @@ public class DroolsEngine implements GameEngine {
 				facts.add(new Updating(updateCalls.getUpdateTag()));
 			}
 
-			List<Team> playerTeams = playerSrv.readTeams(gameId,
+			List<TeamState> playerTeams = playerSrv.readTeams(gameId,
 					state.getPlayerId());
 			logger.info("Player {} belongs to {} teams", state.getPlayerId(),
 					playerTeams.size(), data);
@@ -194,7 +194,7 @@ public class DroolsEngine implements GameEngine {
 			}
 
 			facts.add(new Member(state.getPlayerId(), data));
-			for (Team team : playerTeams) {
+			for (TeamState team : playerTeams) {
 				workflow.apply(gameId, action, team.getPlayerId(), null,
 						new ArrayList<>(facts));
 			}
@@ -206,7 +206,7 @@ public class DroolsEngine implements GameEngine {
 
 		// check if a propagation to team members is needed
 		if (updateCall != null) {
-			Team team = playerSrv.readTeam(gameId, updateCall.getTeamId());
+			TeamState team = playerSrv.readTeam(gameId, updateCall.getTeamId());
 			List<String> members = team.getMembers();
 			for (String member : members) {
 				workflow.apply(gameId, action, member, data,

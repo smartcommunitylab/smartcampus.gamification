@@ -3,16 +3,16 @@ package eu.trentorise.game.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Member {
+public class Team {
 	private String playerId;
 	private Map<String, Object> inputData;
 
-	public Member(String playerId) {
+	public Team(String playerId) {
 		this.playerId = playerId;
 		this.inputData = new HashMap<String, Object>();
 	}
 
-	public Member(String playerId, Map<String, Object> inputData) {
+	public Team(String playerId, Map<String, Object> inputData) {
 		this.playerId = playerId;
 		this.inputData = inputData != null ? inputData
 				: new HashMap<String, Object>();

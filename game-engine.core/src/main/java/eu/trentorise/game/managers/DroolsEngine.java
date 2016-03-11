@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -61,6 +60,7 @@ import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.UpdateMembers;
 import eu.trentorise.game.model.UpdateTeam;
@@ -188,7 +188,7 @@ public class DroolsEngine implements GameEngine {
 			List<TeamState> playerTeams = playerSrv.readTeams(gameId,
 					state.getPlayerId());
 			logger.info("Player {} belongs to {} teams", state.getPlayerId(),
-					playerTeams.size(), data);
+					playerTeams.size());
 			if (playerTeams.size() > 0) {
 				logger.info("call for update with data {}", data);
 			}
@@ -201,18 +201,24 @@ public class DroolsEngine implements GameEngine {
 		}
 		iter = ((QueryResults) results.getValue("retrieveUpdateMembers"))
 				.iterator();
-		UpdateMembers updateCall = iter.hasNext() ? (UpdateMembers) iter.next()
-				.get("$data") : null;
-
-		// check if a propagation to team members is needed
-		if (updateCall != null) {
-			TeamState team = playerSrv.readTeam(gameId, updateCall.getTeamId());
-			List<String> members = team.getMembers();
-			for (String member : members) {
-				workflow.apply(gameId, action, member, data,
-						Arrays.<Object> asList(new Updating(updateCall
-								.getUpdateTag())));
+		if (iter.hasNext()) {
+			Set<Object> facts = new HashSet<>();
+			while (iter.hasNext()) {
+				UpdateMembers updateCalls = (UpdateMembers) iter.next().get(
+						"$data");
+				facts.add(new Updating(updateCalls.getUpdateTag()));
 			}
+			// check if a propagation to team members is needed
+			TeamState team = playerSrv.readTeam(gameId, state.getPlayerId());
+			List<String> members = team.getMembers();
+			facts.add(new Team(state.getPlayerId(), data));
+			logger.info("Team {} has {} members", state.getPlayerId(),
+					members.size());
+			for (String member : members) {
+				workflow.apply(gameId, action, member, null, new ArrayList<>(
+						facts));
+			}
+
 		}
 
 		state.setState(newState);

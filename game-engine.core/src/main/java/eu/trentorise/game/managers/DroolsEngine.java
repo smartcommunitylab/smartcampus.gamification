@@ -64,7 +64,7 @@ import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.UpdateMembers;
 import eu.trentorise.game.model.UpdateTeam;
-import eu.trentorise.game.model.Updating;
+import eu.trentorise.game.model.Propagation;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.FSRule;
@@ -182,7 +182,7 @@ public class DroolsEngine implements GameEngine {
 			Set<Object> facts = new HashSet<>();
 			while (iter.hasNext()) {
 				UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
-				facts.add(new Updating(updateCalls.getUpdateTag()));
+				facts.add(new Propagation(updateCalls.getPropagationAction()));
 			}
 
 			List<TeamState> playerTeams = playerSrv.readTeams(gameId,
@@ -206,7 +206,7 @@ public class DroolsEngine implements GameEngine {
 			while (iter.hasNext()) {
 				UpdateMembers updateCalls = (UpdateMembers) iter.next().get(
 						"$data");
-				facts.add(new Updating(updateCalls.getUpdateTag()));
+				facts.add(new Propagation(updateCalls.getPropagationAction()));
 			}
 			// check if a propagation to team members is needed
 			TeamState team = playerSrv.readTeam(gameId, state.getPlayerId());

@@ -1,21 +1,21 @@
 package eu.trentorise.game.model;
 
 public class UpdateTeam {
-	private String updateTag;
+	private String propagationAction;
 
 	public UpdateTeam() {
 	}
 
-	public UpdateTeam(String updateTag) {
-		this.updateTag = updateTag;
+	public UpdateTeam(String propagationAction) {
+		this.propagationAction = propagationAction;
 	}
 
-	public String getUpdateTag() {
-		return updateTag;
+	public String getPropagationAction() {
+		return propagationAction;
 	}
 
-	public void setUpdateTag(String updateTag) {
-		this.updateTag = updateTag;
+	public void setPropagationAction(String propagationAction) {
+		this.propagationAction = propagationAction;
 	}
 
 }

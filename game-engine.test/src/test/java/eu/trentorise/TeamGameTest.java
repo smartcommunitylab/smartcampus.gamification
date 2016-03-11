@@ -29,15 +29,6 @@ public class TeamGameTest extends GameTest {
 		team.setMembers(Arrays.asList("prowler", "rocket racer"));
 		playerSrv.saveTeam(team);
 
-		team = new TeamState(GAME, "spider-man friends");
-		team.setName("spider-man friends");
-		team.setMembers(Arrays.asList("prowler"));
-		playerSrv.saveTeam(team);
-
-		team = new TeamState(GAME, "marvel");
-		team.setName("marvel");
-		team.setMembers(Arrays.asList("fuorilegge", "spider-man friends"));
-		playerSrv.saveTeam(team);
 	}
 
 	@Override
@@ -64,41 +55,25 @@ public class TeamGameTest extends GameTest {
 		data = new HashMap<String, Object>();
 		data.put("meters-walked", 1000d); // 1500steps
 		input = new ExecData(GAME, ACTION, "fuorilegge", data);
-		// execList.add(input);
+		execList.add(input);
 
 		data = new HashMap<String, Object>();
 		data.put("meters-walked", 400d); // 600steps
 		input = new ExecData(GAME, ACTION, "prowler", data);
-		// execList.add(input);
+		execList.add(input);
 
 		data = new HashMap<String, Object>();
 		data.put("meters-walked", 100d); // 150steps
 		input = new ExecData(GAME, ACTION, "rocket racer", data);
-		// execList.add(input);
+		execList.add(input);
+
 	}
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 750d, "prowler", "steps");
-		// assertionPoint(GAME, 0d, "rocket racer", "steps");
-		assertionPoint(GAME, 375d, "fuorilegge", "steps");
-		assertionPoint(GAME, 375d, "spider-man friends", "steps");
-
-		// assertionPoint(GAME, 1450d, "prowler", "steps");
-		// assertionPoint(GAME, 250d, "rocket racer", "steps");
-		// assertionPoint(GAME, 2250d, "fuorilegge", "steps");
-		// assertionPoint(GAME, 675d, "spider-man friends", "steps");
-
-		// assertionBadge(GAME, Arrays.asList("poi_1", "poi_2"), "fuorilegge",
-		// "itinerary");
-		// assertionBadge(GAME, Collections.<String> emptyList(), "fuorilegge",
-		// "my-badges");
-		//
-		// assertionBadge(GAME, Arrays.asList("badge-hero"), "prowler",
-		// "my-badges");
-		//
-		// assertionBadge(GAME, Arrays.asList("badge-hero"), "rocket racer",
-		// "my-badges");
+		assertionPoint(GAME, 1501d, "prowler", "steps");
+		assertionPoint(GAME, 301d, "rocket racer", "steps");
+		assertionPoint(GAME, 2270d, "fuorilegge", "steps");
 
 	}
 

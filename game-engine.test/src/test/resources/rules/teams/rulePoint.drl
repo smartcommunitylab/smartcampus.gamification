@@ -50,6 +50,8 @@ then
     $pc.setScore($pc.getScore() + steps/2); 
     log("Team " +$playerId + " increases of "+steps/2+" steps");  
     update($pc);
+    insert(new UpdateTeam());
+    //insert(new UpdateMembers());
 end
 
 rule "Team prop: badge"
@@ -63,6 +65,8 @@ then
     $pc.setScore($pc.getScore() + 10); 
     log("Team " +$playerId + " increases of "+10+" steps");  
     update($pc);
+    insert(new UpdateTeam());
+    //insert(new UpdateMembers());
 end
 
 
@@ -77,6 +81,8 @@ then
     $bc.getBadgeEarned().add($b); 
     log("Team " +$playerId + " gained bagde "+$b);  
     update($bc);
+    insert(new UpdateTeam());
+    //insert(new UpdateMembers());
 end
 
 
@@ -91,6 +97,7 @@ then
     $pc.setScore($pc.getScore() + 1); 
     log("Player " +$playerId + " increases of 1 steps");
     update($pc);
+    insert(new UpdateTeam());
     
 end
 
@@ -106,5 +113,5 @@ then
     $pc.setScore($pc.getScore() + steps/10); 
     log("Player " +$playerId + " increases of " + steps/10 + " steps");
     update($pc);
-    
+    insert(new UpdateTeam());
 end

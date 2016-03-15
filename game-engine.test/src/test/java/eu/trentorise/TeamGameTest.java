@@ -29,6 +29,16 @@ public class TeamGameTest extends GameTest {
 		team.setMembers(Arrays.asList("prowler", "rocket racer"));
 		playerSrv.saveTeam(team);
 
+		team = new TeamState(GAME, "secret avengers");
+		team.setName("secret avengers");
+		team.setMembers(Arrays.asList("war machine", "moon knight"));
+		playerSrv.saveTeam(team);
+
+		team = new TeamState(GAME, "marvel");
+		team.setName("marvel");
+		team.setMembers(Arrays.asList("fuorilegge", "secret avengers"));
+		playerSrv.saveTeam(team);
+
 	}
 
 	@Override
@@ -71,9 +81,15 @@ public class TeamGameTest extends GameTest {
 
 	@Override
 	public void analyzeResult() {
+		// assertionPoint(GAME, 1501d, "prowler", "steps");
+		// assertionPoint(GAME, 301d, "rocket racer", "steps");
+		// assertionPoint(GAME, 2270d, "fuorilegge", "steps");
+
 		assertionPoint(GAME, 1501d, "prowler", "steps");
 		assertionPoint(GAME, 301d, "rocket racer", "steps");
-		assertionPoint(GAME, 2270d, "fuorilegge", "steps");
+		assertionPoint(GAME, 1685d, "fuorilegge", "steps");
+
+		// assertionPoint(GAME, 2270d, "marvel", "steps");
 
 	}
 

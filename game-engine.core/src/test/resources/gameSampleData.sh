@@ -15,52 +15,52 @@
 #    limitations under the License.
 #
 
-GAMEID=5537a29744ae60a9aad97329 
+GAMEID=56cae8b2e4b055d79d306019 
 
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID", "actionId":"save_itinerary","userId":"43","data":{"bikesharing": true}}
-EOF
-
-curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"14","data":{"walkDistance": 10.0}}
+{"gameId": "$GAMEID", "actionId":"save_itinerary","playerId":"43","data":{"bikesharing": true}}
 EOF
 
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"5","data":{"p+r": true}}
-EOF
-curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"67","data":{"p+r": true}}
-EOF
-curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"177","data":{"p+r": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"14","data":{"walkDistance": 10.0}}
 EOF
 
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"79","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"5","data":{"p+r": true}}
 EOF
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"168","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"67","data":{"p+r": true}}
 EOF
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"169","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
-EOF
-curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"171","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"177","data":{"p+r": true}}
 EOF
 
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"121","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"79","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
 EOF
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"157","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"168","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
 EOF
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"158","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"169","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
 EOF
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"165","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"171","data":{"walkDistance": 1.0,"bikeDistance": 4.0, "sustainable": true}}
 EOF
 
 curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
-{"gameId": "$GAMEID","actionId":"save_itinerary","userId":"167","data":{"walkDistance": 3.0, "trainDistance": 25.0}}
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"121","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+EOF
+curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"157","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+EOF
+curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"158","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+EOF
+curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"165","data":{"walkDistance": 5.0, "busDistance": 13.0, "bikesharing": true}}
+EOF
+
+curl http://localhost:8080/gamification/gengine/execute -H "Content-type: application/json" -d @- << EOF 
+{"gameId": "$GAMEID","actionId":"save_itinerary","playerId":"167","data":{"walkDistance": 3.0, "trainDistance": 25.0}}
 EOF

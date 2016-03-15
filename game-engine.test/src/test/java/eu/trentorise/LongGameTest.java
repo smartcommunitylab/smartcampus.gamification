@@ -44,7 +44,6 @@ public class LongGameTest extends GameTest {
 						+ "/finalClassificationBadges.drl", pathGame
 						+ "/specialBadges.drl", pathGame
 						+ "/weekClassificationBadges.drl"));
-
 	}
 
 	@Override
@@ -67,6 +66,7 @@ public class LongGameTest extends GameTest {
 		data = new HashMap<String, Object>();
 		data.put("bikeDistance", 10d);
 		data.put("bikesharing", true);
+		data.put("sustainable", true);
 		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
 		execList.add(ex);
 
@@ -91,7 +91,7 @@ public class LongGameTest extends GameTest {
 		/*
 		 * this "reset" action is a fake action used in
 		 * combination with a stub rule in the .drl file to force
-		 * a rese4t of the "-past" counters.
+		 * a reset of the "-past" counters.
 		 */
 		data = new HashMap<String, Object>();
 		data.put("reset", new Boolean(true));
@@ -114,6 +114,9 @@ public class LongGameTest extends GameTest {
 	public void analyzeResult() {
 		PlayerState s = playerSrv.loadState(GAME, PLAYER_ID, false);
 		Assert.assertNotNull(s);
+		
+		//Check point totals
+		assertionPoint(GAME, 565d, PLAYER_ID, "green leaves");
 		
 		//Check cumulative counters for Km
 		Assert.assertEquals(26d, s.getCustomData().get("walk-km"));

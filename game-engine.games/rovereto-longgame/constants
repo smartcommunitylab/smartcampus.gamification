@@ -32,5 +32,5 @@ pr_points=10
 
 #soglie di rilevanza
 walk_min=0.1
-bike_min=0.2
-train_max=15.0
+bike_min=0.01
+train_max=30.0

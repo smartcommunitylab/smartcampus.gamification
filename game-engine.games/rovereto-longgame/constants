@@ -16,21 +16,33 @@
 # java.util.ArrayList (i.e var=park,street,bikestation)
 
 
-# GREEN BONUS
-green_walk_bike_points=5
-green_bus_train_points=1
-
-green_pr_bonus=10
+# GREEN POINTS for Walk, Bike, BikeSharing
+green_walk_points=10
+green_bike_points=5
+zero_impact_booster=2
 green_sustainable_bonus=5
 
-# HEALTH BONUS
-health_walk_points=10
-health_bike_points=3
+#GREEN POINTS for Bus
+green_bus_points_base=15
+green_bus_points_step1=20
+green_bus_points_step2=30
+bus_threshold_step1=5.0
+bus_threshold_step2=10.0
 
-# P+R BONUS
-pr_points=10
+#GREEN POINTS for Train
+green_train_points_base=10
+green_train_points_step1=20
+green_train_points_step2=30
+train_threshold_step1=10.0
+train_threshold_step2=20.0
 
-#soglie di rilevanza
+#levels for Badge Collections
+# green_points_collection = 50, 100, 500, 1000, 2000, 5000, 10000
+# bikesharing_collection = 1, 5, 10, 20, 50, 100
+# zero_impact_collection = 1, 5, 10, 20, 50, 100
+
+
+#soglie di rilevanza per modo
 walk_min=0.1
-bike_min=0.01
-train_max=30.0
+walk_max=5.0
+bike_max=10.0

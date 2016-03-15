@@ -1,4 +1,4 @@
-package eu.trentorise.game.challenges;
+package eu.trentorise.game.challenges.model;
 
 import java.util.Collection;
 

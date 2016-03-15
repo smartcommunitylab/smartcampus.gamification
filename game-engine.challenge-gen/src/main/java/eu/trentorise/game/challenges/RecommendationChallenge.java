@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import eu.trentorise.game.challenges.exception.UndefinedChallengeException;
+import eu.trentorise.game.challenges.model.Challenge;
+import eu.trentorise.game.challenges.model.ChallengeType;
+
 public class RecommendationChallenge extends Challenge {
 	private Integer prize = null;
 	private String pointType = null;

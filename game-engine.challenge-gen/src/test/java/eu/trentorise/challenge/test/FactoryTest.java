@@ -5,10 +5,10 @@ import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.trentorise.game.challenges.Challenge;
-import eu.trentorise.game.challenges.ChallengeFactory;
-import eu.trentorise.game.challenges.ChallengeType;
-import eu.trentorise.game.challenges.UndefinedChallengeException;
+import eu.trentorise.game.challenges.exception.UndefinedChallengeException;
+import eu.trentorise.game.challenges.model.Challenge;
+import eu.trentorise.game.challenges.model.ChallengeType;
+import eu.trentorise.game.challenges.util.ChallengeFactory;
 
 public class FactoryTest {
 	private ChallengeFactory chFactory;

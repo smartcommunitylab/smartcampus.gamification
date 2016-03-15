@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import eu.trentorise.game.challenges.exception.UndefinedChallengeException;
+import eu.trentorise.game.challenges.model.Challenge;
+import eu.trentorise.game.challenges.model.ChallengeType;
+
 // import eu.trentorise.game.model.Player;
 
 public class TripNumberChallenge 

@@ -1,4 +1,5 @@
-package eu.trentorise.game.challenges;
+package eu.trentorise.game.challenges.util;
+
 
 public class ChallengeMaker {
 	private ChallengeFactory chFactory;

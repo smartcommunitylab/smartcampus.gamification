@@ -21,7 +21,7 @@ then
 	$bc.getBadgeEarned().add('1st_of_the_week');
 	insert( new BadgeNotification($gameId,$playerId,'1st_of_the_week'));
 	update( $bc );
-	$pc.setScore($pc.getScore() + 100;
+	$pc.setScore($pc.getScore() + 100);
     update($pc);
 end
 
@@ -38,7 +38,7 @@ then
 	$bc.getBadgeEarned().add('2nd_of_the_week');
 	insert( new BadgeNotification($gameId,$playerId,'2nd_of_the_week'));
 	update( $bc );
-	$pc.setScore($pc.getScore() + 80;
+	$pc.setScore($pc.getScore() + 80);
     update($pc);
 end
 
@@ -55,6 +55,6 @@ then
 	$bc.getBadgeEarned().add('3rd_of_the_week');
 	insert( new BadgeNotification($gameId,$playerId,'3rd_of_the_week'));
 	update( $bc );
-	$pc.setScore($pc.getScore() + 60;
+	$pc.setScore($pc.getScore() + 60);
     update($pc);
 end

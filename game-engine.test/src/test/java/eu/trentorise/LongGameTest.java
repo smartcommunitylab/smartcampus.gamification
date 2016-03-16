@@ -35,7 +35,11 @@ public class LongGameTest extends GameTest {
 		List<GameConcept> concepts = new ArrayList<GameConcept>();
 		concepts.add(new PointConcept("green leaves"));
 		concepts.add(new BadgeCollectionConcept("green leaves"));
-
+		concepts.add(new BadgeCollectionConcept("bike aficionado"));
+		concepts.add(new BadgeCollectionConcept("public transport aficionado"));
+		concepts.add(new BadgeCollectionConcept("park and ride pioneer"));
+		concepts.add(new BadgeCollectionConcept("leaderboard top 3"));
+		
 		defineGameHelper(GAME, Arrays.asList(ACTION), concepts);
 
 		String rootProjFolder = new File(System.getProperty("user.dir"))
@@ -44,11 +48,12 @@ public class LongGameTest extends GameTest {
 				+ "/game-engine.games/rovereto-longgame";
 
 		loadFilesystemRules(GAME, Arrays.asList(pathGame + "/constants",
-				pathGame + "/greenBadges.drl", pathGame + "/greenPoints.drl",
-				pathGame + "/mode-counters.drl", pathGame
-						+ "/finalClassificationBadges.drl", pathGame
-						+ "/specialBadges.drl", pathGame
-						+ "/weekClassificationBadges.drl"));
+				pathGame + "/greenBadges.drl", 
+				pathGame + "/greenPoints.drl",
+				pathGame + "/mode-counters.drl", 
+				pathGame + "/finalClassificationBadges.drl",
+				pathGame + "/specialBadges.drl",
+  				pathGame + "/weekClassificationBadges.drl"));  
 	}
 
 	@Override

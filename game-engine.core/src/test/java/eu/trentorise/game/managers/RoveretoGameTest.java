@@ -398,7 +398,7 @@ public class RoveretoGameTest {
 		List<PlayerState> states = playerSrv.loadStates(GAME);
 		StateAnalyzer analyzer = new StateAnalyzer(states);
 		Assert.assertTrue(String.format("Failure concept %s of  player %s",
-				playerId, conceptName),
+				conceptName, playerId),
 				new HashSet<String>(Arrays.asList(values)).containsAll(analyzer
 						.getBadges(analyzer.findPlayer(playerId), conceptName)));
 	}

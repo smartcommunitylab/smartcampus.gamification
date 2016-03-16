@@ -56,6 +56,7 @@ var token="<%=request.getAttribute("token")%>";
 var userId="<%=request.getAttribute("user_id")%>";
 var user_name="<%=request.getAttribute("user_name")%>";
 var user_surname="<%=request.getAttribute("user_surname")%>";
+var conf_gameid="<%=request.getAttribute("gameid")%>";
 var user_mail="<%=request.getAttribute("e_mail")%>";
 var nome="<%=request.getAttribute("nome")%>";
 var cognome="<%=request.getAttribute("cognome")%>";
@@ -179,6 +180,7 @@ var base64="<%=request.getAttribute("base64")%>";
             </li> 
             
             <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li>
+            <li class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
             <li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li>
             <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
             
@@ -213,6 +215,7 @@ var base64="<%=request.getAttribute("base64")%>";
 			            	</a>
 			            	<ul class="dropdown-menu" role="menu">
 			            		<li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li>
+			            		<li class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
 			            		<li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" ><strong>{{ 'left_menu-classification' | i18n }}</strong></a></li>
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
 								<!-- <li class="divider"></li> -->
@@ -236,34 +239,8 @@ var base64="<%=request.getAttribute("base64")%>";
 <!-- 		            <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
 <!-- 		          </ul> -->
 <!--         		</div> -->
-<!-- 			    <div class="navbar-header pull-right"> -->
-<!-- 			    	<ul class="nav navbar-nav"> -->
-<!-- 			         	<li class="active" ng-show="isActiveProfile() == 'active'">{{ 'left_menu-profile' | i18n }}</li> -->
-<!-- 			            <li class="active" ng-show="isActiveClassification() == 'active'">{{ 'left_menu-classification' | i18n }}</li> -->
-<!-- 			            <li class="active" ng-show="isActiveRules() == 'active'">{{ 'left_menu-rules' | i18n }}</li>  -->
-<!-- 			         </ul> -->
-<!-- 			    </div>      -->
 	    	</div>
 	    </div>
-<!--         <div class="collapse navbar-collapse"> -->
-<!--           <ul class="nav navbar-nav"> -->
-<!--             <li class="dropdown"> -->
-<!--             	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> -->
-<!--             		<img height="22" src="img/navMobile.svg"> -->
-<!--             	</a> -->
-<!--             	<ul class="dropdown-menu" role="menu"> -->
-<!--             		<li><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li> -->
-<!--             		<li><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li> -->
-<!--             		<li><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li> -->
-<!--             		<li class="divider"></li> -->
-<!--             		<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
-<!--           			<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
-<!--           			<li class="divider"></li> -->
-<!--           			<li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
-<!--             	</ul> -->
-<!--             </li>   -->
-<!--           </ul> -->
-<!--         </div> -->
       </div><!-- /.container -->
     </div><!-- /.navbar -->
     
@@ -376,23 +353,85 @@ var base64="<%=request.getAttribute("base64")%>";
 	</div>	
 </body>
 <script type="text/ng-template" id="/dialogs/nickinput.html">
-<div class="modal">
+<div class="modal" id="variablesModal" role="dialog"> <!-- aria-labelledby="modalTitle" aria-hidden="true" -->
 	<form role="form" name="form">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Crea Nickname</h4>
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ 'modal_title_value' | i18n }}</h4>
 				</div>
 				<div class="modal-body">
-						<div class="form-group" ng-class="{true: 'has-error'}[form.reportname.$dirty && form.reportname.$invalid]">
-							<label class="control-label" for="username">Nick name:</label>
-							<input type="text" class="form-control" name="nickname" id="nickname" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
-							<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
-						</div>
+					<div>
+					{{ 'modal_desc_label' | i18n }}
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
+						<label class="control-label" for="username">{{ 'modal_nick_label' | i18n }}:</label>
+						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="{{ 'modal_nick_placeholder' | i18n }}" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
+						<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.age.$dirty && form.age.$invalid]"><!--  -->
+						<label class="control-label">{{ 'modal_age_label' | i18n }}:</label>
+						<select type="text" name="age" class="form-control" ng-model="user.age" required><!--  ng-options="a as a.label for a in ages" required -->
+							<option value="">{{ 'modal_age_placeholder' | i18n }}</option>
+							<option value="1">{{ 'modal_age_value_1' | i18n }}</option>
+							<option value="2">{{ 'modal_age_value_2' | i18n }}</option>
+							<option value="3">{{ 'modal_age_value_3' | i18n }}</option>
+							<option value="4">{{ 'modal_age_value_4' | i18n }}</option>
+						</select>
+						<div ng-show="submitNumber && form.age.$error.required" class="alert alert-danger" role="alert">{{ 'modal_age_error_required' | i18n }}</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.transport.$dirty && form.transport.$invalid]">
+						<label class="control-label" for="username">{{ 'modal_transport_label' | i18n }}</label>
+						<table width="100%">
+							<tr><td><label><input type="radio" name="transport" value="yes" ng-model="user.transport" ng-change="clearVehicle()" required> {{ 'modal_transport_yes' | i18n }}</label></td></tr>
+							<tr><td><label><input type="radio" name="transport" value="no" ng-model="user.transport" ng-change="clearVehicle()" required> {{ 'modal_transport_no' | i18n }}</label></td></tr>
+						</table>
+						<div ng-show="submitNumber && form.transport.$error.required" class="alert alert-danger" role="alert">{{ 'modal_transport_error_required' | i18n }}</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.vehicle.$dirty && form.vehicle.$invalid || form.vehicle.$error.required]">
+						<label class="control-label" for="username">{{ 'modal_vehicle_label' | i18n }}: </label>
+						<table width="100%">
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="0" name="vehicle" ng-model="user.vehicle[0]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_train_label' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="1" name="vehicle" ng-model="user.vehicle[1]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_bus_label' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="2" name="vehicle" ng-model="user.vehicle[2]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_shared_car_label' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="3" name="vehicle" ng-model="user.vehicle[3]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_shared_bike_label' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="4" name="vehicle" ng-model="user.vehicle[4]" ng-required="!someSelectedPrivat(user.vehicle)"> {{ 'modal_private_car_label' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="5" name="vehicle" ng-model="user.vehicle[5]" ng-required="!someSelectedPrivat(user.vehicle)"> {{ 'modal_private_bike_label' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="6" name="vehicle" ng-model="user.vehicle[6]" ng-required="!someSelectedPrivat(user.vehicle)"> {{ 'modal_walk_label' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><div ng-show="submitNumber && form.vehicle.$error.required" class="alert alert-danger" role="alert">{{ 'modal_walk_label' | i18n }}Veicolo obbligatorio. Selezionare almeno un elemento</div></td>
+							</tr>
+						</table>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
+						<label class="control-label" for="averagekm">{{ 'modal_average_daily_km_label' | i18n }}: </label>
+						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" required>
+						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">{{ 'modal_average_daily_km_error_value' | i18n }}</div>
+						<div ng-show="submitNumber && form.averagekm.$error.required" class="alert alert-danger" role="alert">{{ 'modal_average_daily_km_error_required' | i18n }}</div>
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.invitation_person.$dirty && form.invitation_person.$invalid]">
+						<label class="control-label" for="invitation">{{ 'modal_invitation_nickname_label' | i18n }}</label>
+						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="{{ 'modal_invitation_nickname_placeholder' | i18n }}" ng-model="user.invitation">
+					</div>
 				</div>
+				<div class="required_desc"><p>{{ 'modal_required_field_label' | i18n }}</p></div>
 				<div class="modal-footer">
-					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
-					<button type="button" class="btn btn-primary" ng-click="save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
+					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">{{ 'modal_cancel_button_label' | i18n }}</button> -->
+					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >{{ 'modal_ok_button_label' | i18n }}</button>
 				</div>
 			</div>
 		</div>

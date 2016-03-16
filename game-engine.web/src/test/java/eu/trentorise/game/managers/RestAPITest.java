@@ -19,7 +19,9 @@ package eu.trentorise.game.managers;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -179,6 +181,41 @@ public class RestAPITest {
 		}
 
 		Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
+	}
+
+	@Test
+	public void updatePlayer() {
+		GamePersistence gp = defineGame();
+		mongo.save(gp);
+		PlayerState player = new PlayerState(GAME, "play1");
+		CustomData c = new CustomData();
+		c.put("playername", "sid");
+		c.put("level", 21);
+		player.setCustomData(c);
+
+		playerSrv.saveState(player);
+
+		Map<String, Object> updateData = new HashMap<String, Object>();
+		updateData.put("newData", "data");
+
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders
+					.put("/console/game/" + GAME + "/player/"
+							+ player.getPlayerId())
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(mapper.writeValueAsString(updateData));
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+			PlayerState play = playerSrv.loadState(GAME, "play1", false);
+			Assert.assertNotNull(play);
+			Assert.assertEquals("data", play.getCustomData().get("newData"));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+
 	}
 
 	@Test

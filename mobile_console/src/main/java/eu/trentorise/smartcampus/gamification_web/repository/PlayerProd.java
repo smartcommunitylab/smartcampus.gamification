@@ -3,6 +3,8 @@ package eu.trentorise.smartcampus.gamification_web.repository;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
+
 @Document(collection="player_prod")
 public class PlayerProd {
 	
@@ -14,13 +16,14 @@ public class PlayerProd {
 	private String surname;
 	private String nikName;
 	private String mail;
+	private PersonalData personalData;
 	
 	public PlayerProd() {
 		super();
 	}
 
 	public PlayerProd(String pid, String socialId, String name, String surname, String nikName,
-			String mail) {
+			String mail, PersonalData personalData) {
 		super();
 		this.pid = pid;
 		this.socialId = socialId;
@@ -28,6 +31,7 @@ public class PlayerProd {
 		this.surname = surname;
 		this.nikName = nikName;
 		this.mail = mail;
+		this.personalData = personalData;
 	}
 
 	public String getPId() {
@@ -86,10 +90,22 @@ public class PlayerProd {
 		this.socialId = socialId;
 	}
 
+	public PersonalData getPersonalData() {
+		return personalData;
+	}
+
+	public void setPersonalData(PersonalData personalData) {
+		this.personalData = personalData;
+	}
+
 	public String toJSONString() {
+		String pdata = null;
+		if(personalData!=null){
+			pdata = personalData.toJSONString();
+		}
 		return "{\"pid\":\"" + pid + "\", \"socialId\":\"" + socialId + "\", \"name\":\""
 				+ name + "\", \"surname\":\"" + surname + "\", \"nikName\":\"" + nikName
-				+ "\", \"mail\":\"" + mail + "\"}";
+				+ "\", \"mail\":\"" + mail + "\", \"personalData\":" + pdata +"}";
 	}
 
 }

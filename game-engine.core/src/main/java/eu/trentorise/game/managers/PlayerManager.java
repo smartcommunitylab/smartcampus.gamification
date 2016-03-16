@@ -208,6 +208,12 @@ public class PlayerManager implements PlayerService {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
+
+	@Override
+	public PlayerState updateCustomData(String gameId, String playerId,
+			Map<String, Object> data) {
+		throw new UnsupportedOperationException("method not implemented");
+	}
 }
 
 class ConceptPersistence {

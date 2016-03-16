@@ -32,6 +32,11 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
+    	.when('/challeng/:id', {
+    		templateUrl: 'partials/challeng.html',
+    		controller: 'MainCtrl',
+    		controllerAs: 'main'
+    	})
     	.when('/classification/:id', {
     		templateUrl: 'partials/classification.html',
     		controller: 'MainCtrl',

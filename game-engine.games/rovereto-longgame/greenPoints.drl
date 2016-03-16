@@ -82,12 +82,12 @@ then
 	boolean zeroImpact = ($walk != null || $bike != null) && (($bus == null || ((Double)$bus) == 0) &&  ($car == null || ((Double)$car) == 0) && ($train == null || ((Double)$train) == 0));	
 	
 	if ($bike != null) {	
-		Double bikeDistance = (Double)$bike <= bike_max ? Math.round((Double) $bike) : bike_max;
+		Double bikeDistance = (Double)$bike <= bike_max ? (Double) $bike : bike_max;
 		bikePoints = Math.round(bikeDistance * green_bike_points);
 		// log(bikePoints.toString() + " bike points applied for " + bikeDistance.toString() + " bike Km.");
 	}	
 	if ($walk != null) {
-		Double walkDistance = (Double)$walk <= walk_max ? Math.round((Double) $walk) : walk_max;
+		Double walkDistance = (Double)$walk <= walk_max ? (Double) $walk : walk_max;
 		if (walkDistance > walk_min)
 			walkPoints = Math.round(walkDistance * green_walk_points);
 		// log(walkPoints.toString() + " walk points applied for " + walkDistance.toString() + " walk Km.");

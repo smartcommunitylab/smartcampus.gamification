@@ -42,19 +42,19 @@ public class LongGameTest extends GameTest {
 				.getParent();
 		String pathGame = rootProjFolder
 				+ "/game-engine.games/rovereto-longgame";
+
 		loadFilesystemRules(GAME, Arrays.asList(pathGame + "/constants",
 				pathGame + "/greenBadges.drl", pathGame + "/greenPoints.drl",
 				pathGame + "/mode-counters.drl", pathGame
 						+ "/finalClassificationBadges.drl", pathGame
 						+ "/specialBadges.drl", pathGame
 						+ "/weekClassificationBadges.drl"));
-
 	}
 
 	@Override
 	public void defineExecData(List<ExecData> execList) {
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("walkDistance", 4d);
+		data.put("walkDistance", 0.4d);
 		ExecData ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
 		execList.add(ex);
 
@@ -71,6 +71,7 @@ public class LongGameTest extends GameTest {
 		data = new HashMap<String, Object>();
 		data.put("bikeDistance", 10d);
 		data.put("bikesharing", true);
+		data.put("sustainable", true);
 		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
 		execList.add(ex);
 
@@ -94,7 +95,7 @@ public class LongGameTest extends GameTest {
 
 		/*
 		 * this "reset" action is a fake action used in combination with a stub
-		 * rule in the .drl file to force a rese4t of the "-past" counters.
+		 * rule in the .drl file to force a reset of the "-past" counters.
 		 */
 		data = new HashMap<String, Object>();
 		data.put("reset", new Boolean(true));
@@ -104,7 +105,7 @@ public class LongGameTest extends GameTest {
 		data = new HashMap<String, Object>();
 		data.put("bikeDistance", 1d);
 		data.put("bikesharing", true);
-		data.put("walkDistance", 2d);
+		data.put("walkDistance", 2.3d);
 		data.put("carDistance", 3d);
 		data.put("trainDistance", 40d);
 		data.put("busDistance", 5d);
@@ -118,8 +119,11 @@ public class LongGameTest extends GameTest {
 		PlayerState s = playerSrv.loadState(GAME, PLAYER_ID, false);
 		Assert.assertNotNull(s);
 
+		// Check point totals
+		assertionPoint(GAME, 498d, PLAYER_ID, "green leaves");
+
 		// Check cumulative counters for Km
-		Assert.assertEquals(26d, s.getCustomData().get("walk-km"));
+		Assert.assertEquals(22.7d, s.getCustomData().get("walk-km"));
 		Assert.assertEquals(41.1d, s.getCustomData().get("bike-km"));
 		Assert.assertEquals(11d, s.getCustomData().get("bikesharing-km"));
 		Assert.assertEquals(5d, s.getCustomData().get("car-km"));
@@ -135,7 +139,7 @@ public class LongGameTest extends GameTest {
 		Assert.assertEquals(2, s.getCustomData().get("train-trips"));
 
 		// Check period counters for Km
-		Assert.assertEquals(2d, s.getCustomData().get("walk-km-past"));
+		Assert.assertEquals(2.3d, s.getCustomData().get("walk-km-past"));
 		Assert.assertEquals(1d, s.getCustomData().get("bike-km-past"));
 		Assert.assertEquals(1d, s.getCustomData().get("bikesharing-km-past"));
 		Assert.assertEquals(3d, s.getCustomData().get("car-km-past"));

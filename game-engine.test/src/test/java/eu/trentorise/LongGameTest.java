@@ -1,5 +1,6 @@
 package eu.trentorise;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +38,10 @@ public class LongGameTest extends GameTest {
 
 		defineGameHelper(GAME, Arrays.asList(ACTION), concepts);
 
-		String pathGame = "/home/mirko/data/git/smartcampus.gamification/game-engine.games/rovereto-longgame";
+		String rootProjFolder = new File(System.getProperty("user.dir"))
+				.getParent();
+		String pathGame = rootProjFolder
+				+ "/game-engine.games/rovereto-longgame";
 		loadFilesystemRules(GAME, Arrays.asList(pathGame + "/constants",
 				pathGame + "/greenBadges.drl", pathGame + "/greenPoints.drl",
 				pathGame + "/mode-counters.drl", pathGame

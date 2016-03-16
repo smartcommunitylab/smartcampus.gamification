@@ -1,8 +1,8 @@
 package eu.trentorise.game.model
 
-global Integer walk_min;
-global Integer bike_min;
-global Integer train_max;
+global Double walk_min;
+global Double walk_max;
+global Double bike_max;
 
 rule "clear past counters"
 lock-on-active
@@ -25,6 +25,7 @@ then
 	$c.put("bus-trips-past", 0);
 	$c.put("train-trips-past", 0);
 	$c.put("car-trips-past", 0);
+	$c.put("gp-current",0l);
 	
 	update($c);
 end
@@ -62,7 +63,7 @@ end
 rule "update bike counters"
 lock-on-active
 when
-    InputData( $km : data["bikeDistance"] != null, $km >= bike_min)
+    InputData( $km : data["bikeDistance"] != null)
     $c : CustomData($counterKm : this["bike-km"], $counterTrips : this["bike-trips"], $counterKmPast : this["bike-km-past"], $counterTripsPast: this["bike-trips-past"])
 then
 	if($counterKm == null) {
@@ -92,7 +93,7 @@ end
 rule "update bikesharing counters"
 lock-on-active
 when
-    InputData( $km : data["bikeDistance"] != null, data["bikesharing"] == true, $km >= bike_min)
+    InputData( $km : data["bikeDistance"] != null, data["bikesharing"] == true)
     $c : CustomData($counterKm : this["bikesharing-km"], $counterTrips : this["bikesharing-trips"], $counterKmPast : this["bikesharing-km-past"], $counterTripsPast: this["bikesharing-trips-past"])
 then
 	if($counterKm == null) {
@@ -205,4 +206,18 @@ then
 		$c.put("car-trips-past", (Integer) $counterTripsPast + 1);
 	}
     update($c);
+end
+
+rule "update point counters"
+when 
+	$delta : PointDelta(this.pointType == "green leaves")
+	$c : CustomData($counterGreenPoints : this["gp-current"])
+then
+	Long points = $delta.getDelta();
+	Long gp = $counterGreenPoints != null ? (Long)$counterGreenPoints : 0l;
+	gp += points;
+	$c.put("gp-current", gp);
+	log("current Green Point counter = " + gp);
+	update($c);
+	retract($delta);
 end

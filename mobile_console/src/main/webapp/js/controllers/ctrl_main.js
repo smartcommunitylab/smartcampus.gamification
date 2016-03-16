@@ -20,21 +20,32 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.FROM_40_TO_70 = 3;
 	$scope.MAIOR_70 = 4;
 	// challeng_keys
-	$scope.CHAL_K = "ch-";
-	$scope.CHAL_K_TYPE = "-type";
-	$scope.CHAL_K_STS = "-startChTs";
-	$scope.CHAL_K_ETS = "-endChTs";
-	$scope.CHAL_K_WALKED_KM = "-Km_walked_during_challenge";
-	$scope.CHAL_K_TARGET = "-target";
-	$scope.CHAL_K_BONUS = "-bonus";
-	$scope.CHAL_K_RECOM = "-recommandation";
-	$scope.CHAL_K_SUCCESS = "-success";
-	$scope.CHAL_K_COUNTER = "-counter";
-	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km a piedi e avrai BONUS punti bonus";
-	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con il Bike sharing e vinci un bonus di BONUS Green Points";
-	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS Green Points";
-	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS Green Points";
-    $scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in a day (for test I use 7 days)
+	$scope.CHAL_K = "ch_";
+	$scope.CHAL_K_TYPE = "_type";
+	$scope.CHAL_K_STS = "_startChTs";
+	$scope.CHAL_K_ETS = "_endChTs";
+	$scope.CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
+	$scope.CHAL_K_TARGET = "_target";
+	$scope.CHAL_K_BONUS = "_bonus";
+	$scope.CHAL_K_RECOM = "_recommendations_sent_during_challenges";
+	$scope.CHAL_K_SUCCESS = "_success";
+	$scope.CHAL_K_COUNTER = "_counter";
+	$scope.CHAL_K_POINT_TYPE = "_point_type";
+	$scope.CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
+	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
+	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con il Bike sharing e vinci un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
+	$scope.CHAL_ALLOWED_MODE_W = "walk";
+	$scope.CHAL_ALLOWED_MODE_BK = "bike";
+	$scope.CHAL_ALLOWED_MODE_BKS = "bikesharing";
+	$scope.CHAL_ALLOWED_MODE_T = "train";
+	$scope.CHAL_ALLOWED_MODE_B = "bus";
+	$scope.CHAL_ALLOWED_MODE_C = "car";
+	$scope.CHAL_ALLOWED_PT_GREEN = "green leaves";
+	$scope.CHAL_ALLOWED_PT_HEALTH = "health";
+	$scope.CHAL_ALLOWED_PT_PR = "pr";
+	$scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in a day (for test I use 7 days)
     $scope.MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
     var show_ch_details = false;
 	
@@ -591,10 +602,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		for(var keyName in customdata){
     			var key = keyName;
     			var value = customdata[keyName];
-    			if(key.indexOf('ch-') > -1){
+    			if(key.indexOf($scope.CHAL_K) > -1){
     				// case key is a challeng key
     				var challangeString = key.substring(3);
-    				var partialIndex = challangeString.split("-");
+    				var partialIndex = challangeString.split("_");
     				var chal_Indx = partialIndex[0];
     				if(challIndxArray.length == 0){
     					challIndxArray.push(chal_Indx);
@@ -612,6 +623,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			var target = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_TARGET];
 				var bonus = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_BONUS];
 				var endChTs = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_ETS];
+				var point_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_POINT_TYPE];
 				var now = new Date().getTime();
 				var daysToEnd = $scope.calculateRemainingDays(endChTs, now);
 				var success = (customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] != null) ? customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] : false;
@@ -621,12 +633,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			switch(ch_type){
     				case 'ch1':
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
+    					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = walked_km * 100 / target;
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],
-    						icon: "img/green/greenLeavesTesto.svg", //"img/health/healthLeavesTesto.svg",
-    						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
+    						icon: $scope.getCorrectIcon(point_type), //"img/health/healthLeavesTesto.svg",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus, point_type, mobility_mode), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -645,8 +658,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					status = count * 100 / target;
     					tmp_chall = {
     						id: challIndxArray[i],
-    						icon: "img/green/greenLeavesTesto.svg",
-    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus), //"Fai almeno N viaggio/i con il Bike sharing e vinci un bonus di 50 Green Points",
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus, point_type, ""), //"Fai almeno N viaggio/i con il Bike sharing e vinci un bonus di 50 Green Points",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -667,8 +680,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					}
     					tmp_chall = {
     						id: challIndxArray[i],
-    						icon: "img/green/greenLeavesTesto.svg",
-    						desc: $scope.correctDesc($scope.CHAL_DESC_7, target, bonus), //"completa una Badge Collection e vinci un bonus di 50 Green Points",
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_7, target, bonus, point_type, ""), //"completa una Badge Collection e vinci un bonus di 50 Green Points",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -687,8 +700,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],
-    						icon: "img/green/greenLeavesTesto.svg",
-    						desc: $scope.correctDesc($scope.CHAL_DESC_9, target, bonus), //"raccomanda la App ad almeno 10 utenti e guadagni 50 Green Points",
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_9, target, bonus, point_type, ""), //"raccomanda la App ad almeno 10 utenti e guadagni 50 Green Points",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -711,6 +724,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	}
     	$scope.setLoading(false);
     };
+    
+    $scope.getCorrectIcon = function(p_type){
+    	if(p_type == $scope.CHAL_ALLOWED_PT_GREEN){
+    		return "img/green/greenLeavesTesto.svg";
+    	} else if(p_type == $scope.CHAL_ALLOWED_PT_HEALTH){
+    		return "img/health/healthLeavesTesto.svg";
+    	} else if(p_type == $scope.CHAL_ALLOWED_PT_PR){
+    		return "img/pr/p&rLeavesBase.svg";
+    	}
+    }
     
     $scope.calculateRemainingDays = function(endTimeMillis, now){
     	var remainingDays = 0;
@@ -772,7 +795,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return !contained;
     };
     
-    $scope.correctDesc = function(desc, target, bonus){
+    $scope.correctDesc = function(desc, target, bonus, p_type, mode){
     	if(desc.indexOf("TARGET") > -1){
     		desc = desc.replace("TARGET", target);
     	}
@@ -782,7 +805,51 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	if(desc.indexOf("BONUS") > -1){
     		desc = desc.replace("BONUS", bonus);
     	}
+    	if(desc.indexOf("POINT_TYPE") > -1){
+    		desc = desc.replace("POINT_TYPE", $scope.getCorrectPointType(p_type));
+    	}
+    	if(mode != null && mode != ""){
+    		if(desc.indexOf("MODE") > -1){
+    			desc = desc.replace("MODE", $scope.getCorrectMode(mode));
+    		}
+    	}
     	return desc;
+    };
+    
+    $scope.getCorrectMode = function(mode){
+    	var corr_mode = "";
+    	switch(mode){
+	    	case $scope.CHAL_ALLOWED_MODE_W: 
+	    		corr_mode = "a piedi";
+	    		break;
+	    	case $scope.CHAL_ALLOWED_MODE_BK: 
+	    		corr_mode = "in bici";
+	    		break;
+	    	case $scope.CHAL_ALLOWED_MODE_BKS: 
+	    		corr_mode = "con bici condivisa";
+	    		break;
+	    	case $scope.CHAL_ALLOWED_MODE_T: 
+	    		corr_mode = "in treno";
+	    		break;
+	    	case $scope.CHAL_ALLOWED_MODE_B: 
+	    		corr_mode = "in autobus";
+	    		break;
+	    	case $scope.CHAL_ALLOWED_MODE_C: 
+	    		corr_mode = "in auto";
+	    		break;
+	    	default: break;
+    	};
+    	return corr_mode;
+    };
+    
+    $scope.getCorrectPointType = function(ptype){
+    	if(ptype == $scope.CHAL_ALLOWED_PT_GREEN){
+    		return "Green Leaves";
+    	} else if(ptype == $scope.CHAL_ALLOWED_PT_HEALTH){
+    		return "Salute";
+    	} else if(ptype == $scope.CHAL_ALLOWED_PT_PR){
+    		return "Park & Ride";
+    	}
     };
     
     // Method used to load only the used data from the players list

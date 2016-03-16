@@ -2,86 +2,120 @@ package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
 
-rule "10 point green badge"
-	salience -1000
-when
-    PointConcept(name == 'green leaves', score >= 10.0)
-    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains '10-point-green')
-    Game( $gameId: id)
-    Player( $playerId : id)
-then
-	log("apply \'10-point-green badge\'");
-	$bc.getBadgeEarned().add('10-point-green');
-	insert( new BadgeNotification($gameId,$playerId,'10-point-green'));
-	update( $bc );
-end
-
 rule "50 point green badge"
 	salience -1000
 when
     PointConcept(name == 'green leaves', score >= 50.0)
-    $bc : BadgeCollectionConcept(name == 'green leaves', badgeEarned not contains '50-point-green')
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains '50_point_green')
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'50-point-green badge\'");
-	$bc.getBadgeEarned().add('50-point-green');
-	insert(new BadgeNotification($gameId,$playerId,'50-point-green'));
+	log("apply \'50_point_green badge\'");
+	$bc.getBadgeEarned().add('50_point_green');
+	insert( new BadgeNotification($gameId,$playerId,'50_point_green'));
 	update( $bc );
 end
+
 
 rule "100 point green badge"
 	salience -1000
 when
     PointConcept(name == 'green leaves', score >= 100.0)
-    $bc : BadgeCollectionConcept(name == 'green leaves', badgeEarned not contains '100-point-green')
+    $bc : BadgeCollectionConcept(name == 'green leaves', badgeEarned not contains '100_point_green')
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'100-point-green badge\'");
-	$bc.getBadgeEarned().add('100-point-green');
-	insert(new BadgeNotification($gameId,$playerId,'100-point-green'));
+	log("apply \'100_point_green badge\'");
+	$bc.getBadgeEarned().add('100_point_green');
+	insert(new BadgeNotification($gameId,$playerId,'100_point_green'));
 	update( $bc );
 end
 
-rule "250 point green badge"
+
+rule "200 point green badge"
 	salience -1000
 when
-    PointConcept(name == 'green leaves', score >= 250.0)
-    $bc : BadgeCollectionConcept(name == 'green leaves', badgeEarned not contains '250-point-green')
+    PointConcept(name == 'green leaves', score >= 200.0)
+    $bc : BadgeCollectionConcept(name == 'green leaves', badgeEarned not contains '200_point_green')
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'250-point-green badge\'");
-	$bc.getBadgeEarned().add('250-point-green');
-	insert( new BadgeNotification($gameId,$playerId,'250-point-green'));
+	log("apply \'200_point_green badge\'");
+	$bc.getBadgeEarned().add('200_point_green');
+	insert( new BadgeNotification($gameId,$playerId,'200_point_green'));
 	update( $bc );
 end
 
-rule "500 point green badge"
+
+rule "400 point green badge"
 	salience -1000
 when
-    PointConcept(name == 'green leaves', score >= 500.0)
-    $bc : BadgeCollectionConcept(name == 'green leaves', badgeEarned not contains '500-point-green')
+    PointConcept(name == 'green leaves', score >= 400)
+    $bc : BadgeCollectionConcept(name == 'green leaves', badgeEarned not contains '400_point_green')
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'500-point-green badge\'");
-	$bc.getBadgeEarned().add('500-point-green');
-	insert( new BadgeNotification($gameId,$playerId,'500-point-green'));
+	log("apply \'400_point_green badge\'");
+	$bc.getBadgeEarned().add('400_point_green');
+	insert( new BadgeNotification($gameId,$playerId,'400_point_green'));
 	update( $bc );
 end
 
-rule "1000 point green badge"
+
+rule "800 point green badge"
 	salience -1000
 when
-    PointConcept(name == 'green leaves', score >= 1000.0)
-    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains '1000-point-green')
+    PointConcept(name == 'green leaves', score >= 800)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains '800_point_green')
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'1000-point-green badge\'");
-	$bc.getBadgeEarned().add('1000-point-green');
-	insert( new BadgeNotification($gameId,$playerId,'1000-point-green'));
+	log("apply \'800_point_green badge\'");
+	$bc.getBadgeEarned().add('800_point_green');
+	insert( new BadgeNotification($gameId,$playerId,'800_point_green'));
+	update( $bc );
+end
+
+
+rule "1500 point green badge"
+	salience -1000
+when
+    PointConcept(name == 'green leaves', score >= 1500)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains '1500_point_green')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply \'1500_point_green badge\'");
+	$bc.getBadgeEarned().add('1500_point_green');
+	insert( new BadgeNotification($gameId,$playerId,'1500_point_green'));
+	update( $bc );
+end
+
+
+rule "2500 point green badge"
+	salience -1000
+when
+    PointConcept(name == 'green leaves', score >= 2500)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains '2500_point_green')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply \'2500_point_green badge\'");
+	$bc.getBadgeEarned().add('2500_point_green');
+	insert( new BadgeNotification($gameId,$playerId,'2500_point_green'));
+	update( $bc );
+end
+
+rule "5000 point green badge"
+	salience -1000
+when
+    PointConcept(name == 'green leaves', score >= 5000)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains '5000_point_green')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply \'5000_point_green badge\'");
+	$bc.getBadgeEarned().add('5000_point_green');
+	insert( new BadgeNotification($gameId,$playerId,'5000_point_green'));
 	update( $bc );
 end

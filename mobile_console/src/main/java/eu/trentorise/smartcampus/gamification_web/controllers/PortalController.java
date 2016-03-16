@@ -319,8 +319,7 @@ public class PortalController extends SCController{
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/prelogin")
 	public ModelAndView preSecure(HttpServletRequest request) {
-		//String redirectUri = mainURL + "/check";
-		logger.error(String.format("I am in pre login"));
+		logger.info(String.format("I am in pre login"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("landing");
 		return model;

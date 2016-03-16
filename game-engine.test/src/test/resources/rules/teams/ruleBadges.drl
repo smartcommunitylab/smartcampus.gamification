@@ -5,7 +5,7 @@ import eu.trentorise.game.notification.BadgeNotification;
 
 rule "player badge 1"
 when 
-    PointConcept(name == 'steps', score >= 200)
+    PointConcept(name == 'steps', score >= 100)
     $bc : BadgeCollectionConcept($b : 'poi_1', name =="itinerary", badgeEarned not contains $b) 
     Player( $playerId : id)
 then
@@ -18,7 +18,7 @@ end
 
 rule "player badge 2"
 when 
-    PointConcept(name == 'steps', score >= 210)
+    PointConcept(name == 'steps', score >= 200)
     $bc : BadgeCollectionConcept($b : 'poi_2', name =="itinerary", badgeEarned not contains $b) 
     Player( $playerId : id)
 then
@@ -31,7 +31,7 @@ end
 
 rule "player badge 3"
 when 
-    PointConcept(name == 'steps', score >= 220)
+    PointConcept(name == 'steps', score >= 300)
     $bc : BadgeCollectionConcept($b : 'poi_3', name =="itinerary", badgeEarned not contains $b) 
     Player( $playerId : id)
 then
@@ -44,7 +44,7 @@ end
 
 rule "R-add-badge leg-1"
 when 
-    PointConcept(name == 'steps', score >= 700)
+    PointConcept(name == 'steps', score >= 500)
     $bc : BadgeCollectionConcept($b : 'team_1', name =="itinerary", badgeEarned not contains $b) 
     Player($playerId: id, team == true)
 then

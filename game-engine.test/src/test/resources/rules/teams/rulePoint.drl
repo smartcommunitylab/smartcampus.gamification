@@ -3,47 +3,108 @@ package eu.trentorise.game.model
 
 global Integer steps_per_100m;
 
-rule "R1-update individual steps"
-when // here we need to understand better how InputData will be structured
-    $inputData: InputData( $distance : data["meters-walked"])
+
+
+rule "R1-player execution"
+when
+    InputData( $distance : data["meters-walked"] != null)
     $pc : PointConcept(name == "steps")
-    Player($playerId: id)
+    Player($playerId: id, team == false)
 then
-	log("apply \'R1\'");
+	log("Player execution");
     Long steps = Math.round(steps_per_100m *  (double) $distance / 100);  
     $pc.setScore($pc.getScore() + steps); 
     log("Player " +$playerId + " increases of "+steps+" steps");
     update($pc);
-    // here generate the internal event with two parameters: $playerId and $distance (to fire R2)
-    insert(new UpdateTeam($playerId,$inputData));
+    // propagate rule to my teams
+    insert(new UpdateTeam());
 end
 
 
-rule "R2-propagation to team"
+
+rule "R3-team execution"
 when
-	Updating()
-    Team($playerId: playerId)
-    $inputData: InputData( $distance : data["meters-walked"])
+    Player($playerId: id, team == true)
+    InputData( $distance : data["meters-walked"] != null)
     $pc : PointConcept(name == "steps")
 then
-    log("apply \'R2\'");
+    log("Team execution");
+    Long steps = Math.round(steps_per_100m *  (double) $distance / 100);   
+    $pc.setScore($pc.getScore() + steps); 
+    log("Team " +$playerId + " increases of "+steps+" steps");
+    update($pc);
+     // propagate rule to team members
+    insert(new UpdateMembers());
+end
+
+
+
+rule "Team prop: points"
+when
+    Player($playerId: id, team == true)
+    $pc : PointConcept(name == "steps")
+	Member($distance : inputData["meters-walked"] != null, $inputData : inputData)
+then
+    log("Player to team: points");
     Long steps = Math.round(steps_per_100m *  (double) $distance / 100);  
     $pc.setScore($pc.getScore() + steps/2); 
     log("Team " +$playerId + " increases of "+steps/2+" steps");  
     update($pc);
 end
 
-rule "R3-update team rule"
+rule "Team prop: badge"
 when
-	not Updating()
-    Team($playerId: playerId)
-    $inputData: InputData( $distance : data["meters-walked"])
+    Player($playerId: id, team == true)
     $pc : PointConcept(name == "steps")
+	Member()
+	Propagation(action == "gained-poi_1")
 then
-    log("apply \'R3\'");
-    Long steps = Math.round(steps_per_100m *  (double) $distance / 100);   
-    $pc.setScore($pc.getScore() + steps); 
-    log("Team " +$playerId + " increases of "+steps+" steps");
+    log("Player to team: badge");
+    $pc.setScore($pc.getScore() + 10); 
+    log("Team " +$playerId + " increases of "+10+" steps");  
     update($pc);
 end
 
+
+rule "Team prop: badge 2"
+when
+    Player($playerId: id, team == true)
+    $bc : BadgeCollectionConcept($b : 'team_bump_1', name =="itinerary", badgeEarned not contains $b) 
+	Member()
+	Propagation(action == "gained-poi_3")
+then
+    log("Player to team: badge 2");
+    $bc.getBadgeEarned().add($b); 
+    log("Team " +$playerId + " gained bagde "+$b);  
+    update($bc);
+end
+
+
+
+rule "Player prop: badge"
+when 
+    $pc : PointConcept(name == "steps")
+    Player($playerId: id)
+    Propagation(action == "gained-team_1")
+then
+	log("Team to player: badge");
+    $pc.setScore($pc.getScore() + 1); 
+    log("Player " +$playerId + " increases of 1 steps");
+    update($pc);
+    
+end
+
+
+rule "Player prop: points"
+when 
+    $pc : PointConcept(name == "steps")
+    Player($playerId: id)
+    Team($distance : inputData["meters-walked"] != null)
+then
+	log("Team to player: points");
+	Long steps = Math.round(steps_per_100m *  (double) $distance / 100);
+    $pc.setScore($pc.getScore() + steps/10); 
+    log("Player " +$playerId + " increases of " + steps/10 + " steps");
+    update($pc);
+    
+end

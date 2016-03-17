@@ -1,0 +1,55 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+
+
+rule "player badge 1"
+when 
+    PointConcept(name == 'steps', score >= 200)
+    $bc : BadgeCollectionConcept($b : 'poi_1', name =="itinerary", badgeEarned not contains $b) 
+    Player( $playerId : id)
+then
+    log("PLAY badge 1");
+    $bc.getBadgeEarned().add($b);
+    update( $bc );
+    insert(new UpdateTeam("gained-poi_1"));
+end
+
+
+rule "player badge 2"
+when 
+    PointConcept(name == 'steps', score >= 210)
+    $bc : BadgeCollectionConcept($b : 'poi_2', name =="itinerary", badgeEarned not contains $b) 
+    Player( $playerId : id)
+then
+    log("PLAY badge 2");
+    $bc.getBadgeEarned().add($b);
+    update( $bc );
+    insert(new UpdateTeam("gained-poi_1"));
+end
+
+
+rule "player badge 3"
+when 
+    PointConcept(name == 'steps', score >= 220)
+    $bc : BadgeCollectionConcept($b : 'poi_3', name =="itinerary", badgeEarned not contains $b) 
+    Player( $playerId : id)
+then
+    log("PLAY badge 3");
+    $bc.getBadgeEarned().add($b);
+    update( $bc );
+    insert(new UpdateTeam("gained-poi_3"));
+end
+
+
+rule "R-add-badge leg-1"
+when 
+    PointConcept(name == 'steps', score >= 700)
+    $bc : BadgeCollectionConcept($b : 'team_1', name =="itinerary", badgeEarned not contains $b) 
+    Player($playerId: id, team == true)
+then
+    log("apply \'R-add-badge leg-1\'");
+    $bc.getBadgeEarned().add($b);
+    update( $bc );
+    insert(new UpdateMembers("gained-team_1"));
+end

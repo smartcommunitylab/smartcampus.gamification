@@ -1,12 +1,12 @@
 package eu.trentorise.game.model;
 
-public class UpdateTeam {
+public class UpdateMembers {
 	private String propagationAction;
 
-	public UpdateTeam() {
+	public UpdateMembers() {
 	}
 
-	public UpdateTeam(String propagationAction) {
+	public UpdateMembers(String propagationAction) {
 		this.propagationAction = propagationAction;
 	}
 

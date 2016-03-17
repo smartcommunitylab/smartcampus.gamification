@@ -1,6 +1,6 @@
 package eu.trentorise.game.repo;
 
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 
 public class TeamPersistence extends StatePersistence {
 
@@ -8,11 +8,11 @@ public class TeamPersistence extends StatePersistence {
 		super(gameId, playerId);
 	}
 
-	public TeamPersistence(Team t) {
+	public TeamPersistence(TeamState t) {
 		super(t);
 
 		// set specific team data
-		metadata.put(Team.NAME_METADATA, t.getName());
-		metadata.put(Team.MEMBERS_METADATA, t.getMembers());
+		metadata.put(TeamState.NAME_METADATA, t.getName());
+		metadata.put(TeamState.MEMBERS_METADATA, t.getMembers());
 	}
 }

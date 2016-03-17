@@ -24,7 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 
 @Service
 public interface PlayerService {
@@ -51,16 +51,16 @@ public interface PlayerService {
 
 	public List<String> readPlayers(String gameId);
 
-	public Team saveTeam(Team team);
+	public TeamState saveTeam(TeamState team);
 
-	public List<Team> readTeams(String gameId);
+	public List<TeamState> readTeams(String gameId);
 
-	public Team readTeam(String gameId, String teamId);
+	public TeamState readTeam(String gameId, String teamId);
 
-	public List<Team> readTeams(String gameId, String playerId);
+	public List<TeamState> readTeams(String gameId, String playerId);
 
-	public Team addToTeam(String gameId, String teamId, String playerId);
+	public TeamState addToTeam(String gameId, String teamId, String playerId);
 
-	public Team removeFromTeam(String gameId, String teamId, String playerId);
+	public TeamState removeFromTeam(String gameId, String teamId, String playerId);
 
 }

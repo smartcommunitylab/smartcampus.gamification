@@ -6,7 +6,7 @@ global Integer steps_per_100m;
 rule "R1-update individual steps"
 when // here we need to understand better how InputData will be structured
     Action(id == "increase_score")
-    $inputData: InputData( $distance : data["meters-walked"])
+    InputData( $distance : data["meters-walked"] != null)
     $pc : PointConcept(name == "steps")
     Player($playerId: id)
 then
@@ -16,15 +16,14 @@ then
     log("Player " +$playerId + " increases of "+steps+" steps");
     update($pc);
     // here generate the internal event with two parameters: $playerId and $distance (to fire R2)
-    insert(new UpdateTeam($playerId,$inputData));
+    insert(new UpdateTeam());
 end
 
 
 rule "R2-propagation to team"
 when
-   	Updating()
-    Team($playerId: playerId)
-    $inputData: InputData( $distance : data["meters-walked"])
+    Member($distance : inputData["meters-walked"] != null)
+    Player($playerId : id, team == true)
     $pc : PointConcept(name == "steps")
 then
     log("apply \'R2\'");
@@ -33,7 +32,7 @@ then
     log("Team " +$playerId + " increases of "+steps+" steps");  
     update($pc);
 end
-
+/*
 rule "R3-update team rule"
 when
 	  not Updating()
@@ -48,3 +47,4 @@ then
     log("Team " +$playerId + " increases of "+steps+" steps");
     update($pc);
 end
+*/

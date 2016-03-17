@@ -27,6 +27,10 @@ query "getUpdateTeam"
 	$data: UpdateTeam()
 end
 
+query "getUpdateMembers"
+	$data: UpdateMembers()
+end
+
 // ****************************************** global functions 	
 
 function void log(String msg) {

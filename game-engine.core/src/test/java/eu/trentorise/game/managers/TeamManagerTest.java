@@ -15,7 +15,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
@@ -41,7 +41,7 @@ public class TeamManagerTest {
 
 	@Test
 	public void createTeam() {
-		Team t = new Team("game1", "team1");
+		TeamState t = new TeamState("game1", "team1");
 		t.setName("muppet");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 
@@ -52,7 +52,7 @@ public class TeamManagerTest {
 
 	@Test
 	public void readAndDeleteTeams() {
-		Team t = new Team("game1", "team1");
+		TeamState t = new TeamState("game1", "team1");
 		t.setName("muppet");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		playerSrv.saveTeam(t);
@@ -64,7 +64,7 @@ public class TeamManagerTest {
 		Assert.assertEquals(1, playerSrv.readTeams("game1").size());
 		Assert.assertEquals(4, playerSrv.readPlayers("game1").size());
 
-		t = new Team("game2", "team2");
+		t = new TeamState("game2", "team2");
 		t.setName("muppet1");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		playerSrv.saveTeam(t);
@@ -72,7 +72,7 @@ public class TeamManagerTest {
 		Assert.assertEquals(1, playerSrv.readTeams("game1").size());
 		Assert.assertEquals(4, playerSrv.readPlayers("game1").size());
 
-		t = new Team("game1", "team2");
+		t = new TeamState("game1", "team2");
 		t.setName("muppet1");
 		t.setMembers(Arrays.asList("12", "dsadfaf0", "388fjjs"));
 		t = playerSrv.saveTeam(t);
@@ -91,19 +91,19 @@ public class TeamManagerTest {
 		PlayerState me = new PlayerState("game1", "p1");
 		playerSrv.saveState(me);
 
-		Team t = new Team("game1", "t1");
+		TeamState t = new TeamState("game1", "t1");
 		t.getMembers().add("p1");
 		t.setName("team1");
 		playerSrv.saveTeam(t);
 
-		t = new Team("game1", "t2");
+		t = new TeamState("game1", "t2");
 		t.getMembers().add("p1");
 		t.getMembers().add("p13");
 		t.getMembers().add("p21");
 		t.setName("team2");
 		playerSrv.saveTeam(t);
 
-		t = new Team("game1", "t3");
+		t = new TeamState("game1", "t3");
 		t.getMembers().add("p211");
 		t.setName("team3");
 		playerSrv.saveTeam(t);
@@ -113,7 +113,7 @@ public class TeamManagerTest {
 
 	@Test
 	public void membership() {
-		Team t = new Team("game1", "t1");
+		TeamState t = new TeamState("game1", "t1");
 		t.getMembers().add("p1");
 		t.setName("team1");
 		playerSrv.saveTeam(t);

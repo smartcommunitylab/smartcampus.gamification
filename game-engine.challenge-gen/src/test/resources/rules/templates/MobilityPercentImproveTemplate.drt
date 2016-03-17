@@ -38,7 +38,7 @@ rule "ch_@{ch_ID}_trace"
 no_loop
 when 
 	InputData($distance: data["@{ch_mode}"] != null)
-	$c: CustomData($now: System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, $counter : this['ch_@{ch_ID}_Km_walked_during_challenge'])
+	$c: CustomData($now: System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, $counter : this['ch_@{ch_ID}_Km_traveled_during_challenge'])
 	Player(id == "@{ch_player}") 
 then
 	if($counter == null) {

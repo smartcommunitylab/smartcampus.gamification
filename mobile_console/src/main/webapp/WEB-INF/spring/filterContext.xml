@@ -73,7 +73,7 @@
 		
 <!-- 	</sec:http> -->
 	
-	<!-- MyWeb Portal login configuration -->
+	<!-- Game Portal login configuration -->
 	<sec:http pattern="/**" disable-url-rewriting="true" auto-config="false">
 	    <sec:intercept-url pattern="/prelogin" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 	    <sec:intercept-url pattern="/cookie_info" access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -87,7 +87,7 @@
 <!-- 	 JSESSIONID,open_id_session_id,vasdevgoogle  -->
 	</sec:http>
 
-	<!-- MyWeb Portal authentication manager with oauth -->
+	<!-- Game Portal authentication manager with oauth -->
 	<bean id="forbEntryPoint"
 		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint">
 	</bean>

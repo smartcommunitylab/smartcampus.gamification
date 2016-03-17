@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,11 +57,14 @@ import eu.trentorise.game.model.Action;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.InputData;
+import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Team;
+import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.UpdateMembers;
 import eu.trentorise.game.model.UpdateTeam;
-import eu.trentorise.game.model.Updating;
+import eu.trentorise.game.model.Propagation;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.FSRule;
@@ -126,11 +128,8 @@ public class DroolsEngine implements GameEngine {
 
 		cmds.add(CommandFactory.newInsert(new Game(gameId)));
 
-		if (state instanceof Team) {
-			cmds.add(CommandFactory.newInsert((Team) state));
-		} else {
-			cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId())));
-		}
+		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId(),
+				state instanceof TeamState)));
 
 		cmds.add(CommandFactory.newInsertElements(state.getState()));
 		cmds.add(CommandFactory.newInsert(state.getCustomData()));
@@ -142,6 +141,8 @@ public class DroolsEngine implements GameEngine {
 				"getNotifications"));
 		cmds.add(CommandFactory.newQuery("retrieveCustomData", "getCustomData"));
 		cmds.add(CommandFactory.newQuery("retrieveUpdateTeam", "getUpdateTeam"));
+		cmds.add(CommandFactory.newQuery("retrieveUpdateMembers",
+				"getUpdateMembers"));
 
 		kSession = loadGameConstants(kSession, gameId);
 
@@ -176,22 +177,48 @@ public class DroolsEngine implements GameEngine {
 
 		iter = ((QueryResults) results.getValue("retrieveUpdateTeam"))
 				.iterator();
-		while (iter.hasNext()) {
-			UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
 
-			List<Team> playerTeams = playerSrv.readTeams(gameId,
-					updateCalls.getPlayerId());
-			logger.info("Player {} belongs to {} teams", updateCalls
-					.getPlayerId(), playerTeams.size(), updateCalls
-					.getInputData().getData());
+		if (iter.hasNext()) {
+			Set<Object> facts = new HashSet<>();
+			while (iter.hasNext()) {
+				UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
+				facts.add(new Propagation(updateCalls.getPropagationAction()));
+			}
+
+			List<TeamState> playerTeams = playerSrv.readTeams(gameId,
+					state.getPlayerId());
+			logger.info("Player {} belongs to {} teams", state.getPlayerId(),
+					playerTeams.size());
 			if (playerTeams.size() > 0) {
-				logger.info("call for update with data {}", updateCalls
-						.getInputData().getData());
+				logger.info("call for update with data {}", data);
 			}
-			for (Team team : playerTeams) {
-				workflow.apply(gameId, action, team.getPlayerId(), data,
-						Arrays.<Object> asList(new Updating()));
+
+			facts.add(new Member(state.getPlayerId(), data));
+			for (TeamState team : playerTeams) {
+				workflow.apply(gameId, action, team.getPlayerId(), null,
+						new ArrayList<>(facts));
 			}
+		}
+		iter = ((QueryResults) results.getValue("retrieveUpdateMembers"))
+				.iterator();
+		if (iter.hasNext()) {
+			Set<Object> facts = new HashSet<>();
+			while (iter.hasNext()) {
+				UpdateMembers updateCalls = (UpdateMembers) iter.next().get(
+						"$data");
+				facts.add(new Propagation(updateCalls.getPropagationAction()));
+			}
+			// check if a propagation to team members is needed
+			TeamState team = playerSrv.readTeam(gameId, state.getPlayerId());
+			List<String> members = team.getMembers();
+			facts.add(new Team(state.getPlayerId(), data));
+			logger.info("Team {} has {} members", state.getPlayerId(),
+					members.size());
+			for (String member : members) {
+				workflow.apply(gameId, action, member, null, new ArrayList<>(
+						facts));
+			}
+
 		}
 
 		state.setState(newState);

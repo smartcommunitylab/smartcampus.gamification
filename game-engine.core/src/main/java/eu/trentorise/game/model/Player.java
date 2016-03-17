@@ -18,9 +18,15 @@ package eu.trentorise.game.model;
 
 public class Player {
 	private String id;
+	private boolean team = false;
 
 	public Player(String id) {
 		this.id = id;
+	}
+
+	public Player(String id, boolean isTeam) {
+		this.id = id;
+		this.team = isTeam;
 	}
 
 	public String getId() {
@@ -29,6 +35,14 @@ public class Player {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public boolean isTeam() {
+		return team;
+	}
+
+	public void setTeam(boolean isTeam) {
+		this.team = isTeam;
 	}
 
 }

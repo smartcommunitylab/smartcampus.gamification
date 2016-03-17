@@ -64,7 +64,9 @@ public final class ChallengeRulesLoader {
 		} else if (tc.getCellType() == Cell.CELL_TYPE_STRING) {
 		    crr.setTarget(tc.getStringCellValue());
 		}
-		crr.setBonus(row.getCell(3).getNumericCellValue());
+		Integer bonus = (int) Math.round(row.getCell(3)
+			.getNumericCellValue());
+		crr.setBonus(bonus);
 		crr.setPointType(row.getCell(4).getStringCellValue());
 		crr.setSelectionCriteria(row.getCell(6).getStringCellValue());
 		response.getChallenges().add(crr);

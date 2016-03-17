@@ -7,7 +7,7 @@ public class ChallengeRuleRow {
     private Object target;
     private String pointType;
     private String selectionCriteria;
-    private Double bonus;
+    private Integer bonus;
 
     public String getType() {
 	return type;
@@ -49,11 +49,11 @@ public class ChallengeRuleRow {
 	this.selectionCriteria = selectionCriteria;
     }
 
-    public void setBonus(Double bonus) {
+    public void setBonus(Integer bonus) {
 	this.bonus = bonus;
     }
 
-    public Double getBonus() {
+    public Integer getBonus() {
 	return bonus;
     }
 

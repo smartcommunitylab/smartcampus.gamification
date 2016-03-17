@@ -13,6 +13,8 @@ import eu.trentorise.game.challenges.util.ChallengeFactory;
 public class FactoryTest {
     private ChallengeFactory chFactory;
 
+    private final String testUserId = "999";
+
     @Test
     public void buildChallenges() {
 	// simulates Factory client
@@ -30,7 +32,7 @@ public class FactoryTest {
 	    params.put("point_type", "green leaves");
 	    params.put("baseline", new Double(100.0));
 	    c.setTemplateParams(params);
-	    c.compileChallenge();
+	    c.compileChallenge(testUserId);
 	} catch (UndefinedChallengeException uce) {
 	    uce.printStackTrace();
 	}
@@ -51,7 +53,7 @@ public class FactoryTest {
 	    params.put("bonus", new Integer(50));
 	    params.put("point_type", "green leaves");
 	    c.setTemplateParams(params);
-	    c.compileChallenge();
+	    c.compileChallenge(testUserId);
 	} catch (UndefinedChallengeException uce) {
 	    // TODO Auto-generated catch block
 	    uce.printStackTrace();
@@ -72,7 +74,7 @@ public class FactoryTest {
 	    params.put("bonus", new Integer(50));
 	    params.put("point_type", "green leaves");
 	    c.setTemplateParams(params);
-	    c.compileChallenge();
+	    c.compileChallenge(testUserId);
 	} catch (UndefinedChallengeException uce) {
 	    // TODO Auto-generated catch block
 	    uce.printStackTrace();
@@ -92,7 +94,7 @@ public class FactoryTest {
 	    params.put("point_type", "green leaves");
 	    params.put("bonus", new Integer(50));
 	    c.setTemplateParams(params);
-	    c.compileChallenge();
+	    c.compileChallenge(testUserId);
 	} catch (UndefinedChallengeException uce) {
 	    // TODO Auto-generated catch block
 	    uce.printStackTrace();

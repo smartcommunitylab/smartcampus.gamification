@@ -1,8 +1,6 @@
 package eu.trentorise.game.challenges;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import eu.trentorise.game.challenges.exception.UndefinedChallengeException;
@@ -69,40 +67,18 @@ public class PercentMobilityChallenge extends Challenge {
     }
 
     @Override
-    public void compileChallenge() throws UndefinedChallengeException {
+    public void compileChallenge(String playerId)
+	    throws UndefinedChallengeException {
 	if (mode == null || prize == null || percent <= 0 || baseline <= 0)
 	    throw new UndefinedChallengeException("undefined challenge!");
 
-	// here find the players affected by this one challenge
-	players = selectPlayers(getAllPlayers());
-	if (players.isEmpty())
-	    return;
-
-	for (Object o : players) {
-	    templateParams.put("ch_player", o.toString());
-	    try {
-		generatedRules += generateRules(locateTemplate());
-	    } catch (IOException ioe) {
-		throw new UndefinedChallengeException(
-			"challenge cannot be compiled for user " + o.toString());
-	    }
-	    return;
+	templateParams.put("ch_player", playerId);
+	try {
+	    generatedRules += generateRules(locateTemplate());
+	} catch (IOException ioe) {
+	    throw new UndefinedChallengeException(
+		    "challenge cannot be compiled for user " + playerId);
 	}
-    }
-
-    /*
-     * TODO: this is a stub method to be replaced with a query to GE
-     */
-    private Collection<Object> getAllPlayers() {
-	ArrayList<Object> p = new ArrayList<Object>();
-	p.add(new Object());
-	return p;
-    }
-
-    /*
-     * TODO: this is a stub method to be replaced by an algo that filters over p
-     */
-    private Collection<Object> selectPlayers(Collection<Object> p) {
-	return p;
+	return;
     }
 }

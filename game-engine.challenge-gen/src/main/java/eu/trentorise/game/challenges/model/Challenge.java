@@ -27,7 +27,8 @@ public abstract class Challenge {
     protected HashMap<String, Object> customData = null;
     protected String generatedRules = "";
 
-    public abstract void compileChallenge() throws UndefinedChallengeException;
+    public abstract void compileChallenge(String playerId)
+	    throws UndefinedChallengeException;
 
     public abstract void setTemplateParams(HashMap<String, Object> tp)
 	    throws UndefinedChallengeException;

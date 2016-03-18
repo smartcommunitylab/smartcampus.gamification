@@ -9,7 +9,7 @@ GREEN WEEK CLASSIFICATION
 *************************************************************************** */
 rule "week classification badge green"
 	salience -1000
-when
+when	
     Classification( name == 'week classification green', position == 1)
     Game( $gameId: id)
     Player( $playerId : id)

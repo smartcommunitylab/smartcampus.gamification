@@ -46,7 +46,7 @@ public class GenerationTest {
 
 	// get users from gamification engine
 	// TODO paginazione risultati da gamification engine
-	Paginator users = facade.gameState("56e7bf3b570ac89331c37262");
+	Paginator users = facade.readGameState("56e7bf3b570ac89331c37262");
 
 	// generate challenges
 	Matcher matcher = new Matcher(result.getChallenges().get(0));
@@ -65,7 +65,7 @@ public class GenerationTest {
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 
 	// get users from gamification engine
-	Paginator users = facade.gameState("56e7bf3b570ac89331c37262");
+	Paginator users = facade.readGameState("56e7bf3b570ac89331c37262");
 
 	StringBuffer buffer;
 	// generate challenges

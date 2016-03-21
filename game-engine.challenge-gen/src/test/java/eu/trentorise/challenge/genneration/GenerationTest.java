@@ -1,4 +1,4 @@
-package eu.trentorise.challenge.genenration;
+package eu.trentorise.challenge.genneration;
 
 import static org.junit.Assert.assertTrue;
 

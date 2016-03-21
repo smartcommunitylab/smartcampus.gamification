@@ -124,7 +124,12 @@ public class GenerationTest {
 	    rule.setName(challengeSpec.getName());
 	    // insert rule
 	    RuleDto insertedRule = insertFacade.insertGameRule(GAMEID, rule);
-	    assertTrue(!insertedRule.getId().isEmpty());
+	    if (insertedRule != null) {
+		logger.debug("Inserted rule ");
+		assertTrue(!insertedRule.getId().isEmpty());
+	    } else {
+		logger.error("Error during insertion of rules");
+	    }
 
 	}
     }

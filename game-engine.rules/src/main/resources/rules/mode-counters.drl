@@ -10,7 +10,7 @@ when
 	InputData($reset : data["reset"] != null, $reset == true)
 	$c : CustomData()
 then
-	log("resetting all past counters to 0");
+	log("resetting all past (i.e. periodic) counters to 0");
 	
 	$c.put("walk_km_past", (Double) 0.0);
 	$c.put("bike_km_past", (Double) 0.0);
@@ -25,9 +25,31 @@ then
 	$c.put("bus_trips_past", 0);
 	$c.put("train_trips_past", 0);
 	$c.put("car_trips_past", 0);
+	$c.put("zero_impact_trips_past", 0);
 	$c.put("gp_current",0l);
 	
 	update($c);
+end
+
+rule " 0-impact update counters"
+lock-on-active
+when
+	InputData (($walk : data["walkDistance"] != null || $bike : data["bikeDistance"] != null) &&
+		($bus : data["busDistance"] == null || ((Double)$bus)==0) && 
+		($train : data["trainDistance"] == null || ((Double)$train)==0) &&
+		($car : data["carDistance"]==null || ((Double)$car)==0))
+		$c : CustomData($counterZeroPast : this["zero_impact_trips_past"], $counterZero : this["zero_impact_trips"])
+then
+		log("apply \'0-impact update counters\'");
+		if ($counterZeroPast == null)
+			$c.put("zero_impact_trips_past", 1);
+		else 
+			$c.put("zero_impact_trips_past", (Integer) $counterZeroPast + 1);
+		if ($counterZero == null)
+			$c.put("zero_impact_trips", 1);
+		else 
+			$c.put("zero_impact_trips", (Integer) $counterZeroPast + 1);
+		update ($c);
 end
 
 rule "update walk counters"

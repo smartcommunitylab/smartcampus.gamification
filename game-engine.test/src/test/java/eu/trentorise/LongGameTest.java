@@ -45,7 +45,7 @@ public class LongGameTest extends GameTest {
 		String rootProjFolder = new File(System.getProperty("user.dir"))
 				.getParent();
 		String pathGame = rootProjFolder
-				+ "/game-engine.games/rovereto-longgame";
+				+ "/game-engine.rules/src/main/resources/rules";
 
 		loadFilesystemRules(GAME, Arrays.asList(pathGame + "/constants",
 				pathGame + "/greenBadges.drl", 
@@ -143,6 +143,8 @@ public class LongGameTest extends GameTest {
 		Assert.assertEquals(2, s.getCustomData().get("car_trips"));
 		Assert.assertEquals(2, s.getCustomData().get("bus_trips"));
 		Assert.assertEquals(2, s.getCustomData().get("train_trips"));
+		Assert.assertEquals(5, s.getCustomData().get("zero_impact_trips"));
+
 
 		// Check period counters for Km
 		Assert.assertEquals(2.3d, s.getCustomData().get("walk_km_past"));
@@ -159,6 +161,7 @@ public class LongGameTest extends GameTest {
 		Assert.assertEquals(1, s.getCustomData().get("car_trips_past"));
 		Assert.assertEquals(1, s.getCustomData().get("bus_trips_past"));
 		Assert.assertEquals(1, s.getCustomData().get("train_trips_past"));
+		Assert.assertEquals(0, s.getCustomData().get("zero_impact_trips_past"));
 
 	}
 }

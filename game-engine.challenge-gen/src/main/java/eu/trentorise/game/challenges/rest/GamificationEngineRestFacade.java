@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class GamificationEngineRestFacade {
 
+    private static final String RULE_PREFIX = "db://";
+
     private static final Logger logger = LogManager
 	    .getLogger(GamificationEngineRestFacade.class);
 
@@ -104,7 +106,7 @@ public class GamificationEngineRestFacade {
 	if (gameId == null || ruleId == null) {
 	    throw new IllegalArgumentException("input cannot be null");
 	}
-	String ruleUrl = StringUtils.removeStart(ruleId, "db://");
+	String ruleUrl = StringUtils.removeStart(ruleId, RULE_PREFIX);
 	WebTarget target = createEndpoint().path(GAME).path(gameId).path(RULE)
 		.path(DB).path(ruleUrl);
 	Response response = target.request().delete();

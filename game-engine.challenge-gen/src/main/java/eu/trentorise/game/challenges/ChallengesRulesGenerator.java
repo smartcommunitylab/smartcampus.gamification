@@ -1,5 +1,8 @@
 package eu.trentorise.game.challenges;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +60,34 @@ public class ChallengesRulesGenerator {
 	    c.compileChallenge(user.getPlayerId());
 	    buffer.append(c.getGeneratedRules());
 	}
+	// remove package declaration after first
+	// TODO: we have to find a better way to fix this
+	String temp = buffer.toString();
+	buffer = new StringBuffer();
+	boolean remove = false;
+	try {
+	    BufferedReader rdr = new BufferedReader(new StringReader(temp));
+	    for (String line = rdr.readLine(); line != null; line = rdr
+		    .readLine()) {
+		if (line.startsWith("package") && !remove) {
+		    remove = true;
+		    buffer.append(line).append(
+			    System.getProperty("line.separator"));
+
+		} else if (line.startsWith("package") && remove) {
+		    // do nothing
+		    System.out.println();
+		} else {
+		    buffer.append(line).append(
+			    System.getProperty("line.separator"));
+
+		}
+	    }
+	    rdr.close();
+	} catch (IOException e) {
+	    // TODO log
+	}
+	// lines now contains all the strings between line breaks
 	return buffer.toString();
     }
-
 }

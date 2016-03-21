@@ -39,6 +39,7 @@ when
 then
 	$pc.setScore($pc.getScore() + (Integer) $c.get("ch_@{ch_ID}_bonus"));
 	$c.put("ch_@{ch_ID}_success",true);
+	insert(new PointDelta((Integer)$c.get("ch_@{ch_ID}_bonus"),"green leaves"));
 	log('ch_@{ch_ID} success');
 	update($pc); 
 end

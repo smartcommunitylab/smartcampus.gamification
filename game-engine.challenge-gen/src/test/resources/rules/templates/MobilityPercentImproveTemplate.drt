@@ -35,7 +35,7 @@ CustomData to have   []=used by
 template MobilityPercentImproveTemplate
 
 rule "ch_@{ch_ID}_trace"
-no_loop
+no-loop
 when 
 	InputData($distance: data["@{ch_mode}"] != null)
 	$c: CustomData($now: System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, $counter : this['ch_@{ch_ID}_Km_traveled_during_challenge'])
@@ -44,7 +44,7 @@ then
 	if($counter == null) {
 		$c.put('ch_@{ch_ID}_Km_traveled_during_challenge',(Double) $distance);	
 	}else {
-		$c.put('ch_@{ch_ID}_Km_traveled_during_challenge', $counter + (Double) $distance);
+		$c.put('ch_@{ch_ID}_Km_traveled_during_challenge', (Double)$counter + (Double) $distance);
 	}
 	log('ch_@{ch_ID} update');
 	update($c); 
@@ -56,8 +56,9 @@ when
 	$c: CustomData($now: System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, this['ch_@{ch_ID}_Km_traveled_during_challenge'] >= this['ch_@{ch_ID}_target'], this['ch_@{ch_ID}_success'] == false)
 	$pc : PointConcept(name == "@{ch_point_type}")
 then
-	$pc.setScore($pc.getScore() + (Integer)$c.get("ch_@{ch_ID}_bonus");
+	$pc.setScore($pc.getScore() + (Integer)$c.get("ch_@{ch_ID}_bonus"));
 	$c.put('ch_@{ch_ID}_success',true);
+	insert(new PointDelta((Integer)$c.get("ch_@{ch_ID}_bonus"),"green leaves")); 
 	log('ch_@{ch_ID} successful');
 	update($pc); 
 end

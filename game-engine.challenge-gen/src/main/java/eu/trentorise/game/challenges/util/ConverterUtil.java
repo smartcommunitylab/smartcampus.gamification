@@ -58,14 +58,13 @@ public final class ConverterUtil {
 		}
 		if (leg.getTransport().getType().equals(TType.BICYCLE)) {
 		    bikeDist += leg.getLength() / 1000;
-		    if (leg.getFrom().getStopId() != null) {
-			bikeSharing = true;
-			startBikesharingName = leg.getFrom().getStopId()
-				.getId();
-		    }
-		    if (leg.getTo().getStopId() != null) {
-			bikeSharing = true;
-			endBikesharingName = leg.getTo().getStopId().getId();
+		    if (leg.getTransport().getAgencyId().equals("BIKE_SHARING_TOBIKE_ROVERETO")) { 
+		    	//used a bikeshare vehicle
+		    	bikeSharing = true;
+		    	if (leg.getFrom() != null && leg.getFrom().getStopId() != null) 
+		    		startBikesharingName = leg.getFrom().getStopId().getId();
+		    	if (leg.getTo() != null && leg.getTo().getStopId() != null) 
+		    		endBikesharingName = leg.getTo().getStopId().getId();
 		    }
 		}
 		if (leg.getTransport().getType().equals(TType.WALK)) {
@@ -154,6 +153,8 @@ public final class ConverterUtil {
 	    leg.setTransport(transport);
 	    Position to = buildPosition((Map) map.get("to"));
 	    leg.setTo(to);
+	    Position from = buildPosition((Map) map.get("from"));
+	    leg.setFrom(from);
 	    leg.setLength((Double) map.get("length"));
 	    legs.add(leg);
 	}

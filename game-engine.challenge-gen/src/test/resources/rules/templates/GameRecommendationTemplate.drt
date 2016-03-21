@@ -54,9 +54,10 @@ when
 	$c : CustomData($now : System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, this['ch_@{ch_ID}_recommendations_sent_during_challenges'] >= this['ch_@{ch_ID}_target'], this['ch_@{ch_ID}_success'] == false)
 	$pc : PointConcept(name == '@{ch_point_type}')
 then
-	$pc.setScore($pc.getScore() + (Integer)$c.get("ch_@{ch_ID}_bonus");
+	$pc.setScore($pc.getScore() + (Integer)$c.get("ch_@{ch_ID}_bonus"));
 	log('ch_@{ch_ID} success');
 	$c.put("ch_@{ch_ID}_success",true);
+	insert(new PointDelta((Integer)$c.get("ch_@{ch_ID}_bonus"),"green leaves"));
 	update($pc); 
 end
 

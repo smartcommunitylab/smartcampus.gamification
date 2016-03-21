@@ -23,7 +23,7 @@ public class RestTest {
     private final static String HOST = "http://localhost:8080/gamification/";
     private final static String CONTEXT = "gengine/";
     private final static String INSERT_CONTEXT = "console/";
-    private static final String GAMEID = "56e7bf3b570ac89331c37262";
+    private static final String GAMEID = "56cc77737d847cb2a12ea89b";
 
     @Test
     public void gameReadGameStateTest() {
@@ -45,8 +45,8 @@ public class RestTest {
 	RuleDto result = facade.insertGameRule(GAMEID, rule);
 	assertTrue(!result.getId().isEmpty());
 	// delete inserted rule
-	boolean res = facade.deleteGameRule(GAMEID, result.getId());
-	assertTrue(res);
+//	boolean res = facade.deleteGameRule(GAMEID, result.getId());
+//	assertTrue(res);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class RestTest {
 	GamificationEngineRestFacade facade = new GamificationEngineRestFacade(
 		HOST + CONTEXT);
 	// create input
-	String ref = "savedtrips1.json";
+	String ref = "testTrips129.json";
 	// read all lines from file
 	List<String> lines = IOUtils.readLines(Thread.currentThread()
 		.getContextClassLoader().getResourceAsStream(ref));

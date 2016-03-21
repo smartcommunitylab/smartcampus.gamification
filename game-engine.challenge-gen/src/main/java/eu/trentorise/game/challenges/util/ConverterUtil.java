@@ -93,7 +93,7 @@ public final class ConverterUtil {
 	    score += ((trainDist > 0 && trainDist < 10) ? 10
 		    : (trainDist >= 10 && trainDist < 20) ? 20 : 30);
 	}
-	// score += (itinerary.isPromoted() ? 5 : 0);
+	score += (itinerary.isPromoted() ? 5 : 0);
 
 	if (bikeDist > 0)
 	    data.put("bikeDistance", bikeDist);
@@ -111,7 +111,7 @@ public final class ConverterUtil {
 	    data.put("park", parkName);
 	if (pnr)
 	    data.put("p+r", pnr);
-	// data.put("sustainable", itinerary.isPromoted());
+	data.put("sustainable", itinerary.isPromoted());
 	data.put("estimatedScore", score.longValue());
 
 	return data;
@@ -142,6 +142,7 @@ public final class ConverterUtil {
 	Integer walkingDuration = JsonPath.read(document,
 		"$.data.data.walkingDuration");
 	Position to = new Position(latlon);
+	boolean isPromoted = false;
 	// set data
 	Itinerary it = new Itinerary();
 	it.setLeg(legs);
@@ -150,7 +151,8 @@ public final class ConverterUtil {
 	it.setFrom(from);
 	it.setTo(to);
 	it.setWalkingDuration(walkingDuration);
-
+	isPromoted = JsonPath.read(document, "$.data.data.promoted");
+	it.setPromoted(isPromoted);
 	Map<String, Object> data = ConverterUtil
 		.convertFromSmartPlannerToPlayerGameState(it);
 

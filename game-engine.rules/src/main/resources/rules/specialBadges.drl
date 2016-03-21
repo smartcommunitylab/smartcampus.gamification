@@ -94,7 +94,34 @@ end
 /* ***************************************************************************
 BIKE SHARING PIONEER COLLECTION  
 *************************************************************************** */
+rule "bike sharing pioneer badge start"
+	salience -1000
+when
+    InputData( $startBS : data['startBike'] != null)
+    $bc : BadgeCollectionConcept(name == "bike sharing pioneer", badgeEarned not contains ($startBS+'_BSstation'))
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply  \'"+$startBS+"_BSstation badge\'");
+	$bc.getBadgeEarned().add((String) $startBS+'_BSstation');
+	insert( new BadgeNotification($gameId,$playerId,$startBS+'_BSstation'));
+	update( $bc );
+end
 
+
+rule "bike sharing pioneer badge end"
+	salience -1000
+when
+    InputData( $endBS : data['endBike'] != null)
+    $bc : BadgeCollectionConcept(name == "bike sharing pioneer", badgeEarned not contains ($endBS+'_BSstation'))
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	log("apply  \'"+$endBS+"_BSstation badge\'");
+	$bc.getBadgeEarned().add((String) $endBS+'_BSstation');
+	insert( new BadgeNotification($gameId,$playerId,$endBS+'_BSstation'));
+	update( $bc );
+end
 
 
 /* ***************************************************************************
@@ -204,18 +231,88 @@ end
 
 /* ***************************************************************************
 IMPACT 0
-  
-rule "zero impact badge"
+*************************************************************************** */ 
+rule "1 trip impact0"
 	salience -1000
 when
-    InputData((data['walkDistance'] != null || data['bikeDistance'] != null) && ((data['busDistance'] == null || data['busDistance'] == 0) &&  (data['carDistance'] == null || data['carDistance'] == 0)))
-    $bc : BadgeCollectionConcept(name == "special", badgeEarned not contains 'zero_impact')
+	$c : CustomData($counterTrips : this["zero_impact_trips"], $counterTrips != null)
+    $bc : BadgeCollectionConcept(name == "sustainable life", badgeEarned not contains '1_zero_impact_trip')
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'zero_impact badge\'");
-	$bc.getBadgeEarned().add('zero_impact');
-	insert( new BadgeNotification($gameId,$playerId,'zero_impact'));
-	update( $bc );
+	if ((Integer)$counterTrips >= 1) {
+		log("apply \'1_zero_impact_trip\'");
+		$bc.getBadgeEarned().add('1_zero_impact_trip');
+		insert( new BadgeNotification($gameId,$playerId,'1_zero_impact_trip'));
+		update( $bc );
+	}
 end
-*************************************************************************** */
+
+
+rule "5 trip impact0"
+	salience -1000
+when
+	$c : CustomData($counterTrips : this["zero_impact_trips"], $counterTrips != null)
+    $bc : BadgeCollectionConcept(name == "sustainable life", badgeEarned not contains '5_zero_impact_trip')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counterTrips >= 5) {
+		log("apply \'5_zero_impact_trip\'");
+		$bc.getBadgeEarned().add('5_zero_impact_trip');
+		insert( new BadgeNotification($gameId,$playerId,'5_zero_impact_trip'));
+		update( $bc );
+	}
+end
+
+
+rule "10 trip impact0"
+	salience -1000
+when
+	$c : CustomData($counterTrips : this["zero_impact_trips"], $counterTrips != null)
+    $bc : BadgeCollectionConcept(name == "sustainable life", badgeEarned not contains '10_zero_impact_trip')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counterTrips >= 10) {
+		log("apply \'10_zero_impact_trip\'");
+		$bc.getBadgeEarned().add('10_zero_impact_trip');
+		insert( new BadgeNotification($gameId,$playerId,'10_zero_impact_trip'));
+		update( $bc );
+	}
+end
+
+rule "25 trip impact0"
+	salience -1000
+when
+	$c : CustomData($counterTrips : this["zero_impact_trips"], $counterTrips != null)
+    $bc : BadgeCollectionConcept(name == "sustainable life", badgeEarned not contains '25_zero_impact_trip')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counterTrips >= 25) {
+		log("apply \'25_zero_impact_trip\'");
+		$bc.getBadgeEarned().add('25_zero_impact_trip');
+		insert( new BadgeNotification($gameId,$playerId,'25_zero_impact_trip'));
+		update( $bc );
+	}
+end
+
+
+rule "50 trip impact0"
+	salience -1000
+when
+	$c : CustomData($counterTrips : this["zero_impact_trips"], $counterTrips != null)
+    $bc : BadgeCollectionConcept(name == "sustainable life", badgeEarned not contains '50_zero_impact_trip')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counterTrips >= 50) {
+		log("apply \'50_zero_impact_trip\'");
+		$bc.getBadgeEarned().add('50_zero_impact_trip');
+		insert( new BadgeNotification($gameId,$playerId,'50_zero_impact_trip'));
+		update( $bc );
+	}
+end
+
+// ***************************************************************************

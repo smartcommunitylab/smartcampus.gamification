@@ -19,12 +19,16 @@ import org.apache.logging.log4j.Logger;
  */
 public class GamificationEngineRestFacade {
 
-    private static final String STATE = "state";
-    private static final String GAME = "game";
+    private static final String RULE_PREFIX = "db://";
+
     private static final Logger logger = LogManager
 	    .getLogger(GamificationEngineRestFacade.class);
+
+    private static final String STATE = "state";
+    private static final String GAME = "game";
     private static final String RULE = "rule";
     private static final String DB = "db";
+    private static final String EXECUTE = "execute";
 
     private final String endpoint;
 
@@ -58,13 +62,10 @@ public class GamificationEngineRestFacade {
 	WebTarget target = createEndpoint().path(STATE).path(gameId);
 	Paginator response = target.request().get(Paginator.class);
 	if (response != null) {
-	    logger.error("response code: ");
 	    return response;
-	} else {
-	    logger.error("response code: ");
-	    return null;
 	}
-
+	logger.error("error in reading game state");
+	return null;
     }
 
     /**
@@ -85,29 +86,49 @@ public class GamificationEngineRestFacade {
 	Response response = target.request().post(Entity.json(rule));
 
 	if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-	    logger.error("response code: " + response.getStatus());
+	    logger.debug("response code: " + response.getStatus());
 	    return response.readEntity(RuleDto.class);
-	} else {
-	    logger.error("response code: " + response.getStatus());
-	    return null;
 	}
+	logger.error("response code: " + response.getStatus());
+	return null;
     }
 
-    public boolean deleteGameRule(String gameId, String id) {
-	if (gameId == null || id == null) {
+    /**
+     * Delete rule from game
+     * 
+     * @param gameId
+     *            - unique id for game
+     * @param ruleId
+     *            - unique id for rule
+     * @return
+     */
+    public boolean deleteGameRule(String gameId, String ruleId) {
+	if (gameId == null || ruleId == null) {
 	    throw new IllegalArgumentException("input cannot be null");
 	}
-	String ruleUrl = StringUtils.removeStart(id, "db://");
+	String ruleUrl = StringUtils.removeStart(ruleId, RULE_PREFIX);
 	WebTarget target = createEndpoint().path(GAME).path(gameId).path(RULE)
 		.path(DB).path(ruleUrl);
 	Response response = target.request().delete();
 	if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-	    logger.error("response code: " + response.getStatus());
+	    logger.debug("response code: " + response.getStatus());
 	    return true;
-	} else {
-	    logger.error("response code: " + response.getStatus());
-	    return false;
 	}
+	logger.error("response code: " + response.getStatus());
+	return false;
+    }
 
+    public boolean saveItinerary(ExecutionDataDTO input) {
+	if (input == null) {
+	    throw new IllegalArgumentException("input cannot be null");
+	}
+	WebTarget target = createEndpoint().path(EXECUTE);
+	Response response = target.request().post(Entity.json(input));
+	if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+	    logger.debug("response code: " + response.getStatus());
+	    return true;
+	}
+	logger.error("response code: " + response.getStatus());
+	return false;
     }
 }

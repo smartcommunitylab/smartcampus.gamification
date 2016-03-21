@@ -2,6 +2,7 @@ package eu.trentorise.game.challenges;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import eu.trentorise.game.challenges.exception.UndefinedChallengeException;
 import eu.trentorise.game.challenges.model.Challenge;
@@ -19,7 +20,7 @@ public class RecommendationChallenge extends Challenge {
     }
 
     @Override
-    public void setTemplateParams(HashMap<String, Object> tp)
+    public void setTemplateParams(Map<String, Object> tp)
 	    throws UndefinedChallengeException {
 	templateParams = new HashMap<String, Object>();
 	templateParams.put("ch_ID", this.chId);
@@ -33,7 +34,7 @@ public class RecommendationChallenge extends Challenge {
     }
 
     @Override
-    protected void setCustomData(HashMap<String, Object> tp)
+    protected void setCustomData(Map<String, Object> tp)
 	    throws UndefinedChallengeException {
 	super.setCustomData(tp);
 

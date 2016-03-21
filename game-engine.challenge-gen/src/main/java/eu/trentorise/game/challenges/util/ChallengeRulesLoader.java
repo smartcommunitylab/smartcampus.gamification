@@ -56,19 +56,20 @@ public final class ChallengeRulesLoader {
 	    while (iter.hasNext()) {
 		row = iter.next();
 		ChallengeRuleRow crr = new ChallengeRuleRow();
-		crr.setType(row.getCell(0).getStringCellValue());
-		crr.setGoalType(row.getCell(1).getStringCellValue());
-		Cell tc = row.getCell(2);
+		crr.setName(row.getCell(0).getStringCellValue());
+		crr.setType(row.getCell(1).getStringCellValue());
+		crr.setGoalType(row.getCell(2).getStringCellValue());
+		Cell tc = row.getCell(3);
 		if (tc.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 		    crr.setTarget(new Double(tc.getNumericCellValue()));
 		} else if (tc.getCellType() == Cell.CELL_TYPE_STRING) {
 		    crr.setTarget(tc.getStringCellValue());
 		}
-		Integer bonus = (int) Math.round(row.getCell(3)
+		Integer bonus = (int) Math.round(row.getCell(4)
 			.getNumericCellValue());
 		crr.setBonus(bonus);
-		crr.setPointType(row.getCell(4).getStringCellValue());
-		crr.setSelectionCriteria(row.getCell(6).getStringCellValue());
+		crr.setPointType(row.getCell(5).getStringCellValue());
+		crr.setSelectionCriteria(row.getCell(7).getStringCellValue());
 		response.getChallenges().add(crr);
 	    }
 	    logger.debug("Rows in excel file "

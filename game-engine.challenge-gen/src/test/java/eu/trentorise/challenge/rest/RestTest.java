@@ -2,18 +2,24 @@ package eu.trentorise.challenge.rest;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import eu.trentorise.game.challenges.rest.ExecutionDataDTO;
 import eu.trentorise.game.challenges.rest.GamificationEngineRestFacade;
 import eu.trentorise.game.challenges.rest.Paginator;
 import eu.trentorise.game.challenges.rest.RuleDto;
+import eu.trentorise.game.challenges.util.ConverterUtil;
+import eu.trentorise.game.challenges.util.JourneyData;
 
 public class RestTest {
 
+    private static final String SAVE_ITINERARY = "save_itinerary";
     private final static String HOST = "http://localhost:8080/gamification/";
     private final static String CONTEXT = "gengine/";
     private final static String INSERT_CONTEXT = "console/";
@@ -48,7 +54,7 @@ public class RestTest {
 	GamificationEngineRestFacade facade = new GamificationEngineRestFacade(
 		HOST + CONTEXT);
 	ExecutionDataDTO input = new ExecutionDataDTO();
-	input.setActionId("save_itinerary");
+	input.setActionId(SAVE_ITINERARY);
 	input.setPlayerId("1");
 	input.setGameId(GAMEID);
 	Map<String, Object> data = new HashMap<String, Object>();
@@ -57,5 +63,31 @@ public class RestTest {
 	boolean result = facade.saveItinerary(input);
 
 	assertTrue(result);
+    }
+
+    @Test
+    public void saveUsersItineraryLoadedFromFil() throws IOException {
+	// init facade
+	GamificationEngineRestFacade facade = new GamificationEngineRestFacade(
+		HOST + CONTEXT);
+	// create input
+	String ref = "savedtrips1.json";
+	// read all lines from file
+	List<String> lines = IOUtils.readLines(Thread.currentThread()
+		.getContextClassLoader().getResourceAsStream(ref));
+
+	for (String line : lines) {
+	    JourneyData jd = ConverterUtil.extractJourneyData(line);
+	    ExecutionDataDTO input = new ExecutionDataDTO();
+	    input.setActionId(SAVE_ITINERARY);
+	    input.setPlayerId(jd.getUserId());
+	    input.setGameId(GAMEID);
+	    input.setData(jd.getData());
+	    boolean result = facade.saveItinerary(input);
+
+	    assertTrue(result);
+
+	}
+
     }
 }

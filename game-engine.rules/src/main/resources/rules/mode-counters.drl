@@ -230,6 +230,21 @@ then
     update($c);
 end
 
+rule "update recommendation counters"
+lock-on-active
+when
+	Action ($id : id == "app_sent_recommandation")
+	$c : CustomData($counterRec : this["recommendations"])
+then
+		log("apply \'recommendation update counters\'");
+		if ($counterRec == null)
+			$c.put("recommendations", 1);
+		else 
+			$c.put("recommendations", (Integer) $counterRec + 1);
+		update ($c);
+end
+
+
 rule "update point counters"
 when 
 	$delta : PointDelta(this.pointType == "green leaves")

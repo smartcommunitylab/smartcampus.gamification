@@ -3,6 +3,7 @@ package eu.trentorise.game.model
 global Integer green_walk_points;
 global Integer green_bike_points;
 global Integer green_sustainable_bonus;
+global Integer recommendation_bonus;
 global Integer green_bus_points_base;
 global Integer green_bus_points_step1;
 global Integer green_bus_points_step2;
@@ -113,5 +114,17 @@ then
 	$pc.setScore($pc.getScore() + green_sustainable_bonus);
     update($pc);
     insert(new PointDelta(green_sustainable_bonus,"green leaves")); 
+end
+
+rule "recommendation bonus"
+	salience 1
+when
+	Action ($id : id == "app_sent_recommandation")
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'recommendation bonus\'");
+	$pc.setScore($pc.getScore() + recommendation_bonus);
+    update($pc);
+    insert(new PointDelta(recommendation_bonus,"green leaves")); 
 end
 

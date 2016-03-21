@@ -23,6 +23,7 @@ then
 	update( $bc );
 	$pc.setScore($pc.getScore() + 100);
     update($pc);
+    insert(new PointDelta(100,"green leaves")); 
 end
 
 rule "2nd of the week"
@@ -40,6 +41,7 @@ then
 	update( $bc );
 	$pc.setScore($pc.getScore() + 80);
     update($pc);
+    insert(new PointDelta(80,"green leaves")); 
 end
 
 rule "3rd of the week"
@@ -57,6 +59,7 @@ then
 	update( $bc );
 	$pc.setScore($pc.getScore() + 60);
     update($pc);
+    insert(new PointDelta(80,"green leaves")); 
 end
     
     

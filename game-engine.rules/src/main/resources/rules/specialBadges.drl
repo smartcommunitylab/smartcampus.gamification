@@ -211,7 +211,7 @@ end
 
 
 /* ***************************************************************************
-PARK  
+PARK & RIDE PIONEER COLLECTION 
 *************************************************************************** */  
 
 rule "park badge"
@@ -230,7 +230,7 @@ end
 
 
 /* ***************************************************************************
-IMPACT 0
+IMPACT 0 COLLECTION
 *************************************************************************** */ 
 rule "1 trip impact0"
 	salience -1000
@@ -315,4 +315,85 @@ then
 	}
 end
 
-// ***************************************************************************
+/* ***************************************************************************
+APP RECOMMENDATION COLLECTION
+*************************************************************************** */ 
+
+rule "3 recommendations"
+	salience -1000
+when
+	$c : CustomData($counter : this["recommendations"], $counter != null)
+    $bc : BadgeCollectionConcept(name == "recommendations", badgeEarned not contains '3_recommendations')
+    $pc : PointConcept(name == "green leaves")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counter >= 3) {
+		log("apply \'3_recommendations badge\'");
+		$bc.getBadgeEarned().add('3_recommendations');
+		insert( new BadgeNotification($gameId,$playerId,'3_recommendations'));
+		update( $bc );
+		$pc.setScore($pc.getScore() + 50);
+    	update($pc);
+	}
+end
+
+rule "5 recommendations"
+	salience -1000
+when
+	$c : CustomData($counter : this["recommendations"], $counter != null)
+    $bc : BadgeCollectionConcept(name == "recommendations", badgeEarned not contains '5_recommendations')
+    $pc : PointConcept(name == "green leaves")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counter >= 5) {
+		log("apply \'5_recommendations badge\'");
+		$bc.getBadgeEarned().add('5_recommendations');
+		insert( new BadgeNotification($gameId,$playerId,'5_recommendations'));
+		update( $bc );
+		$pc.setScore($pc.getScore() + 100);
+    	update($pc);
+    	insert(new PointDelta(100,"green leaves")); 
+	}
+end
+
+rule "10 recommendations"
+	salience -1000
+when
+	$c : CustomData($counter : this["recommendations"], $counter != null)
+    $bc : BadgeCollectionConcept(name == "recommendations", badgeEarned not contains '10_recommendations')
+    $pc : PointConcept(name == "green leaves")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counter >= 10) {
+		log("apply \'10_recommendations badge\'");
+		$bc.getBadgeEarned().add('10_recommendations');
+		insert( new BadgeNotification($gameId,$playerId,'10_recommendations'));
+		update( $bc );
+		$pc.setScore($pc.getScore() + 200);
+    	update($pc);
+    	insert(new PointDelta(200,"green leaves"));
+	}
+end
+
+rule "25 recommendations"
+	salience -1000
+when
+	$c : CustomData($counter : this["recommendations"], $counter != null)
+    $bc : BadgeCollectionConcept(name == "recommendations", badgeEarned not contains '25_recommendations')
+    $pc : PointConcept(name == "green leaves")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+	if ((Integer)$counter >= 25) {
+		log("apply \'25_recommendations badge\'");
+		$bc.getBadgeEarned().add('25_recommendations');
+		insert( new BadgeNotification($gameId,$playerId,'25_recommendations'));
+		update( $bc );
+		$pc.setScore($pc.getScore() + 300);
+    	update($pc);
+    	insert(new PointDelta(300,"green leaves"));
+	}
+end

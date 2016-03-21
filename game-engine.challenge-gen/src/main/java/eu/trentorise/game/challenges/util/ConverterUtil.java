@@ -111,7 +111,7 @@ public final class ConverterUtil {
 	    data.put("park", parkName);
 	if (pnr)
 	    data.put("p+r", pnr);
-	// data.put("sustainable", itinerary.isPromoted());
+	data.put("sustainable", itinerary.isPromoted());
 	data.put("estimatedScore", score.longValue());
 
 	return data;
@@ -150,6 +150,8 @@ public final class ConverterUtil {
 	it.setFrom(from);
 	it.setTo(to);
 	it.setWalkingDuration(walkingDuration);
+	it.setPromoted((Boolean) JsonPath
+		.read(document, "$.data.data.promoted"));
 
 	Map<String, Object> data = ConverterUtil
 		.convertFromSmartPlannerToPlayerGameState(it);

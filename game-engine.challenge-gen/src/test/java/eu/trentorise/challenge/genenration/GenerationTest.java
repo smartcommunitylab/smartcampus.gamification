@@ -46,7 +46,7 @@ public class GenerationTest {
 
 	// get users from gamification engine
 	// TODO paginazione risultati da gamification engine
-	Paginator users = facade.gameState("56e7bf3b570ac89331c37262");
+	Paginator users = facade.readGameState("56e7bf3b570ac89331c37262");
 
 	// generate challenges
 	Matcher matcher = new Matcher(result.getChallenges().get(0));
@@ -65,43 +65,45 @@ public class GenerationTest {
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 
 	// get users from gamification engine
-	Paginator users = facade.gameState("56e7bf3b570ac89331c37262");
+	Paginator users = facade.readGameState("56e7bf3b570ac89331c37262");
 
+	StringBuffer buffer;
 	// generate challenges
-	Matcher matcher = new Matcher(result.getChallenges().get(0));
-	List<Content> r = matcher.match(users);
+	for (ChallengeRuleRow challengeSpec : result.getChallenges()) {
+	    // filtro utenti per la challenge specifica
+	    Matcher matcher = new Matcher(challengeSpec);
+	    List<Content> r = matcher.match(users);
 
-	StringBuffer buffer = new StringBuffer();
+	    buffer = new StringBuffer();
+	    buffer.append("/** " + challengeSpec.getType() + " "
+		    + challengeSpec.getTarget().toString() + " **/\n");
 
-	// get right challenge
-	for (Content user : r) {
-	    // for current challenge
-	    // TODO: first
-	    ChallengeRuleRow challengeSpec = result.getChallenges().get(0);
-	    Challenge c = factory.createChallenge(ChallengeType
-		    .valueOf(challengeSpec.getType()));
-	    params = new HashMap<String, Object>();
-	    if (challengeSpec.getTarget() instanceof Double) {
-		params.put("percent", challengeSpec.getTarget());
+	    // get right challenge
+	    for (Content user : r) {
+		Challenge c = factory.createChallenge(ChallengeType
+			.valueOf(challengeSpec.getType()));
+		params = new HashMap<String, Object>();
+		if (challengeSpec.getTarget() instanceof Double) {
+		    params.put("percent", challengeSpec.getTarget());
+		}
+		params.put("mode", challengeSpec.getGoalType());
+		params.put("bonus", challengeSpec.getBonus());
+		params.put("point_type", challengeSpec.getPointType());
+		params.put("baseline", user.getCustomData()
+			.getAdditionalProperties().get("walk_km_past"));
+		c.setTemplateParams(params);
+		c.compileChallenge(user.getPlayerId());
+
+		Assert.assertTrue("Challenge " + ChallengeType.PERCENT
+			+ " created", c != null);
+		Assert.assertTrue(c.getType().equals(ChallengeType.PERCENT));
+		Assert.assertTrue(c.getGeneratedRules() != null
+			&& !c.getGeneratedRules().equals(""));
+		// System.out.println(c.getGeneratedRules() + "\n\n");
+		buffer.append(c.getGeneratedRules());
 	    }
-	    params.put("mode", challengeSpec.getGoalType());
-	    params.put("bonus", challengeSpec.getBonus());
-	    params.put("point_type", challengeSpec.getPointType());
-	    params.put("baseline", user.getCustomData()
-		    .getAdditionalProperties().get("walk_km_past"));
-	    c.setTemplateParams(params);
-	    c.compileChallenge(user.getPlayerId());
-
-	    Assert.assertTrue(
-		    "Challenge " + ChallengeType.PERCENT + " created",
-		    c != null);
-	    Assert.assertTrue(c.getType().equals(ChallengeType.PERCENT));
-	    Assert.assertTrue(c.getGeneratedRules() != null
-		    && !c.getGeneratedRules().equals(""));
-	    // System.out.println(c.getGeneratedRules() + "\n\n");
-	    buffer.append(c.getGeneratedRules());
+	    assertTrue(buffer != null && !buffer.toString().isEmpty());
+	    System.out.println(buffer.toString() + "\n\n");
 	}
-	assertTrue(buffer != null && !buffer.toString().isEmpty());
-	System.out.println(buffer.toString() + "\n\n");
     }
 }

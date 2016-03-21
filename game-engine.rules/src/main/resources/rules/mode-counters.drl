@@ -1,0 +1,223 @@
+package eu.trentorise.game.model
+
+global Double walk_min;
+global Double walk_max;
+global Double bike_max;
+
+rule "clear past counters"
+lock-on-active
+when
+	InputData($reset : data["reset"] != null, $reset == true)
+	$c : CustomData()
+then
+	log("resetting all past counters to 0");
+	
+	$c.put("walk_km_past", (Double) 0.0);
+	$c.put("bike_km_past", (Double) 0.0);
+	$c.put("bikesharing_km_past", (Double) 0.0);
+	$c.put("bus_km_past", (Double) 0.0);
+	$c.put("train_km_past", (Double) 0.0);
+	$c.put("car_km_past", (Double) 0.0);
+	
+	$c.put("walk_trips_past", 0);
+	$c.put("bike_trips_past", 0);
+	$c.put("bikesharing_trips_past", 0);
+	$c.put("bus_trips_past", 0);
+	$c.put("train_trips_past", 0);
+	$c.put("car_trips_past", 0);
+	$c.put("gp_current",0l);
+	
+	update($c);
+end
+
+rule "update walk counters"
+lock-on-active
+when
+    InputData( $km : data["walkDistance"] != null, $km >= walk_min)
+    $c : CustomData($counterKm : this["walk_km"], $counterTrips: this["walk_trips"], $counterKmPast : this["walk_km_past"], $counterTripsPast: this["walk_trips_past"])
+then
+	if($counterKm == null) {
+		$c.put("walk_km", (Double) $km);
+	} else {
+		$c.put("walk_km", (Double) $counterKm + (Double) $km);
+	}
+	if($counterKmPast == null) {
+		$c.put("walk_km_past", (Double) $km);
+	} else {
+		$c.put("walk_km_past", (Double) $counterKmPast + (Double) $km);
+	}
+	if($counterTrips == null) {
+		$c.put("walk_trips", 1);
+	} else {
+		$c.put("walk_trips", (Integer)$counterTrips +1);	
+	}
+	if($counterTripsPast == null) {
+		$c.put("walk_trips_past", 1);
+	} else {
+		$c.put("walk_trips_past", (Integer) $counterTripsPast + 1);
+	}
+    update($c);
+end
+
+
+rule "update bike counters"
+lock-on-active
+when
+    InputData( $km : data["bikeDistance"] != null)
+    $c : CustomData($counterKm : this["bike_km"], $counterTrips : this["bike_trips"], $counterKmPast : this["bike_km_past"], $counterTripsPast: this["bike_trips_past"])
+then
+	if($counterKm == null) {
+		$c.put("bike_km", (Double) $km);
+	} else {
+		$c.put("bike_km", (Double) $counterKm + (Double) $km);
+	}
+	if($counterKmPast == null) {
+		$c.put("bike_km_past", (Double) $km);
+	} else {
+		$c.put("bike_km_past", (Double) $counterKmPast + (Double) $km);
+	}
+	if($counterTrips == null) {
+		$c.put("bike_trips", 1);
+	} else {
+		$c.put("bike_trips", (Integer) $counterTrips + 1);
+	}
+	if($counterTripsPast == null) {
+		$c.put("bike_trips_past", 1);
+	} else {
+		$c.put("bike_trips_past", (Integer) $counterTripsPast + 1);
+	}
+    update($c);
+end
+
+
+rule "update bikesharing counters"
+lock-on-active
+when
+    InputData( $km : data["bikeDistance"] != null, data["bikesharing"] == true)
+    $c : CustomData($counterKm : this["bikesharing_km"], $counterTrips : this["bikesharing_trips"], $counterKmPast : this["bikesharing_km_past"], $counterTripsPast: this["bikesharing_trips_past"])
+then
+	if($counterKm == null) {
+		$c.put("bikesharing_km", (Double) $km);
+	} else {
+		$c.put("bikesharing_km", (Double) $counterKm + (Double) $km);
+	}
+	if($counterKmPast == null) {
+		$c.put("bikesharing_km_past", (Double) $km);
+	} else {
+		$c.put("bikesharing_km_past", (Double) $counterKmPast + (Double) $km);
+	}
+	if($counterTrips == null) {
+		$c.put("bikesharing_trips", 1);
+	} else {
+		$c.put("bikesharing_trips", (Integer) $counterTrips + 1);
+	}
+	if($counterTripsPast == null) {
+		$c.put("bikesharing_trips_past", 1);
+	} else {
+		$c.put("bikesharing_trips_past", (Integer) $counterTripsPast + 1);
+	}
+    update($c);
+end
+
+
+rule "update bus counters"
+lock-on-active
+when
+    InputData( $km : data["busDistance"] != null)
+    $c : CustomData($counterKm : this["bus_km"], $counterTrips : this["bus_trips"], $counterKmPast : this["bus_km_past"], $counterTripsPast: this["bus_trips_past"])
+then
+	if($counterKm == null) {
+		$c.put("bus_km", (Double) $km);
+	} else {
+		$c.put("bus_km", (Double) $counterKm + (Double) $km);
+	}
+	if($counterKmPast == null) {
+		$c.put("bus_km_past", (Double) $km);
+	} else {
+		$c.put("bus_km_past", (Double) $counterKmPast + (Double) $km);
+	}
+	if($counterTrips == null) {
+		$c.put("bus_trips", 1);
+	} else {
+		$c.put("bus_trips", (Integer) $counterTrips + 1);
+	}
+	if($counterTripsPast == null) {
+		$c.put("bus_trips_past", 1);
+	} else {
+		$c.put("bus_trips_past", (Integer) $counterTripsPast + 1);
+	}
+    update($c);
+end
+
+
+rule "update train counters"
+lock-on-active
+when
+    InputData( $km : data["trainDistance"] != null)
+    $c : CustomData($counterKm : this["train_km"], $counterTrips : this["train_trips"], $counterKmPast : this["train_km_past"], $counterTripsPast: this["train_trips_past"])
+then
+	if($counterKm == null) {
+		$c.put("train_km", (Double) $km);
+	} else {
+		$c.put("train_km", (Double) $counterKm + (Double) $km);
+	}
+	if($counterKmPast == null) {
+		$c.put("train_km_past", (Double) $km);
+	} else {
+		$c.put("train_km_past", (Double) $counterKmPast + (Double) $km);
+	}
+	if($counterTrips == null) {
+		$c.put("train_trips", 1);
+	} else {
+		$c.put("train_trips", (Integer) $counterTrips + 1);
+	}
+	if($counterTripsPast == null) {
+		$c.put("train_trips_past", 1);
+	} else {
+		$c.put("train_trips_past", (Integer) $counterTripsPast + 1);
+	}
+    update($c);
+end
+
+rule "update car counters"
+lock-on-active
+when
+    InputData( $km : data["carDistance"] != null)
+    $c : CustomData($counterKm : this["car_km"],$counterTrips : this["car_trips"], $counterKmPast : this["car_km_past"], $counterTripsPast: this["car_trips_past"])
+then
+	if($counterKm == null) {
+		$c.put("car_km", (Double) $km);
+	} else {
+		$c.put("car_km", (Double) $counterKm + (Double) $km);
+	}
+	if($counterKmPast == null) {
+		$c.put("car_km_past", (Double) $km);
+	} else {
+		$c.put("car_km_past", (Double) $counterKmPast + (Double) $km);
+	}
+	if($counterTrips == null) {
+		$c.put("car_trips", 1);
+	} else {
+		$c.put("car_trips", (Integer) $counterTrips + 1);
+	}
+	if($counterTripsPast == null) {
+		$c.put("car_trips_past", 1);
+	} else {
+		$c.put("car_trips_past", (Integer) $counterTripsPast + 1);
+	}
+    update($c);
+end
+
+rule "update point counters"
+when 
+	$delta : PointDelta(this.pointType == "green leaves")
+	$c : CustomData($counterGreenPoints : this["gp_current"])
+then
+	Long points = $delta.getDelta();
+	Long gp = $counterGreenPoints != null ? (Long)$counterGreenPoints : 0l;
+	gp += points;
+	$c.put("gp_current", gp);
+	log("current Green Point counter = " + gp);
+	update($c);
+	retract($delta);
+end

@@ -1,0 +1,62 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.task.Classification;
+
+/* ***************************************************************************
+GREEN WEEK CLASSIFICATION
+??? SCATTANO SOLO ALLA FINE DI OGNI SETTIMANA ???
+  
+*************************************************************************** */
+rule "1st of the week"
+	salience -1000
+when
+    Classification( name == 'week classification green', position == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "leaderboard top 3", badgeEarned not contains '1st_of_the_week')
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'1st_of_the_week\'");
+	$bc.getBadgeEarned().add('1st_of_the_week');
+	insert( new BadgeNotification($gameId,$playerId,'1st_of_the_week'));
+	update( $bc );
+	$pc.setScore($pc.getScore() + 100);
+    update($pc);
+end
+
+rule "2nd of the week"
+	salience -1000
+when
+    Classification( name == 'week classification green', position == 2)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "leaderboard top 3", badgeEarned not contains '2nd_of_the_week')
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'2nd_of_the_week\'");
+	$bc.getBadgeEarned().add('2nd_of_the_week');
+	insert( new BadgeNotification($gameId,$playerId,'2nd_of_the_week'));
+	update( $bc );
+	$pc.setScore($pc.getScore() + 80);
+    update($pc);
+end
+
+rule "3rd of the week"
+	salience -1000
+when
+    Classification( name == 'week classification green', position == 3)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "leaderboard top 3", badgeEarned not contains '3rd_of_the_week')
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'3rd_of_the_week\'");
+	$bc.getBadgeEarned().add('3rd_of_the_week');
+	insert( new BadgeNotification($gameId,$playerId,'3rd_of_the_week'));
+	update( $bc );
+	$pc.setScore($pc.getScore() + 60);
+    update($pc);
+end
+    
+    

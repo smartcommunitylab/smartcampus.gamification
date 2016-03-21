@@ -31,6 +31,14 @@ query "getUpdateMembers"
 	$data: UpdateMembers()
 end
 
+query "getLevel"
+	Propagation($data: level)
+end
+
+query "getMember"
+	$data: Member()
+end
+
 // ****************************************** global functions 	
 
 function void log(String msg) {

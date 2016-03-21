@@ -60,11 +60,11 @@ import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.Propagation;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.UpdateMembers;
 import eu.trentorise.game.model.UpdateTeam;
-import eu.trentorise.game.model.Propagation;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.FSRule;
@@ -143,6 +143,8 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newQuery("retrieveUpdateTeam", "getUpdateTeam"));
 		cmds.add(CommandFactory.newQuery("retrieveUpdateMembers",
 				"getUpdateMembers"));
+		cmds.add(CommandFactory.newQuery("retrieveLevel", "getLevel"));
+		cmds.add(CommandFactory.newQuery("retrieveMember", "getMember"));
 
 		kSession = loadGameConstants(kSession, gameId);
 
@@ -180,9 +182,18 @@ public class DroolsEngine implements GameEngine {
 
 		if (iter.hasNext()) {
 			Set<Object> facts = new HashSet<>();
+			Iterator<QueryResultsRow> iter1 = null;
 			while (iter.hasNext()) {
 				UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
-				facts.add(new Propagation(updateCalls.getPropagationAction()));
+				iter1 = ((QueryResults) results.getValue("retrieveLevel"))
+						.iterator();
+				int level = 1;
+				if (iter1.hasNext()) {
+					level = (int) iter1.next().get("$data");
+					level++;
+				}
+				facts.add(new Propagation(updateCalls.getPropagationAction(),
+						level));
 			}
 
 			List<TeamState> playerTeams = playerSrv.readTeams(gameId,
@@ -193,7 +204,15 @@ public class DroolsEngine implements GameEngine {
 				logger.info("call for update with data {}", data);
 			}
 
-			facts.add(new Member(state.getPlayerId(), data));
+			iter1 = ((QueryResults) results.getValue("retrieveMember"))
+					.iterator();
+			Member fromPropagation = null;
+			if (iter1.hasNext()) {
+				fromPropagation = (Member) iter1.next().get("$data");
+			}
+			facts.add(new Member(state.getPlayerId(),
+					data == null ? (fromPropagation != null ? fromPropagation
+							.getInputData() : null) : data));
 			for (TeamState team : playerTeams) {
 				workflow.apply(gameId, action, team.getPlayerId(), null,
 						new ArrayList<>(facts));

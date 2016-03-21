@@ -84,7 +84,7 @@ public class TeamGameTest extends GameTest {
 		assertionPoint(GAME, 1001d, "prowler", "steps");
 		assertionPoint(GAME, 201d, "rocket racer", "steps");
 		assertionPoint(GAME, 1531d, "fuorilegge", "steps");
-		assertionPoint(GAME, 510d, "marvel", "steps");
+		assertionPoint(GAME, 760d, "marvel", "steps");
 		assertionPoint(GAME, 1d, "secret avengers", "steps");
 
 	}

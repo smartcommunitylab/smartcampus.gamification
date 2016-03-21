@@ -8,6 +8,7 @@ public class ChallengeRuleRow {
     private String pointType;
     private String selectionCriteria;
     private Integer bonus;
+    private String name;
 
     public String getType() {
 	return type;
@@ -55,6 +56,14 @@ public class ChallengeRuleRow {
 
     public Integer getBonus() {
 	return bonus;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    public String getName() {
+	return name;
     }
 
 }

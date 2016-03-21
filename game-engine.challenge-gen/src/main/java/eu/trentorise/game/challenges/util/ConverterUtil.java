@@ -151,8 +151,9 @@ public final class ConverterUtil {
 	it.setFrom(from);
 	it.setTo(to);
 	it.setWalkingDuration(walkingDuration);
-	isPromoted = JsonPath.read(document, "$.data.data.promoted");
-	it.setPromoted(isPromoted);
+	it.setPromoted((Boolean) JsonPath
+		.read(document, "$.data.data.promoted"));
+
 	Map<String, Object> data = ConverterUtil
 		.convertFromSmartPlannerToPlayerGameState(it);
 

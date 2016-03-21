@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.drools.template.ObjectDataCompiler;
@@ -30,10 +31,10 @@ public abstract class Challenge {
     public abstract void compileChallenge(String playerId)
 	    throws UndefinedChallengeException;
 
-    public abstract void setTemplateParams(HashMap<String, Object> tp)
+    public abstract void setTemplateParams(Map<String, Object> tp)
 	    throws UndefinedChallengeException;
 
-    protected void setCustomData(HashMap<String, Object> tp)
+    protected void setCustomData(Map<String, Object> tp)
 	    throws UndefinedChallengeException {
 	customData = new HashMap<String, Object>();
 	customData.put(Constants.CH + this.chId + Constants.TYPE, this.type);

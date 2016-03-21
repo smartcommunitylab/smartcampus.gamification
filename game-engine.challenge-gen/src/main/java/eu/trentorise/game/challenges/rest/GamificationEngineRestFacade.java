@@ -19,10 +19,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class GamificationEngineRestFacade {
 
-    private static final String STATE = "state";
-    private static final String GAME = "game";
     private static final Logger logger = LogManager
 	    .getLogger(GamificationEngineRestFacade.class);
+
+    private static final String STATE = "state";
+    private static final String GAME = "game";
     private static final String RULE = "rule";
     private static final String DB = "db";
     private static final String EXECUTE = "execute";

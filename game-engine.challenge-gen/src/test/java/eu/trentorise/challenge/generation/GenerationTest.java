@@ -70,7 +70,7 @@ public class GenerationTest {
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 
 	// get users from gamification engine
-	Paginator users = facade.readGameState("56e7bf3b570ac89331c37262");
+	Paginator users = facade.readGameState(GAMEID);
 
 	ChallengesRulesGenerator crg = new ChallengesRulesGenerator(
 		new ChallengeFactory());
@@ -101,7 +101,7 @@ public class GenerationTest {
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 
 	// get users from gamification engine
-	Paginator users = facade.readGameState("56e7bf3b570ac89331c37262");
+	Paginator users = facade.readGameState(GAMEID);
 
 	ChallengesRulesGenerator crg = new ChallengesRulesGenerator(
 		new ChallengeFactory());

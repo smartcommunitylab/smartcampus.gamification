@@ -335,6 +335,7 @@ then
 		update( $bc );
 		$pc.setScore($pc.getScore() + 50);
     	update($pc);
+    	insert(new PointDelta(50,"green leaves"));
 	}
 end
 

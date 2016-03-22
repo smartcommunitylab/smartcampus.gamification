@@ -1,0 +1,29 @@
+package eu.trentorise.game.model
+
+//list any import classes here.
+
+rule "Clear Player"
+salience -2000
+lock-on-active
+    when
+        InputData($reset : data["player_reset"], $reset != null)
+		$p : Player($playerId : id, $playerId == $reset)
+		$pc : PointConcept()
+		$bc: BadgeCollectionConcept()
+		$c: CustomData()
+		
+    then
+    	log("resetting player: " + (String)$playerId);
+    	if ($pc.getScore() > 0d) {
+    		$pc.setScore(0d);
+    		log("reset points " + $pc.getName() + " of player: " + (String)$playerId + " to: " + $pc.getScore());
+    	}
+    	if (! $bc.getBadgeEarned().isEmpty()) {
+	    	$bc.getBadgeEarned().clear();
+	    	log("reset badges in " + $bc.getName() + " of player: " + (String)$playerId);
+	    }
+		if (! $c.isEmpty()) {
+	    	$c.clear();
+	    	log("reset Custom Data of player: " + (String)$playerId);
+	    }
+end

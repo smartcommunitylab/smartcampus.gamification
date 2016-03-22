@@ -1,5 +1,8 @@
 package eu.trentorise.game.challenges.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -53,19 +56,42 @@ public class GamificationEngineRestFacade {
      * Read game state
      * 
      * @param gameId
-     * @return {@link Paginator} a page of results
+     * @return a list of {@link Content}, null if error
      */
-    public Paginator readGameState(String gameId) {
+    public List<Content> readGameState(String gameId) {
 	if (gameId == null) {
 	    throw new IllegalArgumentException("gameId cannot be null");
 	}
 	WebTarget target = createEndpoint().path(STATE).path(gameId);
+	// for testing pagination: target.queryParam("page",
+	// 1).queryParam("size", 1).request().get(Paginator.class);
 	Paginator response = target.request().get(Paginator.class);
-	if (response != null) {
-	    return response;
+	if (response == null) {
+	    logger.error("error in reading game state");
+	    return null;
 	}
-	logger.error("error in reading game state");
-	return null;
+	if (response.getLast()) {
+	    logger.error("service return only one page of result");
+	    return response.getContent();
+	}
+	List<Content> result = new ArrayList<Content>();
+	int page = 2;
+	boolean end = false;
+	Paginator pageResponse;
+	result.addAll(response.getContent());
+	while (!end) {
+	    pageResponse = target.request().get(Paginator.class);
+	    if (pageResponse != null) {
+		result.addAll(pageResponse.getContent());
+		if (pageResponse.getLast()) {
+		    end = true;
+		} else {
+		    page++;
+		}
+	    }
+	}
+	logger.error("service return " + page + " pages of result");
+	return result;
     }
 
     /**

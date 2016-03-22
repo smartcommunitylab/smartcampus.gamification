@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.trentorise.game.challenges.rest.Content;
-import eu.trentorise.game.challenges.rest.Paginator;
 
 public class Matcher {
 
@@ -27,9 +26,9 @@ public class Matcher {
 	this.engine = manager.getEngineByName("nashorn");
     }
 
-    public List<Content> match(Paginator input) {
+    public List<Content> match(List<Content> users) {
 	List<Content> result = new ArrayList<Content>();
-	for (Content user : input.getContent()) {
+	for (Content user : users) {
 	    if (challengeMatch(user)) {
 		result.add(user);
 	    }

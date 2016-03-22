@@ -19,7 +19,6 @@ import eu.trentorise.game.challenges.ChallengesRulesGenerator;
 import eu.trentorise.game.challenges.exception.UndefinedChallengeException;
 import eu.trentorise.game.challenges.rest.Content;
 import eu.trentorise.game.challenges.rest.GamificationEngineRestFacade;
-import eu.trentorise.game.challenges.rest.Paginator;
 import eu.trentorise.game.challenges.rest.RuleDto;
 import eu.trentorise.game.challenges.util.ChallengeRuleRow;
 import eu.trentorise.game.challenges.util.ChallengeRules;
@@ -45,13 +44,13 @@ public class GenerationTest {
 	    IllegalArgumentException, IOException {
 	// load
 	ChallengeRules result = ChallengeRulesLoader
-		.load("challengesRules.xls");
+		.load("challengesRules.csv");
 
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 
 	// get users from gamification engine
 	// TODO paginazione risultati da gamification engine
-	Paginator users = facade.readGameState("56e7bf3b570ac89331c37262");
+	List<Content> users = facade.readGameState("56e7bf3b570ac89331c37262");
 
 	// generate challenges
 	Matcher matcher = new Matcher(result.getChallenges().get(0));
@@ -65,12 +64,12 @@ public class GenerationTest {
 	    IllegalArgumentException, IOException, UndefinedChallengeException {
 	// load
 	ChallengeRules result = ChallengeRulesLoader
-		.load("challengesRules.xls");
+		.load("challengesRules.csv");
 
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 
 	// get users from gamification engine
-	Paginator users = facade.readGameState(GAMEID);
+	List<Content> users = facade.readGameState(GAMEID);
 
 	ChallengesRulesGenerator crg = new ChallengesRulesGenerator(
 		new ChallengeFactory());
@@ -101,7 +100,7 @@ public class GenerationTest {
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 
 	// get users from gamification engine
-	Paginator users = facade.readGameState(GAMEID);
+	List<Content> users = facade.readGameState(GAMEID);
 
 	ChallengesRulesGenerator crg = new ChallengesRulesGenerator(
 		new ChallengeFactory());

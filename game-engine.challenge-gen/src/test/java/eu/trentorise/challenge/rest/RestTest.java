@@ -73,7 +73,7 @@ public class RestTest {
     @Test
     public void saveUsersItineraryLoadedFromFile() throws IOException {
 	// create input
-	String ref = "testTrips129.json";
+	String ref = "testTrips160.json";
 	
 	// read all lines from file
 	List<String> lines = IOUtils.readLines(Thread.currentThread()

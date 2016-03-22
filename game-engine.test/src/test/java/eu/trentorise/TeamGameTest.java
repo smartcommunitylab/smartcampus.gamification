@@ -29,6 +29,16 @@ public class TeamGameTest extends GameTest {
 		team.setMembers(Arrays.asList("prowler", "rocket racer"));
 		playerSrv.saveTeam(team);
 
+		team = new TeamState(GAME, "secret avengers");
+		team.setName("secret avengers");
+		team.setMembers(Arrays.asList("war machine", "moon knight"));
+		playerSrv.saveTeam(team);
+
+		team = new TeamState(GAME, "marvel");
+		team.setName("marvel");
+		team.setMembers(Arrays.asList("fuorilegge", "secret avengers"));
+		playerSrv.saveTeam(team);
+
 	}
 
 	@Override
@@ -48,22 +58,22 @@ public class TeamGameTest extends GameTest {
 	@Override
 	public void defineExecData(List<ExecData> execList) {
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("meters-walked", 500d); // 750steps
+		data.put("meters-walked", 500d);
 		ExecData input = new ExecData(GAME, ACTION, "prowler", data);
 		execList.add(input);
 
 		data = new HashMap<String, Object>();
-		data.put("meters-walked", 1000d); // 1500steps
+		data.put("meters-walked", 1000d);
 		input = new ExecData(GAME, ACTION, "fuorilegge", data);
 		execList.add(input);
 
 		data = new HashMap<String, Object>();
-		data.put("meters-walked", 400d); // 600steps
+		data.put("meters-walked", 400d);
 		input = new ExecData(GAME, ACTION, "prowler", data);
 		execList.add(input);
 
 		data = new HashMap<String, Object>();
-		data.put("meters-walked", 100d); // 150steps
+		data.put("meters-walked", 100d);
 		input = new ExecData(GAME, ACTION, "rocket racer", data);
 		execList.add(input);
 
@@ -71,9 +81,11 @@ public class TeamGameTest extends GameTest {
 
 	@Override
 	public void analyzeResult() {
-		assertionPoint(GAME, 1501d, "prowler", "steps");
-		assertionPoint(GAME, 301d, "rocket racer", "steps");
-		assertionPoint(GAME, 2270d, "fuorilegge", "steps");
+		assertionPoint(GAME, 1001d, "prowler", "steps");
+		assertionPoint(GAME, 201d, "rocket racer", "steps");
+		assertionPoint(GAME, 1531d, "fuorilegge", "steps");
+		assertionPoint(GAME, 760d, "marvel", "steps");
+		assertionPoint(GAME, 1d, "secret avengers", "steps");
 
 	}
 

@@ -12,7 +12,7 @@ then
     log("PLAY badge 1");
     $bc.getBadgeEarned().add($b);
     update( $bc );
-    insert(new UpdateTeam("gained-poi_1"));
+    insert(new UpdateTeams("gained-poi_1"));
 end
 
 
@@ -25,7 +25,7 @@ then
     log("PLAY badge 2");
     $bc.getBadgeEarned().add($b);
     update( $bc );
-    insert(new UpdateTeam("gained-poi_1"));
+    insert(new UpdateTeams("gained-poi_1"));
 end
 
 
@@ -38,7 +38,7 @@ then
     log("PLAY badge 3");
     $bc.getBadgeEarned().add($b);
     update( $bc );
-    insert(new UpdateTeam("gained-poi_3"));
+    insert(new UpdateTeams("gained-poi_3"));
 end
 
 

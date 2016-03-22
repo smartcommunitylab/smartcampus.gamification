@@ -23,8 +23,8 @@ query "getCustomData"
 	$data: CustomData()
 end
 
-query "getUpdateTeam"
-	$data: UpdateTeam()
+query "getUpdateTeams"
+	$data: UpdateTeams()
 end
 
 query "getUpdateMembers"

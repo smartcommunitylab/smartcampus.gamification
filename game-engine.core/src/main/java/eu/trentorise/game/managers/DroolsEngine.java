@@ -64,7 +64,7 @@ import eu.trentorise.game.model.Propagation;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.UpdateMembers;
-import eu.trentorise.game.model.UpdateTeam;
+import eu.trentorise.game.model.UpdateTeams;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.FSRule;
@@ -140,7 +140,8 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newQuery("retrieveNotifications",
 				"getNotifications"));
 		cmds.add(CommandFactory.newQuery("retrieveCustomData", "getCustomData"));
-		cmds.add(CommandFactory.newQuery("retrieveUpdateTeam", "getUpdateTeam"));
+		cmds.add(CommandFactory.newQuery("retrieveUpdateTeams",
+				"getUpdateTeams"));
 		cmds.add(CommandFactory.newQuery("retrieveUpdateMembers",
 				"getUpdateMembers"));
 		cmds.add(CommandFactory.newQuery("retrieveLevel", "getLevel"));
@@ -177,14 +178,15 @@ public class DroolsEngine implements GameEngine {
 			logger.info("send notification: {}", note.toString());
 		}
 
-		iter = ((QueryResults) results.getValue("retrieveUpdateTeam"))
+		iter = ((QueryResults) results.getValue("retrieveUpdateTeams"))
 				.iterator();
 
 		if (iter.hasNext()) {
 			Set<Object> facts = new HashSet<>();
 			Iterator<QueryResultsRow> iter1 = null;
 			while (iter.hasNext()) {
-				UpdateTeam updateCalls = (UpdateTeam) iter.next().get("$data");
+				UpdateTeams updateCalls = (UpdateTeams) iter.next()
+						.get("$data");
 				iter1 = ((QueryResults) results.getValue("retrieveLevel"))
 						.iterator();
 				int level = 1;

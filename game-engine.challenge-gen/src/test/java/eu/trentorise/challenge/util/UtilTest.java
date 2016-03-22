@@ -24,7 +24,7 @@ public class UtilTest {
     @Test
     public void loadChallengesRulesTest() throws IOException {
 	ChallengeRules result = ChallengeRulesLoader
-		.load("challengesRules.xls");
+		.load("challengesRules.csv");
 
 	assertTrue(!result.getChallenges().isEmpty());
     }

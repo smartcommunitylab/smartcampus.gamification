@@ -1,0 +1,3 @@
+NAME;TYPE;GOAL_TYPE;TARGET;BONUS;POINT_TYPE;DIFFICULTY;SELECTION_CRITERIA
+test_percent_20;PERCENT;walkDistance;0.2;100;green leaves;;walk_trips_past >= 1 && walk_km_past > 1
+test_percent_50;PERCENT;walkDistance;0.5;100;green leaves;;walk_trips_past >= 1 && walk_km_past > 3.5

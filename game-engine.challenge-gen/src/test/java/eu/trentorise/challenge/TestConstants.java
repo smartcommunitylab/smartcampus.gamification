@@ -6,6 +6,6 @@ public final class TestConstants {
     public final static String HOST = "http://localhost:8080/gamification/";
     public final static String CONTEXT = "gengine/";
     public final static String INSERT_CONTEXT = "console/";
-    public static final String GAMEID = "56cc77737d847cb2a12ea89b";
+    public static final String GAMEID = "56e7bf3b570ac89331c37262";
 
 }

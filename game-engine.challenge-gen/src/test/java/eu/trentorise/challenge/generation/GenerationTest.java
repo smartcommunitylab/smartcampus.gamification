@@ -96,7 +96,7 @@ public class GenerationTest {
 	    UndefinedChallengeException {
 	// load
 	ChallengeRules result = ChallengeRulesLoader
-		.load("challengesRules.xls");
+		.load("challengesRules.csv");
 
 	assertTrue(result != null && !result.getChallenges().isEmpty());
 

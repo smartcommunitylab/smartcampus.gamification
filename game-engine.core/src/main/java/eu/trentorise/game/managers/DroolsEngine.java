@@ -228,14 +228,21 @@ public class DroolsEngine implements GameEngine {
 				facts.add(new Propagation(updateCalls.getPropagationAction()));
 			}
 			// check if a propagation to team members is needed
-			TeamState team = playerSrv.readTeam(gameId, state.getPlayerId());
-			List<String> members = team.getMembers();
-			facts.add(new Team(state.getPlayerId(), data));
-			logger.info("Team {} has {} members", state.getPlayerId(),
-					members.size());
-			for (String member : members) {
-				workflow.apply(gameId, action, member, null, new ArrayList<>(
-						facts));
+			try {
+				TeamState team = playerSrv
+						.readTeam(gameId, state.getPlayerId());
+				List<String> members = team.getMembers();
+				facts.add(new Team(state.getPlayerId(), data));
+				logger.info("Team {} has {} members", state.getPlayerId(),
+						members.size());
+				for (String member : members) {
+					workflow.apply(gameId, action, member, null,
+							new ArrayList<>(facts));
+				}
+			} catch (ClassCastException e) {
+				logger.info(String
+						.format("%s is not a team, there is no propagation to team members",
+								state.getPlayerId()));
 			}
 
 		}

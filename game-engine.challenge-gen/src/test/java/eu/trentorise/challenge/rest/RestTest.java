@@ -16,9 +16,9 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.trentorise.game.challenges.rest.Content;
 import eu.trentorise.game.challenges.rest.ExecutionDataDTO;
 import eu.trentorise.game.challenges.rest.GamificationEngineRestFacade;
-import eu.trentorise.game.challenges.rest.Paginator;
 import eu.trentorise.game.challenges.rest.RuleDto;
 import eu.trentorise.game.challenges.util.ConverterUtil;
 import eu.trentorise.game.challenges.util.JourneyData;
@@ -36,8 +36,8 @@ public class RestTest {
 
     @Test
     public void gameReadGameStateTest() {
-	Paginator result = facade.readGameState(GAMEID);
-	assertTrue(!result.getContent().isEmpty());
+	List<Content> result = facade.readGameState(GAMEID);
+	assertTrue(!result.isEmpty());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class RestTest {
     public void saveUsersItineraryLoadedFromFile() throws IOException {
 	// create input
 	String ref = "testTrips129.json";
-	
+
 	// read all lines from file
 	List<String> lines = IOUtils.readLines(Thread.currentThread()
 		.getContextClassLoader().getResourceAsStream(ref));

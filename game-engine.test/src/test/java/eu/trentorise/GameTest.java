@@ -59,7 +59,7 @@ public abstract class GameTest {
 	private String gameId;
 	private List<GameTask> tasks = new ArrayList<GameTask>();
 
-	private static final long WAIT_EXEC = 15 * 1000;
+	private static final long WAIT_EXEC = 30 * 1000;
 
 	@Autowired
 	private GameManager gameManager;

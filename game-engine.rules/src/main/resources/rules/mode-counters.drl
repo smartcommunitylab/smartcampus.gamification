@@ -4,33 +4,6 @@ global Double walk_min;
 global Double walk_max;
 global Double bike_max;
 
-rule "clear past counters"
-lock-on-active
-when
-	InputData($reset : data["reset"] != null, $reset == true)
-	$c : CustomData()
-then
-	log("resetting all past (i.e. periodic) counters to 0");
-	
-	$c.put("walk_km_past", (Double) 0.0);
-	$c.put("bike_km_past", (Double) 0.0);
-	$c.put("bikesharing_km_past", (Double) 0.0);
-	$c.put("bus_km_past", (Double) 0.0);
-	$c.put("train_km_past", (Double) 0.0);
-	$c.put("car_km_past", (Double) 0.0);
-	
-	$c.put("walk_trips_past", 0);
-	$c.put("bike_trips_past", 0);
-	$c.put("bikesharing_trips_past", 0);
-	$c.put("bus_trips_past", 0);
-	$c.put("train_trips_past", 0);
-	$c.put("car_trips_past", 0);
-	$c.put("zero_impact_trips_past", 0);
-	$c.put("gp_current",0l);
-	
-	update($c);
-end
-
 rule " 0-impact update counters"
 lock-on-active
 when

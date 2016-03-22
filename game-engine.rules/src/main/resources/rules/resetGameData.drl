@@ -2,12 +2,13 @@ package eu.trentorise.game.model
 
 //list any import classes here.
 
-rule "Clear Player"
+rule "Reset Player"
 salience -2000
 lock-on-active
     when
-        InputData($reset : data["player_reset"], $reset != null)
-		$p : Player($playerId : id, $playerId == $reset)
+    	Action ($id : id == "reset_game")
+        InputData($reset : data["player_reset"], $reset == true)
+		$p : Player($playerId : id)
 		$pc : PointConcept()
 		$bc: BadgeCollectionConcept()
 		$c: CustomData()
@@ -26,4 +27,33 @@ lock-on-active
 	    	$c.clear();
 	    	log("reset Custom Data of player: " + (String)$playerId);
 	    }
+end
+
+rule "reset past counters"
+lock-on-active
+when
+	Action ($id : id == "reset_game")
+	InputData($reset : data["counters_reset"] != null, $reset == true)
+	$p : Player($playerId : id)
+	$c : CustomData()
+then
+	log("resetting all past (i.e. periodic) counters to 0 for player" + (String)$playerId);
+	
+	$c.put("walk_km_past", (Double) 0.0);
+	$c.put("bike_km_past", (Double) 0.0);
+	$c.put("bikesharing_km_past", (Double) 0.0);
+	$c.put("bus_km_past", (Double) 0.0);
+	$c.put("train_km_past", (Double) 0.0);
+	$c.put("car_km_past", (Double) 0.0);
+	
+	$c.put("walk_trips_past", 0);
+	$c.put("bike_trips_past", 0);
+	$c.put("bikesharing_trips_past", 0);
+	$c.put("bus_trips_past", 0);
+	$c.put("train_trips_past", 0);
+	$c.put("car_trips_past", 0);
+	$c.put("zero_impact_trips_past", 0);
+	$c.put("gp_current",0l);
+	
+	update($c);
 end

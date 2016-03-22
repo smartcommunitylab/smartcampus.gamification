@@ -23,6 +23,7 @@ public class LongGameTest extends GameTest {
 
 	private static final String GAME = "long_game";
 	private static final String ACTION = "save_itinerary";
+	private static final String RESET_ACTION = "reset";
 
 	private static final String PLAYER_ID = "daken";
 
@@ -53,7 +54,8 @@ public class LongGameTest extends GameTest {
 				pathGame + "/mode-counters.drl", 
 				pathGame + "/finalClassificationBadges.drl",
 				pathGame + "/specialBadges.drl",
-  				pathGame + "/weekClassificationBadges.drl"));  
+  				pathGame + "/weekClassificationBadges.drl",
+  				pathGame + "/resetGameData.drl"));  
 	}
 
 	@Override
@@ -68,7 +70,6 @@ public class LongGameTest extends GameTest {
 		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
 		execList.add(ex);
 
-		data = new HashMap<String, Object>();
 		data.put("bikeDistance", 30d);
 		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
 		execList.add(ex);
@@ -99,13 +100,13 @@ public class LongGameTest extends GameTest {
 		execList.add(ex);
 
 		/*
-		 * this "reset" action is a fake action used in
-		 * combination with a stub rule in the .drl file to force
-		 * a reset of the "_past" counters.
+		 * this "reset" action forces
+		 * a reset of the "_past" counters 
+		 * in a Player's custom data
 		 */
 		data = new HashMap<String, Object>();
-		data.put("reset", new Boolean(true));
-		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
+		data.put("counters_reset", new Boolean(true));
+		ex = new ExecData(GAME, RESET_ACTION, PLAYER_ID, data);
 		execList.add(ex);
 
 		data = new HashMap<String, Object>();
@@ -117,7 +118,15 @@ public class LongGameTest extends GameTest {
 		data.put("busDistance", 5d);
 		ex = new ExecData(GAME, ACTION, PLAYER_ID, data);
 		execList.add(ex);
-
+		
+		/* this "reset player" action 
+		 * resets ALL players' state for test purposes.
+		 */
+		data = new HashMap<String, Object>();
+		data.put("player_reset", new Boolean(true));
+		ex = new ExecData(GAME, RESET_ACTION, PLAYER_ID, data);
+		execList.add(ex);
+		
 	}
 
 	@Override

@@ -9,12 +9,22 @@ package eu.trentorise.game.model;
  */
 public class Propagation {
 	private String action;
+	private int level = 1;
 
 	public Propagation() {
 	}
 
+	public Propagation(int level) {
+		this.level = level;
+	}
+
 	public Propagation(String action) {
 		this.action = action;
+	}
+
+	public Propagation(String action, int level) {
+		this.action = action;
+		this.level = level;
 	}
 
 	public String getAction() {
@@ -38,6 +48,7 @@ public class Propagation {
 	@Override
 	public int hashCode() {
 		int hash = 1;
+		hash = hash * 21 + level;
 		if (action != null) {
 			hash = hash * 17 + action.hashCode();
 		}
@@ -46,7 +57,15 @@ public class Propagation {
 
 	@Override
 	public String toString() {
-		return String.format("%s(action=%s)", getClass().getSimpleName(),
-				action);
+		return String.format("%s(action=%s, level=%s)", getClass()
+				.getSimpleName(), action, level);
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 }

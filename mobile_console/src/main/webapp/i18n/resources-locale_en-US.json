@@ -502,5 +502,45 @@
 	"key": "ch_dayToEnd_label",
 	"value": "Giorni al termine",
 	"description": "label per giorni al termine in pagina challenges"
+}, {
+	"key": "label_challeng_title_actual",
+	"value": "Sfide in corso",
+	"description": "label titolo sezione sfide attuali"
+}, {
+	"key": "label_challeng_title_old",
+	"value": "Sfide passate",
+	"description": "label titolo sezione sfide passate"
+}, {
+	"key": "button_old_chall_view",
+	"value": "Vedi sfide passate",
+	"description": "testo pulsante sfide passate"
+}, {
+	"key": "button_actual_chall_view",
+	"value": "Vedi sfide in corso",
+	"description": "testo pulsante sfide attuali"
+}, {
+	"key": "button_old_chall_view_small",
+	"value": "Passate",
+	"description": "testo pulsante sfide passate"
+}, {
+	"key": "button_actual_chall_view_small",
+	"value": "In corso",
+	"description": "testo pulsante sfide attuali"
+}, {
+	"key": "ch_day_to_end_text_label",
+	"value": " giorni per completare la sfida",
+	"description": "label per giorni al termine in pagina challenges"
+}, {
+	"key": "ch_gameover_message_text_label",
+	"value": "HAI PERSO! Punteggio finale di ",
+	"description": "label messaggio sfida persa in pagina challenges"
+}, {
+	"key": "ch_win_message_text_label",
+	"value": "HAI VINTO! Punteggio finale di ",
+	"description": "label messaggio sfida vinta in pagina challenges"
+}, {
+	"key": "ch_empty_list",
+	"value": "Non stai partecipando a nessuna sfida",
+	"description": "label messaggio nessuna sfida in pagina challenges"
 }
 ]

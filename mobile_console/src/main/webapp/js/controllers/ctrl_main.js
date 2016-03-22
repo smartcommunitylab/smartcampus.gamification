@@ -33,7 +33,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_POINT_TYPE = "_point_type";
 	$scope.CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
-	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con il Bike sharing e vinci un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con Bike sharing e avrai BONUS punti POINT_TYPE in bonus";
 	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_ALLOWED_MODE_W = "walk";
@@ -45,9 +45,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_ALLOWED_PT_GREEN = "green leaves";
 	$scope.CHAL_ALLOWED_PT_HEALTH = "health";
 	$scope.CHAL_ALLOWED_PT_PR = "pr";
+	$scope.CHAL_PT_GREEN_STRING = "Punti Green";
+	$scope.CHAL_PT_HEALTH_STRING = "Punti Salute";
+	$scope.CHAL_PT_PR_STRING = "Punti Park&Ride";
 	$scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in a day (for test I use 7 days)
     $scope.MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
     var show_ch_details = false;
+    $scope.actualChellenges = true;
 	
     $scope.setFrameOpened = function(value){
     	$rootScope.frameOpened = value;
@@ -593,10 +597,19 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.setLoading(false);
     };
     
+    $scope.loadOldChallenges = function(){
+    	$scope.actualChellenges = false;
+    };
+    
+    $scope.loadActualChallenges = function(){
+    	$scope.actualChellenges = true;
+    };
+    
     // Method used to load only the custom data from the user profile data
     $scope.correctCustomData = function(customdata){
     	var challIndxArray = [];
     	$scope.challenges = [];
+    	$scope.oldChallenges = [];
     	if(customdata != null && customdata != ""){
     		
     		for(var keyName in customdata){
@@ -629,12 +642,14 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 				var success = (customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] != null) ? customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] : false;
 				var active = (now < endChTs);
 				var status = 0;
+				var row_status = 0;
     			var tmp_chall = {};
     			switch(ch_type){
     				case 'ch1':
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = walked_km * 100 / target;
+    					row_status = walked_km + "/" + target;
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],
@@ -646,16 +661,24 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						Km_walked_during_challenge: walked_km,
     						target: target,
     						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
     						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
     						active: active,
     						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
+    						progress_img: $scope.convertStatusToIcon(status),
     						details: false
     					};
     					break;
     				case 'ch3':
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
     					status = count * 100 / target;
+    					row_status = count + "/" + target;
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: $scope.getCorrectIcon(point_type),
@@ -665,11 +688,18 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						daysToEnd: daysToEnd,
     						target: target,
     						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
     						counter: count,
     						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
     						active: active,
     						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
+    						progress_img: $scope.convertStatusToIcon(status),
     						details: false
     					};
     					break;
@@ -677,6 +707,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
     					if(success){
     						status = 100;
+    						row_status = "1/1";
+    					} else {
+    						row_status = "0/1";
     					}
     					tmp_chall = {
     						id: challIndxArray[i],
@@ -687,16 +720,24 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						daysToEnd: daysToEnd,
     						target: target,
     						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
     						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
     						active: active,
     						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
+    						progress_img: $scope.convertStatusToIcon(status),
     						details: false
     					};
     					break;
     				case 'ch9':
     					var recommandation = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_RECOM];
     					status = recommandation * 100 / target;
+    					row_status = recommandation + "/" + target;
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],
@@ -708,10 +749,17 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						recommandation: recommandation,
     						target: target,
     						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
     						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
     						active: active,
     						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
+    						progress_img: $scope.convertStatusToIcon(status),
     						details: false
     					};
     					break;	
@@ -719,10 +767,43 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			}
     			if(now < (endChTs + $scope.CHAL_TS_OFFSET)){
     				$scope.challenges.push(tmp_chall);
+    			} else {
+    				$scope.oldChallenges.push(tmp_chall);
     			}
     		}
     	}
     	$scope.setLoading(false);
+    };
+    
+    $scope.getWidthPosByStringLength = function(stringlength){
+    	var style_name = "";
+    	switch(stringlength){
+    		case 2: 
+    			style_name = "oriz_space_2";
+    			break;
+    		case 3: 
+    			style_name = "oriz_space_3";
+    			break;
+    		case 4: 
+    			style_name = "oriz_space_4";
+    			break;
+    		default: 
+    			style_name = "oriz_space_5";
+    			break;
+    	}
+    	return style_name;
+    };
+    
+    $scope.getWidthPosByIntValue = function(intvalue){
+    	var style_name = "";
+    	if(intvalue < 100){
+    		style_name = "oriz_space_bonus_2";
+    	} else if(intvalue < 1000){
+    		style_name = "oriz_space_bonus_3";
+    	} else {
+    		style_name = "oriz_space_bonus_4";
+    	}
+    	return style_name;
     };
     
     $scope.getCorrectIcon = function(p_type){
@@ -733,7 +814,45 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	} else if(p_type == $scope.CHAL_ALLOWED_PT_PR){
     		return "img/pr/p&rLeavesBase.svg";
     	}
-    }
+    };
+    
+    $scope.getCorrectTypeString = function(stringtype){
+    	if(stringtype == $scope.CHAL_ALLOWED_PT_GREEN){
+    		return $scope.CHAL_PT_GREEN_STRING;
+    	}
+    	if(stringtype == $scope.CHAL_ALLOWED_PT_HEALTH){
+    		return $scope.CHAL_PT_HEALTH_STRING;
+    	}
+    	if(stringtype == $scope.CHAL_ALLOWED_PT_PR){
+    		return $scope.CHAL_PT_PR_STRING;
+    	}
+    };
+    
+    $scope.convertStatusToIcon = function(status){
+    	if(status < 10){
+    		return "img/challenges_icon/coppa_0_10.png";
+    	} else if(status >= 10 && status < 20){
+    		return "img/challenges_icon/coppa_1_10.png";
+    	} else if(status >= 20 && status < 30){
+    		return "img/challenges_icon/coppa_2_10.png";
+    	} else if(status >= 30 && status < 40){
+    		return "img/challenges_icon/coppa_3_10.png";
+    	} else if(status >= 40 && status < 50){
+    		return "img/challenges_icon/coppa_4_10.png";
+    	} else if(status >= 50 && status < 60){
+    		return "img/challenges_icon/coppa_5_10.png";
+    	} else if(status >= 60 && status < 70){
+    		return "img/challenges_icon/coppa_6_10.png";
+    	} else if(status >= 70 && status < 80){
+    		return "img/challenges_icon/coppa_7_10.png";
+    	} else if(status >= 80 && status < 90){
+    		return "img/challenges_icon/coppa_8_10.png";
+    	} else if(status >= 90 && status < 100){
+    		return "img/challenges_icon/coppa_9_10.png";
+    	} else if(status >= 100){
+    		return "img/challenges_icon/coppa_10_10_sfida_vinta.png";
+    	} 
+    };
     
     $scope.calculateRemainingDays = function(endTimeMillis, now){
     	var remainingDays = 0;

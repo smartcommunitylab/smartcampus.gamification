@@ -57,8 +57,7 @@ public final class ChallengeRulesLoader {
 		response.getChallenges().add(crr);
 	    }
 
-	    logger.debug("Rows in excel file "
-		    + response.getChallenges().size());
+	    logger.debug("Rows in file " + response.getChallenges().size());
 	    return response;
 	} catch (IOException e) {
 	    logger.error(e.getMessage(), e);

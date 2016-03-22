@@ -1,3 +1,8 @@
-NAME;TYPE;GOAL_TYPE;TARGET;BONUS;POINT_TYPE;DIFFICULTY;SELECTION_CRITERIA
-test_percent_20;PERCENT;walkDistance;0.2;100;green leaves;;walk_trips_past >= 1 && walk_km_past > 1
-test_percent_50;PERCENT;walkDistance;0.5;100;green leaves;;walk_trips_past >= 1 && walk_km_past > 3.5
+NAME;TYPE;GOAL_TYPE;TARGET;BONUS;POINT_TYPE;DIFFICULTY;BASELINE_VARIABLE;SELECTION_CRITERIA
+test_bike_percent_20;PERCENT;bikeDistance;0.2;40;green leaves;;bike_km_past;bike_km_past > 2 && bike_trips_past >= 1
+test_bike_percent_30;PERCENT;bikeDistance;0.3;60;green leaves;;bike_km_past;bike_km_past > 2 && bike_trips_past >= 1 && bike_km_past <= 25
+test_bikesharing_trips_2;TRIPNUMBER;bikesharing_trips_past;2;40;green leaves;;;bikesharing_trip_past == 1
+test_bikesharing_trips_4;TRIPNUMBER;bikesharing_trips_past;4;60;green leaves;;;bikesharing_trip_past > 1 && bikesharing_trip_past <= 8
+test_bikesharing_trips_8;TRIPNUMBER;bikesharing_trips_past;8;100;green leaves;;;bikesharing_trip_past > 4 && bikesharing_trip_past <= 8
+test_try_mode_bike;TRIPNUMBER;bike_trips_past;1;30;green leaves;;;bike_trip_past == 0
+test_try_mode_bikesharing;TRIPNUMBER;bikesharing_trips_past;1;30;green leaves;;;bikesharing_trip_past == 0

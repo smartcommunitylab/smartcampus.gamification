@@ -48,6 +48,8 @@ public class ChallengesRulesGenerator {
 	    Challenge c = factory.createChallenge(ChallengeType
 		    .valueOf(challengeSpec.getType()));
 	    params = new HashMap<String, Object>();
+	    // TODO: con peppo, dobbiamo capire come le varie tipologie vanno ad
+	    // essere usate nei template
 	    if (challengeSpec.getTarget() instanceof Double) {
 		params.put("percent", challengeSpec.getTarget());
 	    }

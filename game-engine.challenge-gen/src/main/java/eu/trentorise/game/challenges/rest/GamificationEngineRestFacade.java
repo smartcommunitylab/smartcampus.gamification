@@ -80,7 +80,8 @@ public class GamificationEngineRestFacade {
 	Paginator pageResponse;
 	result.addAll(response.getContent());
 	while (!end) {
-	    pageResponse = target.request().get(Paginator.class);
+	    pageResponse = target.queryParam("page", page).request()
+		    .get(Paginator.class);
 	    if (pageResponse != null) {
 		result.addAll(pageResponse.getContent());
 		if (pageResponse.getLast()) {

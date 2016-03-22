@@ -47,7 +47,7 @@ then
     log("Team " +$playerId + " increases of "+score+" steps");  
     update($pc);
     insert(new UpdateTeam());
-    //insert(new UpdateMembers());
+    insert(new UpdateMembers());
 end
 
 rule "Player to Team prop: badge"
@@ -63,7 +63,7 @@ then
     log("Team " +$playerId + " increases of "+10+" steps");  
     update($pc);
     insert(new UpdateTeam());
-    //insert(new UpdateMembers());
+    insert(new UpdateMembers());
 end
 
 
@@ -80,7 +80,7 @@ then
     log("Team " +$playerId + " gained bagde "+$b);  
     update($bc);
     insert(new UpdateTeam());
-    //insert(new UpdateMembers());
+    insert(new UpdateMembers());
 end
 
 
@@ -97,6 +97,7 @@ then
     log("Player " +$playerId + " increases of 1 steps");
     update($pc);
     insert(new UpdateTeam());
+    insert(new UpdateMembers());
     
 end
 
@@ -114,4 +115,5 @@ then
     log("Player " +$playerId + " increases of " + steps/10 + " steps");
     update($pc);
     insert(new UpdateTeam());
+    insert(new UpdateMembers());
 end

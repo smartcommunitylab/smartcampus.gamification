@@ -21,6 +21,7 @@ green_walk_points=10
 green_bike_points=5
 zero_impact_booster=2
 green_sustainable_bonus=5
+recommendation_bonus=20
 
 #GREEN POINTS for Bus
 green_bus_points_base=15

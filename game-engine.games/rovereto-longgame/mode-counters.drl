@@ -4,30 +4,25 @@ global Double walk_min;
 global Double walk_max;
 global Double bike_max;
 
-rule "clear past counters"
+rule " 0-impact update counters"
 lock-on-active
 when
-	InputData($reset : data["reset"] != null, $reset == true)
-	$c : CustomData()
+	InputData (($walk : data["walkDistance"] != null || $bike : data["bikeDistance"] != null) &&
+		($bus : data["busDistance"] == null || ((Double)$bus)==0) && 
+		($train : data["trainDistance"] == null || ((Double)$train)==0) &&
+		($car : data["carDistance"]==null || ((Double)$car)==0))
+		$c : CustomData($counterZeroPast : this["zero_impact_trips_past"], $counterZero : this["zero_impact_trips"])
 then
-	log("resetting all past counters to 0");
-	
-	$c.put("walk_km_past", (Double) 0.0);
-	$c.put("bike_km_past", (Double) 0.0);
-	$c.put("bikesharing_km_past", (Double) 0.0);
-	$c.put("bus_km_past", (Double) 0.0);
-	$c.put("train_km_past", (Double) 0.0);
-	$c.put("car_km_past", (Double) 0.0);
-	
-	$c.put("walk_trips_past", 0);
-	$c.put("bike_trips_past", 0);
-	$c.put("bikesharing_trips_past", 0);
-	$c.put("bus_trips_past", 0);
-	$c.put("train_trips_past", 0);
-	$c.put("car_trips_past", 0);
-	$c.put("gp_current",0l);
-	
-	update($c);
+		log("apply \'0-impact update counters\'");
+		if ($counterZeroPast == null)
+			$c.put("zero_impact_trips_past", 1);
+		else 
+			$c.put("zero_impact_trips_past", (Integer) $counterZeroPast + 1);
+		if ($counterZero == null)
+			$c.put("zero_impact_trips", 1);
+		else 
+			$c.put("zero_impact_trips", (Integer) $counterZeroPast + 1);
+		update ($c);
 end
 
 rule "update walk counters"
@@ -207,6 +202,21 @@ then
 	}
     update($c);
 end
+
+rule "update recommendation counters"
+lock-on-active
+when
+	Action ($id : id == "app_sent_recommandation")
+	$c : CustomData($counterRec : this["recommendations"])
+then
+		log("apply \'recommendation update counters\'");
+		if ($counterRec == null)
+			$c.put("recommendations", 1);
+		else 
+			$c.put("recommendations", (Integer) $counterRec + 1);
+		update ($c);
+end
+
 
 rule "update point counters"
 when 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="cp">
+<html ng-app="cp" itemscope itemtype="http://schema.org/Article">
 <head lang="it">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,15 +10,22 @@
 <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
 <link href="css/xeditable.css" rel="stylesheet" />
 <link href="css/modaldialog.css" rel="stylesheet" />
+<link href="css/angular-socialshare.css" rel="stylesheet">
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
+<script src="http://platform.tumblr.com/v1/share.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer>
+    {lang: 'it'}
+</script>
+<script src="http://platform.twitter.com/widgets.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="lib/angular.js"></script>
 <script src="js/localize.js" type="text/javascript"></script>
 <script src="lib/angular-route.js"></script>
 <script src="lib/angular-sanitize.js"></script>
+<script src="lib/angular-socialshare.js"></script>
 <script src="lib/ui-bootstrap-tpls.min.js"></script>
 <script src="js/dialogs.min.js" type="text/javascript"></script>
 <script src="js/app.js"></script>
@@ -52,7 +59,10 @@
 		background: url(img/paginaAccesso-56-56-56.svg) no-repeat center center fixed;
 	}
 </style>
-
+<!-- Aggiungi i tre tag seguenti all'interno del tag head. -->
+<meta itemprop="name" content="Prova">
+<meta itemprop="description" content="Prova 124">
+<meta itemprop="image" content="img/foglia.svg">
 </head>
 
 <body>

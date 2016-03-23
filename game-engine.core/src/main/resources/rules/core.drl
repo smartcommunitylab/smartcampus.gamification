@@ -23,12 +23,20 @@ query "getCustomData"
 	$data: CustomData()
 end
 
-query "getUpdateTeam"
-	$data: UpdateTeam()
+query "getUpdateTeams"
+	$data: UpdateTeams()
 end
 
 query "getUpdateMembers"
 	$data: UpdateMembers()
+end
+
+query "getLevel"
+	Propagation($data: level)
+end
+
+query "getMember"
+	$data: Member()
 end
 
 // ****************************************** global functions 	

@@ -16,7 +16,7 @@ then
     log("Player " +$playerId + " increases of "+steps+" steps");
     update($pc);
     // here generate the internal event with two parameters: $playerId and $distance (to fire R2)
-    insert(new UpdateTeam());
+    insert(new UpdateTeams());
 end
 
 

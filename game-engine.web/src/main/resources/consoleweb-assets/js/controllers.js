@@ -620,6 +620,7 @@ function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
   $scope.confirm = function () {};
 }
 
+// rules.html
 function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	 $rootScope.currentNav = 'rules';
 	  $rootScope.currentGameId = $stateParams.id;
@@ -714,6 +715,7 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	  $scope.confirm = function () {};
 }
 
+// tasks.html
 function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	  $rootScope.currentNav = 'tasks';
 	  $rootScope.currentGameId = $stateParams.id;

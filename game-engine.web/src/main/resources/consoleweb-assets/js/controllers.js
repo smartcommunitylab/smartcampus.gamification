@@ -866,6 +866,7 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory,$sta
 	};
 	
 	$scope.update = function() {
+		$scope.expandIdx = -1000;
 		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
 			data.content = enrichData(data.content);
 			$scope.playerStates = data;

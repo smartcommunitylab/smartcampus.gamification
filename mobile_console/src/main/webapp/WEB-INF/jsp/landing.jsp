@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="cp" itemscope itemtype="http://schema.org/Article">
+<html ng-app="cp">
 <head lang="it">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,11 +14,9 @@
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
-<script src="http://platform.tumblr.com/v1/share.js"></script>
 <script src="https://apis.google.com/js/platform.js" async defer>
     {lang: 'it'}
 </script>
-<script src="http://platform.twitter.com/widgets.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="lib/angular.js"></script>
@@ -59,10 +57,6 @@
 		background: url(img/paginaAccesso-56-56-56.svg) no-repeat center center fixed;
 	}
 </style>
-<!-- Aggiungi i tre tag seguenti all'interno del tag head. -->
-<meta itemprop="name" content="Prova">
-<meta itemprop="description" content="Prova 124">
-<meta itemprop="image" content="img/foglia.svg">
 </head>
 
 <body>
@@ -80,7 +74,7 @@
 							<![endif]-->
 							<div class="row" style="font-size: 18px; color: red" align="center" id="cookies">
 							</div>
-							<div class="row" style="height: 20px" align="center" ng-show="isIe10==true">
+							<div class="row" style="height: 20px" align="center" ng-if="isIe10==true">
 								<h4><font color="red">Alcune funzionalit&agrave; del portale non sono supportate in Internet Explorer. Utilizza un altro browser per accedere al portale.</font></h4>
 							</div>
 							<div style="margin: 50px 5px 5px 5px" align="center">

@@ -1,8 +1,7 @@
 'use strict';
 
 /* App Module */
-
-var cp = angular.module('cp', [ 
+var cp = angular.module('cp', [                          
 	'localization',
 	'ngRoute',
 	'ngSanitize',
@@ -16,7 +15,8 @@ var cp = angular.module('cp', [
 	'xeditable',
 	'dialogs',
 	'ui.bootstrap',
-	'base64'
+	'base64',
+	'djds4rce.angular-socialshare'
 ]);
 
 cp.config(['$routeProvider', '$locationProvider',
@@ -42,16 +42,31 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
-    	.when('/rules', {
-    		templateUrl: 'partials/rules.html',
+    	.when('/rules/:type', {
+    		templateUrl: 'partials/game_rules.html',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
+    	.when('/privacy/:type', {
+    		templateUrl: 'partials/privacy_data.html',
+    		controller: 'MainCtrl',
+    		controllerAs: 'main'
+    	})
+    	.when('/prizes/:type', {
+    		templateUrl: 'partials/game_prizes.html',
+    		controller: 'MainCtrl',
+    		controllerAs: 'main'
+    	})
+    	/*.when('/viewall/prizes', {
+    		templateUrl: 'partials/game_prizes.html',
+    		controller: 'MainCtrl',
+    		controllerAs: 'main'
+    	})*/
     	.otherwise({
     		redirectTo:'/'
     	});
   			
-  	$locationProvider.html5Mode(true);
+  	$locationProvider.html5Mode(true); //.hashPrefix('!')
 }]);
 cp.config(['$compileProvider',
     function( $compileProvider )
@@ -60,3 +75,6 @@ cp.config(['$compileProvider',
         // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
     }
 ]);
+cp.run(function($FB){
+	  $FB.init('837242743069588');
+});	  

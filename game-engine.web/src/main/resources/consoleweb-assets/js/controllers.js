@@ -267,280 +267,6 @@ function GameCtrl($scope, $rootScope, $window, $stateParams, $modal, gamesFactor
 	  };
 }
 
-// Points instance controller (game_points.html)
-function GamePointsCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
-  $rootScope.currentNav = 'configure';
-  $rootScope.currentGameId = $stateParams.id;
-
-  // Error alerts object
-  $scope.alerts = {
-    'loadGameError': false,
-    'settingsEdited': false
-  };
-
-  // Load game and points instance
-  gamesFactory.getInstanceById($stateParams.id, 'points', $stateParams.idPoints).then(function (response) {
-    $scope.game = response.game;
-    $scope.points = response.inst;
-
-  }, function () {
-    // Show error alert
-    $scope.alerts.loadGameError = true;
-  });
-
-  $scope.closeAlert = function (alertName) {
-    $scope.alerts[alertName] = false;
-  };
-
-  $scope.openEditInstanceModal = function () {
-    // Edit points instance
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_points_instance_edit.html',
-      controller: EditPointsInstanceModalInstanceCtrl,
-      backdrop: "static",
-      resolve: {
-        game: function () {
-          return $scope.game;
-        },
-        instance: function () {
-          return $scope.points;
-        }
-      }
-    });
-
-    modalInstance.result.then(function () {
-      // Show 'settings successfully edited' alert
-      $scope.alerts.settingsEdited = true;
-    });
-  };
-
-  $scope.deleteInstance = function () {
-    // Delete points instance
-    // Before points removal, tell the user that linked leaderboard will be deleted too
-    var leaderboards = gamesFactory.pointsDeleteCheck($scope.game, $scope.points);
-
-    if (leaderboards.length != 0) {
-      // There are linked leaderboards
-      var modalInstance = $modal.open({
-        templateUrl: 'templates/modals/modal_delete_leaderboards_confirm.html',
-        controller: DeleteLeaderboardsConfirmModalInstanceCtrl,
-        backdrop: "static",
-        resolve: {
-          game: function () {
-            return $scope.game;
-          },
-          leaderboards: function () {
-            return leaderboards;
-          }
-        }
-      });
-
-      modalInstance.result.then(function () {
-        var secondModalInstance = $modal.open({
-          templateUrl: 'templates/modals/modal_delete_confirm.html',
-          controller: DeleteInstanceConfirmModalInstanceCtrl,
-          backdrop: "static",
-          resolve: {
-            game: function () {
-              return $scope.game;
-            },
-            instance: function () {
-              return $scope.points;
-            },
-            instanceType: function () {
-              return 'points';
-            }
-          }
-        });
-      });
-    } else {
-      // There are no linked leaderboards
-      var secondModalInstance = $modal.open({
-        templateUrl: 'templates/modals/modal_delete_confirm.html',
-        controller: DeleteInstanceConfirmModalInstanceCtrl,
-        backdrop: "static",
-        resolve: {
-          game: function () {
-            return $scope.game;
-          },
-          instance: function () {
-            return $scope.points;
-          },
-          instanceType: function () {
-            return 'points';
-          }
-        }
-      });
-    }
-  };
-
-  $scope.deleteRule = function () {
-    // Delete rule
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_delete_confirm.html',
-      controller: DeleteRuleConfirmModalInstanceCtrl,
-      backdrop: "static",
-      resolve: {
-        argument: function () {
-          return "TODO";
-        }
-      }
-    });
-  };
-
-  // Edit rule
-  $scope.openEditRuleModal = function () {
-    // TODO: adjust to pass parameters
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_rule_edit.html',
-      controller: EditRuleModalInstanceCtrl,
-      backdrop: "static",
-    });
-  };
-
-  // Add rule
-  $scope.openAddRuleModal = function () {
-    // TODO: adjust to pass parameters
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_rule_edit.html',
-      controller: EditRuleModalInstanceCtrl,
-      backdrop: "static",
-    });
-  };
-}
-
-// Badges collection instance controller (game_badges_collection.html)
-function GameBadgesCollectionCtrl($scope, $rootScope, $stateParams, $modal, $window, gamesFactory) {
-  $rootScope.currentNav = 'configure';
-  $rootScope.currentGameId = $stateParams.id;
-
-  // Error alerts object
-  $scope.alerts = {
-    'loadGameError': false,
-    'settingsEdited': false
-  };
-
-  // Tab switching
-  $scope.active = {
-    'rules': false,
-    'badges': false
-  };
-
-  // Read the tab param to select the right tab. If it isn't given, choose the dafualt tab
-  var tab = $stateParams.tab;
-
-  if (!!tab && (tab == 'rules' || tab == 'badges')) {
-    // User choice (tab)
-    $scope.active[tab] = true;
-  } else {
-    // Default choice = 'points'
-    $scope.active.rules = true;
-  }
-
-  // Load game and badges collection instance
-  gamesFactory.getInstanceById($stateParams.id, 'badges_collections', $stateParams.idBadgesCollection).then(function (response) {
-    $scope.game = response.game;
-    $scope.badges_collection = response.inst;
-  }, function () {
-    // Show error alert
-    $scope.alerts.loadGameError = true;
-  });
-
-  $scope.closeAlert = function (alertName) {
-    $scope.alerts[alertName] = false;
-  };
-
-  $scope.goToTab = function (tab) {
-    $window.location.href = '#/game/' + $scope.game.id + '/badges_collections/' + $scope.badges_collection.id + '?tab=' + tab;
-  };
-
-  $scope.openEditInstanceModal = function () {
-    // Edit badges collection instance
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_badges_collection_instance_edit.html',
-      controller: EditBadgesCollectionInstanceModalInstanceCtrl,
-      backdrop: "static",
-      resolve: {
-        game: function () {
-          return $scope.game;
-        },
-        instance: function () {
-          return $scope.badges_collection;
-        }
-      }
-    });
-
-    modalInstance.result.then(function () {
-      // Show 'settings successfully edited' alert
-      $scope.alerts.settingsEdited = true;
-    });
-  };
-
-  $scope.deleteInstance = function () {
-    // Delete badges collection instance
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_delete_confirm.html',
-      controller: DeleteInstanceConfirmModalInstanceCtrl,
-      backdrop: "static",
-      resolve: {
-        game: function () {
-          return $scope.game;
-        },
-        instance: function () {
-          return $scope.badges_collection;
-        },
-        instanceType: function () {
-          return 'badges_collections';
-        }
-      }
-    });
-  };
-
-  $scope.openAddBadgeModal = function () {
-    // Add badge
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_badges_edit.html',
-      controller: EditBadgesModalInstanceCtrl,
-      backdrop: "static",
-    });
-  };
-
-  $scope.deleteRule = function () {
-    // Delete rule
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_delete_confirm.html',
-      controller: DeleteRuleConfirmModalInstanceCtrl,
-      backdrop: "static",
-      resolve: {
-        argument: function () {
-          return "TODO";
-        }
-      }
-    });
-  };
-
-  // Edit rule
-  $scope.openEditRuleModal = function () {
-    // TODO: adjust to pass parameters
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_rule_edit.html',
-      controller: EditRuleModalInstanceCtrl,
-      backdrop: "static",
-    });
-  };
-
-  // Add rule
-  $scope.openAddRuleModal = function () {
-    // TODO: adjust to pass parameters
-    var modalInstance = $modal.open({
-      templateUrl: 'templates/modals/modal_rule_edit.html',
-      controller: EditRuleModalInstanceCtrl,
-      backdrop: "static",
-    });
-  };
-}
-
-
 // Actions controller (actions.html)
 function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 
@@ -620,6 +346,7 @@ function ActionsCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
   $scope.confirm = function () {};
 }
 
+// rules.html
 function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	 $rootScope.currentNav = 'rules';
 	  $rootScope.currentGameId = $stateParams.id;
@@ -714,6 +441,7 @@ function RulesCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	  $scope.confirm = function () {};
 }
 
+// tasks.html
 function TasksCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory) {
 	  $rootScope.currentNav = 'tasks';
 	  $rootScope.currentGameId = $stateParams.id;
@@ -866,6 +594,7 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory,$sta
 	};
 	
 	$scope.update = function() {
+		$scope.expandIdx = -1000;
 		gamesFactory.getPlayersState($rootScope.currentGameId,$scope.playerIdFilter,$scope.currentPage, $scope.items4Page).then(function(data){
 			data.content = enrichData(data.content);
 			$scope.playerStates = data;

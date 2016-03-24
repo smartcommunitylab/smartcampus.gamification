@@ -364,12 +364,15 @@ public class ConsoleController {
 			@PathVariable String playerId,
 			@RequestBody Map<String, Object> customData) {
 
-		PlayerState state = playerSrv.updateCustomData(gameId, playerId,
-				customData);
+		PlayerState state = playerSrv.loadState(gameId, playerId, false);
+
 		if (state == null) {
 			throw new IllegalArgumentException(String.format(
 					"player %s doesn't exist in game %s", playerId, gameId));
 		} else {
+			state.getCustomData().putAll(customData);
+			state = playerSrv.updateCustomData(gameId, playerId,
+					state.getCustomData());
 			return converter.convertPlayerState(state);
 		}
 	}

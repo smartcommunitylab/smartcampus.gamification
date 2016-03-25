@@ -1366,15 +1366,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowGreenBronzeMedal = false;
     	$scope.userShowGreenKingWeek = false;
     	
-    	$scope.userShowGreenLeaves50 = false;
-    	$scope.userShowGreenLeaves100 = false;
-    	$scope.userShowGreenLeaves200 = false;
-    	$scope.userShowGreenLeaves400 = false;
-    	$scope.userShowGreenLeaves800 = false;
-    	$scope.userShowGreenLeaves1500 = false;
-    	$scope.userShowGreenLeaves2500 = false;
-    	$scope.userShowGreenLeaves5000 = false;
-    	
     	$scope.userShowHealthGoldMedal = false;
     	$scope.userShowHealthSilverMedal = false;
     	$scope.userShowHealthBronzeMedal = false;
@@ -1395,6 +1386,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowSpecialBike = false;
     	$scope.userShowSpecialWalking = false;
     	$scope.userNoSpecialBadge = false;
+    	
+    	// Green Leaves badges
+    	$scope.userShowGreenLeaves50 = false;
+    	$scope.userShowGreenLeaves100 = false;
+    	$scope.userShowGreenLeaves200 = false;
+    	$scope.userShowGreenLeaves400 = false;
+    	$scope.userShowGreenLeaves800 = false;
+    	$scope.userShowGreenLeaves1500 = false;
+    	$scope.userShowGreenLeaves2500 = false;
+    	$scope.userShowGreenLeaves5000 = false;
     	
     	// Bike aficionado
     	$scope.userShowBikeTrip1 = false;

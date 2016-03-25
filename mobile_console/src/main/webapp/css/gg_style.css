@@ -333,6 +333,10 @@
 		padding-top: 5px;
 		vertical-align: middle; 
 	}
+	.small_b {
+		padding-left: 0px;
+		padding-right: 5px;
+	}
 	
 	.headercol > a,
 	.headercol > a:hover,
@@ -391,6 +395,9 @@
 	#ch-big-details-block {display: none; }
 	#ch-small-title {display: block; }
 	#ch-big-title {display: none; }
+	/* Block for badges */
+	#small-badges {display: block; }
+	#big-badges {display: none; }
 	
 	/* Block for page head titles */
 	#my-prof-head-title { 
@@ -446,4 +453,7 @@
 		#ch-big-details-block {display: block; }
 		#ch-small-title {display: none; }
 		#ch-big-title {display: block; }
+		/* Block for badges */
+		#small-badges {display: none; }
+		#big-badges {display: block; }
 	}

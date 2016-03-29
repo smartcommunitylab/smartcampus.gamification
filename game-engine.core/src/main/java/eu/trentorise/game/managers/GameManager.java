@@ -179,16 +179,29 @@ public class GameManager implements GameService {
 				}
 
 				if (rule instanceof DBRule) {
+					boolean alreadyExist = false;
 					DBRule r = (DBRule) rule;
 					if (r.getId() != null) {
 						r.setId(r.getId().replace(DBRule.URL_PROTOCOL, ""));
+					} else {
+						alreadyExist = ruleRepo.findByGameIdAndName(
+								rule.getGameId(), r.getName()) != null;
 					}
-					rule = ruleRepo.save(r);
-					ruleUrl = DBRule.URL_PROTOCOL + r.getId();
+
+					if (!alreadyExist) {
+						rule = ruleRepo.save(r);
+						ruleUrl = DBRule.URL_PROTOCOL + r.getId();
+					}
 				}
 
-				game.getRules().add(ruleUrl);
-				saveGameDefinition(game);
+				if (ruleUrl != null && !game.getRules().contains(ruleUrl)) {
+					game.getRules().add(ruleUrl);
+					saveGameDefinition(game);
+				} else {
+					throw new IllegalArgumentException(
+							"the rule already exist for game "
+									+ rule.getGameId());
+				}
 			} else {
 				logger.error("Game {} not found", rule.getGameId());
 			}

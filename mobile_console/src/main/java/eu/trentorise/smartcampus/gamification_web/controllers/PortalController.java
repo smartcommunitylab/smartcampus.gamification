@@ -38,6 +38,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,6 +93,10 @@ public class PortalController extends SCController{
 	@Autowired
 	@Value("${smartcampus.isTest}")
 	private String isTest;
+	
+	@Autowired
+	@Value("${smartcampus.gamification.pointtype}")
+	private String p_types;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -172,6 +178,7 @@ public class PortalController extends SCController{
 			model.put("user_name", user.getName());
 			model.put("user_surname", user.getSurname());
 			model.put("gameid", gameid);
+			model.put("point_types", p_types);	// point type
 			logger.info(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));
@@ -342,6 +349,41 @@ public class PortalController extends SCController{
 		model.setViewName("cookie_licence");
 		return model;
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/view_prizes")
+	public ModelAndView preSecurePrizesPage(HttpServletRequest request) {
+		//String redirectUri = mainURL + "/check";
+		logger.error(String.format("I am in prizes info page"));
+		ModelAndView model = new ModelAndView();
+		model.setViewName("g_prizes");
+		return model;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/view_rules")
+	public ModelAndView preSecureRulesPage(HttpServletRequest request) {
+		//String redirectUri = mainURL + "/check";
+		logger.error(String.format("I am in rules info page"));
+		ModelAndView model = new ModelAndView();
+		model.setViewName("g_rules");
+		return model;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/view_privacy")
+	public ModelAndView preSecurePrivacyPage(HttpServletRequest request) {
+		//String redirectUri = mainURL + "/check";
+		logger.error(String.format("I am in privacy info page"));
+		ModelAndView model = new ModelAndView();
+		model.setViewName("g_privacy");
+		return model;
+	}
+	
+/*	@RequestMapping(method = RequestMethod.GET, value = "/viewall")
+	public ModelAndView viewAllElements(HttpServletRequest request) {
+		logger.error(String.format("I am in get viewAll"));
+		ModelAndView model = new ModelAndView();
+		model.setViewName("info_index");
+		return model;
+	}*/
 	
 //	@RequestMapping(method = RequestMethod.GET, value = "/logout")
 //	public ModelAndView outSecure(HttpServletRequest request) {

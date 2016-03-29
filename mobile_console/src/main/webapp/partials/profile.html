@@ -5,9 +5,9 @@
 	</div>
 
 	<div align="center">
-			<h1>{{ getUserName() }} {{ getUserSurname() }} - {{ myNick }}</h1>
-			<h4>{{ 'label_profile_title_h4' | i18n }}</h4>
-		</div>	
+		<h1>{{ getUserName() }} {{ getUserSurname() }} - {{ myNick }}</h1>
+		<h4>{{ 'label_profile_title_h4' | i18n }}</h4>
+	</div>	
 <!-- 		<div class="row" style="height: 200px; margin-top: 20px" ng-show="isLoading"> -->
 <!-- 			<div style="text-align: center"> -->
 <!-- 				<img src="img/ajax-loader.gif" width="70" height="70" /><br> -->
@@ -21,23 +21,35 @@
 <!-- 			</tab> -->
 <!-- 		</tabset> -->
 		
-		<div class="row">
-		    <ul class="nav nav-tabs nav-justified">
-		        <li class="nav active"><a data-target="#G" data-toggle="tab">{{ 'green_leaves_tab_title' | i18n }}</a></li>
-		        <li class="nav"><a data-target="#H" data-toggle="tab">{{ 'health_tab_title' | i18n }}</a></li>
-		        <li class="nav"><a data-target="#P" data-toggle="tab">{{ 'pr_tab_title' | i18n }}</a></li>
-		        <li class="nav"><a data-target="#S" data-toggle="tab">{{ 'special_tab_title' | i18n }}</a></li><!-- ng-click="activeProfTab(3)" -->
-		    </ul>
+	<div class="row">
+	    <ul class="nav nav-tabs nav-justified">
+	        <li ng-if="show_gpoint" class="nav active"><a data-target="#G" data-toggle="tab">{{ 'green_leaves_tab_title' | i18n }}</a></li>
+	        <li ng-if="show_hpoint" class="nav"><a data-target="#H" data-toggle="tab">{{ 'health_tab_title' | i18n }}</a></li>
+	        <li ng-if="show_prpoint" class="nav"><a data-target="#P" data-toggle="tab">{{ 'pr_tab_title' | i18n }}</a></li>
+	        <li ng-if="show_otherpoint" class="nav"><a data-target="#O" data-toggle="tab">{{ 'other_tab_title' | i18n }}</a></li>
+	        <li ng-if="show_specialpoint" class="nav"><a data-target="#S" data-toggle="tab">{{ 'special_tab_title' | i18n }}</a></li><!-- ng-click="activeProfTab(3)" -->
+	    </ul>
 		
-		    <!-- Tab panes -->
-		    <div class="tab-content">
-		        <div class="tab-pane fade in active" id="G" ng-include="profTabs[0].content"></div>
-		        <div class="tab-pane fade" id="H" ng-include="profTabs[1].content"></div>
-		        <div class="tab-pane fade" id="P" ng-include="profTabs[2].content"></div>
-		        <div class="tab-pane fade" id="S" ng-include="profTabs[3].content"></div>
-		    </div>
-		</div>
-		
-		
-		
+	    <!-- Tab panes -->
+	    <div class="tab-content">
+	        <div class="tab-pane fade in active" id="G" ng-include="profTabs[0].content"></div>
+	        <div class="tab-pane fade" id="H" ng-include="profTabs[1].content"></div>
+	        <div class="tab-pane fade" id="P" ng-include="profTabs[2].content"></div>
+	        <div class="tab-pane fade" id="O" ng-include="profTabs[4].content"></div>
+	        <div class="tab-pane fade" id="S" ng-include="profTabs[3].content"></div>
+	      	<p itemprop="description" ng-show="false">{{ text_gp }}</p>
+	      	<div class="row" align="right">
+				<div class="col-md-12 verticalpad">
+					<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ text_fb }}" data-callback="callback"></a><!-- {{ shares }} -->
+					&nbsp;&nbsp;
+					<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ text_tw }}' ></a>
+					&nbsp;&nbsp;
+					<a gplus data-size="tall" data-annotation="none" data-href='{{ url }}' data-action='share'></a>
+				</div>
+				<!-- <div facebook class="facebookShare" data-title="{{ title }}" data-picture-url="http://plnkr.co/img/plunker.png" data-url="http://google.com" data-shares='shares' data-caption="esempio di dati condivisi" data-callback='callback'>{{ shares }}  </div> -->
+				<!-- <a twitter data-lang="en" data-count='vertical' data-url='http://google.com' data-via='notsosleepy' data-size="medium" data-text='Testing Twitter Share' >Share on twitter</a>
+				<div class="g-plus" data-action="share" data-annotation="none" data-href="http://www.google.it"></div> -->
+			</div> 
+	    </div>
+	</div>	
 </div>

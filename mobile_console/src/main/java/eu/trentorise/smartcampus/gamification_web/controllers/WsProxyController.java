@@ -34,9 +34,12 @@ public class WsProxyController {
 	private static transient final Logger logger = Logger.getLogger(WsProxyController.class);
 
 	@Autowired
-	//@Value("${smartcampus.urlws.epu}")
 	@Value("${smartcampus.urlws.gamification}")
 	private String gamificationUrl;
+	
+	@Autowired
+	@Value("${smartcampus.urlws.post.gamification}")
+	private String gamificationUrlPost;
 	
 	@Autowired
     private PlayerRepositoryDao playerRepositoryDao;
@@ -73,7 +76,11 @@ public class WsProxyController {
 		logger.info("WS-POST. Method " + urlWS + ". Passed data : " + data); //Added for log ws calls info in preliminary phase of portal
 		String result = "";
 		try {
-			result = restTemplate.postForObject(gamificationUrl + urlWS, data, String.class);
+			//if(urlWS.contains("execute")){
+			//	result = restTemplate.postForObject(gamificationUrlPost + urlWS, data, String.class);
+			//} else {
+				result = restTemplate.postForObject(gamificationUrl + urlWS, data, String.class);
+			//}
 			if(urlWS.compareTo("GetPDF") == 0 && (result.contains("error") || result.contains("exception"))){
 				logger.info("WS-POST. Method " + urlWS + ". Error : " + result);
 			}

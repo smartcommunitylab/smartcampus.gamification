@@ -2,12 +2,12 @@
   border: none;
   visibility: visible;
   width: auto;
-  height: 22px;
+  /*height: 22px;*/
   background: transparent;
   overflow: hidden;
   -webkit-text-size-adjust: none;
   color: #333;
-  line-height: 1.28;
+  /*line-height: 1.28;*/
   margin: 0;
   padding: 0;
   text-align: left;

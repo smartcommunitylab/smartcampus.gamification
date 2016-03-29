@@ -49,10 +49,10 @@
 		<h5><strong>{{ 'player_king_week_label_green' | i18n }}</strong></h5>
 	</div>
 </div>
-<div class="row" align="center">
-	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 10">
+<div id="big-badges" class="row" align="center">
+	<!-- <div class="col-md-4" ng-show="userProfile.scores[0].score >= 10">
 		<img height="150" width="150" src="img/green/greenLeaves10.svg" alt="Bedge Green 10" title="Bedge Green 10">
-	</div>
+	</div> -->
 	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 50">
 		<img height="150" width="150" src="img/green/greenLeaves50.svg" alt="Bedge Green 50" title="Bedge Green 50">
 	</div>
@@ -76,5 +76,34 @@
 	</div>
 	<div class="col-md-4" ng-show="userShowGreenGoldMedal==true">
 		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Green Gold Medal" title="Bedge Green Gold Medal">
+	</div>
+</div>
+<div id="small-badges" class="row" align="center">
+	<!-- <div class="col-md-4" ng-show="userProfile.scores[0].score >= 10">
+		<img height="150" width="150" src="img/green/greenLeaves10.svg" alt="Bedge Green 10" title="Bedge Green 10">
+	</div> -->
+	<div class="col-xs-4 small_b" ng-show="userProfile.scores[0].score >= 50">
+		<img height="70" width="70" src="img/green/greenLeaves50.svg" alt="Bedge Green 50" title="Bedge Green 50">
+	</div>
+	<div class="col-xs-4 small_b" ng-show="userProfile.scores[0].score >= 100">
+		<img height="70" width="70" src="img/green/greenLeaves100.svg" alt="Bedge Green 100" title="Bedge Green 100">
+	</div>
+	<div class="col-xs-4 small_b" ng-show="userProfile.scores[0].score >= 250">
+		<img height="70" width="70" src="img/green/greenLeaves250.svg" alt="Bedge Green 250" title="Bedge Green 250">
+	</div>
+	<div class="col-xs-4 small_b" ng-show="userProfile.scores[0].score >= 500">
+		<img height="70" width="70" src="img/green/greenLeaves500.svg" alt="Bedge Green 500" title="Bedge Green 500">
+	</div>
+	<div class="col-xs-4 small_b" ng-show="userProfile.scores[0].score >= 1000">
+		<img height="70" width="70" src="img/green/greenLeaves1000.svg" alt="Bedge Green 1000" title="Bedge Green 1000">
+	</div>
+	<div class="col-xs-4 small_b" ng-show="userShowGreenBronzeMedal==true">
+		<img height="70" width="70" src="img/green/greenBronzeMedal.svg" alt="Bedge Green Bronze Medal" title="Bedge Green Bronze Medal">
+	</div>
+	<div class="col-xs-4 small_b" ng-show="userShowGreenSilverMedal==true">
+		<img height="70" width="70" src="img/green/greenSilverMedal.svg" alt="Bedge Green Silver Medal" title="Bedge Green Silver Medal">
+	</div>
+	<div class="col-xs-4 small_b" ng-show="userShowGreenGoldMedal==true">
+		<img height="70" width="70" src="img/green/greenGoldMedal.svg" alt="Bedge Green Gold Medal" title="Bedge Green Gold Medal">
 	</div>
 </div>

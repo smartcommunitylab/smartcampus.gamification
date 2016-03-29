@@ -1,20 +1,5 @@
-
-<!-- <table width="100%"> -->
-<!-- 	<tr> -->
-<!-- 		<td colspan="2"><strong>{{ 'player_details_game_label' | i18n }}:</strong> {{ userProfile.gameId }}</td> -->
-<!-- 	</tr> -->
-<!-- 	<tr> -->
-<!-- 		<td><strong>{{ 'player_details_badge_label' | i18n }}</strong></td> -->
-<!-- 		<td></td> -->
-<!-- 	</tr> -->
-<!-- 	<tbody class="animate-repeat" ng-repeat="b in userProfile.badges[3].badgeEarned"> -->
-<!-- 		<tr> -->
-<!-- 			<td colspan="2">{{ b }}</td> -->
-<!-- 		</tr> -->
-<!-- 	</tbody> -->
-<!-- </table> -->
 <div ng-show="userNoSpecialBadge==true">
-	<h5>{{ 'no_special_badge' | i18n }}</h5>
+	<h5>{{ 'no_other_badge' | i18n }}</h5>
 </div>
 
 <div class="row" align="center">
@@ -24,10 +9,10 @@
 	<div class="col-md-4" ng-show="userShowZeroImpact==true">
 		<img height="150" width="150" src="img/special/special_impatto_zero.svg" alt="Bedge Special ZeroImpact" title="Bedge Special ZeroImpact">
 	</div>
-	<div class="col-md-4" ng-show="userShowParkAndRideManifattura==true">
+	<div class="col-md-4" ng-show="userShowManifatturaPark==true">
 		<img height="150" width="150" src="img/special/special_special_p_manifattura.svg" alt="Bedge Special Manifattura Park" title="Bedge Special Manifattura Park">
 	</div>
-	<div class="col-md-4" ng-show="userShowParkAndRideStadio==true">
+	<div class="col-md-4" ng-show="userShowQuerciaPark==true">
 		<img height="150" width="150" src="img/special/special_p_quercia.svg" alt="Bedge Special Quercia Park" title="Bedge Special Quercia Park">
 	</div>
 	<div class="col-md-4" ng-show="userShowCentroStoricoPark==true">

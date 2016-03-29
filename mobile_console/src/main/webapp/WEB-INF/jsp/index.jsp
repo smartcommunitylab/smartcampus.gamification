@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="cp">
+<html ng-app="cp" itemscope itemtype="http://schema.org/Article">
 <head id="myHead" lang="it">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +10,15 @@
 <link href="css/xeditable.css" rel="stylesheet">
 <link href="css/modaldialog.css" rel="stylesheet">
 <link href="css/gg_style.css" rel="stylesheet">
+<link href="css/angular-socialshare.css" rel="stylesheet">
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
+<script src="http://platform.tumblr.com/v1/share.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer>
+    {lang: 'it'}
+</script>
+<script src="http://platform.twitter.com/widgets.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="lib/angular.js"></script>
@@ -20,6 +26,7 @@
 <script src="js/dialogs.min.js" type="text/javascript"></script>
 <script src="lib/angular-route.js"></script>
 <script src="lib/angular-sanitize.js"></script>
+<script src="lib/angular-socialshare.js"></script>
 
 <script src="i18n/angular-locale_it-IT.js"></script>
 <!-- <script src="i18n/angular-locale_en-EN.js"></script> -->
@@ -57,6 +64,7 @@ var userId="<%=request.getAttribute("user_id")%>";
 var user_name="<%=request.getAttribute("user_name")%>";
 var user_surname="<%=request.getAttribute("user_surname")%>";
 var conf_gameid="<%=request.getAttribute("gameid")%>";
+var conf_point_types="<%=request.getAttribute("point_types")%>";
 var user_mail="<%=request.getAttribute("e_mail")%>";
 var nome="<%=request.getAttribute("nome")%>";
 var cognome="<%=request.getAttribute("cognome")%>";
@@ -160,7 +168,10 @@ var base64="<%=request.getAttribute("base64")%>";
 	    }
 	});
   </script>
-
+  <!-- Posiziona questo tag all'interno del tag head oppure subito prima della chiusura del tag body. -->
+	<!-- Aggiungi i tre tag seguenti all'interno del tag head. -->
+	<meta itemprop="name" content="GreenGame Rovereto">
+	<meta itemprop="image" content="img/foglia.svg">
 </head>
 
 <body>
@@ -179,21 +190,17 @@ var base64="<%=request.getAttribute("base64")%>";
             	</a>
             </li> 
             
-            <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li>
-            <li class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
-            <li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li>
-            <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
+            <li ng-if="!disableAllLinks" class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li>
+            <li ng-if="!disableAllLinks" class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
+            <li ng-if="!disableAllLinks" class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li>
+            <li class="{{ isActiveRules() }}"><a href="#/rules/0" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
+            <li class="{{ isActivePrivacy() }}"><a href="#/privacy/0" ng-click="showPrivacy()" >{{ 'left_menu-privacy' | i18n }}</a></li>
+            <li class="{{ isActivePrizes() }}"><a href="#/prizes/0" ng-click="showPrizes()" >{{ 'left_menu-prizes' | i18n }}</a></li>
             
           </ul>
           <ul class="nav navbar-nav navbar-right" >
 			<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
 			<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
-<!--             <li class="active" > -->
-<!--             	<a> -->
-<!--             		<span class="glyphicon glyphicon-user"></span> -->
-<!--             		{{ getUserName() }} {{ getUserSurname() }} -->
-<!--             	</a> -->
-<!--             </li> --> 
             <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li><!-- ng-click="logout()" -->
           </ul>
         </div><!-- /.nav-collapse -->
@@ -218,6 +225,8 @@ var base64="<%=request.getAttribute("base64")%>";
 			            		<li class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
 			            		<li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" ><strong>{{ 'left_menu-classification' | i18n }}</strong></a></li>
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
+            					<li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" ><strong>{{ 'left_menu-privacy' | i18n }}</strong></a></li>
+            					<li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" ><strong>{{ 'left_menu-prizes' | i18n }}</strong></a></li>
 								<!-- <li class="divider"></li> -->
 								<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li> -->
 								<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li> -->
@@ -362,7 +371,19 @@ var base64="<%=request.getAttribute("base64")%>";
 				</div>
 				<div class="modal-body">
 					<div>
-					{{ 'modal_desc_label' | i18n }}
+					{{ 'modal_desc_label' | i18n }}<br />
+					Per maggiori informazioni visualizza anche i seguenti link:
+					<ul>
+						<li>
+							<a href="view_rules" target="_blank" >{{ 'left_menu-rules' | i18n }}</a>
+						</li>
+						<li>
+							<a href="view_privacy" target="_blank" >{{ 'left_menu-privacy' | i18n }}</a>
+						</li>
+						<li>
+							<a href="view_prizes" target="_blank" >{{ 'left_menu-prizes' | i18n }}</a>
+						</li>
+					</ul>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
 						<label class="control-label" for="username">{{ 'modal_nick_label' | i18n }}:</label>
@@ -426,6 +447,7 @@ var base64="<%=request.getAttribute("base64")%>";
 					<div class="form-group" ng-class="{true: 'has-error'}[form.invitation_person.$dirty && form.invitation_person.$invalid]">
 						<label class="control-label" for="invitation">{{ 'modal_invitation_nickname_label' | i18n }}</label>
 						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="{{ 'modal_invitation_nickname_placeholder' | i18n }}" ng-model="user.invitation">
+						<div ng-show="showInvitationMessages" class="alert alert-danger" role="alert">{{ errorInvitationMessages }}</div>
 					</div>
 				</div>
 				<div class="required_desc"><p>{{ 'modal_required_field_label' | i18n }}</p></div>

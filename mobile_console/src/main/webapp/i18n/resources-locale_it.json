@@ -68,8 +68,16 @@
 	"description": "Link classifica"
 }, {
 	"key": "left_menu-rules",
-	"value": "Istruzioni",
+	"value": "Regole",
 	"description": "Link regolamento"
+}, {
+	"key": "left_menu-privacy",
+	"value": "Privacy",
+	"description": "Link privacy"
+}, {
+	"key": "left_menu-prizes",
+	"value": "Premi",
+	"description": "Link premi"
 }, {
 	"key": "home_title_page-classification-global",
 	"value": "Classifica Generale",
@@ -335,9 +343,17 @@
 	"value": "Park&Ride",
 	"description": "Titolo tab pr"
 }, {
+	"key": "other_tab_title",
+	"value": "Altri",
+	"description": "Titolo tab altri"
+}, {
 	"key": "special_tab_title",
 	"value": "Speciali",
 	"description": "Titolo tab speciali"
+}, {
+	"key": "no_other_badge",
+	"value": "Non possiedi badge di questa categoria",
+	"description": "Messaggio No Badge Altri"
 }, {
 	"key": "no_special_badge",
 	"value": "Non possiedi badge Speciali",

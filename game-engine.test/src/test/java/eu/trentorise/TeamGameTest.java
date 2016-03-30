@@ -3,6 +3,7 @@ package eu.trentorise;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
@@ -24,20 +24,22 @@ public class TeamGameTest extends GameTest {
 
 	@Override
 	public void initEnv() {
-		TeamState team = new TeamState(GAME, "fuorilegge");
-		team.setName("fuorilegge");
-		team.setMembers(Arrays.asList("prowler", "rocket racer"));
-		playerSrv.saveTeam(team);
 
-		team = new TeamState(GAME, "secret avengers");
-		team.setName("secret avengers");
-		team.setMembers(Arrays.asList("war machine", "moon knight"));
-		playerSrv.saveTeam(team);
+		saveTeam(GAME, "fuorilegge", "fuorilegge",
+				new HashSet<String>(Arrays.asList("prowler", "rocket racer")));
 
-		team = new TeamState(GAME, "marvel");
-		team.setName("marvel");
-		team.setMembers(Arrays.asList("fuorilegge", "secret avengers"));
-		playerSrv.saveTeam(team);
+		saveTeam(
+				GAME,
+				"secret avengers",
+				"secret avengers",
+				new HashSet<String>(Arrays.asList("war machine", "moon knight")));
+
+		saveTeam(
+				GAME,
+				"marvel",
+				"marvel",
+				new HashSet<String>(Arrays.asList("fuorilegge",
+						"secret avengers")));
 
 	}
 

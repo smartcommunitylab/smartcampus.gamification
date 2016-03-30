@@ -1,5 +1,6 @@
 package eu.trentorise.smartcampus.gamification_web.controllers;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,10 +56,29 @@ public class WsProxyController {
 	@Autowired
 	@Value("${smartcampus.isTest}")
 	private String isTest;
+	
+	@Autowired
+    @Value("${gamification.server.bauth.username}")
+    private String basicAuthUsername;
+    @Autowired
+    @Value("${gamification.server.bauth.password}")
+    private String basicAuthPassword;
 //	
 //	@Autowired
 //	@Value("${smartcampus.cf.test}")
 //	private String codFiscale;
+	
+	HttpHeaders createHeaders( ){
+		return new HttpHeaders(){
+			{
+				String auth = basicAuthUsername + ":" + basicAuthPassword;
+				byte[] encodedAuth = Base64.encode( 
+						auth.getBytes(Charset.forName("UTF-8")) );
+				String authHeader = "Basic " + new String( encodedAuth );
+				set( "Authorization", authHeader );
+			}
+		};
+	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/allGet")
 	public @ResponseBody
@@ -61,11 +86,14 @@ public class WsProxyController {
 		RestTemplate restTemplate = new RestTemplate();
 		logger.info("WS-GET. Method " + urlWS);	//Added for log ws calls info in preliminary phase of portal
 		String result = "";
+		ResponseEntity<String> tmp_res = null;
 		try {
-			result = restTemplate.getForObject(gamificationUrl + urlWS, String.class);
+			//result = restTemplate.getForObject(gamificationUrl + urlWS, String.class);
+			tmp_res = restTemplate.exchange(gamificationUrl + urlWS, HttpMethod.GET, new HttpEntity<Object>(createHeaders()),String.class);
 		} catch (Exception ex){
 			logger.info(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
+		result = tmp_res.getBody();
 		return result;	
 	}
 	

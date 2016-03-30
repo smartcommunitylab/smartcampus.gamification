@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,6 +43,7 @@ import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
@@ -109,9 +111,7 @@ public abstract class GameTest {
 
 	public void savePlayerState(String gameId, String playerId,
 			List<GameConcept> concepts) {
-		PlayerState player = new PlayerState(gameId, playerId);
-		player.setState(new HashSet<GameConcept>(concepts));
-		mongo.save(new StatePersistence(player));
+		savePlayerState(gameId, playerId, concepts, null);
 	}
 
 	public void savePlayerState(String gameId, String playerId,
@@ -121,7 +121,31 @@ public abstract class GameTest {
 		if (customData != null) {
 			player.getCustomData().putAll(customData);
 		}
-		mongo.save(new StatePersistence(player));
+		playerSrv.saveState(player);
+	}
+
+	public void saveTeam(String gameId, String teamId, String name,
+			Set<String> members) {
+		saveTeam(gameId, teamId, name, members, null, null);
+	}
+
+	public void saveTeam(String gameId, String teamId, String name,
+			Set<String> members, List<GameConcept> concepts) {
+		saveTeam(gameId, teamId, name, members, concepts, null);
+	}
+
+	public void saveTeam(String gameId, String teamId, String name,
+			Set<String> members, List<GameConcept> concepts,
+			Map<String, Object> customData) {
+		TeamState team = new TeamState(gameId, teamId);
+		team.setName(name);
+		if (members != null) {
+			team.setMembers(new ArrayList<>(members));
+		}
+		playerSrv.saveTeam(team);
+		if (concepts != null || customData != null) {
+			savePlayerState(gameId, teamId, concepts, customData);
+		}
 	}
 
 	public void defineGameHelper(String gameId, List<String> actions,

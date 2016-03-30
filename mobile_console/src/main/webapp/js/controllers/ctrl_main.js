@@ -3,8 +3,8 @@
 /* Controllers */
 var cpControllers = angular.module('cpControllers');
 
-cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootScope', 'localize', '$locale', '$dialogs', 'sharedDataService', '$filter', 'invokeWSService','invokeWSServiceProxy','invokePdfServiceProxy', 'invokeWSNiksServiceProxy','getMyMessages','$timeout',
-    function($scope, $http, $route, $routeParams, $rootScope, localize, $locale, $dialogs, sharedDataService, $filter, invokeWSService, invokeWSServiceProxy, invokePdfServiceProxy, invokeWSNiksServiceProxy, getMyMessages, $timeout) {
+cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootScope', 'localize', '$locale', '$dialogs', 'sharedDataService', '$filter', 'invokeWSService','invokeWSServiceProxy','invokePdfServiceProxy', 'invokeWSNiksServiceProxy','getMyMessages','$timeout', '$base64',
+    function($scope, $http, $route, $routeParams, $rootScope, localize, $locale, $dialogs, sharedDataService, $filter, invokeWSService, invokeWSServiceProxy, invokePdfServiceProxy, invokeWSNiksServiceProxy, getMyMessages, $timeout, $base64) {
 
     //$rootScope.frameOpened = false;
 	var cod_ente = "24";
@@ -91,6 +91,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
                   			
     $scope.citizenId = userId;
     $scope.user_token = token;
+    $scope.basic_auth_user = conf_bauth_user;
+    $scope.basic_auth_password = conf_bauth_password;
     
     // Configure point type to show in pages
     $scope.point_types = conf_point_types;
@@ -296,7 +298,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     $scope.getBasic = function() {
-        return 'Basic ' + $scope.user_token;
+        return 'Basic ' + $base64.encode($scope.basic_auth_user + ':' + $scope.basic_auth_password);
     };
     
     $scope.authHeadersBasic = {
@@ -471,11 +473,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
            
     $scope.profTabs = [ 
-         { title:'Green Leaves', index: 1, content:"partials/profiles/prof_green_leaves.html", activeClass:"active" },
+         { title:'Punti e Badge', index: 1, content:"partials/profiles/prof_points.html", activeClass:"active" },
          { title:'Health', index: 2, content:"partials/profiles/prof_health.html", activeClass:"", disabled:false },
          { title:'P+R', index: 3, content:"partials/profiles/prof_pr.html", activeClass:"", disabled:false },
          { title:'Special', index: 4, content:"partials/profiles/prof_special.html", activeClass:"", disabled:false },
-         { title:'Others', index: 5, content:"partials/profiles/prof_other.html", activeClass:"", disabled:false }
+         { title:'Others', index: 5, content:"partials/profiles/prof_other.html", activeClass:"", disabled:false },
+         { title:'Challenge', index: 6, content:"partials/challeng.html", activeClass:"", disabled:false },
+         { title:'Classifica', index: 7, content:"partials/classification.html", activeClass:"", disabled:false }
     ];
     
     $scope.setProfIndex = function($index){
@@ -536,6 +540,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    		$scope.getProfilesData(gameId);
 	    	});
     	}
+    	$scope.gameId = gameId;
     };
     
     $scope.getChalleng = function(gameId){
@@ -548,7 +553,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId + "/" + $scope.userId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
     	myDataPromise.then(function(result){
     		$scope.correctProfileData(result);
     		$scope.showProfile();
@@ -560,7 +565,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId + "/" + $scope.userId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
     	myDataPromise.then(function(result){
     		if(result.customData){
     			$scope.correctCustomData(result.customData);
@@ -575,7 +580,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
     	myDataPromise.then(function(result){
     		$scope.correctClassificationData(result);
     		$scope.showClassification();
@@ -762,8 +767,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		};
     		angular.copy(playerData, $scope.userProfile);
     		console.log(JSON.stringify(playerData));
-    		var badgesString = $scope.checkBadges($scope.userProfile.badges);
-    		$scope.profileDataToString(scores, badgesString);
+    		var badgesStrings = $scope.checkBadges($scope.userProfile.badges);
+    		$scope.profileDataToString(scores, badgesStrings[0], badgesStrings[1]);
     	}
     	$scope.setLoading(false);
     };
@@ -776,13 +781,14 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.actualChellenges = true;
     };
     
-    $scope.profileDataToString = function(scores, b_string){
+    $scope.profileDataToString = function(scores, b_string_fb, b_string_tw){
     	// here I have to create the correct string representing the user profile situation
-    	var pointString = "punti green: " + scores[0].score + " punti; ";
-    	var profileString = pointString + b_string;
-    	$scope.text_fb = "Green Game Rovereto: " + profileString;
-        $scope.text_tw = "#greengamerovereto: " + profileString;
-        $scope.text_gp = "Green Game Rovereto: " + profileString;
+    	var pointString = " " + scores[0].score + " punti green; ";
+    	var profileStringFb = pointString + b_string_fb;
+    	var profileStringTw = pointString + b_string_tw;
+    	$scope.text_fb = "Green Game Rovereto: " + profileStringFb;
+        $scope.text_tw = "Green Game Rovereto: " + profileStringTw + " #greengamerovereto";
+        //$scope.text_gp = "Green Game Rovereto: " + profileString;
     };
     
     $scope.retrievePlayerFromNick = function(invitation){
@@ -1361,6 +1367,15 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     // ------------------------------------------------------------------------------------------------------------------------------------
     
     $scope.checkBadges = function(list){
+    	var greenBadges = 0;
+    	var bikeTripBadges = 0;
+    	var bikeShareBadges = 0;
+    	var zeroImpactBadges = 0;
+    	var publicTransportBadges = 0;
+    	var parkRideBadges = 0;
+    	var recommendationBadges = 0;
+    	var leaderBoardBadges = 0;
+    	
     	$scope.userShowGreenGoldMedal = false;
     	$scope.userShowGreenSilverMedal = false;
     	$scope.userShowGreenBronzeMedal = false;
@@ -1460,35 +1475,43 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    				case "50" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves50 = true;
 	    					badgeString += "50 punti green, ";
+	    					greenBadges += 1;
 	    					break;
 	    				case "100" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves100 = true;
 	    					badgeString += "100 punti green, ";
+	    					greenBadges += 1;
 	    					break;
 	    				case "200" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves200 = true;
 	    					badgeString += "200 punti green, ";
+	    					greenBadges += 1;
 	    					break;
 	    				case "400" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves400 = true;
 	    					badgeString += "400 punti green, ";
+	    					greenBadges += 1;
 	    					break;
 	    				case "800" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves800 = true;
 	    					badgeString += "800 punti green, ";
+	    					greenBadges += 1;
 	    					break;
 	    				case "1500" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves1500 = true;
 	    					badgeString += "1500 punti green, ";
+	    					greenBadges += 1;
 	    					break;
 	    				case "2500" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves2500 = true;
 	    					badgeString += "2500 punti green, ";
+	    					greenBadges += 1;
 	    					break;
 	    				case "5000" + $scope.BG_GREEN_POINT :
 	    					$scope.userShowGreenLeaves5000 = true;
 	    					badgeString += "5000 punti green, ";
-	    					break;	
+	    					greenBadges += 1;
+	    					break;
 	    				default: 
 	    					break;
 	    			}
@@ -1569,86 +1592,107 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    				case "1" + $scope.BG_BIKE_TRIP :
 	    					$scope.userShowBikeTrip1 = true;
 	    					badgeString += "1 viaggio in bici, ";
+	    					bikeTripBadges += 1;
 	    					break;
 	    				case "5" + $scope.BG_BIKE_TRIP :
 	    					$scope.userShowBikeTrip5 = true;
 	    					badgeString += "5 viaggio in bici, ";
+	    					bikeTripBadges += 1;
 	    					break;
 	    				case "10" + $scope.BG_BIKE_TRIP :
 	    					$scope.userShowBikeTrip10 = true;
 	    					badgeString += "10 viaggio in bici, ";
+	    					bikeTripBadges += 1;
 	    					break;
 	    				case "25" + $scope.BG_BIKE_TRIP :
 	    					$scope.userShowBikeTrip25 = true;
 	    					badgeString += "25 viaggio in bici, ";
+	    					bikeTripBadges += 1;
 	    					break;
 	    				case "50" + $scope.BG_BIKE_TRIP :
 	    					$scope.userShowBikeTrip50 = false;
-	    					badgeString += "50 viaggio in bici, ";
+	    					bikeTripBadges += "50 viaggio in bici, ";
+	    					bikeShareBadges += 1;
 	    					break;
 	    				case "1" + $scope.BG_ZERO_IMPACT :
 	    					$scope.userShowZeroImpact1 = true;
 	    					badgeString += "1 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
 	    					break;
 	    				case "5" + $scope.BG_ZERO_IMPACT :
 	    					$scope.userShowZeroImpact5 = true;
 	    					badgeString += "5 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
 	    					break;
 	    				case "10" + $scope.BG_ZERO_IMPACT :
 	    					$scope.userShowZeroImpact10 = true;
 	    					badgeString += "10 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
 	    					break;
 	    				case "25" + $scope.BG_ZERO_IMPACT :
 	    					$scope.userShowZeroImpact25 = true;
 	    					badgeString += "25 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
 	    					break;
 	    				case "50" + $scope.BG_ZERO_IMPACT :
 	    					$scope.userShowZeroImpact50 = true;
 	    					badgeString += "50 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
 	    					break;
 	    				case "5" + $scope.BG_PUBLIC_TRANSPORT :
 	    					$scope.userShowPublicTransport5 = true;
 	    					badgeString += "5 viaggi trasporto pubblico, ";
+	    					publicTransportBadges += 1;
 	    					break;
 	    				case "10" + $scope.BG_PUBLIC_TRANSPORT :
 	    					$scope.userShowPublicTransport10 = true;
 	    					badgeString += "10 viaggi trasporto pubblico, ";
+	    					publicTransportBadges += 1;
 	    					break;
 	    				case "25" + $scope.BG_PUBLIC_TRANSPORT :
 	    					$scope.userShowPublicTransport25 = true;
 	    					badgeString += "25 viaggi trasporto pubblico, ";
+	    					publicTransportBadges += 1;
 	    					break;
 	    				case "50" + $scope.BG_PUBLIC_TRANSPORT :
 	    					$scope.userShowPublicTransport50 = true;
 	    					badgeString += "50 viaggi trasporto pubblico, ";
+	    					publicTransportBadges += 1;
 	    					break;
 	    				case "100" + $scope.BG_PUBLIC_TRANSPORT :
 	    					$scope.userShowPublicTransport100 = true;
 	    					badgeString += "100 viaggi trasporto pubblico, ";
+	    					publicTransportBadges += 1;
 	    					break;
 	    				case "Stadio" + $scope.BG_PARK_AND_RIDE :
 	    					$scope.userShowParkAndRideStadio = true;
 	    					badgeString += "Parcheggio-Stadio, ";
+	    					parkRideBadges += 1;
 	    					break;
 	    				case "Manifattura" + $scope.BG_PARK_AND_RIDE :
 	    					$scope.userShowParkAndRideManifattura = true;
 	    					badgeString += "Parcheggio-Manifattura, ";
+	    					parkRideBadges += 1;
 	    					break;
 	    				case "3" + $scope.BG_RECOMMENDATION :
 	    					$scope.userShowRecommendation3 = true;
 	    					badgeString += "3 amici invitati, ";
+	    					recommendationBadges += 1;
 	    					break;
 	    				case "5" + $scope.BG_RECOMMENDATION :
 	    					$scope.userShowRecommendation5 = true;
 	    					badgeString += "5 amici invitati, ";
+	    					recommendationBadges += 1;
 	    					break;
 	    				case "10" + $scope.BG_RECOMMENDATION :
 	    					$scope.userShowRecommendation10 = true;
 	    					badgeString += "10 amici invitati, ";
+	    					recommendationBadges += 1;
 	    					break;
 	    				case "25" + $scope.BG_RECOMMENDATION :
 	    					$scope.userShowRecommendation25 = true;
 	    					badgeString += "25 amici invitati, ";
+	    					recommendationBadges += 1;
 	    					break;	
 	    				default: 
 	//    					if(list[3].badgeEarned[i].indexOf("-park") > -1){
@@ -1667,9 +1711,21 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	if(badgeString.length == 18){
     		badgeString = "";
     	} else {
-    		badgeString = badgeString.substring(0, badgeString.length - 2);
+    		//badgeString = badgeString.substring(0, badgeString.length - 2);
+    		badgeString = "badge guadagnati: ";
     	}
-    	return badgeString;
+    	var badgeStringFB = "";
+    	var badgeStringTW = "";
+    	if(badgeString != ""){
+    		var totalValue = Number(greenBadges) + Number(bikeTripBadges) + Number(bikeShareBadges) + Number(zeroImpactBadges) + Number(publicTransportBadges) + Number(parkRideBadges) + Number(recommendationBadges) + Number(leaderBoardBadges);
+    		badgeStringFB = badgeString + greenBadges + " badges green, " + bikeTripBadges + " badges bike trip, " + bikeShareBadges + " badges bike share, " + zeroImpactBadges + " badges zero impact, " + publicTransportBadges + " badges public transport, " + parkRideBadges + " badges park&ride, " + recommendationBadges + " badges recommendation, " + leaderBoardBadges + " badges leader boards;";
+    		badgeStringTW = badgeString + totalValue + " badges totali ";
+    	}
+    	var allBadges = [];
+    	allBadges.push(badgeStringFB);
+    	allBadges.push(badgeStringTW);
+    	
+    	return allBadges;
     };
     
     // ----------------------------------- WS Section End ----------------------------------
@@ -1777,16 +1833,28 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.callback = function(response){
         console.log(response);
         //alert('share callback');
-    }
+    };
     
     $scope.image_url = "https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/256x256/plain/leaf.png";//"https://dev.smartcommunitylab.it/gamificationweb/img/foglia.svg";
-    //$scope.url = "https://dev.smartcommunitylab.it/gamificationweb/profile";
-    $scope.url = "http://localhost:8080/gamificationweb/profile";
+    $scope.url = "https://dev.smartcommunitylab.it/gamificationweb/profile";
+    //$scope.url = "http://localhost:8080/gamificationweb/profile";
     $scope.title = "Rovereto Green Game";
-    $scope.caption = "Green Game"
+    $scope.caption = "Green Game";
     /* $scope.text_fb = "Green Game: punteggio attuale 50 punti, badges raggiunti: 10, 50 punti";
     $scope.text_tw = "Green Game: punteggio attuale 50 punti, badges raggiunti: 10, 50 punti";
     $scope.text_gp = "Green Game: punteggio attuale 50 punti, badges raggiunti: 10, 50 punti";*/
+    $scope.getTextFb_ch = function(ch){
+    	return "Vinta la challenge: '" + ch.desc + "'";
+    };
+    $scope.getTextTw_ch = function(ch){
+    	return "Vinta la challenge: '" + ch.desc + "' #greengamechallenges";
+    };
+    $scope.getPosFb_class = function(position){
+    	return "GreenGame: " + position.score[0].score + " punti, posizione in classifica: " + position.class_pos_g + "^ posto";
+    };
+    $scope.getPosTw_class = function(position){
+    	return "#GreenGame: " + position.score[0].score + " punti, posizione in classifica: " + position.class_pos_g + "^ posto";
+    };
     
 }]);
 cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){

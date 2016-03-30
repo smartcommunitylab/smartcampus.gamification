@@ -1,4 +1,4 @@
-<div class="container-fluid" ng-init="init_class();getClassification(params.id)">
+<div class="container-fluid"><!-- ng-init="init_class();getClassification(params.id)" -->
 
 	<div id="my-class-head-title" align="center">
 		{{ 'left_menu-classification' | i18n }}
@@ -25,11 +25,17 @@
 	    </ul>
 			
 	    <!-- Tab panes -->
-	    <div class="tab-content">
+	    <div id="big-tab-classification" class="tab-content">
 	        <div class="tab-pane fade in active" id="G" ng-include="classTabs[0].content"></div>
 	        <div class="tab-pane fade" id="H" ng-include="classTabs[1].content"></div>
 	        <div class="tab-pane fade" id="P" ng-include="classTabs[2].content"></div>
 	    </div>
+	    <div id="small-tab-classification" class="tab-content small-content">
+	        <div class="tab-pane fade in active" id="G" ng-include="classTabs[0].content"></div>
+	        <div class="tab-pane fade" id="H" ng-include="classTabs[1].content"></div>
+	        <div class="tab-pane fade" id="P" ng-include="classTabs[2].content"></div>
+	    </div>
+	    
 	</div>
 		
 </div>

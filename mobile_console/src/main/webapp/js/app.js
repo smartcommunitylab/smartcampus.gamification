@@ -42,17 +42,17 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
-    	.when('/rules/:type', {
+    	.when('/rules', {
     		templateUrl: 'partials/game_rules.html',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
-    	.when('/privacy/:type', {
+    	.when('/privacy', {
     		templateUrl: 'partials/privacy_data.html',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
-    	.when('/prizes/:type', {
+    	.when('/prizes', {
     		templateUrl: 'partials/game_prizes.html',
     		controller: 'MainCtrl',
     		controllerAs: 'main'

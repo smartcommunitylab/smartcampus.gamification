@@ -59,20 +59,20 @@
     	border-left: 3px solid #c2c2c2;
     	border-right: 3px solid #c2c2c2;
     	border-bottom: 3px solid #c2c2c2;
-    	background-color: #e5e4e2;
-    	padding: 25px;
+    	background-color: #fff; /*#e5e4e2*/;
+    	padding: 15px;
 	}
 	.nav-tabs {
 		font-weight: bold;
         color: #2a2a2a;
-        background-color: #e5e4e2;
+        background-color: #fff; /*#e5e4e2*/;
     }
 	
 	.nav-tabs.nav-justified > li > a,
     .nav-tabs.nav-justified > li > a:hover,
     .nav-tabs.nav-justified > li > a:focus {
         color: #2a2a2a;
-        background-color: #e5e4e2;
+        background-color: #fff; /*#e5e4e2*/
         border-top: 3px solid #c2c2c2;
         border-right: 3px solid #c2c2c2;
       	border-left: 3px solid #c2c2c2;
@@ -84,16 +84,32 @@
     .nav-tabs.nav-justified > li.active > a:hover,
     .nav-tabs.nav-justified > li.active > a:focus {
         color: #00984a;
-        background-color: #e5e4e2;
+        background-color: #fff; /*#e5e4e2*/
         border-top: 3px solid #c2c2c2;
         border-right: 3px solid #c2c2c2;
       	border-left: 3px solid #c2c2c2;
-		border-bottom: 3px solid #e5e4e2;
+		border-bottom: 3px solid #fff; /*#e5e4e2*/
     } 
     
     #prof-nav.tab-content {
     	background-color: trasparent;
     	padding: 25px;
+	}
+	
+	.homepanel {
+		margin-top: 40px;
+		border-width: 0px;
+	}
+	
+	.homeheadertitle {
+		margin-bottom: 25px;
+		max-height: 100px;
+	}
+	
+	.nopadding {
+		padding-left: 5px;
+		padding-right: 5px;
+		padding-top: 0px;
 	}
 	
 	.panel-success {
@@ -106,10 +122,10 @@
 	
 	.panel-success.success {
 		background-color: #f5f5f5;
-        border-top: 3px dotted #00984a;
-        border-right: 3px dotted #00984a;
-      	border-left: 3px dotted #00984a;
-		border-bottom: 3px dotted #00984a;
+        border-top: 2px solid #00984a;
+        border-right: 2px solid #00984a;
+      	border-left: 2px solid #00984a;
+		border-bottom: 2px solid #00984a;
 	}
 	.panel-success.success .panel-body {
 		padding-left: 10px;
@@ -333,9 +349,24 @@
 		padding-top: 5px;
 		vertical-align: middle; 
 	}
+	.social-absolute {
+		position: absolute;
+		top: 60%;
+		left: 100px;
+	}
 	.small_b {
 		padding-left: 0px;
 		padding-right: 5px;
+	}
+	.center-text {
+		text-align: center;
+	}
+	.right-text {
+		text-align: right;
+	}
+	
+	.small-content {
+		padding: 0px;
 	}
 	
 	.headercol > a,
@@ -398,6 +429,21 @@
 	/* Block for badges */
 	#small-badges {display: block; }
 	#big-badges {display: none; }
+	#small-badges-bike-trips {display: block; }
+	#big-badges-bike-trips {display: none; }
+	#small-badges-zero-impact {display: block; }
+	#big-badges-zero-impact {display: none; }
+	#small-badges-public-transport {display: block; }
+	#big-badges-public-transport {display: none; }
+	#small-badges-park-and-ride {display: block; }
+	#big-badges-park-and-ride {display: none; }
+	#small-badges-user-recommendation {display: block; }
+	#big-badges-user-recommendation {display: none; }
+	/* Block for classification */
+	#small-class-table-green {display: block; }
+	#big-class-table-green {display: none; }
+	#small-tab-classification {display: block; }
+	#big-tab-classification {display: none; }
 	
 	/* Block for page head titles */
 	#my-prof-head-title { 
@@ -456,4 +502,19 @@
 		/* Block for badges */
 		#small-badges {display: none; }
 		#big-badges {display: block; }
+		#small-badges-bike-trips {display: none; }
+		#big-badges-bike-trips {display: block; }
+		#small-badges-zero-impact {display: none; }
+		#big-badges-zero-impact {display: block; }
+		#small-badges-public-transport {display: none; }
+		#big-badges-public-transport {display: block; }
+		#small-badges-park-and-ride {display: none; }
+		#big-badges-park-and-ride {display: block; }
+		#small-badges-user-recommendation {display: none; }
+		#big-badges-user-recommendation {display: block; }
+		/* Block for classification */
+		#small-class-table-green {display: none; }
+		#big-class-table-green {display: block; }
+		#small-tab-classification {display: none; }
+		#big-tab-classification {display: block; }
 	}

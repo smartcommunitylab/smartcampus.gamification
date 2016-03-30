@@ -24,4 +24,6 @@ import eu.trentorise.game.model.core.DBRule;
 @Repository
 public interface RuleRepo extends CrudRepository<DBRule, String> {
 
+	public DBRule findByGameIdAndName(String gameId, String name);
+
 }

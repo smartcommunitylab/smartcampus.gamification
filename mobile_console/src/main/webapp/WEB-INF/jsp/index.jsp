@@ -14,11 +14,11 @@
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
-<script src="http://platform.tumblr.com/v1/share.js"></script>
+<!-- <script src="http://platform.tumblr.com/v1/share.js"></script> -->
 <script src="https://apis.google.com/js/platform.js" async defer>
     {lang: 'it'}
 </script>
-<script src="http://platform.twitter.com/widgets.js"></script>
+<script src="https://platform.twitter.com/widgets.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="lib/angular.js"></script>

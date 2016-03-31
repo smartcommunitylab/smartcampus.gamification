@@ -89,6 +89,9 @@ public class TeamGameTest extends GameTest {
 		assertionPoint(GAME, 760d, "marvel", "steps");
 		assertionPoint(GAME, 1d, "secret avengers", "steps");
 
+		assertionBadge(GAME, Arrays.asList("poi_1", "poi_3", "team_1", "poi_2",
+				"team_bump_1"), "fuorilegge", "itinerary");
+
 	}
 
 }

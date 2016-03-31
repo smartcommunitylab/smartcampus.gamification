@@ -216,22 +216,25 @@ public abstract class GameTest {
 		StateAnalyzer analyzer = new StateAnalyzer(states);
 		List<String> badgesEarned = analyzer.getBadges(
 				analyzer.findPlayer(playerId), conceptName);
-		Assert.assertTrue(
-				String.format(
-						"Failure badgecollection concept %s for  player %s",
-						conceptName, playerId),
-				new HashSet<String>(values).containsAll(badgesEarned)
-						&& values.size() == badgesEarned.size());
+		Assert.assertEquals(new HashSet<String>(values), new HashSet<String>(
+				badgesEarned));
+
+		// Assert.assertTrue(
+		// String.format(
+		// "Failure badgecollection concept %s for  player %s",
+		// conceptName, playerId),
+		// new HashSet<String>(values).containsAll(badgesEarned)
+		// && values.size() == badgesEarned.size());
 	}
 
 	public void assertionPoint(String gameId, Double score, String playerId,
 			String conceptName) {
 		List<PlayerState> states = playerSrv.loadStates(gameId);
 		StateAnalyzer analyzer = new StateAnalyzer(states);
-		Assert.assertTrue(String.format(
+		Assert.assertEquals(String.format(
 				"Failure point concept %s for  player %s", conceptName,
-				playerId), score.equals(analyzer.getScore(
-				analyzer.findPlayer(playerId), conceptName)));
+				playerId), score.doubleValue(), analyzer.getScore(
+				analyzer.findPlayer(playerId), conceptName), 0);
 	}
 
 	protected class ExecData {

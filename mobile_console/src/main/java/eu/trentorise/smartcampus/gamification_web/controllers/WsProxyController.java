@@ -103,13 +103,16 @@ public class WsProxyController {
 		RestTemplate restTemplate = new RestTemplate();
 		logger.info("WS-POST. Method " + urlWS + ". Passed data : " + data); //Added for log ws calls info in preliminary phase of portal
 		String result = "";
+		ResponseEntity<String> tmp_res = null;
 		try {
 			//if(urlWS.contains("execute")){
 			//	result = restTemplate.postForObject(gamificationUrlPost + urlWS, data, String.class);
 			//} else {
-				result = restTemplate.postForObject(gamificationUrl + urlWS, data, String.class);
+				//result = restTemplate.postForObject(gamificationUrl + urlWS, data, String.class);
+			tmp_res = restTemplate.exchange(gamificationUrl + urlWS, HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
 			//}
-			if(urlWS.compareTo("GetPDF") == 0 && (result.contains("error") || result.contains("exception"))){
+			result = tmp_res.getStatusCode().toString();
+			if(urlWS.compareTo("GetPDF") == 0 && (result.contains("error") || result.contains("exception") || result.compareTo("200") != 0)){
 				logger.info("WS-POST. Method " + urlWS + ". Error : " + result);
 			}
 		} catch (Exception ex){

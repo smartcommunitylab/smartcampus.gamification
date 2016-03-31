@@ -154,6 +154,12 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${smartcampus.gamification.gamename}")
     private String gameid;
+    @Autowired
+    @Value("${gamification.server.bauth.username}")
+    private String basicAuthUsername;
+    @Autowired
+    @Value("${gamification.server.bauth.password}")
+    private String basicAuthPassword;
     
     private final String JSON_STATE = "state";
     private final String JSON_POINTCONCEPT = "PointConcept";
@@ -178,6 +184,8 @@ public class PortalController extends SCController{
 			model.put("user_name", user.getName());
 			model.put("user_surname", user.getSurname());
 			model.put("gameid", gameid);
+			model.put("bauth_user", basicAuthUsername);
+			model.put("bauth_password", basicAuthPassword);
 			model.put("point_types", p_types);	// point type
 			logger.info(String
 					.format("I am in get root. User id: " + user.getUserId()));

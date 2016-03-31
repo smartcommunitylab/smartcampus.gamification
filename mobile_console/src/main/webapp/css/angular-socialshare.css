@@ -94,6 +94,9 @@
   height: 14px;
   width: 14px;
 }
+.buttonFBSmall {
+  width: 20px;
+}
 .facebookShare .facebookButton .pluginButton button .sx_plugin-button-2x_favblue {
   background-position: 0 -42px;
 }
@@ -301,4 +304,10 @@
   font-family: Arial, sans-serif;
   line-height: 18px;
   padding: 0 2px;
+}
+.buttonTWSmall {
+  width: 22px;
+}
+.btn-o {
+  width: 22px;
 }

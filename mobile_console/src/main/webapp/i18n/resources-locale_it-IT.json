@@ -251,6 +251,10 @@
 	"value": "Punti",
 	"description": "Label stato punteggio"
 }, {
+	"key": "player_state_social",
+	"value": "Share",
+	"description": "Label share punteggio"
+}, {
 	"key": "player_operations",
 	"value": "Azioni",
 	"description": "Label operazioni su pratica"
@@ -328,8 +332,12 @@
 	"description": "Testo pulsante datapicker per chiudi"
 }, {
 	"key": "label_profile_title_h4",
-	"value": "Scopri i badge che hai guadagnato",
+	"value": "Visualizza il tuo stato all'interno del giocoo",
 	"description": "Testo label titolo profilo"
+}, {
+	"key": "points_and_badges_tab_title",
+	"value": "Punti e Badge",
+	"description": "Titolo tab punti e badge"
 }, {
 	"key": "green_leaves_tab_title",
 	"value": "Green",
@@ -350,6 +358,14 @@
 	"key": "special_tab_title",
 	"value": "Speciali",
 	"description": "Titolo tab speciali"
+}, {
+	"key": "chall_tab_title",
+	"value": "Challenge",
+	"description": "Titolo tab sfide"
+}, {
+	"key": "class_tab_title",
+	"value": "Classifica",
+	"description": "Titolo tab classifica"
 }, {
 	"key": "no_other_badge",
 	"value": "Non possiedi badge di questa categoria",
@@ -552,11 +568,15 @@
 	"description": "label messaggio sfida persa in pagina challenges"
 }, {
 	"key": "ch_win_message_text_label",
-	"value": "HAI VINTO! Punteggio finale di ",
+	"value": "HAI VINTO!",
 	"description": "label messaggio sfida vinta in pagina challenges"
 }, {
 	"key": "ch_empty_list",
 	"value": "Non stai partecipando a nessuna sfida",
 	"description": "label messaggio nessuna sfida in pagina challenges"
+}, {
+	"key": "hello_home-title",
+	"value": "Ciao",
+	"description": "testo titolo in header pagine prima di nickname"
 }
 ]

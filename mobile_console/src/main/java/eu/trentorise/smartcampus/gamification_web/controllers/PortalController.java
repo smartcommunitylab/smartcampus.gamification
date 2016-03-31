@@ -160,6 +160,66 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.server.bauth.password}")
     private String basicAuthPassword;
+    @Autowired
+    @Value("${gamification.challenges.description.bikekm}")
+    private String challengeDescriptionBikeKm;
+    @Autowired
+    @Value("${gamification.challenges.description.bikesharekm}")
+    private String challengeDescriptionBikeShareKm;
+    @Autowired
+    @Value("${gamification.challenges.description.walkkm}")
+    private String challengeDescriptionWalkKm;
+    @Autowired
+    @Value("${gamification.challenges.description.biketrips}")
+    private String challengeDescriptionBikeShareTrip;
+    @Autowired
+    @Value("${gamification.challenges.description.bustrips}")
+    private String challengeDescriptionBusTrip;
+    @Autowired
+    @Value("${gamification.challenges.description.traintrips}")
+    private String challengeDescriptionTrainTrip;
+    @Autowired
+    @Value("${gamification.challenges.description.zeroimpacttrips}")
+    private String challengeDescriptionZeroImpactTrip;
+    @Autowired
+    @Value("${gamification.challenges.description.promotedtrips}")
+    private String challengeDescriptionPromotedTrip;
+    @Autowired
+    @Value("${gamification.challenges.description.trybibsbutr}")
+    private String challengeDescriptionTryBikeBikeShareBusTrain;
+    @Autowired
+    @Value("${gamification.challenges.description.recommendation}")
+    private String challengeDescriptionRecommendation;
+    @Autowired
+    @Value("${gamification.challenges.description.gbshzipoint}")
+    private String challengeDescriptionGreenBikeShareHealthZeroImpactPoint;
+    @Autowired
+    @Value("${gamification.challenges.description.topxweek}")
+    private String challengeDescriptionTopXWeek;
+    @Autowired
+    @Value("${gamification.challenges.description.prpioneer}")
+    private String challengeDescriptionParkRidePioneer;
+    @Autowired
+    @Value("${gamification.challenges.description.bspioneer}")
+    private String challengeDescriptionBikeSharingPioneer;
+    @Autowired
+    @Value("${gamification.challenges.description.nextbadge.green}")
+    private String challengeDescriptionNextBadgeGreen;
+    @Autowired
+    @Value("${gamification.challenges.description.nextbadge.zeroimpact}")
+    private String challengeDescriptionNextBadgeZeroImpact;
+    @Autowired
+    @Value("${gamification.challenges.description.nextbadge.publictransport}")
+    private String challengeDescriptionNextBadgePublicTransport;
+    @Autowired
+    @Value("${gamification.challenges.description.nextbadge.bike}")
+    private String challengeDescriptionNextBadgeBike;
+    @Autowired
+    @Value("${gamification.challenges.description.nextbadge.recommendation}")
+    private String challengeDescriptionNextBadgeRecommendation;
+    @Autowired
+    @Value("${gamification.challenges.description.complete.badge.collection}")
+    private String challengeDescriptionCompleteBadgeCollection;
     
     private final String JSON_STATE = "state";
     private final String JSON_POINTCONCEPT = "PointConcept";
@@ -187,6 +247,26 @@ public class PortalController extends SCController{
 			model.put("bauth_user", basicAuthUsername);
 			model.put("bauth_password", basicAuthPassword);
 			model.put("point_types", p_types);	// point type
+			model.put("chall_desc_bike_km", challengeDescriptionBikeKm);
+			model.put("chall_desc_bike_share_km", challengeDescriptionBikeShareKm);
+			model.put("chall_desc_walk_km", challengeDescriptionWalkKm);
+			model.put("chall_desc_bike_share_trip", challengeDescriptionBikeShareTrip);
+			model.put("chall_desc_bus_trip", challengeDescriptionBusTrip);
+			model.put("chall_desc_train_trip", challengeDescriptionTrainTrip);
+			model.put("chall_desc_zero_impact_trip", challengeDescriptionZeroImpactTrip);
+			model.put("chall_desc_promoted_trip", challengeDescriptionPromotedTrip);
+			model.put("chall_desc_try_bike_bikeshare_bus_train", challengeDescriptionTryBikeBikeShareBusTrain);
+			model.put("chall_desc_top_x_week", challengeDescriptionTopXWeek);
+			model.put("chall_desc_park_ride_pioneer", challengeDescriptionParkRidePioneer);
+			model.put("chall_desc_bike_sharing_pioneer", challengeDescriptionBikeSharingPioneer);
+			model.put("chall_desc_recommendation", challengeDescriptionRecommendation);
+			model.put("chall_desc_green_bike_sharing_health_zero_impact_point", challengeDescriptionGreenBikeShareHealthZeroImpactPoint);
+			model.put("chall_desc_next_badge_green", challengeDescriptionNextBadgeGreen);
+			model.put("chall_desc_next_badge_zero_impact", challengeDescriptionNextBadgeZeroImpact);
+			model.put("chall_desc_next_badge_public_transport", challengeDescriptionNextBadgePublicTransport);
+			model.put("chall_desc_next_badge_bike", challengeDescriptionNextBadgeBike);
+			model.put("chall_desc_next_badge_recommendation", challengeDescriptionNextBadgeRecommendation);
+			model.put("chall_desc_complete_badge_collection", challengeDescriptionCompleteBadgeCollection);
 			logger.info(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));

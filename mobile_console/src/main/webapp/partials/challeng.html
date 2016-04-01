@@ -37,7 +37,7 @@
 			  			<div class="row">
 							<div class="col-md-1 iconcol" ng-class="{'iconcol-success': ch.success || ch.status == 100, 'iconcol-failed': !ch.success && !ch.active && ch.status != 100}">
 								<img ng-if="ch.icon" height="60" width="60" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" />
-								<div class="info-wrapper" ng-if="!ch.success && ch.active && ch.status != 100"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch.type)"></i></div>
+								<div class="info-wrapper"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch)"></i></div><!-- ng-if="!ch.success && ch.active && ch.status != 100" -->
 							</div>
 							<div class="col-md-9 headercol" ng-class="{'headercol-success': ch.success || ch.status == 100, 'headercol-failed': !ch.success && !ch.active && ch.status != 100}">
 								<div class="desc-wrapper"><strong>{{ ch.desc }}</strong></div>
@@ -72,7 +72,7 @@
 			  			<div class="row">
 							<!-- <div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div> -->
 							<div class="col-xs-10 iconcolsmall"><!-- col-xs-8 -->
-								<div class="info-wrapper-small" ng-if="!ch.success && ch.active && ch.status != 100"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch.type)"></i></div>
+								<div class="info-wrapper-small" ng-if="!ch.success && ch.active && ch.status != 100"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch)"></i></div>
 								<strong>{{ ch.desc }}</strong>
 								<div class="days-wrapper small" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}</strong></div>
 								<div class="days-wrapper-failed small" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>

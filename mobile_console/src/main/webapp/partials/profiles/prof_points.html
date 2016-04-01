@@ -34,7 +34,7 @@
 	<!-- <div class="col-md-4" ng-show="userProfile.scores[0].score >= 10">
 		<img height="150" width="150" src="img/green/greenLeaves10.svg" alt="Bedge Green 10" title="Bedge Green 10">
 	</div> -->
-	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 50">
+	<!-- <div class="col-md-4" ng-show="userProfile.scores[0].score >= 50">
 		<img height="150" width="150" src="img/green/greenLeaves50.svg" alt="Bedge Green 50" title="Bedge Green 50">
 	</div>
 	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 100">
@@ -48,6 +48,30 @@
 	</div>
 	<div class="col-md-4" ng-show="userProfile.scores[0].score >= 1000">
 		<img height="150" width="150" src="img/green/greenLeaves1000.svg" alt="Bedge Green 1000" title="Bedge Green 1000">
+	</div> -->
+	<div class="col-md-4" ng-show="userShowGreenLeaves50==true">
+		<img height="150" width="150" src="img/green/greenLeaves50.svg" alt="Bedge Green 50" title="Bedge Green 50">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenLeaves100==true">
+		<img height="150" width="150" src="img/green/greenLeaves100.svg" alt="Bedge Green 100" title="Bedge Green 100">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenLeaves200==true">
+		<img height="150" width="150" src="img/green/greenLeaves200.svg" alt="Bedge Green 200" title="Bedge Green 200">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenLeaves400==true">
+		<img height="150" width="150" src="img/green/greenLeaves400.svg" alt="Bedge Green 400" title="Bedge Green 400">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenLeaves800==true">
+		<img height="150" width="150" src="img/green/greenLeaves800.svg" alt="Bedge Green 800" title="Bedge Green 800">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenLeaves1500==true">
+		<img height="150" width="150" src="img/green/greenLeaves1500.svg" alt="Bedge Green 1500" title="Bedge Green 1500">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenLeaves2500==true">
+		<img height="150" width="150" src="img/green/greenLeaves2500.svg" alt="Bedge Green 2500" title="Bedge Green 2500">
+	</div>
+	<div class="col-md-4" ng-show="userShowGreenLeaves5000==true">
+		<img height="150" width="150" src="img/green/greenLeaves5000.svg" alt="Bedge Green 5000" title="Bedge Green 5000">
 	</div>
 	<div class="col-md-4" ng-show="userShowGreenBronzeMedal==true">
 		<img height="150" width="150" src="img/green/greenBronzeMedal.svg" alt="Bedge Green Bronze Medal" title="Bedge Green Bronze Medal">
@@ -62,86 +86,86 @@
 <div id="big-badges-bike-trips" class="row" align="center">
 	<div class="col-md-12" ng-show="userShowBikeTrip1==true"><h5><strong>&nbsp;&nbsp;Bike Trip Badge</strong></h5></div>
 	<div class="col-md-4" ng-show="userShowBikeTrip1==true">
-		<img height="150" width="150" src="img/green/greenBronzeMedal.svg" alt="Bedge Bike Trip 1" title="Bedge Bike Trip 1">
+		<img height="150" width="150" src="img/bike/bikeAficionado1.svg" alt="Bedge Bike Trip 1" title="Bedge Bike Trip 1">
 	</div>
 	<div class="col-md-4" ng-show="userShowBikeTrip5==true">
-		<img height="150" width="150" src="img/green/greenSilverMedal.svg" alt="Bedge Bike Trip 5" title="Bedge Bike Trip 5">
+		<img height="150" width="150" src="img/bike/bikeAficionado5.svg" alt="Bedge Bike Trip 5" title="Bedge Bike Trip 5">
 	</div>
 	<div class="col-md-4" ng-show="userShowBikeTrip10==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Bike Trip 10" title="Bedge Bike Trip 10">
+		<img height="150" width="150" src="img/bike/bikeAficionado10.svg" alt="Bedge Bike Trip 10" title="Bedge Bike Trip 10">
 	</div>
 	<div class="col-md-4" ng-show="userShowBikeTrip25==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Bike Trip 25" title="Bedge Bike Trip 25">
+		<img height="150" width="150" src="img/bike/bikeAficionado25.svg" alt="Bedge Bike Trip 25" title="Bedge Bike Trip 25">
 	</div>
 	<div class="col-md-4" ng-show="userShowBikeTrip50==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Bike Trip 50" title="Bedge Bike Trip 50">
+		<img height="150" width="150" src="img/bike/bikeAficionado50.svg" alt="Bedge Bike Trip 50" title="Bedge Bike Trip 50">
 	</div>
 </div>
 <div id="big-badges-zero-impact" class="row" align="center">
 	<div class="col-md-12" ng-show="userShowZeroImpact1==true"><h5><strong>&nbsp;&nbsp;Zero Impact Badge</strong></h5></div>
 	<div class="col-md-4" ng-show="userShowZeroImpact1==true">
-		<img height="150" width="150" src="img/green/greenBronzeMedal.svg" alt="Bedge Zero Impact 1" title="Bedge Zero Impact 1">
+		<img height="150" width="150" src="img/zero_impact/zeroImpact1.svg" alt="Bedge Zero Impact 1" title="Bedge Zero Impact 1">
 	</div>
 	<div class="col-md-4" ng-show="userShowZeroImpact5==true">
-		<img height="150" width="150" src="img/green/greenSilverMedal.svg" alt="Bedge Zero Impact 5" title="Bedge Zero Impact 5">
+		<img height="150" width="150" src="img/zero_impact/zeroImpact5.svg" alt="Bedge Zero Impact 5" title="Bedge Zero Impact 5">
 	</div>
 	<div class="col-md-4" ng-show="userShowZeroImpact10==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Zero Impact 10" title="Bedge Zero Impact 10">
+		<img height="150" width="150" src="img/zero_impact/zeroImpact10.svg" alt="Bedge Zero Impact 10" title="Bedge Zero Impact 10">
 	</div>
 	<div class="col-md-4" ng-show="userShowZeroImpact25==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Zero Impact 25" title="Bedge Zero Impact 25">
+		<img height="150" width="150" src="img/zero_impact/zeroImpact25.svg" alt="Bedge Zero Impact 25" title="Bedge Zero Impact 25">
 	</div>
 	<div class="col-md-4" ng-show="userShowZeroImpact50==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Zero Impact 50" title="Bedge Zero Impact 50">
+		<img height="150" width="150" src="img/zero_impact/zeroImpact50.svg" alt="Bedge Zero Impact 50" title="Bedge Zero Impact 50">
 	</div>
 </div>
 <div id="big-badges-public-transport" class="row" align="center">
 	<div class="col-md-12" ng-show="userShowPublicTransport5==true"><h5><strong>&nbsp;&nbsp;Public Transport Badge</strong></h5></div>
 	<div class="col-md-4" ng-show="userShowPublicTransport5==true">
-		<img height="150" width="150" src="img/green/greenBronzeMedal.svg" alt="Bedge Public Transport 5" title="Bedge Public Transport 5">
+		<img height="150" width="150" src="img/public_transport/publicTransportAficionado5.svg" alt="Bedge Public Transport 5" title="Bedge Public Transport 5">
 	</div>
 	<div class="col-md-4" ng-show="userShowPublicTransport10==true">
-		<img height="150" width="150" src="img/green/greenSilverMedal.svg" alt="Bedge Public Transport 10" title="Bedge Public Transport 10">
+		<img height="150" width="150" src="img/public_transport/publicTransportAficionado10.svg" alt="Bedge Public Transport 10" title="Bedge Public Transport 10">
 	</div>
 	<div class="col-md-4" ng-show="userShowPublicTransport25==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Public Transport 25" title="Bedge Public Transport 25">
+		<img height="150" width="150" src="img/public_transport/publicTransportAficionado25.svg" alt="Bedge Public Transport 25" title="Bedge Public Transport 25">
 	</div>
 	<div class="col-md-4" ng-show="userShowPublicTransport50==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Public Transport 50" title="Bedge Public Transport 50">
+		<img height="150" width="150" src="img/public_transport/publicTransportAficionado50.svg" alt="Bedge Public Transport 50" title="Bedge Public Transport 50">
 	</div>
 	<div class="col-md-4" ng-show="userShowPublicTransport100==true">
-		<img height="150" width="150" src="img/green/greenGoldMedal.svg" alt="Bedge Public Transport 100" title="Bedge Public Transport 100">
+		<img height="150" width="150" src="img/public_transport/publicTransportAficionado100.svg" alt="Bedge Public Transport 100" title="Bedge Public Transport 100">
 	</div>
 </div>
 <div id="big-badges-park-and-ride" class="row" align="center">
 	<div class="col-md-12" ng-show="userShowParkAndRideStadio==true || userShowParkAndRideManifattura==true"><h5><strong>&nbsp;&nbsp;Park&Ride Badge</strong></h5></div>
 	<div class="col-md-4" ng-show="userShowParkAndRideStadio==true">
-		<img height="150" width="150" src="img/special/special_p_quercia.svg" alt="Bedge Stadio Park Park" title="Bedge Stadio Park">
+		<img height="150" width="150" src="img/pr/p&rPioneerStadio.svg" alt="Bedge Stadio Park Park" title="Bedge Stadio Park">
 	</div>
 	<div class="col-md-4" ng-show="userShowParkAndRideManifattura==true">
-		<img height="150" width="150" src="img/special/special_special_p_manifattura.svg" alt="Bedge Manifattura Park" title="Bedge Manifattura Park">
+		<img height="150" width="150" src="img/pr/p&rPioneerManifattura.svg" alt="Bedge Manifattura Park" title="Bedge Manifattura Park">
 	</div>
 </div>
 <div id="big-badges-user-recommendation" class="row" align="center">
 	<div class="col-md-12" ng-show="userShowRecommendation3==true"><h5><strong>&nbsp;&nbsp;User Recommendation Badge</strong></h5></div>
 	<div class="col-md-4" ng-show="userShowRecommendation3==true">
-		<img height="150" width="150" src="img/special/special_p_quercia.svg" alt="Bedge User Recommendation 3" title="Bedge User Recommendation 3">
+		<img height="150" width="150" src="img/recommendation/inviteFriends3.svg" alt="Bedge User Recommendation 3" title="Bedge User Recommendation 3">
 	</div>
 	<div class="col-md-4" ng-show="userShowRecommendation5==true">
-		<img height="150" width="150" src="img/special/special_special_p_manifattura.svg" alt="Bedge User Recommendation 5" title="Bedge User Recommendation 5">
+		<img height="150" width="150" src="img/recommendation/inviteFriends5.svg" alt="Bedge User Recommendation 5" title="Bedge User Recommendation 5">
 	</div>
 	<div class="col-md-4" ng-show="userShowRecommendation10==true">
-		<img height="150" width="150" src="img/special/special_special_p_manifattura.svg" alt="Bedge User Recommendation 10" title="Bedge User Recommendation 10">
+		<img height="150" width="150" src="img/recommendation/inviteFriends10.svg" alt="Bedge User Recommendation 10" title="Bedge User Recommendation 10">
 	</div>
 	<div class="col-md-4" ng-show="userShowRecommendation25==true">
-		<img height="150" width="150" src="img/special/special_special_p_manifattura.svg" alt="Bedge User Recommendation 25" title="Bedge User Recommendation 25">
+		<img height="150" width="150" src="img/recommendation/inviteFriends25.svg" alt="Bedge User Recommendation 25" title="Bedge User Recommendation 25">
 	</div>
 </div>
 <div id="small-badges" class="row" align="center">
 	<!-- <div class="col-md-4" ng-show="userProfile.scores[0].score >= 10">
 		<img height="150" width="150" src="img/green/greenLeaves10.svg" alt="Bedge Green 10" title="Bedge Green 10">
 	</div> -->
-	<div class="col-xs-6 small_b" ng-show="userProfile.scores[0].score >= 50">
+	<!-- <div class="col-xs-6 small_b" ng-show="userProfile.scores[0].score >= 50">
 		<img height="100" width="100" src="img/green/greenLeaves50.svg" alt="Bedge Green 50" title="Bedge Green 50">
 	</div>
 	<div class="col-xs-6 small_b" ng-show="userProfile.scores[0].score >= 100">
@@ -155,6 +179,30 @@
 	</div>
 	<div class="col-xs-6 small_b" ng-show="userProfile.scores[0].score >= 1000">
 		<img height="100" width="100" src="img/green/greenLeaves1000.svg" alt="Bedge Green 1000" title="Bedge Green 1000">
+	</div> -->
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves50==true">
+		<img height="100" width="100" src="img/green/greenLeaves50.svg" alt="Bedge Green 50" title="Bedge Green 50">
+	</div>
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves100==true">
+		<img height="100" width="100" src="img/green/greenLeaves100.svg" alt="Bedge Green 100" title="Bedge Green 100">
+	</div>
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves200==true">
+		<img height="100" width="100" src="img/green/greenLeaves200.svg" alt="Bedge Green 200" title="Bedge Green 200">
+	</div>
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves400==true">
+		<img height="100" width="100" src="img/green/greenLeaves400.svg" alt="Bedge Green 400" title="Bedge Green 400">
+	</div>
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves800==true">
+		<img height="100" width="100" src="img/green/greenLeaves800.svg" alt="Bedge Green 800" title="Bedge Green 800">
+	</div>
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves1500==true">
+		<img height="100" width="100" src="img/green/greenLeaves1500.svg" alt="Bedge Green 1500" title="Bedge Green 1500">
+	</div>
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves2500==true">
+		<img height="100" width="100" src="img/green/greenLeaves2500.svg" alt="Bedge Green 2500" title="Bedge Green 2500">
+	</div>
+	<div class="col-xs-6 small_b" ng-show="userShowGreenLeaves5000==true">
+		<img height="100" width="100" src="img/green/greenLeaves5000.svg" alt="Bedge Green 5000" title="Bedge Green 5000">
 	</div>
 	<div class="col-xs-6 small_b" ng-show="userShowGreenBronzeMedal==true">
 		<img height="100" width="100" src="img/green/greenBronzeMedal.svg" alt="Bedge Green Bronze Medal" title="Bedge Green Bronze Medal">
@@ -169,79 +217,79 @@
 <div id="small-badges-bike-trips" class="row" align="center">
 	<div class="col-xs-12" ng-show="userShowBikeTrip1==true"><h5><strong>&nbsp;&nbsp;Bike Trip Badge</strong></h5></div>
 	<div class="col-xs-6" ng-show="userShowBikeTrip1==true">
-		<img height="100" width="100" src="img/green/greenBronzeMedal.svg" alt="Bedge Bike Trip 1" title="Bedge Bike Trip 1">
+		<img height="100" width="100" src="img/bike/bikeAficionado1.svg" alt="Bedge Bike Trip 1" title="Bedge Bike Trip 1">
 	</div>
 	<div class="col-xs-6" ng-show="userShowBikeTrip5==true">
-		<img height="100" width="100" src="img/green/greenSilverMedal.svg" alt="Bedge Bike Trip 5" title="Bedge Bike Trip 5">
+		<img height="100" width="100" src="img/bike/bikeAficionado5.svg" alt="Bedge Bike Trip 5" title="Bedge Bike Trip 5">
 	</div>
 	<div class="col-xs-6" ng-show="userShowBikeTrip10==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Bike Trip 10" title="Bedge Bike Trip 10">
+		<img height="100" width="100" src="img/bike/bikeAficionado10.svg" alt="Bedge Bike Trip 10" title="Bedge Bike Trip 10">
 	</div>
 	<div class="col-xs-6" ng-show="userShowBikeTrip25==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Bike Trip 25" title="Bedge Bike Trip 25">
+		<img height="100" width="100" src="img/bike/bikeAficionado25.svg" alt="Bedge Bike Trip 25" title="Bedge Bike Trip 25">
 	</div>
 	<div class="col-xs-6" ng-show="userShowBikeTrip50==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Bike Trip 50" title="Bedge Bike Trip 50">
+		<img height="100" width="100" src="img/bike/bikeAficionado50.svg" alt="Bedge Bike Trip 50" title="Bedge Bike Trip 50">
 	</div>
 </div>
 <div id="small-badges-zero-impact" class="row" align="center">
 	<div class="col-xs-12" ng-show="userShowZeroImpact1==true"><h5><strong>&nbsp;&nbsp;Zero Impact Badge</strong></h5></div>
 	<div class="col-xs-6" ng-show="userShowZeroImpact1==true">
-		<img height="100" width="100" src="img/green/greenBronzeMedal.svg" alt="Bedge Zero Impact 1" title="Bedge Zero Impact 1">
+		<img height="100" width="100" src="img/zero_impact/zeroImpact1.svg" alt="Bedge Zero Impact 1" title="Bedge Zero Impact 1">
 	</div>
 	<div class="col-xs-6" ng-show="userShowZeroImpact5==true">
-		<img height="100" width="100" src="img/green/greenSilverMedal.svg" alt="Bedge Zero Impact 5" title="Bedge Zero Impact 5">
+		<img height="100" width="100" src="img/zero_impact/zeroImpact5.svg" alt="Bedge Zero Impact 5" title="Bedge Zero Impact 5">
 	</div>
 	<div class="col-xs-6" ng-show="userShowZeroImpact10==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Zero Impact 10" title="Bedge Zero Impact 10">
+		<img height="100" width="100" src="img/zero_impact/zeroImpact10.svg" alt="Bedge Zero Impact 10" title="Bedge Zero Impact 10">
 	</div>
 	<div class="col-xs-6" ng-show="userShowZeroImpact25==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Zero Impact 25" title="Bedge Zero Impact 25">
+		<img height="100" width="100" src="img/zero_impact/zeroImpact25.svg" alt="Bedge Zero Impact 25" title="Bedge Zero Impact 25">
 	</div>
 	<div class="col-xs-6" ng-show="userShowZeroImpact50==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Zero Impact 50" title="Bedge Zero Impact 50">
+		<img height="100" width="100" src="img/zero_impact/zeroImpact50.svg" alt="Bedge Zero Impact 50" title="Bedge Zero Impact 50">
 	</div>
 </div>
 <div id="small-badges-public-transport" class="row" align="center">
 	<div class="col-xs-12" ng-show="userShowPublicTransport5==true"><h5><strong>&nbsp;&nbsp;Public Transport Badge</strong></h5></div>
 	<div class="col-xs-6" ng-show="userShowPublicTransport5==true">
-		<img height="100" width="100" src="img/green/greenBronzeMedal.svg" alt="Bedge Public Transport 5" title="Bedge Public Transport 5">
+		<img height="100" width="100" src="img/public_transport/publicTransportAficionado5.svg" alt="Bedge Public Transport 5" title="Bedge Public Transport 5">
 	</div>
 	<div class="col-xs-6" ng-show="userShowPublicTransport10==true">
-		<img height="100" width="100" src="img/green/greenSilverMedal.svg" alt="Bedge Public Transport 10" title="Bedge Public Transport 10">
+		<img height="100" width="100" src="img/public_transport/publicTransportAficionado10.svg" alt="Bedge Public Transport 10" title="Bedge Public Transport 10">
 	</div>
 	<div class="col-xs-6" ng-show="userShowPublicTransport25==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Public Transport 25" title="Bedge Public Transport 25">
+		<img height="100" width="100" src="img/public_transport/publicTransportAficionado25.svg" alt="Bedge Public Transport 25" title="Bedge Public Transport 25">
 	</div>
 	<div class="col-xs-6" ng-show="userShowPublicTransport50==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Public Transport 50" title="Bedge Public Transport 50">
+		<img height="100" width="100" src="img/public_transport/publicTransportAficionado50.svg" alt="Bedge Public Transport 50" title="Bedge Public Transport 50">
 	</div>
 	<div class="col-xs-6" ng-show="userShowPublicTransport100==true">
-		<img height="100" width="100" src="img/green/greenGoldMedal.svg" alt="Bedge Public Transport 100" title="Bedge Public Transport 100">
+		<img height="100" width="100" src="img/public_transport/publicTransportAficionado100.svg" alt="Bedge Public Transport 100" title="Bedge Public Transport 100">
 	</div>
 </div>
 <div id="small-badges-park-and-ride" class="row" align="center">
 	<div class="col-xs-12" ng-show="userShowParkAndRideStadio==true || userShowParkAndRideManifattura==true"><h5><strong>&nbsp;&nbsp;Park&Ride Badge</strong></h5></div>
 	<div class="col-xs-6" ng-show="userShowParkAndRideStadio==true">
-		<img height="100" width="100" src="img/special/special_p_quercia.svg" alt="Bedge Stadio Park Park" title="Bedge Stadio Park">
+		<img height="100" width="100" src="img/pr/p&rPioneerStadio.svg" alt="Bedge Stadio Park Park" title="Bedge Stadio Park">
 	</div>
 	<div class="col-xs-6" ng-show="userShowParkAndRideManifattura==true">
-		<img height="100" width="100" src="img/special/special_special_p_manifattura.svg" alt="Bedge Manifattura Park" title="Bedge Manifattura Park">
+		<img height="100" width="100" src="img/pr/p&rPioneerManifattura.svg" alt="Bedge Manifattura Park" title="Bedge Manifattura Park">
 	</div>
 </div>
 <div id="small-badges-user-recommendation" class="row" align="center">
 	<div class="col-xs-12" ng-show="userShowRecommendation3==true"><h5><strong>&nbsp;&nbsp;User Recommendation Badge</strong></h5></div>
 	<div class="col-xs-6" ng-show="userShowRecommendation3==true">
-		<img height="100" width="100" src="img/special/special_p_quercia.svg" alt="Bedge User Recommendation 3" title="Bedge User Recommendation 3">
+		<img height="100" width="100" src="img/recommendation/inviteFriends3.svg" alt="Bedge User Recommendation 3" title="Bedge User Recommendation 3">
 	</div>
 	<div class="col-xs-6" ng-show="userShowRecommendation5==true">
-		<img height="100" width="100" src="img/special/special_special_p_manifattura.svg" alt="Bedge User Recommendation 5" title="Bedge User Recommendation 5">
+		<img height="100" width="100" src="img/recommendation/inviteFriends5.svg" alt="Bedge User Recommendation 5" title="Bedge User Recommendation 5">
 	</div>
 	<div class="col-xs-6" ng-show="userShowRecommendation10==true">
-		<img height="100" width="100" src="img/special/special_special_p_manifattura.svg" alt="Bedge User Recommendation 10" title="Bedge User Recommendation 10">
+		<img height="100" width="100" src="img/recommendation/inviteFriends10.svg" alt="Bedge User Recommendation 10" title="Bedge User Recommendation 10">
 	</div>
 	<div class="col-xs-6" ng-show="userShowRecommendation25==true">
-		<img height="100" width="100" src="img/special/special_special_p_manifattura.svg" alt="Bedge User Recommendation 25" title="Bedge User Recommendation 25">
+		<img height="100" width="100" src="img/recommendation/inviteFriends25.svg" alt="Bedge User Recommendation 25" title="Bedge User Recommendation 25">
 	</div>
 </div>
 <p itemprop="description" ng-show="false">{{ text_gp }}</p>

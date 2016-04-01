@@ -88,4 +88,8 @@ public class CustomData implements Map<String, Object> {
 		return data.entrySet();
 	}
 
+	@Override
+	public String toString() {
+		return data.toString();
+	}
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.LogManager;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
 import org.slf4j.Logger;
@@ -174,8 +175,12 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable) {
-		StopWatch stopWatch = new Log4JStopWatch();
-		stopWatch.start("loadStates");
+		StopWatch stopWatch = LogManager.getLogger(
+				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
+				: null;
+		if (stopWatch != null) {
+			stopWatch.start("loadStates");
+		}
 		Page<StatePersistence> states = playerRepo.findByGameId(gameId,
 				pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
@@ -184,7 +189,9 @@ public class DBPlayerManager implements PlayerService {
 		}
 		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
 				states.getTotalElements());
-		stopWatch.stop("loadStates", "Loaded states of game " + gameId);
+		if (stopWatch != null) {
+			stopWatch.stop("loadStates", "Loaded states of game " + gameId);
+		}
 		return res;
 	}
 

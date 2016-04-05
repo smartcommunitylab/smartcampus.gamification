@@ -25,6 +25,9 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.log4j.LogManager;
+import org.perf4j.StopWatch;
+import org.perf4j.log4j.Log4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +165,12 @@ public class GameManager implements GameService {
 	public String addRule(Rule rule) {
 		String ruleUrl = null;
 		if (rule != null) {
+			StopWatch stopWatch = LogManager.getLogger(
+					StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
+					: null;
+			if (stopWatch != null) {
+				stopWatch.start("insert rule");
+			}
 			Game game = loadGameDefinitionById(rule.getGameId());
 			if (game != null) {
 				if (rule instanceof ClasspathRule) {
@@ -201,6 +210,10 @@ public class GameManager implements GameService {
 					throw new IllegalArgumentException(
 							"the rule already exist for game "
 									+ rule.getGameId());
+				}
+				if (stopWatch != null) {
+					stopWatch.stop("insert rule", "inserted rule for game "
+							+ rule.getGameId());
 				}
 			} else {
 				logger.error("Game {} not found", rule.getGameId());

@@ -21,8 +21,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -218,13 +220,6 @@ public abstract class GameTest {
 				analyzer.findPlayer(playerId), conceptName);
 		Assert.assertEquals(new HashSet<String>(values), new HashSet<String>(
 				badgesEarned));
-
-		// Assert.assertTrue(
-		// String.format(
-		// "Failure badgecollection concept %s for  player %s",
-		// conceptName, playerId),
-		// new HashSet<String>(values).containsAll(badgesEarned)
-		// && values.size() == badgesEarned.size());
 	}
 
 	public void assertionPoint(String gameId, Double score, String playerId,
@@ -235,6 +230,47 @@ public abstract class GameTest {
 				"Failure point concept %s for  player %s", conceptName,
 				playerId), score.doubleValue(), analyzer.getScore(
 				analyzer.findPlayer(playerId), conceptName), 0);
+	}
+
+	public void assertionCustomData(String gameId, String playerId, String key,
+			Object value) {
+		List<PlayerState> states = playerSrv.loadStates(gameId);
+		StateAnalyzer analyzer = new StateAnalyzer(states);
+		PlayerState ps = analyzer.findPlayer(playerId);
+		Assert.assertNotNull(String.format(
+				"player %s has not state in game %s", playerId, gameId), ps);
+		Object dataValue = ps.getCustomData().get(key);
+		Assert.assertNotNull(String.format(
+				"customData %s of player %s not exist in game %s", key,
+				playerId, gameId), dataValue);
+		Assert.assertEquals(
+				String.format("customData %s of player %s", key, playerId),
+				value, dataValue);
+	}
+
+	public void assertionAnyCustomData(String gameId, String playerId,
+			Map<String, Object> customData) {
+		List<PlayerState> states = playerSrv.loadStates(gameId);
+		StateAnalyzer analyzer = new StateAnalyzer(states);
+		PlayerState ps = analyzer.findPlayer(playerId);
+		Assert.assertNotNull(String.format(
+				"player %s has not state in game %s", playerId, gameId), ps);
+		for (Entry<String, Object> entry : customData.entrySet()) {
+			Assert.assertThat(String
+					.format("customData of player %s", playerId), ps
+					.getCustomData().entrySet(), CoreMatchers.hasItem((entry)));
+		}
+	}
+
+	public void assertionSameCustomData(String gameId, String playerId,
+			Map<String, Object> customData) {
+		List<PlayerState> states = playerSrv.loadStates(gameId);
+		StateAnalyzer analyzer = new StateAnalyzer(states);
+		PlayerState ps = analyzer.findPlayer(playerId);
+		Assert.assertNotNull(String.format(
+				"player %s has not state in game %s", playerId, gameId), ps);
+		Assert.assertEquals(String.format("customData of player %s", playerId),
+				customData, ps.getCustomData());
 	}
 
 	protected class ExecData {

@@ -2024,7 +2024,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
         //alert('share callback');
     };
     
-    $scope.image_url = "https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/256x256/plain/leaf.png";//"https://dev.smartcommunitylab.it/gamificationweb/img/foglia.svg";
+    $scope.image_url = "https://dev.smartcommunitylab.it/gamificationweb/img/foglia.png";//"https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/256x256/plain/leaf.png";
     $scope.url = "https://dev.smartcommunitylab.it/gamificationweb/profile";
     //$scope.url = "http://localhost:8080/gamificationweb/profile";
     $scope.title = "Rovereto Green Game";

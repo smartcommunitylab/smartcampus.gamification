@@ -2,6 +2,10 @@
     	text-align: left;
      	padding: 1em;
 	}
+	
+	.buttonaccess {
+		margin: 10px;
+	}
   
 	.navbar-default {
 		background: #c2c2c2;
@@ -60,7 +64,7 @@
     	border-right: 3px solid #c2c2c2;
     	border-bottom: 3px solid #c2c2c2;
     	background-color: #fff; /*#e5e4e2*/;
-    	padding: 15px;
+    	padding: 7px;
 	}
 	.nav-tabs {
 		font-weight: bold;
@@ -106,10 +110,30 @@
 		max-height: 100px;
 	}
 	
+	.twitter_btn_wrapper {
+		max-width: 22px;
+		overflow: hidden;
+		position: absolute;
+		top: 1px;
+		left: 23px;
+	}
+	
+	.sharing_wrapper {
+		position: relative;
+	}
+	
+	.panel-body .panel-body-nopadding {
+		padding: 5px;
+	}
+	
 	.nopadding {
 		padding-left: 5px;
 		padding-right: 5px;
 		padding-top: 0px;
+	}
+	
+	.padding_btm {
+		padding-bottom: 10px;
 	}
 	
 	.panel-success {
@@ -431,6 +455,8 @@
 	#big-badges {display: none; }
 	#small-badges-bike-trips {display: block; }
 	#big-badges-bike-trips {display: none; }
+	#small-badges-bike-sharing {display: block; }
+	#big-badges-bike-sharing {display: none; }
 	#small-badges-zero-impact {display: block; }
 	#big-badges-zero-impact {display: none; }
 	#small-badges-public-transport {display: block; }
@@ -444,6 +470,19 @@
 	#big-class-table-green {display: none; }
 	#small-tab-classification {display: block; }
 	#big-tab-classification {display: none; }
+	/* Extra pages */
+	#small-rules-page {display: block; }
+	#big-rules-page {display: none; }
+	#small-rules-view {display: block; }
+	#big-rules-view {display: none; }
+	#small-privacy-page {display: block; }
+	#big-privacy-page {display: none; }
+	#small-privacy-view {display: block; }
+	#big-privacy-view {display: none; }
+	#small-prizes-page {display: block; }
+	#big-prizes-page {display: none; }
+	#small-prizes-view {display: block; }
+	#big-prizes-view {display: none; }
 	
 	/* Block for page head titles */
 	#my-prof-head-title { 
@@ -504,6 +543,8 @@
 		#big-badges {display: block; }
 		#small-badges-bike-trips {display: none; }
 		#big-badges-bike-trips {display: block; }
+		#small-badges-bike-sharing {display: none; }
+		#big-badges-bike-sharing {display: block; }
 		#small-badges-zero-impact {display: none; }
 		#big-badges-zero-impact {display: block; }
 		#small-badges-public-transport {display: none; }
@@ -517,4 +558,17 @@
 		#big-class-table-green {display: block; }
 		#small-tab-classification {display: none; }
 		#big-tab-classification {display: block; }
+		/* Extra pages */
+		#small-rules-page {display: none; }
+		#big-rules-page {display: block; }
+		#small-rules-view {display: none; }
+		#big-rules-view {display: block; }
+		#small-privacy-page {display: none; }
+		#big-privacy-page {display: block; }
+		#small-privacy-view {display: none; }
+		#big-privacy-view {display: block; }
+		#small-prizes-page {display: none; }
+		#big-prizes-page {display: block; }
+		#small-prizes-view {display: none; }
+		#big-prizes-view {display: block; }
 	}

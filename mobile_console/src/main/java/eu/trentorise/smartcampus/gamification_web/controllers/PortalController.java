@@ -1,10 +1,14 @@
 package eu.trentorise.smartcampus.gamification_web.controllers;
 
 import java.awt.Image;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +32,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,6 +43,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
@@ -48,16 +57,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.trentorise.smartcampus.gamification_web.service.ChallengesUtils;
 import eu.trentorise.smartcampus.gamification_web.service.EmailService;
 
 import eu.trentorise.smartcampus.aac.AACException;
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
+import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
 import eu.trentorise.smartcampus.gamification_web.models.State;
 import eu.trentorise.smartcampus.gamification_web.models.Summary;
 //import eu.trentorise.smartcampus.gamification_web.models.SubjectDn;
 import eu.trentorise.smartcampus.gamification_web.models.UserCS;
+import eu.trentorise.smartcampus.gamification_web.models.WeekConfData;
+import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
+import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProdRepositoryDao;
@@ -412,6 +426,18 @@ public class PortalController extends SCController{
 						+ redirectAacService);
 	}
 	
+
+	@RequestMapping(method = RequestMethod.GET, value = "/loginfb")
+	public ModelAndView secureFb(HttpServletRequest request) {
+		String redirectUri = mainURL + "/check";
+		String redirectAacService = aacService.generateAuthorizationURIForCodeFlow(redirectUri, "/facebook",
+				"profile.basicprofile.me,profile.accountprofile.me", null);	//"smartcampus.profile.basicprofile.me,smartcampus.profile.accountprofile.me"
+		//logger.error(String.format("Redirect url : %s", redirectAacService));
+		return new ModelAndView(
+				"redirect:"
+						+ redirectAacService);
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, value = "/prelogin")
 	public ModelAndView preSecure(HttpServletRequest request) {
 		logger.info(String.format("I am in pre login"));
@@ -516,16 +542,17 @@ public class PortalController extends SCController{
 	}
 	
 	// Here I insert a task that invoke the WS notification
+	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
 	//@Scheduled(cron="0 0 0/2 * * *") // Repeat every hours at 00:00 min/sec
-	@Scheduled(cron="0 0 8 * * *") 		// Repeat every day at 8 AM from 1 to 8 dec
-	public synchronized void checkNotification() throws IOException{
-		
+	@Scheduled(cron="0 0 8 * * MON") 		// Repeat every Monday at 8 AM from 1 to 8 dec
+	public synchronized void checkNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
-		
-		long millis = System.currentTimeMillis() - (24*60*60*1000);	// Delta in millis of 24 hours //long millis = 1415660400000L; //(for test)
+		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
 		String timestamp = "?timestamp=" + millis;
 		//String timestamp = "";
+		
+		ChallengesUtils challUtils = new ChallengesUtils();
 		
 		URL resource = getClass().getResource("/");
 		String path = resource.getPath();
@@ -557,7 +584,28 @@ public class PortalController extends SCController{
 		
 			// New method
 			logger.error(String.format("Check Notification task. Cycle - %d", i++));
-			
+			// Here I have to read the mail conf file data
+			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
+			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
+			List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/conf_file/game_week_winners.csv");
+			// here I have to add the new mail parameters readed from csv files
+			String actual_week = "";
+			String actual_week_theme = "";
+			String last_week = "";
+			Boolean are_chall = false;
+			Boolean are_prizes = false;
+			Boolean are_prizes_last_week = false;
+			for(int i = 0; i < mailConfigurationFileData.size(); i++){
+				WeekConfData tmpWConf = mailConfigurationFileData.get(i);
+				if(tmpWConf.isActual()){
+					actual_week = tmpWConf.getWeekNum();
+					actual_week_theme = tmpWConf.getWeekTheme();
+					last_week = Integer.toString(Integer.parseInt(actual_week) - 1);
+					are_chall = tmpWConf.isChallenges();
+					are_prizes = tmpWConf.isPrizes();
+					are_prizes_last_week = tmpWConf.isPrizesLast();
+				}
+			}
 			if(isTest.compareTo("true") == 0){
 				Iterable<Player> iter = playerRepositoryDao.findAll();
 				for(Player p: iter){
@@ -571,11 +619,27 @@ public class PortalController extends SCController{
 					ArrayList<State> states = null;
 					ArrayList<Notification> notifications = null;
 					ArrayList<BagesData> someBadge = null;
+					List<ChallengesData> challenges = null;
+					List<ChallengesData> lastWeekChallenges = null;
 					
 					try {
-					// WS State Invocation
+						// WS State Invocation
 						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
 						states = getState(urlWSState);
+						// Challenges correction
+						String completeState = getAllChallenges(urlWSState);
+						try {
+							@SuppressWarnings("rawtypes")
+							List<List> challLists = challUtils.correctCustomData(completeState);
+							if(challLists != null && challLists.size() == 2){
+								challenges = challLists.get(0);
+								lastWeekChallenges = challLists.get(1);
+							}
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
 						// WS Notification Invocation
 						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
@@ -600,15 +664,23 @@ public class PortalController extends SCController{
 						try {
 							if(notifications != null){
 								if(states != null && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							}
 						} catch (MessagingException e) {
@@ -628,6 +700,12 @@ public class PortalController extends SCController{
 								logger.error(String.format("Invio mail a %s", playerName));
 							}
 						}
+						if(challenges != null && !challenges.isEmpty()){
+							logger.error(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+						}
+						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
+							logger.error(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+						}
 					}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 				}
@@ -644,11 +722,26 @@ public class PortalController extends SCController{
 					ArrayList<State> states = null;
 					ArrayList<Notification> notifications = null;
 					ArrayList<BagesData> someBadge = null;
+					List<ChallengesData> challenges = null;
+					List<ChallengesData> lastWeekChallenges = null;
 					
 					try {
-					// WS State Invocation
+						// WS State Invocation
 						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
 						states = getState(urlWSState);
+						// Challenges correction
+						String completeState = getAllChallenges(urlWSState);
+						try {
+							@SuppressWarnings("rawtypes")
+							List<List> challLists = challUtils.correctCustomData(completeState);
+							if(challLists != null && challLists.size() == 2){
+								challenges = challLists.get(0);
+								lastWeekChallenges = challLists.get(1);
+							}
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
 						// WS Notification Invocation
 						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
@@ -670,18 +763,27 @@ public class PortalController extends SCController{
 					}
 					
 					if(mailSend.compareTo("true") == 0){
+						
 						try {
 							if(notifications != null){
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, someBadge, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), states.get(1).getScore(), states.get(2).getScore(), null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, null, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							}
 						} catch (MessagingException e) {
@@ -700,6 +802,12 @@ public class PortalController extends SCController{
 							} else {
 								logger.error(String.format("Invio mail a %s", playerName));
 							}
+						}
+						if(challenges != null && !challenges.isEmpty()){
+							logger.error(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+						}
+						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
+							logger.error(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
@@ -722,26 +830,30 @@ public class PortalController extends SCController{
 		ArrayList<BagesData> allBadges = new ArrayList<BagesData>();
 		// files for green badges
 		File greenKing = new File(path + "mail/img/green/greenKingWeek.png");
-		File green10 = new File(path + "mail/img/green/greenLeaves10.png");
 		File green50 = new File(path + "mail/img/green/greenLeaves50.png");
 		File green100 = new File(path + "mail/img/green/greenLeaves100.png");
-		File green250 = new File(path + "mail/img/green/greenLeaves250.png");
-		File green500 = new File(path + "mail/img/green/greenLeaves500.png");
-		File green1000 = new File(path + "mail/img/green/greenLeaves1000.png");
+		File green200 = new File(path + "mail/img/green/greenLeaves200.png");
+		File green400 = new File(path + "mail/img/green/greenLeaves400.png");
+		File green800 = new File(path + "mail/img/green/greenLeaves800.png");
+		File green1500 = new File(path + "mail/img/green/greenLeaves1500.png");
+		File green2500 = new File(path + "mail/img/green/greenLeaves2500.png");
+		File green5000 = new File(path + "mail/img/green/greenLeaves5000.png");
 		File greenBronze = new File(path + "mail/img/green/greenBronzeMedal.png");
 		File greenSilver = new File(path + "mail/img/green/greenSilverMedal.png");
 		File greenGold = new File(path + "mail/img/green/greenGoldMedal.png");
 		
-		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king-week-green", "Re della Settimana - Green"));
-		allBadges.add(new BagesData(green10.getName(), FileUtils.readFileToByteArray(green10), "image/png", "10-point-green", "10 Punti Green"));
-		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50-point-green", "50 Punti Green"));
-		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100-point-green", "100 Punti Green"));
-		allBadges.add(new BagesData(green250.getName(), FileUtils.readFileToByteArray(green250), "image/png", "250-point-green", "250 Punti Green"));
-		allBadges.add(new BagesData(green500.getName(), FileUtils.readFileToByteArray(green500), "image/png", "500-point-green", "500 Punti Green"));
-		allBadges.add(new BagesData(green1000.getName(), FileUtils.readFileToByteArray(green1000), "image/png", "1000-point-green", "1000 Punti Green"));
-		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green"));
-		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green"));
-		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green"));
+		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king_week_green", "Re della Settimana - Green"));
+		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50_point_green", "50 Punti Green"));
+		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100_point_green", "100 Punti Green"));
+		allBadges.add(new BagesData(green200.getName(), FileUtils.readFileToByteArray(green200), "image/png", "200_point_green", "200 Punti Green"));
+		allBadges.add(new BagesData(green400.getName(), FileUtils.readFileToByteArray(green400), "image/png", "400_point_green", "400 Punti Green"));
+		allBadges.add(new BagesData(green800.getName(), FileUtils.readFileToByteArray(green800), "image/png", "800_point_green", "800 Punti Green"));
+		allBadges.add(new BagesData(green1500.getName(), FileUtils.readFileToByteArray(green1500), "image/png", "1500_point_green", "1500 Punti Green"));
+		allBadges.add(new BagesData(green2500.getName(), FileUtils.readFileToByteArray(green2500), "image/png", "2500_point_green", "2500 Punti Green"));
+		allBadges.add(new BagesData(green5000.getName(), FileUtils.readFileToByteArray(green5000), "image/png", "5000_point_green", "5000 Punti Green"));
+		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze_medal_green", "Medaglia di Bronzo - Green"));
+		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver_medal_green", "Medaglia d'Argento - Green"));
+		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold_medal_green", "Medaglia d'Oro - Green"));
 				
 		// files for health badges
 		File healthKing = new File(path + "mail/img/health/healthKingWeek.png");
@@ -754,15 +866,15 @@ public class PortalController extends SCController{
 		File healthSilver = new File(path + "mail/img/health/healthSilverMedal.png");
 		File healthGold = new File(path + "mail/img/health/healthGoldMedal.png");
 		
-		allBadges.add(new BagesData(healthKing.getName(), FileUtils.readFileToByteArray(healthKing), "image/png", "king-week-health", "Re della Settimana - Salute"));
-		allBadges.add(new BagesData(health10.getName(), FileUtils.readFileToByteArray(health10), "image/png", "10-point-health", "10 Punti Salute"));
-		allBadges.add(new BagesData(health25.getName(), FileUtils.readFileToByteArray(health25), "image/png", "25-point-health", "25 Punti Salute"));
-		allBadges.add(new BagesData(health50.getName(), FileUtils.readFileToByteArray(health50), "image/png", "50-point-health", "50 Punti Salute"));
-		allBadges.add(new BagesData(health100.getName(), FileUtils.readFileToByteArray(health100), "image/png", "100-point-health", "100 Punti Salute"));
-		allBadges.add(new BagesData(health200.getName(), FileUtils.readFileToByteArray(health200), "image/png", "200-point-health", "200 Punti Salute"));
-		allBadges.add(new BagesData(healthBronze.getName(), FileUtils.readFileToByteArray(healthBronze), "image/png", "bronze-medal-health", "Medaglia di Bronzo - Salute"));
-		allBadges.add(new BagesData(healthSilver.getName(), FileUtils.readFileToByteArray(healthSilver), "image/png", "silver-medal-health", "Medaglia d'Argento - Salute"));
-		allBadges.add(new BagesData(healthGold.getName(), FileUtils.readFileToByteArray(healthGold), "image/png", "gold-medal-health", "Medaglia d'Oro - Salute"));
+		allBadges.add(new BagesData(healthKing.getName(), FileUtils.readFileToByteArray(healthKing), "image/png", "king_week_health", "Re della Settimana - Salute"));
+		allBadges.add(new BagesData(health10.getName(), FileUtils.readFileToByteArray(health10), "image/png", "10_point_health", "10 Punti Salute"));
+		allBadges.add(new BagesData(health25.getName(), FileUtils.readFileToByteArray(health25), "image/png", "25_point_health", "25 Punti Salute"));
+		allBadges.add(new BagesData(health50.getName(), FileUtils.readFileToByteArray(health50), "image/png", "50_point_health", "50 Punti Salute"));
+		allBadges.add(new BagesData(health100.getName(), FileUtils.readFileToByteArray(health100), "image/png", "100_point_health", "100 Punti Salute"));
+		allBadges.add(new BagesData(health200.getName(), FileUtils.readFileToByteArray(health200), "image/png", "200_point_health", "200 Punti Salute"));
+		allBadges.add(new BagesData(healthBronze.getName(), FileUtils.readFileToByteArray(healthBronze), "image/png", "bronze_medal_health", "Medaglia di Bronzo - Salute"));
+		allBadges.add(new BagesData(healthSilver.getName(), FileUtils.readFileToByteArray(healthSilver), "image/png", "silver_medal_health", "Medaglia d'Argento - Salute"));
+		allBadges.add(new BagesData(healthGold.getName(), FileUtils.readFileToByteArray(healthGold), "image/png", "gold_medal_health", "Medaglia d'Oro - Salute"));
 		
 		// files for pr badges
 		File prKing = new File(path + "mail/img/pr/prKingWeek.png");
@@ -774,16 +886,20 @@ public class PortalController extends SCController{
 		File prBronze = new File(path + "mail/img/pr/prBronzeMedal.png");
 		File prSilver = new File(path + "mail/img/pr/prSilverMedal.png");
 		File prGold = new File(path + "mail/img/pr/prGoldMedal.png");
+		File prManifattura = new File(path + "mail/img/pr/prPioneerManifattura.png");
+		File prStadio = new File(path + "mail/img/pr/prPioneerStadio.png");
 		
-		allBadges.add(new BagesData(prKing.getName(), FileUtils.readFileToByteArray(prKing), "image/png", "king-week-pr", "Re della Settimana - Park&Ride"));
-		allBadges.add(new BagesData(pr10.getName(), FileUtils.readFileToByteArray(pr10), "image/png", "10-point-pr", "10 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr20.getName(), FileUtils.readFileToByteArray(pr20), "image/png", "20-point-pr", "20 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr50.getName(), FileUtils.readFileToByteArray(pr50), "image/png", "50-point-pr", "50 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr100.getName(), FileUtils.readFileToByteArray(pr100), "image/png", "100-point-pr", "100 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr200.getName(), FileUtils.readFileToByteArray(pr200), "image/png", "200-point-pr", "200 Punti Park&Ride"));
-		allBadges.add(new BagesData(prBronze.getName(), FileUtils.readFileToByteArray(prBronze), "image/png", "bronze-medal-pr", "Medaglia di Bronzo - Park&Ride"));
-		allBadges.add(new BagesData(prSilver.getName(), FileUtils.readFileToByteArray(prSilver), "image/png", "silver-medal-pr", "Medaglia d'Argento - Park&Ride"));
-		allBadges.add(new BagesData(prGold.getName(), FileUtils.readFileToByteArray(prGold), "image/png", "gold-medal-pr", "Medaglia d'Oro - Park&Ride"));
+		allBadges.add(new BagesData(prKing.getName(), FileUtils.readFileToByteArray(prKing), "image/png", "king_week_pr", "Re della Settimana - Park&Ride"));
+		allBadges.add(new BagesData(pr10.getName(), FileUtils.readFileToByteArray(pr10), "image/png", "10_point_pr", "10 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr20.getName(), FileUtils.readFileToByteArray(pr20), "image/png", "20_point_pr", "20 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr50.getName(), FileUtils.readFileToByteArray(pr50), "image/png", "50_point_pr", "50 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr100.getName(), FileUtils.readFileToByteArray(pr100), "image/png", "100_point_pr", "100 Punti Park&Ride"));
+		allBadges.add(new BagesData(pr200.getName(), FileUtils.readFileToByteArray(pr200), "image/png", "200_point_pr", "200 Punti Park&Ride"));
+		allBadges.add(new BagesData(prBronze.getName(), FileUtils.readFileToByteArray(prBronze), "image/png", "bronze_medal_pr", "Medaglia di Bronzo - Park&Ride"));
+		allBadges.add(new BagesData(prSilver.getName(), FileUtils.readFileToByteArray(prSilver), "image/png", "silver_medal_pr", "Medaglia d'Argento - Park&Ride"));
+		allBadges.add(new BagesData(prGold.getName(), FileUtils.readFileToByteArray(prGold), "image/png", "gold_medal_pr", "Medaglia d'Oro - Park&Ride"));
+		allBadges.add(new BagesData(prManifattura.getName(), FileUtils.readFileToByteArray(prManifattura), "image/png", "Manifattura_parking", "Parcheggio Manifattura - Park&Ride"));
+		allBadges.add(new BagesData(prStadio.getName(), FileUtils.readFileToByteArray(prStadio), "image/png", "Stadio_parking", "Parcheggio Stadio - Park&Ride"));
 		
 		// files for special badges
 		File specialEmotion = new File(path + "mail/img/special/emotion.png");
@@ -802,6 +918,85 @@ public class PortalController extends SCController{
 		allBadges.add(new BagesData(specialParcheggioCentro.getName(), FileUtils.readFileToByteArray(specialParcheggioCentro), "image/png", "Parcheggio Centro-park", "Parcheggio Centro"));
 		allBadges.add(new BagesData(specialPleALeoni.getName(), FileUtils.readFileToByteArray(specialPleALeoni), "image/png", "P.le A.Leoni-park", "Parcheggio Piazzale Leoni"));
 		
+		// files for bike
+		File bike1 = new File(path + "mail/img/bike/bikeAficionado1.png");
+		File bike5 = new File(path + "mail/img/bike/bikeAficionado5.png");
+		File bike10 = new File(path + "mail/img/bike/bikeAficionado10.png");
+		File bike25 = new File(path + "mail/img/bike/bikeAficionado25.png");
+		File bike50 = new File(path + "mail/img/bike/bikeAficionado50.png");
+		
+		allBadges.add(new BagesData(bike1.getName(), FileUtils.readFileToByteArray(bike1), "image/png", "1_bike_trip", "1 Viaggio in Bici"));
+		allBadges.add(new BagesData(bike5.getName(), FileUtils.readFileToByteArray(bike5), "image/png", "5_bike_trip", "5 Viaggi in Bici"));
+		allBadges.add(new BagesData(bike10.getName(), FileUtils.readFileToByteArray(bike10), "image/png", "10_bike_trip", "10 Viaggi in Bici"));
+		allBadges.add(new BagesData(bike25.getName(), FileUtils.readFileToByteArray(bike25), "image/png", "25_bike_trip", "25 Viaggi in Bici"));
+		allBadges.add(new BagesData(bike50.getName(), FileUtils.readFileToByteArray(bike50), "image/png", "50_bike_trip", "50 Viaggi in Bici"));
+		
+		// files for bike sharing
+		File bikeShareBrione = new File(path + "mail/img/bike_sharing/bikeSharingPioneerBrione.png");
+		File bikeShareLizzana = new File(path + "mail/img/bike_sharing/bikeSharingPioneerLizzana.png");
+		File bikeShareMarco = new File(path + "mail/img/bike_sharing/bikeSharingPioneerMarco.png");
+		File bikeShareMunicipio = new File(path + "mail/img/bike_sharing/bikeSharingPioneerMunicipio.png");
+		File bikeShareNoriglio = new File(path + "mail/img/bike_sharing/bikeSharingPioneerNoriglio.png");
+		File bikeShareOrsi = new File(path + "mail/img/bike_sharing/bikeSharingPioneerOrsi.png");
+		File bikeShareOspedale = new File(path + "mail/img/bike_sharing/bikeSharingPioneerOspedale.png");
+		File bikeSharePaoli = new File(path + "mail/img/bike_sharing/bikeSharingPioneerPaoli.png");
+		File bikeSharePROsmini = new File(path + "mail/img/bike_sharing/bikeSharingPioneerPRosmini.png");
+		File bikeShareQuercia = new File(path + "mail/img/bike_sharing/bikeSharingPioneerQuercia.png");
+		File bikeShareSacco = new File(path + "mail/img/bike_sharing/bikeSharingPioneerSacco.png");
+		File bikeShareStazione = new File(path + "mail/img/bike_sharing/bikeSharingPioneerStazione.png");
+		File bikeShareZonaIndustriale = new File(path + "mail/img/bike_sharing/bikeSharingPioneerZonaIndustriale.png");
+				
+		allBadges.add(new BagesData(bikeShareBrione.getName(), FileUtils.readFileToByteArray(bikeShareBrione), "image/png", "Brione - Rovereto_BSstation", "Parcheggio Bike Sharing Brione"));
+		allBadges.add(new BagesData(bikeShareLizzana.getName(), FileUtils.readFileToByteArray(bikeShareLizzana), "image/png", "Lizzana - Rovereto_BSstation", "Parcheggio Bike Sharing Lizzana"));
+		allBadges.add(new BagesData(bikeShareMarco.getName(), FileUtils.readFileToByteArray(bikeShareMarco), "image/png", "Marco - Rovereto_BSstation", "Parcheggio Bike Sharing Marco"));
+		allBadges.add(new BagesData(bikeShareMunicipio.getName(), FileUtils.readFileToByteArray(bikeShareMunicipio), "image/png", "Municipio - Rovereto_BSstation", "Parcheggio Bike Sharing Municipio"));
+		allBadges.add(new BagesData(bikeShareNoriglio.getName(), FileUtils.readFileToByteArray(bikeShareNoriglio), "image/png", "Noriglio - Rovereto_BSstation", "Parcheggio Bike Sharing Noriglio"));
+		allBadges.add(new BagesData(bikeShareOrsi.getName(), FileUtils.readFileToByteArray(bikeShareOrsi), "image/png", "Orsi - Rovereto_BSstation", "Parcheggio Bike Sharing Piazzale Orsi"));
+		allBadges.add(new BagesData(bikeShareOspedale.getName(), FileUtils.readFileToByteArray(bikeShareOspedale), "image/png", "Ospedale - Rovereto_BSstation", "Parcheggio Bike Sharing Ospedale"));
+		allBadges.add(new BagesData(bikeSharePaoli.getName(), FileUtils.readFileToByteArray(bikeSharePaoli), "image/png", "Paoli - Rovereto_BSstation", "Parcheggio Bike Sharing Paoli"));
+		allBadges.add(new BagesData(bikeSharePROsmini.getName(), FileUtils.readFileToByteArray(bikeSharePROsmini), "image/png", "P. Rosmini - Rovereto_BSstation", "Parcheggio Bike Sharing P. Rosmini"));
+		allBadges.add(new BagesData(bikeShareQuercia.getName(), FileUtils.readFileToByteArray(bikeShareQuercia), "image/png", "Quercia - Rovereto_BSstation", "Parcheggio Bike Sharing Quercia"));
+		allBadges.add(new BagesData(bikeShareSacco.getName(), FileUtils.readFileToByteArray(bikeShareSacco), "image/png", "Sacco - Rovereto_BSstation", "Parcheggio Bike Sharing Sacco"));
+		allBadges.add(new BagesData(bikeShareStazione.getName(), FileUtils.readFileToByteArray(bikeShareStazione), "image/png", "Stazione FF.SS. - Rovereto_BSstation", "Parcheggio Bike Sharing Stazione FF.SS."));
+		allBadges.add(new BagesData(bikeShareZonaIndustriale.getName(), FileUtils.readFileToByteArray(bikeShareZonaIndustriale), "image/png", "Zona Industriale - Rovereto_BSstation", "Parcheggio Bike Sharing Zona Industriale"));
+		
+		// files for recommendation
+		File recommendations3 = new File(path + "mail/img/recommendation/inviteFriends3.png");
+		File recommendations5 = new File(path + "mail/img/recommendation/inviteFriends5.png");
+		File recommendations10 = new File(path + "mail/img/recommendation/inviteFriends10.png");
+		File recommendations25 = new File(path + "mail/img/recommendation/inviteFriends25.png");
+				
+		allBadges.add(new BagesData(recommendations3.getName(), FileUtils.readFileToByteArray(recommendations3), "image/png", "3_recommendations", "3 Amici Invitati"));
+		allBadges.add(new BagesData(recommendations5.getName(), FileUtils.readFileToByteArray(recommendations5), "image/png", "5_recommendations", "5 Amici Invitati"));
+		allBadges.add(new BagesData(recommendations10.getName(), FileUtils.readFileToByteArray(recommendations10), "image/png", "10_recommendations", "10 Amici Invitati"));
+		allBadges.add(new BagesData(recommendations25.getName(), FileUtils.readFileToByteArray(recommendations25), "image/png", "25_recommendations", "25 Amici Invitati"));
+				
+		// files for public transport
+		File publicTrans5 = new File(path + "mail/img/public_transport/publicTransportAficionado5.png");
+		File publicTrans10 = new File(path + "mail/img/public_transport/publicTransportAficionado10.png");
+		File publicTrans25 = new File(path + "mail/img/public_transport/publicTransportAficionado25.png");
+		File publicTrans50 = new File(path + "mail/img/public_transport/publicTransportAficionado50.png");
+		File publicTrans100 = new File(path + "mail/img/public_transport/publicTransportAficionado100.png");
+		
+		allBadges.add(new BagesData(publicTrans5.getName(), FileUtils.readFileToByteArray(publicTrans5), "image/png", "5_pt_trip", "5 Viaggi Mezzi Pubblici"));
+		allBadges.add(new BagesData(publicTrans10.getName(), FileUtils.readFileToByteArray(publicTrans10), "image/png", "10_pt_trip", "10 Viaggi Mezzi Pubblici"));
+		allBadges.add(new BagesData(publicTrans25.getName(), FileUtils.readFileToByteArray(publicTrans25), "image/png", "25_pt_trip", "25 Viaggi Mezzi Pubblici"));
+		allBadges.add(new BagesData(publicTrans50.getName(), FileUtils.readFileToByteArray(publicTrans50), "image/png", "50_pt_trip", "50 Viaggi Mezzi Pubblici"));
+		allBadges.add(new BagesData(publicTrans100.getName(), FileUtils.readFileToByteArray(publicTrans100), "image/png", "100_pt_trip", "100 Viaggi Mezzi Pubblici"));
+		
+		// files for zero impact
+		File zeroImpact1 = new File(path + "mail/img/zero_impact/zeroImpact1.png");
+		File zeroImpact5 = new File(path + "mail/img/zero_impact/zeroImpact5.png");
+		File zeroImpact10 = new File(path + "mail/img/zero_impact/zeroImpact10.png");
+		File zeroImpact25 = new File(path + "mail/img/zero_impact/zeroImpact25.png");
+		File zeroImpact50 = new File(path + "mail/img/zero_impact/zeroImpact50.png");
+				
+		allBadges.add(new BagesData(zeroImpact1.getName(), FileUtils.readFileToByteArray(zeroImpact1), "image/png", "1_zero_impact_trip", "1 Viaggio Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact5.getName(), FileUtils.readFileToByteArray(zeroImpact5), "image/png", "5_zero_impact_trip", "5 Viaggi Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact10.getName(), FileUtils.readFileToByteArray(zeroImpact10), "image/png", "10_zero_impact_trip", "10 Viaggi Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact25.getName(), FileUtils.readFileToByteArray(zeroImpact25), "image/png", "25_zero_impact_trip", "25 Viaggi Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact50.getName(), FileUtils.readFileToByteArray(zeroImpact50), "image/png", "50_zero_impact_trip", "50 Viaggi Impatto Zero"));		
+		
 		return allBadges;
 	}
 	
@@ -819,6 +1014,18 @@ public class PortalController extends SCController{
 		return correctBadges;
 	}
 	
+	HttpHeaders createHeaders( ){
+		return new HttpHeaders(){
+			{
+				String auth = basicAuthUsername + ":" + basicAuthPassword;
+				byte[] encodedAuth = Base64.encode( 
+						auth.getBytes(Charset.forName("UTF-8")) );
+				String authHeader = "Basic " + new String( encodedAuth );
+				set( "Authorization", authHeader );
+			}
+		};
+	}
+	
 	
 	/**
 	 * Method used to retrieve the state of a specific user and to send the find data via mail
@@ -829,27 +1036,51 @@ public class PortalController extends SCController{
 	private ArrayList<State> getState(String urlWS) throws InterruptedException{
 		
 		RestTemplate restTemplate = new RestTemplate();
-		logger.error("Notification WS GET " + urlWS);
-		
+		logger.error("State WS GET " + urlWS);
 		String result = "";
+		ResponseEntity<String> tmp_res = null;
 		try {
-			result = restTemplate.getForObject(gamificationUrl + urlWS, String.class); //I pass the timestamp of the scheduled start time
+			//result = restTemplate.getForObject(gamificationUrl + urlWS, String.class); //I pass the timestamp of the scheduled start time
+			tmp_res = restTemplate.exchange(gamificationUrl + urlWS, HttpMethod.GET, new HttpEntity<Object>(createHeaders()),String.class);
 		} catch (Exception ex){
 			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
 		
 		ArrayList<State> states = null;
+		result = tmp_res.getBody();
 		
 		if(result != null && result.compareTo("") != 0){
 			logger.error(String.format("State Result Ok: %s", result));
 			states = chekState(result);	
-			
 		} else {
 			logger.error(String.format("State Result Fail: %s", result));
 		}
 		
 		return states;
 	}
+	
+	/**
+	 * Method used to retrieve the state of a specific user and to send the find data via mail
+	 * @param urlWS: url of the ws
+	 * @return string complete state
+	 * @throws InterruptedException 
+	 */
+	private String getAllChallenges(String urlWS) throws InterruptedException {
+		
+		RestTemplate restTemplate = new RestTemplate();
+		logger.error("Challenges WS GET " + urlWS);
+		String result = "";
+		ResponseEntity<String> tmp_res = null;
+		try {
+			//result = restTemplate.getForObject(gamificationUrl + urlWS, String.class); //I pass the timestamp of the scheduled start time
+			tmp_res = restTemplate.exchange(gamificationUrl + urlWS, HttpMethod.GET, new HttpEntity<Object>(createHeaders()),String.class);
+		} catch (Exception ex){
+			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+		}
+		result = tmp_res.getBody();
+		
+		return result;
+	}	
 	
 	/**
 	 * Method used to retrieve the notification of a specific user and to send the find data via mail
@@ -862,15 +1093,17 @@ public class PortalController extends SCController{
 		
 		RestTemplate restTemplate = new RestTemplate();
 		logger.error("Notification WS GET " + urlWS);
-		
 		String result = "";
+		ResponseEntity<String> tmp_res = null;
 		try {
-			result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
+			//result = restTemplate.getForObject(gamificationUrl + urlWS + timestamp, String.class); //I pass the timestamp of the scheduled start time
+			tmp_res = restTemplate.exchange(gamificationUrl + urlWS + timestamp, HttpMethod.GET, new HttpEntity<Object>(createHeaders()),String.class);
 		} catch (Exception ex){
 			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
 		
 		ArrayList<Notification> notifications = null;
+		result = tmp_res.getBody();
 		if(result != null){
 			logger.error(String.format("Notification Result Ok: %s", result));
 			notifications = chekNotification(result);	
@@ -1021,6 +1254,121 @@ public class PortalController extends SCController{
 		String nick_n = "";
 		nick_n = name.toLowerCase() + surname.toUpperCase().substring(0,1) + socialId;
 		return nick_n;
+	}
+	
+	public List<WeekConfData> readWeekConfFile(String src) {
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		List<WeekConfData> confWeekFileData = new ArrayList<WeekConfData>();
+
+		try {
+			br = new BufferedReader(new FileReader(src));
+			line = br.readLine();	// read table header line
+			while ((line = br.readLine()) != null) {
+			    // use comma as separator
+				String[] weekConfValues = line.split(cvsSplitBy);
+				String weekNum = weekConfValues[0];
+				String weekTheme = weekConfValues[1];
+				String areChallenges = weekConfValues[2];
+				String arePrizes = weekConfValues[3];
+				String arePrizesLast= weekConfValues[4];
+				String actualWeek = weekConfValues[5];
+				logger.info(String.format("Week conf file: week num %s, theme %s, challenges %s, prizes %s, prizes last %s, actual week %s", weekNum, weekTheme, areChallenges, arePrizes, arePrizesLast, actualWeek));
+				// value conversion from string to boolean
+				Boolean areChall = (areChallenges.compareTo("Y") == 0) ? true : false;
+				Boolean arePriz = (arePrizes.compareTo("Y") == 0) ? true : false;
+				Boolean arePrizLast = (arePrizesLast.compareTo("Y") == 0) ? true : false;
+				Boolean isActual = (actualWeek.compareTo("Y") == 0) ? true : false;
+				WeekConfData wconf = new WeekConfData(weekNum, weekTheme, areChall, arePriz, arePrizLast, isActual);
+				confWeekFileData.add(wconf);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return confWeekFileData;
+	}
+	
+	public List<WeekPrizeData> readWeekPrizesFile(String src) {
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		List<WeekPrizeData> prizeWeekFileData = new ArrayList<WeekPrizeData>();
+
+		try {
+			br = new BufferedReader(new FileReader(src));
+			line = br.readLine();	// read table header line
+			while ((line = br.readLine()) != null) {
+			    // use comma as separator
+				String[] weekPrizeValues = line.split(cvsSplitBy);
+				String weekNum = weekPrizeValues[0];
+				String weekPrize = weekPrizeValues[1];
+				String target = weekPrizeValues[2];
+				String sponsor = weekPrizeValues[3];
+				logger.info(String.format("Week prize file: week num %s, prize %s, target %s, sponsor %s", weekNum, weekPrize, target, sponsor));
+				WeekPrizeData wPrize = new WeekPrizeData(weekNum, weekPrize, target, sponsor);
+				prizeWeekFileData.add(wPrize);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prizeWeekFileData;
+	}
+	
+	public List<WeekWinnersData> readWeekWinnersFile(String src) {
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		List<WeekWinnersData> winnerWeekFileData = new ArrayList<WeekWinnersData>();
+
+		try {
+			br = new BufferedReader(new FileReader(src));
+			line = br.readLine();	// read table header line
+			while ((line = br.readLine()) != null) {
+			    // use comma as separator
+				String[] weekWinnerValues = line.split(cvsSplitBy);
+				String weekNum = weekWinnerValues[0];
+				String player = weekWinnerValues[1];
+				String prize = weekWinnerValues[2];
+				String target = weekWinnerValues[3];
+				logger.info(String.format("Week winner file: week num %s, player %s, prize %s, target %s", weekNum, player, prize, target));
+				WeekWinnersData wWinners = new WeekWinnersData(weekNum, player, prize, target);
+				winnerWeekFileData.add(wWinners);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return winnerWeekFileData;
 	}
 
 }

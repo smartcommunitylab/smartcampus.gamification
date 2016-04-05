@@ -39,7 +39,7 @@
 <base href="/gamificationweb/" />
 </head>
 <body>
-	<div class="container">
+	<div id="big-prizes-page" class="container">
 		<div class="row" style="margin-top: 50px;">
 			<div ng-class="col-md-10">
 				<div class="panel panel-success" >
@@ -62,6 +62,35 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
+				<hr>
+				<footer>
+				</footer>
+			</div>
+		</div>
+	</div>
+	<div id="small-prizes-page" class="container">
+		<div class="row" style="margin-top: 50px;">
+			<div ng-class="col-xs-12">
+				<div class="panel panel-success" >
+	  				<div class="panel-body">
+					<h4>RISULTATI E INCENTIVI</h4>
+					<div align="justify">
+						Alla fine del Gioco, ogni Giocatore ricever&agrave; un attestato che riporter&agrave; i risultati raggiunti.
+						I primi tre Giocatori <strong>nella classifica a punti Grean Leaves</strong> (vedasi 
+						"FUNZIONAMENTO DEL GIOCO" - al punto I.) alla fine del Gioco riceveranno i 
+						seguenti premi, elargiti dal <strong>Comune di Rovereto</strong>:
+						<ul>
+							<li><strong>Tessera MITT a scalare con valore di 34 Euro (30 di ticket + 4 di attivazione)</strong></li>
+						</ul>
+						Una premiazione, con consegna degli attestati e dei premi summenzionati, avverr&agrave; presso 
+						e a cura del Comune di Rovereto al termine del Gioco, in data luned&igrave; 15/12 p.v. alle ore 18:00.
+					</div>
+				   </div>	
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
 				<hr>
 				<footer>
 				</footer>

@@ -1481,10 +1481,20 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowBikeTrip50 = false;
     	
     	// Bike sharing
-    	$scope.userShowBikeSharingPark1 = false;
-    	$scope.userShowBikeSharingPark2 = false;
-    	$scope.userShowBikeSharingPark3 = false;
-    	$scope.userShowBikeSharingPark4 = false;
+    	$scope.userShowBikeSharingBrione = false;
+    	$scope.userShowBikeSharingLizzana = false;
+    	$scope.userShowBikeSharingMarco = false;
+    	$scope.userShowBikeSharingMunicipio = false;
+    	$scope.userShowBikeSharingNoriglio = false;
+    	$scope.userShowBikeSharingOrsi = false;
+    	$scope.userShowBikeSharingOspedale = false;
+    	$scope.userShowBikeSharingPaoli = false;
+    	$scope.userShowBikeSharingPRosmini = false;
+    	$scope.userShowBikeSharingQuercia = false;
+    	$scope.userShowBikeSharingSacco = false;
+    	$scope.userShowBikeSharingStazione = false;
+    	$scope.userShowBikeSharingZonaIndustriale = false;
+    	$scope.userBikeSharingPresent = false;
     	
     	// Zero impact
     	$scope.userShowZeroImpact1 = false;
@@ -1710,7 +1720,85 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		if(list[5].badgeEarned){
 	    		for(var i = 0; i < list[5].badgeEarned.length; i++){
 	    			switch(list[5].badgeEarned[i]){
-	    				default: break;
+		    			case "Brione - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingBrione = true;
+	    					badgeString += "Parcheggio Bike Sharing Brione, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Lizzana - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingLizzana = true;
+	    					badgeString += "Parcheggio Bike Sharing di Lizzana, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Marco - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingMarco = true;
+	    					badgeString += "Parcheggio Bike Sharing di Marco, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Municipio - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingMunicipio = true;
+	    					badgeString += "Parcheggio Bike Sharing Municipio, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Noriglio - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingNoriglio = true;
+	    					badgeString += "Parcheggio Bike Sharing di Noriglio, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Orsi - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingOrsi = true;
+	    					badgeString += "Parcheggio Bike Sharing Orsi, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Ospedale - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingOspedale = true;
+	    					badgeString += "Parcheggio Bike Sharing Ospedale, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Paoli - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingPaoli = true;
+	    					badgeString += "Parcheggio Bike Sharing Paoli, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "P. Rosmini - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingPRosmini = true;
+	    					badgeString += "Parcheggio Bike Sharing di P. Rosmini, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Quercia - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingQuercia = true;
+	    					badgeString += "Parcheggio Bike Sharing Quercia, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Sacco - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingSacco = true;
+	    					badgeString += "Parcheggio Bike Sharing Sacco, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "Stazione FF.SS. - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingStazione = true;
+	    					badgeString += "Parcheggio Bike Sharing Stazione Treni, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;
+		    			case "ZonaIndustriale - Rovereto" + $scope.BG_BIKE_SHARING :
+		    				$scope.userShowBikeSharingStazione = true;
+	    					badgeString += "Parcheggio Bike Sharing Zona Industriale, ";
+	    					bikeShareBadges += 1;
+	    					$scope.userBikeSharingPresent = true;
+	    					break;	
+		    			default: break;
 	    			}
 	    		}
     		}
@@ -2029,7 +2117,7 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	// (added lower case transformation to consider string with same chars but different formatting
 	$scope.checkIfNickAlreadyPresent = function(nick){
 		for(var i = 0; i < data.length; i++){
-			if(data[i].nikName.toLowerCase() == nick.toLowerCase()){
+			if(data[i].nikName.toLowerCase() == nick.trim().toLowerCase()){
 				return true;
 			}
 		}

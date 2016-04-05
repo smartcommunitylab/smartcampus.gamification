@@ -41,6 +41,8 @@
 	<http xmlns="http://www.springframework.org/schema/security"
         pattern="/login" security="none" />
 	<http xmlns="http://www.springframework.org/schema/security"
+        pattern="/loginfb" security="none" />
+	<http xmlns="http://www.springframework.org/schema/security"
         pattern="/check" security="none" />
 	<http xmlns="http://www.springframework.org/schema/security"
         pattern="/mobile" security="none" />

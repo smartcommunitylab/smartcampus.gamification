@@ -14,7 +14,6 @@
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
-<!-- <script src="http://platform.tumblr.com/v1/share.js"></script> -->
 <script src="https://apis.google.com/js/platform.js" async defer>
     {lang: 'it'}
 </script>
@@ -335,98 +334,99 @@ var base64="<%=request.getAttribute("base64")%>";
 </div>	
 </body>
 <script type="text/ng-template" id="/dialogs/nickinput.html">
-<div class="modal" id="variablesModal" role="dialog"> <!-- aria-labelledby="modalTitle" aria-hidden="true" -->
+<div class="modal" id="variablesModal" role="dialog">
 	<form role="form" name="form">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{ 'modal_title_value' | i18n }}</h4>
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Benvenuto</h4>
 				</div>
 				<div class="modal-body">
-					<div>
-					{{ 'modal_desc_label' | i18n }}<br />
+					<div align="justify">
+					Rispondi a queste veloci e semplici domande per accedere alla console. 
+					Questo permettera' al sistema di recuperare informazioni utili per offrire un servizio piu' personalizzato e adatto alle tue abitudini.<br />
 					Per maggiori informazioni visualizza anche i seguenti link:
 					<ul>
 						<li>
-							<a href="view_rules" target="_blank" >{{ 'left_menu-rules' | i18n }}</a>
+							<a href="view_rules" target="_blank" >Regole</a>
 						</li>
 						<li>
-							<a href="view_privacy" target="_blank" >{{ 'left_menu-privacy' | i18n }}</a>
+							<a href="view_privacy" target="_blank" >Privacy</a>
 						</li>
 						<li>
-							<a href="view_prizes" target="_blank" >{{ 'left_menu-prizes' | i18n }}</a>
+							<a href="view_prizes" target="_blank" >Premi</a>
 						</li>
 					</ul>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
-						<label class="control-label" for="username">{{ 'modal_nick_label' | i18n }}:</label>
-						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="{{ 'modal_nick_placeholder' | i18n }}" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
+						<label class="control-label" for="username">Nick name:</label>
+						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
 						<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.age.$dirty && form.age.$invalid]"><!--  -->
-						<label class="control-label">{{ 'modal_age_label' | i18n }}:</label>
+						<label class="control-label">Eta':</label>
 						<select type="text" name="age" class="form-control" ng-model="user.age" required><!--  ng-options="a as a.label for a in ages" required -->
-							<option value="">{{ 'modal_age_placeholder' | i18n }}</option>
-							<option value="1">{{ 'modal_age_value_1' | i18n }}</option>
-							<option value="2">{{ 'modal_age_value_2' | i18n }}</option>
-							<option value="3">{{ 'modal_age_value_3' | i18n }}</option>
-							<option value="4">{{ 'modal_age_value_4' | i18n }}</option>
+							<option value="">Seleziona una fascia d'età</option>
+							<option value="1">< 20 anni</option>
+							<option value="2">20 - 40 anni</option>
+							<option value="3">40 - 70 anni</option>
+							<option value="4">> 70 anni</option>
 						</select>
-						<div ng-show="submitNumber && form.age.$error.required" class="alert alert-danger" role="alert">{{ 'modal_age_error_required' | i18n }}</div>
+						<div ng-show="submitNumber && form.age.$error.required" class="alert alert-danger" role="alert">Valore eta' obbligatorio. Selezionare un valore</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.transport.$dirty && form.transport.$invalid]">
-						<label class="control-label" for="username">{{ 'modal_transport_label' | i18n }}</label>
+						<label class="control-label" for="username">Utilizzi quotidianamente i mezzi pubblici? </label>
 						<table width="100%">
-							<tr><td><label><input type="radio" name="transport" value="yes" ng-model="user.transport" ng-change="clearVehicle()" required> {{ 'modal_transport_yes' | i18n }}</label></td></tr>
-							<tr><td><label><input type="radio" name="transport" value="no" ng-model="user.transport" ng-change="clearVehicle()" required> {{ 'modal_transport_no' | i18n }}</label></td></tr>
+							<tr><td><label><input type="radio" name="transport" value="yes" ng-model="user.transport" ng-change="clearVehicle()" required> Si'</label></td></tr>
+							<tr><td><label><input type="radio" name="transport" value="no" ng-model="user.transport" ng-change="clearVehicle()" required> No</label></td></tr>
 						</table>
-						<div ng-show="submitNumber && form.transport.$error.required" class="alert alert-danger" role="alert">{{ 'modal_transport_error_required' | i18n }}</div>
+						<div ng-show="submitNumber && form.transport.$error.required" class="alert alert-danger" role="alert">Valore obbligatorio, selezionare si' o no</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.vehicle.$dirty && form.vehicle.$invalid || form.vehicle.$error.required]">
-						<label class="control-label" for="username">{{ 'modal_vehicle_label' | i18n }}: </label>
+						<label class="control-label" for="username">Mezzi usati abitualmente per gli spostamenti: </label>
 						<table width="100%">
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="0" name="vehicle" ng-model="user.vehicle[0]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_train_label' | i18n }}</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="0" name="vehicle" ng-model="user.vehicle[0]" ng-required="!someSelectedTrans(user.vehicle)"> treno</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="1" name="vehicle" ng-model="user.vehicle[1]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_bus_label' | i18n }}</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="1" name="vehicle" ng-model="user.vehicle[1]" ng-required="!someSelectedTrans(user.vehicle)"> autobus</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="2" name="vehicle" ng-model="user.vehicle[2]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_shared_car_label' | i18n }}</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="2" name="vehicle" ng-model="user.vehicle[2]" ng-required="!someSelectedTrans(user.vehicle)"> auto condivisa</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="3" name="vehicle" ng-model="user.vehicle[3]" ng-required="!someSelectedTrans(user.vehicle)"> {{ 'modal_shared_bike_label' | i18n }}</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="3" name="vehicle" ng-model="user.vehicle[3]" ng-required="!someSelectedTrans(user.vehicle)"> bici condivisa</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="4" name="vehicle" ng-model="user.vehicle[4]" ng-required="!someSelectedPrivat(user.vehicle)"> {{ 'modal_private_car_label' | i18n }}</label></td>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="4" name="vehicle" ng-model="user.vehicle[4]" ng-required="!someSelectedPrivat(user.vehicle)"> auto privata</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="5" name="vehicle" ng-model="user.vehicle[5]" ng-required="!someSelectedPrivat(user.vehicle)"> {{ 'modal_private_bike_label' | i18n }}</label></td>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="5" name="vehicle" ng-model="user.vehicle[5]" ng-required="!someSelectedPrivat(user.vehicle)"> bici privata</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="6" name="vehicle" ng-model="user.vehicle[6]" ng-required="!someSelectedPrivat(user.vehicle)"> {{ 'modal_walk_label' | i18n }}</label></td>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="6" name="vehicle" ng-model="user.vehicle[6]" ng-required="!someSelectedPrivat(user.vehicle)"> a piedi</label></td>
 							</tr>
 							<tr>
-								<td><div ng-show="submitNumber && form.vehicle.$error.required" class="alert alert-danger" role="alert">{{ 'modal_walk_label' | i18n }}Veicolo obbligatorio. Selezionare almeno un elemento</div></td>
+								<td><div ng-show="submitNumber && form.vehicle.$error.required" class="alert alert-danger" role="alert">Veicolo obbligatorio. Selezionare almeno un elemento</div></td>
 							</tr>
 						</table>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
-						<label class="control-label" for="averagekm">{{ 'modal_average_daily_km_label' | i18n }}: </label>
+						<label class="control-label" for="averagekm">Km medi percorsi giornalmente: </label>
 						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" required>
-						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">{{ 'modal_average_daily_km_error_value' | i18n }}</div>
-						<div ng-show="submitNumber && form.averagekm.$error.required" class="alert alert-danger" role="alert">{{ 'modal_average_daily_km_error_required' | i18n }}</div>
+						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">Valore non permesso nel campo km</div>
+						<div ng-show="submitNumber && form.averagekm.$error.required" class="alert alert-danger" role="alert">Valore km medi obbligatorio</div>
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.invitation_person.$dirty && form.invitation_person.$invalid]">
-						<label class="control-label" for="invitation">{{ 'modal_invitation_nickname_label' | i18n }}</label>
-						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="{{ 'modal_invitation_nickname_placeholder' | i18n }}" ng-model="user.invitation">
+						<label class="control-label" for="invitation">Chi ti ha invitato a questo gioco? (nickname)</label>
+						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="Inserisci il nickname di chi ti ha invitato al gioco" ng-model="user.invitation">
 						<div ng-show="showInvitationMessages" class="alert alert-danger" role="alert">{{ errorInvitationMessages }}</div>
 					</div>
 				</div>
-				<div class="required_desc"><p>{{ 'modal_required_field_label' | i18n }}</p></div>
+				<div class="required_desc"><p>Il simbolo * indica un campo obbligatorio</p></div>
 				<div class="modal-footer">
-					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">{{ 'modal_cancel_button_label' | i18n }}</button> -->
-					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >{{ 'modal_ok_button_label' | i18n }}</button>
+					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
+					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
 				</div>
 			</div>
 		</div>

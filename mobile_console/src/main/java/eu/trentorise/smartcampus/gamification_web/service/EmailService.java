@@ -3,6 +3,7 @@ package eu.trentorise.smartcampus.gamification_web.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.mail.MessagingException;
@@ -20,9 +21,12 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
+import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
 import eu.trentorise.smartcampus.gamification_web.models.Summary;
+import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
+import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
 
 @Service
 public class EmailService {
@@ -145,13 +149,25 @@ public class EmailService {
     
     public void sendMailGamification(
             final String recipientName, final String point_green, final String point_health, final String point_pr, final String badge,
-            final String position, 
+            final String position, final String week_number, final String week_theme, final String last_week_number, final Boolean are_challenges, final Boolean are_prizes, final Boolean are_last_week_prizes, 
             final ArrayList<BagesData> badges,
-            final ArrayList<MailImage> standardImages,
+            final List<ChallengesData> challenges,
+            final List<ChallengesData> last_week_challenges,
+            final List<WeekPrizeData> prizes,
+            final List<WeekWinnersData> winners,
+            final List<MailImage> standardImages,
             final String recipientEmail, final String greengame_url, final Locale locale)
             throws MessagingException {
         
     	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
+    	
+    	// Correct the winners:
+    	List<WeekWinnersData> last_week_winners = new ArrayList<WeekWinnersData>();
+    	for(int i = 0; i < winners.size(); i++){
+    		if(winners.get(i).getWeekNum().compareTo(last_week_number) == 0){
+    			last_week_winners.add(winners.get(i));
+    		}
+    	}
     	
         // Prepare the evaluation context
         final Context ctx = new Context(locale);
@@ -161,6 +177,16 @@ public class EmailService {
         ctx.setVariable("p_point", point_pr);
         ctx.setVariable("n_badge", badge);
         ctx.setVariable("n_badges", badges);
+        ctx.setVariable("next_week_num", week_number);
+        ctx.setVariable("next_week_theme", week_theme);
+        ctx.setVariable("week_num", last_week_number);
+        ctx.setVariable("n_challenges", challenges);
+        ctx.setVariable("n_lw_challenges", last_week_challenges);
+        ctx.setVariable("n_prizes", prizes);
+        ctx.setVariable("are_prizes", are_prizes);
+        ctx.setVariable("are_prizes_last", are_last_week_prizes);
+        ctx.setVariable("are_challenges", are_challenges);
+        ctx.setVariable("n_winners", last_week_winners);
         ctx.setVariable("u_position", position);
         ctx.setVariable("greengame_url", greengame_url);
         ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
@@ -179,7 +205,7 @@ public class EmailService {
         message.setTo(recipientEmail);
 
         // Create the HTML body using Thymeleaf
-        final String htmlContent = this.templateEngine.process("email-gamification.html", ctx);
+        final String htmlContent = this.templateEngine.process("email-gamification2016.html", ctx);
         message.setText(htmlContent, true /* isHtml */);
         
         // Add the inline titles image, referenced from the HTML code as "cid:${imageResourceName}"
@@ -191,10 +217,10 @@ public class EmailService {
         // Add the inline score image, referenced from the HTML code as "cid:${imageResourceName}"
         final InputStreamSource imageSourceGreen = new ByteArrayResource(standardImages.get(2).getImageByte());
         message.addInline(standardImages.get(2).getImageName(), imageSourceGreen, standardImages.get(2).getImageType());
-        final InputStreamSource imageSourceHealth = new ByteArrayResource(standardImages.get(3).getImageByte());
+        /*final InputStreamSource imageSourceHealth = new ByteArrayResource(standardImages.get(3).getImageByte());
         message.addInline(standardImages.get(3).getImageName(), imageSourceHealth, standardImages.get(3).getImageType());
         final InputStreamSource imageSourcePr = new ByteArrayResource(standardImages.get(4).getImageByte());
-        message.addInline(standardImages.get(4).getImageName(), imageSourcePr, standardImages.get(4).getImageType());
+        message.addInline(standardImages.get(4).getImageName(), imageSourcePr, standardImages.get(4).getImageType());*/
         
         // Add the inline footer image, referenced from the HTML code as "cid:${imageResourceName}"
         final InputStreamSource imageSourceFooter = new ByteArrayResource(standardImages.get(5).getImageByte());

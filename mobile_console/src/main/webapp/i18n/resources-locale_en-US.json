@@ -396,7 +396,7 @@
 	"description": "Valore della label per l' eta'"
 }, {
 	"key": "modal_age_placeholder",
-	"value": "Seleziona una facia d'età",
+	"value": "Seleziona una fascia d'età",
 	"description": "Valore del placeholder per l' età"
 }, {
 	"key": "modal_age_value_1",

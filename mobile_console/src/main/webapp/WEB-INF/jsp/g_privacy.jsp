@@ -39,7 +39,7 @@
 <base href="/gamificationweb/" />
 </head>
 <body>
-	<div class="container">
+	<div id="big-privacy-page" class="container">
 		<div class="row" style="margin-top: 50px;">
 			<div ng-class="col-md-10">
 				<div class="panel panel-success" >
@@ -63,6 +63,36 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
+				<hr>
+				<footer>
+				</footer>
+			</div>
+		</div>
+	</div>
+	<div id="small-privacy-page" class="container">
+		<div class="row" style="margin-top: 50px;">
+			<div ng-class="col-xs-12">
+				<div class="panel panel-success" >
+					<div class="panel-body">
+				    <h4>TRATTAMENTO DEI DATI PERSONALI</h4>
+					<div align="justify">
+						Lo scopo del gioco ViaggiaRovereto (di seguito, "il Gioco") &egrave; quello di indurre e 
+						facilitare i partecipanti all'esplorazione e all'uso di soluzioni di mobilit&agrave; urbana 
+						sostenibile per mezzo di incentivi virtuali e reali, che vengono introdotti, presentati e 
+						raggiunti nell'ambito di un contesto ludico, mediato dall'uso delle tecnologie ICT, in 
+						questo caso dall'applicazione mobile ViaggiaRovereto (di seguito, l'App), secondo la 
+						tecnica cosiddetta della "gamification".
+						Gli enti che organizzano e gestiscono il Gioco sono il <strong>Comune di Rovereto</strong>, la 
+						<strong>Fondazione Bruno Kessler</strong> e <strong>CAIRE</strong> - Cooperativa Architetti e Ingegneri - Urbanistica 
+						(di seguito, "gli Organizzatori"), nell'ambito del progetto Europeo <strong>STREETLIFE</strong>.
+					</div>
+					<br/>
+				   </div>
+				</div>   
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
 				<hr>
 				<footer>
 				</footer>

@@ -11,6 +11,7 @@
 <link href="css/xeditable.css" rel="stylesheet" />
 <link href="css/modaldialog.css" rel="stylesheet" />
 <link href="css/angular-socialshare.css" rel="stylesheet">
+<link href="css/gg_style.css" rel="stylesheet" />
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
@@ -89,7 +90,9 @@
 							<div class="row" style="height: 150px; margin-top: 80px" align="center">
 								&nbsp;
 								&nbsp;
-								<a id="btn_login_test" href="login" class="btn btn-success btn-lg" role="button" ng-click="getOldLogin()" disabled="false"><font face="Raleway" size="4"><strong>Accedi con Google</strong></font></a>
+								<a id="btn_login_test" href="login" class="btn btn-success btn-lg buttonaccess" role="button" ng-click="getOldLogin()" disabled="false"><font face="Raleway" size="4"><strong>Accedi con Google</strong></font></a>
+								&nbsp;
+								<a id="btn_login_facebook" href="loginfb" class="btn btn-success btn-lg buttonaccess" role="button" ng-click="getOldLogin()" disabled="false"><font face="Raleway" size="4"><strong>Accedi con Facebook</strong></font></a>
 							</div>
 							<div class="row" align="center">
 								<img src="img/lineaPaginaAccesso-57.svg" width="95%" alt="" title="" />
@@ -113,11 +116,11 @@
 	if(!cookieEnabled){
 		document.getElementById("cookies").innerHTML = "Il tuo browser sembra non avere i cookie attivi. E' necessario attivarli per utilizzare il portale. Clicca <a href='cookie_info'>QUI</a> per maggiori informazioni";
 		$("#btn_login_prod").attr("disabled", "disabled");
-	 	$("#btn_login_console").attr("disabled", "disabled");
+	 	$("#btn_login_facebook").attr("disabled", "disabled");
 	 	$("#btn_login_test").attr("disabled", "disabled");
 	} else {
 		$("#btn_login_prod").removeAttr("disabled");
-	 	$("#btn_login_console").removeAttr("disabled");
+	 	$("#btn_login_facebook").removeAttr("disabled");
 	 	$("#btn_login_test").removeAttr("disabled");
 	}
 </script>

@@ -76,5 +76,5 @@ cp.config(['$compileProvider',
     }
 ]);
 cp.run(function($FB){
-	  $FB.init('837212459739283');
+	  $FB.init('1694843157451296');
 });	  

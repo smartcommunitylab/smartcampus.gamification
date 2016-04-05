@@ -1,85 +1,89 @@
 <div ng-show="!isLoading">
-	<div id="big-class-table-green">
-		<table class="table table-hover" style="width: 100%">
-			<tr ng-show="GameClassification.length != 0">
-				<th width="15%" align="left">{{ 'player_position' | i18n }}</th>
-				<th width="50%" align="center">{{ 'player_name' | i18n }}</th>
-				<!-- <th width="23%">{{ 'game_code' | i18n }}</th> -->
-				<!-- <th width="23%">{{ 'player_state_badge' | i18n }}</th> -->
-				<th width="10%">{{ 'player_state_score' | i18n }}</th>
-				<th width="25%" class="center-text">{{ 'player_state_social' | i18n }}</th>
-			</tr>
-			<tbody class="animate-repeat"
-				ng-repeat="p_g in GameClassification | filter:q | orderBy: '-score[0].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
-				<tr ng-show="p_g.id == userId" class="success" href="#/profile/{{ gameId }}" ng-click="showProfile()">
-					<td align="left">{{ p_g.class_pos_g }}</td>
-					<td align="left">{{ p_g.name }}</td>
-					<!-- <td align="left">{{ p.gameId }}</td> -->
-					<!-- <td align="left">{{ p.badge }}</td> -->
-					<td align="left">{{ p_g.score[0].score }}</td>
-					<td align="left">
-						<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(p_g) }}" data-callback="callback"></a><!-- {{ shares }} -->
-						&nbsp;&nbsp;
-						<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(p_g) }}' ></a>
-					</td>
+	<div class="padding_btm">
+		<div id="big-class-table-green">
+			<table class="table table-hover" style="width: 100%">
+				<tr ng-show="GameClassification.length != 0">
+					<th width="15%" align="left">{{ 'player_position' | i18n }}</th>
+					<th width="50%" align="center">{{ 'player_name' | i18n }}</th>
+					<!-- <th width="23%">{{ 'game_code' | i18n }}</th> -->
+					<!-- <th width="23%">{{ 'player_state_badge' | i18n }}</th> -->
+					<th width="10%">{{ 'player_state_score' | i18n }}</th>
+					<th width="25%" class="center-text">{{ 'player_state_social' | i18n }}</th>
 				</tr>
-				<tr ng-show="p_g.id != userId">
-					<td align="left">{{ p_g.class_pos_g }}</td>
-					<td align="left">{{ p_g.name }}</td>
-					<!-- <td align="left">{{ p.gameId }}</td> -->
-					<!-- <td align="left">{{ p.badge }}</td> -->
-					<td align="left">{{ p_g.score[0].score }}</td>
-					<td align="left"></td>
+				<tbody class="animate-repeat"
+					ng-repeat="p_g in GameClassification | filter:q | orderBy: '-score[0].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
+					<tr ng-show="p_g.id == userId" class="success" href="#/profile/{{ gameId }}" ng-click="showProfile()">
+						<td align="left">{{ p_g.class_pos_g }}</td>
+						<td align="left">{{ p_g.name }}</td>
+						<!-- <td align="left">{{ p.gameId }}</td> -->
+						<!-- <td align="left">{{ p.badge }}</td> -->
+						<td align="left">{{ p_g.score[0].score }}</td>
+						<td align="left">
+							<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(p_g) }}" data-callback="callback"></a><!-- {{ shares }} -->
+							&nbsp;&nbsp;
+							<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(p_g) }}' ></a>
+						</td>
+					</tr>
+					<tr ng-show="p_g.id != userId">
+						<td align="left">{{ p_g.class_pos_g }}</td>
+						<td align="left">{{ p_g.name }}</td>
+						<!-- <td align="left">{{ p.gameId }}</td> -->
+						<!-- <td align="left">{{ p.badge }}</td> -->
+						<td align="left">{{ p_g.score[0].score }}</td>
+						<td align="left"></td>
+					</tr>
+				</tbody>
+				<tr ng-show="GameClassification.length == 0">
+					<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
 				</tr>
-			</tbody>
-			<tr ng-show="GameClassification.length == 0">
-				<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
-			</tr>
-		</table>
-	</div>
-	<div id="small-class-table-green">
-		<table class="table table-hover" style="width: 90%">
-			<tr ng-show="GameClassification.length != 0">
-				<th width="10%" align="left">{{ 'player_position' | i18n }}</th>
-				<th width="40%" align="center">{{ 'player_name' | i18n }}</th>
-				<!-- <th width="23%">{{ 'game_code' | i18n }}</th> -->
-				<!-- <th width="23%">{{ 'player_state_badge' | i18n }}</th> -->
-				<th width="10%">{{ 'player_state_score' | i18n }}</th>
-				<th width="30%" class="center-text">{{ 'player_state_social' | i18n }}</th>
-			</tr>
-			<tbody class="animate-repeat"
-				ng-repeat="p_g in GameClassification | filter:q | orderBy: '-score[0].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
-				<tr ng-show="p_g.id == userId" class="success" href="#/profile/{{ gameId }}" ng-click="showProfile()">
-					<td align="left">{{ p_g.class_pos_g }}</td>
-					<td align="left">{{ p_g.name }}</td>
-					<!-- <td align="left">{{ p.gameId }}</td> -->
-					<!-- <td align="left">{{ p.badge }}</td> -->
-					<td align="left">{{ p_g.score[0].score }}</td>
-					<td align="left">
-						<a facebook-feed-share class="facebookShare buttonFBSmall" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(p_g) }}" data-callback="callback"></a><!-- {{ shares }} -->
-						&nbsp;
-						<a twitter style="width: 22px" class="buttonTWSmall" data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="middle" data-text='{{ getPosTw_class(p_g) }}' ></a>
-					</td>
+			</table>
+		</div>
+		<div id="small-class-table-green">
+			<table class="table table-hover" style="width: 100%">
+				<tr ng-show="GameClassification.length != 0">
+					<th width="10%" align="left">{{ 'player_position' | i18n }}</th>
+					<th width="40%" align="center">{{ 'player_name' | i18n }}</th>
+					<!-- <th width="23%">{{ 'game_code' | i18n }}</th> -->
+					<!-- <th width="23%">{{ 'player_state_badge' | i18n }}</th> -->
+					<th width="10%">{{ 'player_state_score' | i18n }}</th>
+					<th width="30%" class="center-text">{{ 'player_state_social' | i18n }}</th>
 				</tr>
-				<tr ng-show="p_g.id != userId">
-					<td align="left">{{ p_g.class_pos_g }}</td>
-					<td align="left">{{ p_g.name }}</td>
-					<!-- <td align="left">{{ p.gameId }}</td> -->
-					<!-- <td align="left">{{ p.badge }}</td> -->
-					<td align="left">{{ p_g.score[0].score }}</td>
-					<td align="left"></td>
+				<tbody class="animate-repeat"
+					ng-repeat="p_g in GameClassification | filter:q | orderBy: '-score[0].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
+					<tr ng-show="p_g.id == userId" class="success" href="#/profile/{{ gameId }}" ng-click="showProfile()">
+						<td align="left">{{ p_g.class_pos_g }}</td>
+						<td align="left">{{ p_g.name }}</td>
+						<!-- <td align="left">{{ p.gameId }}</td> -->
+						<!-- <td align="left">{{ p.badge }}</td> -->
+						<td align="left">{{ p_g.score[0].score }}</td>
+						<td align="left">
+							<div class="sharing_wrapper">
+								<a facebook-feed-share class="facebookShare buttonFBSmall" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(p_g) }}" data-callback="callback"></a><!-- {{ shares }} -->
+								&nbsp;
+								<div class="twitter_btn_wrapper"><a id="twitter_button" twitter style="width: 22px" class="buttonTWSmall" data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="middle" data-text='{{ getPosTw_class(p_g) }}' ></a></div>
+							</div>
+						</td>
+					</tr>
+					<tr ng-show="p_g.id != userId">
+						<td align="left">{{ p_g.class_pos_g }}</td>
+						<td align="left">{{ p_g.name }}</td>
+						<!-- <td align="left">{{ p.gameId }}</td> -->
+						<!-- <td align="left">{{ p.badge }}</td> -->
+						<td align="left">{{ p_g.score[0].score }}</td>
+						<td align="left"></td>
+					</tr>
+				</tbody>
+				<tr ng-show="GameClassification.length == 0">
+					<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
 				</tr>
-			</tbody>
-			<tr ng-show="GameClassification.length == 0">
-				<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
-			</tr>
-		</table>
-	</div>
-	<button class="btn btn-success"
-		ng-disabled="currentPage == 0"
-		ng-click="currentPage=currentPage-1">{{ 'previous_label' | i18n }}</button>
-		{{currentPage+1}}/{{numberOfPages()}}
-	<button class="btn btn-success"
-		ng-disabled="currentPage >= GameClassification.length/maxPlayers - 1"
-		ng-click="currentPage=currentPage+1">{{ 'next_label' | i18n }}</button>
+			</table>
+		</div>
+		<button class="btn btn-success"
+			ng-disabled="currentPage == 0"
+			ng-click="currentPage=currentPage-1">{{ 'previous_label' | i18n }}</button>
+			{{currentPage+1}}/{{numberOfPages()}}
+		<button class="btn btn-success"
+			ng-disabled="currentPage >= GameClassification.length/maxPlayers - 1"
+			ng-click="currentPage=currentPage+1">{{ 'next_label' | i18n }}</button>
+	</div>	
 </div>

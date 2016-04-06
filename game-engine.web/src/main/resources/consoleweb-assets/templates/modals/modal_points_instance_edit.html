@@ -17,9 +17,8 @@
 -->
 
 <div class="modal-header text-center">
-  <h4 class="modal-title">{{'lbl_points_configuration' | i18next}}</h4>
+  <h4 class="modal-title">{{'labels:lbl_points_configuration' | i18next}}</h4>
 </div>
-<form role="form">
   <div class="modal-body text-center">
     <div class="row">
       <div class="col-md-12 text-center">
@@ -27,13 +26,13 @@
       </div>
     </div>
     <div class="form-group form-inline">
-      <label for="newPointsInstanceName">{{'lbl_name' | i18next}}</label>
+      <label for="newPointsInstanceName">{{'labels:lbl_name' | i18next}}</label>
       &nbsp;&nbsp;
       <input type="text" class="form-control" id="newPointsInstanceName" ng-model="points.name" required />
     </div>
   </div>
   <div class="modal-footer">
-    <button type="reset" class="btn btn-default" ng-click="cancel()">{{'btn_cancel' | i18next}}</button>
-    <button type="submit" class="btn btn-primary" ng-click="save()">{{'btn_save' | i18next}}</button>
+    <button type="reset" class="btn btn-default" ng-click="cancel()">{{'labels:btn_cancel' | i18next}}</button>
+    <button type="submit" class="btn btn-primary" ng-click="save()">{{'labels:btn_save' | i18next}}</button>
   </div>
 </form>

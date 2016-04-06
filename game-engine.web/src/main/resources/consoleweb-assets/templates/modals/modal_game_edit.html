@@ -17,7 +17,7 @@
 -->
 
 <div class="modal-header">
-  <h3 class="modal-title">{{'lbl_edit_game' | i18next}}</h3>
+  <h3 class="modal-title">{{'labels:lbl_edit_game' | i18next}}</h3>
 </div>
 <form role="form">
   <div class="modal-body">
@@ -27,13 +27,13 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="gameName">{{'lbl_game_name' | i18next}}</label>
-      <input type="text" class="form-control" id="gameName" data-ng-model="newGame.name" placeholder="{{'lbl_enter_new_name' | i18next}}" required />
+      <label for="gameName">{{'labels:lbl_game_name' | i18next}}</label>
+      <input type="text" class="form-control" id="gameName" data-ng-model="newGame.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required />
     </div>
     <div class="form-group">
-      <label  for="neverending">{{'lbl_game_expiration' | i18next}}</label>
+      <label  for="neverending">{{'labels:lbl_game_expiration' | i18next}}</label>
      <div>
-      <label for="expiration">{{'lbl_game_neverending' | i18next}}</label>
+      <label for="expiration">{{'labels:lbl_game_neverending' | i18next}}</label>
       <input  id="neverending" data-ng-model="newGame.neverending" type="checkbox" data-ng-checked="newGame.neverending"/>
      </div>
       <div data-ng-show="!newGame.neverending">
@@ -43,7 +43,7 @@
     </div>
   </div>
   <div class="modal-footer clearfix">
-    <button type="reset" class="btn btn-default" data-ng-click="cancel()">{{'btn_cancel' | i18next}}</button>
-    <button type="submit" class="btn btn-primary" data-ng-click="ok()">{{'btn_ok' | i18next}}</button>
+    <button type="reset" class="btn btn-default" data-ng-click="cancel()">{{'labels:btn_cancel' | i18next}}</button>
+    <button type="submit" class="btn btn-primary" data-ng-click="ok()">{{'labels:btn_ok' | i18next}}</button>
   </div>
 </form>

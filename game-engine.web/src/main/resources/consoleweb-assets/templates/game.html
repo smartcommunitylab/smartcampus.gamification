@@ -18,17 +18,17 @@
 
 <div class="row">
   <div class="col-md-12 text-center">
-    <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'msg_load_games_error' | i18next}}</alert>
+    <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'messages:msg_load_games_error' | i18next}}</alert>
   </div>
 </div>
 <div class="row">
   <div class="col-md-12 text-center">
-    <alert ng-if="alerts.cantCreateLeaderboards" type="danger" close="closeAlert('cantCreateLeaderboards')">{{'msg_leaderboards_error' | i18next}}</alert>
+    <alert ng-if="alerts.cantCreateLeaderboards" type="danger" close="closeAlert('cantCreateLeaderboards')">{{'messages:msg_leaderboards_error' | i18next}}</alert>
   </div>
 </div>
 <div class="row">
   <div class="col-md-12 text-center">
-    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'msg_game_settings_edited' | i18next}}</alert>
+    <alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'messages:msg_game_settings_edited' | i18next}}</alert>
   </div>
 </div>
 
@@ -38,11 +38,11 @@
 
 <div class="col-md-10">
 <h3>Game : {{game.name}}</h3>
-<h4 data-ng-show="viewName == 'concepts'">{{'lbl_concepts_menu' | i18next}}</h4>
-<h4 data-ng-show="viewName == 'actions'">{{'lbl_actions_menu' | i18next}}</h4>
-<h4 data-ng-show="viewName == 'rules'">{{'lbl_rules_menu' | i18next}}</h4>
-<h4 data-ng-show="viewName == 'tasks'">{{'lbl_tasks_menu' | i18next}}</h4>
-<h4 data-ng-show="viewName == 'game-monitor'">{{'lbl_monitor_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'concepts'">{{'labels:lbl_concepts_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'actions'">{{'labels:lbl_actions_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'rules'">{{'labels:lbl_rules_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'tasks'">{{'labels:lbl_tasks_menu' | i18next}}</h4>
+<h4 data-ng-show="viewName == 'game-monitor'">{{'labels:lbl_monitor_menu' | i18next}}</h4>
 <div  style="margin-left: 1em;" data-ng-include="'templates/'+viewName+'.html'"></div>
 </div>
 </div>

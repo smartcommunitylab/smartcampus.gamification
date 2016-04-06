@@ -16,5 +16,6 @@
   "msg_rule_error": "Error during rule operation",
   "msg_task_error" : "Error in task operation",
   "msg_error_integer" : "Non a valid integer",
-  "msg_error_exist" : "Element already exist"
+  "msg_error_exist" : "Element already exist",
+  "msg_no_customdata": "No custom data for the player"
 }

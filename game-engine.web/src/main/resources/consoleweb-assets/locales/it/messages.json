@@ -16,5 +16,6 @@
   "msg_rule_error": "Errore durante l'operazione sulla regola",
   "msg_task_error" : "Errore nell'operazione sul task",
   "msg_error_integer" : "Il valore deve essere un intero",
-  "msg_error_exist" : "L'elemento esiste già"
+  "msg_error_exist" : "L'elemento esiste già",
+  "msg_no_customdata": "Nessun custom data per il giocatore"
 }

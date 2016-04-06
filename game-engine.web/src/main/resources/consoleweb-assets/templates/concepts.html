@@ -18,20 +18,20 @@
 
 <div data-ng-controller="GameCtrl">
 <div class="row top-margined">
-    <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddInstanceModal()" data-tooltip="{{'tool_add' | i18next}}">
+    <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddInstanceModal()" data-tooltip="{{'labels:tool_add' | i18next}}">
       <span class="glyphicon glyphicon-plus"></span>
     </button>
 </div>
 <div class="row vertical-spacing">
     <tabset>
-      <tab class="clickable" heading="{{'lbl_points' | i18next}}" ng-click="goToTab('points')" active="active.points">
+      <tab class="clickable" heading="{{'labels:lbl_points' | i18next}}" ng-click="goToTab('points')" active="active.points">
        		   <div class="table-actions">
 					<table class="table table-striped table-bordered">
 						<tbody>
 							<tr data-ng-repeat="point in game.pointConcept">
 								<td>
 									{{point.name}}
-									 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteConcept(point,'point')" data-tooltip="{{'tool_delete' | i18next}}">
+									 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteConcept(point,'point')" data-tooltip="{{'labels:tool_delete' | i18next}}">
 			         				 <span class="glyphicon glyphicon-remove"></span>
 			        			</button>
 								</td>
@@ -40,14 +40,14 @@
 					</table>
 				</div>
       </tab>
-      <tab class="clickable" heading="{{'lbl_badges_collections' | i18next}}" ng-click="goToTab('badges_collections')" active="active.badges_collections">
+      <tab class="clickable" heading="{{'labels:lbl_badges_collections' | i18next}}" ng-click="goToTab('badges_collections')" active="active.badges_collections">
        	  <div class="table-actions">
 					<table class="table table-striped table-bordered">
 						<tbody>
 							<tr data-ng-repeat="badges_collection in game.badgeCollectionConcept">
 								<td>
 									{{badges_collection.name}}
-									 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteConcept(badges_collection,'badge')" data-tooltip="{{'tool_delete' | i18next}}">
+									 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteConcept(badges_collection,'badge')" data-tooltip="{{'labels:tool_delete' | i18next}}">
 			         				 <span class="glyphicon glyphicon-remove"></span>
 			        			</button>
 								</td>

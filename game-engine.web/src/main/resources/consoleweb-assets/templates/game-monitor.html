@@ -29,9 +29,9 @@
 	<div class="row">
 		<div class="col-md-12">
 				<div  class="input-group">
-					<input id="player" type="text" data-ng-model="playerIdFilter" class="form-control" placeholder="{{'lbl_filter_ph' | i18next}}"/>
+					<input id="player" type="text" data-ng-model="playerIdFilter" class="form-control" placeholder="{{'labels:lbl_filter_ph' | i18next}}"/>
 				 <span class="input-group-btn">
-					<button class="btn btn-primary" type="submit" ng-click="filter()" title="{{'tool_filter' | i18next}}">
+					<button class="btn btn-primary" type="submit" ng-click="filter()" title="{{'labels:tool_filter' | i18next}}">
               			<div class="glyphicon glyphicon-search"></div>
               		</button>
               	</span>
@@ -50,16 +50,16 @@
 	<div class="monitor-row" data-ng-repeat="player in playerStates.content">
 		<div class="row summary-row">
 			<div class="col-md-3">
-				<p>{{'lbl_player' | i18next }}: {{player.playerId}}</p>
+				<p>{{'labels:lbl_player' | i18next }}: {{player.playerId}}</p>
 			</div>
 			<div class="col-md-3" >
-				<p>{{'lbl_summary_score' | i18next }}: {{player.totalScore}}</p>
+				<p>{{'labels:lbl_summary_score' | i18next }}: {{player.totalScore}}</p>
 			</div>
 			<div class="col-md-3">
-				<p>{{'lbl_summary_badge' | i18next }}: {{player.totalBadges}}</p>
+				<p>{{'labels:lbl_summary_badge' | i18next }}: {{player.totalBadges}}</p>
 			</div>
 			<div class="col-md-3">
-			<button type="button" class="pull-right game-btn btn btn-defalt btn-circle right-spaced" data-ng-click="openDetails($index)" data-toggle="collapse" data-target="#player-details" data-tooltip="{{'tool_details' | i18next}}">
+			<button type="button" class="pull-right game-btn btn btn-defalt btn-circle right-spaced" data-ng-click="openDetails($index)" data-toggle="collapse" data-target="#player-details" data-tooltip="{{'labels:tool_details' | i18next}}">
         		<span class="glyphicon" data-ng-class="{'glyphicon-chevron-down': expandIdx != $index, 'glyphicon-chevron-up': expandIdx == $index}" ></span>
       		</button>
 			</div>
@@ -81,6 +81,15 @@
 					<td style="width:90%;"><span class="badge-elem" data-ng-repeat="badge in elem.badgeEarned  track by $index">{{badge}}</span></td>
 				</tr>
 			
+			</table>
+		<hr/>
+			<strong>CUSTOM DATA:</strong>
+			<div ng-hide="player.hasCustomData">{{'messages:msg_no_customdata' | i18next }}</div>
+			<table class="badge-box" ng-show="player.hasCustomData">
+				<tr data-ng-repeat="(key, value) in player.customData">
+					<td style="width:15%; text-align:right;">{{key}} </td>
+					<td style="width:90%;"><span class="badge-elem">{{value}}</span></td>
+				</tr>
 			</table>
 		</div>
 		</div>

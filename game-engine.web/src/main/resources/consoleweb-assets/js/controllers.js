@@ -558,6 +558,7 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory,$sta
 			score.forEach(function(s) {
 				p.totalScore += s.score;
 			});
+			p.hasCustomData = Object.keys(p.customData).length > 0;
 		 });
 		 
 		 return data;

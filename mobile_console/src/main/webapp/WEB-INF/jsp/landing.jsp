@@ -15,9 +15,9 @@
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
-<script src="https://apis.google.com/js/platform.js" async defer>
+<!-- <script src="https://apis.google.com/js/platform.js" async defer>
     {lang: 'it'}
-</script>
+</script> -->
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="lib/angular.js"></script>

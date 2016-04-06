@@ -17,7 +17,8 @@
 <script src="https://apis.google.com/js/platform.js" async defer>
     {lang: 'it'}
 </script>
-<script src="https://platform.twitter.com/widgets.js"></script>
+<!-- <script src="https://platform.twitter.com/widgets.js"></script> -->
+<script src="lib/platform_twitter_widgets.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="lib/angular.js"></script>
@@ -320,7 +321,7 @@ var base64="<%=request.getAttribute("base64")%>";
 				</div>
 				<br>
 				<div class="col-md-4" align="center">	
-					<img src="img/footer/comuneRV.svg" width="150" alt="" title="" />
+					<img src="img/footer/logoRV.png" width="150" alt="" title="" />
 				</div>
 				<br>
 				<div class="col-md-4" align="center">	

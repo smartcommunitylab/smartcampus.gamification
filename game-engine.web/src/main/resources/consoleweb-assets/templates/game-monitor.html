@@ -82,6 +82,15 @@
 				</tr>
 			
 			</table>
+		<hr/>
+			<strong>CUSTOM DATA:</strong>
+			<div ng-hide="player.hasCustomData">{{'msg_no_customdata' | i18next }}</div>
+			<table class="badge-box" ng-show="player.hasCustomData">
+				<tr data-ng-repeat="(key, value) in player.customData">
+					<td style="width:15%; text-align:right;">{{key}} </td>
+					<td style="width:90%;"><span class="badge-elem">{{value}}</span></td>
+				</tr>
+			</table>
 		</div>
 		</div>
 		</div>

@@ -122,6 +122,10 @@
 		position: relative;
 	}
 	
+	.view_body_wrapper {
+		margin:5px 5px;
+	}
+	
 	.panel-body .panel-body-nopadding {
 		padding: 5px;
 	}
@@ -129,7 +133,7 @@
 	.nopadding {
 		padding-left: 5px;
 		padding-right: 5px;
-		padding-top: 0px;
+		padding-top: 4px;
 	}
 	
 	.padding_btm {

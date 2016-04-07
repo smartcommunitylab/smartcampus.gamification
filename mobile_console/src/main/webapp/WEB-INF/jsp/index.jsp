@@ -281,7 +281,7 @@ var base64="<%=request.getAttribute("base64")%>";
 			<div class="col-md-8 col-md-offset-2 nopadding">
 				<div class="panel panel-default homepanel">
 			  		<div class="panel-body nopadding">
-			  			<div style="margin:5px 5px;">
+			  			<div class="view_body_wrapper">
 							<ng-view class="row">{{ 'loading_text'| i18n }}...</ng-view>
 						</div>
 					</div>

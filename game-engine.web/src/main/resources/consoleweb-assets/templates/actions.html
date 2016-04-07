@@ -34,7 +34,7 @@
 </div>
 	
 	<div class="row top-margined">
-					 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddActionModal()" data-tooltip="{{'tool_add' | i18next}}">
+					 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddActionModal()" data-tooltip="{{'labels:tool_add' | i18next}}">
 			          <span class="glyphicon glyphicon-plus"></span>
 			        </button>
 			</div>
@@ -45,7 +45,7 @@
 							<tr data-ng-repeat="action in game.actions track by $index">
 								<td>
 									{{action}}
-									<button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteAction(action)" data-tooltip="{{'tool_delete' | i18next}}">
+									<button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteAction(action)" data-tooltip="{{'labels:tool_delete' | i18next}}">
 			         				 <span class="glyphicon glyphicon-remove"></span>
 			        			</button>
 								</td>

@@ -838,9 +838,9 @@ public class PortalController extends SCController{
 		File green1500 = new File(path + "mail/img/green/greenLeaves1500.png");
 		File green2500 = new File(path + "mail/img/green/greenLeaves2500.png");
 		File green5000 = new File(path + "mail/img/green/greenLeaves5000.png");
-		File greenBronze = new File(path + "mail/img/green/greenBronzeMedal.png");
-		File greenSilver = new File(path + "mail/img/green/greenSilverMedal.png");
-		File greenGold = new File(path + "mail/img/green/greenGoldMedal.png");
+		File greenBronze = new File(path + "mail/img/leaderboard/green/leaderboardGreen3.png");
+		File greenSilver = new File(path + "mail/img/leaderboard/green/leaderboardGreen2.png");
+		File greenGold = new File(path + "mail/img/leaderboard/green/leaderboardGreen1.png");
 		
 		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king_week_green", "Re della Settimana - Green"));
 		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50_point_green", "50 Punti Green"));
@@ -851,9 +851,9 @@ public class PortalController extends SCController{
 		allBadges.add(new BagesData(green1500.getName(), FileUtils.readFileToByteArray(green1500), "image/png", "1500_point_green", "1500 Punti Green"));
 		allBadges.add(new BagesData(green2500.getName(), FileUtils.readFileToByteArray(green2500), "image/png", "2500_point_green", "2500 Punti Green"));
 		allBadges.add(new BagesData(green5000.getName(), FileUtils.readFileToByteArray(green5000), "image/png", "5000_point_green", "5000 Punti Green"));
-		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze_medal_green", "Medaglia di Bronzo - Green"));
-		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver_medal_green", "Medaglia d'Argento - Green"));
-		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold_medal_green", "Medaglia d'Oro - Green"));
+		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green"));
+		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green"));
+		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green"));
 				
 		// files for health badges
 		File healthKing = new File(path + "mail/img/health/healthKingWeek.png");

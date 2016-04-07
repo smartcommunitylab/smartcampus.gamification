@@ -47,7 +47,7 @@
 							<div style="margin: 20px" align="center">
 								<table width="100%">
 							    	<tr>
-							    		<td width="45%" align="right"><img src="img/foglia.svg" alt="Logo GreenGame" title="Logo GreenGame" height="90" width="180" /></td>
+							    		<td width="45%" align="right"><img src="img/foglia.svg" alt="Logo Play&Go" title="Logo Play&Go" height="90" width="180" /></td>
 							    		<td width="55%" valign="middle"><h2>Informativa Cookie</h2></td>
 							    	</tr>
 							    </table>
@@ -56,7 +56,7 @@
 								<div align="justify">
 									Con il presente documento, ai sensi degli artt. 13 e 122 del D. Lgs. 196/2003 ("codice privacy"),
 									e in base a quanto previsto dal Provvedimento generale del Garante privacy dell'8 maggio 2014, si forniscono agli utenti del sito
-									 GreenGame (https://dev.smartcommunitylab.it/gamificationweb) alcune informazioni relative ai cookie utilizzati.
+									 Play&Go (https://dev.smartcommunitylab.it/gamificationweb) alcune informazioni relative ai cookie utilizzati.
 								</div>
 								<h4><strong>Cosa sono i cookie</strong></h4>
 								<div align="justify">									
@@ -81,7 +81,7 @@
 								</div>
 								<h5><strong>Cookie di terze parti</strong></h5>
 								<div align="justify">
-									Attraverso il sito GreenGame (https://dev.smartcommunitylab.it/gamificationweb) sono installati alcuni cookie di terze parti, 
+									Attraverso il sito Play&Go (https://dev.smartcommunitylab.it/gamificationweb) sono installati alcuni cookie di terze parti, 
 									anche profilanti, che si attivano cliccando "ok" sul banner.
 								</div>
 								<div align="left" style="margin-top: 10px;">

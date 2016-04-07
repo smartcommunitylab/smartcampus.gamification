@@ -4,7 +4,7 @@
 <head lang="it">
 <meta charset="utf-8" />
 <!-- <title>{{ 'app_tab-title' | i18n }}</title> -->
-<title>Cookie Info</title>
+<title>Play&Go</title>
 
 <link href="css/bootstrap.min.css" rel="stylesheet" />
 <link href="css/bootstrap-theme.min.css" rel="stylesheet" />

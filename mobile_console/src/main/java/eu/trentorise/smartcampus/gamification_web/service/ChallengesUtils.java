@@ -28,7 +28,7 @@ public class ChallengesUtils {
 	private final String CHAL_K_POINT_TYPE = "_point_type";
 	private final String CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	private final String CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
-	private final String CHAL_DESC_3 = "Fai almeno TARGET viaggio con Bike sharing e avrai BONUS punti POINT_TYPE in bonus";
+	private final String CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_ALLOWED_MODE_W = "walk";
@@ -37,6 +37,8 @@ public class ChallengesUtils {
 	private final String CHAL_ALLOWED_MODE_T = "train";
 	private final String CHAL_ALLOWED_MODE_B = "bus";
 	private final String CHAL_ALLOWED_MODE_C = "car";
+	private final String CHAL_ALLOWED_MODE_Z = "zeroimpact";
+	private final String CHAL_ALLOWED_MODE_P = "promoted";
 	private final String CHAL_ALLOWED_PT_GREEN = "green leaves";
 	private final String CHAL_ALLOWED_PT_HEALTH = "health";
 	private final String CHAL_ALLOWED_PT_PR = "pr";
@@ -123,10 +125,11 @@ public class ChallengesUtils {
     			}
     			if(ch_type.compareTo("ch3") == 0){
     				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
+    				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = count * 100 / target;
     				row_status = count + "/" + target;
     				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, "");
+    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode);
     				long startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
@@ -240,6 +243,12 @@ public class ChallengesUtils {
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_C) == 0){
     		corr_mode = "in auto";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_Z) == 0){
+    		corr_mode = "a impatto zero";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_P) == 0){
+    		corr_mode = "promoted";
     	}
     	return corr_mode;
     }

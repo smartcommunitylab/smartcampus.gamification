@@ -80,7 +80,7 @@
 							</div>
 							<div style="margin: 50px 5px 5px 5px" align="center">
 								<h1>
-									<font face="Raleway-bold" size="48" color="gray"><strong>GreenGame</strong></font>
+									<font face="Raleway-bold" size="48" color="gray"><strong>Play&Go</strong></font>
 								</h1>
 								<h2>
 									<font face="Raleway">con ViaggiaRovereto</font>

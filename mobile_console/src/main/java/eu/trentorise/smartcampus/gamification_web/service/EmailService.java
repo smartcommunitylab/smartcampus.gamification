@@ -200,7 +200,7 @@ public class EmailService {
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper message = 
                 new MimeMessageHelper(mimeMessage, true /* multipart */, "UTF-8");
-        message.setSubject("Gamification - Notifica");
+        message.setSubject("Play&Go - Notifica");
         message.setFrom(mailFrom);
         message.setTo(recipientEmail);
 
@@ -267,7 +267,7 @@ public class EmailService {
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper message = 
                 new MimeMessageHelper(mimeMessage, true /* multipart */, "UTF-8");
-        message.setSubject("Gamification - Notifica");
+        message.setSubject("Play&Go - Riepilogo");
         message.setFrom(mailFrom);
         message.setTo(recipientEmail);
 

@@ -4,7 +4,7 @@
 <head lang="it">
 <meta charset="utf-8" />
 <!-- <title>{{ 'app_tab-title' | i18n }}</title> -->
-<title>Cookie Info</title>
+<title>Play&Go - Regolamento</title>
 
 <link href="css/bootstrap.min.css" rel="stylesheet" />
 <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
@@ -44,7 +44,7 @@
 			<div ng-class="col-md-10">
 				<div class="panel panel-success" >
 	  				<div class="panel-body">
-				    <h4>Benvenuto nel Gioco GreenGame con ViaggiaRovereto!</h4>
+				    <h4>Benvenuto nel Gioco Play&Go con ViaggiaRovereto!</h4>
 					<div align="justify">
 						Partecipare &egrave; semplice: pianifica i tuoi viaggi con ViaggiaRovereto e scegli delle soluzioni di mobilit&agrave; sostenibile per guadagnare punti e avanzare nel gioco. 
 						Divertiti a collezionare punti, badges e mettiti alla prova con le challenges settimanali. Sfida i tuoi amici a scalare le classifiche: ogni settimana puoi vincere ricchi premi e 
@@ -71,7 +71,7 @@
 					<div align="left">
 						Durante il gioco sono previsti <strong>premi settimanali e finali</strong> che andranno a premiare i primi tre classificati nella classifica (settimanale e generale, rispettivamente) a punti Green Leaves.
 						<br/>
-						Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" alt="regolamento" title="regolamento">regolamento GreenGame</a>.
+						Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" alt="regolamento" title="regolamento">regolamento Play&Go</a>.
 					</div>
 				</div>
 			</div>
@@ -89,7 +89,7 @@
 			<div ng-class="col-xs-12">
 				<div class="panel panel-success" >
 	  				<div class="panel-body">
-				    <h4>Benvenuto nel Gioco GreenGame con ViaggiaRovereto!</h4>
+				    <h4>Benvenuto nel Gioco Play&Go con ViaggiaRovereto!</h4>
 					<div align="justify">
 						Partecipare &egrave; semplice: pianifica i tuoi viaggi con ViaggiaRovereto e scegli delle soluzioni di mobilit&agrave; sostenibile per guadagnare punti e avanzare nel gioco. 
 						Divertiti a collezionare punti, badges e mettiti alla prova con le challenges settimanali. Sfida i tuoi amici a scalare le classifiche: ogni settimana puoi vincere ricchi premi e 
@@ -116,7 +116,7 @@
 					<div align="left">
 						Durante il gioco sono previsti <strong>premi settimanali e finali</strong> che andranno a premiare i primi tre classificati nella classifica (settimanale e generale, rispettivamente) a punti Green Leaves.
 						<br/>
-						Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" alt="regolamento" title="regolamento">regolamento GreenGame</a>.
+						Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" alt="regolamento" title="regolamento">regolamento Play&Go</a>.
 					</div>
 				</div>
 			</div>

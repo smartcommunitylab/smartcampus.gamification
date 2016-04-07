@@ -3,7 +3,7 @@
 <head id="myHead" lang="it">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Green Game</title>
+<title>Play&Go</title>
 
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-theme.min.css" rel="stylesheet">
@@ -192,7 +192,7 @@ var base64="<%=request.getAttribute("base64")%>";
   </script>
   <!-- Posiziona questo tag all'interno del tag head oppure subito prima della chiusura del tag body. -->
 	<!-- Aggiungi i tre tag seguenti all'interno del tag head. -->
-	<meta itemprop="name" content="GreenGame Rovereto">
+	<meta itemprop="name" content="Play&Go Rovereto">
 	<meta itemprop="image" content="img/foglia.svg">
 </head>
 
@@ -291,7 +291,7 @@ var base64="<%=request.getAttribute("base64")%>";
 		<div id="my-big-footer" class="row">
 			<div class="col-md-8 col-md-offset-2" align="center">
 					
-				<h5><font face="Raleway-bold" size="5" color="gray"><strong>Green Game</strong></font> con ViaggiaRovereto</h5>
+				<h5><font face="Raleway-bold" size="5" color="gray"><strong>Play&Go</strong></font> con ViaggiaRovereto</h5>
 				&egrave; un progetto di:
 				<br>
 				<footer>
@@ -302,7 +302,7 @@ var base64="<%=request.getAttribute("base64")%>";
 		</div>
 		<div id="my-small-footer" class="row">
 			<div class="col-md-4 col-md-offset-2" align="center">
-				<h5><font face="Raleway-bold" size="5" color="gray"><strong>Green Game</strong></font></h5>
+				<h5><font face="Raleway-bold" size="5" color="gray"><strong>Play&Go</strong></font></h5>
 			</div>
 			<div class="col-md-4" align="center">	
 				<h5> con ViaggiaRovereto</h5>
@@ -313,19 +313,19 @@ var base64="<%=request.getAttribute("base64")%>";
 			<footer>
 				<br>
 				<div class="col-md-4" align="center">	
-					<img src="img/footer/streetLife.svg" width="120" alt="" title="" />
+					<img src="img/footer/streetLife.png" width="120" alt="" title="" />
 				</div>
 				<br>
 				<div class="col-md-4" align="center">	
-					<img src="img/footer/fbk.svg" width="85" alt="" title="" />
+					<img src="img/footer/fbk.png" width="85" alt="" title="" />
 				</div>
 				<br>
 				<div class="col-md-4" align="center">	
-					<img src="img/footer/logoRV.png" width="150" alt="" title="" />
+					<img src="img/footer/logoRV.png" width="85" alt="" title="" />
 				</div>
 				<br>
 				<div class="col-md-4" align="center">	
-					<img src="img/footer/caire.svg" width="150" alt="" title="" />
+					<img src="img/footer/caire.png" width="150" alt="" title="" />
 				</div>
 				<br>
 				<!-- <p>&copy; SmartCampus 2013</p> -->
@@ -375,6 +375,12 @@ var base64="<%=request.getAttribute("base64")%>";
 						</select>
 						<div ng-show="submitNumber && form.age.$error.required" class="alert alert-danger" role="alert">Valore eta' obbligatorio. Selezionare un valore</div>
 					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
+						<label class="control-label" for="averagekm">Km medi percorsi giornalmente: </label>
+						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" required>
+						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">Valore non permesso nel campo km</div>
+						<div ng-show="submitNumber && form.averagekm.$error.required" class="alert alert-danger" role="alert">Valore km medi obbligatorio</div>
+					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.transport.$dirty && form.transport.$invalid]">
 						<label class="control-label" for="username">Utilizzi quotidianamente i mezzi pubblici? </label>
 						<table width="100%">
@@ -411,12 +417,6 @@ var base64="<%=request.getAttribute("base64")%>";
 								<td><div ng-show="submitNumber && form.vehicle.$error.required" class="alert alert-danger" role="alert">Veicolo obbligatorio. Selezionare almeno un elemento</div></td>
 							</tr>
 						</table>
-					</div>
-					<div class="form-group required" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
-						<label class="control-label" for="averagekm">Km medi percorsi giornalmente: </label>
-						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" required>
-						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">Valore non permesso nel campo km</div>
-						<div ng-show="submitNumber && form.averagekm.$error.required" class="alert alert-danger" role="alert">Valore km medi obbligatorio</div>
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.invitation_person.$dirty && form.invitation_person.$invalid]">
 						<label class="control-label" for="invitation">Chi ti ha invitato a questo gioco? (nickname)</label>

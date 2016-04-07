@@ -33,7 +33,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_POINT_TYPE = "_point_type";
 	$scope.CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
-	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio con Bike sharing e avrai BONUS punti POINT_TYPE in bonus";
+	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai BONUS punti POINT_TYPE in bonus";
 	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_ALLOWED_MODE_W = "walk";
@@ -42,6 +42,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_ALLOWED_MODE_T = "train";
 	$scope.CHAL_ALLOWED_MODE_B = "bus";
 	$scope.CHAL_ALLOWED_MODE_C = "car";
+	$scope.CHAL_ALLOWED_MODE_Z = "zeroimpact";
+	$scope.CHAL_ALLOWED_MODE_P = "promoted";
 	$scope.CHAL_ALLOWED_PT_GREEN = "green leaves";
 	$scope.CHAL_ALLOWED_PT_HEALTH = "health";
 	$scope.CHAL_ALLOWED_PT_PR = "pr";
@@ -547,8 +549,18 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_desc_walk_km;
     			}
     			break;
-    		case "ch3": 
-    			msg_to_show=$scope.chall_desc_bike_share_trip;
+    		case "ch3":
+    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B){
+    				msg_to_show=$scope.chall_desc_bus_trip;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS){
+    				msg_to_show=$scope.chall_desc_bike_share_trip;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T){
+    				msg_to_show=$scope.chall_desc_train_trip;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z){
+    				msg_to_show=$scope.chall_desc_zero_impact_trip;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P){
+    				msg_to_show=$scope.chall_desc_promoted_trip;
+    			} 
     			break;
     		case "ch7": 
     			msg_to_show=$scope.chall_desc_complete_badge_collection;
@@ -916,15 +928,17 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;
     				case 'ch3':
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = count * 100 / target;
     					row_status = count + "/" + target;
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: $scope.getCorrectIcon(point_type),
-    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus, point_type, ""), //"Fai almeno N viaggio/i con il Bike sharing e vinci un bonus di 50 Green Points",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus, point_type, mobility_mode), //"Fai almeno N viaggio/i con il 'Bike sharing' e vinci un bonus di 50 Green Points",
     						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
+    						mobilityMode: mobility_mode,
     						target: target,
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
@@ -1195,6 +1209,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    	case $scope.CHAL_ALLOWED_MODE_C: 
 	    		corr_mode = "in auto";
 	    		break;
+	    	case $scope.CHAL_ALLOWED_MODE_Z: 
+	    		corr_mode = "a impatto zero";
+	    		break;
+	    	case $scope.CHAL_ALLOWED_MODE_P: 
+	    		corr_mode = "promoted";
+	    		break;	
 	    	default: break;
     	};
     	return corr_mode;

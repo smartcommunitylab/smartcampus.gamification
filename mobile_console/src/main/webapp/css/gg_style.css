@@ -124,7 +124,7 @@
 	
 	.twitter_btn_wrapper_large {
 		max-width: 60px;
-		max-heign: 15px;
+		height: 25px;
 		overflow: hidden;
 		position: absolute;
 		top: 1px;
@@ -133,7 +133,7 @@
 	
 	.facebook_btn_wrapper_large {
 		max-width: 60px;
-		max-heign: 15px;
+		height: 25px;
 		overflow: hidden;
 		position: absolute;
 		top: 0px;

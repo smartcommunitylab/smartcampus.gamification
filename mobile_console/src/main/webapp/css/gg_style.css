@@ -107,7 +107,11 @@
 	
 	.homeheadertitle {
 		margin-bottom: 25px;
-		max-height: 100px;
+		max-height: 90px;
+	}
+	
+	.h1_reduced_margin {
+		margin-top: 10px;
 	}
 	
 	.twitter_btn_wrapper {
@@ -123,7 +127,7 @@
 	}
 	
 	.view_body_wrapper {
-		margin:5px 5px;
+		margin:10px 5px;
 	}
 	
 	.panel-body .panel-body-nopadding {

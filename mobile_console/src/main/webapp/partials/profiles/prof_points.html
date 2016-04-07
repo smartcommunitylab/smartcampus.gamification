@@ -378,9 +378,13 @@
 </div>
 <p itemprop="description" ng-show="false">{{ text_gp }}</p>
 <div class="row" align="right">
-	<div class="col-md-12 verticalpad">
-		<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ text_fb }}" data-callback="callback"></a><!-- {{ shares }} -->
+	<div class="col-md-12 sharing_wrapper">
+		<div class="facebook_btn_wrapper_large">
+			<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ text_fb }}" data-callback="callback"></a><!-- {{ shares }} -->
+		</div>
 		&nbsp;&nbsp;
-		<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ text_tw }}' ></a>
+		<div class="twitter_btn_wrapper_large">
+			<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ text_tw }}' ></a>
+		</div>
 	</div>
 </div> 

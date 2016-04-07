@@ -122,6 +122,24 @@
 		left: 23px;
 	}
 	
+	.twitter_btn_wrapper_large {
+		max-width: 60px;
+		max-heign: 15px;
+		overflow: hidden;
+		position: absolute;
+		top: 1px;
+		right: 15px;
+	}
+	
+	.facebook_btn_wrapper_large {
+		max-width: 60px;
+		max-heign: 15px;
+		overflow: hidden;
+		position: absolute;
+		top: 0px;
+		right: 85px;
+	}
+	
 	.sharing_wrapper {
 		position: relative;
 	}

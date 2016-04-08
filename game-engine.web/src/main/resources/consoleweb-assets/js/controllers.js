@@ -559,6 +559,17 @@ function MonitorCtrl($scope, $rootScope, $stateParams, $modal, gamesFactory,$sta
 				p.totalScore += s.score;
 			});
 			p.hasCustomData = Object.keys(p.customData).length > 0;
+			
+			/* patch for an explicit request of peppo
+			if custom data key contains '_startTs' or '_endTs' format it as a date
+			THIS MUST TO BE RETHINK FOR A GENERIC PURPOSE
+			*/
+			
+			Object.keys(p.customData).forEach(function(k){
+				if(k.indexOf('_startChTs') != -1 || k.indexOf('_endChTs') != -1) {
+					p.customData[k] = moment(p.customData[k]).format('DD/MM/YYYY, HH:mm:ss');
+				}
+			});
 		 });
 		 
 		 return data;

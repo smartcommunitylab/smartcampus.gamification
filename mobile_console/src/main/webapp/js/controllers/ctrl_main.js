@@ -25,6 +25,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_STS = "_startChTs";
 	$scope.CHAL_K_ETS = "_endChTs";
 	$scope.CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
+	$scope.CHAL_K_EARNED_POINT = "_points_earned_during_challenges";
 	$scope.CHAL_K_TARGET = "_target";
 	$scope.CHAL_K_BONUS = "_bonus";
 	$scope.CHAL_K_RECOM = "_recommendations_sent_during_challenges";
@@ -34,6 +35,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
 	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai BONUS punti POINT_TYPE in bonus";
+	$scope.CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE durante la challenge e guadagni un ulteriore bonus di BONUS punti POINT_TYPE"
 	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_ALLOWED_MODE_W = "walk";
@@ -120,7 +122,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.chall_desc_park_ride_pioneer = conf_chall_desc_park_ride_pioneer;
     $scope.chall_desc_bike_sharing_pioneer = conf_chall_desc_bike_sharing_pioneer;
     $scope.chall_desc_recommentation = conf_chall_desc_recommendation;
-    $scope.chall_desc_green_bike_sharing_healt_zero_impact_pint = conf_chall_desc_green_bike_sharing_health_zero_impact_point;
+    $scope.chall_desc_green_bike_sharing_healt_zero_impact_point = conf_chall_desc_green_bike_sharing_health_zero_impact_point;
     $scope.chall_desc_next_badge_green = conf_chall_desc_next_badge_green;
     $scope.chall_desc_next_badge_zero_impact = conf_chall_desc_next_badge_zero_impact;
     $scope.chall_desc_next_badge_public_transport = conf_chall_desc_next_badge_public_transport;
@@ -562,6 +564,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_desc_promoted_trip;
     			} 
     			break;
+    		case "ch5": 
+    			msg_to_show=$scope.chall_desc_green_bike_sharing_healt_zero_impact_point.replace("X", ch.target).replace("punti [green leaves, bici, salute, impatto 0]", ch.point_type);
+    			break;	
     		case "ch7": 
     			msg_to_show=$scope.chall_desc_complete_badge_collection;
     			break;
@@ -956,6 +961,36 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						details: false
     					};
     					break;
+    				case 'ch5':
+    					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
+    					var earned_points = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_EARNED_POINT];
+    					status = earned_points * 100 / target;
+    					row_status = earned_points + "/" + target;
+    					if(status > 100)status = 100;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: $scope.getCorrectIcon(point_type), //"img/health/healthLeavesTesto.svg",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_5, target, bonus, point_type, ""), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
+    						startChTs: customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS],
+    						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
+    						pt_earned_during_challenge: earned_points,
+    						target: target,
+    						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
+    						active: active,
+    						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
+    						success: success,
+    						progress_img: $scope.convertStatusToIcon(status),
+    						details: false
+    					};
+    					break;	
     				case 'ch7':
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
     					if(success){
@@ -1178,7 +1213,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		desc = desc.replace("BONUS", bonus);
     	}
     	if(desc.indexOf("POINT_TYPE") > -1){
-    		desc = desc.replace("POINT_TYPE", $scope.getCorrectPointType(p_type));
+    		desc = desc.replace(new RegExp("POINT_TYPE", 'g'), $scope.getCorrectPointType(p_type));
     	}
     	if(mode != null && mode != ""){
     		if(desc.indexOf("MODE") > -1){

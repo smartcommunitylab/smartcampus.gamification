@@ -1,7 +1,8 @@
 package eu.trentorise.smartcampus.gamification_web.service;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class ChallengesUtils {
 	private final String CHAL_K_STS = "_startChTs";
 	private final String CHAL_K_ETS = "_endChTs";
 	private final String CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
+	private final String CHAL_K_EARNED_POINT = "_points_earned_during_challenges";
 	private final String CHAL_K_TARGET = "_target";
 	private final String CHAL_K_BONUS = "_bonus";
 	private final String CHAL_K_RECOM = "_recommendations_sent_during_challenges";
@@ -29,6 +31,7 @@ public class ChallengesUtils {
 	private final String CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	private final String CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai BONUS punti POINT_TYPE in bonus";
+	private final String CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE e avrai ulteriori BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_ALLOWED_MODE_W = "walk";
@@ -54,6 +57,7 @@ public class ChallengesUtils {
 		// TODO Auto-generated constructor stub
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public List<List> correctCustomData(String profile) throws JSONException{
     	List<String> challIndxArray = new ArrayList<String>();
     	List<ChallengesData> challenges = new ArrayList<ChallengesData>();
@@ -100,6 +104,7 @@ public class ChallengesUtils {
 				int daysToEnd = calculateRemainingDays(endChTs, now);
 				Boolean success = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SUCCESS)) ? customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS) : false;
 				long endTime = Long.parseLong(endChTs);
+				long startTime = 0L;
 				Boolean active = (now < endTime);
 				int status = 0;
 				String row_status = "";
@@ -112,7 +117,7 @@ public class ChallengesUtils {
     				if(status > 100)status = 100;
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode);
-    				long startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
     				tmp_chall.setChallTarget(target);
@@ -130,7 +135,26 @@ public class ChallengesUtils {
     				row_status = count + "/" + target;
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode);
-    				long startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+    				tmp_chall.setChallId(id);
+    				tmp_chall.setChallDesc(desc);
+    				tmp_chall.setChallTarget(target);
+    				tmp_chall.setType(ch_type);
+    				tmp_chall.setStatus(status);
+    				tmp_chall.setActive(active);
+    				tmp_chall.setSuccess(success);
+    				tmp_chall.setStartDate(startTime);
+    				tmp_chall.setEndDate(endTime);
+    			}
+    			if(ch_type.compareTo("ch5") == 0){
+    				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
+    				int earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
+    				status = earned_points * 100 / target;
+    				row_status = earned_points + "/" + target;
+    				if(status > 100)status = 100;
+					String id = challIndxArray.get(i);
+    				String desc = correctDesc(CHAL_DESC_5, target, bonus, point_type, "");
+    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
     				tmp_chall.setChallTarget(target);
@@ -151,7 +175,7 @@ public class ChallengesUtils {
 					}
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_7, target, bonus, point_type, "");
-    				long startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
     				tmp_chall.setChallTarget(target);
@@ -169,7 +193,7 @@ public class ChallengesUtils {
     				if(status > 100)status = 100;
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_9, target, bonus, point_type, "");
-    				long startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
     				tmp_chall.setChallTarget(target);
@@ -181,12 +205,25 @@ public class ChallengesUtils {
     				tmp_chall.setEndDate(endTime);
     			}
     			
-    			if(now < endTime){
-    				challenges.add(tmp_chall);
-    			} else if(now < endTime + CHAL_TS_OFFSET){
-    				oldChallenges.add(tmp_chall);	// last week challenges
+    			if(now >= startTime){	// if challenge is started
+	    			if(now < endTime){	// if challenge is not ended
+	    				challenges.add(tmp_chall);
+	    			} else if(now < endTime + CHAL_TS_OFFSET){
+	    				oldChallenges.add(tmp_chall);	// last week challenges
+	    			}
     			}
     		}
+    		// Sorting
+        	Collections.sort(challenges, new Comparator<ChallengesData>() {
+        	    public int compare(ChallengesData chalData2, ChallengesData chalData1){
+        	        return  chalData2.getChallId().compareTo(chalData1.getChallId());
+        	    }
+        	});
+        	Collections.sort(oldChallenges, new Comparator<ChallengesData>() {
+        	    public int compare(ChallengesData chalData2, ChallengesData chalData1){
+        	        return  chalData1.getChallId().compareTo(chalData2.getChallId());
+        	    }
+        	});
     		challengesList.add(challenges);
 			challengesList.add(oldChallenges);
     	}
@@ -214,7 +251,7 @@ public class ChallengesUtils {
     		desc = desc.replace("BONUS", Integer.toString(bonus));
     	}
     	if(desc.contains("POINT_TYPE")){
-    		desc = desc.replace("POINT_TYPE", getCorrectPointType(p_type));
+    		desc = desc.replaceAll("POINT_TYPE", getCorrectPointType(p_type));
     	}
     	if(mode != null && mode != ""){
     		if(desc.contains("MODE")){

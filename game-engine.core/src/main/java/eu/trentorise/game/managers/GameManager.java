@@ -164,6 +164,7 @@ public class GameManager implements GameService {
 
 	public String addRule(Rule rule) {
 		String ruleUrl = null;
+		boolean isEdit = false;
 		if (rule != null) {
 			StopWatch stopWatch = LogManager.getLogger(
 					StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
@@ -192,6 +193,7 @@ public class GameManager implements GameService {
 					DBRule r = (DBRule) rule;
 					if (r.getId() != null) {
 						r.setId(r.getId().replace(DBRule.URL_PROTOCOL, ""));
+						isEdit = true;
 					} else {
 						alreadyExist = ruleRepo.findByGameIdAndName(
 								rule.getGameId(), r.getName()) != null;
@@ -203,7 +205,8 @@ public class GameManager implements GameService {
 					}
 				}
 
-				if (ruleUrl != null && !game.getRules().contains(ruleUrl)) {
+				if (isEdit || ruleUrl != null
+						&& !game.getRules().contains(ruleUrl)) {
 					game.getRules().add(ruleUrl);
 					saveGameDefinition(game);
 				} else {

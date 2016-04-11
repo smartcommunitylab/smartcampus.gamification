@@ -388,7 +388,7 @@ public class PortalController extends SCController{
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/mobile")
-	public ModelAndView secureMobile(HttpServletRequest request, @RequestParam String token)
+	public ModelAndView secureMobile(HttpServletRequest request, @RequestParam String token, @RequestParam(required=false) String redirect_url)
 			throws SecurityException, AACException {
 		List<GrantedAuthority> list = Collections.<GrantedAuthority> singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 		Authentication auth = new PreAuthenticatedAuthenticationToken(token, "", list);
@@ -396,8 +396,17 @@ public class PortalController extends SCController{
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 				SecurityContextHolder.getContext());
-		return new ModelAndView("redirect:/");
+		String new_page = "";
+		if(redirect_url != null && redirect_url.compareTo("") != 0){
+			new_page = "#/" + redirect_url;
+		}
+		return new ModelAndView("redirect:/" + new_page);
 	}
+	
+/*	@RequestMapping(method = RequestMethod.GET, value = "/rulespage")
+	public ModelAndView rules(HttpServletRequest request) {
+		return new ModelAndView("rules");
+	}*/
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/check")
 	public ModelAndView securePage(HttpServletRequest request, @RequestParam(required = false) String code, @RequestParam(required = false) String type)

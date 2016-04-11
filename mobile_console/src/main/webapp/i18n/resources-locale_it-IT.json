@@ -572,7 +572,7 @@
 	"description": "label messaggio sfida vinta in pagina challenges"
 }, {
 	"key": "ch_empty_list",
-	"value": "Non stai partecipando a nessuna sfida",
+	"value": "In questo momento del gioco le sfide personalizzate non sono ancora attive. Continua a giocare e verrai avvisato quando saranno attivate.",
 	"description": "label messaggio nessuna sfida in pagina challenges"
 }, {
 	"key": "hello_home-title",

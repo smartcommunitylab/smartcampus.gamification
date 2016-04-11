@@ -168,6 +168,13 @@ public class EmailService {
     			last_week_winners.add(winners.get(i));
     		}
     	}
+    	// Correct the win challenges
+    	List<ChallengesData> winChallenges = new ArrayList<ChallengesData>();
+    	for(int i = 0; i < last_week_challenges.size(); i++){
+    		if(last_week_challenges.get(i).getSuccess()){
+    			winChallenges.add(last_week_challenges.get(i));
+    		}
+    	}
     	
         // Prepare the evaluation context
         final Context ctx = new Context(locale);
@@ -182,6 +189,7 @@ public class EmailService {
         ctx.setVariable("week_num", last_week_number);
         ctx.setVariable("n_challenges", challenges);
         ctx.setVariable("n_lw_challenges", last_week_challenges);
+        ctx.setVariable("n_lw_win_challenges", winChallenges);
         ctx.setVariable("n_prizes", prizes);
         ctx.setVariable("are_prizes", are_prizes);
         ctx.setVariable("are_prizes_last", are_last_week_prizes);

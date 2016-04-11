@@ -42,20 +42,20 @@
 			            Caro Utente,
 			        </h3>
 			        <h3>
-			        	siamo entrati nella <strong th:text="${next_week_num}">X+1</strong>^a settimana di gioco.<br/>
+			        	stiamo per entrare nella <strong th:text="${next_week_num}">X+1</strong>^a settimana di gioco.<br/>
 			        	Nel seguito le sfide di questa settimana e i tuoi risultati recenti.
 			        </h3>
 			        <div th:if="${n_challenges ne null}">
 				        <h3 th:text="#{week_desc(${next_week_theme})}">
-				            Questa &egrave; la settimana DELLA BICI
+				            Questa sar&agrave; la settimana DELLA BICI
 				        </h3>
 				        <h3 th:if="${are_challenges}">
 				            Ecco le tue CHALLENGE per questa settimana, mettiti alla prova per superarle:
 				        </h3>
 				        <table th:if="${n_challenges ne null}">
 						    <tr th:each="ch : ${n_challenges}">
-						        <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td>
-						       	<td><font size="2"><strong> : <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
+						        <!-- <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
+						       	<td><font size="2"><strong> - <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
 						    </tr>
 					    </table>
 			        </div>
@@ -130,14 +130,14 @@
 					</div>
 			        
 			        <!-- th:if="${name.length() gt 10}" -->
-			        <div th:if="${n_lw_challenges ne null and not #lists.isEmpty(n_lw_challenges)}">
+			        <div th:if="${n_lw_win_challenges ne null and not #lists.isEmpty(n_lw_win_challenges)}">
 				        <h3>
 				            Hai superato le challenge:
 				        </h3>
-				        <table th:if="${n_lw_challenges ne null}">
-						    <tr th:each="ch : ${n_lw_challenges}" th:if="${ch.success} == true" >
-						        <td><font size="2" ><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td>
-						       	<td><font size="2" ><strong> : <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
+				        <table th:if="${n_lw_win_challenges ne null}">
+						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" >
+						        <!-- <td><font size="2" ><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
+						       	<td><font size="2" ><strong> - <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
 						    </tr>
 					    </table>
 			        </div>

@@ -34,6 +34,16 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE e avrai ulteriori BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
+	private final String CHAL_TYPE_1 = "PERCENT";
+	private final String CHAL_TYPE_3 = "TRIPNUMBER";
+	private final String CHAL_TYPE_5 = "POINTSEARNED";
+	private final String CHAL_TYPE_7 = "COMPLETECOLLECTION";
+	private final String CHAL_TYPE_9 = "RECOMMENDATION";
+	/*private final String CHAL_TYPE_1 = "ch1";
+	private final String CHAL_TYPE_3 = "ch3";
+	private final String CHAL_TYPE_5 = "ch5";
+	private final String CHAL_TYPE_7 = "ch7";
+	private final String CHAL_TYPE_9 = "ch9";*/
 	private final String CHAL_ALLOWED_MODE_W = "walk";
 	private final String CHAL_ALLOWED_MODE_BK = "bike";
 	private final String CHAL_ALLOWED_MODE_BKS = "bikesharing";
@@ -42,6 +52,14 @@ public class ChallengesUtils {
 	private final String CHAL_ALLOWED_MODE_C = "car";
 	private final String CHAL_ALLOWED_MODE_Z = "zeroimpact";
 	private final String CHAL_ALLOWED_MODE_P = "promoted";
+	private final String CHAL_ALLOWED_MODE_W_DIS = "walkDistance";
+	private final String CHAL_ALLOWED_MODE_BK_DIS = "bikeDistance";
+	private final String CHAL_ALLOWED_MODE_BKS_DIS = "bikesharingDistance";
+	private final String CHAL_ALLOWED_MODE_T_DIS = "trainDistance";
+	private final String CHAL_ALLOWED_MODE_B_DIS = "busDistance";
+	private final String CHAL_ALLOWED_MODE_C_DIS = "carDistance";
+	private final String CHAL_ALLOWED_MODE_Z_DIS = "zeroimpactDistance";
+	private final String CHAL_ALLOWED_MODE_P_DIS = "promotedDistance";
 	private final String CHAL_ALLOWED_PT_GREEN = "green leaves";
 	private final String CHAL_ALLOWED_PT_HEALTH = "health";
 	private final String CHAL_ALLOWED_PT_PR = "pr";
@@ -109,7 +127,7 @@ public class ChallengesUtils {
 				int status = 0;
 				String row_status = "";
     			ChallengesData tmp_chall = new ChallengesData();
-    			if(ch_type.compareTo("ch1") == 0){
+    			if(ch_type.compareTo(CHAL_TYPE_1) == 0){
     				int walked_km = customData.getInt(CHAL_K + ch_id + CHAL_K_WALKED_KM);
     				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = (walked_km * 100) / target;
@@ -128,7 +146,7 @@ public class ChallengesUtils {
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
     			}
-    			if(ch_type.compareTo("ch3") == 0){
+    			if(ch_type.compareTo(CHAL_TYPE_3) == 0){
     				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
     				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = count * 100 / target;
@@ -146,7 +164,7 @@ public class ChallengesUtils {
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
     			}
-    			if(ch_type.compareTo("ch5") == 0){
+    			if(ch_type.compareTo(CHAL_TYPE_5) == 0){
     				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
     				int earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
     				status = earned_points * 100 / target;
@@ -165,7 +183,7 @@ public class ChallengesUtils {
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
     			}
-    			if(ch_type.compareTo("ch7") == 0){
+    			if(ch_type.compareTo(CHAL_TYPE_7) == 0){
     				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
     				if(success){
 						status = 100;
@@ -186,7 +204,7 @@ public class ChallengesUtils {
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
     			}
-    			if(ch_type.compareTo("ch9") == 0){
+    			if(ch_type.compareTo(CHAL_TYPE_9) == 0){
     				int recommandation = customData.getInt(CHAL_K + ch_id + CHAL_K_RECOM);
     				status = recommandation * 100 / target;
     				row_status = recommandation + "/" + target;
@@ -205,16 +223,16 @@ public class ChallengesUtils {
     				tmp_chall.setEndDate(endTime);
     			}
     			
-    			if(now >= startTime){	// if challenge is started
+    			//if(now >= startTime){	// if challenge is started
 	    			if(now < endTime){	// if challenge is not ended
 	    				challenges.add(tmp_chall);
 	    			} else if(now < endTime + CHAL_TS_OFFSET){
 	    				oldChallenges.add(tmp_chall);	// last week challenges
 	    			}
-    			}
+    			//}
     		}
     		// Sorting
-        	Collections.sort(challenges, new Comparator<ChallengesData>() {
+        	/*Collections.sort(challenges, new Comparator<ChallengesData>() {
         	    public int compare(ChallengesData chalData2, ChallengesData chalData1){
         	        return  chalData2.getChallId().compareTo(chalData1.getChallId());
         	    }
@@ -223,7 +241,7 @@ public class ChallengesUtils {
         	    public int compare(ChallengesData chalData2, ChallengesData chalData1){
         	        return  chalData1.getChallId().compareTo(chalData2.getChallId());
         	    }
-        	});
+        	});*/
     		challengesList.add(challenges);
 			challengesList.add(oldChallenges);
     	}
@@ -285,6 +303,30 @@ public class ChallengesUtils {
     		corr_mode = "a impatto zero";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_P) == 0){
+    		corr_mode = "promoted";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_W_DIS) == 0){
+    		corr_mode = "a piedi";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_BK_DIS) == 0){
+    		corr_mode = "in bici";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_BKS_DIS) == 0){
+    		corr_mode = "con bici condivisa";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_T_DIS) == 0){
+    		corr_mode = "in treno";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_B_DIS) == 0){
+    		corr_mode = "in autobus";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_C_DIS) == 0){
+    		corr_mode = "in auto";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_Z_DIS) == 0){
+    		corr_mode = "a impatto zero";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_P_DIS) == 0){
     		corr_mode = "promoted";
     	}
     	return corr_mode;

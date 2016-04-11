@@ -597,6 +597,7 @@ public class PortalController extends SCController{
 			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
 			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
 			List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/conf_file/game_week_winners.csv");
+			List<WeekPrizeData> mailPrizeActualData = new ArrayList<WeekPrizeData>();
 			// here I have to add the new mail parameters readed from csv files
 			String actual_week = "";
 			String actual_week_theme = "";
@@ -613,6 +614,7 @@ public class PortalController extends SCController{
 					are_chall = tmpWConf.isChallenges();
 					are_prizes = tmpWConf.isPrizes();
 					are_prizes_last_week = tmpWConf.isPrizesLast();
+					mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 				}
 			}
 			if(isTest.compareTo("true") == 0){
@@ -675,21 +677,21 @@ public class PortalController extends SCController{
 								if(states != null && states.size() > 0){
 									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
 									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
 									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							}
 						} catch (MessagingException e) {
@@ -778,21 +780,21 @@ public class PortalController extends SCController{
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
 									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
 									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeFileData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							}
 						} catch (MessagingException e) {
@@ -954,6 +956,7 @@ public class PortalController extends SCController{
 		File bikeShareSacco = new File(path + "mail/img/bike_sharing/bikeSharingPioneerSacco.png");
 		File bikeShareStazione = new File(path + "mail/img/bike_sharing/bikeSharingPioneerStazione.png");
 		File bikeShareZonaIndustriale = new File(path + "mail/img/bike_sharing/bikeSharingPioneerZonaIndustriale.png");
+		File bikeShareMart = new File(path + "mail/img/bike_sharing/bikeSharingPioneerMART.png");
 				
 		allBadges.add(new BagesData(bikeShareBrione.getName(), FileUtils.readFileToByteArray(bikeShareBrione), "image/png", "Brione - Rovereto_BSstation", "Parcheggio Bike Sharing Brione"));
 		allBadges.add(new BagesData(bikeShareLizzana.getName(), FileUtils.readFileToByteArray(bikeShareLizzana), "image/png", "Lizzana - Rovereto_BSstation", "Parcheggio Bike Sharing Lizzana"));
@@ -962,12 +965,13 @@ public class PortalController extends SCController{
 		allBadges.add(new BagesData(bikeShareNoriglio.getName(), FileUtils.readFileToByteArray(bikeShareNoriglio), "image/png", "Noriglio - Rovereto_BSstation", "Parcheggio Bike Sharing Noriglio"));
 		allBadges.add(new BagesData(bikeShareOrsi.getName(), FileUtils.readFileToByteArray(bikeShareOrsi), "image/png", "Orsi - Rovereto_BSstation", "Parcheggio Bike Sharing Piazzale Orsi"));
 		allBadges.add(new BagesData(bikeShareOspedale.getName(), FileUtils.readFileToByteArray(bikeShareOspedale), "image/png", "Ospedale - Rovereto_BSstation", "Parcheggio Bike Sharing Ospedale"));
-		allBadges.add(new BagesData(bikeSharePaoli.getName(), FileUtils.readFileToByteArray(bikeSharePaoli), "image/png", "Paoli - Rovereto_BSstation", "Parcheggio Bike Sharing Paoli"));
+		allBadges.add(new BagesData(bikeSharePaoli.getName(), FileUtils.readFileToByteArray(bikeSharePaoli), "image/png", "Via Paoli - Rovereto_BSstation", "Parcheggio Bike Sharing Via Paoli"));
 		allBadges.add(new BagesData(bikeSharePROsmini.getName(), FileUtils.readFileToByteArray(bikeSharePROsmini), "image/png", "P. Rosmini - Rovereto_BSstation", "Parcheggio Bike Sharing P. Rosmini"));
 		allBadges.add(new BagesData(bikeShareQuercia.getName(), FileUtils.readFileToByteArray(bikeShareQuercia), "image/png", "Quercia - Rovereto_BSstation", "Parcheggio Bike Sharing Quercia"));
 		allBadges.add(new BagesData(bikeShareSacco.getName(), FileUtils.readFileToByteArray(bikeShareSacco), "image/png", "Sacco - Rovereto_BSstation", "Parcheggio Bike Sharing Sacco"));
 		allBadges.add(new BagesData(bikeShareStazione.getName(), FileUtils.readFileToByteArray(bikeShareStazione), "image/png", "Stazione FF.SS. - Rovereto_BSstation", "Parcheggio Bike Sharing Stazione FF.SS."));
 		allBadges.add(new BagesData(bikeShareZonaIndustriale.getName(), FileUtils.readFileToByteArray(bikeShareZonaIndustriale), "image/png", "Zona Industriale - Rovereto_BSstation", "Parcheggio Bike Sharing Zona Industriale"));
+		allBadges.add(new BagesData(bikeShareMart.getName(), FileUtils.readFileToByteArray(bikeShareMart), "image/png", "Mart - Rovereto_BSstation", "Parcheggio Bike Sharing MART"));
 		
 		// files for recommendation
 		File recommendations3 = new File(path + "mail/img/recommendation/inviteFriends3.png");
@@ -1342,6 +1346,16 @@ public class PortalController extends SCController{
 			}
 		}
 		return prizeWeekFileData;
+	}
+	
+	public List<WeekPrizeData> readWeekPrizesFileData(String weeknum, List<WeekPrizeData> allPrizes) {
+		List<WeekPrizeData> prizeWeekData = new ArrayList<WeekPrizeData>();
+		for(int i = 0; i < allPrizes.size(); i++){
+			if(allPrizes.get(i).getWeekNum().compareTo(weeknum) == 0){
+				prizeWeekData.add(allPrizes.get(i));
+			}
+		}
+		return prizeWeekData;
 	}
 	
 	public List<WeekWinnersData> readWeekWinnersFile(String src) {

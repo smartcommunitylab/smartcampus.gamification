@@ -1065,13 +1065,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;	
     				default: break;
     			}
-    			//if(now >= startChTs){
+    			if(now >= startChTs){
 	    			if(now < (endChTs + $scope.CHAL_TS_OFFSET)){
 	    				$scope.challenges.push(tmp_chall);
 	    			} else {
 	    				$scope.oldChallenges.push(tmp_chall);
 	    			}
-    			//}
+    			}
     		}
     	}
     	$scope.setLoading(false);

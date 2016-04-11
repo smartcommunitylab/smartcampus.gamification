@@ -110,10 +110,19 @@ public class ChallengesUtils {
     			String ch_type = customData.getString(CHAL_K + ch_id + CHAL_K_TYPE);
     			String targetVal = customData.getString(CHAL_K + ch_id + CHAL_K_TARGET);
     			int target = 0;
-    			try {
-    				target = Integer.parseInt(targetVal);
-    			} catch (Exception ex){
-    				logger.info("String target value"); 
+    			if(targetVal.contains(".")){
+    				try {
+    				Float f_target = Float.parseFloat(targetVal);
+    				target = f_target.intValue();
+    				} catch (Exception ex){
+    					logger.info("String target value error from float");
+    				}
+    			} else {
+	    			try {
+	    				target = Integer.parseInt(targetVal);
+	    			} catch (Exception ex){
+	    				logger.info("String target value error from int"); 
+	    			}
     			}
 				int bonus = customData.getInt(CHAL_K + ch_id + CHAL_K_BONUS);
 				String endChTs = customData.getString(CHAL_K + ch_id + CHAL_K_ETS);

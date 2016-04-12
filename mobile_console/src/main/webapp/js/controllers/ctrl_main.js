@@ -940,7 +940,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						type: ch_type,
     						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
-    						progress_img: $scope.convertStatusToIcon(status),
+    						progress_img: $scope.convertStatusToIcon(status, success),
     						details: false
     					};
     					break;
@@ -970,7 +970,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						type: ch_type,
     						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
-    						progress_img: $scope.convertStatusToIcon(status),
+    						progress_img: $scope.convertStatusToIcon(status, success),
     						details: false
     					};
     					break;
@@ -1003,7 +1003,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						type: ch_type,
     						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
-    						progress_img: $scope.convertStatusToIcon(status),
+    						progress_img: $scope.convertStatusToIcon(status, success),
     						details: false
     					};
     					break;	
@@ -1034,7 +1034,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						type: ch_type,
     						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
-    						progress_img: $scope.convertStatusToIcon(status),
+    						progress_img: $scope.convertStatusToIcon(status, success),
     						details: false
     					};
     					break;
@@ -1063,7 +1063,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						type: ch_type,
     						point_type: $scope.getCorrectTypeString(point_type),
     						success: success,
-    						progress_img: $scope.convertStatusToIcon(status),
+    						progress_img: $scope.convertStatusToIcon(status, success),
     						details: false
     					};
     					break;	
@@ -1134,30 +1134,34 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	}
     };
     
-    $scope.convertStatusToIcon = function(status){
-    	if(status < 10){
-    		return "img/challenges_icon/coppa_0_10.png";
-    	} else if(status >= 10 && status < 20){
-    		return "img/challenges_icon/coppa_1_10.png";
-    	} else if(status >= 20 && status < 30){
-    		return "img/challenges_icon/coppa_2_10.png";
-    	} else if(status >= 30 && status < 40){
-    		return "img/challenges_icon/coppa_3_10.png";
-    	} else if(status >= 40 && status < 50){
-    		return "img/challenges_icon/coppa_4_10.png";
-    	} else if(status >= 50 && status < 60){
-    		return "img/challenges_icon/coppa_5_10.png";
-    	} else if(status >= 60 && status < 70){
-    		return "img/challenges_icon/coppa_6_10.png";
-    	} else if(status >= 70 && status < 80){
-    		return "img/challenges_icon/coppa_7_10.png";
-    	} else if(status >= 80 && status < 90){
-    		return "img/challenges_icon/coppa_8_10.png";
-    	} else if(status >= 90 && status < 100){
-    		return "img/challenges_icon/coppa_9_10.png";
-    	} else if(status >= 100){
+    $scope.convertStatusToIcon = function(status, success){
+    	if(success){
     		return "img/challenges_icon/coppa_10_10_sfida_vinta.png";
-    	} 
+    	} else {
+	    	if(status < 10){
+	    		return "img/challenges_icon/coppa_0_10.png";
+	    	} else if(status >= 10 && status < 20){
+	    		return "img/challenges_icon/coppa_1_10.png";
+	    	} else if(status >= 20 && status < 30){
+	    		return "img/challenges_icon/coppa_2_10.png";
+	    	} else if(status >= 30 && status < 40){
+	    		return "img/challenges_icon/coppa_3_10.png";
+	    	} else if(status >= 40 && status < 50){
+	    		return "img/challenges_icon/coppa_4_10.png";
+	    	} else if(status >= 50 && status < 60){
+	    		return "img/challenges_icon/coppa_5_10.png";
+	    	} else if(status >= 60 && status < 70){
+	    		return "img/challenges_icon/coppa_6_10.png";
+	    	} else if(status >= 70 && status < 80){
+	    		return "img/challenges_icon/coppa_7_10.png";
+	    	} else if(status >= 80 && status < 90){
+	    		return "img/challenges_icon/coppa_8_10.png";
+	    	} else if(status >= 90 && status < 100){
+	    		return "img/challenges_icon/coppa_9_10.png";
+	    	} else if(status >= 100){
+	    		return "img/challenges_icon/coppa_10_10_sfida_vinta.png";
+	    	}
+    	}
     };
     
     $scope.calculateRemainingDays = function(endTimeMillis, now){

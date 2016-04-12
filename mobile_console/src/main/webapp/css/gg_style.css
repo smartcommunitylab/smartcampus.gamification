@@ -202,8 +202,9 @@
 		font-size: 14px;
 	}
 	
-	.image_succ_wrapper {
+	.image-succ-wrapper {
     	position: relative;
+    	margin: auto;
     }
 	
 	.panel-body {

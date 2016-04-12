@@ -86,17 +86,19 @@
 								</div>
 							</div>
 							<div class="col-xs-10 headercolsmall" ng-if="!ch.success && ch.active && ch.status != 100"><!-- col-xs-1  -->
-								<div class="image_succ_wrapper">
+								<div class="image-succ-wrapper">
 									<img height="70" width="60" ng-src="{{ ch.progress_img }}" alt="Stato sfida" title="Stato sfida" />
 									<div class="image-bonus-info-small" ng-class="ch.bonus_style_small">{{ ch.bonus }}</div>
 									<div class="image-status-info-small" ng-class="ch.row_status_style_small">{{ ch.row_status }}</div>
 								</div>
 							</div>
 							<div class="col-xs-10 headercolsmall" ng-if="!ch.success && !ch.active && ch.status != 100"><!-- col-xs-1 -->
-								<img height="80" width="60" ng-src="img/challenges_icon/sfida_non_vinta.png" alt="Sfida persa" title="Sfida persa" />
+								<div class="image-succ-wrapper">
+									<img height="80" width="60" ng-src="img/challenges_icon/sfida_non_vinta.png" alt="Sfida persa" title="Sfida persa" />
+								</div>
 							</div>
 							<div class="col-xs-10 headercolsmall" ng-if="ch.success || ch.status == 100"><!-- col-xs-1  -->
-								<div class="image_succ_wrapper">
+								<div class="image-succ-wrapper">
 									<img height="80" width="60" ng-src="{{ ch.progress_img }}" alt="Sfida vinta" title="Sfida vinta" />
 									<div class="image-bonus-success-num-small">{{ ch.bonus }}</div>
 									<div class="image-bonus-success-small">{{ ch.point_type }}</div>

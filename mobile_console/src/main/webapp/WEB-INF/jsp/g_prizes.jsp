@@ -47,7 +47,7 @@
 					<h4>RISULTATI E INCENTIVI</h4>
 					<div align="justify">
 						Alla fine del Gioco, ogni Giocatore ricever&agrave; un attestato che riporter&agrave; i risultati raggiunti.
-						I primi tre Giocatori <strong>nella classifica a punti Grean Leaves</strong> (vedasi 
+						I primi tre Giocatori <strong>nella classifica a punti Green Leaves</strong> (vedasi 
 						"FUNZIONAMENTO DEL GIOCO" - al punto I.) alla fine del Gioco riceveranno i 
 						seguenti premi, elargiti dal <strong>Comune di Rovereto</strong>:
 						<ul>

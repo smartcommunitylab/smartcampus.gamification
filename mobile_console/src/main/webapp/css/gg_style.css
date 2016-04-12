@@ -202,6 +202,10 @@
 		font-size: 14px;
 	}
 	
+	.image_succ_wrapper {
+    	position: relative;
+    }
+	
 	.panel-body {
 		padding-left: 10px;
 		padding-right: 10px;
@@ -299,7 +303,7 @@
 	.image-bonus-success-num-small {
 		position: absolute;
 		top: 5px;
-		left: 62%;
+		left: 22px;
 		font-weight: bold;
 		font-size: 15px;
 		color: #fff;
@@ -308,7 +312,7 @@
 	.image-bonus-success-small {
 		position: absolute;
 		top: 20px;
-		left: 59%;
+		left: 16px;
 		font-weight: bold;
 		font-size: 11px;
 		line-height: 11px;
@@ -338,25 +342,25 @@
 		left: 32px;
 	}
 	.oriz_space_2_small {
-		left: 54%;
+		left: 24px;
 	}
 	.oriz_space_3_small {
-		left: 52%;
+		left: 20px;
 	}
 	.oriz_space_4_small {
-		left: 50%;
+		left: 16px;
 	}
 	.oriz_space_5_small {
-		left: 49%;
+		left: 13px;
 	}
 	.oriz_space_bonus_2_small {
-		left: 53%;
+		left: 22px;
 	}
 	.oriz_space_bonus_3_small {
-		left: 51%;
+		left: 20px;
 	}
 	.oriz_space_bonus_4_small {
-		left: 50%;
+		left: 18px;
 	}
 	
 	.spacedrow {

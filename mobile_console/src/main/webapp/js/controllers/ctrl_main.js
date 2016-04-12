@@ -26,6 +26,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_ETS = "_endChTs";
 	$scope.CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
 	$scope.CHAL_K_EARNED_POINT = "_points_earned_during_challenges";
+	$scope.CHAL_K_EARNED_POINT_NEW = "gp_current";
 	$scope.CHAL_K_TARGET = "_target";
 	$scope.CHAL_K_BONUS = "_bonus";
 	$scope.CHAL_K_RECOM = "_recommendations_sent_during_challenges";
@@ -554,24 +555,24 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var msg_to_show = "";
     	switch(ch.type){
     		case $scope.CHAL_TYPE_1: 
-    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK){
+    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
     				msg_to_show=$scope.chall_desc_bike_km;
-    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS){
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
     				msg_to_show=$scope.chall_desc_bike_share_km;
-    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W){
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W + "Distance"){
     				msg_to_show=$scope.chall_desc_walk_km;
     			}
     			break;
     		case $scope.CHAL_TYPE_3:
-    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B){
+    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
     				msg_to_show=$scope.chall_desc_bus_trip;
-    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS){
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
     				msg_to_show=$scope.chall_desc_bike_share_trip;
-    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T){
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T + "Distance"){
     				msg_to_show=$scope.chall_desc_train_trip;
-    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z){
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z + "Distance"){
     				msg_to_show=$scope.chall_desc_zero_impact_trip;
-    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P){
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P + "Distance"){
     				msg_to_show=$scope.chall_desc_promoted_trip;
     			} 
     			break;
@@ -977,7 +978,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
     					var earned_points = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_EARNED_POINT];
     					if(earned_points == null){
-    						earned_points = 0;
+    						earned_points = customdata[$scope.CHAL_K_EARNED_POINT_NEW];
     					}
     					status = earned_points * 100 / target;
     					row_status = earned_points + "/" + target;

@@ -22,6 +22,7 @@ public class ChallengesUtils {
 	private final String CHAL_K_ETS = "_endChTs";
 	private final String CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
 	private final String CHAL_K_EARNED_POINT = "_points_earned_during_challenges";
+	private final String CHAL_K_EARNED_POINT_NEW = "gp_current";
 	private final String CHAL_K_TARGET = "_target";
 	private final String CHAL_K_BONUS = "_bonus";
 	private final String CHAL_K_RECOM = "_recommendations_sent_during_challenges";
@@ -178,6 +179,8 @@ public class ChallengesUtils {
     				int earned_points = 0;
     				if(!customData.isNull(CHAL_K + ch_id + CHAL_K_EARNED_POINT)){
     					earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
+    				} else {
+    					earned_points = customData.getInt(CHAL_K_EARNED_POINT_NEW);
     				}
     				status = earned_points * 100 / target;
     				row_status = earned_points + "/" + target;

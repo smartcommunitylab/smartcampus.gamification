@@ -38,7 +38,7 @@
 	    	</div>
 	    	<div class="row" style="width:700px">
 	    		<div class="col-md-6 col-md-offset-1">
-			        <h3 th:text="#{greeting(${name})}">
+			        <!-- <h3 th:text="#{greeting(${name})}">
 			            Caro Utente,
 			        </h3>
 			        <h3>
@@ -54,7 +54,7 @@
 				        </h3>
 				        <table th:if="${n_challenges ne null}">
 						    <tr th:each="ch : ${n_challenges}">
-						        <!-- <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
+						        <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td>
 						       	<td><font size="2"><strong> - <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
 						    </tr>
 					    </table>
@@ -79,19 +79,19 @@
 			        <br/>
 			        <h3>
 				    	Risultati della <strong th:text="${week_num}">X</strong>^a settimana di gioco
-				    </h3>
-			        <!-- <div th:if="${are_prizes_last}">
+				    </h3> -->
+			        <div><!-- th:if="${are_prizes_last}" -->
 				        <h3>
-				        	PREMI SETTIMANALI
+				        	VINCITORI DELLA SCORSA SETTIMANA
 				        </h3>
 				        <h3>
-				        	Complimenti ai vincitori dei premi di questa settimana:
+				        	Complimenti ai vincitori dei premi della scorsa settimana:
 				        </h3>
-				        <table th:if="${n_winners ne null}" width="85%">
+				        <table th:if="${n_winners ne null}" width="95%">
 				        	<tr align="left">
 				        		<th width="20%">Giocatore</th>
-				        		<th width="20%">Premio</th>
-				        		<th width="60%">Traguardo</th>
+				        		<th width="25%">Premio</th>
+				        		<th width="55%">Traguardo</th>
 				        	</tr>
 						    <tr th:each="w : ${n_winners}">
 						        <td><font size="2" > - <strong th:text="${w.nickPlayer}">Nick giocatore</strong></font></td>
@@ -99,12 +99,15 @@
 						       	<td><font size="2" ><span th:text="${w.prizesTarget}">Primo posto green leaves</span></font></td>
 						    </tr>
 					    </table>
-			        </div> -->
+			        </div>
 			        <h3>
-			        	I TUOI RISULTATI
+			        	IL TUO STATO DI GIOCO
+			        </h3>
+			        <h3 th:text="#{greeting(${name})}">
+			            Caro Utente,
 			        </h3>
 			        <h3>
-			        	complimenti, ecco i tuoi risultati di gioco:
+			        	di seguito riepiloghiamo i tuoi risultati di gioco:
 			        </h3>
 			        <div style="margin: 50px 5px 5px 150px">
 				        <table>
@@ -132,7 +135,7 @@
 			        <!-- th:if="${name.length() gt 10}" -->
 			        <div th:if="${n_lw_win_challenges ne null and not #lists.isEmpty(n_lw_win_challenges)}">
 				        <h3>
-				            Hai superato le challenge:
+				            Hai gi&agrave; superato le challenge:
 				        </h3>
 				        <table th:if="${n_lw_win_challenges ne null}">
 						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" >
@@ -143,7 +146,7 @@
 			        </div>
 			        
 			        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{new_badges}">
-			            Inoltre, durante la settimana hai guadagnato:
+			            Inoltre, dall'inizio della settimana hai guadagnato:
 			        </h3>
 			        <div style="margin: 50px 5px 5px 150px" >
 				        <table th:if="${n_badges ne null}">
@@ -155,7 +158,7 @@
 			        </div>
 			        
 			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
-			            Questa settimana non hai guadagnato nuovi badge! Gioca ancora ed otterrai nuovi punti!
+			            In questa settimana non hai ancora guadagnato nuovi badge! Gioca ancora ed otterrai nuovi punti!
 			        </h3>
 			
 			        <h3>

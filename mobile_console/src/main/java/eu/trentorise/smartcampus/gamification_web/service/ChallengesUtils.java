@@ -238,13 +238,13 @@ public class ChallengesUtils {
     				tmp_chall.setEndDate(endTime);
     			}
     			
-    			//if(now >= startTime){	// if challenge is started
+    			if(now >= startTime - MILLIS_IN_DAY){	// if challenge is started (with one day of offset for mail)
 	    			if(now < endTime){	// if challenge is not ended
 	    				challenges.add(tmp_chall);
 	    			} else if(now < endTime + CHAL_TS_OFFSET){
 	    				oldChallenges.add(tmp_chall);	// last week challenges
 	    			}
-    			//}
+    			}
     		}
     		// Sorting
         	/*Collections.sort(challenges, new Comparator<ChallengesData>() {

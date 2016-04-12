@@ -976,6 +976,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				case $scope.CHAL_TYPE_5:
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
     					var earned_points = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_EARNED_POINT];
+    					if(earned_points == null){
+    						earned_points = 0;
+    					}
     					status = earned_points * 100 / target;
     					row_status = earned_points + "/" + target;
     					if(status > 100)status = 100;

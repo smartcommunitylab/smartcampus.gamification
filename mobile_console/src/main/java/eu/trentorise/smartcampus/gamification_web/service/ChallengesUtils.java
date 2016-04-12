@@ -175,7 +175,10 @@ public class ChallengesUtils {
     			}
     			if(ch_type.compareTo(CHAL_TYPE_5) == 0){
     				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
-    				int earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
+    				int earned_points = 0;
+    				if(!customData.isNull(CHAL_K + ch_id + CHAL_K_EARNED_POINT)){
+    					earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
+    				}
     				status = earned_points * 100 / target;
     				row_status = earned_points + "/" + target;
     				if(status > 100)status = 100;

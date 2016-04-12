@@ -79,10 +79,14 @@
 								<div class="days-wrapper-success small" ng-if="ch.success || ch.status == 100">
 									<strong>{{ 'ch_win_message_text_label' | i18n }}</strong>
 								</div>
-								<div class="verticalpad" ng-if="ch.success || ch.status == 100">
-									<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ text_fb }}" data-callback="callback"></a><!-- {{ shares }} -->
+								<div class="verticalpad sharing_wrapper" ng-if="ch.success || ch.status == 100">
+									<div class="facebook_btn_wrapper_ch">
+										<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ text_fb }}" data-callback="callback"></a><!-- {{ shares }} -->
+									</div>
 									&nbsp;&nbsp;
-									<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ text_tw }}' ></a>
+									<div class="twitter_btn_wrapper_ch">
+										<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ text_tw }}' ></a>
+									</div>
 								</div>
 							</div>
 							<div class="col-xs-10 headercolsmall" ng-if="!ch.success && ch.active && ch.status != 100"><!-- col-xs-1  -->

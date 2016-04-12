@@ -140,6 +140,24 @@
 		right: 85px;
 	}
 	
+	.twitter_btn_wrapper_ch {
+		max-width: 60px;
+		height: 25px;
+		overflow: hidden;
+		position: absolute;
+		top: 1px;
+		left: 65px;
+	}
+	
+	.facebook_btn_wrapper_ch {
+		max-width: 60px;
+		height: 25px;
+		overflow: hidden;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+	}
+	
 	.sharing_wrapper {
 		position: relative;
 	}
@@ -204,7 +222,7 @@
 	
 	.image-succ-wrapper {
     	position: relative;
-    	margin: auto;
+    	text-align: center;
     }
 	
 	.panel-body {
@@ -343,7 +361,7 @@
 		left: 32px;
 	}
 	.oriz_space_2_small {
-		left: 24px;
+		left: 25px;
 	}
 	.oriz_space_3_small {
 		left: 20px;
@@ -352,16 +370,16 @@
 		left: 16px;
 	}
 	.oriz_space_5_small {
-		left: 13px;
+		left: 11px;
 	}
 	.oriz_space_bonus_2_small {
 		left: 22px;
 	}
 	.oriz_space_bonus_3_small {
-		left: 20px;
+		left: 18px;
 	}
 	.oriz_space_bonus_4_small {
-		left: 18px;
+		left: 14px;
 	}
 	
 	.spacedrow {
@@ -374,7 +392,7 @@
 	}
 	.headercolsmall {
 		margin-top: 10px;
-		padding-right: 35%;
+		padding-right: 28%;
 		padding-left: 35%;
 		text-align: center;
 	}

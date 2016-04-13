@@ -179,7 +179,7 @@ public class ChallengesUtils {
     				int earned_points = 0;
     				if(!customData.isNull(CHAL_K + ch_id + CHAL_K_EARNED_POINT)){
     					earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
-    				} else {
+    				} else if(!customData.isNull(CHAL_K_EARNED_POINT_NEW)){
     					earned_points = customData.getInt(CHAL_K_EARNED_POINT_NEW);
     				}
     				status = earned_points * 100 / target;

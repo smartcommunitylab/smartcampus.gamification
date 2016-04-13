@@ -980,6 +980,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					if(earned_points == null){
     						earned_points = customdata[$scope.CHAL_K_EARNED_POINT_NEW];
     					}
+    					if(earned_points == null){
+    						earned_points = 0;
+    					}
     					status = earned_points * 100 / target;
     					row_status = earned_points + "/" + target;
     					if(status > 100)status = 100;

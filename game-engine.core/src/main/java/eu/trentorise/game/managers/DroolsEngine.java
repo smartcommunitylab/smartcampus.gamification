@@ -31,6 +31,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.log4j.LogManager;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierError;
@@ -47,6 +48,8 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
+import org.perf4j.StopWatch;
+import org.perf4j.log4j.Log4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +101,13 @@ public class DroolsEngine implements GameEngine {
 
 	public PlayerState execute(String gameId, PlayerState state, String action,
 			Map<String, Object> data, List<Object> factObjects) {
+
+		StopWatch stopWatch = LogManager.getLogger(
+				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
+				: null;
+		if (stopWatch != null) {
+			stopWatch.start("game execution");
+		}
 
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 		if (game != null && game.isTerminated()) {
@@ -253,6 +263,12 @@ public class DroolsEngine implements GameEngine {
 		// fix for dataset prior than 0.9 version
 		state.setCustomData(customData.isEmpty() ? new CustomData()
 				: customData.get(0));
+
+		if (stopWatch != null) {
+			stopWatch.stop("game execution", String.format(
+					"execution for game %s of player %s", gameId,
+					state.getPlayerId()));
+		}
 		return state;
 	}
 

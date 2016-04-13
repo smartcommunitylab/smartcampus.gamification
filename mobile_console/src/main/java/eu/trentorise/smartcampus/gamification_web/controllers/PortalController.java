@@ -234,6 +234,9 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.challenges.description.complete.badge.collection}")
     private String challengeDescriptionCompleteBadgeCollection;
+    @Autowired
+    @Value("${gamification.weeksponsor.name}")
+    private String weekSponsor;
     
     private final String JSON_STATE = "state";
     private final String JSON_POINTCONCEPT = "PointConcept";
@@ -281,6 +284,7 @@ public class PortalController extends SCController{
 			model.put("chall_desc_next_badge_bike", challengeDescriptionNextBadgeBike);
 			model.put("chall_desc_next_badge_recommendation", challengeDescriptionNextBadgeRecommendation);
 			model.put("chall_desc_complete_badge_collection", challengeDescriptionCompleteBadgeCollection);
+			model.put("week_sponsor_param", weekSponsor);
 			logger.info(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));
@@ -304,15 +308,15 @@ public class PortalController extends SCController{
 				Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());	// app user table
 				if(player_check == null){
 					//String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
-					logger.info(String.format("Player to add: mail %s.", attribute_mail));
+					logger.debug(String.format("Player to add: mail %s.", attribute_mail));
 					if(attribute_mail != null){
 						if(authorizationTable.compareTo("true") == 0){
 							AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
 							if(auth_p != null){
-								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+								logger.debug(String.format("Add player: authorised %s.", auth_p.toJSONString()));
 								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerRepositoryDao.save(new_p);
-								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
+								logger.debug(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
 								return new ModelAndView("redirect:/logout");	// user not allowed - logout
 							}
@@ -321,7 +325,7 @@ public class PortalController extends SCController{
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
 							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null);
 							playerRepositoryDao.save(new_p);
-							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
+							logger.debug(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
 				}
@@ -335,10 +339,10 @@ public class PortalController extends SCController{
 						if(authorizationTable.compareTo("true") == 0){
 							AuthPlayerProd auth_p = authPlayerProdRepositoryDao.findByMail(attribute_mail);
 							if(auth_p != null){
-								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+								logger.debug(String.format("Add player: authorised %s.", auth_p.toJSONString()));
 								PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerProdRepositoryDao.save(new_p);
-								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
+								logger.debug(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
 								return new ModelAndView("redirect:/logout");	// user not allowed - logout
 							}
@@ -347,7 +351,7 @@ public class PortalController extends SCController{
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
 							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null);
 							playerProdRepositoryDao.save(new_p);
-							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
+							logger.debug(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
 				}
@@ -355,7 +359,7 @@ public class PortalController extends SCController{
 			
 			UserCS utente = createUserCartaServiziByMap(mappaAttributi);
 			
-			logger.error(String.format("Account attributes info: %s", mappaAttributi));
+			logger.debug(String.format("Account attributes info: %s", mappaAttributi));
 			//String mail = getAttributeFromId("openid.ext1.value.email", mappaAttributi);
 			//model.put("e_mail", mail);
 			model.put("nome", utente.getNome());
@@ -412,7 +416,7 @@ public class PortalController extends SCController{
 	public ModelAndView securePage(HttpServletRequest request, @RequestParam(required = false) String code, @RequestParam(required = false) String type)
 			throws SecurityException, AACException {
 		String redirectUri = mainURL + "/check";
-		logger.info(String.format("I am in get check. RedirectUri = %s", redirectUri));
+		logger.debug(String.format("I am in get check. RedirectUri = %s", redirectUri));
 		String userToken = aacService.exchngeCodeForToken(code, redirectUri).getAccess_token();
 		//logger.info(String.format("User token = %s", userToken));
 		List<GrantedAuthority> list = Collections.<GrantedAuthority> singletonList(new SimpleGrantedAuthority("ROLE_USER"));
@@ -458,7 +462,7 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/cookie_info")
 	public ModelAndView preSecureCookie(HttpServletRequest request) {
 		//String redirectUri = mainURL + "/check";
-		logger.error(String.format("I am in cookie info page"));
+		logger.debug(String.format("I am in cookie info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("cookie_info");
 		return model;
@@ -467,7 +471,7 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/cookie_licence")
 	public ModelAndView preSecureCookieLicence(HttpServletRequest request) {
 		//String redirectUri = mainURL + "/check";
-		logger.error(String.format("I am in cookie licence info page"));
+		logger.debug(String.format("I am in cookie licence info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("cookie_licence");
 		return model;
@@ -476,7 +480,7 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/view_prizes")
 	public ModelAndView preSecurePrizesPage(HttpServletRequest request) {
 		//String redirectUri = mainURL + "/check";
-		logger.error(String.format("I am in prizes info page"));
+		logger.debug(String.format("I am in prizes info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("g_prizes");
 		return model;
@@ -485,7 +489,7 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/view_rules")
 	public ModelAndView preSecureRulesPage(HttpServletRequest request) {
 		//String redirectUri = mainURL + "/check";
-		logger.error(String.format("I am in rules info page"));
+		logger.debug(String.format("I am in rules info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("g_rules");
 		return model;
@@ -494,7 +498,7 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/view_privacy")
 	public ModelAndView preSecurePrivacyPage(HttpServletRequest request) {
 		//String redirectUri = mainURL + "/check";
-		logger.error(String.format("I am in privacy info page"));
+		logger.debug(String.format("I am in privacy info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("g_privacy");
 		return model;
@@ -523,7 +527,7 @@ public class PortalController extends SCController{
 		try{
 			value = map.get(key).toString();
 		} catch (Exception ex){
-			logger.error("No value found for key " + key);
+			logger.debug("No value found for key " + key);
 		}
 		return value;
 	}
@@ -582,7 +586,7 @@ public class PortalController extends SCController{
 		standardImages.add(new MailImage(prScore.getName(), FileUtils.readFileToByteArray(prScore), "image/png"));
 		standardImages.add(new MailImage(footer.getName(), FileUtils.readFileToByteArray(footer), "image/png"));
 		
-		logger.error(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
+		logger.debug(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
 		
 		//ArrayList<BagesData> allBadgeTest = getAllBadges(path);
 		//try {
@@ -592,7 +596,7 @@ public class PortalController extends SCController{
 		//}
 		
 			// New method
-			logger.error(String.format("Check Notification task. Cycle - %d", i++));
+			logger.debug(String.format("Check Notification task. Cycle - %d", i++));
 			// Here I have to read the mail conf file data
 			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
 			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
@@ -620,7 +624,7 @@ public class PortalController extends SCController{
 			if(isTest.compareTo("true") == 0){
 				Iterable<Player> iter = playerRepositoryDao.findAll();
 				for(Player p: iter){
-					logger.error(String.format("Profile finded  %s", p.getNikName()));
+					logger.debug(String.format("Profile finded  %s", p.getNikName()));
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e1) {
@@ -700,22 +704,22 @@ public class PortalController extends SCController{
 					} else {
 						if(notifications != null){
 							if(states != null && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
 							}
 						} else {
 							if(states != null  && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s", playerName));
+								logger.debug(String.format("Invio mail a %s", playerName));
 							}
 						}
 						if(challenges != null && !challenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
 						}
 						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
@@ -723,7 +727,7 @@ public class PortalController extends SCController{
 			} else {
 				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
 				for(PlayerProd p: iter){
-					logger.error(String.format("Profile finded  %s", p.getNikName()));
+					logger.debug(String.format("Profile finded  %s", p.getNikName()));
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e1) {
@@ -803,22 +807,22 @@ public class PortalController extends SCController{
 					} else {
 						if(notifications != null){
 							if(states != null && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
 							}
 						} else {
 							if(states != null && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s", playerName));
+								logger.debug(String.format("Invio mail a %s", playerName));
 							}
 						}
 						if(challenges != null && !challenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
 						}
 						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
@@ -868,7 +872,7 @@ public class PortalController extends SCController{
 		standardImages.add(new MailImage(prScore.getName(), FileUtils.readFileToByteArray(prScore), "image/png"));
 		standardImages.add(new MailImage(footer.getName(), FileUtils.readFileToByteArray(footer), "image/png"));
 		
-		logger.error(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
+		logger.debug(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
 		
 		//ArrayList<BagesData> allBadgeTest = getAllBadges(path);
 		//try {
@@ -878,7 +882,7 @@ public class PortalController extends SCController{
 		//}
 		
 			// New method
-			logger.error(String.format("Check Notification task. Cycle - %d", i++));
+			logger.debug(String.format("Check Notification task. Cycle - %d", i++));
 			// Here I have to read the mail conf file data
 			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
 			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
@@ -906,7 +910,7 @@ public class PortalController extends SCController{
 			if(isTest.compareTo("true") == 0){
 				Iterable<Player> iter = playerRepositoryDao.findAll();
 				for(Player p: iter){
-					logger.error(String.format("Profile finded  %s", p.getNikName()));
+					logger.debug(String.format("Profile finded  %s", p.getNikName()));
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e1) {
@@ -981,27 +985,27 @@ public class PortalController extends SCController{
 								}
 							}
 						} catch (MessagingException e) {
-							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+							logger.debug(String.format("Errore invio mail : %s", e.getMessage()));
 						}
 					} else {
 						if(notifications != null){
 							if(states != null && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
 							}
 						} else {
 							if(states != null  && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s", playerName));
+								logger.debug(String.format("Invio mail a %s", playerName));
 							}
 						}
 						if(challenges != null && !challenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
 						}
 						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
@@ -1009,7 +1013,7 @@ public class PortalController extends SCController{
 			} else {
 				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
 				for(PlayerProd p: iter){
-					logger.error(String.format("Profile finded  %s", p.getNikName()));
+					logger.debug(String.format("Profile finded  %s", p.getNikName()));
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e1) {
@@ -1089,22 +1093,22 @@ public class PortalController extends SCController{
 					} else {
 						if(notifications != null){
 							if(states != null && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
 							}
 						} else {
 							if(states != null && states.size() > 0){
-								logger.error(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
 							} else {
-								logger.error(String.format("Invio mail a %s", playerName));
+								logger.debug(String.format("Invio mail a %s", playerName));
 							}
 						}
 						if(challenges != null && !challenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
 						}
 						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.error(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
@@ -1139,18 +1143,18 @@ public class PortalController extends SCController{
 		File greenSilver = new File(path + "mail/img/leaderboard/green/leaderboardGreen2.png");
 		File greenGold = new File(path + "mail/img/leaderboard/green/leaderboardGreen1.png");
 		
-		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king_week_green", "Re della Settimana - Green"));
+		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king_week_green", "Re della Settimana - Green Leaves"));
 		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50_point_green", "50 Punti Green"));
-		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100_point_green", "100 Punti Green"));
-		allBadges.add(new BagesData(green200.getName(), FileUtils.readFileToByteArray(green200), "image/png", "200_point_green", "200 Punti Green"));
-		allBadges.add(new BagesData(green400.getName(), FileUtils.readFileToByteArray(green400), "image/png", "400_point_green", "400 Punti Green"));
-		allBadges.add(new BagesData(green800.getName(), FileUtils.readFileToByteArray(green800), "image/png", "800_point_green", "800 Punti Green"));
-		allBadges.add(new BagesData(green1500.getName(), FileUtils.readFileToByteArray(green1500), "image/png", "1500_point_green", "1500 Punti Green"));
-		allBadges.add(new BagesData(green2500.getName(), FileUtils.readFileToByteArray(green2500), "image/png", "2500_point_green", "2500 Punti Green"));
-		allBadges.add(new BagesData(green5000.getName(), FileUtils.readFileToByteArray(green5000), "image/png", "5000_point_green", "5000 Punti Green"));
-		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green"));
-		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green"));
-		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green"));
+		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100_point_green", "100 Punti Green Leaves"));
+		allBadges.add(new BagesData(green200.getName(), FileUtils.readFileToByteArray(green200), "image/png", "200_point_green", "200 Punti Green Leaves"));
+		allBadges.add(new BagesData(green400.getName(), FileUtils.readFileToByteArray(green400), "image/png", "400_point_green", "400 Punti Green Leaves"));
+		allBadges.add(new BagesData(green800.getName(), FileUtils.readFileToByteArray(green800), "image/png", "800_point_green", "800 Punti Green Leaves"));
+		allBadges.add(new BagesData(green1500.getName(), FileUtils.readFileToByteArray(green1500), "image/png", "1500_point_green", "1500 Punti Green Leaves"));
+		allBadges.add(new BagesData(green2500.getName(), FileUtils.readFileToByteArray(green2500), "image/png", "2500_point_green", "2500 Punti Green Leaves"));
+		allBadges.add(new BagesData(green5000.getName(), FileUtils.readFileToByteArray(green5000), "image/png", "5000_point_green", "5000 Punti Green Leaves"));
+		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green Leaves"));
+		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green Leaves"));
+		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green Leaves"));
 				
 		// files for health badges
 		File healthKing = new File(path + "mail/img/health/healthKingWeek.png");
@@ -1305,7 +1309,7 @@ public class PortalController extends SCController{
 		for(int i = 0; i < allB.size(); i++){
 			for(int j = 0; j < notifics.size(); j++){
 				if(notifics.get(j).getBadge().compareTo(allB.get(i).getTextId()) == 0){
-					logger.error(String.format("Notification check notifics: %s, badge :%s", notifics.get(j).getBadge(), allB.get(i).getTextId()));
+					logger.debug(String.format("Notification check notifics: %s, badge :%s", notifics.get(j).getBadge(), allB.get(i).getTextId()));
 					correctBadges.add(allB.get(i));
 				}
 			}
@@ -1335,7 +1339,7 @@ public class PortalController extends SCController{
 	private ArrayList<State> getState(String urlWS) throws InterruptedException{
 		
 		RestTemplate restTemplate = new RestTemplate();
-		logger.error("State WS GET " + urlWS);
+		logger.debug("State WS GET " + urlWS);
 		String result = "";
 		ResponseEntity<String> tmp_res = null;
 		try {
@@ -1349,7 +1353,7 @@ public class PortalController extends SCController{
 		result = tmp_res.getBody();
 		
 		if(result != null && result.compareTo("") != 0){
-			logger.error(String.format("State Result Ok: %s", result));
+			logger.debug(String.format("State Result Ok: %s", result));
 			states = chekState(result);	
 		} else {
 			logger.error(String.format("State Result Fail: %s", result));
@@ -1367,7 +1371,7 @@ public class PortalController extends SCController{
 	private String getAllChallenges(String urlWS) throws InterruptedException {
 		
 		RestTemplate restTemplate = new RestTemplate();
-		logger.error("Challenges WS GET " + urlWS);
+		logger.debug("Challenges WS GET " + urlWS);
 		String result = "";
 		ResponseEntity<String> tmp_res = null;
 		try {
@@ -1391,7 +1395,7 @@ public class PortalController extends SCController{
 	private ArrayList<Notification> getNotifications(String urlWS, String timestamp) throws InterruptedException{
 		
 		RestTemplate restTemplate = new RestTemplate();
-		logger.error("Notification WS GET " + urlWS);
+		logger.debug("Notification WS GET " + urlWS);
 		String result = "";
 		ResponseEntity<String> tmp_res = null;
 		try {
@@ -1404,7 +1408,7 @@ public class PortalController extends SCController{
 		ArrayList<Notification> notifications = null;
 		result = tmp_res.getBody();
 		if(result != null){
-			logger.error(String.format("Notification Result Ok: %s", result));
+			logger.debug(String.format("Notification Result Ok: %s", result));
 			notifications = chekNotification(result);	
 			
 		} else {
@@ -1421,7 +1425,7 @@ public class PortalController extends SCController{
 	 */
 	private ArrayList<Notification> chekNotification(String result){
 		ArrayList<Notification> notificationList = new ArrayList<Notification>();
-		logger.error(String.format("Result from WS: %s", result));
+		logger.debug(String.format("Result from WS: %s", result));
 		
 		// Here I have to convert result string in a list of notifications
 		try {
@@ -1449,7 +1453,7 @@ public class PortalController extends SCController{
 	 */
 	private ArrayList<State> chekState(String result){
 		ArrayList<State> stateList = new ArrayList<State>();
-		logger.error(String.format("Result from WS: %s", result));
+		logger.debug(String.format("Result from WS: %s", result));
 		
 		try {
 			JSONObject JOStates = new JSONObject(result);
@@ -1573,7 +1577,7 @@ public class PortalController extends SCController{
 				String arePrizes = weekConfValues[3];
 				String arePrizesLast= weekConfValues[4];
 				String actualWeek = weekConfValues[5];
-				logger.info(String.format("Week conf file: week num %s, theme %s, challenges %s, prizes %s, prizes last %s, actual week %s", weekNum, weekTheme, areChallenges, arePrizes, arePrizesLast, actualWeek));
+				logger.debug(String.format("Week conf file: week num %s, theme %s, challenges %s, prizes %s, prizes last %s, actual week %s", weekNum, weekTheme, areChallenges, arePrizes, arePrizesLast, actualWeek));
 				// value conversion from string to boolean
 				Boolean areChall = (areChallenges.compareTo("Y") == 0) ? true : false;
 				Boolean arePriz = (arePrizes.compareTo("Y") == 0) ? true : false;
@@ -1614,7 +1618,7 @@ public class PortalController extends SCController{
 				String weekPrize = weekPrizeValues[1];
 				String target = weekPrizeValues[2];
 				String sponsor = weekPrizeValues[3];
-				logger.info(String.format("Week prize file: week num %s, prize %s, target %s, sponsor %s", weekNum, weekPrize, target, sponsor));
+				logger.debug(String.format("Week prize file: week num %s, prize %s, target %s, sponsor %s", weekNum, weekPrize, target, sponsor));
 				WeekPrizeData wPrize = new WeekPrizeData(weekNum, weekPrize, target, sponsor);
 				prizeWeekFileData.add(wPrize);
 			}
@@ -1660,7 +1664,7 @@ public class PortalController extends SCController{
 				String player = weekWinnerValues[1];
 				String prize = weekWinnerValues[2];
 				String target = weekWinnerValues[3];
-				logger.info(String.format("Week winner file: week num %s, player %s, prize %s, target %s", weekNum, player, prize, target));
+				logger.debug(String.format("Week winner file: week num %s, player %s, prize %s, target %s", weekNum, player, prize, target));
 				WeekWinnersData wWinners = new WeekWinnersData(weekNum, player, prize, target);
 				winnerWeekFileData.add(wWinners);
 			}

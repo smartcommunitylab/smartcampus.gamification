@@ -9,6 +9,7 @@ public class PersonalData {
 	private List<String> vehicles;
 	private int averagekm;
 	private String nick_recommandation;
+	private Long timestamp;
 
 	public String getAge_range() {
 		return age_range;
@@ -50,26 +51,36 @@ public class PersonalData {
 		this.nick_recommandation = nick_recommandation;
 	}
 
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
+	}
+
 	public PersonalData() {
 		super();
 	}
 
 	public PersonalData(String age_range, boolean use_transport, List<String> vehicles, int averagekm,
-			String nick_recommandation) {
+			String nick_recommandation, Long timestamp) {
 		super();
 		this.age_range = age_range;
 		this.use_transport = use_transport;
 		this.vehicles = vehicles;
 		this.averagekm = averagekm;
 		this.nick_recommandation = nick_recommandation;
+		this.timestamp = timestamp;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "PersonalData [age_range=" + age_range + ", use_transport=" + use_transport + ", vehicles=" + vehicles
-				+ ", averagekm=" + averagekm + ", nick_recommandation=" + nick_recommandation + "]";
+				+ ", averagekm=" + averagekm + ", nick_recommandation=" + nick_recommandation + ", timestamp="
+				+ timestamp + "]";
 	}
-	
+
 	public String toJSONString() {
 		String vehicle_strings = "[";
 		String nick_recomm = null;
@@ -86,11 +97,11 @@ public class PersonalData {
 			vehicle_strings = null;
 		}
 		if(nick_recomm != null){
-			return "{\"age_range\":\"" + age_range + "\", \"use_transport\":" + use_transport + ", \"vehicles\":"
+			return "{\"timestamp\":" + timestamp + ", \"age_range\":\"" + age_range + "\", \"use_transport\":" + use_transport + ", \"vehicles\":"
 					+ vehicle_strings + ", \"averagekm\":" + averagekm + ", \"nick_recommandation\":\"" + nick_recommandation
 					+ "\"}";
 		} else {
-			return "{\"age_range\":\"" + age_range + "\", \"use_transport\":" + use_transport + ", \"vehicles\":"
+			return "{\"timestamp\":" + timestamp + ", \"age_range\":\"" + age_range + "\", \"use_transport\":" + use_transport + ", \"vehicles\":"
 					+ vehicle_strings + ", \"averagekm\":" + averagekm + "}";
 		}
 		

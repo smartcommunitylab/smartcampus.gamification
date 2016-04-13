@@ -39,7 +39,7 @@
 	    	<div class="row" style="width:700px">
 	    		<div class="col-md-6 col-md-offset-1">
 			        <h3 th:text="#{greeting(${name})}">
-			            Caro Utente,
+			            Ciao Utente,
 			        </h3>
 			        <h3>
 			        	stiamo per entrare nella <strong th:text="${next_week_num}">X+1</strong>^a settimana di gioco.<br/>
@@ -49,7 +49,7 @@
 				        <h3 th:text="#{week_desc(${next_week_theme})}">
 				            Questa sar&agrave; la settimana DELLA BICI
 				        </h3>
-				        <h3 th:if="${are_challenges}">
+				        <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
 				            Ecco le tue CHALLENGE per questa settimana, mettiti alla prova per superarle:
 				        </h3>
 				        <table th:if="${n_challenges ne null}">
@@ -112,7 +112,7 @@
 						       	<td>
 						       		<img src="img/green/greenLeavesbase.png" th:src="'cid:' + ${imageRNGreenScore}" width="90px" alt="" title="" />
 								</td>
-							   	<td><font size="3" ><strong th:text="#{green_points(${g_point})}">Punti verdi</strong></font></td>
+							   	<td><font size="3" ><strong th:text="#{green_points(${g_point})}">Punti Green Leaves</strong></font></td>
 							</tr>
 							<!-- <tr>
 						       	<td>

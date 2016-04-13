@@ -102,7 +102,7 @@ public class ChallengesUtils {
     		    			challIndxArray.add(chal_Indx);
     		    		}
     		    	}
-    		    	logger.info("key: " + key + ", value: " + value );
+    		    	logger.debug("key: " + key + ", value: " + value );
     		    }
     		}
     		
@@ -116,13 +116,13 @@ public class ChallengesUtils {
     				Float f_target = Float.parseFloat(targetVal);
     				target = f_target.intValue();
     				} catch (Exception ex){
-    					logger.info("String target value error from float");
+    					logger.error("String target value error from float");
     				}
     			} else {
 	    			try {
 	    				target = Integer.parseInt(targetVal);
 	    			} catch (Exception ex){
-	    				logger.info("String target value error from int"); 
+	    				logger.error("String target value error from int"); 
 	    			}
     			}
 				int bonus = customData.getInt(CHAL_K + ch_id + CHAL_K_BONUS);

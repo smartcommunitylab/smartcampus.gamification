@@ -14,9 +14,9 @@
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
-<script src="https://apis.google.com/js/platform.js" async defer>
+<!-- <script src="https://apis.google.com/js/platform.js" async defer>
     {lang: 'it'}
-</script>
+</script> -->
 <!-- <script src="https://platform.twitter.com/widgets.js"></script> -->
 <script src="lib/platform_twitter_widgets.js"></script>
 <script src="js/jquery.min.js"></script>
@@ -87,6 +87,7 @@ var conf_chall_desc_next_badge_public_transport="<%=request.getAttribute("chall_
 var conf_chall_desc_next_badge_bike="<%=request.getAttribute("chall_desc_next_badge_bike")%>";
 var conf_chall_desc_next_badge_recommendation="<%=request.getAttribute("chall_desc_next_badge_recommendation")%>";
 var conf_chall_desc_complete_badge_collection="<%=request.getAttribute("chall_desc_complete_badge_collection")%>";
+var conf_week_sponsor="<%=request.getAttribute("week_sponsor_param")%>";
 var user_mail="<%=request.getAttribute("e_mail")%>";
 var nome="<%=request.getAttribute("nome")%>";
 var cognome="<%=request.getAttribute("cognome")%>";
@@ -218,6 +219,7 @@ var base64="<%=request.getAttribute("base64")%>";
             <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
             <li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" >{{ 'left_menu-privacy' | i18n }}</a></li>
             <li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" >{{ 'left_menu-prizes' | i18n }}</a></li>
+            <li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" >{{ 'left_menu-credits' | i18n }}</a></li>
             
           </ul>
           <ul class="nav navbar-nav navbar-right" >
@@ -249,6 +251,7 @@ var base64="<%=request.getAttribute("base64")%>";
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" ><strong>{{ 'left_menu-privacy' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" ><strong>{{ 'left_menu-prizes' | i18n }}</strong></a></li>
+								<li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" ><strong>{{ 'left_menu-credits' | i18n }}</strong></a></li>
 								<!-- <li class="divider"></li> -->
 								<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li> -->
 								<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li> -->
@@ -288,14 +291,14 @@ var base64="<%=request.getAttribute("base64")%>";
 				</div>
 			</div>
 		</div>
-		<div id="my-big-footer" class="row">
+		<!-- <div id="my-big-footer" class="row">
 			<div class="col-md-8 col-md-offset-2" align="center">
 					
 				<h5><font face="Raleway-bold" size="5" color="gray"><strong>Play&Go</strong></font> con ViaggiaRovereto</h5>
 				&egrave; un progetto di:
 				<br>
 				<footer>
-					<!-- <p>&copy; SmartCampus 2013</p> -->
+					<p>&copy; SmartCampus 2013</p>
 					<img src="img/footer/footer.png" width="90%" alt="" title="" />
 				</footer>
 			</div>
@@ -327,10 +330,8 @@ var base64="<%=request.getAttribute("base64")%>";
 				<div class="col-md-4" align="center">	
 					<img src="img/footer/caire.png" width="150" alt="" title="" />
 				</div>
-				<br>
-				<!-- <p>&copy; SmartCampus 2013</p> -->
 			</footer>
-		</div>
+		</div> -->
 	</div>
 </div>	
 </body>

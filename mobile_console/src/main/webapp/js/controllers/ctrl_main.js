@@ -60,7 +60,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_ALLOWED_PT_GREEN = "green leaves";
 	$scope.CHAL_ALLOWED_PT_HEALTH = "health";
 	$scope.CHAL_ALLOWED_PT_PR = "pr";
-	$scope.CHAL_PT_GREEN_STRING = "Punti Green";
+	$scope.CHAL_PT_GREEN_STRING = "Punti Green Leaves";
 	$scope.CHAL_PT_HEALTH_STRING = "Punti Salute";
 	$scope.CHAL_PT_PR_STRING = "Punti Park&Ride";
 	// badges_keys
@@ -77,7 +77,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	// badges_collection_names
 	$scope.BCN_GREEN = "green leaves";
 	$scope.BCN_BIKE = "bike aficionado";
-	$scope.BCN_BIKE_SHARING = "bikesharing pioneer";
+	$scope.BCN_BIKE_SHARING = "bike sharing pioneer";
 	$scope.BCN_ZERO_IMPACT = "sustainable life";
 	$scope.BCN_PUBLIC_TRANSPORT = "public transport aficionado";
 	$scope.BCN_PARK_AND_RIDE = "park and ride pioneer";
@@ -119,6 +119,14 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.user_token = token;
     $scope.basic_auth_user = conf_bauth_user;
     $scope.basic_auth_password = conf_bauth_password;
+    
+    
+    $scope.week_sponsor = conf_week_sponsor;
+    if($scope.week_sponsor){
+    	$scope.show_sponsor_banner = true;
+    } else {
+    	$scope.show_sponsor_banner = false;
+    }
     
     // Challenges minute description test
     $scope.chall_desc_bike_km = conf_chall_desc_bike_km;
@@ -243,6 +251,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     var activeLinkRules = "";
     var activeLinkPrivacy = "";
     var activeLinkPrizes = "";
+    var activeLinkCredits = "";
     
     $scope.showProfile = function(){
     	activeLinkProfile = "active";
@@ -251,6 +260,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	activeLinkRules = "";
     	activeLinkPrivacy = "";
     	activeLinkPrizes = "";
+    	activeLinkCredits = "";
     };
     
     $scope.showChalleng = function(){
@@ -260,6 +270,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	activeLinkRules = "";
     	activeLinkPrivacy = "";
     	activeLinkPrizes = "";
+    	activeLinkCredits = "";
     };
     
     $scope.showClassification = function(){
@@ -269,6 +280,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	activeLinkRules = "";
     	activeLinkPrivacy = "";
     	activeLinkPrizes = "";
+    	activeLinkCredits = "";
     };
     
     $scope.showRules = function(){
@@ -277,7 +289,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	activeLinkClassification = "";
     	activeLinkRules = "active";
     	activeLinkPrivacy = "";
-    	activeLinkPrizes = "";	
+    	activeLinkPrizes = "";
+    	activeLinkCredits = "";
     };
     
     $scope.showPrivacy = function(){
@@ -286,7 +299,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	activeLinkClassification = "";
     	activeLinkRules = "";
     	activeLinkPrivacy = "active";
-    	activeLinkPrizes = "";	
+    	activeLinkPrizes = "";
+    	activeLinkCredits = "";
     };
     
     $scope.showPrizes = function(){
@@ -295,7 +309,18 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	activeLinkClassification = "";
     	activeLinkRules = "";
     	activeLinkPrivacy = "";
-    	activeLinkPrizes = "active";	
+    	activeLinkPrizes = "active";
+    	activeLinkCredits = "";
+    };
+    
+    $scope.showCredits = function(){
+    	activeLinkProfile = "";
+    	activeLinkChalleng = "";
+    	activeLinkClassification = "";
+    	activeLinkRules = "";
+    	activeLinkPrivacy = "";
+    	activeLinkPrizes = "";
+    	activeLinkCredits = "active";
     };
     
     $scope.isActiveProfile = function(){
@@ -320,6 +345,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     $scope.isActivePrizes = function(){
     	return activeLinkPrizes;
+    };
+    
+    $scope.isActiveCredits = function(){
+    	return activeLinkCredits;
     };
     
     $scope.logout = function() {

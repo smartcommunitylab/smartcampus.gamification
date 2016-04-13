@@ -84,14 +84,14 @@ public class WsProxyController {
 	public @ResponseBody
 	String getAll(HttpServletRequest request, @RequestParam String urlWS){
 		RestTemplate restTemplate = new RestTemplate();
-		logger.info("WS-GET. Method " + urlWS);	//Added for log ws calls info in preliminary phase of portal
+		logger.debug("WS-GET. Method " + urlWS);	//Added for log ws calls info in preliminary phase of portal
 		String result = "";
 		ResponseEntity<String> tmp_res = null;
 		try {
 			//result = restTemplate.getForObject(gamificationUrl + urlWS, String.class);
 			tmp_res = restTemplate.exchange(gamificationUrl + urlWS, HttpMethod.GET, new HttpEntity<Object>(createHeaders()),String.class);
 		} catch (Exception ex){
-			logger.info(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
 		result = tmp_res.getBody();
 		return result;	
@@ -101,7 +101,7 @@ public class WsProxyController {
 	public @ResponseBody
 	String postAll(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
 		RestTemplate restTemplate = new RestTemplate();
-		logger.info("WS-POST. Method " + urlWS + ". Passed data : " + data); //Added for log ws calls info in preliminary phase of portal
+		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data); //Added for log ws calls info in preliminary phase of portal
 		String result = "";
 		ResponseEntity<String> tmp_res = null;
 		try {
@@ -113,10 +113,10 @@ public class WsProxyController {
 			//}
 			result = tmp_res.getStatusCode().toString();
 			if(urlWS.compareTo("GetPDF") == 0 && (result.contains("error") || result.contains("exception") || result.compareTo("200") != 0)){
-				logger.info("WS-POST. Method " + urlWS + ". Error : " + result);
+				logger.debug("WS-POST. Method " + urlWS + ". Error : " + result);
 			}
 		} catch (Exception ex){
-			logger.info(String.format("Exception in proxyController post ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+			logger.error(String.format("Exception in proxyController post ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
 		
 		return result;	
@@ -125,34 +125,35 @@ public class WsProxyController {
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/allNiks")
 	public @ResponseBody
 	String getAllNiks(HttpServletRequest request, @RequestParam String urlWS){
-		logger.info("WS-get All profiles."); //Added for log ws calls info in preliminary phase of portal
+		logger.debug("WS-get All profiles."); //Added for log ws calls info in preliminary phase of portal
 		String result = "{ \"players\":[";
 		if(isTest.compareTo("true") == 0){
 			Iterable<Player> iter = playerRepositoryDao.findAll();
 			for(Player p: iter){
-				logger.info(String.format("Profile result %s", p.getNikName()));
+				logger.debug(String.format("Profile result %s", p.getNikName()));
 				result += p.toJSONString() + ",";
 			}
 		} else {
 			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
 			for(PlayerProd p: iter){
-				logger.info(String.format("Profile result %s", p.getNikName()));
+				logger.debug(String.format("Profile result %s", p.getNikName()));
 				result += p.toJSONString() + ",";
 			}
 		}
 		result = result.substring(0, result.length()-1);
 		result += "]}";
-		logger.info(String.format("WS-get all profiles result %s", result));
+		logger.debug(String.format("WS-get all profiles result %s", result));
 		return result;	
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateNick")
 	public @ResponseBody
 	String updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
-		logger.info("WS-POST. Method " + urlWS + ". Passed data : " + data);
+		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data);
 		String result = "";
 		String name = "";//data.get("nickname").toString();
 		String id = data.get("id").toString();
+		long millis = System.currentTimeMillis();
 		PersonalData pdata = null;
 		// part for personalData
 		if(data.get("personalData") != null){
@@ -176,6 +177,7 @@ public class WsProxyController {
 				pdata.setVehicles(vehicle_list);
 				pdata.setAveragekm(averagekm);
 				pdata.setNick_recommandation(nick_recommandation);
+				pdata.setTimestamp(millis);
 			} catch (JSONException e) {
 				logger.error("JSON exception " + e.getMessage());
 			}
@@ -201,26 +203,26 @@ public class WsProxyController {
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/checkuser/{socialId}")
 	public @ResponseBody
 	String getUserData(HttpServletRequest request, @PathVariable String socialId){
-		logger.info("WS-get checkuser " + socialId);
+		logger.debug("WS-get checkuser " + socialId);
 		boolean result = false;
 		String correctResult = "{";
 		
 		if(isTest.compareTo("true") == 0){
 			Player p = playerRepositoryDao.findBySocialId(socialId);
 			if(p != null && p.getNikName() != null && p.getNikName().compareTo("") != 0){
-				logger.info(String.format("Profile find result %s", p.toJSONString()));
+				logger.debug(String.format("Profile find result %s", p.toJSONString()));
 				result = true;
 			}
 		} else {
 			PlayerProd pp = playerProdRepositoryDao.findBySocialId(socialId);
 			if(pp != null && pp.getNikName() != null && pp.getNikName().compareTo("") != 0){
-				logger.info(String.format("Profile find result %s", pp.toJSONString()));
+				logger.debug(String.format("Profile find result %s", pp.toJSONString()));
 				result = true;
 			}
 		}
 		
 		correctResult += "\"registered\":" + result + "}";
-		logger.info(String.format("WS-get check if user %s already access app: %s", socialId, result));
+		logger.debug(String.format("WS-get check if user %s already access app: %s", socialId, result));
 		return correctResult;
 	}
 	

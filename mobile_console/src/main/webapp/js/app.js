@@ -57,6 +57,11 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
+    	.when('/credits', {
+    		templateUrl: 'partials/credits.html',
+    		controller: 'MainCtrl',
+    		controllerAs: 'main'
+    	})
     	/*.when('/viewall/prizes', {
     		templateUrl: 'partials/game_prizes.html',
     		controller: 'MainCtrl',

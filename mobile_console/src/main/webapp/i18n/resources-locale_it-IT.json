@@ -56,7 +56,7 @@
 	"description": "Menu sx Servizi utili"
 }, {
 	"key": "left_menu-profile",
-	"value": "Profilo",
+	"value": "Punteggio",
 	"description": "Link profilo"
 }, {
 	"key": "left_menu-challeng",
@@ -104,7 +104,7 @@
 	"description": "Label dettagli giocatore - punteggio"
 }, {
 	"key": "player_details_score_label_green",
-	"value": "Punti Green",
+	"value": "Punti Green Leaves",
 	"description": "Label dettagli giocatore - punteggio green"
 }, {
 	"key": "player_details_score_label_health",
@@ -339,8 +339,12 @@
 	"value": "Punti e Badge",
 	"description": "Titolo tab punti e badge"
 }, {
+	"key": "points_tab_title",
+	"value": "Punti",
+	"description": "Titolo tab punti e badge"
+}, {
 	"key": "green_leaves_tab_title",
-	"value": "Green",
+	"value": "Green Leaves",
 	"description": "Titolo tab green leaves"
 }, {
 	"key": "health_tab_title",
@@ -360,7 +364,7 @@
 	"description": "Titolo tab speciali"
 }, {
 	"key": "chall_tab_title",
-	"value": "Challenge",
+	"value": "Sfide",
 	"description": "Titolo tab sfide"
 }, {
 	"key": "class_tab_title",
@@ -578,5 +582,13 @@
 	"key": "hello_home-title",
 	"value": "Ciao",
 	"description": "testo titolo in header pagine prima di nickname"
+}, {
+	"key": "week_prize_from_title",
+	"value": "Premio della settimana gentilmente offerto da ",
+	"description": "testo banner sponsor premio settimana"
+}, {
+	"key": "left_menu-credits",
+	"value": "Credits",
+	"description": "titolo pagina credits"
 }
 ]

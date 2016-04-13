@@ -1,7 +1,14 @@
 <div class="container-fluid" ng-init="getProfile(params.id)">
 
-	<div id="my-prof-head-title" align="center">
+	<!-- <div id="my-prof-head-title" align="center">
 		{{ 'left_menu-profile' | i18n }}
+	</div> -->
+	<div class="row" ng-if="show_sponsor_banner">
+		<div class="alert alert-success" role="alert">
+			<h4>
+			{{ 'week_prize_from_title' | i18n }}{{ week_sponsor }}
+			</h4>
+		</div>
 	</div>
 
 	<div align="center" class="homeheadertitle">
@@ -24,7 +31,7 @@
 		
 	<div class="row">
 	    <ul class="nav nav-tabs nav-justified">
-	        <li ng-if="show_gpoint" class="nav active"><a data-target="#G" data-toggle="tab">{{ 'points_and_badges_tab_title' | i18n }}</a></li>
+	        <li ng-if="show_gpoint" class="nav active"><a data-target="#G" data-toggle="tab">{{ 'points_tab_title' | i18n }}</a></li>
 	        <li ng-if="show_hpoint" class="nav"><a data-target="#H" data-toggle="tab">{{ 'health_tab_title' | i18n }}</a></li>
 	        <li ng-if="show_prpoint" class="nav"><a data-target="#P" data-toggle="tab">{{ 'pr_tab_title' | i18n }}</a></li>
 	        <li ng-if="show_otherpoint" class="nav"><a data-target="#O" data-toggle="tab">{{ 'other_tab_title' | i18n }}</a></li>

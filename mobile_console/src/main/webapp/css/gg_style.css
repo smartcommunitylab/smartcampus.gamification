@@ -71,6 +71,17 @@
         color: #2a2a2a;
         background-color: #fff; /*#e5e4e2*/;
     }
+    
+	.nav-tabs.nav-justified {
+		/* width: 33.33333333%;
+		float: left; */
+		max-height: 45px;
+    } 
+    
+    .nav-justified > li {
+		display: table-cell;
+		width: 1%;
+    }
 	
 	.nav-tabs.nav-justified > li > a,
     .nav-tabs.nav-justified > li > a:hover,
@@ -93,7 +104,7 @@
         border-right: 3px solid #c2c2c2;
       	border-left: 3px solid #c2c2c2;
 		border-bottom: 3px solid #fff; /*#e5e4e2*/
-    } 
+    }     
     
     #prof-nav.tab-content {
     	background-color: trasparent;
@@ -176,6 +187,17 @@
 		padding-top: 4px;
 	}
 	
+	.alert-success {
+		text-align: center;
+		background-color: #00984a;
+		color: #fff;
+		background-image: none;
+	}
+	.alert h4 {
+		margin-bottom: 0;
+		margin-top: 0;
+	}
+	
 	.padding_btm {
 		padding-bottom: 10px;
 	}
@@ -186,6 +208,14 @@
         border-right: 2px solid #bdbdbd;
       	border-left: 2px solid #bdbdbd;
 		border-bottom: 2px solid #bdbdbd;
+	}
+	
+	.panel-success-trasparent {
+		background-color: #fff;
+        border-top: 0px solid #bdbdbd;
+        border-right: 0px solid #bdbdbd;
+      	border-left: 0px solid #bdbdbd;
+		border-bottom: 0px solid #bdbdbd;
 	}
 	
 	.panel-success.success {
@@ -472,6 +502,29 @@
 	.modal-body {
 		padding-bottom: 8px;
 	}
+	
+	.center-bottom {
+		text-align: center;
+		vertical-align: bottom;
+		display: inline-block;
+		float: none;
+	}
+	
+	.center-bottom-small {
+		text-align: center;
+		vertical-align: bottom;
+		padding-top: 20px;
+		padding-bottom: 5px;
+	}
+	.center-bottom-small-fbk {
+		text-align: center;
+		vertical-align: bottom;
+		padding-top: 35px;
+	}
+	
+	.margin-row {
+		margin-top: 30px;
+	}
 
 	#my-small-menu { display: block; }   /* hide it elsewhere */
   	#my-big-menu { display: none; }   /* show it elsewhere */
@@ -532,6 +585,8 @@
 	#big-prizes-page {display: none; }
 	#small-prizes-view {display: block; }
 	#big-prizes-view {display: none; }
+	#small-credits-view {display: block; }
+	#big-credits-view {display: none; }
 	
 	/* Block for page head titles */
 	#my-prof-head-title { 
@@ -552,7 +607,12 @@
 		font-size: 32px;
 		font-weight: bold;
 	}
-	
+	#my-credits-head-title { 
+		display: block;
+		color: gray;
+		font-size: 32px;
+		font-weight: bold;
+	}
 
 	@media (min-width:768px) {
 		#my-small-menu { display: none; }   /* hide it elsewhere */
@@ -620,4 +680,6 @@
 		#big-prizes-page {display: block; }
 		#small-prizes-view {display: none; }
 		#big-prizes-view {display: block; }
+		#small-credits-view {display: none; }
+		#big-credits-view {display: block; }
 	}

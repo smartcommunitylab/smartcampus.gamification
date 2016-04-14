@@ -80,6 +80,7 @@ import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
+import eu.trentorise.smartcampus.gamification_web.security.MongoUserDetailsService;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
 import eu.trentorise.smartcampus.profileservice.model.AccountProfile;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
@@ -394,17 +395,19 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/mobile")
 	public ModelAndView secureMobile(HttpServletRequest request, @RequestParam String token, @RequestParam(required=false) String redirect_url)
 			throws SecurityException, AACException {
+		ModelAndView redirectMAV = null;
 		List<GrantedAuthority> list = Collections.<GrantedAuthority> singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 		Authentication auth = new PreAuthenticatedAuthenticationToken(token, "", list);
 		auth = authenticationManager.authenticate(auth);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 				SecurityContextHolder.getContext());
-		String new_page = "";
 		if(redirect_url != null && redirect_url.compareTo("") != 0){
-			new_page = "#/" + redirect_url;
+			redirectMAV = new ModelAndView("redirect:/#/" + redirect_url);
+		} else {
+			redirectMAV = new ModelAndView("redirect:/");
 		}
-		return new ModelAndView("redirect:/" + new_page);
+		return redirectMAV;
 	}
 	
 /*	@RequestMapping(method = RequestMethod.GET, value = "/rulespage")

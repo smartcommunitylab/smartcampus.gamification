@@ -30,6 +30,7 @@
 <!-- 		</tabset> -->
 		
 	<div class="row">
+		<div class="all-width">
 	    <ul class="nav nav-tabs nav-justified">
 	        <li ng-if="show_gpoint" class="nav active"><a data-target="#G" data-toggle="tab">{{ 'points_tab_title' | i18n }}</a></li>
 	        <li ng-if="show_hpoint" class="nav"><a data-target="#H" data-toggle="tab">{{ 'health_tab_title' | i18n }}</a></li>
@@ -39,6 +40,7 @@
 	    	<li class="nav"><a data-target="#CH" data-toggle="tab" ng-click="getChalleng(gameId)">{{ 'chall_tab_title' | i18n }}</a></li>
 	    	<li class="nav"><a data-target="#CL" data-toggle="tab" ng-click="init_class();getClassification(gameId)">{{ 'class_tab_title' | i18n }}</a></li>
 	    </ul>
+	    </div>
 		
 	    <!-- Tab panes -->
 	    <div class="tab-content">

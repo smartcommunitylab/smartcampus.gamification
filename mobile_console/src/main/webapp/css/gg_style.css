@@ -59,6 +59,9 @@
 		background-image: linear-gradient(to bottom, #50d090 0, #449d44 100%);	/* aligned to green used in app */
 	}
 
+	.all-width {
+		width: 100%;
+	}
   	.tab-content {
     	border-left: 3px solid #c2c2c2;
     	border-right: 3px solid #c2c2c2;
@@ -70,11 +73,21 @@
 		font-weight: bold;
         color: #2a2a2a;
         background-color: #fff; /*#e5e4e2*/;
+        border-bottom: none;
+        width: 100%;
+    }
+    .tab-content-noborder {
+    	border: none;
+    	background-color: #fff;
     }
     
 	.nav-tabs.nav-justified {
 		max-height: 45px;
-    } 
+		/* float: left; */
+    }
+    .nav-tabs.nav-justified > li {
+		float: left;
+    }
     
     .nav-tabs.nav-justified-big {
 		max-height: 45px;
@@ -82,12 +95,16 @@
     
     .nav-justified > li {
 		display: table-cell;
-		width: 33%;
+		width: 33.33%;
+		/* resize: horizontal; */
+		float: left;
     }
     
     .nav-justified-big > li {
 		display: table-cell;
-		width: 101%;
+		width: 100%;
+		/* resize: horizontal; */
+		float: none;
     }
 	
 	.nav-tabs.nav-justified > li > a,
@@ -118,10 +135,11 @@
     .nav-tabs.nav-justified-big > li > a:focus {
         color: #2a2a2a;
         background-color: #fff; /*#e5e4e2*/
-        border-top: 3px solid #c2c2c2;
+        /* border-top: 3px solid #c2c2c2;
         border-right: 3px solid #c2c2c2;
       	border-left: 3px solid #c2c2c2;
-     	border-bottom: 3px solid #c2c2c2;
+     	border-bottom: 3px solid #c2c2c2; */
+     	border: none;
 /* 		border-bottom-color: transparent; */
     } 
 	
@@ -130,10 +148,11 @@
     .nav-tabs.nav-justified-big > li.active > a:focus {
         color: #00984a;
         background-color: #fff; /*#e5e4e2*/
-        border-top: 3px solid #c2c2c2;
+        /* border-top: 3px solid #c2c2c2;
         border-right: 3px solid #c2c2c2;
       	border-left: 3px solid #c2c2c2;
-		border-bottom: 3px solid #fff; /*#e5e4e2*/
+		border-bottom: 3px solid #fff; */
+		border: none;
     } 
     
     #prof-nav.tab-content {
@@ -283,6 +302,7 @@
 	.image-succ-wrapper {
     	position: relative;
     	text-align: center;
+    	width: 60px;
     }
 	
 	.panel-body {
@@ -645,6 +665,7 @@
 	}
 
 	@media (min-width:768px) {
+		.nav-tabs.nav-justified > li { float: none; }
 		#my-small-menu { display: none; }   /* hide it elsewhere */
   		#my-big-menu { display: block; }   /* show it elsewhere */
   		#my-small-footer { display: none; }

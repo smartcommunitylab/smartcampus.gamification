@@ -76,7 +76,7 @@
         border-bottom: none;
         width: 100%;
     }
-    .tab-content-noborder {
+    .noborder {
     	border: none;
     	background-color: #fff;
     }

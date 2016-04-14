@@ -590,5 +590,9 @@
 	"key": "left_menu-credits",
 	"value": "Credits",
 	"description": "titolo pagina credits"
+}, {
+	"key": "no_named_user",
+	"value": "Sconosciuto",
+	"description": "Testo per utente senza nickname"
 }
 ]

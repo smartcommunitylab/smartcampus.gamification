@@ -183,6 +183,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
                   			
     // max practices displayed in home list
     $scope.maxPlayers = 10;
+    $scope.maxPlayersClassification = 500;
 
     // for language icons
     var itaLanguage = "active";
@@ -680,6 +681,22 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
     	myDataPromise.then(function(result){
     		$scope.correctClassificationData(result);
+    		$scope.showClassification();
+    	});
+    };
+    
+    $scope.getClassificationPages = function(gameId, page) {
+    	$scope.setLoading(true);
+    	var method = 'GET';
+    	var params = {
+    		page: page,
+    		size: $scope.maxPlayersClassification
+    	};
+    	var wsRestUrl = "state/" + gameId;
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
+    	myDataPromise.then(function(result){
+    		$scope.correctClassificationData(result);
+    		$scope.isLast = result.lastPage;
     		$scope.showClassification();
     	});
     };

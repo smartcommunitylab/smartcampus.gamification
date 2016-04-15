@@ -40,8 +40,8 @@
 								<div class="info-wrapper"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch)"></i></div><!-- ng-if="!ch.success && ch.active && ch.status != 100" -->
 							</div>
 							<div class="col-md-9 headercol" ng-class="{'headercol-success': ch.success || ch.status == 100, 'headercol-failed': !ch.success && !ch.active && ch.status != 100}">
-								<div class="desc-wrapper"><strong>{{ ch.desc }}</strong></div>
-								<div class="days-wrapper" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}</strong></div>
+								<div class="desc-wrapper"><strong>{{ ch.desc }}.</strong></div>
+								<div class="days-wrapper" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}!</strong></div>
 								<div class="days-wrapper-failed" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
 								<div class="days-wrapper-success" ng-if="ch.success || ch.status == 100">
 									<strong>{{ 'ch_win_message_text_label' | i18n }}</strong>
@@ -73,8 +73,8 @@
 							<!-- <div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div> -->
 							<div class="col-xs-10 iconcolsmall"><!-- col-xs-8 -->
 								<div class="info-wrapper-small" ng-if="!ch.success && ch.active && ch.status != 100"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch)"></i></div>
-								<strong>{{ ch.desc }}</strong>
-								<div class="days-wrapper small" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}</strong></div>
+								<strong>{{ ch.desc }}.</strong>
+								<div class="days-wrapper small" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}!</strong></div>
 								<div class="days-wrapper-failed small" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
 								<div class="days-wrapper-success small" ng-if="ch.success || ch.status == 100">
 									<strong>{{ 'ch_win_message_text_label' | i18n }}</strong>
@@ -158,25 +158,25 @@
 			  		<div id="ch-small-block" align="justify">
 			  			<div class="row">
 							<!-- <div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div> -->
-							<div class="col-xs-8 iconcolsmall">
+							<div class="col-xs-10 iconcolsmall">
 								<strong>{{ ch.desc }}</strong>
 								<div class="days-wrapper small" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}</strong></div>
 								<div class="days-wrapper-failed small" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
 								<div class="days-wrapper-success small" ng-if="ch.success || ch.status == 100"><strong>{{ 'ch_win_message_text_label' | i18n }}</strong></div>
 							</div>
-							<div class="col-xs-1 headercolsmall" ng-if="!ch.success && ch.active && ch.status != 100">
+							<div class="col-xs-10 headercolsmall" ng-if="!ch.success && ch.active && ch.status != 100">
 								<div class="image-succ-wrapper">
 									<img height="70" width="60" ng-src="{{ ch.progress_img }}" alt="Stato sfida" title="Stato sfida" />
 									<div class="image-bonus-info-small" ng-class="ch.bonus_style_small">{{ ch.bonus }}</div>
 									<div class="image-status-info-small" ng-class="ch.row_status_style_small">{{ ch.row_status }}</div>
 								</div>
 							</div>
-							<div class="col-xs-1 headercolsmall" ng-if="!ch.success && !ch.active && ch.status != 100">
+							<div class="col-xs-10 headercolsmall" ng-if="!ch.success && !ch.active && ch.status != 100">
 								<div class="image-succ-wrapper">
 									<img height="80" width="60" ng-src="img/challenges_icon/sfida_non_vinta.png" alt="Sfida persa" title="Sfida persa" />
 								</div>
 							</div>
-							<div class="col-xs-1 headercolsmall" ng-if="ch.success || ch.status == 100">
+							<div class="col-xs-10 headercolsmall" ng-if="ch.success || ch.status == 100">
 								<div class="image-succ-wrapper">
 									<img height="80" width="60" ng-src="{{ ch.progress_img }}" alt="Sfida vinta" title="Sfida vinta" />
 									<div class="image-bonus-success-num-small">{{ ch.bonus }}</div>

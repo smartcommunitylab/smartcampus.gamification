@@ -347,7 +347,7 @@ var base64="<%=request.getAttribute("base64")%>";
 					<div align="justify">
 					Rispondi a queste veloci e semplici domande per registrarti al gioco. 
 					Questo permettera' al sistema di recuperare informazioni utili per offrire un servizio piu' personalizzato e adatto alle tue abitudini.<br/>
-					<label><input type="checkbox" ng-model="accepted"> Ho letto e accettato il regolamento di gioco e l'informativa sulla privacy:</label>
+					<label><input type="checkbox" ng-model="accepted" ng-disabled="false"> Ho letto e accettato il regolamento di gioco e l'informativa sulla privacy:</label>
 					<ul>
 						<li>
 							<a href="view_rules" target="_blank" >Regolamento di gioco</a>

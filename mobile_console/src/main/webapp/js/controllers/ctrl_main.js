@@ -2206,6 +2206,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	//-- Variables --//
 	$scope.submitNumber = 0;
+	$scope.accepted = false;
 	
 	$scope.ages = [
 	    {val: 1, label: '< 20 anni'},

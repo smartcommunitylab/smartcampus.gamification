@@ -963,7 +963,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = walked_km * 100 / target;
-    					row_status = walked_km + "/" + target;
+    					row_status = Math.floor(walked_km) + "/" + target;
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],

@@ -1147,7 +1147,7 @@ public class PortalController extends SCController{
 		File greenGold = new File(path + "mail/img/leaderboard/green/leaderboardGreen1.png");
 		
 		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king_week_green", "Re della Settimana - Green Leaves"));
-		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50_point_green", "50 Punti Green"));
+		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50_point_green", "50 Punti Green Leaves"));
 		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100_point_green", "100 Punti Green Leaves"));
 		allBadges.add(new BagesData(green200.getName(), FileUtils.readFileToByteArray(green200), "image/png", "200_point_green", "200 Punti Green Leaves"));
 		allBadges.add(new BagesData(green400.getName(), FileUtils.readFileToByteArray(green400), "image/png", "400_point_green", "400 Punti Green Leaves"));

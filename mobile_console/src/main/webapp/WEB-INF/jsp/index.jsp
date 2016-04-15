@@ -345,15 +345,15 @@ var base64="<%=request.getAttribute("base64")%>";
 				</div>
 				<div class="modal-body">
 					<div align="justify">
-					Rispondi a queste veloci e semplici domande per accedere alla console. 
-					Questo permettera' al sistema di recuperare informazioni utili per offrire un servizio piu' personalizzato e adatto alle tue abitudini.<br />
-					Per maggiori informazioni visualizza anche i seguenti link:
+					Rispondi a queste veloci e semplici domande per registrarti al gioco. 
+					Questo permettera' al sistema di recuperare informazioni utili per offrire un servizio piu' personalizzato e adatto alle tue abitudini.<br/>
+					<label><input type="checkbox" ng-model="accepted"> Ho letto e accettato il regolamento di gioco e l'informativa sulla privacy:</label>
 					<ul>
 						<li>
-							<a href="view_rules" target="_blank" >Regole</a>
+							<a href="view_rules" target="_blank" >Regolamento di gioco</a>
 						</li>
 						<li>
-							<a href="view_privacy" target="_blank" >Privacy</a>
+							<a href="view_privacy" target="_blank" >Informativa privacy</a>
 						</li>
 						<li>
 							<a href="view_prizes" target="_blank" >Premi</a>
@@ -362,12 +362,12 @@ var base64="<%=request.getAttribute("base64")%>";
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
 						<label class="control-label" for="username">Nick name:</label>
-						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
+						<input type="text" class="form-control" name="nickname" id="nickname" ng-disabled="!accepted" placeholder="Inserisci un nickname che ti rappresenti nel gioco" ng-model="user.nickname" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" required>
 						<div ng-show="showMessages" class="alert alert-danger" role="alert">{{ errorMessages }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.age.$dirty && form.age.$invalid]"><!--  -->
 						<label class="control-label">Eta':</label>
-						<select type="text" name="age" class="form-control" ng-model="user.age" required><!--  ng-options="a as a.label for a in ages" required -->
+						<select type="text" name="age" class="form-control" ng-model="user.age" ng-disabled="!accepted" required><!--  ng-options="a as a.label for a in ages" required -->
 							<option value="">Seleziona una fascia d'età</option>
 							<option value="1">< 20 anni</option>
 							<option value="2">20 - 40 anni</option>
@@ -378,15 +378,15 @@ var base64="<%=request.getAttribute("base64")%>";
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.averagekm.$dirty && form.averagekm.$invalid]">
 						<label class="control-label" for="averagekm">Km medi percorsi giornalmente: </label>
-						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" required>
+						<input id="averagekm" type="number" class="form-control" min="0" name="averagekm" ng-model="user.averagekm" ng-disabled="!accepted" required>
 						<div ng-show="submitNumber && form.averagekm.$error.min" class="alert alert-danger" role="alert">Valore non permesso nel campo km</div>
 						<div ng-show="submitNumber && form.averagekm.$error.required" class="alert alert-danger" role="alert">Valore km medi obbligatorio</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.transport.$dirty && form.transport.$invalid]">
 						<label class="control-label" for="username">Utilizzi quotidianamente i mezzi pubblici? </label>
 						<table width="100%">
-							<tr><td><label><input type="radio" name="transport" value="yes" ng-model="user.transport" ng-change="clearVehicle()" required> Si'</label></td></tr>
-							<tr><td><label><input type="radio" name="transport" value="no" ng-model="user.transport" ng-change="clearVehicle()" required> No</label></td></tr>
+							<tr><td><label><input type="radio" name="transport" value="yes" ng-model="user.transport" ng-change="clearVehicle()" ng-disabled="!accepted" required> Si'</label></td></tr>
+							<tr><td><label><input type="radio" name="transport" value="no" ng-model="user.transport" ng-change="clearVehicle()" ng-disabled="!accepted" required> No</label></td></tr>
 						</table>
 						<div ng-show="submitNumber && form.transport.$error.required" class="alert alert-danger" role="alert">Valore obbligatorio, selezionare si' o no</div>
 					</div>
@@ -394,25 +394,25 @@ var base64="<%=request.getAttribute("base64")%>";
 						<label class="control-label" for="username">Mezzi usati abitualmente per gli spostamenti: </label>
 						<table width="100%">
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="0" name="vehicle" ng-model="user.vehicle[0]" ng-required="!someSelectedTrans(user.vehicle)"> treno</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="0" name="vehicle" ng-model="user.vehicle[0]" ng-required="!someSelectedTrans(user.vehicle)" ng-disabled="!accepted"> treno</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="1" name="vehicle" ng-model="user.vehicle[1]" ng-required="!someSelectedTrans(user.vehicle)"> autobus</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="1" name="vehicle" ng-model="user.vehicle[1]" ng-required="!someSelectedTrans(user.vehicle)" ng-disabled="!accepted"> autobus</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="2" name="vehicle" ng-model="user.vehicle[2]" ng-required="!someSelectedTrans(user.vehicle)"> auto condivisa</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="2" name="vehicle" ng-model="user.vehicle[2]" ng-required="!someSelectedTrans(user.vehicle)" ng-disabled="!accepted"> auto condivisa</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="3" name="vehicle" ng-model="user.vehicle[3]" ng-required="!someSelectedTrans(user.vehicle)"> bici condivisa</label></td>
+								<td><label ng-if="user.transport=='yes'"><input type="checkbox" value="3" name="vehicle" ng-model="user.vehicle[3]" ng-required="!someSelectedTrans(user.vehicle)" ng-disabled="!accepted"> bici condivisa</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="4" name="vehicle" ng-model="user.vehicle[4]" ng-required="!someSelectedPrivat(user.vehicle)"> auto privata</label></td>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="4" name="vehicle" ng-model="user.vehicle[4]" ng-required="!someSelectedPrivat(user.vehicle)" ng-disabled="!accepted"> auto privata</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="5" name="vehicle" ng-model="user.vehicle[5]" ng-required="!someSelectedPrivat(user.vehicle)"> bici privata</label></td>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="5" name="vehicle" ng-model="user.vehicle[5]" ng-required="!someSelectedPrivat(user.vehicle)" ng-disabled="!accepted"> bici privata</label></td>
 							</tr>
 							<tr>
-								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="6" name="vehicle" ng-model="user.vehicle[6]" ng-required="!someSelectedPrivat(user.vehicle)"> a piedi</label></td>
+								<td><label ng-if="user.transport=='no'"><input type="checkbox" value="6" name="vehicle" ng-model="user.vehicle[6]" ng-required="!someSelectedPrivat(user.vehicle)" ng-disabled="!accepted"> a piedi</label></td>
 							</tr>
 							<tr>
 								<td><div ng-show="submitNumber && form.vehicle.$error.required" class="alert alert-danger" role="alert">Veicolo obbligatorio. Selezionare almeno un elemento</div></td>
@@ -421,14 +421,14 @@ var base64="<%=request.getAttribute("base64")%>";
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.invitation_person.$dirty && form.invitation_person.$invalid]">
 						<label class="control-label" for="invitation">Chi ti ha invitato a questo gioco? (nickname)</label>
-						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="Inserisci il nickname di chi ti ha invitato al gioco" ng-model="user.invitation">
+						<input type="text" class="form-control" name="invitation_person" id="invitation" placeholder="Inserisci il nickname di chi ti ha invitato al gioco" ng-model="user.invitation" ng-disabled="!accepted">
 						<div ng-show="showInvitationMessages" class="alert alert-danger" role="alert">{{ errorInvitationMessages }}</div>
 					</div>
 				</div>
 				<div class="required_desc"><p>Il simbolo * indica un campo obbligatorio</p></div>
 				<div class="modal-footer">
 					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
-					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
+					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine || !accepted" >OK</button>
 				</div>
 			</div>
 		</div>

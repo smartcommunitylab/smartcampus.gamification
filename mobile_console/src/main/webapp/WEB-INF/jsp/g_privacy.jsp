@@ -53,15 +53,8 @@
 						<div class="panel-body">
 					    <h4>TRATTAMENTO DEI DATI PERSONALI</h4>
 						<div align="justify">
-							Lo scopo del gioco ViaggiaRovereto (di seguito, "il Gioco") &egrave; quello di indurre e 
-							facilitare i partecipanti all'esplorazione e all'uso di soluzioni di mobilit&agrave; urbana 
-							sostenibile per mezzo di incentivi virtuali e reali, che vengono introdotti, presentati e 
-							raggiunti nell'ambito di un contesto ludico, mediato dall'uso delle tecnologie ICT, in 
-							questo caso dall'applicazione mobile ViaggiaRovereto (di seguito, l'App), secondo la 
-							tecnica cosiddetta della "gamification".
-							Gli enti che organizzano e gestiscono il Gioco sono il <strong>Comune di Rovereto</strong>, la 
-							<strong>Fondazione Bruno Kessler</strong> e <strong>CAIRE</strong> - Cooperativa Architetti e Ingegneri - Urbanistica 
-							(di seguito, "gli Organizzatori"), nell'ambito del progetto Europeo <strong>STREETLIFE</strong>.
+							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaRovereto si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
+							I tuoi dati personali verranno trattati nel pieno rispetto della vigente normativa sulla privacy, <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >come da seguente documento</a>.
 						</div>
 						<br/>
 					   </div>
@@ -83,15 +76,8 @@
 						<div class="panel-body">
 					    <h4>TRATTAMENTO DEI DATI PERSONALI</h4>
 						<div align="justify">
-							Lo scopo del gioco ViaggiaRovereto (di seguito, "il Gioco") &egrave; quello di indurre e 
-							facilitare i partecipanti all'esplorazione e all'uso di soluzioni di mobilit&agrave; urbana 
-							sostenibile per mezzo di incentivi virtuali e reali, che vengono introdotti, presentati e 
-							raggiunti nell'ambito di un contesto ludico, mediato dall'uso delle tecnologie ICT, in 
-							questo caso dall'applicazione mobile ViaggiaRovereto (di seguito, l'App), secondo la 
-							tecnica cosiddetta della "gamification".
-							Gli enti che organizzano e gestiscono il Gioco sono il <strong>Comune di Rovereto</strong>, la 
-							<strong>Fondazione Bruno Kessler</strong> e <strong>CAIRE</strong> - Cooperativa Architetti e Ingegneri - Urbanistica 
-							(di seguito, "gli Organizzatori"), nell'ambito del progetto Europeo <strong>STREETLIFE</strong>.
+							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaRovereto si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
+							I tuoi dati personali verranno trattati nel pieno rispetto della vigente normativa sulla privacy, <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >come da seguente documento</a>.
 						</div>
 						<br/>
 					   </div>

@@ -554,7 +554,7 @@
 	}
 	
 	.modal {
-		-webkit-overflow-scrolling: none;
+		-webkit-overflow-scrolling: auto !important;
 	}
 	
 	.center-bottom {

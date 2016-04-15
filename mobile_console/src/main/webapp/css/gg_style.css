@@ -553,6 +553,10 @@
 		padding-bottom: 8px;
 	}
 	
+	.modal {
+		-webkit-overflow-scrolling: none;
+	}
+	
 	.center-bottom {
 		text-align: center;
 		vertical-align: bottom;

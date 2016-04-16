@@ -221,6 +221,7 @@ public class WsProxyController {
 			if (p != null) {
 				logger.debug("External registration: user exists, updating data and nick");
 				p.setNikName(nickname);
+				data.setTimestamp(System.currentTimeMillis());
 				p.setPersonalData(data);
 			} else {
 				logger.debug("External registration: new user");
@@ -252,6 +253,7 @@ public class WsProxyController {
 			if (p != null) {
 				logger.debug("External registration: user exists, updating data and nick");
 				p.setNikName(nickname);
+				data.setTimestamp(System.currentTimeMillis());
 				p.setPersonalData(data);
 			} else {
 				logger.debug("External registration: new user");

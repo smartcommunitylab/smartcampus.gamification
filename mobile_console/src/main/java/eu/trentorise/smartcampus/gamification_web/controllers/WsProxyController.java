@@ -117,31 +117,6 @@ public class WsProxyController {
 		return result;	
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/rest/allPost")
-	public @ResponseBody
-	String postAll(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
-		RestTemplate restTemplate = new RestTemplate();
-		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data); //Added for log ws calls info in preliminary phase of portal
-		String result = "";
-		ResponseEntity<String> tmp_res = null;
-		try {
-			//if(urlWS.contains("execute")){
-			//	result = restTemplate.postForObject(gamificationUrlPost + urlWS, data, String.class);
-			//} else {
-				//result = restTemplate.postForObject(gamificationUrl + urlWS, data, String.class);
-			tmp_res = restTemplate.exchange(gamificationUrl + urlWS, HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
-			//}
-			result = tmp_res.getStatusCode().toString();
-			if(urlWS.compareTo("GetPDF") == 0 && (result.contains("error") || result.contains("exception") || result.compareTo("200") != 0)){
-				logger.debug("WS-POST. Method " + urlWS + ". Error : " + result);
-			}
-		} catch (Exception ex){
-			logger.error(String.format("Exception in proxyController post ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
-		}
-		
-		return result;	
-	}
-	
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/allNiks")
 	public @ResponseBody
 	String getAllNiks(HttpServletRequest request, @RequestParam String urlWS){
@@ -284,7 +259,7 @@ public class WsProxyController {
 	String updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
 		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data);
 		String result = "";
-		String name = "";//data.get("nickname").toString();
+		String name = "";
 		String id = data.get("id").toString();
 		long millis = System.currentTimeMillis();
 		PersonalData pdata = null;
@@ -292,7 +267,6 @@ public class WsProxyController {
 		if(data.get("personalData") != null){
 			String nick_recommandation = null;
 			pdata = new PersonalData();
-			//JSONObject allData = new JSONObject(data);
 			try {
 				JSONObject personalData = new JSONObject(data.get("personalData").toString());
 				name = personalData.getString("nickname");
@@ -320,6 +294,12 @@ public class WsProxyController {
 			Player p = playerRepositoryDao.findBySocialId(id);
 			p.setNikName(name);
 			p.setPersonalData(pdata);
+			if (pdata.getNick_recommandation() != null) {
+				Player recommender = playerRepositoryDao.findByNick(pdata.getNick_recommandation());
+				if (recommender != null) {
+					sendRecommendationToGamification(recommender.getPid());
+				}
+			}
 			playerRepositoryDao.save(p);
 			result = p.toJSONString();
 		} else {
@@ -327,6 +307,12 @@ public class WsProxyController {
 			p.setNikName(name);
 			p.setPersonalData(pdata);
 			playerProdRepositoryDao.save(p);
+			if (pdata.getNick_recommandation() != null) {
+				PlayerProd recommender = playerProdRepositoryDao.findByNick(pdata.getNick_recommandation());
+				if (recommender != null) {
+					sendRecommendationToGamification(recommender.getPid());
+				}
+			}
 			result = p.toJSONString();
 		}
 		

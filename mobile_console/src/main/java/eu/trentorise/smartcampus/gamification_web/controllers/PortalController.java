@@ -259,8 +259,8 @@ public class PortalController extends SCController{
 			model.put("token", getToken(request));
 			user = profileService.getBasicProfile(getToken(request));
 			model.put("user_id", user.getUserId());
-			model.put("user_name", user.getName());
-			model.put("user_surname", user.getSurname());
+			/*model.put("user_name", user.getName());
+			model.put("user_surname", user.getSurname());*/
 			model.put("gameid", gameid);
 			model.put("bauth_user", basicAuthUsername);
 			model.put("bauth_password", basicAuthPassword);
@@ -357,30 +357,6 @@ public class PortalController extends SCController{
 					}
 				}
 			}
-			
-			UserCS utente = createUserCartaServiziByMap(mappaAttributi);
-			
-			logger.debug(String.format("Account attributes info: %s", mappaAttributi));
-			//String mail = getAttributeFromId("openid.ext1.value.email", mappaAttributi);
-			//model.put("e_mail", mail);
-			model.put("nome", utente.getNome());
-			model.put("cognome", utente.getCognome());
-			model.put("sesso", utente.getSesso());
-			model.put("dataNascita", utente.getDataNascita());
-			model.put("provinciaNascita", utente.getProvinciaNascita());
-			model.put("luogoNascita", utente.getLuogoNascita());
-			model.put("codiceFiscale", utente.getCodiceFiscale());
-			model.put("cellulare", utente.getCellulare());
-			model.put("email", utente.getEmail());
-			model.put("indirizzoRes", utente.getIndirizzoRes());
-			model.put("capRes", utente.getCapRes());
-			model.put("cittaRes", utente.getCittaRes());
-			model.put("provinciaRes", utente.getProvinciaRes());
-			model.put("issuerdn", utente.getIssuersdn());
-			//model.put("subjectdn", utente.getSubjectdn());
-			//String base_tmp = utente.getBase64();
-			//model.put("base64", base_tmp.compareTo("") == 0 ? "noAdmin" : base_tmp);
-			model.put("base64", utente.getBase64());
 		} catch (Exception ex){
 			logger.error(String.format("Errore di conversione: %s", ex.getMessage()));
 			return new ModelAndView("redirect:/logout");
@@ -522,40 +498,6 @@ public class PortalController extends SCController{
 //		
 //		return new ModelAndView("landing", model_map);
 //	}
-	
-	
-	@SuppressWarnings("rawtypes")
-	private String getAttributeFromId(String key, Map map){
-		String value = "";
-		try{
-			value = map.get(key).toString();
-		} catch (Exception ex){
-			logger.debug("No value found for key " + key);
-		}
-		return value;
-	}
-	
-	@SuppressWarnings("rawtypes")
-	private UserCS createUserCartaServiziByMap(Map map){
-		String name = getAttributeFromId("eu.trentorise.smartcampus.givenname", map);
-		String surname = getAttributeFromId("eu.trentorise.smartcampus.surname", map);
-		String sesso = getAttributeFromId("pat_attribute_sesso", map);
-		String dataNascita = getAttributeFromId("pat_attribute_datanascita", map);
-		String provinciaNascita = getAttributeFromId("pat_attribute_provincianascita", map);
-		String luogoNascita = getAttributeFromId("pat_attribute_luogonascita", map);
-		String codiceFiscale = getAttributeFromId("pat_attribute_codicefiscale", map);
-		String cellulare = getAttributeFromId("pat_attribute_cellulare", map);
-		String email = getAttributeFromId("pat_attribute_email", map);
-		String indirizzoRes = getAttributeFromId("pat_attribute_indirizzoresidenza", map);
-		String capRes = getAttributeFromId("pat_attribute_capresidenza", map);
-		String cittaRes = getAttributeFromId("pat_attribute_cittaresidenza", map);
-		String provinciaRes = getAttributeFromId("pat_attribute_provinciaresidenza", map);
-		String issuerdn = getAttributeFromId("pat_attribute_issuerdn", map);
-		String subjectdn = getAttributeFromId("pat_attribute_subjectdn", map);
-		String base64 = getAttributeFromId("pat_attribute_base64", map);
-		
-		return new UserCS(name, surname, sesso, dataNascita, provinciaNascita, luogoNascita, codiceFiscale, cellulare, email, indirizzoRes, capRes, cittaRes, provinciaRes, issuerdn, subjectdn, base64);	
-	}
 	
 	// Here I insert a task that invoke the WS notification
 	@SuppressWarnings("unchecked")
@@ -1479,21 +1421,6 @@ public class PortalController extends SCController{
 		return orderState(stateList);
 	}
 	
-	private String cleanField(String[] fieldStrings){
-		String field = fieldStrings[1].replace('"', ' ').trim();
-		return field;
-	}
-	
-	private String cleanFieldScore(String[] fieldStrings){
-		String field = fieldStrings[1].replace('"', ' ').trim();
-		
-		Float score_num_f = Float.valueOf(field);
-		int score_num_i = score_num_f.intValue();
-		
-		String cleanedScore = Integer.toString(score_num_i);
-		return cleanedScore;
-	}
-	
 	private String cleanStringFieldScore(String fieldString){
 		String field = fieldString.trim();
 		Float score_num_f = Float.valueOf(field);
@@ -1547,19 +1474,6 @@ public class PortalController extends SCController{
 		} else {
 			return false;
 		}
-	}
-	
-	/**
-	 * Method generateNik: used to concatenate name, surname and social id to generate a univoke nik
-	 * @param name: name of user
-	 * @param surname: surname of user
-	 * @param socialId: socialId of user from aac
-	 * @return string of the generated nickname
-	 */
-	private String generateNick(String name, String surname, String socialId){
-		String nick_n = "";
-		nick_n = name.toLowerCase() + surname.toUpperCase().substring(0,1) + socialId;
-		return nick_n;
 	}
 	
 	public List<WeekConfData> readWeekConfFile(String src) {

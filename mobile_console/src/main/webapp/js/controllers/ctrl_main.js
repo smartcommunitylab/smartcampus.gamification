@@ -3,8 +3,8 @@
 /* Controllers */
 var cpControllers = angular.module('cpControllers');
 
-cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootScope', 'localize', '$locale', '$dialogs', 'sharedDataService', '$filter', 'invokeWSService','invokeWSServiceProxy','invokePdfServiceProxy', 'invokeWSNiksServiceProxy','getMyMessages','$timeout', '$base64',
-    function($scope, $http, $route, $routeParams, $rootScope, localize, $locale, $dialogs, sharedDataService, $filter, invokeWSService, invokeWSServiceProxy, invokePdfServiceProxy, invokeWSNiksServiceProxy, getMyMessages, $timeout, $base64) {
+cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootScope', 'localize', '$locale', '$dialogs', 'sharedDataService', '$filter','invokeWSServiceProxy','invokeWSNiksServiceProxy','$timeout', '$base64',
+    function($scope, $http, $route, $routeParams, $rootScope, localize, $locale, $dialogs, sharedDataService, $filter, invokeWSServiceProxy, invokeWSNiksServiceProxy, $timeout, $base64) {
 
     //$rootScope.frameOpened = false;
 	var cod_ente = "24";
@@ -111,15 +111,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.$routeParams = $routeParams;
     $scope.params = $routeParams;
     
-    $scope.userCF = sharedDataService.getUserIdentity(); 
     sharedDataService.setGameId(conf_gameid);
     $scope.app ;
                   			
     $scope.citizenId = userId;
     $scope.user_token = token;
-    $scope.basic_auth_user = conf_bauth_user;
-    $scope.basic_auth_password = conf_bauth_password;
-    
+    //$scope.basic_auth_user = conf_bauth_user;
+    //$scope.basic_auth_password = conf_bauth_password;
     
     $scope.week_sponsor = conf_week_sponsor;
     if($scope.week_sponsor){
@@ -198,10 +196,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	//$locale.id = "en-US";
     	localize.setLanguage('en-US');
     	sharedDataService.setUsedLanguage('eng');
-    	var myDataMsg = getMyMessages.promiseToHaveData('eng');
-    	myDataMsg.then(function(result){
-    		sharedDataService.inithializeAllMessages(result);
-    	});
     };
     
     $scope.setItalianLanguage = function(){
@@ -212,10 +206,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	//$locale.id = "it-IT";
     	localize.setLanguage('it-IT');
     	sharedDataService.setUsedLanguage('ita');
-    	var myDataMsg = getMyMessages.promiseToHaveData('ita');
-    	myDataMsg.then(function(result){
-    	    sharedDataService.inithializeAllMessages(result);
-    	});
     };
     
     $scope.setUserLocale = function(lan){
@@ -354,15 +344,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     $scope.logout = function() {
     	// Clear some session variables
-    	sharedDataService.setName(null);
-        sharedDataService.setSurname(null);
-        sharedDataService.setBase64(null);
+        //sharedDataService.setBase64(null);
         $scope.user_token = null;
         token = null;
         userId = null;
-        user_name = null;
-        user_surname = null;
-        
     	window.location.href = "gamificationweb/logout";
     };
                   		    
@@ -375,23 +360,19 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
          'Accept': 'application/json;charset=UTF-8'
     };
     
-    $scope.getBasic = function() {
-        return 'Basic ' + $base64.encode($scope.basic_auth_user + ':' + $scope.basic_auth_password);
-    };
+    //$scope.getBasic = function() {
+    //    return 'Basic ' + $base64.encode($scope.basic_auth_user + ':' + $scope.basic_auth_password);
+    //};
     
     $scope.authHeadersBasic = {
-            'Authorization': $scope.getBasic(),
+            //'Authorization': $scope.getBasic(),
             'Accept': 'application/json;charset=UTF-8'
        };
                   		    
     // ------------------- User section ------------------
     
     // For user shared data
-    sharedDataService.setName(user_name);
-    sharedDataService.setSurname(user_surname);
     sharedDataService.setUserId(userId);
-    sharedDataService.setBase64(base64);
-    sharedDataService.setUtente(nome, cognome, sesso, dataNascita, provinciaNascita, luogoNascita, codiceFiscale, cellulare, email, indirizzoRes, capRes, cittaRes, provinciaRes );
     
     $scope.gameId = sharedDataService.getGameId();
     $scope.userId = sharedDataService.getUserId();
@@ -414,18 +395,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     $scope.setMail = function(value){
     	sharedDataService.setMail(value);
-    };
-    
-    $scope.translateUserGender = function(value){
-    	if(sharedDataService.getUsedLanguage() == 'eng'){
-    		if(value == 'maschio'){
-    			return 'male';
-    		} else {
-    			return 'female';
-    		}
-    	} else {
-    		return value;
-    	}
     };
     
     // ----------------------------- Classification Tabs Section ---------------------------
@@ -651,7 +620,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId + "/" + $scope.userId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
     		$scope.correctProfileData(result);
     		$scope.showProfile();
@@ -663,7 +632,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId + "/" + $scope.userId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
     		if(result.customData){
     			$scope.correctCustomData(result.customData);
@@ -678,7 +647,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var method = 'GET';
     	var params = null;
     	var wsRestUrl = "state/" + gameId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
     		$scope.correctClassificationData(result);
     		$scope.showClassification();
@@ -693,39 +662,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		size: $scope.maxPlayersClassification
     	};
     	var wsRestUrl = "state/" + gameId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, null);
+    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
     		$scope.correctClassificationData(result);
     		$scope.isLast = result.lastPage;
     		$scope.showClassification();
     	});
     };
-    
-    // Method used to insert the user raccomandation in the gamification-engine
-    $scope.setRaccomandationData = function(nick_social_id){
-    	/*POST /gamification/gengine/execute
-    	HTTP Header Content-Type : application/json
-    	BODY
-    	{ "gameId": "<GAMEID>,
-    	  "actionId": "app_sent_recommandation"
-    	  "playerId": "<ID DI CHI HA RACCOMANDATO APP>"
-    	}*/
-    	var gameId = sharedDataService.getGameId();
-    	var method = 'POST';
-    	var params = null;
-    	//var wsRestUrl = "gengine/execute";
-    	var wsRestUrl = "execute";
-    	var data = {
-        	gameId: gameId,
-        	actionId: "app_sent_recommandation",
-        	playerId: nick_social_id
-        };
-    	var value = JSON.stringify(data);
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeadersBasic, value);
-    	myDataPromise.then(function(result){
-    		console.log("Result from post raccomandation " + result);
-    	});
-    }
     
     // Method used to retrieve all users niks
     $scope.getNiks = function(id) {
@@ -863,7 +806,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 			$scope.updateNiks(user);		// commented for test
 			if(user.invitation != null && user.invitation != "") {
 				var rec_player = $scope.retrievePlayerFromNick(user.invitation);
-				$scope.setRaccomandationData(rec_player.socialId);	// WS call to gamification engine to update the recommendation numbers
 			}
 		});
     };
@@ -897,11 +839,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     $scope.profileDataToString = function(scores, b_string_fb, b_string_tw){
     	// here I have to create the correct string representing the user profile situation
-    	var pointString = " " + scores[0].score + " punti green; ";
+    	var pointString = " " + scores[0].score + " punti Green Leaves; ";
     	var profileStringFb = pointString + b_string_fb;
     	var profileStringTw = pointString + b_string_tw;
-    	$scope.text_fb = "Green Game Rovereto: " + profileStringFb;
-        $scope.text_tw = "Green Game Rovereto: " + profileStringTw + " #greengamerovereto";
+    	$scope.text_fb = "ViaggiaRovereto Play&Go: " + profileStringFb;
+        $scope.text_tw = "ViaggiaRovereto Play&Go: " + profileStringTw + " #viaggiaroveretoplayandgo";
         //$scope.text_gp = "Green Game Rovereto: " + profileString;
     };
     
@@ -2057,7 +1999,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	if(badgeString.length == 18){
     		badgeString = "";
     	} else {
-    		//badgeString = badgeString.substring(0, badgeString.length - 2);
     		badgeString = "badge guadagnati: ";
     	}
     	var badgeStringFB = "";
@@ -2148,8 +2089,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		return null;
     	}
     };
-    
-                  			
+                			
     // for next and prev in practice list
     $scope.currentPage = 0;
 	
@@ -2159,36 +2099,15 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 		}
 		return Math.ceil($scope.GameClassification.length/$scope.maxPlayers);
 	};
-                  			
-    var newPractice = false;
-                  			
-    $scope.newPracticeShow = function(){
-    	newPractice = true;
-    };
-                  			
-    $scope.newPracticeHide = function(){
-    	newPractice = false;
-    };
-                  			
-   	$scope.isNewPractice = function(){
-   		return newPractice;
-    };
-      
-    $scope.utenteCS = sharedDataService.getUtente();
     
     $scope.callback = function(response){
         console.log(response);
-        //alert('share callback');
     };
     
     $scope.image_url = "https://tn.smartcommunitylab.it/gamificationweb/img/foglia.png";//"https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/256x256/plain/leaf.png";
     $scope.url = "https://tn.smartcommunitylab.it/gamificationweb";
-    //$scope.url = "http://localhost:8080/gamificationweb/profile";
     $scope.title = "Rovereto Play&Go";
     $scope.caption = "Play&Go";
-    /* $scope.text_fb = "Green Game: punteggio attuale 50 punti, badges raggiunti: 10, 50 punti";
-    $scope.text_tw = "Green Game: punteggio attuale 50 punti, badges raggiunti: 10, 50 punti";
-    $scope.text_gp = "Green Game: punteggio attuale 50 punti, badges raggiunti: 10, 50 punti";*/
     $scope.getTextFb_ch = function(ch){
     	return "Vinta la challenge: '" + ch.desc + "'";
     };

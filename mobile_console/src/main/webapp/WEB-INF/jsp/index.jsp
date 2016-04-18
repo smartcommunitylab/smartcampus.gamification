@@ -14,10 +14,6 @@
 <link href="img/gamification.ico" rel="shortcut icon" type="image/x-icon" />
 
 <!-- required libraries -->
-<!-- <script src="https://apis.google.com/js/platform.js" async defer>
-    {lang: 'it'}
-</script> -->
-<!-- <script src="https://platform.twitter.com/widgets.js"></script> -->
 <script src="lib/platform_twitter_widgets.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -42,10 +38,6 @@
 <script src="js/directives.js"></script>
 <script src="lib/ui-bootstrap-tpls.min.js"></script>
 
-<!-- <script type="text/javascript" src="js/jquery.min.js" /></script> -->
-<!-- <script type="text/javascript" src="js/jquery-ui.custom.min.js" ></script> -->
-<!-- <script type="text/javascript" src="js/ui.datepicker-it.js" ></script> -->
-
 <!-- optional libraries -->
 <!-- <script src="lib/underscore-min.js"></script> -->
 <!-- <script src="lib/moment.min.js"></script> -->
@@ -61,11 +53,7 @@
 <script>
 var token="<%=request.getAttribute("token")%>";
 var userId="<%=request.getAttribute("user_id")%>";
-var user_name="<%=request.getAttribute("user_name")%>";
-var user_surname="<%=request.getAttribute("user_surname")%>";
 var conf_gameid="<%=request.getAttribute("gameid")%>";
-var conf_bauth_user="<%=request.getAttribute("bauth_user")%>";
-var conf_bauth_password="<%=request.getAttribute("bauth_password")%>";
 var conf_point_types="<%=request.getAttribute("point_types")%>";
 var conf_chall_desc_bike_km="<%=request.getAttribute("chall_desc_bike_km")%>";
 var conf_chall_desc_bike_share_km="<%=request.getAttribute("chall_desc_bike_share_km")%>";
@@ -88,80 +76,7 @@ var conf_chall_desc_next_badge_bike="<%=request.getAttribute("chall_desc_next_ba
 var conf_chall_desc_next_badge_recommendation="<%=request.getAttribute("chall_desc_next_badge_recommendation")%>";
 var conf_chall_desc_complete_badge_collection="<%=request.getAttribute("chall_desc_complete_badge_collection")%>";
 var conf_week_sponsor="<%=request.getAttribute("week_sponsor_param")%>";
-var user_mail="<%=request.getAttribute("e_mail")%>";
-var nome="<%=request.getAttribute("nome")%>";
-var cognome="<%=request.getAttribute("cognome")%>";
-var sesso="<%=request.getAttribute("sesso")%>";
-var dataNascita="<%=request.getAttribute("dataNascita")%>";
-var provinciaNascita="<%=request.getAttribute("provinciaNascita")%>";
-var luogoNascita="<%=request.getAttribute("luogoNascita")%>";
-var indirizzoRes="<%=request.getAttribute("indirizzoRes")%>";
-var capRes="<%=request.getAttribute("capRes")%>";
-var cittaRes="<%=request.getAttribute("cittaRes")%>";
-var provinciaRes="<%=request.getAttribute("provinciaRes")%>";
-var codiceFiscale="<%=request.getAttribute("codiceFiscale")%>";
-var cellulare="<%=request.getAttribute("cellulare")%>";
-var email="<%=request.getAttribute("email")%>";
-var issuerdn="<%=request.getAttribute("issuerdn")%>";
-<%-- var subjectdn="<%=request.getAttribute("subjectdn")%>"; --%>
-var base64="<%=request.getAttribute("base64")%>";
 
-  
-  
-//   angular.module('cpControllers', [])
-//   .controller('LangController', ['$scope', 'sharedDataService', function($scope, sharedDataService) {
-    
-// 	$scope.init_lang = function(){ 
-// 		$scope.lang = sharedDataService.getUsedLanguage();
-	    
-// 		if($scope.lang == 'ita'){
-// 			var locale = 'it-IT';
-// 			$.getScript('i18n/angular-locale_it-IT.js');
-// 	  	} else {
-// 	  		//$("#lang_script").remove();
-// 	  		$.getScript('i18n/angular-locale_en-EN.js');
-// 		};
-
-// 	};
-//   }]);
-  
-// 	var language_script = document.createElement('script');
-// 	language_script.type = 'text/javascript';
-// 	language_script.id = 'lang_script';
-	
-// 	var appElement = document.querySelector('[ng-app=cp]');
-// 	var $scope = angular.element(appElement).scope();
-// 	console.log($scope.used_lang);
-	
-// 	var controllerElement = document.querySelector('html');
-// 	var controllerScope = angular.element(controllerElement).scope();
-// 	console.log(controllerScope);
-
-	
-// 	var language = JSON.parse(localStorage.getItem('language'));
-  
-	//var dom_el = document.querySelector('[ng-controller="MainCtrl"]');
-	//var ng_el = angular.element(dom_el);
- 	//var ng_el_scope = ng_el.scope();
-	//var language = ng_el_scope.used_lang;
-	//var language = $('[ng-controller="MainCtrl"]')).scope().used_lang;
-	
-//  	if(language == 'ita'){
-//		language_script.src = 'i18n/angular-locale_it-IT.js';
-	  //document.write('<script src=\'i18n/angular-locale_it-IT.js\'/>');
-//  	} else {
-//  		$("#lang_script").remove();
-//		language_script.src = 'i18n/angular-locale_en-EN.js';
-	  //document.write('<script src=\'i18n/angular-locale_en-EN.js\'/>');
-//	};
-
-  
-// 	$("#myHead").append(language_script);
-
-// 	var locale = JSON.parse(localStorage.getItem('language'));
-// 	if (locale) {
-//     	document.write('<script src="i18n/angular-locale_'+locale+'.js"><\/script>');
-// 	}
 
 	<%-- Prevent the backspace key from navigating back. --%>
 	$(document).unbind('keydown').bind('keydown', function (event) {
@@ -191,8 +106,6 @@ var base64="<%=request.getAttribute("base64")%>";
 	    }
 	});
   </script>
-  <!-- Posiziona questo tag all'interno del tag head oppure subito prima della chiusura del tag body. -->
-	<!-- Aggiungi i tre tag seguenti all'interno del tag head. -->
 	<meta itemprop="name" content="Play&Go Rovereto">
 	<meta itemprop="image" content="img/foglia.svg">
 </head>
@@ -246,8 +159,6 @@ var base64="<%=request.getAttribute("base64")%>";
 			            	</a>
 			            	<ul class="dropdown-menu" role="menu">
 			            		<li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li>
-			            		<!-- <li class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
-			            		<li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" ><strong>{{ 'left_menu-classification' | i18n }}</strong></a></li> -->
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" ><strong>{{ 'left_menu-privacy' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" ><strong>{{ 'left_menu-prizes' | i18n }}</strong></a></li>
@@ -261,18 +172,6 @@ var base64="<%=request.getAttribute("base64")%>";
 			            </li>
 			         </ul>
 			    </div>
-<!-- 			    <div id="navbar_col" class="collapse navbar-collapse"> -->
-<!-- 		          <ul class="nav navbar-nav"> -->
-<!-- 		            <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li> -->
-<!-- 		            <li class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li> -->
-<!-- 		            <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>  -->
-<!-- 		          </ul> -->
-<!-- 		          <ul class="nav navbar-nav navbar-right" > -->
-<!-- 		          	<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
-<!-- 		          	<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
-<!-- 		            <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
-<!-- 		          </ul> -->
-<!--         		</div> -->
 	    	</div>
 	    </div>
       </div><!-- /.container -->
@@ -291,47 +190,6 @@ var base64="<%=request.getAttribute("base64")%>";
 				</div>
 			</div>
 		</div>
-		<!-- <div id="my-big-footer" class="row">
-			<div class="col-md-8 col-md-offset-2" align="center">
-					
-				<h5><font face="Raleway-bold" size="5" color="gray"><strong>Play&Go</strong></font> con ViaggiaRovereto</h5>
-				&egrave; un progetto di:
-				<br>
-				<footer>
-					<p>&copy; SmartCampus 2013</p>
-					<img src="img/footer/footer.png" width="90%" alt="" title="" />
-				</footer>
-			</div>
-		</div>
-		<div id="my-small-footer" class="row">
-			<div class="col-md-4 col-md-offset-2" align="center">
-				<h5><font face="Raleway-bold" size="5" color="gray"><strong>Play&Go</strong></font></h5>
-			</div>
-			<div class="col-md-4" align="center">	
-				<h5> con ViaggiaRovereto</h5>
-			</div>
-			<div class="col-md-4" align="center">	
-				&egrave; un progetto di:
-			</div>	
-			<footer>
-				<br>
-				<div class="col-md-4" align="center">	
-					<img src="img/footer/streetLife.png" width="120" alt="" title="" />
-				</div>
-				<br>
-				<div class="col-md-4" align="center">	
-					<img src="img/footer/fbk.png" width="85" alt="" title="" />
-				</div>
-				<br>
-				<div class="col-md-4" align="center">	
-					<img src="img/footer/logoRV.png" width="85" alt="" title="" />
-				</div>
-				<br>
-				<div class="col-md-4" align="center">	
-					<img src="img/footer/caire.png" width="150" alt="" title="" />
-				</div>
-			</footer>
-		</div> -->
 	</div>
 </div>	
 </body>

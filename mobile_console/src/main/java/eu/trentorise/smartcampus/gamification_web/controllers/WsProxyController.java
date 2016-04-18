@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -196,10 +197,10 @@ public class WsProxyController {
 			if (p != null) {
 				logger.debug("External registration: user exists, updating data and nick");
 				p.setNikName(nickname);
-				data.setTimestamp(System.currentTimeMillis());
 				p.setPersonalData(data);
 			} else {
 				logger.debug("External registration: new user");
+				data.setTimestamp(System.currentTimeMillis());
 				p = new Player(
 						user.getUserId(), 
 						user.getUserId(), 
@@ -208,7 +209,7 @@ public class WsProxyController {
 						nickname, 
 						email, 
 						data);
-				if (data.getNick_recommandation() != null) {
+				if (StringUtils.hasText(data.getNick_recommandation())) {
 					Player recommender = playerRepositoryDao.findByNick(data.getNick_recommandation());
 					if (recommender != null) {
 						sendRecommendationToGamification(recommender.getPid());
@@ -228,10 +229,10 @@ public class WsProxyController {
 			if (p != null) {
 				logger.debug("External registration: user exists, updating data and nick");
 				p.setNikName(nickname);
-				data.setTimestamp(System.currentTimeMillis());
 				p.setPersonalData(data);
 			} else {
 				logger.debug("External registration: new user");
+				data.setTimestamp(System.currentTimeMillis());
 				p = new PlayerProd(
 						user.getUserId(), 
 						user.getUserId(), 
@@ -240,7 +241,7 @@ public class WsProxyController {
 						nickname, 
 						email, 
 						data);
-				if (data.getNick_recommandation() != null) {
+				if (StringUtils.hasText(data.getNick_recommandation())) {
 					PlayerProd recommender = playerProdRepositoryDao.findByNick(data.getNick_recommandation());
 					if (recommender != null) {
 						sendRecommendationToGamification(recommender.getPid());

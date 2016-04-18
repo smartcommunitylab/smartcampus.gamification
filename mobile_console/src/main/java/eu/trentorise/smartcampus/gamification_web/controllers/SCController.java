@@ -73,27 +73,6 @@ public class SCController {
 		System.err.println("TOKEN: "+fromCtx);
 		return fromCtx;
 	}
-	
-//	protected String getToken(HttpServletRequest request) {
-//
-//		// String fromCtx = (String)
-//		// SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		String fromCtx = (String) request.getSession().getAttribute("token");
-//
-//		System.err.println("TOKEN: " + fromCtx);
-//		return fromCtx;
-//	}
-
-//	protected SCWebApiClient getSCClient() {
-//		if (client == null) {
-//			client = SCWebApiClient.getInstance(Locale.ENGLISH, socialEngineHost, socialEnginePort);
-//		}
-//		return client;
-//	}
-//
-//	protected boolean canRead(Long socialActorId, Long entityId) throws WebApiException {
-//		return getSCClient().readPermission(socialActorId, entityId, Operation.READ);
-//	}
 
 	/*
 	 * Getters and Setters

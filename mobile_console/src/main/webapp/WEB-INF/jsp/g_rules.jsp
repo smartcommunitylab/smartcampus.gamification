@@ -78,6 +78,7 @@
 								<div align="left">
 									Durante il gioco sono previsti <strong>premi settimanali e finali</strong> che andranno a premiare i primi tre classificati nella classifica (settimanale e generale, rispettivamente) a punti Green Leaves.
 									<br/>
+									Il gioco &egrave; accessibile tramite App Android e iPhone, tuttavia Google e Apple non sponsorizzano in alcun modo questo gioco e non offrono premi.<br/>
 									Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" alt="regolamento" title="regolamento">regolamento Play&Go</a>.
 								</div>
 							</div>
@@ -125,6 +126,7 @@
 								<div align="left">
 									Durante il gioco sono previsti <strong>premi settimanali e finali</strong> che andranno a premiare i primi tre classificati nella classifica (settimanale e generale, rispettivamente) a punti Green Leaves.
 									<br/>
+									Il gioco &egrave; accessibile tramite App Android e iPhone, tuttavia Google e Apple non sponsorizzano in alcun modo questo gioco e non offrono premi.<br/>
 									Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" alt="regolamento" title="regolamento">regolamento Play&Go</a>.
 								</div>
 							</div>

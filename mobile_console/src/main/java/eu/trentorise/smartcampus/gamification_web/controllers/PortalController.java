@@ -389,7 +389,6 @@ public class PortalController extends SCController{
 	// Here I insert a task that invoke the WS notification
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
-	//@Scheduled(cron="0 0 0/2 * * *") // Repeat every hours at 00:00 min/sec
 	@Scheduled(cron="0 0 20 * * THU") 		// Repeat every Thursday at 8 PM
 	public synchronized void checkNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();

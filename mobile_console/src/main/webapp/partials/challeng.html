@@ -126,7 +126,7 @@
 			  	</div>
 			</div>
 		</div>
-		<div ng-if="challenges.length == 0">{{ 'ch_empty_list' | i18n }}</div>
+		<div ng-if="challenges.length == 0 && actualChellenges">{{ 'ch_empty_list' | i18n }}</div>
 		<div ng-repeat="ch in oldChallenges | orderBy:['-success','-endChTs'] " ng-if="!actualChellenges">
 			<div class="{{ getChallStyle(ch.active, ch.status, ch.success) }}" ng-show="!isShowedDetails(ch.id)">
 			   	<div class="panel-body">

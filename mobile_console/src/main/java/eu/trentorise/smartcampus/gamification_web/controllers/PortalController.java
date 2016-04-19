@@ -1,30 +1,22 @@
 package eu.trentorise.smartcampus.gamification_web.controllers;
 
-import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.jar.Attributes;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -47,14 +39,10 @@ import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.trentorise.smartcampus.gamification_web.service.ChallengesUtils;
@@ -67,8 +55,6 @@ import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
 import eu.trentorise.smartcampus.gamification_web.models.State;
 import eu.trentorise.smartcampus.gamification_web.models.Summary;
-//import eu.trentorise.smartcampus.gamification_web.models.SubjectDn;
-import eu.trentorise.smartcampus.gamification_web.models.UserCS;
 import eu.trentorise.smartcampus.gamification_web.models.WeekConfData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
@@ -76,11 +62,11 @@ import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerRepositoryDao;
+import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
-import eu.trentorise.smartcampus.gamification_web.security.MongoUserDetailsService;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
 import eu.trentorise.smartcampus.profileservice.model.AccountProfile;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
@@ -88,30 +74,6 @@ import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
 @Controller
 @EnableScheduling
 public class PortalController extends SCController{
-	
-	@Autowired
-	@Value("${smartcampus.gamification.url}")
-	private String mainURL;
-	
-	@Autowired
-	@Value("${smartcampus.urlws.gamification}")
-	private String gamificationUrl;
-	
-	@Autowired
-	@Value("${smartcampus.gamification.gamename}")
-	private String gameName;
-	
-	@Autowired
-	@Value("${smartcampus.task.startupTime}")
-	private String StartupTime;
-	
-	@Autowired
-	@Value("${smartcampus.isTest}")
-	private String isTest;
-	
-	@Autowired
-	@Value("${smartcampus.gamification.pointtype}")
-	private String p_types;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -134,6 +96,44 @@ public class PortalController extends SCController{
     
     @Autowired
     private AuthPlayerProdRepositoryDao authPlayerProdRepositoryDao;
+    
+    @Autowired
+    private ChallengeDescriptionDataSetup challDescriptionSetup;
+    
+    //Config params
+    @Autowired
+	@Value("${smartcampus.gamification.url}")
+	private String mainURL;
+	@Autowired
+	@Value("${smartcampus.urlws.gamification}")
+	private String gamificationUrl;
+	@Autowired
+	@Value("${smartcampus.gamification.gamename}")
+	private String gameName;
+	@Autowired
+	@Value("${smartcampus.task.startupTime}")
+	private String StartupTime;
+	@Autowired
+	@Value("${smartcampus.isTest}")
+	private String isTest;
+	@Autowired
+	@Value("${smartcampus.gamification.pointtype}")
+	private String p_types;
+    @Autowired
+	@Value("${gamification.useAuthorizationTable}")
+    private String authorizationTable;
+    @Autowired
+    @Value("${smartcampus.gamification.gamename}")
+    private String gameid;
+    @Autowired
+    @Value("${gamification.server.bauth.username}")
+    private String basicAuthUsername;
+    @Autowired
+    @Value("${gamification.server.bauth.password}")
+    private String basicAuthPassword;
+    @Autowired
+    @Value("${gamification.weeksponsor.name}")
+    private String weekSponsor;
 	
 	//Mail Params
 	@Autowired
@@ -163,81 +163,6 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.mailredirect.url}")
     private String mailRedirectUrl;
-    @Autowired
-    @Value("${gamification.useAuthorizationTable}")
-    private String authorizationTable;
-    @Autowired
-    @Value("${smartcampus.gamification.gamename}")
-    private String gameid;
-    @Autowired
-    @Value("${gamification.server.bauth.username}")
-    private String basicAuthUsername;
-    @Autowired
-    @Value("${gamification.server.bauth.password}")
-    private String basicAuthPassword;
-    @Autowired
-    @Value("${gamification.challenges.description.bikekm}")
-    private String challengeDescriptionBikeKm;
-    @Autowired
-    @Value("${gamification.challenges.description.bikesharekm}")
-    private String challengeDescriptionBikeShareKm;
-    @Autowired
-    @Value("${gamification.challenges.description.walkkm}")
-    private String challengeDescriptionWalkKm;
-    @Autowired
-    @Value("${gamification.challenges.description.biketrips}")
-    private String challengeDescriptionBikeShareTrip;
-    @Autowired
-    @Value("${gamification.challenges.description.bustrips}")
-    private String challengeDescriptionBusTrip;
-    @Autowired
-    @Value("${gamification.challenges.description.traintrips}")
-    private String challengeDescriptionTrainTrip;
-    @Autowired
-    @Value("${gamification.challenges.description.zeroimpacttrips}")
-    private String challengeDescriptionZeroImpactTrip;
-    @Autowired
-    @Value("${gamification.challenges.description.promotedtrips}")
-    private String challengeDescriptionPromotedTrip;
-    @Autowired
-    @Value("${gamification.challenges.description.trybibsbutr}")
-    private String challengeDescriptionTryBikeBikeShareBusTrain;
-    @Autowired
-    @Value("${gamification.challenges.description.recommendation}")
-    private String challengeDescriptionRecommendation;
-    @Autowired
-    @Value("${gamification.challenges.description.gbshzipoint}")
-    private String challengeDescriptionGreenBikeShareHealthZeroImpactPoint;
-    @Autowired
-    @Value("${gamification.challenges.description.topxweek}")
-    private String challengeDescriptionTopXWeek;
-    @Autowired
-    @Value("${gamification.challenges.description.prpioneer}")
-    private String challengeDescriptionParkRidePioneer;
-    @Autowired
-    @Value("${gamification.challenges.description.bspioneer}")
-    private String challengeDescriptionBikeSharingPioneer;
-    @Autowired
-    @Value("${gamification.challenges.description.nextbadge.green}")
-    private String challengeDescriptionNextBadgeGreen;
-    @Autowired
-    @Value("${gamification.challenges.description.nextbadge.zeroimpact}")
-    private String challengeDescriptionNextBadgeZeroImpact;
-    @Autowired
-    @Value("${gamification.challenges.description.nextbadge.publictransport}")
-    private String challengeDescriptionNextBadgePublicTransport;
-    @Autowired
-    @Value("${gamification.challenges.description.nextbadge.bike}")
-    private String challengeDescriptionNextBadgeBike;
-    @Autowired
-    @Value("${gamification.challenges.description.nextbadge.recommendation}")
-    private String challengeDescriptionNextBadgeRecommendation;
-    @Autowired
-    @Value("${gamification.challenges.description.complete.badge.collection}")
-    private String challengeDescriptionCompleteBadgeCollection;
-    @Autowired
-    @Value("${gamification.weeksponsor.name}")
-    private String weekSponsor;
     
     private final String JSON_STATE = "state";
     private final String JSON_POINTCONCEPT = "PointConcept";
@@ -259,32 +184,13 @@ public class PortalController extends SCController{
 			model.put("token", getToken(request));
 			user = profileService.getBasicProfile(getToken(request));
 			model.put("user_id", user.getUserId());
-			/*model.put("user_name", user.getName());
-			model.put("user_surname", user.getSurname());*/
+			//model.put("user_name", user.getName());
+			//model.put("user_surname", user.getSurname());
 			model.put("gameid", gameid);
 			model.put("bauth_user", basicAuthUsername);
 			model.put("bauth_password", basicAuthPassword);
 			model.put("point_types", p_types);	// point type
-			model.put("chall_desc_bike_km", challengeDescriptionBikeKm);
-			model.put("chall_desc_bike_share_km", challengeDescriptionBikeShareKm);
-			model.put("chall_desc_walk_km", challengeDescriptionWalkKm);
-			model.put("chall_desc_bike_share_trip", challengeDescriptionBikeShareTrip);
-			model.put("chall_desc_bus_trip", challengeDescriptionBusTrip);
-			model.put("chall_desc_train_trip", challengeDescriptionTrainTrip);
-			model.put("chall_desc_zero_impact_trip", challengeDescriptionZeroImpactTrip);
-			model.put("chall_desc_promoted_trip", challengeDescriptionPromotedTrip);
-			model.put("chall_desc_try_bike_bikeshare_bus_train", challengeDescriptionTryBikeBikeShareBusTrain);
-			model.put("chall_desc_top_x_week", challengeDescriptionTopXWeek);
-			model.put("chall_desc_park_ride_pioneer", challengeDescriptionParkRidePioneer);
-			model.put("chall_desc_bike_sharing_pioneer", challengeDescriptionBikeSharingPioneer);
-			model.put("chall_desc_recommendation", challengeDescriptionRecommendation);
-			model.put("chall_desc_green_bike_sharing_health_zero_impact_point", challengeDescriptionGreenBikeShareHealthZeroImpactPoint);
-			model.put("chall_desc_next_badge_green", challengeDescriptionNextBadgeGreen);
-			model.put("chall_desc_next_badge_zero_impact", challengeDescriptionNextBadgeZeroImpact);
-			model.put("chall_desc_next_badge_public_transport", challengeDescriptionNextBadgePublicTransport);
-			model.put("chall_desc_next_badge_bike", challengeDescriptionNextBadgeBike);
-			model.put("chall_desc_next_badge_recommendation", challengeDescriptionNextBadgeRecommendation);
-			model.put("chall_desc_complete_badge_collection", challengeDescriptionCompleteBadgeCollection);
+			model.put("challenge_desc_messages", challDescriptionSetup.getDescriptions());
 			model.put("week_sponsor_param", weekSponsor);
 			logger.info(String
 					.format("I am in get root. User id: " + user.getUserId()));
@@ -386,11 +292,6 @@ public class PortalController extends SCController{
 		return redirectMAV;
 	}
 	
-/*	@RequestMapping(method = RequestMethod.GET, value = "/rulespage")
-	public ModelAndView rules(HttpServletRequest request) {
-		return new ModelAndView("rules");
-	}*/
-	
 	@RequestMapping(method = RequestMethod.GET, value = "/check")
 	public ModelAndView securePage(HttpServletRequest request, @RequestParam(required = false) String code, @RequestParam(required = false) String type)
 			throws SecurityException, AACException {
@@ -412,7 +313,6 @@ public class PortalController extends SCController{
 		String redirectUri = mainURL + "/check";
 		String redirectAacService = aacService.generateAuthorizationURIForCodeFlow(redirectUri, "/google",
 				"profile.basicprofile.me,profile.accountprofile.me", null);	//"smartcampus.profile.basicprofile.me,smartcampus.profile.accountprofile.me"
-		//logger.error(String.format("Redirect url : %s", redirectAacService));
 		return new ModelAndView(
 				"redirect:"
 						+ redirectAacService);
@@ -424,7 +324,6 @@ public class PortalController extends SCController{
 		String redirectUri = mainURL + "/check";
 		String redirectAacService = aacService.generateAuthorizationURIForCodeFlow(redirectUri, "/facebook",
 				"profile.basicprofile.me,profile.accountprofile.me", null);	//"smartcampus.profile.basicprofile.me,smartcampus.profile.accountprofile.me"
-		//logger.error(String.format("Redirect url : %s", redirectAacService));
 		return new ModelAndView(
 				"redirect:"
 						+ redirectAacService);
@@ -440,7 +339,6 @@ public class PortalController extends SCController{
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/cookie_info")
 	public ModelAndView preSecureCookie(HttpServletRequest request) {
-		//String redirectUri = mainURL + "/check";
 		logger.debug(String.format("I am in cookie info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("cookie_info");
@@ -449,7 +347,6 @@ public class PortalController extends SCController{
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/cookie_licence")
 	public ModelAndView preSecureCookieLicence(HttpServletRequest request) {
-		//String redirectUri = mainURL + "/check";
 		logger.debug(String.format("I am in cookie licence info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("cookie_licence");
@@ -458,7 +355,6 @@ public class PortalController extends SCController{
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/view_prizes")
 	public ModelAndView preSecurePrizesPage(HttpServletRequest request) {
-		//String redirectUri = mainURL + "/check";
 		logger.debug(String.format("I am in prizes info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("g_prizes");
@@ -467,7 +363,6 @@ public class PortalController extends SCController{
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/view_rules")
 	public ModelAndView preSecureRulesPage(HttpServletRequest request) {
-		//String redirectUri = mainURL + "/check";
 		logger.debug(String.format("I am in rules info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("g_rules");
@@ -476,20 +371,12 @@ public class PortalController extends SCController{
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/view_privacy")
 	public ModelAndView preSecurePrivacyPage(HttpServletRequest request) {
-		//String redirectUri = mainURL + "/check";
 		logger.debug(String.format("I am in privacy info page"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("g_privacy");
 		return model;
 	}
 	
-/*	@RequestMapping(method = RequestMethod.GET, value = "/viewall")
-	public ModelAndView viewAllElements(HttpServletRequest request) {
-		logger.error(String.format("I am in get viewAll"));
-		ModelAndView model = new ModelAndView();
-		model.setViewName("info_index");
-		return model;
-	}*/
 	
 //	@RequestMapping(method = RequestMethod.GET, value = "/logout")
 //	public ModelAndView outSecure(HttpServletRequest request) {
@@ -503,7 +390,7 @@ public class PortalController extends SCController{
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
 	//@Scheduled(cron="0 0 0/2 * * *") // Repeat every hours at 00:00 min/sec
-	@Scheduled(cron="0 0 20 * * THU") 		// Repeat every Monday at 8 AM from 1 to 8 dec
+	@Scheduled(cron="0 0 20 * * THU") 		// Repeat every Thursday at 8 PM
 	public synchronized void checkNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
@@ -819,257 +706,249 @@ public class PortalController extends SCController{
 		
 		logger.debug(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
 		
-		//ArrayList<BagesData> allBadgeTest = getAllBadges(path);
-		//try {
-		//	this.emailService.sendMailGamification("NikName", "43", "32", "112", null, null, allBadgeTest, standardImages ,mailTo, Locale.ITALIAN);
-		//} catch (MessagingException e1) {
-		//	e1.printStackTrace();
-		//}
-		
-			// New method
-			logger.debug(String.format("Check Notification task. Cycle - %d", i++));
-			// Here I have to read the mail conf file data
-			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
-			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
-			List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/conf_file/game_week_winners.csv");
-			List<WeekPrizeData> mailPrizeActualData = new ArrayList<WeekPrizeData>();
-			// here I have to add the new mail parameters readed from csv files
-			String actual_week = "";
-			String actual_week_theme = "";
-			String last_week = "";
-			Boolean are_chall = false;
-			Boolean are_prizes = false;
-			Boolean are_prizes_last_week = false;
-			for(int i = 0; i < mailConfigurationFileData.size(); i++){
-				WeekConfData tmpWConf = mailConfigurationFileData.get(i);
-				if(tmpWConf.isActual()){
-					actual_week = tmpWConf.getWeekNum();
-					actual_week_theme = tmpWConf.getWeekTheme();
-					last_week = Integer.toString(Integer.parseInt(actual_week) - 1);
-					are_chall = tmpWConf.isChallenges();
-					are_prizes = tmpWConf.isPrizes();
-					are_prizes_last_week = tmpWConf.isPrizesLast();
-					mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
-				}
+		// New method
+		logger.debug(String.format("Check Notification task. Cycle - %d", i++));
+		// Here I have to read the mail conf file data
+		List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
+		List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
+		List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/conf_file/game_week_winners.csv");
+		List<WeekPrizeData> mailPrizeActualData = new ArrayList<WeekPrizeData>();
+		// here I have to add the new mail parameters readed from csv files
+		String actual_week = "";
+		String actual_week_theme = "";
+		String last_week = "";
+		Boolean are_chall = false;
+		Boolean are_prizes = false;
+		Boolean are_prizes_last_week = false;
+		for(int i = 0; i < mailConfigurationFileData.size(); i++){
+			WeekConfData tmpWConf = mailConfigurationFileData.get(i);
+			if(tmpWConf.isActual()){
+				actual_week = tmpWConf.getWeekNum();
+				actual_week_theme = tmpWConf.getWeekTheme();
+				last_week = Integer.toString(Integer.parseInt(actual_week) - 1);
+				are_chall = tmpWConf.isChallenges();
+				are_prizes = tmpWConf.isPrizes();
+				are_prizes_last_week = tmpWConf.isPrizesLast();
+				mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 			}
-			if(isTest.compareTo("true") == 0){
-				Iterable<Player> iter = playerRepositoryDao.findAll();
-				for(Player p: iter){
-					logger.debug(String.format("Profile finded  %s", p.getNikName()));
+		}
+		if(isTest.compareTo("true") == 0){
+			Iterable<Player> iter = playerRepositoryDao.findAll();
+			for(Player p: iter){
+				logger.debug(String.format("Profile finded  %s", p.getNikName()));
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e1) {
+					logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
+				}
+				
+				ArrayList<State> states = null;
+				ArrayList<Notification> notifications = null;
+				ArrayList<BagesData> someBadge = null;
+				List<ChallengesData> challenges = null;
+				List<ChallengesData> lastWeekChallenges = null;
+				
+				try {
+					// WS State Invocation
+					String urlWSState = "state/" + gameName + "/" + p.getSocialId();
+					states = getState(urlWSState);
+					// Challenges correction
+					String completeState = getAllChallenges(urlWSState);
 					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e1) {
-						logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-					}
-					
-					ArrayList<State> states = null;
-					ArrayList<Notification> notifications = null;
-					ArrayList<BagesData> someBadge = null;
-					List<ChallengesData> challenges = null;
-					List<ChallengesData> lastWeekChallenges = null;
-					
-					try {
-						// WS State Invocation
-						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-						states = getState(urlWSState);
-						// Challenges correction
-						String completeState = getAllChallenges(urlWSState);
-						try {
-							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState);
-							if(challLists != null && challLists.size() == 2){
-								challenges = challLists.get(0);
-								lastWeekChallenges = challLists.get(1);
-							}
-							
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						@SuppressWarnings("rawtypes")
+						List<List> challLists = challUtils.correctCustomData(completeState);
+						if(challLists != null && challLists.size() == 2){
+							challenges = challLists.get(0);
+							lastWeekChallenges = challLists.get(1);
 						}
 						
-						// WS Notification Invocation
-						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
-						notifications = getNotifications(urlWSNot, timestamp);
-					} catch (InterruptedException ie){
-						logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					
-					if(notifications != null && notifications.size() > 0){
-						ArrayList<BagesData> allBadge = getAllBadges(path);
-						someBadge = checkCorrectBadges(allBadge, notifications);	
-					}
-					
-					String mailto = null;
-					mailto = p.getMail();
-					String playerName = p.getNikName();
-					if(mailto == null || mailto.compareTo("") == 0){
-						mailto = mailTo;
-					}
-					
-					if(mailSend.compareTo("true") == 0){
-						try {
-							if(notifications != null){
-								if(states != null && states.size() > 0){
-									this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							} else {
-								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							}
-						} catch (MessagingException e) {
-							logger.debug(String.format("Errore invio mail : %s", e.getMessage()));
-						}
-					} else {
+					// WS Notification Invocation
+					String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
+					notifications = getNotifications(urlWSNot, timestamp);
+				} catch (InterruptedException ie){
+					logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
+				}
+				
+				if(notifications != null && notifications.size() > 0){
+					ArrayList<BagesData> allBadge = getAllBadges(path);
+					someBadge = checkCorrectBadges(allBadge, notifications);	
+				}
+				
+				String mailto = null;
+				mailto = p.getMail();
+				String playerName = p.getNikName();
+				if(mailto == null || mailto.compareTo("") == 0){
+					mailto = mailTo;
+				}
+				
+				if(mailSend.compareTo("true") == 0){
+					try {
 						if(notifications != null){
 							if(states != null && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 							} else {
-								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 							}
 						} else {
 							if(states != null  && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 							} else {
-								logger.debug(String.format("Invio mail a %s", playerName));
+								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 							}
 						}
-						if(challenges != null && !challenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
-						}
-						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
-						}
+					} catch (MessagingException e) {
+						logger.debug(String.format("Errore invio mail : %s", e.getMessage()));
 					}
-					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
-				}
-			} else {
-				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
-				for(PlayerProd p: iter){
-					logger.debug(String.format("Profile finded  %s", p.getNikName()));
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e1) {
-						logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-					}
-					
-					ArrayList<State> states = null;
-					ArrayList<Notification> notifications = null;
-					ArrayList<BagesData> someBadge = null;
-					List<ChallengesData> challenges = null;
-					List<ChallengesData> lastWeekChallenges = null;
-					
-					try {
-						// WS State Invocation
-						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-						states = getState(urlWSState);
-						// Challenges correction
-						String completeState = getAllChallenges(urlWSState);
-						try {
-							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState);
-							if(challLists != null && challLists.size() == 2){
-								challenges = challLists.get(0);
-								lastWeekChallenges = challLists.get(1);
-							}
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						// WS Notification Invocation
-						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
-						notifications = getNotifications(urlWSNot, timestamp);
-					} catch (InterruptedException ie){
-						logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
-					}
-					
-					if(notifications != null && notifications.size() > 0){
-						ArrayList<BagesData> allBadge = getAllBadges(path);
-						someBadge = checkCorrectBadges(allBadge, notifications);	
-					}
-					
-					String mailto = null;
-					mailto = p.getMail();
-					String playerName = p.getNikName();
-					if(mailto == null || mailto.compareTo("") == 0){
-						mailto = mailTo;
-					}
-					
-					if(mailSend.compareTo("true") == 0){
-						
-						try {
-							if(notifications != null){
-								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							} else {
-								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							}
-						} catch (MessagingException e) {
-							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+				} else {
+					if(notifications != null){
+						if(states != null && states.size() > 0){
+							logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+						} else {
+							logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
 						}
 					} else {
-						if(notifications != null){
-							if(states != null && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
-							} else {
-								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
-							}
+						if(states != null  && states.size() > 0){
+							logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
 						} else {
-							if(states != null && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
-							} else {
-								logger.debug(String.format("Invio mail a %s", playerName));
-							}
-						}
-						if(challenges != null && !challenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
-						}
-						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+							logger.debug(String.format("Invio mail a %s", playerName));
 						}
 					}
-					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
+					if(challenges != null && !challenges.isEmpty()){
+						logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+					}
+					if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
+						logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+					}
 				}
+				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 			}
-			
-			// Send summary mail
-			if(mailSend.compareTo("true") == 0){
-				// Here I send the summary mail (only if the sendMail parameter is true)
+		} else {
+			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+			for(PlayerProd p: iter){
+				logger.debug(String.format("Profile finded  %s", p.getNikName()));
 				try {
-					this.emailService.sendMailSummary("Mattia", "0", "0", "0", summaryMail, standardImages, mailTo, Locale.ITALIAN);
-				} catch (MessagingException e) {
-					logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
+					Thread.sleep(1500);
+				} catch (InterruptedException e1) {
+					logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
 				}
+				
+				ArrayList<State> states = null;
+				ArrayList<Notification> notifications = null;
+				ArrayList<BagesData> someBadge = null;
+				List<ChallengesData> challenges = null;
+				List<ChallengesData> lastWeekChallenges = null;
+				
+				try {
+					// WS State Invocation
+					String urlWSState = "state/" + gameName + "/" + p.getSocialId();
+					states = getState(urlWSState);
+					// Challenges correction
+					String completeState = getAllChallenges(urlWSState);
+					try {
+						@SuppressWarnings("rawtypes")
+						List<List> challLists = challUtils.correctCustomData(completeState);
+						if(challLists != null && challLists.size() == 2){
+							challenges = challLists.get(0);
+							lastWeekChallenges = challLists.get(1);
+						}
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					// WS Notification Invocation
+					String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
+					notifications = getNotifications(urlWSNot, timestamp);
+				} catch (InterruptedException ie){
+					logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
+				}
+				
+				if(notifications != null && notifications.size() > 0){
+					ArrayList<BagesData> allBadge = getAllBadges(path);
+					someBadge = checkCorrectBadges(allBadge, notifications);	
+				}
+				
+				String mailto = null;
+				mailto = p.getMail();
+				String playerName = p.getNikName();
+				if(mailto == null || mailto.compareTo("") == 0){
+					mailto = mailTo;
+				}
+				
+				if(mailSend.compareTo("true") == 0){
+					
+					try {
+						if(notifications != null){
+							if(states != null  && states.size() > 0){
+								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+							} else {
+								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+							}
+						} else {
+							if(states != null  && states.size() > 0){
+								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+							} else {
+								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+							}
+						}
+					} catch (MessagingException e) {
+						logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+					}
+				} else {
+					if(notifications != null){
+						if(states != null && states.size() > 0){
+							logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+						} else {
+							logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+						}
+					} else {
+						if(states != null && states.size() > 0){
+							logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+						} else {
+							logger.debug(String.format("Invio mail a %s", playerName));
+						}
+					}
+					if(challenges != null && !challenges.isEmpty()){
+						logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+					}
+					if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
+						logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+					}
+				}
+				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 			}
-		//}
+		}
+		
+		// Send summary mail
+		if(mailSend.compareTo("true") == 0){
+			// Here I send the summary mail (only if the sendMail parameter is true)
+			try {
+				this.emailService.sendMailSummary("Mattia", "0", "0", "0", summaryMail, standardImages, mailTo, Locale.ITALIAN);
+			} catch (MessagingException e) {
+				logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
+			}
+		}
 	}
 	
 	private ArrayList<BagesData> getAllBadges(String path) throws IOException {
@@ -1456,24 +1335,6 @@ public class PortalController extends SCController{
 			}
 		}
 		return orderedList;
-	}
-	
-	/**
-	 * Method used to check if it is time to run check notification
-	 * @param date: input date now
-	 * @return true if now is equal than StartupTime
-	 */
-	private boolean itsTime(Date date){
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy-HH:mm");
-		String inputDate = dateFormat.format(date);
-		String dateStrings[] = inputDate.split("-");
-		String inputTime = dateStrings[1];
-		
-		if(inputTime.compareTo(StartupTime) == 0){
-			return true;
-		} else {
-			return false;
-		}
 	}
 	
 	public List<WeekConfData> readWeekConfFile(String src) {

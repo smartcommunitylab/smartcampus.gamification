@@ -55,7 +55,8 @@ var token="<%=request.getAttribute("token")%>";
 var userId="<%=request.getAttribute("user_id")%>";
 var conf_gameid="<%=request.getAttribute("gameid")%>";
 var conf_point_types="<%=request.getAttribute("point_types")%>";
-var conf_chall_desc_bike_km="<%=request.getAttribute("chall_desc_bike_km")%>";
+var conf_chall_messages="<%=request.getAttribute("challenge_desc_messages")%>";
+<%-- var conf_chall_desc_bike_km="<%=request.getAttribute("chall_desc_bike_km")%>";
 var conf_chall_desc_bike_share_km="<%=request.getAttribute("chall_desc_bike_share_km")%>";
 var conf_chall_desc_walk_km="<%=request.getAttribute("chall_desc_walk_km")%>";
 var conf_chall_desc_bike_share_trip="<%=request.getAttribute("chall_desc_bike_share_trip")%>";
@@ -74,7 +75,7 @@ var conf_chall_desc_next_badge_zero_impact="<%=request.getAttribute("chall_desc_
 var conf_chall_desc_next_badge_public_transport="<%=request.getAttribute("chall_desc_next_badge_public_transport")%>";
 var conf_chall_desc_next_badge_bike="<%=request.getAttribute("chall_desc_next_badge_bike")%>";
 var conf_chall_desc_next_badge_recommendation="<%=request.getAttribute("chall_desc_next_badge_recommendation")%>";
-var conf_chall_desc_complete_badge_collection="<%=request.getAttribute("chall_desc_complete_badge_collection")%>";
+var conf_chall_desc_complete_badge_collection="<%=request.getAttribute("chall_desc_complete_badge_collection")%>"; --%>
 var conf_week_sponsor="<%=request.getAttribute("week_sponsor_param")%>";
 
 

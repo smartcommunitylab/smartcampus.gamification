@@ -23,7 +23,6 @@ import org.thymeleaf.context.Context;
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
 import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
-import eu.trentorise.smartcampus.gamification_web.models.Notification;
 import eu.trentorise.smartcampus.gamification_web.models.Summary;
 import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
@@ -69,7 +68,7 @@ public class EmailService {
         
         // Send email
         this.mailSender.send(mimeMessage);
-        logger.error("Mail Sent - OK");
+        logger.debug("Mail Sent - OK");
 
     }
 
@@ -159,7 +158,7 @@ public class EmailService {
             final String recipientEmail, final String greengame_url, final Locale locale)
             throws MessagingException {
         
-    	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
+    	logger.debug(String.format("Gamification Mail Prepare for %s - OK", recipientName));
     	
     	// Correct the winners:
     	List<WeekWinnersData> last_week_winners = new ArrayList<WeekWinnersData>();
@@ -244,7 +243,7 @@ public class EmailService {
         
         // Send mail
         this.mailSender.send(mimeMessage);
-        logger.error(String.format("Gamification Mail Sent to %s - OK", recipientName));
+        logger.info(String.format("Gamification Mail Sent to %s - OK", recipientName));
         
     }
     
@@ -260,7 +259,7 @@ public class EmailService {
             final String recipientEmail, final String greengame_url, final Locale locale)
             throws MessagingException {
         
-    	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
+    	logger.debug(String.format("Gamification Mail Prepare for %s - OK", recipientName));
     	
     	// Correct the winners:
     	List<WeekWinnersData> last_week_winners = new ArrayList<WeekWinnersData>();
@@ -345,7 +344,7 @@ public class EmailService {
         
         // Send mail
         this.mailSender.send(mimeMessage);
-        logger.error(String.format("Gamification Mail Sent to %s - OK", recipientName));
+        logger.info(String.format("Gamification Mail Sent to %s - OK", recipientName));
         
     }
     
@@ -356,7 +355,7 @@ public class EmailService {
             final String recipientEmail, final Locale locale)
             throws MessagingException {
         
-    	logger.error(String.format("Gamification Mail Prepare for %s - OK", recipientName));
+    	logger.debug(String.format("Gamification Mail Prepare for %s - OK", recipientName));
     	
         // Prepare the evaluation context
         final Context ctx = new Context(locale);
@@ -405,7 +404,7 @@ public class EmailService {
         
         // Send mail
         this.mailSender.send(mimeMessage);
-        logger.error(String.format("Gamification Mail Sent to %s - OK", recipientName));
+        logger.info(String.format("Gamification Mail Sent to %s - OK", recipientName));
         
     }
 

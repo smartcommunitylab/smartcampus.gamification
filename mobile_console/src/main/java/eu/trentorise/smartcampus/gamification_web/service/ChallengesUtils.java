@@ -1,8 +1,6 @@
 package eu.trentorise.smartcampus.gamification_web.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,16 +62,12 @@ public class ChallengesUtils {
 	private final String CHAL_ALLOWED_PT_GREEN = "green leaves";
 	private final String CHAL_ALLOWED_PT_HEALTH = "health";
 	private final String CHAL_ALLOWED_PT_PR = "pr";
-	private final String CHAL_PT_GREEN_STRING = "Punti Green";
-	private final String CHAL_PT_HEALTH_STRING = "Punti Salute";
-	private final String CHAL_PT_PR_STRING = "Punti Park&Ride";
 	private final int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 	private final long CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in one week
 	
 	private static final Logger logger = Logger.getLogger(ChallengesUtils.class);
 	
 	public ChallengesUtils() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -129,19 +123,17 @@ public class ChallengesUtils {
 				String endChTs = customData.getString(CHAL_K + ch_id + CHAL_K_ETS);
 				String point_type = customData.getString(CHAL_K + ch_id + CHAL_K_POINT_TYPE);
 				long now = System.currentTimeMillis();
-				int daysToEnd = calculateRemainingDays(endChTs, now);
+				//int daysToEnd = calculateRemainingDays(endChTs, now);
 				Boolean success = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SUCCESS)) ? customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS) : false;
 				long endTime = Long.parseLong(endChTs);
 				long startTime = 0L;
 				Boolean active = (now < endTime);
 				int status = 0;
-				String row_status = "";
     			ChallengesData tmp_chall = new ChallengesData();
     			if(ch_type.compareTo(CHAL_TYPE_1) == 0){
     				int walked_km = customData.getInt(CHAL_K + ch_id + CHAL_K_WALKED_KM);
     				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = (walked_km * 100) / target;
-    				row_status = walked_km + "/" + target;
     				if(status > 100)status = 100;
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode);
@@ -160,7 +152,6 @@ public class ChallengesUtils {
     				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
     				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = count * 100 / target;
-    				row_status = count + "/" + target;
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode);
     				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
@@ -183,7 +174,6 @@ public class ChallengesUtils {
     					earned_points = customData.getInt(CHAL_K_EARNED_POINT_NEW);
     				}
     				status = earned_points * 100 / target;
-    				row_status = earned_points + "/" + target;
     				if(status > 100)status = 100;
 					String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_5, target, bonus, point_type, "");
@@ -202,9 +192,6 @@ public class ChallengesUtils {
     				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
     				if(success){
 						status = 100;
-						row_status = "1/1";
-					} else {
-						row_status = "0/1";
 					}
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_7, target, bonus, point_type, "");
@@ -222,7 +209,6 @@ public class ChallengesUtils {
     			if(ch_type.compareTo(CHAL_TYPE_9) == 0){
     				int recommandation = customData.getInt(CHAL_K + ch_id + CHAL_K_RECOM);
     				status = recommandation * 100 / target;
-    				row_status = recommandation + "/" + target;
     				if(status > 100)status = 100;
     				String id = challIndxArray.get(i);
     				String desc = correctDesc(CHAL_DESC_9, target, bonus, point_type, "");
@@ -263,7 +249,7 @@ public class ChallengesUtils {
     	return challengesList;
     }
 	
-	private int calculateRemainingDays(String endTimeMillis, long now){
+	/*private int calculateRemainingDays(String endTimeMillis, long now){
     	int remainingDays = 0;
     	long endTime = Long.parseLong(endTimeMillis);
     	if(now < endTime){
@@ -271,7 +257,7 @@ public class ChallengesUtils {
     		remainingDays = (int) Math.ceil(tmpMillis / MILLIS_IN_DAY);
     	}
     	return remainingDays;
-    };
+    };*/
 	
     private String correctDesc(String desc, int target, int bonus, String p_type, String mode){
     	if(desc.contains("TARGET")){
@@ -355,20 +341,6 @@ public class ChallengesUtils {
     		result = "Salute";
     	} else if(ptype.compareTo(CHAL_ALLOWED_PT_PR) == 0){
     		result = "Park & Ride";
-    	}
-    	return result;
-    };
-    
-    private String getCorrectTypeString(String stringtype){
-    	String result = "";
-    	if(stringtype.compareTo(CHAL_ALLOWED_PT_GREEN) == 0){
-    		result = CHAL_PT_GREEN_STRING;
-    	}
-    	if(stringtype.compareTo(CHAL_ALLOWED_PT_HEALTH) == 0){
-    		result = CHAL_PT_HEALTH_STRING;
-    	}
-    	if(stringtype.compareTo(CHAL_ALLOWED_PT_PR) == 0){
-    		result = CHAL_PT_PR_STRING;
     	}
     	return result;
     };

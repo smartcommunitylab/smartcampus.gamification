@@ -116,8 +116,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
                   			
     $scope.citizenId = userId;
     $scope.user_token = token;
-    //$scope.basic_auth_user = conf_bauth_user;
-    //$scope.basic_auth_password = conf_bauth_password;
     
     $scope.week_sponsor = conf_week_sponsor;
     if($scope.week_sponsor){
@@ -126,28 +124,49 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.show_sponsor_banner = false;
     }
     
-    // Challenges minute description test
-    $scope.chall_desc_bike_km = conf_chall_desc_bike_km;
-    $scope.chall_desc_bike_share_km = conf_chall_desc_bike_share_km;
-    $scope.chall_desc_walk_km = conf_chall_desc_walk_km;
-    $scope.chall_desc_bike_share_trip = conf_chall_desc_bike_share_trip;
-    $scope.chall_desc_bus_trip = conf_chall_desc_bus_trip;
-    $scope.chall_desc_train_trip = conf_chall_desc_train_trip;
-    $scope.chall_desc_zero_impact_trip = conf_chall_desc_zero_impact_trip;
-    $scope.chall_desc_promoted_trip = conf_chall_desc_promoted_trip;
-    $scope.chall_desc_try_bikeshare_bus_train = conf_chall_desc_try_bike_bikeshare_bus_train;
-    $scope.chall_desc_top_x_week = conf_chall_desc_top_x_week;
-    $scope.chall_desc_park_ride_pioneer = conf_chall_desc_park_ride_pioneer;
-    $scope.chall_desc_bike_sharing_pioneer = conf_chall_desc_bike_sharing_pioneer;
-    $scope.chall_desc_recommentation = conf_chall_desc_recommendation;
-    $scope.chall_desc_green_bike_sharing_healt_zero_impact_point = conf_chall_desc_green_bike_sharing_health_zero_impact_point;
-    $scope.chall_desc_next_badge_green = conf_chall_desc_next_badge_green;
-    $scope.chall_desc_next_badge_zero_impact = conf_chall_desc_next_badge_zero_impact;
-    $scope.chall_desc_next_badge_public_transport = conf_chall_desc_next_badge_public_transport;
-    $scope.chall_desc_next_badge_bike = conf_chall_desc_next_badge_bike;
-    $scope.chall_desc_next_badge_recommendation = conf_chall_desc_next_badge_recommendation;
-    $scope.chall_desc_complete_badge_collection = conf_chall_desc_complete_badge_collection;
+    // Method used to retrieve the field value from the complete object string
+    $scope.getFieldValue = function(fieldsObject){
+    	var completeField = fieldsObject.split("=");
+    	var lastPos = completeField[1].indexOf(".]");
+    	if(lastPos > -1){
+    		completeField[1] = completeField[1].substring(0, lastPos) + ".";
+    	}
+    	return completeField[1];
+    };
     
+    // Method used to retrieve the challenge objects description list from the relative string value
+    $scope.convertDescriptionObjectToDescArray = function(object_array_list){
+    	var chDescArray = [];
+    	var challenges_data = object_array_list.split("ChallengeDescriptionData ");
+    	for(var i = 1; i < challenges_data.length; i++){
+    		// here I have a list of challenge object string
+    		var fields = challenges_data[i].split(", ");
+    		var id = $scope.getFieldValue(fields[0]);
+    		var type = $scope.getFieldValue(fields[1]);
+    		var mobility_mode = $scope.getFieldValue(fields[2]);
+    		var complete_desc = "";
+    		if(fields.length > 5){
+    			for(var x = 3; x < fields.length; x++){
+    				complete_desc += fields[x] + ", ";
+    			}
+    		} else {
+    			complete_desc = fields[3];
+    		}
+    		var description = $scope.getFieldValue(complete_desc);
+    		var correctedObject = {
+    			id: id,
+    			type: type,
+    			mobility_mode: mobility_mode,
+    			description: description
+    		};
+    		chDescArray.push(correctedObject);
+    	}
+    	return chDescArray;
+    };
+    
+    var chall_description_data_object = conf_chall_messages;
+    $scope.chall_description_array = $scope.convertDescriptionObjectToDescArray(chall_description_data_object);
+        
     // Configure point type to show in pages
     $scope.point_types = conf_point_types;
     $scope.show_gpoint = false;
@@ -235,7 +254,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return engLanguage;
     };
     
-    // for services selection
+    // Home menu bar section
     var activeLinkProfile = "active";
     var activeLinkChalleng = "";
     var activeLinkClassification = "";
@@ -359,17 +378,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
          'Authorization': $scope.getToken(),
          'Accept': 'application/json;charset=UTF-8'
     };
-    
-    //$scope.getBasic = function() {
-    //    return 'Basic ' + $base64.encode($scope.basic_auth_user + ':' + $scope.basic_auth_password);
-    //};
-    
-    $scope.authHeadersBasic = {
-            //'Authorization': $scope.getBasic(),
-            'Accept': 'application/json;charset=UTF-8'
-       };
                   		    
-    // ------------------- User section ------------------
+    // ------------------- Player section ------------------
     
     // For user shared data
     sharedDataService.setUserId(userId);
@@ -550,40 +560,45 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.sTypes = sharedDataService.getScoreTypes();
     $scope.scoreTypes = "green leaves";
     
+    // Method used to show the correct challenge description text when the info icon is clicked
     $scope.openInfoChPanel = function(ch){
     	var msg_to_show = "";
     	switch(ch.type){
     		case $scope.CHAL_TYPE_1: 
     			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
-    				msg_to_show=$scope.chall_desc_bike_km;
+    				msg_to_show=$scope.chall_description_array[0].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
-    				msg_to_show=$scope.chall_desc_bike_share_km;
+    				msg_to_show=$scope.chall_description_array[1].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W + "Distance"){
-    				msg_to_show=$scope.chall_desc_walk_km;
+    				msg_to_show=$scope.chall_description_array[2].description;
     			}
     			break;
     		case $scope.CHAL_TYPE_3:
     			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
-    				msg_to_show=$scope.chall_desc_bus_trip;
+    				msg_to_show=$scope.chall_description_array[4].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
-    				msg_to_show=$scope.chall_desc_bike_share_trip;
+    				msg_to_show=$scope.chall_description_array[3].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T + "Distance"){
-    				msg_to_show=$scope.chall_desc_train_trip;
+    				msg_to_show=$scope.chall_description_array[5].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z + "Distance"){
-    				msg_to_show=$scope.chall_desc_zero_impact_trip;
+    				msg_to_show=$scope.chall_description_array[6].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P + "Distance"){
-    				msg_to_show=$scope.chall_desc_promoted_trip;
+    				msg_to_show=$scope.chall_description_array[7].description;
     			} 
     			break;
     		case $scope.CHAL_TYPE_5: 
-    			msg_to_show=$scope.chall_desc_green_bike_sharing_healt_zero_impact_point.replace("X", ch.target).replace("punti [green leaves, bici, salute, impatto 0]", ch.point_type);
+    			msg_to_show=$scope.chall_description_array[10].description.replace("X", ch.target).replace("punti [green leaves, bici, salute, impatto 0]", ch.point_type);
     			break;	
     		case $scope.CHAL_TYPE_7: 
-    			msg_to_show=$scope.chall_desc_complete_badge_collection;
+    			msg_to_show=$scope.chall_description_array[19].description;
     			break;
     		case $scope.CHAL_TYPE_9: 
     			var racc_num = ch.target;
-    			msg_to_show=$scope.chall_desc_recommentation.replace("X", ch.target);
+    			if(racc_num == 1){
+    				msg_to_show=$scope.chall_description_array[9].description.replace("X", ch.target).replace("tuoi amici si devono", "tuo amico si deve");
+    			} else {
+    				msg_to_show=$scope.chall_description_array[9].description.replace("X", ch.target);
+    			}
     			break;
     	}
     	$dialogs.notify("INFORMAZIONI UTILI", msg_to_show);
@@ -1218,6 +1233,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.correctDesc = function(desc, target, bonus, p_type, mode){
     	if(desc.indexOf("TARGET") > -1){
     		desc = desc.replace("TARGET", target);
+    	}
+    	if(target == 1 && desc.indexOf('utenti') > -1){
+    		desc = desc.replace("utenti", "utente");
     	}
     	if(target > 1 && desc.indexOf('viaggio') > -1){
     		desc = desc.replace("viaggio", "viaggi");

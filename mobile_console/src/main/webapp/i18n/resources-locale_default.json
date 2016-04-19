@@ -35,10 +35,6 @@
     "value": "Web Console",
     "description": "Titolo pagina home app"
 }, {
-    "key": "app_console-title",
-    "value": "Console Operatore",
-    "description": "Titolo pagina console app"
-}, {
     "key": "menu_bar-home",
     "value": "Home",
     "description": "Link home"
@@ -50,10 +46,6 @@
     "key": "text_btn_prec_comp",
     "value": "Precedente",
     "description": "Testo pulsante 'componente precedente'"
-}, {
-	"key": "left_menu-moreServices",
-	"value": "Servizi utili",
-	"description": "Menu sx Servizi utili"
 }, {
 	"key": "left_menu-profile",
 	"value": "Punteggio",
@@ -139,93 +131,9 @@
 	"value": "Informazioni Utente",
 	"description": "Titolo informazioni giocatore"
 }, {
-	"key": "citizen_name",
-	"value": "Nome",
-	"description": "Label nome cittadino"
-}, {
-	"key": "comunity_name",
-	"value": "Nome",
-	"description": "Nome comunita"
-}, {
-	"key": "citizen_surname",
-	"value": "Cognome",
-	"description": "Label cognome cittadino"
-}, {
-	"key": "citizen_address",
-	"value": "Indirizzo",
-	"description": "Label indirizzo cittadino"
-}, {
-	"key": "comunity_address",
-	"value": "Indirizzo",
-	"description": "Indirizzo comunita"
-}, {
-	"key": "citizen_phone",
-	"value": "Telefono",
-	"description": "Label telefono cittadino"
-}, {
-	"key": "citizen_gender",
-	"value": "Sesso",
-	"description": "Label sesso cittadino"
-}, {
-	"key": "citizen_taxcode",
-	"value": "CF",
-	"description": "Label cf cittadino"
-}, {
-	"key": "citizen_date_of_birth",
-	"value": "Data di nascita",
-	"description": "Label data e luogo di nascita cittadino"
-}, {
-	"key": "citizen_birth_place",
-	"value": "Stato di nascita:",
-	"description": "Label stato di nascita cittadino"
-}, {
-	"key": "citizen_birth_municipality",
-	"value": "Comune di nascita:",
-	"description": "Label comune di nascita cittadino"
-}, {
-	"key": "citizen_mail",
-	"value": "E-mail",
-	"description": "Label mail cittadino"
-}, {
-	"key": "need_help",
-	"value": "Ti serve aiuto",
-	"description": "Menu dx Assistenza online"
-}, {
-	"key": "call_skype",
-	"value": "Chiama",
-	"description": "Link chiamata skype"
-}, {
-	"key": "online_assistance_skype",
-	"value": "l'assistenza on-line",
-	"description": "Label assistenza skype"
-}, {
-	"key": "guide",
-	"value": "Guida",
-	"description": "Menu dx Guida"
-}, {
-	"key": "faq",
-	"value": "Domande frequenti",
-	"description": "Link faq"
-}, {
 	"key": "documents",
 	"value": "Documenti",
 	"description": "Link documenti"
-}, {
-	"key": "home_filter_label",
-	"value": "Filtra per cod.",
-	"description": "Label per filtro pratiche"
-}, {
-	"key": "filter_text",
-	"value": "filtra elementi...",
-	"description": "Testo iniziale text box del filtro"
-}, {
-	"key": "practice_title",
-	"value": "Titolo",
-	"description": "Label titolo pratica"
-}, {
-	"key": "practice_type",
-	"value": "Tipo",
-	"description": "Label tipo pratica"
 }, {
 	"key": "player_position",
 	"value": "Pos.",
@@ -263,18 +171,6 @@
 	"value": "Visualizza",
 	"description": "Link visualizza dati giocatore"
 }, {
-	"key": "practice_view_pdf_file",
-	"value": "Scheda PDF",
-	"description": "Link visualizza pdf"
-}, {
-	"key": "practice_edit",
-	"value": "Modifica",
-	"description": "Link modifica"
-}, {
-	"key": "practice_cons",
-	"value": "Conferma",
-	"description": "Link conferma"
-}, {
 	"key": "previous_label",
 	"value": "Prec",
 	"description": "Label precedente"
@@ -283,18 +179,6 @@
 	"value": "Succ",
 	"description": "Label successivo"
 }, {
-	"key": "practice_remove",
-	"value": "Rimuovi",
-	"description": "Link rimuovi"
-}, {
-	"key": "practice_edit_label",
-	"value": "Modifica",
-	"description": "Label modifica pratica"
-}, {
-	"key": "practice_goback_label",
-	"value": "Indietro",
-	"description": "Label torna indietro"
-}, {
 	"key": "no_player_in_lists",
 	"value": "Nessun giocatore presente in classifica",
 	"description": "Messaggio classifica vuota"
@@ -302,10 +186,6 @@
 	"key": "document_title",
 	"value": "Documenti",
 	"description": "Testo sezione documenti"
-}, {
-	"key": "usefull_link",
-	"value": "Contatti utili",
-	"description": "Titolo sezione contatti utili"
 }, {
 	"key": "loading_text",
 	"value": "Caricamento in corso",

@@ -389,7 +389,7 @@ public class PortalController extends SCController{
 	// Here I insert a task that invoke the WS notification
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
-	@Scheduled(cron="0 0 20 * * THU") 		// Repeat every Thursday at 8 PM
+	@Scheduled(cron="0 0 20 * * WED") 		// Repeat every Wednesday at 8 PM
 	public synchronized void checkNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)

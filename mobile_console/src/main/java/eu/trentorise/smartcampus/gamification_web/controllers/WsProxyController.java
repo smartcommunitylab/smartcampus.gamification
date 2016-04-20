@@ -261,6 +261,7 @@ public class WsProxyController {
 		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data);
 		String result = "";
 		String name = "";
+		String mail = "";
 		String id = data.get("id").toString();
 		long millis = System.currentTimeMillis();
 		PersonalData pdata = null;
@@ -270,6 +271,7 @@ public class WsProxyController {
 			pdata = new PersonalData();
 			try {
 				JSONObject personalData = new JSONObject(data.get("personalData").toString());
+				mail = personalData.getString("mail");
 				name = personalData.getString("nickname");
 				String age = personalData.getString("age");
 				boolean transport = personalData.getBoolean("transport");
@@ -294,6 +296,7 @@ public class WsProxyController {
 		if(isTest.compareTo("true") == 0){
 			Player p = playerRepositoryDao.findBySocialId(id);
 			p.setNikName(name);
+			p.setMail(mail);
 			p.setPersonalData(pdata);
 			if (pdata.getNick_recommandation() != null) {
 				Player recommender = playerRepositoryDao.findByNick(pdata.getNick_recommandation());
@@ -306,6 +309,7 @@ public class WsProxyController {
 		} else {
 			PlayerProd p = playerProdRepositoryDao.findBySocialId(id);
 			p.setNikName(name);
+			p.setMail(mail);
 			p.setPersonalData(pdata);
 			playerProdRepositoryDao.save(p);
 			if (pdata.getNick_recommandation() != null) {
@@ -318,6 +322,31 @@ public class WsProxyController {
 		}
 		
 		return result;	
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateMail")
+	public @ResponseBody
+	String updateMail(HttpServletRequest request, @RequestParam String urlWS){
+		String[] allData = urlWS.split("\\?");
+		String[] allParams = allData[1].split("\\&");
+		String playerid = getFieldValue(allParams[0]);
+		String mail = getFieldValue(allParams[1]);
+		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + mail);
+		String result = "";
+		if(mail != null && mail.compareTo("") != 0){
+			if(isTest.compareTo("true") == 0){
+				Player p = playerRepositoryDao.findBySocialId(playerid);
+				p.setMail(mail);
+				playerRepositoryDao.save(p);
+				result = p.toJSONString();
+			} else {
+				PlayerProd p = playerProdRepositoryDao.findBySocialId(playerid);
+				p.setMail(mail);
+				playerProdRepositoryDao.save(p);
+				result = p.toJSONString();
+			}
+		}
+		return result;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/checkuser/{socialId}")
@@ -344,6 +373,15 @@ public class WsProxyController {
 		correctResult += "\"registered\":" + result + "}";
 		logger.debug(String.format("WS-get check if user %s already access app: %s", socialId, result));
 		return correctResult;
+	}
+	
+	private String getFieldValue(String completeParam){
+		String val = "";
+		String[] nameAndVal = completeParam.split("=");
+		if(nameAndVal.length > 1){
+			val = nameAndVal[1];
+		}
+		return val;
 	}
 	
 	

@@ -200,7 +200,7 @@ var conf_week_sponsor="<%=request.getAttribute("week_sponsor_param")%>";
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Benvenuto</h4>
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Benvenuto/a</h4>
 				</div>
 				<div class="modal-body">
 					<div align="justify">
@@ -218,6 +218,12 @@ var conf_week_sponsor="<%=request.getAttribute("week_sponsor_param")%>";
 							<a href="view_prizes" target="_blank" >Premi</a>
 						</li>
 					</ul>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.mail.$dirty && form.mail.$invalid]">
+						<label class="control-label" for="mail">e-mail:</label>
+						<input type="text" class="form-control" name="mail" id="mail" ng-disabled="!accepted" placeholder="Inserisci il tuo indirizzo email" ng-model="user.mail" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" ng-pattern="mailPattern" required>
+						<div ng-show="form.mail.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo mail obbligatorio.</div>
+						<div ng-show="form.mail.$error.pattern && submitNumber" class="alert alert-danger" role="alert">Campo mail non corretto. Inserisci un indirizzo mail esistente.</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.nickname.$dirty && form.nickname.$invalid]">
 						<label class="control-label" for="username">Nick name:</label>
@@ -288,6 +294,35 @@ var conf_week_sponsor="<%=request.getAttribute("week_sponsor_param")%>";
 				<div class="modal-footer">
 					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
 					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine || !accepted" >OK</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+</script>
+<script type="text/ng-template" id="/dialogs/mailinput.html">
+<div class="modal" id="variablesModal" role="dialog">
+	<form role="form" name="form">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Benvenuto/a</h4>
+				</div>
+				<div class="modal-body">
+					<div align="justify">
+					Per utilizzare tutte le funzionalita' del gioco e per essere sempre aggiornato sulle novita' e' necessario che tu inserisca la tua mail. 
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.mail.$dirty && form.mail.$invalid]">
+						<label class="control-label" for="mail">e-mail:</label>
+						<input type="text" class="form-control" name="mail" id="mail" placeholder="Inserisci il tuo indirizzo email" ng-model="user.mail" ng-click="clearErroMessages()" ng-keyup="hitEnter($event)" ng-pattern="mailPattern" required>
+						<div ng-show="form.mail.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo mail obbligatorio.</div>
+						<div ng-show="form.mail.$error.pattern && submitNumber" class="alert alert-danger" role="alert">Campo mail non corretto. Inserisci un indirizzo mail esistente.</div>
+					</div>
+				</div>
+				<div class="required_desc"><p>Il simbolo * indica un campo obbligatorio</p></div>
+				<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
+					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
 				</div>
 			</div>
 		</div>

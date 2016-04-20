@@ -37,11 +37,11 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
-    	.when('/classification/:id', {
+    	/*.when('/classification/:id', {
     		templateUrl: 'partials/classification.html',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
-    	})
+    	})*/
     	.when('/rules', {
     		templateUrl: 'partials/game_rules.html',
     		controller: 'MainCtrl',
@@ -62,11 +62,6 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
-    	/*.when('/viewall/prizes', {
-    		templateUrl: 'partials/game_prizes.html',
-    		controller: 'MainCtrl',
-    		controllerAs: 'main'
-    	})*/
     	.otherwise({
     		redirectTo:'/'
     	});
@@ -81,6 +76,5 @@ cp.config(['$compileProvider',
     }
 ]);
 cp.run(function($FB){
-	  //$FB.init('1694843157451296');
 	$FB.init('1694843157451296');
 });	  

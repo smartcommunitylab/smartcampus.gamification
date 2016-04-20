@@ -28,15 +28,19 @@ public class ChallengesUtils {
 	private final String CHAL_K_COUNTER = "_counter";
 	private final String CHAL_K_POINT_TYPE = "_point_type";
 	private final String CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
+	private final String CHAL_K_BADGE_COLL_NAME = "_badge_collection";
 	private final String CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE e avrai ulteriori BONUS punti POINT_TYPE in bonus";
+	private final String CHAL_DESC_6 = "Ottieni almeno TARGET badge nella Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_TYPE_1 = "PERCENT";
 	private final String CHAL_TYPE_3 = "TRIPNUMBER";
+	private final String CHAL_TYPE_4 = "ZEROIMPACT";
 	private final String CHAL_TYPE_5 = "POINTSEARNED";
-	private final String CHAL_TYPE_7 = "COMPLETECOLLECTION";
+	private final String CHAL_TYPE_6 = "NEXTBADGE";
+	private final String CHAL_TYPE_7 = "BADGECOLLECTION";
 	private final String CHAL_TYPE_9 = "RECOMMENDATION";
 	/*private final String CHAL_TYPE_1 = "ch1";
 	private final String CHAL_TYPE_3 = "ch3";
@@ -136,7 +140,7 @@ public class ChallengesUtils {
     				status = (walked_km * 100) / target;
     				if(status > 100)status = 100;
     				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode);
+    				String desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode, null);
     				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
@@ -153,7 +157,24 @@ public class ChallengesUtils {
     				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = count * 100 / target;
     				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode);
+    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null);
+    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+    				tmp_chall.setChallId(id);
+    				tmp_chall.setChallDesc(desc);
+    				tmp_chall.setChallTarget(target);
+    				tmp_chall.setType(ch_type);
+    				tmp_chall.setStatus(status);
+    				tmp_chall.setActive(active);
+    				tmp_chall.setSuccess(success);
+    				tmp_chall.setStartDate(startTime);
+    				tmp_chall.setEndDate(endTime);
+    			}
+    			if(ch_type.compareTo(CHAL_TYPE_4) == 0){
+    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
+    				String mobility_mode = CHAL_ALLOWED_MODE_Z;
+    				status = count * 100 / target;
+    				String id = challIndxArray.get(i);
+    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null);
     				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
@@ -176,7 +197,24 @@ public class ChallengesUtils {
     				status = earned_points * 100 / target;
     				if(status > 100)status = 100;
 					String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_5, target, bonus, point_type, "");
+    				String desc = correctDesc(CHAL_DESC_5, target, bonus, point_type, "", null);
+    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+    				tmp_chall.setChallId(id);
+    				tmp_chall.setChallDesc(desc);
+    				tmp_chall.setChallTarget(target);
+    				tmp_chall.setType(ch_type);
+    				tmp_chall.setStatus(status);
+    				tmp_chall.setActive(active);
+    				tmp_chall.setSuccess(success);
+    				tmp_chall.setStartDate(startTime);
+    				tmp_chall.setEndDate(endTime);
+    			}
+    			if(ch_type.compareTo(CHAL_TYPE_6) == 0){
+    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
+    				String badge_coll_name = customData.getString(CHAL_K + ch_id + CHAL_K_BADGE_COLL_NAME);
+    				status = count * 100 / target;
+    				String id = challIndxArray.get(i);
+    				String desc = correctDesc(CHAL_DESC_6, target, bonus, point_type, "", badge_coll_name);
     				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
@@ -194,7 +232,7 @@ public class ChallengesUtils {
 						status = 100;
 					}
     				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_7, target, bonus, point_type, "");
+    				String desc = correctDesc(CHAL_DESC_7, target, bonus, point_type, "", null);
     				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
@@ -211,7 +249,7 @@ public class ChallengesUtils {
     				status = recommandation * 100 / target;
     				if(status > 100)status = 100;
     				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_9, target, bonus, point_type, "");
+    				String desc = correctDesc(CHAL_DESC_9, target, bonus, point_type, "", null);
     				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
     				tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
@@ -259,7 +297,7 @@ public class ChallengesUtils {
     	return remainingDays;
     };*/
 	
-    private String correctDesc(String desc, int target, int bonus, String p_type, String mode){
+    private String correctDesc(String desc, int target, int bonus, String p_type, String mode, String coll_name){
     	if(desc.contains("TARGET")){
     		desc = desc.replace("TARGET", Integer.toString(target));
     	}
@@ -275,6 +313,11 @@ public class ChallengesUtils {
     	if(mode != null && mode != ""){
     		if(desc.contains("MODE")){
     			desc = desc.replace("MODE", getCorrectMode(mode));
+    		}
+    	}
+    	if(coll_name != null && coll_name != ""){
+    		if(desc.contains("BADGE_COLL_NAME")){
+    			desc = desc.replace("BADGE_COLL_NAME", coll_name);
     		}
     	}
     	return desc;

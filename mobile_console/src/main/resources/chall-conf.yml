@@ -24,7 +24,7 @@ descriptions:
     mobilitymode: train
     description: Per vincere la sfida vale il numero di itinerari che utilizzano il treno pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
   - id: 7
-    type: TRIPNUMBER
+    type: ZEROIMPACT
     mobilitymode: zeroimpact
     description: Gli itinerari a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi.
   - id: 8
@@ -76,7 +76,7 @@ descriptions:
     mobilitymode: recommendation
     description: I badge della collezione 'invita i tuoi amici' vengono assegnati al raggiungimento di 3, 5, 10, 25 punti.
   - id: 20
-    type: COMPLETECOLLECTION
+    type: BADGECOLLECTION
     mobilitymode: recommendation
     description: Per vincere la sfida devi completare una badge collection. Nello specifico abbiamo la collection green leaves composta dai badge di 50, 100, 200, 400, 800, 1500, 2500 e 5000 punti, la collection impatto zero composta dai badge di 1, 5, 10, 25, 50 punti, la collection public transport composta dai badge di 5, 10, 25, 50, 100 punti, la collection bici composta dai badge di 1, 5, 10, 25, 50 punti e la collection 'invita i tuoi amici' composta dai badge di 3, 5, 10, 25 punti.
     

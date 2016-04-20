@@ -281,7 +281,7 @@ cp.factory('invokeWSNiksServiceProxy', function($http, $q) {
 		} else {
 			$http({
 				method : method,
-				url : 'rest/updateNick',
+				url : 'rest/' + funcName,
 				params : {
 					"urlWS" : urlWS,
 				},

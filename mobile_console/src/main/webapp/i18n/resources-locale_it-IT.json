@@ -474,5 +474,17 @@
 	"key": "no_named_user",
 	"value": "Sconosciuto",
 	"description": "Testo per utente senza nickname"
+}, {
+	"key": "global_class_tab_title",
+	"value": "Globale",
+	"description": "Testo per classifica globale"
+}, {
+	"key": "actual_week_class_tab_title",
+	"value": "Settimana corrente",
+	"description": "Testo per classifica settimana corrente"
+}, {
+	"key": "last_week_class_tab_title",
+	"value": "Settimana scorsa",
+	"description": "Testo per classifica settimana scorsa"
 }
 ]

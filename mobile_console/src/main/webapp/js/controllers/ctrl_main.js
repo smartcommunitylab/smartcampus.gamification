@@ -34,15 +34,19 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_COUNTER = "_counter";
 	$scope.CHAL_K_POINT_TYPE = "_point_type";
 	$scope.CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
+	$scope.CHAL_K_BADGE_COLL_NAME = "_badge_collection";
 	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
 	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai BONUS punti POINT_TYPE in bonus";
 	$scope.CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE durante la challenge e guadagni un ulteriore bonus di BONUS punti POINT_TYPE"
-	$scope.CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_6 = "Ottieni almeno TARGET badge nella Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_7 = "Completa la Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_TYPE_1 = "PERCENT";
 	$scope.CHAL_TYPE_3 = "TRIPNUMBER";
+	$scope.CHAL_TYPE_4 = "ZEROIMPACT";
 	$scope.CHAL_TYPE_5 = "POINTSEARNED";
-	$scope.CHAL_TYPE_7 = "COMPLETECOLLECTION";
+	$scope.CHAL_TYPE_6 = "NEXTBADGE";
+	$scope.CHAL_TYPE_7 = "BADGECOLLECTION";
 	$scope.CHAL_TYPE_9 = "RECOMMENDATION";
 	/*$scope.CHAL_TYPE_1 = "ch1";
 	$scope.CHAL_TYPE_3 = "ch3";
@@ -82,6 +86,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.BCN_PUBLIC_TRANSPORT = "public transport aficionado";
 	$scope.BCN_PARK_AND_RIDE = "park and ride pioneer";
 	$scope.BCN_RECOMMENDATION = "recommendations";
+	$scope.BCN_LEADERBOARD3 = "leaderboard top 3";
 	$scope.BCN_HEALTH = "health";
 	$scope.BCN_SPECIAL = "special";
 	
@@ -411,10 +416,60 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     var tabClassIndex = 0;
            
     $scope.classTabs = [ 
-         { title:'Green Leaves', index: 1, content:"partials/classifications/class_green_leaves.html" },
-         { title:'Health', index: 2, content:"partials/classifications/class_health.html", disabled:false },
-         { title:'P+R', index: 3, content:"partials/classifications/class_pr.html", disabled:false }
+         { title:'Generale', index: 1, content:"partials/classifications/class_green_leaves.html" },
+         /*{ title:'Health', index: 2, content:"partials/classifications/class_health.html", disabled:false },
+         { title:'P+R', index: 3, content:"partials/classifications/class_pr.html", disabled:false },*/
+         { title:'Settimana corrente', index: 2, content:"partials/classifications/class_green_leaves_actual_week.html", disabled:false },
+         { title:'Settimana scorsa', index: 3, content:"partials/classifications/class_green_leaves_last_week.html", disabled:false }
     ];
+    
+    var isActiveG = true;
+    var isActiveAW = false;
+    var isActiveLW = false;
+    
+    $scope.showClass = function(page_id){
+    	if(page_id == 'G'){
+    		isActiveG = true;
+    		isActiveAW = false;
+    		isActiveLW = false;
+    	} else if(page_id == 'AW'){
+    		isActiveG = false;
+    		isActiveAW = true;
+    		isActiveLW = false;
+    	} else if(page_id == 'LW'){
+    		isActiveG = false;
+    		isActiveAW = false;
+    		isActiveLW = true;
+    	}
+    }
+    
+    $scope.isClassActive = function(page_id){
+    	if(page_id == 'G'){
+    		return isActiveG;
+    	} else if(page_id == 'AW'){
+    		return isActiveAW;
+    	} else if(page_id == 'LW'){
+    		return isActiveLW;
+    	}
+    }
+    
+    $scope.isClassActiveForClass = function(page_id){
+    	var classActive = "";
+    	if(page_id == 'G'){
+    		if(isActiveG){
+    			classActive = "active";
+    		}
+    	} else if(page_id == 'AW'){
+    		if(isActiveAW){
+    			classActive = "active";
+    		}
+    	} else if(page_id == 'LW'){
+    		if(isActiveLW){
+    			classActive = "active";
+    		}
+    	}
+    	return classActive;
+    }
     
     /*$scope.classTabs = [];
     $scope.init_class = function(){
@@ -580,15 +635,30 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[3].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T + "Distance"){
     				msg_to_show=$scope.chall_description_array[5].description;
-    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z + "Distance"){
-    				msg_to_show=$scope.chall_description_array[6].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P + "Distance"){
     				msg_to_show=$scope.chall_description_array[7].description;
     			} 
     			break;
+    		case $scope.CHAL_TYPE_4:
+    			//if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
+    			//	msg_to_show=$scope.chall_description_array[4].description;
+    			//} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
+    			//	msg_to_show=$scope.chall_description_array[3].description;
+    			//} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T + "Distance"){
+    			//	msg_to_show=$scope.chall_description_array[5].description;
+    			//} else 
+    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_Z + "Distance"){
+    				msg_to_show=$scope.chall_description_array[6].description;
+    			} //else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P + "Distance"){
+    			//	msg_to_show=$scope.chall_description_array[7].description;
+    			//} 
+    			break;	
     		case $scope.CHAL_TYPE_5: 
     			msg_to_show=$scope.chall_description_array[10].description.replace("X", ch.target).replace("punti [green leaves, bici, salute, impatto 0]", ch.point_type);
-    			break;	
+    			break;
+    		case $scope.CHAL_TYPE_6:
+    			msg_to_show=$scope.chall_description_array[14].description;
+    			break;
     		case $scope.CHAL_TYPE_7: 
     			msg_to_show=$scope.chall_description_array[19].description;
     			break;
@@ -696,27 +766,34 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		if(result != null){
     			sharedDataService.setPlayerList(result.players);
     			var name = "";
+    			var mail = "";
     			var find = false;
     			for(var i = 0; (i < result.players.length) && !find; i++){
     				if(result.players[i].socialId == id){
     					name = result.players[i].nikName;
+    					mail = result.players[i].mail;
     					find = true;
     				}	
     			}
     			$scope.myNick = name;
+    			$scope.playerMail = mail;
     			if(name != null && name != ''){
     				sharedDataService.setNickName(name);
     			}
     			if($scope.myNick == null || $scope.myNick == ""){
     				// manage Nick for player
-    				$scope.retrieveNickForPlayer(result.players);
+    				$scope.retrieveNickForPlayer(result.players, mail);
+    			} else if(mail == null || mail == ""){
+    				// manage Nick for player
+    				$scope.retrieveMailForPlayer();
     			}
+    			
     		}
     	});
     	return myDataPromise;
     };
     
-    // Method used to retrieve all users niks
+    // Method used to update an user nick and mail
     $scope.updateNiks = function(personalData) {
     	var method = 'POST';
     	var params = null;
@@ -740,6 +817,23 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		}
     	});
     	return myDataPromise;
+    };
+    
+    // Method used to update an user nick and mail
+    $scope.updateMail = function(userData) {
+    	var method = 'POST';
+    	var params = {
+    		playerid: $scope.userId,
+    		mail: userData.mail
+    	};
+    	var wsRestUrl = "updateMail";
+    	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
+    	myDataPromise.then(function(result){
+    		if(result != null){
+    			console.log("Updated user mail" + JSON.stringify(result));
+    		}
+    	});
+    	return myDataPromise;
     };  
     
     // Method correctPersonalDataBeforeSave: used to correct personal data object before post ws call
@@ -747,6 +841,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var correctedData = {};
     	if(personaldata.invitation != null && personaldata.invitation != ""){
 	    	correctedData = {
+	    		mail: personaldata.mail,
 	    	    nickname: personaldata.nickname,
 	    		age: $scope.correctAgeRange(personaldata.age),
 	    		transport : (personaldata.transport == "yes") ? true : false,
@@ -756,6 +851,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    	}
     	} else {
     		correctedData = {
+    			mail: personaldata.mail,
     	    	nickname: personaldata.nickname,
     	    	age: $scope.correctAgeRange(personaldata.age),
     	    	transport : (personaldata.transport == "yes") ? true : false,
@@ -812,16 +908,32 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return corr_vehicle_arr;
     };
     
-    $scope.retrieveNickForPlayer = function(nickList){
-    	var dlg = $dialogs.create('/dialogs/nickinput.html','nicknameDialogCtrl',nickList,'lg');
+    // Method used to retrieve the player nickname by opening a modal form that the user has to complete
+    $scope.retrieveNickForPlayer = function(nickList, mail){
+    	var data = {
+    		nickList : nickList,
+    		mail: mail
+    	}
+    	var dlg = $dialogs.create('/dialogs/nickinput.html','nicknameDialogCtrl',data,'lg');
 		dlg.result.then(function(user){
 			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
 			$scope.myNick = user.nickname;
 			sharedDataService.setNickName(user.nickname);
 			$scope.updateNiks(user);		// commented for test
-			if(user.invitation != null && user.invitation != "") {
-				var rec_player = $scope.retrievePlayerFromNick(user.invitation);
-			}
+			//if(user.invitation != null && user.invitation != "") {
+			//	var rec_player = $scope.retrievePlayerFromNick(user.invitation);
+			//}
+		});
+    };
+    
+    // Method used to retrieve the player mail by opening a modal form that user has to complete
+    $scope.retrieveMailForPlayer = function(){
+    	var data = null;
+    	var dlg = $dialogs.create('/dialogs/mailinput.html','mailDialogCtrl',data,'lg');
+		dlg.result.then(function(user){
+			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
+			$scope.playerMail = user.mail;
+			$scope.updateMail(user);
 		});
     };
     
@@ -925,7 +1037,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: $scope.getCorrectIcon(point_type), //"img/health/healthLeavesTesto.svg",
-    						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus, point_type, mobility_mode), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus, point_type, mobility_mode, null), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
     						startChTs: startChTs,
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -977,6 +1089,37 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						details: false
     					};
     					break;
+    				case $scope.CHAL_TYPE_4:
+    					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					//var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					var mobility_mode = $scope.CHAL_ALLOWED_MODE_Z;
+    					status = count * 100 / target;
+    					row_status = count + "/" + target;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus, point_type, mobility_mode, null), //"Fai almeno N viaggio/i con il 'Bike sharing' e vinci un bonus di 50 Green Points",
+    						startChTs: startChTs,
+    						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
+    						mobilityMode: mobility_mode,
+    						target: target,
+    						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						counter: count,
+    						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
+    						active: active,
+    						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
+    						success: success,
+    						progress_img: $scope.convertStatusToIcon(status, success),
+    						details: false
+    					};
+    					break;	
     				case $scope.CHAL_TYPE_5:
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
     					var earned_points = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_EARNED_POINT];
@@ -992,7 +1135,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: $scope.getCorrectIcon(point_type), //"img/health/healthLeavesTesto.svg",
-    						desc: $scope.correctDesc($scope.CHAL_DESC_5, target, bonus, point_type, ""), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_5, target, bonus, point_type, "", null), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
     						startChTs: startChTs,
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -1001,6 +1144,36 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
+    						active: active,
+    						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
+    						success: success,
+    						progress_img: $scope.convertStatusToIcon(status, success),
+    						details: false
+    					};
+    					break;
+    				case $scope.CHAL_TYPE_6:
+    					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					var badge_coll_name = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_BADGE_COLL_NAME];
+    					status = count * 100 / target;
+    					row_status = count + "/" + target;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_6, target, bonus, point_type, null, badge_coll_name), //"Fai almeno N viaggio/i con il 'Bike sharing' e vinci un bonus di 50 Green Points",
+    						startChTs: startChTs,
+    						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
+    						mobilityMode: mobility_mode,
+    						target: target,
+    						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						counter: count,
     						status: status,
     						row_status: row_status,
     						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
@@ -1024,7 +1197,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: $scope.getCorrectIcon(point_type),
-    						desc: $scope.correctDesc($scope.CHAL_DESC_7, target, bonus, point_type, ""), //"completa una Badge Collection e vinci un bonus di 50 Green Points",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_7, target, bonus, point_type, "", null), //"completa una Badge Collection e vinci un bonus di 50 Green Points",
     						startChTs: startChTs,
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -1052,7 +1225,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					tmp_chall = {
     						id: challIndxArray[i],
     						icon: $scope.getCorrectIcon(point_type),
-    						desc: $scope.correctDesc($scope.CHAL_DESC_9, target, bonus, point_type, ""), //"raccomanda la App ad almeno 10 utenti e guadagni 50 Green Points",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_9, target, bonus, point_type, "", null), //"raccomanda la App ad almeno 10 utenti e guadagni 50 Green Points",
     						startChTs: startChTs,
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
@@ -1230,7 +1403,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return !contained;
     };
     
-    $scope.correctDesc = function(desc, target, bonus, p_type, mode){
+    $scope.correctDesc = function(desc, target, bonus, p_type, mode, coll_name){
     	if(desc.indexOf("TARGET") > -1){
     		desc = desc.replace("TARGET", target);
     	}
@@ -1249,6 +1422,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	if(mode != null && mode != ""){
     		if(desc.indexOf("MODE") > -1){
     			desc = desc.replace("MODE", $scope.getCorrectMode(mode));
+    		}
+    	}
+    	if(coll_name != null && coll_name != ""){
+    		if(desc.indexOf("BADGE_COLL_NAME") > -1){
+    			desc = desc.replace("BADGE_COLL_NAME", coll_name);
     		}
     	}
     	return desc;
@@ -2144,6 +2322,7 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	//-- Variables --//
 	$scope.submitNumber = 0;
 	$scope.accepted = false;
+	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	
 	$scope.ages = [
 	    {val: 1, label: '< 20 anni'},
@@ -2153,6 +2332,7 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	];
 	
 	$scope.user = {
+		mail : data.mail,
 		nickname : '',
 		age: '',
 		transport: null,
@@ -2211,8 +2391,8 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	// Method checkIfNickAlreadyPresent: used to control if a nickname is already used in the player's table
 	// (added lower case transformation to consider string with same chars but different formatting
 	$scope.checkIfNickAlreadyPresent = function(nick){
-		for(var i = 0; i < data.length; i++){
-			if(data[i].nikName.toLowerCase() == nick.trim().toLowerCase()){
+		for(var i = 0; i < data.nickList.length; i++){
+			if(data.nickList[i].nikName.toLowerCase() == nick.trim().toLowerCase()){
 				return true;
 			}
 		}
@@ -2266,6 +2446,33 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 		}
 		return somes;
 	}
+}); // end controller(customDialogCtrl)
+cp.controller('mailDialogCtrl',function($scope,$modalInstance,data){
+	//-- Variables --//
+	$scope.submitNumber = 0;
+	$scope.accepted = false;
+	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	
+	$scope.user = {
+		mail : null,
+	};
+
+	//-- Methods --//
 	
+	$scope.cancel = function(){
+		$modalInstance.dismiss('Canceled');
+	}; // end cancel
+	
+	$scope.save = function(form){
+		if(form.$valid){
+			$scope.errorMessages = "";
+			// check if nick already present
+			$modalInstance.close($scope.user);	// pass all the form data to the main controller
+		}
+	}; // end save
+	
+	$scope.hitEnter = function(evt){
+		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
+			$scope.save();
+	};
 }) // end controller(customDialogCtrl)

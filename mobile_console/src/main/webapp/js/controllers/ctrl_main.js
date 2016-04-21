@@ -806,19 +806,23 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     $scope.getClassificationPages = function(gameId, page) {
-    	$scope.setLoading(true);
-    	var method = 'GET';
-    	var params = {
-    		page: page,
-    		size: $scope.maxPlayersClassification
-    	};
-    	var wsRestUrl = "state/" + gameId;
-    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
-    	myDataPromise.then(function(result){
-    		$scope.correctClassificationData(result);
-    		$scope.isLast = result.lastPage;
-    		$scope.showClassification();
-    	});
+    	if(sharedDataService.getClassification() != null && sharedDataService.getClassification().length > 0){
+    		$scope.GameClassification = sharedDataService.getClassification();
+    	} else {
+	    	$scope.setLoading(true);
+	    	var method = 'GET';
+	    	var params = {
+	    		page: page,
+	    		size: $scope.maxPlayersClassification
+	    	};
+	    	var wsRestUrl = "state/" + gameId;
+	    	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
+	    	myDataPromise.then(function(result){
+	    		$scope.correctClassificationData(result);
+	    		$scope.isLast = result.lastPage;
+	    		$scope.showClassification();
+	    	});
+    	}
     };
     
     // Method used to retrieve all users niks
@@ -1590,10 +1594,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		// Here I have to order the list by user scores
     		var greenClassificationTmp = $scope.orderByScores(1, $scope.GameClassification);
     		$scope.GameClassification = $scope.setCorrectPosGreen(greenClassificationTmp);
-    		var HealthClassificationTmp = $scope.orderByScores(2, $scope.GameClassification);
-    		$scope.GameClassification = $scope.setCorrectPosHealth(HealthClassificationTmp);
-    		var PRClassificationTmp = $scope.orderByScores(3, $scope.GameClassification);
-    		$scope.GameClassification = $scope.setCorrectPosPR(PRClassificationTmp);
+    		sharedDataService.setClassification($scope.GameClassification);
+    		//var HealthClassificationTmp = $scope.orderByScores(2, $scope.GameClassification);
+    		//$scope.GameClassification = $scope.setCorrectPosHealth(HealthClassificationTmp);
+    		//var PRClassificationTmp = $scope.orderByScores(3, $scope.GameClassification);
+    		//$scope.GameClassification = $scope.setCorrectPosPR(PRClassificationTmp);
     	}
     	$scope.setLoading(false);
     };

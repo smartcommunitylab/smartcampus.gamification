@@ -33,12 +33,7 @@ cp.service('sharedDataService', function(){
 //	this.searchList = [];
 	
 	this.utente = {};
-	
 	this.idDomanda = '';
-	
-    this.static_ambiti = [];
-    this.static_comuni = [];
-    this.static_edizioni = [];
     
     this.scoreTypes = [
           {code: "green leaves", title:"Green Leaves"},
@@ -57,6 +52,7 @@ cp.service('sharedDataService', function(){
     ];
     
     this.playerList = [];
+    this.classification = [];
 	
 	// Get and Set methods
 	this.getUsedLanguage = function(){
@@ -185,6 +181,14 @@ cp.service('sharedDataService', function(){
 	this.getGameId = function(){
 		return this.gameId;
 	};
+	
+	this.getClassification = function(){
+		return this.classification;
+	}
+	
+	this.setClassification = function(classification){
+		this.classification = classification;
+	}
 });
 
 

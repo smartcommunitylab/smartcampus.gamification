@@ -221,6 +221,22 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return is_actual_sponsor;
     };
     
+    $scope.showBannerMART = false;
+    $scope.showBannerAMI = false;
+    $scope.showBannerCARSHARING = false;
+    $scope.showBannerLENO2001 = false;
+    $scope.showBannerORIENTEOCCIDENTALE = false;
+    $scope.showBannerPAT = false;
+    
+    $scope.checksponsorbanner = function(){
+    	$scope.showBannerAMI = $scope.checkIfCurrentSponsor('Associazione Mozart');
+    	$scope.showBannerCARSHARING = $scope.checkIfCurrentSponsor('Cooperativa Car Sharing Trentino');
+    	$scope.showBannerLENO2001 = $scope.checkIfCurrentSponsor('2001 TEAM');
+    	$scope.showBannerMART = $scope.checkIfCurrentSponsor('MART');
+    	$scope.showBannerORIENTEOCCIDENTE = $scope.checkIfCurrentSponsor('Oriente Occidente');
+    	$scope.showBannerPAT = $scope.checkIfCurrentSponsor('PAT');
+    };
+    
         
     // Configure point type to show in pages
     $scope.point_types = conf_point_types;

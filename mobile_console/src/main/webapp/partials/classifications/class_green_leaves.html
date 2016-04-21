@@ -50,7 +50,7 @@
 					<th width="30%" class="center-text">{{ 'player_state_social' | i18n }}</th>
 				</tr>
 				<tbody class="animate-repeat"
-					ng-repeat="p_g in GameClassification | filter:q | orderBy: '-score[0].score' |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
+					ng-repeat="p_g in GameClassification | filter:q |  startFrom:currentPage*maxPlayers | limitTo:maxPlayers"><!-- | orderBy: '-score[0].score' -->
 					<tr ng-show="p_g.id == userId" class="success" href="#/profile/{{ gameId }}" ng-click="showProfile()">
 						<td align="left">{{ p_g.class_pos_g }}</td>
 						<td align="left">{{ p_g.name }}</td>

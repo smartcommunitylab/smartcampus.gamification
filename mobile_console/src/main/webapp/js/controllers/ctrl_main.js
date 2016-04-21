@@ -1574,13 +1574,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.GameClassification = [];
     	if(list != null && list.length > 0){
     		for(var i = 0; i < list.length; i++){
-    			var badges = $scope.getBadgesList(list[i].state);
+    			//var badges = $scope.getBadgesList(list[i].state);
     			var scores = $scope.getStateList(list[i].state);
     			var playerData = {
     					id : list[i].playerId,
     					name: $scope.getPlayerNameById(list[i].playerId),
     					gameId : list[i].gameId,
-    					badges : badges,		//badge : badgeEarned[badgeEarned.length-1],
+    					//badges : badges,
     					score : scores,
     					class_pos_g : 1,
     					class_pos_h : 1,

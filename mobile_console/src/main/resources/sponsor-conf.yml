@@ -1,0 +1,43 @@
+sponsors:
+  - id: 3
+    start_timestamp: 1461967200000
+    end_timestamp: 1462572000000
+    week_theme: Porta i tuoi amici
+    prize: 4 biglietti evento MART - primo e secondo classificato classifica settimanale Green Leaves
+    sponsor: MART
+  - id: 4
+    start_timestamp: 1462572000000
+    end_timestamp: 1463176800000
+    week_theme: Bici
+    prize: 2 abbonamenti annuali bike sharing - primo e secondo classificato classifica settimanale Green Leaves
+    sponsor: PAT
+  - id: 5
+    start_timestamp: 1463176800000
+    end_timestamp: 1463781600000
+    week_theme: Trasporto pubblico
+    prize: 2 biglietti spettacolo 'Bastien und Bastienne KV50' - primo classificato classifica settimanale Green Leaves
+    sponsor: Associazione Mozart
+  - id: 6
+    start_timestamp: 1463781600000
+    end_timestamp: 1464386400000
+    week_theme: Impatto zero
+    prize: 2 ingressi area Wellness - primo classificato classifica settimanale Green Leaves
+    sponsor: 2001 TEAM
+  - id: 7
+    start_timestamp: 1464386400000
+    end_timestamp: 1464991200000
+    week_theme: In centro senz'auto
+    prize: 1 abbonamento annuale car-sahring - primo classificato classifica settimanale Green Leaves
+    sponsor: Cooperativa Car Sharing Trentino
+  - id: 8
+    start_timestamp: 1464991200000
+    end_timestamp: 1465596000000
+    week_theme: Salute
+    prize: 10 ingressi piscina - primo classificato classifica settimanale Green Leaves
+    sponsor: 2001 TEAM
+  - id: 9
+    start_timestamp: 1465596000000
+    end_timestamp: 1466200800000
+    week_theme: TBD
+    prize: 2 biglietti per spettacolo Oriente/Occidente - primo classificato classifica settimanale Green Leaves
+    sponsor: Oriente Occidente

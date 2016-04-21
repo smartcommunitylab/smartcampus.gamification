@@ -265,9 +265,16 @@
 	
 	.alert-success {
 		text-align: center;
-		background-color: #00984a;
-		color: #fff;
+		border: none;
+		box-shadow: none;
 		background-image: none;
+		color: #fff;
+		background-color: #60b35c;
+		background: #60b35c; /* For browsers that do not support gradients */
+    	background: -webkit-linear-gradient(#60b35c, #fff); /* For Safari 5.1 to 6.0 */
+    	background: -o-linear-gradient(#60b35c, #fff); /* For Opera 11.1 to 12.0 */
+    	background: -moz-linear-gradient(#60b35c, #fff); /* For Firefox 3.6 to 15 */
+    	background: linear-gradient(#60b35c, #fff); /* Standard syntax */
 	}
 	.alert h4 {
 		margin-bottom: 0;
@@ -276,6 +283,11 @@
 	
 	.padding_btm {
 		padding-bottom: 10px;
+	}
+	.banner-imgs {
+		/*margin-top: 15px;*/
+		max-width: 95%;
+		max-height: 200px;
 	}
 	
 	.panel-success {
@@ -670,6 +682,9 @@
 	#big-credits-view {display: none; }
 	#small-dropdown-classification {display: block; }
 	#big-dropdown-classification {display: none; }
+	/* loading panel */
+	#small-loading {display: block; }
+	#big-loading {display: none; }
 	
 	/* Block for page head titles */
 	#my-prof-head-title { 
@@ -770,4 +785,7 @@
 		#big-credits-view {display: block; }
 		#small-dropdown-classification {display: none; }
 		#big-dropdown-classification {display: block; }
+		/* loading panel */
+		#small-loading {display: none; }
+		#big-loading {display: block; }
 	}

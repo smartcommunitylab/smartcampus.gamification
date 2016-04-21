@@ -122,13 +122,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.citizenId = userId;
     $scope.user_token = token;
     
-    $scope.week_sponsor = conf_week_sponsor;
-    if($scope.week_sponsor){
-    	$scope.show_sponsor_banner = true;
-    } else {
-    	$scope.show_sponsor_banner = false;
-    }
-    
     // Method used to retrieve the field value from the complete object string
     $scope.getFieldValue = function(fieldsObject){
     	var completeField = fieldsObject.split("=");
@@ -171,6 +164,63 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     var chall_description_data_object = conf_chall_messages;
     $scope.chall_description_array = $scope.convertDescriptionObjectToDescArray(chall_description_data_object);
+    
+    // Method used to retrieve the sponsor objects data list from the relative string value
+    $scope.convertSponsorObjectToArray = function(object_array_list){
+    	var sponsorArray = [];
+    	var sponsors_data = object_array_list.split("SponsorBannerData ");
+    	for(var i = 1; i < sponsors_data.length; i++){
+    		// here I have a list of sponsor object string
+    		var fields = sponsors_data[i].split(", ");
+    		var id = $scope.getFieldValue(fields[0]);
+    		var start_timestamp = $scope.getFieldValue(fields[1]);
+    		var end_timestamp = $scope.getFieldValue(fields[2]);
+    		var week_theme = $scope.getFieldValue(fields[3]);
+    		var prize = $scope.getFieldValue(fields[4]);
+    		if(fields[5].indexOf("]") > -1){
+    			fields[5] = fields[5].replace(new RegExp("]", 'g'), "");
+    		}
+    		var sponsor = $scope.getFieldValue(fields[5]);
+    		var correctedObject = {
+    			id: id,
+    			start_timestamp: start_timestamp,
+    			end_timestamp: end_timestamp,
+    			week_theme: week_theme,
+    			prize: prize,
+    			sponsor: sponsor
+    		};
+    		sponsorArray.push(correctedObject);
+    	}
+    	return sponsorArray;
+    };
+    
+    var sponsors_banner_data_object = conf_week_sponsor_data;
+    $scope.sponsor_banner_array = $scope.convertSponsorObjectToArray(sponsors_banner_data_object);
+    $scope.sponsored_week = false;
+    
+    $scope.retrieveSponsorBannerFromSponsorName = function(sponsor_name){
+    	var tmp_elements = [];
+    	for(var i = 0; i < $scope.sponsor_banner_array.length; i++){
+    		if($scope.sponsor_banner_array[i].sponsor == sponsor_name){
+    			tmp_elements.push($scope.sponsor_banner_array[i]);
+    		}
+    	}
+    	return tmp_elements;
+    };
+    
+    $scope.checkIfCurrentSponsor = function(sponsor_name){
+    	var is_actual_sponsor = false;
+    	var now_current = new Date().getTime();
+    	var sponsor_obj = $scope.retrieveSponsorBannerFromSponsorName(sponsor_name);
+    	for(var i = 0; i < sponsor_obj.length; i++){
+	    	if(now_current >= sponsor_obj[i].start_timestamp && now_current <= sponsor_obj[i].end_timestamp){
+	    		is_actual_sponsor = true;
+	    		$scope.sponsored_week = true;
+	    	}
+    	}
+    	return is_actual_sponsor;
+    };
+    
         
     // Configure point type to show in pages
     $scope.point_types = conf_point_types;
@@ -204,7 +254,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.currentViewDetails;
                   			
     // max practices displayed in home list
-    $scope.maxPlayers = 10;
+    $scope.maxPlayers = 50;
     $scope.maxPlayersClassification = 500;
 
     // for language icons

@@ -464,7 +464,7 @@
 	"description": "testo titolo in header pagine prima di nickname"
 }, {
 	"key": "week_prize_from_title",
-	"value": "Premio della settimana gentilmente offerto da ",
+	"value": "QUESTA SETTIMANA I PREMI SONO OFFERTI DA ",
 	"description": "testo banner sponsor premio settimana"
 }, {
 	"key": "left_menu-credits",

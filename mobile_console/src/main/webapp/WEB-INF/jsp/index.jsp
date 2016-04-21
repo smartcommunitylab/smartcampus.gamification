@@ -56,27 +56,7 @@ var userId="<%=request.getAttribute("user_id")%>";
 var conf_gameid="<%=request.getAttribute("gameid")%>";
 var conf_point_types="<%=request.getAttribute("point_types")%>";
 var conf_chall_messages="<%=request.getAttribute("challenge_desc_messages")%>";
-<%-- var conf_chall_desc_bike_km="<%=request.getAttribute("chall_desc_bike_km")%>";
-var conf_chall_desc_bike_share_km="<%=request.getAttribute("chall_desc_bike_share_km")%>";
-var conf_chall_desc_walk_km="<%=request.getAttribute("chall_desc_walk_km")%>";
-var conf_chall_desc_bike_share_trip="<%=request.getAttribute("chall_desc_bike_share_trip")%>";
-var conf_chall_desc_bus_trip="<%=request.getAttribute("chall_desc_bus_trip")%>";
-var conf_chall_desc_train_trip="<%=request.getAttribute("chall_desc_train_trip")%>";
-var conf_chall_desc_zero_impact_trip="<%=request.getAttribute("chall_desc_zero_impact_trip")%>";
-var conf_chall_desc_promoted_trip="<%=request.getAttribute("chall_desc_promoted_trip")%>";
-var conf_chall_desc_try_bike_bikeshare_bus_train="<%=request.getAttribute("chall_desc_try_bike_bikeshare_bus_train")%>";
-var conf_chall_desc_top_x_week="<%=request.getAttribute("chall_desc_top_x_week")%>";
-var conf_chall_desc_park_ride_pioneer="<%=request.getAttribute("chall_desc_park_ride_pioneer")%>";
-var conf_chall_desc_bike_sharing_pioneer="<%=request.getAttribute("chall_desc_bike_sharing_pioneer")%>";
-var conf_chall_desc_recommendation="<%=request.getAttribute("chall_desc_recommendation")%>";
-var conf_chall_desc_green_bike_sharing_health_zero_impact_point="<%=request.getAttribute("chall_desc_green_bike_sharing_health_zero_impact_point")%>";
-var conf_chall_desc_next_badge_green="<%=request.getAttribute("chall_desc_next_badge_green")%>";
-var conf_chall_desc_next_badge_zero_impact="<%=request.getAttribute("chall_desc_next_badge_zero_impact")%>";
-var conf_chall_desc_next_badge_public_transport="<%=request.getAttribute("chall_desc_next_badge_public_transport")%>";
-var conf_chall_desc_next_badge_bike="<%=request.getAttribute("chall_desc_next_badge_bike")%>";
-var conf_chall_desc_next_badge_recommendation="<%=request.getAttribute("chall_desc_next_badge_recommendation")%>";
-var conf_chall_desc_complete_badge_collection="<%=request.getAttribute("chall_desc_complete_badge_collection")%>"; --%>
-var conf_week_sponsor="<%=request.getAttribute("week_sponsor_param")%>";
+var conf_week_sponsor_data="<%=request.getAttribute("week_sponsor_data")%>";
 
 
 	<%-- Prevent the backspace key from navigating back. --%>

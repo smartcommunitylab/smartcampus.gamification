@@ -67,6 +67,7 @@ import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
+import eu.trentorise.smartcampus.gamification_web.repository.SponsorBannerDataSetup;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
 import eu.trentorise.smartcampus.profileservice.model.AccountProfile;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
@@ -100,6 +101,9 @@ public class PortalController extends SCController{
     @Autowired
     private ChallengeDescriptionDataSetup challDescriptionSetup;
     
+    @Autowired
+    private SponsorBannerDataSetup sponsorBannerSetup;
+    
     //Config params
     @Autowired
 	@Value("${smartcampus.gamification.url}")
@@ -131,9 +135,6 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.server.bauth.password}")
     private String basicAuthPassword;
-    @Autowired
-    @Value("${gamification.weeksponsor.name}")
-    private String weekSponsor;
 	
 	//Mail Params
 	@Autowired
@@ -191,7 +192,7 @@ public class PortalController extends SCController{
 			model.put("bauth_password", basicAuthPassword);
 			model.put("point_types", p_types);	// point type
 			model.put("challenge_desc_messages", challDescriptionSetup.getDescriptions());
-			model.put("week_sponsor_param", weekSponsor);
+			model.put("week_sponsor_data", sponsorBannerSetup.getSponsors());
 			logger.info(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));

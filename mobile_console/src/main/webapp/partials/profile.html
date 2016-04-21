@@ -3,11 +3,29 @@
 	<!-- <div id="my-prof-head-title" align="center">
 		{{ 'left_menu-profile' | i18n }}
 	</div> -->
-	<div class="row" ng-if="show_sponsor_banner">
+	<div class="row" ng-show="sponsored_week">
 		<div class="alert alert-success" role="alert">
 			<h4>
-			{{ 'week_prize_from_title' | i18n }}{{ week_sponsor }}
+				{{ 'week_prize_from_title' | i18n }} <!-- {{ week_sponsor }} -->
 			</h4>
+			<a href="http://www.mozartitalia.org/it/" target="_blank" ng-if="checkIfCurrentSponsor('Associazione Mozart')">
+				<img class="banner-imgs" src="img/sponsor/Ami.png" alt="Associazione Mozart Italia" title="Associazione Mozart Italia">
+			</a>
+			<a href="http://www.carsharing.tn.it/" target="_blank" ng-if="checkIfCurrentSponsor('Cooperativa Car Sharing Trentino')">
+				<img class="banner-imgs" src="img/sponsor/CarSharing.png" alt="Car Sharing" title="Car Sharing">
+			</a>
+			<a href="http://www.2001team.com/rovereto/" target="_blank" ng-if="checkIfCurrentSponsor('2001 TEAM')">
+				<img class="banner-imgs" src="img/sponsor/LENO2001.png" alt="Centro Natatorio LENO2001" title="Centro Natatorio LENO2001">
+			</a>
+			<a href="http://www.mart.trento.it/" target="_blank" ng-if="checkIfCurrentSponsor('MART')">
+				<img class="banner-imgs" src="img/sponsor/MART.png" alt="MART" title="MART">
+			</a>
+			<a href="http://www.orienteoccidente.it/it/oriente-occidente/" target="_blank" ng-if="checkIfCurrentSponsor('Oriente Occidente')">
+				<img class="banner-imgs" src="img/sponsor/OrienteOccidentale.png" alt="Oriente Occidentale" title="Oriente Occidentale">
+			</a>
+			<a href="http://www.provincia.tn.it/" target="_blank" ng-if="checkIfCurrentSponsor('PAT')">
+				<img class="banner-imgs" src="img/sponsor/ProvinciaTrento.png" alt="Provincia di Trento" title="Provincia di Trento">
+			</a>
 		</div>
 	</div>
 

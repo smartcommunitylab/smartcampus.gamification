@@ -4,10 +4,17 @@
 		{{ 'left_menu-classification' | i18n }}
 	</div> -->
 		
-	<div class="row" style="height: 200px" ng-show="isLoading">
+	<div id="big-loading" class="row" style="height: 200px" ng-show="isLoading">
 		<div style="text-align: center">
 			<img src="img/ajax-loader.gif" width="70" height="70" /><br>
-			<h2>{{ 'loading_text' | i18n }}...</h2>
+			<h3>{{ 'loading_text' | i18n }}...</h3>
+		</div>
+	</div>
+	
+	<div id="small-loading" class="row" style="height: 160px" ng-show="isLoading">
+		<div style="text-align: center">
+			<img src="img/ajax-loader.gif" width="40" height="40" /><br>
+			<h4>{{ 'loading_text' | i18n }}...</h4>
 		</div>
 	</div>
 			

@@ -147,7 +147,7 @@ public class EmailService {
     
     
     public void sendMailGamification(
-            final String recipientName, final String point_green, final String point_health, final String point_pr, final String badge,
+    		final String firstGameMail, final String recipientName, final String point_green, final String point_health, final String point_pr, final String badge,
             final String position, final String week_number, final String week_theme, final String last_week_number, final Boolean are_challenges, final Boolean are_prizes, final Boolean are_last_week_prizes, 
             final ArrayList<BagesData> badges,
             final List<ChallengesData> challenges,
@@ -212,7 +212,13 @@ public class EmailService {
         message.setTo(recipientEmail);
 
         // Create the HTML body using Thymeleaf
-        final String htmlContent = this.templateEngine.process("email-gamification2016.html", ctx);
+        boolean isFirstMail = Boolean.parseBoolean(firstGameMail);
+        String htmlContent = "";
+        if(isFirstMail){
+        	htmlContent = this.templateEngine.process("email-gamification2016-startgame.html", ctx);
+        } else {
+        	htmlContent = this.templateEngine.process("email-gamification2016.html", ctx);
+        }
         message.setText(htmlContent, true /* isHtml */);
         
         // Add the inline titles image, referenced from the HTML code as "cid:${imageResourceName}"

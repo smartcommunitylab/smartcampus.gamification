@@ -452,7 +452,7 @@
 	"description": "label messaggio sfida persa in pagina challenges"
 }, {
 	"key": "ch_win_message_text_label",
-	"value": "HAI VINTO!",
+	"value": "HAI VINTO ",
 	"description": "label messaggio sfida vinta in pagina challenges"
 }, {
 	"key": "ch_empty_list",

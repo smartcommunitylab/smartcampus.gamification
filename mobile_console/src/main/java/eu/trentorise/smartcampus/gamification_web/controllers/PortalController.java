@@ -164,6 +164,9 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.mailredirect.url}")
     private String mailRedirectUrl;
+    @Autowired
+    @Value("${gamification.mail.startgame}")
+    private String mailStartGame;
     
     private final String JSON_STATE = "state";
     private final String JSON_POINTCONCEPT = "PointConcept";
@@ -193,7 +196,7 @@ public class PortalController extends SCController{
 			model.put("point_types", p_types);	// point type
 			model.put("challenge_desc_messages", challDescriptionSetup.getDescriptions());
 			model.put("week_sponsor_data", sponsorBannerSetup.getSponsors());
-			logger.info(String
+			logger.debug(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));
 			Object[] objectArray = account.getAccountNames().toArray();
@@ -332,7 +335,7 @@ public class PortalController extends SCController{
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/prelogin")
 	public ModelAndView preSecure(HttpServletRequest request) {
-		logger.info(String.format("I am in pre login"));
+		logger.debug(String.format("I am in pre login"));
 		ModelAndView model = new ModelAndView();
 		model.setViewName("landing");
 		return model;
@@ -390,7 +393,7 @@ public class PortalController extends SCController{
 	// Here I insert a task that invoke the WS notification
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
-	@Scheduled(cron="0 0 20 * * WED") 		// Repeat every Wednesday at 8 PM
+	@Scheduled(cron="0 0 20 * * FRI") 		// Repeat every Wednesday at 8 PM
 	public synchronized void checkNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
@@ -398,10 +401,11 @@ public class PortalController extends SCController{
 		//String timestamp = "";
 		
 		ChallengesUtils challUtils = new ChallengesUtils();
+		challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
 		
 		URL resource = getClass().getResource("/");
 		String path = resource.getPath();
-		logger.error(String.format("class path : %s", path));
+		logger.debug(String.format("class path : %s", path));
 		
 		ArrayList<MailImage> standardImages = new ArrayList<MailImage>();
 		
@@ -511,21 +515,21 @@ public class PortalController extends SCController{
 						try {
 							if(notifications != null){
 								if(states != null && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
+									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
@@ -614,21 +618,21 @@ public class PortalController extends SCController{
 						try {
 							if(notifications != null){
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
-									this.emailService.sendMailGamification(playerName, "0", "0", "0", null, null, 
+									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								}
@@ -684,10 +688,11 @@ public class PortalController extends SCController{
 		//String timestamp = "";
 		
 		ChallengesUtils challUtils = new ChallengesUtils();
+		challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
 		
 		URL resource = getClass().getResource("/");
 		String path = resource.getPath();
-		logger.error(String.format("class path : %s", path));
+		logger.debug(String.format("class path : %s", path));
 		
 		ArrayList<MailImage> standardImages = new ArrayList<MailImage>();
 		

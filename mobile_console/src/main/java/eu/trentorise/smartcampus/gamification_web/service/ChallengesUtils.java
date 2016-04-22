@@ -7,8 +7,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.trentorise.smartcampus.gamification_web.models.ChallengeDescriptionData;
 import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
+import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
 
 public class ChallengesUtils {
 
@@ -71,7 +74,59 @@ public class ChallengesUtils {
 	
 	private static final Logger logger = Logger.getLogger(ChallengesUtils.class);
 	
+	private List<ChallengeDescriptionData> challLongDescriptionList;
+	
+	public List<ChallengeDescriptionData> getChallLongDescriptionList() {
+		return challLongDescriptionList;
+	}
+
+	public void setChallLongDescriptionList(List<ChallengeDescriptionData> challLongDescriptionList) {
+		this.challLongDescriptionList = challLongDescriptionList;
+	}
+
 	public ChallengesUtils() {
+	}
+	
+	private String getLongDescriptionByChall(String type, String mobMode, String target, String pointType){
+		String correctDesc = "";
+		List<ChallengeDescriptionData> challDescList = getChallLongDescriptionList();
+		if(type.compareTo(CHAL_TYPE_1) == 0){
+			if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
+				correctDesc = challDescList.get(0).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
+				correctDesc = challDescList.get(1).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
+				correctDesc = challDescList.get(2).getDescription();
+			}
+		} else if(type.compareTo(CHAL_TYPE_3) == 0){
+			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
+				correctDesc = challDescList.get(4).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
+				correctDesc = challDescList.get(3).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_T) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_T + "Distance") == 0){
+				correctDesc = challDescList.get(5).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_P) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_P + "Distance") == 0){
+				correctDesc = challDescList.get(7).getDescription();
+			}
+		} else if(type.compareTo(CHAL_TYPE_4) == 0){
+			if(mobMode.compareTo(CHAL_ALLOWED_MODE_Z) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_Z + "Distance") == 0){
+				correctDesc = challDescList.get(6).getDescription();
+			}
+		} else if(type.compareTo(CHAL_TYPE_5) == 0){
+			correctDesc = challDescList.get(10).getDescription().replace("X", target).replace("punti [green leaves, bici, salute, impatto 0]", pointType);
+		} else if(type.compareTo(CHAL_TYPE_6) == 0){
+			correctDesc = challDescList.get(14).getDescription();
+		} else if(type.compareTo(CHAL_TYPE_7) == 0){
+			correctDesc = challDescList.get(19).getDescription();
+		} else if(type.compareTo(CHAL_TYPE_9) == 0){
+			int racc_num = Integer.parseInt(target);
+			if(racc_num == 1){
+				correctDesc = challDescList.get(9).getDescription().replace("X", target).replace("tuoi amici si devono", "tuo amico si deve");
+			} else {
+				correctDesc = challDescList.get(9).getDescription().replace("X", target);
+			}
+		}
+		return correctDesc;
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -151,6 +206,7 @@ public class ChallengesUtils {
     				tmp_chall.setSuccess(success);
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
+    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
     			}
     			if(ch_type.compareTo(CHAL_TYPE_3) == 0){
     				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
@@ -168,6 +224,7 @@ public class ChallengesUtils {
     				tmp_chall.setSuccess(success);
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
+    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
     			}
     			if(ch_type.compareTo(CHAL_TYPE_4) == 0){
     				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
@@ -185,6 +242,7 @@ public class ChallengesUtils {
     				tmp_chall.setSuccess(success);
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
+    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
     			}
     			if(ch_type.compareTo(CHAL_TYPE_5) == 0){
     				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
@@ -208,6 +266,7 @@ public class ChallengesUtils {
     				tmp_chall.setSuccess(success);
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
+    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
     			}
     			if(ch_type.compareTo(CHAL_TYPE_6) == 0){
     				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
@@ -225,6 +284,7 @@ public class ChallengesUtils {
     				tmp_chall.setSuccess(success);
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
+    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
     			}
     			if(ch_type.compareTo(CHAL_TYPE_7) == 0){
     				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
@@ -243,6 +303,7 @@ public class ChallengesUtils {
     				tmp_chall.setSuccess(success);
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
+    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
     			}
     			if(ch_type.compareTo(CHAL_TYPE_9) == 0){
     				int recommandation = customData.getInt(CHAL_K + ch_id + CHAL_K_RECOM);
@@ -260,6 +321,7 @@ public class ChallengesUtils {
     				tmp_chall.setSuccess(success);
     				tmp_chall.setStartDate(startTime);
     				tmp_chall.setEndDate(endTime);
+    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
     			}
     			
     			if(now >= startTime - MILLIS_IN_DAY){	// if challenge is started (with one day of offset for mail)

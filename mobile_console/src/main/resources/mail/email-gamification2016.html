@@ -53,9 +53,16 @@
 				            Ecco le tue CHALLENGE per questa settimana, mettiti alla prova per superarle:
 				        </h3>
 				        <table th:if="${n_challenges ne null}">
-						    <tr th:each="ch : ${n_challenges}">
+						    <tr th:each="ch : ${n_challenges}" valign="top">
 						        <!-- <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
-						       	<td><font size="2"><strong> - <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
+						       	<td><strong> - </strong></td>
+						    	<td>
+						    		<div>
+						    			<font size="2"><strong><span th:text="${ch.challDesc}">Descrizione challenge</span></strong><br/>
+						       				<span th:text="${ch.challCompleteDesc}">Descrizione lunga challenge</span>
+						       			</font>
+						    		</div>
+						       	</td>
 						    </tr>
 					    </table>
 			        </div>
@@ -63,16 +70,18 @@
 				        <h3>
 				            I premi in palio per la <strong th:text="${next_week_num}">X+1</strong>^a settimana sono i seguenti:
 				        </h3>
-				        <table th:if="${n_prizes ne null}" width="85%">
+				        <table th:if="${n_prizes ne null}" width="95%">
 				        	<tr align="left">
-				        		<th width="25%">Premio</th>
-				        		<th width="50%">Traguardo</th>
-				        		<th width="25%">Offerto da</th>
+				        		<th width="2%"></th>
+				        		<th width="39%">Premio</th>
+				        		<th width="39%">Traguardo</th>
+				        		<th width="20%">Offerto da</th>
 				        	</tr>
-						    <tr th:each="p : ${n_prizes}">
-						        <td><font size="2" ><strong> - <span th:text="${p.prize}">tessera mitt</span></strong></font></td>
-						        <td><font size="2" ><span th:text="${p.target}">primo posto green point</span></font></td>
-						       	<td><font size="2" ><span th:text="${p.sponsor}">AMR</span></font></td>
+						    <tr th:each="p : ${n_prizes}" valign="top">
+						        <td>- </td>
+						        <td><font size="2" ><strong><span th:text="${p.prize}">tessera mitt</span></strong></font></td>
+						        <td><font size="2" > <span th:text="${p.target}">primo posto green point</span></font></td>
+						       	<td><font size="2" > <span th:text="${p.sponsor}">AMR</span></font></td>
 						    </tr>
 					    </table>
 			        </div>
@@ -135,7 +144,7 @@
 				            Hai superato le challenge:
 				        </h3>
 				        <table th:if="${n_lw_win_challenges ne null}">
-						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" >
+						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" valign="top" >
 						        <!-- <td><font size="2" ><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
 						       	<td><font size="2" ><strong> - <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
 						    </tr>
@@ -157,9 +166,8 @@
 			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
 			            Questa settimana non hai guadagnato nuovi badge! Gioca ancora ed otterrai nuovi punti!
 			        </h3>
-			
 			        <h3>
-			        	Per vedere i tuoi risultati completi e le classifiche  aggiornate vai al tuo sito personalizzato cliccando <br /><b><a href="https://dev.smartcommunitylab.it/gamificationweb" th:href="${greengame_url}" target="_blank">QUI</a></b>.
+			        	Per vedere i tuoi risultati completi e le classifiche  aggiornate vai al tuo sito personalizzato cliccando <b><a href="https://dev.smartcommunitylab.it/gamificationweb" th:href="${greengame_url}" target="_blank">QUI</a></b>.
 			        </h3>
 			        
 <!-- 			        <img src="img/foglie03.svg" th:src="'cid:' + ${imageResourceName}" /> -->

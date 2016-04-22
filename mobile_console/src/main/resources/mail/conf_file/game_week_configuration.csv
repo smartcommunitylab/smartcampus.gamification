@@ -1,6 +1,10 @@
 Settimana entrante,Tematica ,Presenza challenge,Presenza premi,Presenza premi precedenti,Attuale
-0,Test interno FBK,Y,Y,N,N
-1,Test interno FBK,Y,Y,N,N
-2,Test interno FBK,Y,Y,N,Y
+1,No,N,N,N,N
+2,No,N,N,N,Y
 3,PORTA I TUOI AMICI,Y,Y,N,N
-4,VIAGGIA IN BICICLETTA,Y,Y,Y,N
+4,TUTTI IN BICI,Y,Y,Y,N
+5,TRASPORTO PUBBLICO,Y,Y,Y,N
+6,IMPATTO ZERO,Y,Y,Y,N
+7,IN CENTRO SENZ'AUTO,Y,Y,Y,N
+8,SALUTE E BENESSERE,Y,Y,Y,N
+9,TBD,Y,Y,Y,N

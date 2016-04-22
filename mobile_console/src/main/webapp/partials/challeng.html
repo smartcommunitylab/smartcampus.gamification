@@ -43,8 +43,8 @@
 								<div class="desc-wrapper"><strong>{{ ch.desc }}.</strong></div>
 								<div class="days-wrapper" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}!</strong></div>
 								<div class="days-wrapper-failed" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
-								<div class="days-wrapper-success" ng-if="ch.success || ch.status == 100">
-									<strong>{{ 'ch_win_message_text_label' | i18n }}</strong>
+								<div class="days-wrapper-success upper-letters" ng-if="ch.success || ch.status == 100">
+									<strong>{{ 'ch_win_message_text_label' | i18n }}{{ ch.bonus }} {{ ch.point_type }}!</strong>
 								</div>
 								<div class="social-absolute" ng-if="ch.success || ch.status == 100">
 									<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getTextFb_ch(ch) }}" data-callback="callback"></a><!-- {{ shares }} -->
@@ -64,7 +64,7 @@
 							<div class="col-md-1 imagecol" ng-if="ch.success || ch.status == 100">
 								<img height="90" width="75" ng-src="{{ ch.progress_img }}" alt="Sfida vinta" title="Sfida vinta" />
 								<div class="image-bonus-success-num">{{ ch.bonus }}</div>
-								<div class="image-bonus-success">{{ ch.point_type }}</div>
+								<!-- <div class="image-bonus-success">{{ ch.point_type }}</div> -->
 							</div>
 						</div>
 			  		</div>
@@ -76,8 +76,8 @@
 								<strong>{{ ch.desc }}.</strong>
 								<div class="days-wrapper small" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}!</strong></div>
 								<div class="days-wrapper-failed small" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
-								<div class="days-wrapper-success small" ng-if="ch.success || ch.status == 100">
-									<strong>{{ 'ch_win_message_text_label' | i18n }}</strong>
+								<div class="days-wrapper-success small upper-letters" ng-if="ch.success || ch.status == 100">
+									<strong>{{ 'ch_win_message_text_label' | i18n }}{{ ch.bonus }} {{ ch.point_type }}!</strong>
 								</div>
 								<div class="verticalpad sharing_wrapper" ng-if="ch.success || ch.status == 100">
 									<div class="facebook_btn_wrapper_ch">
@@ -105,7 +105,7 @@
 								<div class="image-succ-wrapper">
 									<img height="80" width="60" ng-src="{{ ch.progress_img }}" alt="Sfida vinta" title="Sfida vinta" />
 									<div class="image-bonus-success-num-small">{{ ch.bonus }}</div>
-									<div class="image-bonus-success-small">{{ ch.point_type }}</div>
+									<!-- <div class="image-bonus-success-small">{{ ch.point_type }}</div> -->
 								</div>
 							</div>
 							<!-- <div class="col-xs-1 headercolsmall"><a href ng-click="showDetails(ch)"><i class="glyphicon glyphicon-info-sign"></i></a></div> -->
@@ -140,7 +140,9 @@
 								<div class="desc-wrapper"><strong>{{ ch.desc }}.</strong></div>
 								<div class="days-wrapper" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}</strong></div>
 								<div class="days-wrapper-failed" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
-								<div class="days-wrapper-success" ng-if="ch.success || ch.status == 100"><strong>{{ 'ch_win_message_text_label' | i18n }}</strong></div>
+								<div class="days-wrapper-success upper-letters" ng-if="ch.success || ch.status == 100">
+									<strong>{{ 'ch_win_message_text_label' | i18n }}{{ ch.bonus }} {{ ch.point_type }}!</strong>
+								</div>
 							</div>
 							<!-- <div class="col-md-1 headercol"><a href ng-click="showDetails(ch)"><i class="glyphicon glyphicon-info-sign"></i></a></div> -->
 							<div class="col-md-1 imagecol" ng-if="!ch.success && ch.active && ch.status != 100">
@@ -154,7 +156,7 @@
 							<div class="col-md-1 imagecol" ng-if="ch.success || ch.status == 100">
 								<img height="90" width="75" ng-src="{{ ch.progress_img }}" alt="Sfida vinta" title="Sfida vinta" />
 								<div class="image-bonus-success-num">{{ ch.bonus }}</div>
-								<div class="image-bonus-success">{{ ch.point_type }}</div>
+								<!-- <div class="image-bonus-success">{{ ch.point_type }}</div> -->
 							</div>
 						</div>
 			  		</div>
@@ -165,7 +167,9 @@
 								<strong>{{ ch.desc }}.</strong>
 								<div class="days-wrapper small" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ ch.daysToEnd }}{{ 'ch_day_to_end_text_label' | i18n }}</strong></div>
 								<div class="days-wrapper-failed small" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
-								<div class="days-wrapper-success small" ng-if="ch.success || ch.status == 100"><strong>{{ 'ch_win_message_text_label' | i18n }}</strong></div>
+								<div class="days-wrapper-success small upper-letters" ng-if="ch.success || ch.status == 100">
+									<strong>{{ 'ch_win_message_text_label' | i18n }}{{ ch.bonus }} {{ ch.point_type }}!</strong>
+								</div>
 							</div>
 							<div class="col-xs-10 headercolsmall" ng-if="!ch.success && ch.active && ch.status != 100">
 								<div class="image-succ-wrapper">
@@ -183,7 +187,7 @@
 								<div class="image-succ-wrapper">
 									<img height="80" width="60" ng-src="{{ ch.progress_img }}" alt="Sfida vinta" title="Sfida vinta" />
 									<div class="image-bonus-success-num-small">{{ ch.bonus }}</div>
-									<div class="image-bonus-success-small">{{ ch.point_type }}</div>
+									<!-- <div class="image-bonus-success-small">{{ ch.point_type }}</div> -->
 								</div>
 							</div>
 							<!-- <div class="col-xs-1 headercolsmall"><a href ng-click="showDetails(ch)"><i class="glyphicon glyphicon-info-sign"></i></a></div> -->

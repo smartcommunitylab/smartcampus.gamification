@@ -12,6 +12,10 @@
 		font-weight: bold;
 	}
 	
+	.upper-letters {
+		text-transform: uppercase;
+	}
+	
 	.navbar-default .navbar-text {
   		color: #2a2a2a;
 	}
@@ -194,7 +198,7 @@
 	
 	.homeheadertitle {
 		margin-bottom: 25px;
-		max-height: 90px;
+		max-height: 115px;
 	}
 	
 	.h1_reduced_margin {
@@ -420,7 +424,7 @@
 	}
 	.image-bonus-success-num {
 		position: absolute;
-		top: 3px;
+		top: 10px;
 		left: 38px;
 		font-weight: bold;
 		font-size: 15px;
@@ -440,7 +444,7 @@
 	}
 	.image-bonus-success-num-small {
 		position: absolute;
-		top: 5px;
+		top: 10px;
 		left: 22px;
 		font-weight: bold;
 		font-size: 15px;
@@ -544,7 +548,7 @@
 	.social-absolute {
 		position: absolute;
 		top: 60%;
-		left: 100px;
+		right: 20px;
 	}
 	.small_b {
 		padding-left: 0px;

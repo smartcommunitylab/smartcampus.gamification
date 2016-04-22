@@ -4,6 +4,7 @@ public class ChallengesData {
 	
 	private String challId = "";
 	private String challDesc = "";
+	private String challCompleteDesc = "";
 	private int challTarget = 0;
 	private int status = 0;
 	private String type = "";
@@ -16,14 +17,15 @@ public class ChallengesData {
 		super();
 	}
 
-	public ChallengesData(String challId, String challDesc, int challTarget, String type, int status,
-			Boolean active, Boolean success, long startDate, long endDate) {
+	public ChallengesData(String challId, String challDesc, String challCompleteDesc, int challTarget, int status,
+			String type, Boolean active, Boolean success, long startDate, long endDate) {
 		super();
 		this.challId = challId;
 		this.challDesc = challDesc;
+		this.challCompleteDesc = challCompleteDesc;
 		this.challTarget = challTarget;
-		this.type = type;
 		this.status = status;
+		this.type = type;
 		this.active = active;
 		this.success = success;
 		this.startDate = startDate;
@@ -102,11 +104,20 @@ public class ChallengesData {
 		this.endDate = endDate;
 	}
 
+	public String getChallCompleteDesc() {
+		return challCompleteDesc;
+	}
+
+	public void setChallCompleteDesc(String challCompleteDesc) {
+		this.challCompleteDesc = challCompleteDesc;
+	}
+
 	@Override
 	public String toString() {
-		return "ChallengesData [challId=" + challId + ", challDesc=" + challDesc + ", challTarget=" + challTarget
-				+ ", type=" + type + ", status=" + status + ", active=" + active + ", success=" + success
-				+ ", startDate=" + startDate + ", endDate=" + endDate + "]";
+		return "ChallengesData [challId=" + challId + ", challDesc=" + challDesc + ", challCompleteDesc="
+				+ challCompleteDesc + ", challTarget=" + challTarget + ", status=" + status + ", type=" + type
+				+ ", active=" + active + ", success=" + success + ", startDate=" + startDate + ", endDate=" + endDate
+				+ "]";
 	}
 
 }

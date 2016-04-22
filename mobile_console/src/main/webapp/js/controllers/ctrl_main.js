@@ -42,7 +42,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_DESC_7 = "Completa la Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_TYPE_1 = "PERCENT";
+	$scope.CHAL_TYPE_1A = "BSPERCENT";
 	$scope.CHAL_TYPE_3 = "TRIPNUMBER";
+	$scope.CHAL_TYPE_3A = "BSTRIPNUMBER";
 	$scope.CHAL_TYPE_4 = "ZEROIMPACT";
 	$scope.CHAL_TYPE_5 = "POINTSEARNED";
 	$scope.CHAL_TYPE_6 = "NEXTBADGE";
@@ -75,9 +77,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.BG_PUBLIC_TRANSPORT = "_pt_trip";
 	$scope.BG_PARK_AND_RIDE = "_parking";
 	$scope.BG_RECOMMENDATION = "_recommendations";
-	$scope.BG_SPECIAL_FIRST = "1stOfTheWeek";
-	$scope.BG_SPECIAL_SECOND = "2ndOfTheWeek";
-	$scope.BG_SPECIAL_THIRD = "3rdOfTheWeek";
+	$scope.BG_SPECIAL_FIRST = "1st_of_the_week";
+	$scope.BG_SPECIAL_SECOND = "2nd_of_the_week";
+	$scope.BG_SPECIAL_THIRD = "3rd_of_the_week";
 	// badges_collection_names
 	$scope.BCN_GREEN = "green leaves";
 	$scope.BCN_BIKE = "bike aficionado";
@@ -685,7 +687,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.openInfoChPanel = function(ch){
     	var msg_to_show = "";
     	switch(ch.type){
-    		case $scope.CHAL_TYPE_1: 
+    		case $scope.CHAL_TYPE_1 || $scope.CHAL_TYPE_1A: 
     			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
     				msg_to_show=$scope.chall_description_array[0].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
@@ -694,9 +696,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[2].description;
     			}
     			break;
-    		case $scope.CHAL_TYPE_3:
+    		case $scope.CHAL_TYPE_3 || $scope.CHAL_TYPE_3A:
     			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
     				msg_to_show=$scope.chall_description_array[4].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
+    				msg_to_show=$scope.chall_description_array[8].description.replace("[bici, bike sharing, bus, treno]","la bici");
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
     				msg_to_show=$scope.chall_description_array[3].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T + "Distance"){
@@ -1098,7 +1102,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 				var row_status = 0;
     			var tmp_chall = {};
     			switch(ch_type){
-    				case $scope.CHAL_TYPE_1:
+    				case $scope.CHAL_TYPE_1 || $scope.CHAL_TYPE_1A:
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = walked_km * 100 / target;
@@ -1129,7 +1133,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						details: false
     					};
     					break;
-    				case $scope.CHAL_TYPE_3:
+    				case $scope.CHAL_TYPE_3 || $scope.CHAL_TYPE_3A:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = count * 100 / target;
@@ -1615,6 +1619,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var badges_bike = {};
     	var badges_recommendation = {};
     	var badges_bike_sharing = {};
+    	var badges_leadertop = {};
     	var badges_special = {};
     	if(badge_list){
 	    	for(var i = 0; i < badge_list.length; i++){
@@ -1637,8 +1642,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    				badges_public_transport = badge_list[i];
 	    			} else if(badge_list[i].name == $scope.BCN_RECOMMENDATION){
 	    				badges_recommendation = badge_list[i];
+	    			} else if(badge_list[i].name == $scope.BCN_LEADERBOARD3){
+	    				badges_leadertop = badge_list[i];
 	    			}
-	    			
 	    		}
 	    	}
     	}
@@ -1652,6 +1658,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	badges.splice(6, 0, badges_zero_impact);		//zero impact
     	badges.splice(7, 0, badges_public_transport);	//public transport
     	badges.splice(8, 0, badges_recommendation);		//recommendation
+    	badges.splice(9, 0, badges_leadertop);			//leadertop
   	
     	return badges;
     };
@@ -1884,6 +1891,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowFirstOfWeek = false;
     	$scope.userShowSecondOfWeek = false;
     	$scope.userShowThirdOfWeek = false;
+    	$scope.userLeaderboardPresent = false;
     	
     	var badgeString = "badge guadagnati: ";
     	
@@ -2257,6 +2265,32 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    					$scope.userShowRecommendation25 = true;
 	    					badgeString += "25 amici invitati, ";
 	    					recommendationBadges += 1;
+	    					break;
+	    				default: break;
+	    			}
+	    		}
+    		}
+    		// leaderboard top 3
+    		if(list[9].badgeEarned){
+	    		for(var i = 0; i < list[9].badgeEarned.length; i++){
+	    			switch(list[9].badgeEarned[i]){
+		    			case $scope.BG_SPECIAL_FIRST :
+	    					$scope.userShowFirstOfWeek = true;
+	    					badgeString += "Primo in classifica green leaves della settimana, ";
+	    					leaderBoardBadges += 1;
+	    					$scope.userLeaderboardPresent = true;
+	    					break;
+	    				case $scope.BG_SPECIAL_SECOND :
+	    					$scope.userShowSecondOfWeek = true;
+	    					badgeString += "Secondo in classifica green leaves della settimana, ";
+	    					leaderBoardBadges += 1;
+	    					$scope.userLeaderboardPresent = true;
+	    					break;
+	    				case $scope.BG_SPECIAL_THIRD :
+	    					$scope.userShowThirdOfWeek = true;
+	    					badgeString += "Terzo in classifica green leaves della settimana, ";
+	    					leaderBoardBadges += 1;
+	    					$scope.userLeaderboardPresent = true;
 	    					break;
 	    				default: break;
 	    			}

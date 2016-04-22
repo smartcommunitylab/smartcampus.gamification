@@ -434,9 +434,13 @@ public class PortalController extends SCController{
 			// New method
 			logger.debug(String.format("Check Notification task. Cycle - %d", i++));
 			// Here I have to read the mail conf file data
-			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
-			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
-			List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/conf_file/game_week_winners.csv");
+			String conf_directory = "conf_file";
+			if(isTest.compareTo("true") == 0){
+				conf_directory = "conf_file_test";
+			}
+			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/" + conf_directory + "/game_week_configuration.csv");
+			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+			List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/" + conf_directory + "/game_week_winners.csv");
 			List<WeekPrizeData> mailPrizeActualData = new ArrayList<WeekPrizeData>();
 			// here I have to add the new mail parameters readed from csv files
 			String actual_week = "";
@@ -1128,6 +1132,15 @@ public class PortalController extends SCController{
 		allBadges.add(new BagesData(zeroImpact10.getName(), FileUtils.readFileToByteArray(zeroImpact10), "image/png", "10_zero_impact_trip", "10 Viaggi Impatto Zero"));
 		allBadges.add(new BagesData(zeroImpact25.getName(), FileUtils.readFileToByteArray(zeroImpact25), "image/png", "25_zero_impact_trip", "25 Viaggi Impatto Zero"));
 		allBadges.add(new BagesData(zeroImpact50.getName(), FileUtils.readFileToByteArray(zeroImpact50), "image/png", "50_zero_impact_trip", "50 Viaggi Impatto Zero"));		
+		
+		// files for leaderboard top 3
+		File firstOfWeek = new File(path + "mail/img/leaderboard/leaderboard1.png");
+		File secondOfWeek = new File(path + "mail/img/leaderboard/leaderboard2.png");
+		File thirdOfWeek = new File(path + "mail/img/leaderboard/leaderboard3.png");
+						
+		allBadges.add(new BagesData(firstOfWeek.getName(), FileUtils.readFileToByteArray(firstOfWeek), "image/png", "1st_of_the_week", "Primo della settimana"));
+		allBadges.add(new BagesData(secondOfWeek.getName(), FileUtils.readFileToByteArray(secondOfWeek), "image/png", "2nd_of_the_week", "Secondo della settimana"));
+		allBadges.add(new BagesData(thirdOfWeek.getName(), FileUtils.readFileToByteArray(thirdOfWeek), "image/png", "3rd_of_the_week", "Terzo della settimana"));
 		
 		return allBadges;
 	}

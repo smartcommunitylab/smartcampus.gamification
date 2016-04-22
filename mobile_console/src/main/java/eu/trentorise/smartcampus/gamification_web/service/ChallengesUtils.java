@@ -7,11 +7,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.trentorise.smartcampus.gamification_web.models.ChallengeDescriptionData;
 import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
-import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
 
 public class ChallengesUtils {
 
@@ -39,7 +37,9 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_TYPE_1 = "PERCENT";
+	private final String CHAL_TYPE_1A = "BSPERCENT";
 	private final String CHAL_TYPE_3 = "TRIPNUMBER";
+	private final String CHAL_TYPE_3A = "BSTRIPNUMBER";
 	private final String CHAL_TYPE_4 = "ZEROIMPACT";
 	private final String CHAL_TYPE_5 = "POINTSEARNED";
 	private final String CHAL_TYPE_6 = "NEXTBADGE";
@@ -90,7 +90,7 @@ public class ChallengesUtils {
 	private String getLongDescriptionByChall(String type, String mobMode, String target, String pointType){
 		String correctDesc = "";
 		List<ChallengeDescriptionData> challDescList = getChallLongDescriptionList();
-		if(type.compareTo(CHAL_TYPE_1) == 0){
+		if(type.compareTo(CHAL_TYPE_1) == 0 || type.compareTo(CHAL_TYPE_1A) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
 				correctDesc = challDescList.get(0).getDescription();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
@@ -98,9 +98,11 @@ public class ChallengesUtils {
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
 				correctDesc = challDescList.get(2).getDescription();
 			}
-		} else if(type.compareTo(CHAL_TYPE_3) == 0){
+		} else if(type.compareTo(CHAL_TYPE_3) == 0 || type.compareTo(CHAL_TYPE_3A) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
 				correctDesc = challDescList.get(4).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
+				correctDesc = challDescList.get(8).getDescription().replace("[bici, bike sharing, bus, treno]","la bici");
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
 				correctDesc = challDescList.get(3).getDescription();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_T) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_T + "Distance") == 0){
@@ -189,7 +191,7 @@ public class ChallengesUtils {
 				Boolean active = (now < endTime);
 				int status = 0;
     			ChallengesData tmp_chall = new ChallengesData();
-    			if(ch_type.compareTo(CHAL_TYPE_1) == 0){
+    			if(ch_type.compareTo(CHAL_TYPE_1) == 0 || ch_type.compareTo(CHAL_TYPE_1A) == 0){
     				int walked_km = customData.getInt(CHAL_K + ch_id + CHAL_K_WALKED_KM);
     				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = (walked_km * 100) / target;
@@ -208,7 +210,7 @@ public class ChallengesUtils {
     				tmp_chall.setEndDate(endTime);
     				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
     			}
-    			if(ch_type.compareTo(CHAL_TYPE_3) == 0){
+    			if(ch_type.compareTo(CHAL_TYPE_3) == 0 || ch_type.compareTo(CHAL_TYPE_3A) == 0){
     				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
     				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
     				status = count * 100 / target;

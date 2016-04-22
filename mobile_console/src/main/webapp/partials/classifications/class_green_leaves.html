@@ -15,9 +15,11 @@
 						<td align="left">{{ p_g.name }}</td>
 						<td align="left">{{ p_g.score[0].score }}</td>
 						<td align="left">
-							<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(p_g) }}" data-callback="callback"></a><!-- {{ shares }} -->
-							&nbsp;&nbsp;
-							<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(p_g) }}' ></a>
+							<div id="big-sharing-class">
+								<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(p_g) }}" data-callback="callback"></a><!-- {{ shares }} -->
+								&nbsp;&nbsp;
+								<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(p_g) }}' ></a>
+							</div>
 						</td>
 					</tr>
 					<tr ng-if="p_g.id != userId">
@@ -48,7 +50,7 @@
 						<td align="left">{{ p_g.name }}</td>
 						<td align="left">{{ p_g.score[0].score }}</td>
 						<td align="left">
-							<div class="sharing_wrapper">
+							<div id="small-sharing-class" class="sharing_wrapper">
 								<a facebook-feed-share class="facebookShare buttonFBSmall" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(p_g) }}" data-callback="callback"></a><!-- {{ shares }} -->
 								&nbsp;
 								<div class="twitter_btn_wrapper"><a id="twitter_button" twitter style="width: 22px" class="buttonTWSmall" data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="middle" data-text='{{ getPosTw_class(p_g) }}' ></a></div>

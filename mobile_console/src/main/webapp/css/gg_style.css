@@ -664,6 +664,8 @@
 	#big-badges-park-and-ride {display: none; }
 	#small-badges-user-recommendation {display: block; }
 	#big-badges-user-recommendation {display: none; }
+	#small-badges-leaderboards-top-3 {display: block; }
+	#big-badges-leaderboards-top-3 {display: none; }
 	/* Block for classification */
 	#small-class-table-green {display: block; }
 	#big-class-table-green {display: none; }
@@ -689,6 +691,9 @@
 	/* loading panel */
 	#small-loading {display: block; }
 	#big-loading {display: none; }
+	/* sharing buttons in classification */
+	#small-sharing-class {display: block; }
+	#big-sharing-class {display: none; }
 	
 	/* Block for page head titles */
 	#my-prof-head-title { 
@@ -767,6 +772,8 @@
 		#big-badges-park-and-ride {display: block; }
 		#small-badges-user-recommendation {display: none; }
 		#big-badges-user-recommendation {display: block; }
+		#small-badges-leaderboards-top-3 {display: none; }
+		#big-badges-leaderboards-top-3 {display: block; }
 		/* Block for classification */
 		#small-class-table-green {display: none; }
 		#big-class-table-green {display: block; }
@@ -792,4 +799,7 @@
 		/* loading panel */
 		#small-loading {display: none; }
 		#big-loading {display: block; }
+		/* sharing buttons in classification */
+		#small-sharing-class {display: none; }
+		#big-sharing-class {display: block; }
 	}

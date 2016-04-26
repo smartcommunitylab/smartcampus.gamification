@@ -53,6 +53,8 @@ cp.service('sharedDataService', function(){
     
     this.playerList = [];
     this.classification = [];
+    this.classificationActual = [];
+    this.classificationLast = [];
 	
 	// Get and Set methods
 	this.getUsedLanguage = function(){
@@ -188,6 +190,22 @@ cp.service('sharedDataService', function(){
 	
 	this.setClassification = function(classification){
 		this.classification = classification;
+	}
+	
+	this.getClassificationActual = function(){
+		return this.classificationActual;
+	}
+	
+	this.setClassificationActual = function(classificationActual){
+		this.classificationActual = classificationActual;
+	}
+	
+	this.getClassificationLast = function(){
+		return this.classificationLast;
+	}
+	
+	this.setClassificationLast = function(classificationLast){
+		this.classificationLast = classificationLast;
 	}
 });
 

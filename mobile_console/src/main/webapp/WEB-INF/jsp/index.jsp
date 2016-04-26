@@ -57,6 +57,7 @@ var conf_gameid="<%=request.getAttribute("gameid")%>";
 var conf_point_types="<%=request.getAttribute("point_types")%>";
 var conf_chall_messages="<%=request.getAttribute("challenge_desc_messages")%>";
 var conf_week_sponsor_data="<%=request.getAttribute("week_sponsor_data")%>";
+var conf_is_test="<%=request.getAttribute("isTest")%>";
 
 
 	<%-- Prevent the backspace key from navigating back. --%>

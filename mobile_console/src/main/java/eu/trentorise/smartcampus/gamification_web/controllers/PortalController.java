@@ -196,6 +196,7 @@ public class PortalController extends SCController{
 			model.put("point_types", p_types);	// point type
 			model.put("challenge_desc_messages", challDescriptionSetup.getDescriptions());
 			model.put("week_sponsor_data", sponsorBannerSetup.getSponsors());
+			model.put("isTest", isTest);
 			logger.debug(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));

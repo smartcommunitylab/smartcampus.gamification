@@ -266,6 +266,12 @@
 		padding-right: 5px;
 		padding-top: 4px;
 	}
+	.norightpadding {
+		padding-right: 0px;
+	}
+	.nopadding-absolute {
+		padding: 0px;
+	}
 	
 	.alert-success {
 		text-align: center;

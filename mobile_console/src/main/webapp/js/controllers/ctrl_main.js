@@ -91,6 +91,27 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.BCN_LEADERBOARD3 = "leaderboard top 3";
 	$scope.BCN_HEALTH = "health";
 	$scope.BCN_SPECIAL = "special";
+	// start week2: 1461362460000 -> 23/04 00:01 
+	// start week3: 1461967260000 -> 30/04 00:01 
+	// start week4: 1462572060000 -> 07/05 00:01 
+	// start week5: 1463176860000 -> 14/05 00:01 
+	// start week6: 1463781660000 -> 21/05 00:01 
+	// start week7: 1464386460000 -> 28/05 00:01 
+	// start week8: 1464991260000 -> 04/06 00:01 
+	// start week9: 1465596060000 -> 11/06 00:01 
+	//   end week9: 1466200860000 -> 18/06 00:01
+	$scope.start_week_1 = 1460757600000;
+	$scope.start_week_2 = 1461362460000;
+	$scope.start_week_3 = 1461967260000;
+	$scope.start_week_4 = 1462572060000;
+	$scope.start_week_5 = 1463176860000;
+	$scope.start_week_6 = 1463781660000;
+	$scope.start_week_7 = 1464386460000;
+	$scope.start_week_8 = 1464991260000;
+	$scope.start_week_9 = 1465596060000;
+	$scope.week_classification = "green leaves week ";
+	$scope.week_test_classification = "green leaves week test"
+	
 	
 	//$scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in a day (for test I use 7 days)
 	$scope.CHAL_TS_OFFSET = 0;
@@ -120,7 +141,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     sharedDataService.setGameId(conf_gameid);
     $scope.app ;
-                  			
+    $scope.is_test = conf_is_test;
     $scope.citizenId = userId;
     $scope.user_token = token;
     
@@ -811,7 +832,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     $scope.getClassificationPages = function(gameId, page) {
     	if(sharedDataService.getClassification() != null && sharedDataService.getClassification().length > 0){
-    		$scope.GameClassification = sharedDataService.getClassification();
+    		$scope.GameClassificationTot = sharedDataService.getClassification();
+    		$scope.GameClassificationActual = sharedDataService.getClassificationActual();
+    		$scope.GameClassificationLast = sharedDataService.getClassificationLast();
     	} else {
 	    	$scope.setLoading(true);
 	    	var method = 'GET';
@@ -1576,6 +1599,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.correctClassificationData = function(object){
     	var list = (object) ? object.content : [];
     	$scope.GameClassification = [];
+    	$scope.GameClassificationTot = [];
+    	$scope.GameClassificationActual = [];
+    	$scope.GameClassificationLast = [];
     	if(list != null && list.length > 0){
     		for(var i = 0; i < list.length; i++){
     			//var badges = $scope.getBadgesList(list[i].state);
@@ -1588,24 +1614,48 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					score : scores,
     					class_pos_g : 1,
     					class_pos_h : 1,
-    					class_pos_p : 1
+    					class_pos_p : 1,
+    					class_pos_aw : 1,
+    					class_pos_lw : 1
     			};
     			//MB19112014: added check to name to consider only the players in list
     			if(playerData.name != null && playerData.name != ""){
     				$scope.GameClassification.push(playerData);
     			}
+    			if($scope.userId == playerData.id){
+    				
+    			}
     		}
     		// Here I have to order the list by user scores
     		var greenClassificationTmp = $scope.orderByScores(1, $scope.GameClassification);
-    		$scope.GameClassification = $scope.setCorrectPosGreen(greenClassificationTmp);
-    		sharedDataService.setClassification($scope.GameClassification);
+    		$scope.GameClassificationTot = $scope.setCorrectPosGreen(greenClassificationTmp);
+    		$scope.playerClassTot = $scope.getPlayerClassificationPositionData($scope.GameClassificationTot);
+    		sharedDataService.setClassification($scope.GameClassificationTot);
     		//var HealthClassificationTmp = $scope.orderByScores(2, $scope.GameClassification);
     		//$scope.GameClassification = $scope.setCorrectPosHealth(HealthClassificationTmp);
     		//var PRClassificationTmp = $scope.orderByScores(3, $scope.GameClassification);
     		//$scope.GameClassification = $scope.setCorrectPosPR(PRClassificationTmp);
+    		var ActualWeekClassificationTmp = $scope.orderByScores(4, $scope.GameClassification);
+    		$scope.GameClassificationActual = $scope.setCorrectPosActualWeek(ActualWeekClassificationTmp);
+    		$scope.playerClassActual = $scope.getPlayerClassificationPositionData($scope.GameClassificationActual);
+    		sharedDataService.setClassificationActual($scope.GameClassificationActual);
+    		var LastWeekClassificationTmp = $scope.orderByScores(5, $scope.GameClassification);
+    		$scope.GameClassificationLast = $scope.setCorrectPosLastWeek(LastWeekClassificationTmp);
+    		$scope.playerClassLast = $scope.getPlayerClassificationPositionData($scope.GameClassificationLast);
+    		sharedDataService.setClassificationLast($scope.GameClassificationLast);
     	}
     	$scope.setLoading(false);
     };
+    
+    // Method getPlayerClassificationPositionData: retrieve the player data (status and position) in a specific classification list
+    $scope.getPlayerClassificationPositionData = function(list){
+    	for(var i = 0; i < list.length; i++){
+			if(list[i].id == $scope.userId){
+				return list[i];
+			}
+		}
+    	return null;
+    }
     
     // Method used to load the different badges in a list
     $scope.getBadgesList = function(object){
@@ -1669,7 +1719,21 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var states = [];
     	var state_greenL = {};
     	var state_health = {};
-    	var state_pr = {}; 
+    	var state_pr = {};
+    	var state_aw = {};
+    	var state_lw = {};
+    	var week_id = $scope.getCorrectActualWeek(new Date().getTime());
+    	var last_week_id = week_id - 1;
+    	var actual_week = "";
+    	var last_week = "";
+    	if($scope.is_test){
+    		actual_week = $scope.week_test_classification + "" + week_id;
+    		last_week = $scope.week_test_classification + "" + last_week_id;
+    	} else {
+    		actual_week = $scope.week_classification + "" + week_id;
+    		last_week = $scope.week_classification + "" + last_week_id;
+    	}
+    	
     	if(state_list){
 	    	for(var i = 0; i < state_list.length; i++){
 	    		if(state_list[i].score != null){	//.score
@@ -1685,8 +1749,20 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 		    					name : state_list[i].name,
 		    					score : state_list[i].score
 		    			};
-	    			} else {
+	    			} else if (state_list[i].name == "pr"){
 		    			state_pr = {
+		    					id : state_list[i].id,
+		    					name : state_list[i].name,
+		    					score : state_list[i].score
+		    			};
+	    			} else if (state_list[i].name == actual_week){
+		    			state_aw = {
+		    					id : state_list[i].id,
+		    					name : state_list[i].name,
+		    					score : state_list[i].score
+		    			};
+	    			} else if (state_list[i].name == last_week){
+		    			state_lw = {
 		    					id : state_list[i].id,
 		    					name : state_list[i].name,
 		    					score : state_list[i].score
@@ -1698,8 +1774,35 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	states.splice(0, 0, state_greenL);
     	states.splice(1, 0, state_health);
     	states.splice(2, 0, state_pr);
+    	states.splice(3, 0, state_aw);
+    	states.splice(4, 0, state_lw);
     	
     	return states;
+    };
+    
+    // Method getCorrectActualWeek: used to retrieve the correct game week number
+    $scope.getCorrectActualWeek = function(now_millis){
+    	var actual_week = 0;
+    	if(now_millis >= $scope.start_week_9){
+    		actual_week = 9;
+    	} else if(now_millis >= $scope.start_week_8){
+    		actual_week = 8;
+    	} else if(now_millis >= $scope.start_week_7){
+    		actual_week = 7;
+    	} else if(now_millis >= $scope.start_week_6){
+    		actual_week = 6;
+    	} else if(now_millis >= $scope.start_week_5){
+    		actual_week = 5;
+    	} else if(now_millis >= $scope.start_week_4){
+    		actual_week = 4;
+    	} else if(now_millis >= $scope.start_week_3){
+    		actual_week = 3;
+    	} else if(now_millis >= $scope.start_week_2){
+    		actual_week = 2;
+    	} else if(now_millis >= $scope.start_week_1){
+    		actual_week = 1;
+    	}
+    	return actual_week;
     };
     
     // Method used to find a player name by the id
@@ -1728,6 +1831,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		case 3: // case pr score
     			list.sort($scope.prScoreCompare);
     			break;
+    		case 4: // case actual week score
+    			list.sort($scope.awScoreCompare);
+    			break;
+    		case 5: // case last week score
+    			list.sort($scope.lwScoreCompare);
+    			break;	
     		default:
     			break;
     	}
@@ -1754,6 +1863,22 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	if(a.score[2].score > b.score[2].score)
     		return -1;
     	if(a.score[2].score < b.score[2].score)
+    		return 1;
+    	return 0;
+    };
+    
+    $scope.awScoreCompare = function(a, b){
+    	if(a.score[3].score > b.score[3].score)
+    		return -1;
+    	if(a.score[3].score < b.score[3].score)
+    		return 1;
+    	return 0;
+    };
+    
+    $scope.lwScoreCompare = function(a, b){
+    	if(a.score[4].score > b.score[4].score)
+    		return -1;
+    	if(a.score[4].score < b.score[4].score)
     		return 1;
     	return 0;
     };
@@ -1787,6 +1912,28 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			list[i].class_pos_p = i + 1;
     		} else {
     			list[i].class_pos_p = list[i - 1].class_pos_p;
+    		}
+    	}
+    	return list;
+    };
+    
+    $scope.setCorrectPosActualWeek = function(list){
+    	for(var i = 1; i < list.length; i++){
+    		if(list[i].score[3].score < list[i-1].score[3].score){
+    			list[i].class_pos_aw = i + 1;
+    		} else {
+    			list[i].class_pos_aw = list[i - 1].class_pos_aw;
+    		}
+    	}
+    	return list;
+    };
+    
+    $scope.setCorrectPosLastWeek = function(list){
+    	for(var i = 1; i < list.length; i++){
+    		if(list[i].score[4].score < list[i-1].score[4].score){
+    			list[i].class_pos_lw = i + 1;
+    		} else {
+    			list[i].class_pos_lw = list[i - 1].class_pos_lw;
     		}
     	}
     	return list;
@@ -2415,13 +2562,29 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.getTextTw_ch = function(ch){
     	return "Vinta la challenge: '" + ch.desc + "' #playandgochallenges";
     };
-    $scope.getPosFb_class = function(position){
-    	return "Play&Go: " + position.score[0].score + " punti, posizione in classifica: " + position.class_pos_g + "^ posto";
+    $scope.getPosFb_class = function(position, type){
+    	if(position){
+	    	if(type == 0){
+	    		return "Play&Go: " + position.score[0].score + " punti, posizione in classifica generale: " + position.class_pos_g + "^o posto";
+	    	} else {
+	    		return "Play&Go: " + position.score[3].score + " punti, posizione in classifica settimanale: " + position.class_pos_aw + "^o posto";
+	    	}
+    	} else {
+    		return "";
+    	}
     };
-    $scope.getPosTw_class = function(position){
-    	return "#Play&Go: " + position.score[0].score + " punti, posizione in classifica: " + position.class_pos_g + "^ posto";
+    $scope.getPosTw_class = function(position, type){
+    	if(position){
+	    	if(type == 0){
+	    		return "#Play&Go: " + position.score[0].score + " punti, posizione in classifica genelare: " + position.class_pos_g + "^o posto";
+	    	} else {
+	    		return "#Play&Go: " + position.score[3].score + " punti, posizione in classifica settimanale: " + position.class_pos_aw + "^o posto";
+	    	}
+    	} else {
+    		return "";
+    	}
     };
-    
+
 }]);
 cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	//-- Variables --//

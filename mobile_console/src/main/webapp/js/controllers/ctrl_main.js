@@ -835,6 +835,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		$scope.GameClassificationTot = sharedDataService.getClassification();
     		$scope.GameClassificationActual = sharedDataService.getClassificationActual();
     		$scope.GameClassificationLast = sharedDataService.getClassificationLast();
+    		$scope.playerClassTot = sharedDataService.getPlayerClassTot();
+    		$scope.playerClassActual = sharedDataService.getPlayerClassActual();
+    		$scope.playerClassLast = sharedDataService.getPlayerClassLast();
     	} else {
 	    	$scope.setLoading(true);
 	    	var method = 'GET';
@@ -1631,6 +1634,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		$scope.GameClassificationTot = $scope.setCorrectPosGreen(greenClassificationTmp);
     		$scope.playerClassTot = $scope.getPlayerClassificationPositionData($scope.GameClassificationTot);
     		sharedDataService.setClassification($scope.GameClassificationTot);
+    		sharedDataService.setPlayerClassTot($scope.playerClassTot);
     		//var HealthClassificationTmp = $scope.orderByScores(2, $scope.GameClassification);
     		//$scope.GameClassification = $scope.setCorrectPosHealth(HealthClassificationTmp);
     		//var PRClassificationTmp = $scope.orderByScores(3, $scope.GameClassification);
@@ -1639,10 +1643,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		$scope.GameClassificationActual = $scope.setCorrectPosActualWeek(ActualWeekClassificationTmp);
     		$scope.playerClassActual = $scope.getPlayerClassificationPositionData($scope.GameClassificationActual);
     		sharedDataService.setClassificationActual($scope.GameClassificationActual);
+    		sharedDataService.setPlayerClassActual($scope.playerClassActual);
     		var LastWeekClassificationTmp = $scope.orderByScores(5, $scope.GameClassification);
     		$scope.GameClassificationLast = $scope.setCorrectPosLastWeek(LastWeekClassificationTmp);
     		$scope.playerClassLast = $scope.getPlayerClassificationPositionData($scope.GameClassificationLast);
     		sharedDataService.setClassificationLast($scope.GameClassificationLast);
+    		sharedDataService.setPlayerClassLast($scope.playerClassLast);
     	}
     	$scope.setLoading(false);
     };

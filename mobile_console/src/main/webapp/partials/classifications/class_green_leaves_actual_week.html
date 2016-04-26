@@ -1,15 +1,11 @@
 <div ng-show="!isLoading">
 	<div class="padding_btm">
 		<div class="row" id="big-sharing-class" align="center" ng-if="playerClassActual">
-			<div class="col-md-8">
+			<div class="col-md-12 sharing_wrapper">
 				<strong>Sei al {{ playerClassActual.class_pos_aw }}^o posto con {{ playerClassActual.score[3].score }} punti.</strong>
-			</div>
-			<div class="col-md-4">
-				<div>
-					<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(playerClassActual, 1) }}" data-callback="callback"></a><!-- {{ shares }} -->
-						&nbsp;&nbsp;
-					<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(playerClassActual, 1) }}' ></a>
-				</div>
+				<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(playerClassActual, 1) }}" data-callback="callback"></a><!-- {{ shares }} -->
+					&nbsp;&nbsp;
+				<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(playerClassActual, 1) }}' ></a>
 			</div>
 		</div>
 		<div class="row" id="small-sharing-class" align="center" ng-if="playerClassActual">

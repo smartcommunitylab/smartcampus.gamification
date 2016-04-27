@@ -19,12 +19,12 @@
 	</div>
 			
 	<div class="row" ng-show="!isLoading" align="center">
-<!-- 	    <ul class="nav nav-tabs nav-justified-big">
+	    <ul class="nav nav-tabs nav-justified-big">
 	        <li ng-if="show_gpoint" class="nav active"><a data-target="#G" data-toggle="tab">{{ 'green_leaves_tab_title' | i18n }}</a></li>
 	        <li ng-if="show_hpoint" class="nav"><a data-target="#H" data-toggle="tab">{{ 'health_tab_title' | i18n }}</a></li>
 	        <li ng-if="show_prpoint" class="nav"><a data-target="#P" data-toggle="tab">{{ 'pr_tab_title' | i18n }}</a></li>
-	    </ul> -->
-	    <div id="big-dropdown-classification" class="col-md-4 col-md-offset-4">
+	    </ul>
+	    <!-- <div id="big-dropdown-classification" class="col-md-4 col-md-offset-4">
 			<div class="dropdown">
 	  			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuClassification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 	    			<span ng-show="isClassActive('G')"><strong>{{ 'global_class_tab_title' | i18n }}</strong></span>
@@ -53,10 +53,10 @@
 			       	<li role="presentation" class="{{ isClassActiveForClass('LW') }}"><a role="menuitem" tabindex="-1" href ng-click="showClass('LW')">{{ 'last_week_class_tab_title' | i18n }}</a></li>
 			    </ul>
 		    </div>
-	    </div>
+	    </div> -->
 			
 	    <!-- Tab panes -->
-		<!-- <div id="big-tab-classification" class="tab-content noborder">
+		<div id="big-tab-classification" class="tab-content noborder">
 	        <div class="tab-pane fade in active" id="G" ng-include="classTabs[0].content"></div>
 	    	<div class="tab-pane fade" id="H" ng-include="classTabs[1].content"></div>
 	        <div class="tab-pane fade" id="P" ng-include="classTabs[2].content"></div>
@@ -65,9 +65,9 @@
 	        <div class="tab-pane fade in active" id="G" ng-include="classTabs[0].content"></div>
 	        <div class="tab-pane fade" id="H" ng-include="classTabs[1].content"></div>
 	        <div class="tab-pane fade" id="P" ng-include="classTabs[2].content"></div>
-	    </div> -->
+	    </div>
 	    
-	    <div id="big-tab-classification">
+	    <!-- <div id="big-tab-classification">
 	        <div id="G" ng-include="classTabs[0].content" ng-show="isClassActive('G')"></div>
 	        <div id="AW" ng-include="classTabs[1].content" ng-show="isClassActive('AW')"></div>
 	        <div id="LW" ng-include="classTabs[2].content" ng-show="isClassActive('LW')"></div>
@@ -76,7 +76,7 @@
 	        <div id="G" ng-include="classTabs[0].content" ng-show="isClassActive('G')"></div>
 	        <div id="AW" ng-include="classTabs[1].content" ng-show="isClassActive('AW')"></div>
 	        <div id="LW" ng-include="classTabs[2].content" ng-show="isClassActive('LW')"></div>
-	    </div>
+	    </div> -->
 	    
 	    
 	</div>

@@ -486,5 +486,17 @@
 	"key": "last_week_class_tab_title",
 	"value": "Settimana scorsa",
 	"description": "Testo per classifica settimana scorsa"
+}, {
+	"key": "classification_position_player_text_1",
+	"value": "Sei al ",
+	"description": "Testo per posizione utente parte 1"
+}, {
+	"key": "classification_position_player_text_2",
+	"value": "^o posto con ",
+	"description": "Testo per posizione utente parte 2"
+}, {
+	"key": "classification_position_player_text_3",
+	"value": " punti.",
+	"description": "Testo per posizione utente parte 3"
 }
 ]

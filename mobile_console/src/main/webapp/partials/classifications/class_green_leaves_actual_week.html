@@ -2,21 +2,21 @@
 	<div class="padding_btm">
 		<div class="row" id="big-sharing-class" align="center" ng-if="playerClassActual">
 			<div class="col-md-12 sharing_wrapper">
-				<strong>Sei al {{ playerClassActual.class_pos_aw }}^o posto con {{ playerClassActual.score[3].score }} punti.</strong>
+				<strong>{{ 'classification_position_player_text_1' | i18n }}{{ playerClassActual.class_pos_aw }}{{ 'classification_position_player_text_2' | i18n }}{{ playerClassActual.score[3].score }}{{ 'classification_position_player_text_3' | i18n }}</strong>
 				<a facebook-feed-share class="facebookShare" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(playerClassActual, 1) }}" data-callback="callback"></a><!-- {{ shares }} -->
 					&nbsp;&nbsp;
-				<a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(playerClassActual, 1) }}' ></a>
+				<a id="twitter_btn_aw" twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(playerClassActual, 1) }}' ></a>
 			</div>
 		</div>
 		<div class="row" id="small-sharing-class" align="center" ng-if="playerClassActual">
 			<div class="col-xs-9 norightpadding">
-				<strong>Sei al {{ playerClassActual.class_pos_aw }}^o posto con {{ playerClassActual.score[3].score }} punti.</strong>
+				<strong>{{ 'classification_position_player_text_1' | i18n }}{{ playerClassActual.class_pos_aw }}{{ 'classification_position_player_text_2' | i18n }}{{ playerClassActual.score[3].score }}{{ 'classification_position_player_text_3' | i18n }}</strong>
 			</div>
-			<div class="col-xs-1 nopadding-absolute" align="left">
+			<div class="col-xs-2 nopadding-absolute" align="left">
 				<div class="sharing_wrapper">
 					<a facebook-feed-share class="facebookShare buttonFBSmall" data-title="{{ title }}" data-url="{{ url }}" data-shares='shares' data-caption="{{ caption }}" data-picture="{{ image_url }}" data-description="{{ getPosFb_class(playerClassActual, 1) }}" data-callback="callback"></a><!-- {{ shares }} -->
 						&nbsp;&nbsp;
-					<div class="twitter_btn_wrapper"><a twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(playerClassActual, 1) }}' ></a></div>
+					<div class="twitter_btn_wrapper"><a id="twitter_btn_aw_small" twitter data-count='horizontal' data-title="{{ title }}" data-url="{{ url }}"  data-size="medium" data-text='{{ getPosTw_class(playerClassActual, 1) }}' ></a></div>
 				</div>
 			</div>
 		</div>

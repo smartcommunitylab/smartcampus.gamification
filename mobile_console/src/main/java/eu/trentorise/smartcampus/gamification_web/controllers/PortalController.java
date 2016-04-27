@@ -112,6 +112,9 @@ public class PortalController extends SCController{
 	@Value("${smartcampus.urlws.gamification}")
 	private String gamificationUrl;
 	@Autowired
+	@Value("${smartcampus.urlws.gameconsole}")
+	private String gamificationConsoleUrl;
+	@Autowired
 	@Value("${smartcampus.gamification.gamename}")
 	private String gameName;
 	@Autowired
@@ -228,6 +231,8 @@ public class PortalController extends SCController{
 								logger.debug(String.format("Add player: authorised %s.", auth_p.toJSONString()));
 								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerRepositoryDao.save(new_p);
+								// here I call an api from gengine console
+								createPlayerInGamification(user.getUserId());
 								logger.debug(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
 								return new ModelAndView("redirect:/logout");	// user not allowed - logout
@@ -237,6 +242,8 @@ public class PortalController extends SCController{
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
 							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null);
 							playerRepositoryDao.save(new_p);
+							// here I call an api from gengine console
+							createPlayerInGamification(user.getUserId());
 							logger.debug(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
@@ -254,6 +261,8 @@ public class PortalController extends SCController{
 								logger.debug(String.format("Add player: authorised %s.", auth_p.toJSONString()));
 								PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerProdRepositoryDao.save(new_p);
+								// here I call an api from gengine console
+								createPlayerInGamification(user.getUserId());
 								logger.debug(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
 								return new ModelAndView("redirect:/logout");	// user not allowed - logout
@@ -263,6 +272,8 @@ public class PortalController extends SCController{
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
 							PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null);
 							playerProdRepositoryDao.save(new_p);
+							// here I call an api from gengine console
+							createPlayerInGamification(user.getUserId());
 							logger.debug(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
@@ -380,6 +391,17 @@ public class PortalController extends SCController{
 		ModelAndView model = new ModelAndView();
 		model.setViewName("g_privacy");
 		return model;
+	}
+	
+	private void createPlayerInGamification(String playerId) throws Exception{
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, Object> data = new HashMap<String, Object>();
+		//data.put("actionId", "app_sent_recommandation");
+		//data.put("gameId", gameName);
+		data.put("playerId", playerId);
+		String partialUrl = "game/" + gameName + "/player";
+		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationConsoleUrl + partialUrl, HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
+		logger.debug("Sent app player registration to gamification engine "+tmp_res.getStatusCode());
 	}
 	
 	

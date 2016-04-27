@@ -51,6 +51,10 @@ public class WsProxyController {
 	private String gamificationUrl;
 	
 	@Autowired
+	@Value("${smartcampus.urlws.gameconsole}")
+	private String gamificationConsoleUrl;
+	
+	@Autowired
 	@Value("${smartcampus.urlws.post.gamification}")
 	private String gamificationUrlPost;
 	
@@ -151,8 +155,7 @@ public class WsProxyController {
 		data.put("playerId", recommenderId);
 		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationUrl + "execute", HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
 		logger.debug("Sent app recommendation to gamification engine "+tmp_res.getStatusCode());
-
-	} 
+	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/out/rest/register")
 	public @ResponseBody

@@ -38,7 +38,7 @@ descriptions:
   - id: 10
     type: RECOMMENDATION
     mobilitymode: all
-    description: Per vincere la sfida, almeno X tuoi amici si devono registrare al gioco indicando il tuo nickname durante la registrazione.
+    description: Per vincere la sfida, almeno X tuoi amici si devono registrare al gioco indicando il tuo nickname nell'apposito campo durante la registrazione.
   - id: 11
     type: POINTSEARNED
     mobilitymode: all

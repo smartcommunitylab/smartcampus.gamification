@@ -443,6 +443,10 @@
 	"value": "In corso",
 	"description": "testo pulsante sfide attuali"
 }, {
+	"key": "ch_day_to_end_text_label_before",
+	"value": "Hai ancora ",
+	"description": "label per giorni al termine in pagina challenges"
+}, {
 	"key": "ch_day_to_end_text_label",
 	"value": " giorni per completare la sfida",
 	"description": "label per giorni al termine in pagina challenges"

@@ -451,6 +451,10 @@
 	"value": " giorni per completare la sfida",
 	"description": "label per giorni al termine in pagina challenges"
 }, {
+	"key": "ch_day_to_end_text_label_one_day",
+	"value": " giorno per completare la sfida",
+	"description": "label per un giorno al termine in pagina challenges"
+}, {
 	"key": "ch_gameover_message_text_label",
 	"value": "HAI PERSO! Punteggio finale di ",
 	"description": "label messaggio sfida persa in pagina challenges"

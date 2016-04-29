@@ -35,8 +35,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_POINT_TYPE = "_point_type";
 	$scope.CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	$scope.CHAL_K_BADGE_COLL_NAME = "_badge_collection";
-	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai BONUS punti POINT_TYPE in bonus";
-	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai BONUS punti POINT_TYPE in bonus";
+	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE durante la challenge e guadagni un ulteriore bonus di BONUS punti POINT_TYPE"
 	$scope.CHAL_DESC_6 = "Ottieni almeno TARGET badge nella Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_7 = "Completa la Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";

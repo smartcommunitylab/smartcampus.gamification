@@ -50,7 +50,7 @@
 				            Questa sar&agrave; la settimana DELLA BICI
 				        </h3>
 				        <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
-				            Ecco le tue CHALLENGE per questa settimana, mettiti alla prova per superarle:
+				            Ecco le tue SFIDE per questa settimana, mettiti alla prova per superarle:
 				        </h3>
 				        <table th:if="${n_challenges ne null}">
 						    <tr th:each="ch : ${n_challenges}" valign="top">
@@ -65,6 +65,9 @@
 						       	</td>
 						    </tr>
 					    </table>
+					    <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
+				            Queste sfide partono alle ore <span th:text="${chs_start_time}">00:00</span> del giorno <span th:text="${chs_start_date}">XXX</span> e hai tempo fino alle ore <span th:text="${chs_end_time}">23:59</span> del giorno <span th:text="${chs_end_date}">YYY</span> per superarle!
+				        </h3>
 			        </div>
 			        <div th:if="${n_prizes ne null and are_prizes}">
 				        <h3>
@@ -164,7 +167,7 @@
 			        </div>
 			        
 			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
-			            Questa settimana non hai guadagnato nuovi badge! Gioca ancora ed otterrai nuovi punti!
+			            Questa settimana non hai guadagnato nuovi badge! Gioca ancora per accumulare altri punti e ottenere nuovi badge!
 			        </h3>
 			        <h3>
 			        	Per vedere i tuoi risultati completi e le classifiche  aggiornate vai al tuo sito personalizzato cliccando <b><a href="https://dev.smartcommunitylab.it/gamificationweb" th:href="${greengame_url}" target="_blank">QUI</a></b>.

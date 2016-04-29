@@ -141,7 +141,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     sharedDataService.setGameId(conf_gameid);
     $scope.app ;
-    $scope.is_test = conf_is_test;
+    $scope.is_test = (conf_is_test=="true")?true:false;
     $scope.citizenId = userId;
     $scope.user_token = token;
     

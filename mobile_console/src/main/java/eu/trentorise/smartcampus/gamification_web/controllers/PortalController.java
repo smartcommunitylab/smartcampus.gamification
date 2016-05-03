@@ -138,6 +138,12 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.server.bauth.password}")
     private String basicAuthPassword;
+    @Autowired
+	@Value("${smartcampus.isShortClassification}")
+	private String isShortClassification;
+    @Autowired
+	@Value("${smartcampus.shortClassificationSize}")
+	private String shortClassificationSize;
 	
 	//Mail Params
 	@Autowired
@@ -200,6 +206,8 @@ public class PortalController extends SCController{
 			model.put("challenge_desc_messages", challDescriptionSetup.getDescriptions());
 			model.put("week_sponsor_data", sponsorBannerSetup.getSponsors());
 			model.put("isTest", isTest);
+			model.put("isShortClassification", isShortClassification);
+			model.put("short_classification_size", shortClassificationSize);
 			logger.debug(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));
@@ -228,12 +236,12 @@ public class PortalController extends SCController{
 						if(authorizationTable.compareTo("true") == 0){
 							AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
 							if(auth_p != null){
-								logger.debug(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
 								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerRepositoryDao.save(new_p);
 								// here I call an api from gengine console
 								createPlayerInGamification(user.getUserId());
-								logger.debug(String.format("Add player: created player %s.", new_p.toJSONString()));
+								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
 								return new ModelAndView("redirect:/logout");	// user not allowed - logout
 							}
@@ -244,7 +252,7 @@ public class PortalController extends SCController{
 							playerRepositoryDao.save(new_p);
 							// here I call an api from gengine console
 							createPlayerInGamification(user.getUserId());
-							logger.debug(String.format("Add new player: created player %s.", new_p.toJSONString()));
+							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
 				}
@@ -258,12 +266,12 @@ public class PortalController extends SCController{
 						if(authorizationTable.compareTo("true") == 0){
 							AuthPlayerProd auth_p = authPlayerProdRepositoryDao.findByMail(attribute_mail);
 							if(auth_p != null){
-								logger.debug(String.format("Add player: authorised %s.", auth_p.toJSONString()));
+								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
 								PlayerProd new_p = new PlayerProd(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null);
 								playerProdRepositoryDao.save(new_p);
 								// here I call an api from gengine console
 								createPlayerInGamification(user.getUserId());
-								logger.debug(String.format("Add player: created player %s.", new_p.toJSONString()));
+								logger.info(String.format("Add player: created player %s.", new_p.toJSONString()));
 							} else {
 								return new ModelAndView("redirect:/logout");	// user not allowed - logout
 							}
@@ -274,7 +282,7 @@ public class PortalController extends SCController{
 							playerProdRepositoryDao.save(new_p);
 							// here I call an api from gengine console
 							createPlayerInGamification(user.getUserId());
-							logger.debug(String.format("Add new player: created player %s.", new_p.toJSONString()));
+							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
 				}
@@ -401,7 +409,7 @@ public class PortalController extends SCController{
 		data.put("playerId", playerId);
 		String partialUrl = "game/" + gameName + "/player";
 		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationConsoleUrl + partialUrl, HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
-		logger.debug("Sent app player registration to gamification engine "+tmp_res.getStatusCode());
+		logger.info("Sent player registration to gamification engine "+tmp_res.getStatusCode());
 	}
 	
 	

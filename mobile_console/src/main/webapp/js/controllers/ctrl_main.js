@@ -109,8 +109,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.start_week_7 = 1464386460000;
 	$scope.start_week_8 = 1464991260000;
 	$scope.start_week_9 = 1465596060000;
-	$scope.week_classification = "green leaves week ";
+	$scope.week_classification = "green leaves week test";
 	$scope.week_test_classification = "green leaves week test"
+	$scope.useShortClassification = (conf_is_short_classification == "true") ? true : false;	// TODO : pass this variable in portal controller and add in properties file
+	// max practices displayed in home list
+    $scope.maxPlayers = 50;
+    $scope.maxPlayersClassification = 500;
+    $scope.maxPlayersClassShort = parseInt(conf_short_classification_size);
 	
 	
 	//$scope.CHAL_TS_OFFSET = 1000 * 60 * 60 * 24 * 7;	// millis in a day (for test I use 7 days)
@@ -291,10 +296,6 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.currentView;
     $scope.editMode;
     $scope.currentViewDetails;
-                  			
-    // max practices displayed in home list
-    $scope.maxPlayers = 50;
-    $scope.maxPlayersClassification = 500;
 
     // for language icons
     var itaLanguage = "active";
@@ -1605,33 +1606,34 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.GameClassificationTot = [];
     	$scope.GameClassificationActual = [];
     	$scope.GameClassificationLast = [];
+    	var listSize = null;
     	if(list != null && list.length > 0){
-    		for(var i = 0; i < list.length; i++){
-    			//var badges = $scope.getBadgesList(list[i].state);
-    			var scores = $scope.getStateList(list[i].state);
-    			var playerData = {
-    					id : list[i].playerId,
-    					name: $scope.getPlayerNameById(list[i].playerId),
-    					gameId : list[i].gameId,
-    					//badges : badges,
-    					score : scores,
-    					class_pos_g : 1,
-    					class_pos_h : 1,
-    					class_pos_p : 1,
-    					class_pos_aw : 1,
-    					class_pos_lw : 1
-    			};
-    			//MB19112014: added check to name to consider only the players in list
-    			if(playerData.name != null && playerData.name != ""){
-    				$scope.GameClassification.push(playerData);
-    			}
-    			if($scope.userId == playerData.id){
-    				
-    			}
+    		if($scope.useShortClassification){
+    			listSize = $scope.maxPlayersClassShort;
     		}
+    		for(var i = 0; i < list.length; i++){
+        		//var badges = $scope.getBadgesList(list[i].state);
+        		var scores = $scope.getStateList(list[i].state);
+        		var playerData = {
+        				id : list[i].playerId,
+        				name: $scope.getPlayerNameById(list[i].playerId),
+        				gameId : list[i].gameId,
+        				//badges : badges,
+        				score : scores,
+        				class_pos_g : 1,
+        				class_pos_h : 1,
+        				class_pos_p : 1,
+        				class_pos_aw : 1,
+        				class_pos_lw : 1
+        		};
+        		//MB19112014: added check to name to consider only the players in list
+        		if(playerData.name != null && playerData.name != ""){
+        			$scope.GameClassification.push(playerData);
+        		}
+        	}
     		// Here I have to order the list by user scores
     		var greenClassificationTmp = $scope.orderByScores(1, $scope.GameClassification);
-    		$scope.GameClassificationTot = $scope.setCorrectPosGreen(greenClassificationTmp);
+    		$scope.GameClassificationTot = $scope.resizeClassificationList($scope.setCorrectPosGreen(greenClassificationTmp), listSize);
     		$scope.playerClassTot = $scope.getPlayerClassificationPositionData($scope.GameClassificationTot);
     		sharedDataService.setClassification($scope.GameClassificationTot);
     		sharedDataService.setPlayerClassTot($scope.playerClassTot);
@@ -1640,12 +1642,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		//var PRClassificationTmp = $scope.orderByScores(3, $scope.GameClassification);
     		//$scope.GameClassification = $scope.setCorrectPosPR(PRClassificationTmp);
     		var ActualWeekClassificationTmp = $scope.orderByScores(4, $scope.GameClassification);
-    		$scope.GameClassificationActual = $scope.setCorrectPosActualWeek(ActualWeekClassificationTmp);
+    		$scope.GameClassificationActual = $scope.resizeClassificationList($scope.setCorrectPosActualWeek(ActualWeekClassificationTmp), listSize);
     		$scope.playerClassActual = $scope.getPlayerClassificationPositionData($scope.GameClassificationActual);
     		sharedDataService.setClassificationActual($scope.GameClassificationActual);
     		sharedDataService.setPlayerClassActual($scope.playerClassActual);
     		var LastWeekClassificationTmp = $scope.orderByScores(5, $scope.GameClassification);
-    		$scope.GameClassificationLast = $scope.setCorrectPosLastWeek(LastWeekClassificationTmp);
+    		$scope.GameClassificationLast = $scope.resizeClassificationList($scope.setCorrectPosLastWeek(LastWeekClassificationTmp), listSize);
     		$scope.playerClassLast = $scope.getPlayerClassificationPositionData($scope.GameClassificationLast);
     		sharedDataService.setClassificationLast($scope.GameClassificationLast);
     		sharedDataService.setPlayerClassLast($scope.playerClassLast);
@@ -1662,6 +1664,33 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 		}
     	return null;
     }
+    
+    // Method resizeClassificationList: resize a list to a specific size
+    $scope.resizeClassificationList = function(list, listSize){
+    	if(listSize){
+    		var found = false
+    		var completeList = [];
+    		angular.copy(list, completeList);
+    		if(listSize > completeList.length)listSize = completeList.length;
+    		var resizedList = completeList.splice(0, listSize);
+    		for(var i = 0; i < listSize && !found; i++){
+    			if($scope.userId == resizedList[i].id){
+    				found = true;
+    			}
+    		}
+    		if(!found){
+    			for(var i = 0; i < list.length && !found; i++){
+        			if($scope.userId == list[i].id){
+        				found = true;
+        				resizedList.push(list[i]);
+        			}
+        		}
+    		}
+    		return resizedList;
+    	} else {
+    		return list;
+    	}
+    };
     
     // Method used to load the different badges in a list
     $scope.getBadgesList = function(object){

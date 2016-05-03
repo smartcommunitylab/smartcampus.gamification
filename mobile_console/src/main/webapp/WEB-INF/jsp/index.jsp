@@ -58,6 +58,8 @@ var conf_point_types="<%=request.getAttribute("point_types")%>";
 var conf_chall_messages="<%=request.getAttribute("challenge_desc_messages")%>";
 var conf_week_sponsor_data="<%=request.getAttribute("week_sponsor_data")%>";
 var conf_is_test="<%=request.getAttribute("isTest")%>";
+var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
+var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
 
 
 	<%-- Prevent the backspace key from navigating back. --%>

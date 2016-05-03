@@ -109,7 +109,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.start_week_7 = 1464386460000;
 	$scope.start_week_8 = 1464991260000;
 	$scope.start_week_9 = 1465596060000;
-	$scope.week_classification = "green leaves week test";
+	$scope.week_classification = "green leaves week ";
 	$scope.week_test_classification = "green leaves week test"
 	$scope.useShortClassification = (conf_is_short_classification == "true") ? true : false;	// TODO : pass this variable in portal controller and add in properties file
 	// max practices displayed in home list

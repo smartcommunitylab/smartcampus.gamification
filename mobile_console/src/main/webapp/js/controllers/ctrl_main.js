@@ -513,8 +513,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
          { title:'Settimana scorsa', index: 3, content:"partials/classifications/class_green_leaves_last_week.html", disabled:false }
     ];
     
-    var isActiveG = true;
-    var isActiveAW = false;
+    var isActiveG = false;
+    var isActiveAW = true;
     var isActiveLW = false;
     
     $scope.showClass = function(page_id){

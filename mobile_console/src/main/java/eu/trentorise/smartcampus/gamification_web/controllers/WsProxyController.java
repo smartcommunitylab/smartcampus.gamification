@@ -219,8 +219,15 @@ public class WsProxyController {
 						sendRecommendationToGamification(recommender.getPid());
 					}
 				}
+				try {
+					createPlayerInGamification(user.getUserId());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					logger.error("Exception in user registration to gamification " + e.getMessage());
+				}
 			}
 			playerRepositoryDao.save(p);
+			
 			return p.toJSONString();
 		} else {
 			PlayerProd withNick = playerProdRepositoryDao.findByNick(nickname);
@@ -251,11 +258,28 @@ public class WsProxyController {
 						sendRecommendationToGamification(recommender.getPid());
 					}
 				}
+				try {
+					createPlayerInGamification(user.getUserId());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					logger.error("Exception in user registration to gamification " + e.getMessage());
+				}
 			}
 			playerProdRepositoryDao.save(p);
 			return p.toJSONString();
 		}
 
+	}
+	
+	private void createPlayerInGamification(String playerId) throws Exception{
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, Object> data = new HashMap<String, Object>();
+		//data.put("actionId", "app_sent_recommandation");
+		//data.put("gameId", gameName);
+		data.put("playerId", playerId);
+		String partialUrl = "game/" + gameName + "/player";
+		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationConsoleUrl + partialUrl, HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
+		logger.info("Sent player registration to gamification engine(mobile-access) "+tmp_res.getStatusCode());
 	}
 	
 	

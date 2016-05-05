@@ -221,8 +221,8 @@ public class WsProxyController {
 				}
 				try {
 					createPlayerInGamification(user.getUserId());
+					if(email != null)logger.info("Added user (mobile-registration) " + email);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					logger.error("Exception in user registration to gamification " + e.getMessage());
 				}
 			}
@@ -260,8 +260,8 @@ public class WsProxyController {
 				}
 				try {
 					createPlayerInGamification(user.getUserId());
+					if(email != null)logger.info("Added user (mobile registration) " + email);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					logger.error("Exception in user registration to gamification " + e.getMessage());
 				}
 			}

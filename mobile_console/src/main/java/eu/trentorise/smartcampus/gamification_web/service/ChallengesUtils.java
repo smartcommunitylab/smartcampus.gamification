@@ -117,7 +117,12 @@ public class ChallengesUtils {
 		} else if(type.compareTo(CHAL_TYPE_5) == 0){
 			correctDesc = challDescList.get(10).getDescription().replace("X", target).replace("punti [green leaves, bici, salute, impatto 0]", pointType);
 		} else if(type.compareTo(CHAL_TYPE_6) == 0){
-			correctDesc = challDescList.get(14).getDescription();
+			if(mobMode.compareTo("green leaves") == 0){
+				correctDesc = challDescList.get(14).getDescription();
+			} else if(mobMode.compareTo("bike sharing pioneer") == 0){
+				correctDesc = challDescList.get(13).getDescription();
+			}
+			
 		} else if(type.compareTo(CHAL_TYPE_7) == 0){
 			correctDesc = challDescList.get(19).getDescription();
 		} else if(type.compareTo(CHAL_TYPE_9) == 0){
@@ -163,174 +168,176 @@ public class ChallengesUtils {
     		
     		for(int i = 0; i < challIndxArray.size(); i++){
     			String ch_id = challIndxArray.get(i);
-    			String ch_type = customData.getString(CHAL_K + ch_id + CHAL_K_TYPE);
-    			String targetVal = customData.getString(CHAL_K + ch_id + CHAL_K_TARGET);
-    			int target = 0;
-    			if(targetVal.contains(".")){
-    				try {
-    				Float f_target = Float.parseFloat(targetVal);
-    				target = f_target.intValue();
-    				} catch (Exception ex){
-    					logger.error("String target value error from float");
-    				}
-    			} else {
-	    			try {
-	    				target = Integer.parseInt(targetVal);
-	    			} catch (Exception ex){
-	    				logger.error("String target value error from int"); 
+    			if(ch_id.length()<=39){
+	    			String ch_type = customData.getString(CHAL_K + ch_id + CHAL_K_TYPE);
+	    			String targetVal = customData.getString(CHAL_K + ch_id + CHAL_K_TARGET);
+	    			int target = 0;
+	    			if(targetVal.contains(".")){
+	    				try {
+	    				Float f_target = Float.parseFloat(targetVal);
+	    				target = f_target.intValue();
+	    				} catch (Exception ex){
+	    					logger.error("String target value error from float");
+	    				}
+	    			} else {
+		    			try {
+		    				target = Integer.parseInt(targetVal);
+		    			} catch (Exception ex){
+		    				logger.error("String target value error from int"); 
+		    			}
 	    			}
-    			}
-				int bonus = customData.getInt(CHAL_K + ch_id + CHAL_K_BONUS);
-				String endChTs = customData.getString(CHAL_K + ch_id + CHAL_K_ETS);
-				String point_type = customData.getString(CHAL_K + ch_id + CHAL_K_POINT_TYPE);
-				long now = System.currentTimeMillis();
-				//int daysToEnd = calculateRemainingDays(endChTs, now);
-				Boolean success = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SUCCESS)) ? customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS) : false;
-				long endTime = Long.parseLong(endChTs);
-				long startTime = 0L;
-				Boolean active = (now < endTime);
-				int status = 0;
-    			ChallengesData tmp_chall = new ChallengesData();
-    			if(ch_type.compareTo(CHAL_TYPE_1) == 0 || ch_type.compareTo(CHAL_TYPE_1A) == 0){
-    				int walked_km = customData.getInt(CHAL_K + ch_id + CHAL_K_WALKED_KM);
-    				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
-    				status = (walked_km * 100) / target;
-    				if(status > 100)status = 100;
-    				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode, null);
-    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
-    				tmp_chall.setChallId(id);
-    				tmp_chall.setChallDesc(desc);
-    				tmp_chall.setChallTarget(target);
-    				tmp_chall.setType(ch_type);
-    				tmp_chall.setStatus(status);
-    				tmp_chall.setActive(active);
-    				tmp_chall.setSuccess(success);
-    				tmp_chall.setStartDate(startTime);
-    				tmp_chall.setEndDate(endTime);
-    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
-    			}
-    			if(ch_type.compareTo(CHAL_TYPE_3) == 0 || ch_type.compareTo(CHAL_TYPE_3A) == 0){
-    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
-    				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
-    				status = count * 100 / target;
-    				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null);
-    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
-    				tmp_chall.setChallId(id);
-    				tmp_chall.setChallDesc(desc);
-    				tmp_chall.setChallTarget(target);
-    				tmp_chall.setType(ch_type);
-    				tmp_chall.setStatus(status);
-    				tmp_chall.setActive(active);
-    				tmp_chall.setSuccess(success);
-    				tmp_chall.setStartDate(startTime);
-    				tmp_chall.setEndDate(endTime);
-    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
-    			}
-    			if(ch_type.compareTo(CHAL_TYPE_4) == 0){
-    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
-    				String mobility_mode = CHAL_ALLOWED_MODE_Z;
-    				status = count * 100 / target;
-    				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null);
-    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
-    				tmp_chall.setChallId(id);
-    				tmp_chall.setChallDesc(desc);
-    				tmp_chall.setChallTarget(target);
-    				tmp_chall.setType(ch_type);
-    				tmp_chall.setStatus(status);
-    				tmp_chall.setActive(active);
-    				tmp_chall.setSuccess(success);
-    				tmp_chall.setStartDate(startTime);
-    				tmp_chall.setEndDate(endTime);
-    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
-    			}
-    			if(ch_type.compareTo(CHAL_TYPE_5) == 0){
-    				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
-    				int earned_points = 0;
-    				if(!customData.isNull(CHAL_K + ch_id + CHAL_K_EARNED_POINT)){
-    					earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
-    				} else if(!customData.isNull(CHAL_K_EARNED_POINT_NEW)){
-    					earned_points = customData.getInt(CHAL_K_EARNED_POINT_NEW);
-    				}
-    				status = earned_points * 100 / target;
-    				if(status > 100)status = 100;
-					String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_5, target, bonus, point_type, "", null);
-    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
-    				tmp_chall.setChallId(id);
-    				tmp_chall.setChallDesc(desc);
-    				tmp_chall.setChallTarget(target);
-    				tmp_chall.setType(ch_type);
-    				tmp_chall.setStatus(status);
-    				tmp_chall.setActive(active);
-    				tmp_chall.setSuccess(success);
-    				tmp_chall.setStartDate(startTime);
-    				tmp_chall.setEndDate(endTime);
-    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
-    			}
-    			if(ch_type.compareTo(CHAL_TYPE_6) == 0){
-    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
-    				String badge_coll_name = customData.getString(CHAL_K + ch_id + CHAL_K_BADGE_COLL_NAME);
-    				status = count * 100 / target;
-    				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_6, target, bonus, point_type, "", badge_coll_name);
-    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
-    				tmp_chall.setChallId(id);
-    				tmp_chall.setChallDesc(desc);
-    				tmp_chall.setChallTarget(target);
-    				tmp_chall.setType(ch_type);
-    				tmp_chall.setStatus(status);
-    				tmp_chall.setActive(active);
-    				tmp_chall.setSuccess(success);
-    				tmp_chall.setStartDate(startTime);
-    				tmp_chall.setEndDate(endTime);
-    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
-    			}
-    			if(ch_type.compareTo(CHAL_TYPE_7) == 0){
-    				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
-    				if(success){
-						status = 100;
-					}
-    				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_7, target, bonus, point_type, "", null);
-    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
-    				tmp_chall.setChallId(id);
-    				tmp_chall.setChallDesc(desc);
-    				tmp_chall.setChallTarget(target);
-    				tmp_chall.setType(ch_type);
-    				tmp_chall.setStatus(status);
-    				tmp_chall.setActive(active);
-    				tmp_chall.setSuccess(success);
-    				tmp_chall.setStartDate(startTime);
-    				tmp_chall.setEndDate(endTime);
-    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
-    			}
-    			if(ch_type.compareTo(CHAL_TYPE_9) == 0){
-    				int recommandation = customData.getInt(CHAL_K + ch_id + CHAL_K_RECOM);
-    				status = recommandation * 100 / target;
-    				if(status > 100)status = 100;
-    				String id = challIndxArray.get(i);
-    				String desc = correctDesc(CHAL_DESC_9, target, bonus, point_type, "", null);
-    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
-    				tmp_chall.setChallId(id);
-    				tmp_chall.setChallDesc(desc);
-    				tmp_chall.setChallTarget(target);
-    				tmp_chall.setType(ch_type);
-    				tmp_chall.setStatus(status);
-    				tmp_chall.setActive(active);
-    				tmp_chall.setSuccess(success);
-    				tmp_chall.setStartDate(startTime);
-    				tmp_chall.setEndDate(endTime);
-    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
-    			}
-    			
-    			if(now >= startTime - MILLIS_IN_DAY){	// if challenge is started (with one day of offset for mail)
-	    			if(now < endTime - MILLIS_IN_DAY){	// if challenge is not ended
-	    				challenges.add(tmp_chall);
-	    			} else if(now < endTime + CHAL_TS_OFFSET){
-	    				oldChallenges.add(tmp_chall);	// last week challenges
+					int bonus = customData.getInt(CHAL_K + ch_id + CHAL_K_BONUS);
+					String endChTs = customData.getString(CHAL_K + ch_id + CHAL_K_ETS);
+					String point_type = customData.getString(CHAL_K + ch_id + CHAL_K_POINT_TYPE);
+					long now = System.currentTimeMillis();
+					//int daysToEnd = calculateRemainingDays(endChTs, now);
+					Boolean success = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SUCCESS)) ? customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS) : false;
+					long endTime = Long.parseLong(endChTs);
+					long startTime = 0L;
+					Boolean active = (now < endTime);
+					int status = 0;
+	    			ChallengesData tmp_chall = new ChallengesData();
+	    			if(ch_type.compareTo(CHAL_TYPE_1) == 0 || ch_type.compareTo(CHAL_TYPE_1A) == 0){
+	    				int walked_km = customData.getInt(CHAL_K + ch_id + CHAL_K_WALKED_KM);
+	    				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
+	    				status = (walked_km * 100) / target;
+	    				if(status > 100)status = 100;
+	    				String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode, null);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    			}
+	    			if(ch_type.compareTo(CHAL_TYPE_3) == 0 || ch_type.compareTo(CHAL_TYPE_3A) == 0){
+	    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
+	    				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
+	    				status = count * 100 / target;
+	    				String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    			}
+	    			if(ch_type.compareTo(CHAL_TYPE_4) == 0){
+	    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
+	    				String mobility_mode = CHAL_ALLOWED_MODE_Z;
+	    				status = count * 100 / target;
+	    				String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    			}
+	    			if(ch_type.compareTo(CHAL_TYPE_5) == 0){
+	    				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
+	    				int earned_points = 0;
+	    				if(!customData.isNull(CHAL_K + ch_id + CHAL_K_EARNED_POINT)){
+	    					earned_points = customData.getInt(CHAL_K + ch_id + CHAL_K_EARNED_POINT);
+	    				} else if(!customData.isNull(CHAL_K_EARNED_POINT_NEW)){
+	    					earned_points = customData.getInt(CHAL_K_EARNED_POINT_NEW);
+	    				}
+	    				status = earned_points * 100 / target;
+	    				if(status > 100)status = 100;
+						String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_5, target, bonus, point_type, "", null);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
+	    			}
+	    			if(ch_type.compareTo(CHAL_TYPE_6) == 0){
+	    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
+	    				String badge_coll_name = customData.getString(CHAL_K + ch_id + CHAL_K_BADGE_COLL_NAME);
+	    				status = count * 100 / target;
+	    				String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_6, target, bonus, point_type, "", badge_coll_name);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, badge_coll_name, target + "", point_type));
+	    			}
+	    			if(ch_type.compareTo(CHAL_TYPE_7) == 0){
+	    				success = customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS);
+	    				if(success){
+							status = 100;
+						}
+	    				String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_7, target, bonus, point_type, "", null);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
+	    			}
+	    			if(ch_type.compareTo(CHAL_TYPE_9) == 0){
+	    				int recommandation = customData.getInt(CHAL_K + ch_id + CHAL_K_RECOM);
+	    				status = recommandation * 100 / target;
+	    				if(status > 100)status = 100;
+	    				String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_9, target, bonus, point_type, "", null);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
+	    			}
+	    			
+	    			if(now >= startTime - MILLIS_IN_DAY){	// if challenge is started (with one day of offset for mail)
+		    			if(now < endTime - MILLIS_IN_DAY){	// if challenge is not ended
+		    				challenges.add(tmp_chall);
+		    			} else if(now < endTime + CHAL_TS_OFFSET){
+		    				oldChallenges.add(tmp_chall);	// last week challenges
+		    			}
 	    			}
     			}
     		}

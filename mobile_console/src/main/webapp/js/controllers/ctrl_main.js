@@ -709,7 +709,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.openInfoChPanel = function(ch){
     	var msg_to_show = "";
     	switch(ch.type){
-    		case $scope.CHAL_TYPE_1 || $scope.CHAL_TYPE_1A: 
+    		case $scope.CHAL_TYPE_1: 
     			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
     				msg_to_show=$scope.chall_description_array[0].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
@@ -718,7 +718,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[2].description;
     			}
     			break;
-    		case $scope.CHAL_TYPE_3 || $scope.CHAL_TYPE_3A:
+    		case $scope.CHAL_TYPE_1A: 
+    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
+    				msg_to_show=$scope.chall_description_array[0].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
+    				msg_to_show=$scope.chall_description_array[1].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W + "Distance"){
+    				msg_to_show=$scope.chall_description_array[2].description;
+    			}
+    			break;	
+    		case $scope.CHAL_TYPE_3:
     			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
     				msg_to_show=$scope.chall_description_array[4].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
@@ -731,6 +740,19 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[7].description;
     			} 
     			break;
+    		case $scope.CHAL_TYPE_3A:
+    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
+    				msg_to_show=$scope.chall_description_array[4].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
+    				msg_to_show=$scope.chall_description_array[8].description.replace("[bici, bike sharing, bus, treno]","la bici");
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
+    				msg_to_show=$scope.chall_description_array[3].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T + "Distance"){
+    				msg_to_show=$scope.chall_description_array[5].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P + "Distance"){
+    				msg_to_show=$scope.chall_description_array[7].description;
+    			} 
+    			break;	
     		case $scope.CHAL_TYPE_4:
     			//if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
     			//	msg_to_show=$scope.chall_description_array[4].description;
@@ -749,7 +771,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			msg_to_show=$scope.chall_description_array[10].description.replace("X", ch.target).replace("punti [green leaves, bici, salute, impatto 0]", ch.point_type);
     			break;
     		case $scope.CHAL_TYPE_6:
-    			msg_to_show=$scope.chall_description_array[14].description;
+    			if(ch.mobilityMode == "green leaves"){
+    				msg_to_show=$scope.chall_description_array[14].description;
+    			} else if(ch.mobilityMode == "bike sharing pioneer"){
+    				msg_to_show=$scope.chall_description_array[13].description;
+    			}
     			break;
     		case $scope.CHAL_TYPE_7: 
     			msg_to_show=$scope.chall_description_array[19].description;
@@ -1115,6 +1141,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		}
     		for(var i = 0; i < challIndxArray.length; i++){
     			var ch_id = challIndxArray[i];
+    			if(ch_id.length <= 39){	// to solve error DAS in id
     			var ch_type = customdata[$scope.CHAL_K+ch_id+$scope.CHAL_K_TYPE];
     			var target = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_TARGET];
 				var bonus = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_BONUS];
@@ -1129,7 +1156,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 				var row_status = 0;
     			var tmp_chall = {};
     			switch(ch_type){
-    				case $scope.CHAL_TYPE_1 || $scope.CHAL_TYPE_1A:
+    				case $scope.CHAL_TYPE_1:
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = walked_km * 100 / target;
@@ -1160,7 +1187,38 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						details: false
     					};
     					break;
-    				case $scope.CHAL_TYPE_3 || $scope.CHAL_TYPE_3A:
+    				case $scope.CHAL_TYPE_1A:
+    					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
+    					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					status = walked_km * 100 / target;
+    					row_status = Math.floor(walked_km) + "/" + target;
+    					if(status > 100)status = 100;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: $scope.getCorrectIcon(point_type), //"img/health/healthLeavesTesto.svg",
+    						desc: $scope.correctDesc($scope.CHAL_DESC_1, target, bonus, point_type, mobility_mode, null), //"Aumenta del 15% i km fatti a piedi e avrai 50 punti bonus",
+    						startChTs: startChTs,
+    						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
+    						mobilityMode: mobility_mode,
+    						Km_walked_during_challenge: walked_km,
+    						target: target,
+    						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
+    						active: active,
+    						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
+    						success: success,
+    						progress_img: $scope.convertStatusToIcon(status, success),
+    						details: false
+    					};
+    					break;	
+    				case $scope.CHAL_TYPE_3:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = count * 100 / target;
@@ -1190,6 +1248,36 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						details: false
     					};
     					break;
+    				case $scope.CHAL_TYPE_3A:
+    					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					status = count * 100 / target;
+    					row_status = count + "/" + target;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_3, target, bonus, point_type, mobility_mode), //"Fai almeno N viaggio/i con il 'Bike sharing' e vinci un bonus di 50 Green Points",
+    						startChTs: startChTs,
+    						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
+    						mobilityMode: mobility_mode,
+    						target: target,
+    						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						counter: count,
+    						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
+    						active: active,
+    						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
+    						success: success,
+    						progress_img: $scope.convertStatusToIcon(status, success),
+    						details: false
+    					};
+    					break;	
     				case $scope.CHAL_TYPE_4:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
     					//var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
@@ -1269,7 +1357,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						startChTs: startChTs,
     						endChTs: endChTs,
     						daysToEnd: daysToEnd,
-    						mobilityMode: mobility_mode,
+    						mobilityMode: badge_coll_name,
     						target: target,
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
@@ -1356,6 +1444,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    				$scope.oldChallenges.push(tmp_chall);
 	    			}
     			}
+    			}	
     		}
     	}
     	$scope.setLoading(false);

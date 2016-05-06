@@ -54,7 +54,7 @@ descriptions:
   - id: 14
     type: PIONEER
     mobilitymode: bikesharing
-    description: Per vincere la sfida utilizza nel corso del periodo di validita' della sfida una stazione di bike sharing che non hai ancora visitato.
+    description: Per vincere la sfida utilizza nel corso del periodo di validita' della sfida una o piu' stazione di bike sharing che non hai ancora visitato.
   - id: 15
     type: NEXTBADGE
     mobilitymode: green

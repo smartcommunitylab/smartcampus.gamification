@@ -144,7 +144,7 @@
 			        <!-- th:if="${name.length() gt 10}" -->
 			        <div th:if="${n_lw_win_challenges ne null and not #lists.isEmpty(n_lw_win_challenges)}">
 				        <h3>
-				            Hai superato le challenge:
+				            Hai superato le sfide:
 				        </h3>
 				        <table th:if="${n_lw_win_challenges ne null}">
 						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" valign="top" >

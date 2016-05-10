@@ -26,6 +26,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_ETS = "_endChTs";
 	$scope.CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
 	$scope.CHAL_K_EARNED_POINT = "_points_earned_during_challenges";
+	$scope.CHAL_K_WEAKLY_EARNED_POINT = "point_type_baseline";	//TODO for new week: add _ at the start of the string
 	$scope.CHAL_K_EARNED_POINT_NEW = "gp_current";
 	$scope.CHAL_K_TARGET = "_target";
 	$scope.CHAL_K_BONUS = "_bonus";
@@ -837,8 +838,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var wsRestUrl = "state/" + gameId + "/" + $scope.userId;
     	var myDataPromise = invokeWSServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
+    		var pointConcept = [];
+    		if(result.state){
+    			pointConcept = result.state.PointConcept;
+    		}
     		if(result.customData){
-    			$scope.correctCustomData(result.customData);
+    			$scope.correctCustomData(result.customData, pointConcept);
     		}
     		$scope.showChalleng();
     	});
@@ -1115,7 +1120,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     // Method used to load only the custom data from the user profile data
-    $scope.correctCustomData = function(customdata){
+    $scope.correctCustomData = function(customdata, pointConcept){
     	var challIndxArray = [];
     	$scope.challenges = [];
     	$scope.oldChallenges = [];
@@ -1311,13 +1316,15 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;	
     				case $scope.CHAL_TYPE_5:
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
-    					var earned_points = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_EARNED_POINT];
+    					var earned_points_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WEAKLY_EARNED_POINT];
+    					var earned_points = $scope.getWeekPointFromName(pointConcept,earned_points_type);
+    					/*var earned_points = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_EARNED_POINT];
     					if(earned_points == null){
     						earned_points = customdata[$scope.CHAL_K_EARNED_POINT_NEW];
     					}
     					if(earned_points == null){
     						earned_points = 0;
-    					}
+    					}*/
     					status = earned_points * 100 / target;
     					row_status = earned_points + "/" + target;
     					if(status > 100)status = 100;
@@ -1448,6 +1455,18 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		}
     	}
     	$scope.setLoading(false);
+    };
+    
+    $scope.getWeekPointFromName = function(list, name){
+    	var found = false;
+    	var points = 0;
+    	for(var i = 0; (i < list.length) && !found; i++){
+    		if(list[i].name == name){
+    			found = true;
+    			points = list[i].score;
+    		}
+    	}
+    	return points;
     };
     
     $scope.getWidthPosByStringLength = function(stringlength){

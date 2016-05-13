@@ -546,7 +546,7 @@ public class PortalController extends SCController{
 						mailto = mailTo;
 					}
 					
-					if(mailSend.compareTo("true") == 0){
+					if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
 						try {
 							if(notifications != null){
 								if(states != null && states.size() > 0){
@@ -648,7 +648,7 @@ public class PortalController extends SCController{
 						mailto = mailTo;
 					}
 					
-					if(mailSend.compareTo("true") == 0){
+					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0){
 						
 						try {
 							if(notifications != null){
@@ -714,8 +714,7 @@ public class PortalController extends SCController{
 	
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
-	//@Scheduled(cron="0 0 0/2 * * *") // Repeat every hours at 00:00 min/sec
-	//@Scheduled(cron="0 0 10 * * THU") 		// Repeat every Monday at 8 AM from 1 to 8 dec
+	//@Scheduled(cron="0 0 11 * * MON") 	// Repeat every Monday at 11 AM
 	public synchronized void checkWinnersNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (3*24*60*60*1000);	// Delta in millis of N days: now 3 days
@@ -826,7 +825,7 @@ public class PortalController extends SCController{
 					mailto = mailTo;
 				}
 				
-				if(mailSend.compareTo("true") == 0){
+				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
 					try {
 						if(notifications != null){
 							if(states != null && states.size() > 0){
@@ -928,7 +927,7 @@ public class PortalController extends SCController{
 					mailto = mailTo;
 				}
 				
-				if(mailSend.compareTo("true") == 0){
+				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
 					
 					try {
 						if(notifications != null){

@@ -26,7 +26,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_ETS = "_endChTs";
 	$scope.CHAL_K_WALKED_KM = "_Km_traveled_during_challenge";
 	$scope.CHAL_K_EARNED_POINT = "_points_earned_during_challenges";
-	$scope.CHAL_K_WEAKLY_EARNED_POINT = "point_type_baseline";	//TODO for new week: add _ at the start of the string
+	$scope.CHAL_K_WEAKLY_EARNED_POINT = "_point_type_baseline";	//TODO check if in server prod we are aligned
+	$scope.CHAL_K_WEAKLY_EARNED_POINT2 = "point_type_baseline";
 	$scope.CHAL_K_EARNED_POINT_NEW = "gp_current";
 	$scope.CHAL_K_TARGET = "_target";
 	$scope.CHAL_K_BONUS = "_bonus";
@@ -1316,7 +1317,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;	
     				case $scope.CHAL_TYPE_5:
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
-    					var earned_points_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WEAKLY_EARNED_POINT];
+    					var earned_points_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WEAKLY_EARNED_POINT];	// key with _
+    					if(earned_points_type == null){
+    						earned_points_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WEAKLY_EARNED_POINT2];	// key without _
+    					}	
     					var earned_points = $scope.getWeekPointFromName(pointConcept,earned_points_type);
     					/*var earned_points = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_EARNED_POINT];
     					if(earned_points == null){

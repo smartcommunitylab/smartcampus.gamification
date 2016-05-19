@@ -121,6 +121,8 @@ public class ChallengesUtils {
 				correctDesc = challDescList.get(14).getDescription();
 			} else if(mobMode.compareTo("bike sharing pioneer") == 0){
 				correctDesc = challDescList.get(13).getDescription();
+			} else if(mobMode.compareTo("sustainable life") == 0){
+				correctDesc = challDescList.get(15).getDescription();
 			}
 			
 		} else if(type.compareTo(CHAL_TYPE_7) == 0){

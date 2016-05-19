@@ -777,6 +777,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[14].description;
     			} else if(ch.mobilityMode == "bike sharing pioneer"){
     				msg_to_show=$scope.chall_description_array[13].description;
+    			} else if(ch.mobilityMode == "sustainable life"){
+    				msg_to_show=$scope.chall_description_array[15].description;	// zero impact
     			}
     			break;
     		case $scope.CHAL_TYPE_7: 

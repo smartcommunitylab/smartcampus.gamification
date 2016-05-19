@@ -62,7 +62,7 @@ descriptions:
   - id: 16
     type: NEXTBADGE
     mobilitymode: zeroimpact
-    description: I badge della collezione impatto zero vengono assegnati al raggiungimento di 1, 5, 10, 25, 50 punti (i viaggi a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi).
+    description: I badge della collezione 'sustainable life' (o impatto zero) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50 punti (i viaggi a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi).
   - id: 17
     type: NEXTBADGE
     mobilitymode: bus

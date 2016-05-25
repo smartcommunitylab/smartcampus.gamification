@@ -11,5 +11,8 @@ public interface PlayerProdRepositoryDao extends CrudRepository<PlayerProd, Stri
 
 	@Query("{'nikName': ?0}")
 	public PlayerProd findByNick(String nickname);
+	
+	@Query("{'nikName': { '$regex': ?0, $options:'i'}}")
+	public PlayerProd findByNickIgnoreCase(String nickname);
 
 }

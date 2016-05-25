@@ -2840,8 +2840,8 @@ cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
 	// (added lower case transformation to consider string with same chars but different formatting
 	$scope.checkIfNickAlreadyPresent = function(nick){
 		for(var i = 0; i < data.nickList.length; i++){
-			//if(data.nickList[i].nikName.toLowerCase() == nick.trim().toLowerCase()){
-			if(data.nickList[i].nikName == nick.trim()){
+			//if(data.nickList[i].nikName.toLowerCase() == nick.trim().toLowerCase()){	// case insensitive
+			if(data.nickList[i].nikName == nick.trim()){								// case sensitive
 				return true;
 			}
 		}

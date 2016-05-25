@@ -191,6 +191,8 @@ public class WsProxyController {
 		
 		if(isTest.compareTo("true") == 0){
 			Player withNick = playerRepositoryDao.findByNick(nickname);
+			//String corrNick = "^" + data.getNick_recommandation() + "$";
+			//Player withNick = playerRepositoryDao.findByNickIgnoreCase(corrNick);
 			if (withNick != null && !withNick.getSocialId().equals(id)) {
 				logger.debug("External registration: nickname conflict with user "+withNick.getPid());
 				res.setStatus(HttpStatus.CONFLICT.value());
@@ -215,6 +217,7 @@ public class WsProxyController {
 						data);
 				if (StringUtils.hasText(data.getNick_recommandation())) {
 					Player recommender = playerRepositoryDao.findByNick(data.getNick_recommandation());
+					//Player recommender = playerRepositoryDao.findByNickIgnoreCase(corrNick);
 					if (recommender != null) {
 						sendRecommendationToGamification(recommender.getPid());
 					}
@@ -231,6 +234,8 @@ public class WsProxyController {
 			return p.toJSONString();
 		} else {
 			PlayerProd withNick = playerProdRepositoryDao.findByNick(nickname);
+			//String corrNick = "^" + data.getNick_recommandation() + "$";
+			//PlayerProd withNick = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
 			if (withNick != null && !withNick.getSocialId().equals(id)) {
 				logger.debug("External registration: nickname conflict with user "+withNick.getPid());
 				res.setStatus(HttpStatus.CONFLICT.value());
@@ -254,6 +259,7 @@ public class WsProxyController {
 						data);
 				if (StringUtils.hasText(data.getNick_recommandation())) {
 					PlayerProd recommender = playerProdRepositoryDao.findByNick(data.getNick_recommandation());
+					//PlayerProd recommender = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
 					if (recommender != null) {
 						sendRecommendationToGamification(recommender.getPid());
 					}
@@ -328,6 +334,8 @@ public class WsProxyController {
 			p.setPersonalData(pdata);
 			if (pdata.getNick_recommandation() != null) {
 				Player recommender = playerRepositoryDao.findByNick(pdata.getNick_recommandation());
+				//String corrNick = "^" + pdata.getNick_recommandation() + "$";
+				//Player recommender = playerRepositoryDao.findByNickIgnoreCase(corrNick);
 				if (recommender != null) {
 					sendRecommendationToGamification(recommender.getPid());
 				}
@@ -342,6 +350,8 @@ public class WsProxyController {
 			playerProdRepositoryDao.save(p);
 			if (pdata.getNick_recommandation() != null) {
 				PlayerProd recommender = playerProdRepositoryDao.findByNick(pdata.getNick_recommandation());
+				//String corrNick = "^" + pdata.getNick_recommandation() + "$";
+				//PlayerProd recommender = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
 				if (recommender != null) {
 					sendRecommendationToGamification(recommender.getPid());
 				}

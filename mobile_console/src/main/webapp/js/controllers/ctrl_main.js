@@ -1183,6 +1183,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						status: status,
     						row_status: row_status,
     						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
@@ -1214,6 +1216,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						status: status,
     						row_status: row_status,
     						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
@@ -1243,6 +1247,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						counter: count,
     						status: status,
     						row_status: row_status,
@@ -1273,6 +1279,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						counter: count,
     						status: status,
     						row_status: row_status,
@@ -1304,6 +1312,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						counter: count,
     						status: status,
     						row_status: row_status,
@@ -1346,6 +1356,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						status: status,
     						row_status: row_status,
     						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
@@ -1375,6 +1387,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						counter: count,
     						status: status,
     						row_status: row_status,
@@ -1407,6 +1421,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						status: status,
     						row_status: row_status,
     						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
@@ -1436,6 +1452,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						bonus: bonus,
     						bonus_style: $scope.getWidthPosByIntValue(bonus),
     						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
     						status: status,
     						row_status: row_status,
     						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
@@ -1487,8 +1505,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		case 4: 
     			style_name = "oriz_space_4";
     			break;
-    		default: 
+    		case 5: 
     			style_name = "oriz_space_5";
+    			break;	
+    		default: 
+    			style_name = "oriz_space_6";
     			break;
     	}
     	return style_name;
@@ -1502,6 +1523,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		style_name = "oriz_space_bonus_3";
     	} else {
     		style_name = "oriz_space_bonus_4";
+    	}
+    	return style_name;
+    };
+    
+    $scope.getWidthPosByIntValueSucc = function(intvalue){
+    	var style_name = "";
+    	if(intvalue < 100){
+    		style_name = "image-bonus-success-num_2";
+    	} else {
+    		style_name = "image-bonus-success-num_3";
     	}
     	return style_name;
     };

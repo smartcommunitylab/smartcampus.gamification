@@ -1168,7 +1168,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = walked_km * 100 / target;
-    					row_status = Math.floor(walked_km) + "/" + target;
+    					if(walked_km < 1){
+    						row_status = Math.round(walked_km * 10) / 10 + "/" + target;
+    					} else {
+    						row_status = Math.floor(walked_km) + "/" + target;
+    					}
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],
@@ -1201,7 +1205,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					status = walked_km * 100 / target;
-    					row_status = Math.floor(walked_km) + "/" + target;
+    					if(walked_km < 1){
+    						row_status = Math.round(walked_km * 10) / 10 + "/" + target;
+    					} else {
+    						row_status = Math.floor(walked_km) + "/" + target;
+    					}
     					if(status > 100)status = 100;
     					tmp_chall = {
     						id: challIndxArray[i],
@@ -2165,6 +2173,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowGreenLeaves1500 = false;
     	$scope.userShowGreenLeaves2500 = false;
     	$scope.userShowGreenLeaves5000 = false;
+    	$scope.userShowGreenLeaves10000 = false;
+    	$scope.userShowGreenLeaves20000 = false;
     	
     	// Bike aficionado
     	$scope.userShowBikeTrip1 = false;
@@ -2172,6 +2182,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowBikeTrip10 = false;
     	$scope.userShowBikeTrip25 = false;
     	$scope.userShowBikeTrip50 = false;
+    	$scope.userShowBikeTrip100 = false;
+    	$scope.userShowBikeTrip200 = false;
+    	$scope.userShowBikeTrip500 = false;
     	
     	// Bike sharing
     	$scope.userShowBikeSharingBrione = false;
@@ -2196,6 +2209,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowZeroImpact10 = false;
     	$scope.userShowZeroImpact25 = false;
     	$scope.userShowZeroImpact50 = false;
+    	$scope.userShowZeroImpact100 = false;
+    	$scope.userShowZeroImpact200 = false;
+    	$scope.userShowZeroImpact500 = false;
     	
     	// Public transport aficionado
     	$scope.userShowPublicTransport5 = false;
@@ -2203,6 +2219,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.userShowPublicTransport25 = false;
     	$scope.userShowPublicTransport50 = false;
     	$scope.userShowPublicTransport100 = false;
+    	$scope.userShowPublicTransport200 = false;
+    	$scope.userShowPublicTransport500 = false;
     	
     	// Park And Ride pioneer
     	$scope.userShowParkAndRideStadio = false;
@@ -2278,6 +2296,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    					badgeString += "5000 punti green, ";
 	    					greenBadges += 1;
 	    					break;
+	    				case "10000" + $scope.BG_GREEN_POINT :
+	    					$scope.userShowGreenLeaves10000 = true;
+	    					badgeString += "10000 punti green, ";
+	    					greenBadges += 1;
+	    					break;
+	    				case "20000" + $scope.BG_GREEN_POINT :
+	    					$scope.userShowGreenLeaves20000 = true;
+	    					badgeString += "20000 punti green, ";
+	    					greenBadges += 1;
+	    					break;	
 	    				default: 
 	    					break;
 	    			}
@@ -2378,7 +2406,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    			$scope.userNoSpecialBadge = true;
 	    		}
     		}
-    		// bike
+    		// bike aficionado
     		if(list[4].badgeEarned){
 	    		for(var i = 0; i < list[4].badgeEarned.length; i++){
 	    			switch(list[4].badgeEarned[i]){
@@ -2405,6 +2433,21 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    				case "50" + $scope.BG_BIKE_TRIP :
 	    					$scope.userShowBikeTrip50 = false;
 	    					bikeTripBadges += "50 viaggio in bici, ";
+	    					bikeShareBadges += 1;
+	    					break;
+	    				case "100" + $scope.BG_BIKE_TRIP :
+	    					$scope.userShowBikeTrip100 = true;
+	    					badgeString += "100 viaggio in bici, ";
+	    					bikeTripBadges += 1;
+	    					break;
+	    				case "200" + $scope.BG_BIKE_TRIP :
+	    					$scope.userShowBikeTrip200 = false;
+	    					bikeTripBadges += "200 viaggio in bici, ";
+	    					bikeShareBadges += 1;
+	    					break;	
+	    				case "500" + $scope.BG_BIKE_TRIP :
+	    					$scope.userShowBikeTrip500 = false;
+	    					bikeTripBadges += "500 viaggio in bici, ";
 	    					bikeShareBadges += 1;
 	    					break;
 	    				default: break;
@@ -2532,6 +2575,21 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    					badgeString += "50 viaggi a impatto zero, ";
 	    					zeroImpactBadges += 1;
 	    					break;
+	    				case "100" + $scope.BG_ZERO_IMPACT :
+	    					$scope.userShowZeroImpact100 = true;
+	    					badgeString += "100 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
+	    					break;
+	    				case "200" + $scope.BG_ZERO_IMPACT :
+	    					$scope.userShowZeroImpact200 = true;
+	    					badgeString += "200 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
+	    					break;
+	    				case "500" + $scope.BG_ZERO_IMPACT :
+	    					$scope.userShowZeroImpact500 = true;
+	    					badgeString += "500 viaggi a impatto zero, ";
+	    					zeroImpactBadges += 1;
+	    					break;	
 	    				default: break;
 	    			}
 	    		}
@@ -2565,6 +2623,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    					badgeString += "100 viaggi trasporto pubblico, ";
 	    					publicTransportBadges += 1;
 	    					break;
+	    				case "200" + $scope.BG_PUBLIC_TRANSPORT :
+	    					$scope.userShowPublicTransport200 = true;
+	    					badgeString += "200 viaggi trasporto pubblico, ";
+	    					publicTransportBadges += 1;
+	    					break;
+	    				case "500" + $scope.BG_PUBLIC_TRANSPORT :
+	    					$scope.userShowPublicTransport500 = true;
+	    					badgeString += "500 viaggi trasporto pubblico, ";
+	    					publicTransportBadges += 1;
+	    					break;	
 	    				default: break;
 	    			}
 	    		}

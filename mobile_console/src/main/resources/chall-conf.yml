@@ -58,19 +58,19 @@ descriptions:
   - id: 15
     type: NEXTBADGE
     mobilitymode: green
-    description: I badge della collezione green leaves vengono assegnati al raggiungimento di 50, 100, 200, 400, 800, 1500, 2500, 5000 punti.
+    description: I badge della collezione green leaves vengono assegnati al raggiungimento di 50, 100, 200, 400, 800, 1500, 2500, 5000, 10000 e 20000 punti.
   - id: 16
     type: NEXTBADGE
     mobilitymode: zeroimpact
-    description: I badge della collezione 'sustainable life' (o impatto zero) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50 punti (i viaggi a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi).
+    description: I badge della collezione 'sustainable life' (o impatto zero) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 punti (i viaggi a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi).
   - id: 17
     type: NEXTBADGE
     mobilitymode: bus
-    description: I badge della collezione public transport (viaggi in bus) vengono assegnati al raggiungimento di 5, 10, 25, 50, 100 punti.
+    description: I badge della collezione public transport (viaggi in bus) vengono assegnati al raggiungimento di 5, 10, 25, 50, 100, 200 e 500 punti.
   - id: 18
     type: NEXTBADGE
     mobilitymode: bike
-    description: I badge della collezione bici (viaggi in bici e bici condivisa) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50 punti.
+    description: I badge della collezione bici (viaggi in bici e bici condivisa) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 punti.
   - id: 19
     type: NEXTBADGE
     mobilitymode: recommendation
@@ -78,7 +78,7 @@ descriptions:
   - id: 20
     type: BADGECOLLECTION
     mobilitymode: recommendation
-    description: Per vincere la sfida devi completare una badge collection. Nello specifico abbiamo la collection green leaves composta dai badge di 50, 100, 200, 400, 800, 1500, 2500 e 5000 punti, la collection impatto zero composta dai badge di 1, 5, 10, 25, 50 punti, la collection public transport composta dai badge di 5, 10, 25, 50, 100 punti, la collection bici composta dai badge di 1, 5, 10, 25, 50 punti e la collection 'invita i tuoi amici' composta dai badge di 3, 5, 10, 25 punti.
+    description: Per vincere la sfida devi completare una badge collection. Nello specifico abbiamo la collection green leaves composta dai badge di 50, 100, 200, 400, 800, 1500, 2500, 5000, 10000 e 20000 punti, la collection impatto zero composta dai badge di 1, 5, 10, 25, 50, 100, 200 e 500 punti, la collection public transport composta dai badge di 5, 10, 25, 50, 100, 200 e 500 punti, la collection bici composta dai badge di 1, 5, 10, 25, 50, 100, 200 e 500 punti e la collection 'invita i tuoi amici' composta dai badge di 3, 5, 10, 25 punti.
   - id: 21
     type: NEGATEDMODE
     mobilitymode: bikesharing

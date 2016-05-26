@@ -31,6 +31,7 @@ public class ChallengesUtils {
 	private final String CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	private final String CHAL_K_BADGE_COLL_NAME = "_badge_collection";
 	private final String CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai un bonus di BONUS punti POINT_TYPE";
+	private final String CHAL_DESC_2 = "Fai almeno TARGET viaggio senza usare MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE e avrai ulteriori BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_6 = "Ottieni almeno TARGET badge nella Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
@@ -38,6 +39,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_TYPE_1 = "PERCENT";
 	private final String CHAL_TYPE_1A = "BSPERCENT";
+	private final String CHAL_TYPE_2 = "NEGATEDMODE";
 	private final String CHAL_TYPE_3 = "TRIPNUMBER";
 	private final String CHAL_TYPE_3A = "BSTRIPNUMBER";
 	private final String CHAL_TYPE_4 = "ZEROIMPACT";
@@ -98,6 +100,20 @@ public class ChallengesUtils {
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
 				correctDesc = challDescList.get(2).getDescription();
 			}
+		} else if(type.compareTo(CHAL_TYPE_2) == 0){
+			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
+				correctDesc = challDescList.get(21).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
+				correctDesc = challDescList.get(23).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
+				correctDesc = challDescList.get(20).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_T) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_T + "Distance") == 0){
+				correctDesc = challDescList.get(22).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_C) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_C + "Distance") == 0){
+				correctDesc = challDescList.get(24).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
+				correctDesc = challDescList.get(25).getDescription();
+			} 
 		} else if(type.compareTo(CHAL_TYPE_3) == 0 || type.compareTo(CHAL_TYPE_3A) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
 				correctDesc = challDescList.get(4).getDescription();
@@ -123,8 +139,9 @@ public class ChallengesUtils {
 				correctDesc = challDescList.get(13).getDescription();
 			} else if(mobMode.compareTo("sustainable life") == 0){
 				correctDesc = challDescList.get(15).getDescription();
-			}
-			
+			} else if(mobMode.compareTo("park and ride pioneer") == 0){
+				correctDesc = challDescList.get(12).getDescription();	// park and ride
+			}	
 		} else if(type.compareTo(CHAL_TYPE_7) == 0){
 			correctDesc = challDescList.get(19).getDescription();
 		} else if(type.compareTo(CHAL_TYPE_9) == 0){
@@ -206,6 +223,24 @@ public class ChallengesUtils {
 	    				if(status > 100)status = 100;
 	    				String id = challIndxArray.get(i);
 	    				String desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode, null);
+	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
+	    				tmp_chall.setChallId(id);
+	    				tmp_chall.setChallDesc(desc);
+	    				tmp_chall.setChallTarget(target);
+	    				tmp_chall.setType(ch_type);
+	    				tmp_chall.setStatus(status);
+	    				tmp_chall.setActive(active);
+	    				tmp_chall.setSuccess(success);
+	    				tmp_chall.setStartDate(startTime);
+	    				tmp_chall.setEndDate(endTime);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    			}
+	    			if(ch_type.compareTo(CHAL_TYPE_2) == 0){
+	    				int count = customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER);
+	    				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);
+	    				status = count * 100 / target;
+	    				String id = challIndxArray.get(i);
+	    				String desc = correctDesc(CHAL_DESC_2, target, bonus, point_type, mobility_mode, null);
 	    				startTime = customData.getLong(CHAL_K + ch_id + CHAL_K_STS);
 	    				tmp_chall.setChallId(id);
 	    				tmp_chall.setChallDesc(desc);
@@ -385,7 +420,11 @@ public class ChallengesUtils {
     	}
     	if(mode != null && mode != ""){
     		if(desc.contains("MODE")){
-    			desc = desc.replace("MODE", getCorrectMode(mode));
+    			if(desc.contains("senza")){
+    				desc = desc.replace("MODE", getCorrectMode(mode, 1));
+    			} else {
+    				desc = desc.replace("MODE", getCorrectMode(mode, 0));
+    			}
     		}
     	}
     	if(coll_name != null && coll_name != ""){
@@ -396,55 +435,55 @@ public class ChallengesUtils {
     	return desc;
     }
     
-    private String getCorrectMode(String mode){
+    private String getCorrectMode(String mode, int type){
     	String corr_mode = "";
     	if(mode.compareTo(CHAL_ALLOWED_MODE_W) == 0){
-    		corr_mode = "a piedi";
+    		corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BK) == 0){
-    		corr_mode = "in bici";
+    		corr_mode = (type == 0) ? "in bici" : "la bici";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0){
-    		corr_mode = "con bici condivisa";
+    		corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_T) == 0){
-    		corr_mode = "in treno";
+    		corr_mode = (type == 0) ? "in treno" : "il treno";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_B) == 0){
-    		corr_mode = "in autobus";
+    		corr_mode = (type == 0) ? "in autobus" : "l'autobus";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_C) == 0){
-    		corr_mode = "in auto";
+    		corr_mode = (type == 0) ? "in auto" : "l'automobile";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_Z) == 0){
-    		corr_mode = "a impatto zero";
+    		corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_P) == 0){
-    		corr_mode = "promoted";
+    		corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_W_DIS) == 0){
-    		corr_mode = "a piedi";
+    		corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BK_DIS) == 0){
-    		corr_mode = "in bici";
+    		corr_mode = (type == 0) ? "in bici" : "la bici";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BKS_DIS) == 0){
-    		corr_mode = "con bici condivisa";
+    		corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_T_DIS) == 0){
-    		corr_mode = "in treno";
+    		corr_mode = (type == 0) ? "in treno" : "il treno";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_B_DIS) == 0){
-    		corr_mode = "in autobus";
+    		corr_mode = (type == 0) ? "in autobus" : "l'autobus";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_C_DIS) == 0){
-    		corr_mode = "in auto";
+    		corr_mode = (type == 0) ? "in auto" : "l'automobile";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_Z_DIS) == 0){
-    		corr_mode = "a impatto zero";
+    		corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_P_DIS) == 0){
-    		corr_mode = "promoted";
+    		corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
     	}
     	return corr_mode;
     }

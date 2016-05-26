@@ -38,6 +38,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_MODE = "_mode";	// possibility: walk, bike, bikesharing, train, bus, car
 	$scope.CHAL_K_BADGE_COLL_NAME = "_badge_collection";
 	$scope.CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_2 = "Fai almeno TARGET viaggio senza usare MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE durante la challenge e guadagni un ulteriore bonus di BONUS punti POINT_TYPE"
 	$scope.CHAL_DESC_6 = "Ottieni almeno TARGET badge nella Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
@@ -45,6 +46,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_TYPE_1 = "PERCENT";
 	$scope.CHAL_TYPE_1A = "BSPERCENT";
+	$scope.CHAL_TYPE_2 = "NEGATEDMODE"
 	$scope.CHAL_TYPE_3 = "TRIPNUMBER";
 	$scope.CHAL_TYPE_3A = "BSTRIPNUMBER";
 	$scope.CHAL_TYPE_4 = "ZEROIMPACT";
@@ -728,6 +730,21 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W + "Distance"){
     				msg_to_show=$scope.chall_description_array[2].description;
     			}
+    			break;
+    		case $scope.CHAL_TYPE_2:
+    			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
+    				msg_to_show=$scope.chall_description_array[21].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BK + "Distance"){
+    				msg_to_show=$scope.chall_description_array[23].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_BKS + "Distance"){
+    				msg_to_show=$scope.chall_description_array[20].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_T + "Distance"){
+    				msg_to_show=$scope.chall_description_array[22].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_C || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_C + "Distance"){
+    				msg_to_show=$scope.chall_description_array[24].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W + "Distance"){
+    				msg_to_show=$scope.chall_description_array[25].description;
+    			} 
     			break;	
     		case $scope.CHAL_TYPE_3:
     			if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){
@@ -779,6 +796,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[13].description;
     			} else if(ch.mobilityMode == "sustainable life"){
     				msg_to_show=$scope.chall_description_array[15].description;	// zero impact
+    			} else if(ch.mobilityMode == "park and ride pioneer"){
+    				msg_to_show=$scope.chall_description_array[12].description;	// park and ride
     			}
     			break;
     		case $scope.CHAL_TYPE_7: 
@@ -1237,7 +1256,39 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						progress_img: $scope.convertStatusToIcon(status, success),
     						details: false
     					};
-    					break;	
+    					break;
+    				case $scope.CHAL_TYPE_2:
+    					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					status = count * 100 / target;
+    					row_status = count + "/" + target;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_2, target, bonus, point_type, mobility_mode), //"Fai almeno N viaggio/i senza usare 'la macchina' e vinci un bonus di 50 Green Points",
+    						startChTs: startChTs,
+    						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
+    						mobilityMode: mobility_mode,
+    						target: target,
+    						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
+    						counter: count,
+    						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
+    						active: active,
+    						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
+    						success: success,
+    						progress_img: $scope.convertStatusToIcon(status, success),
+    						details: false
+    					};
+    					break;
     				case $scope.CHAL_TYPE_3:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
@@ -1675,7 +1726,11 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	}
     	if(mode != null && mode != ""){
     		if(desc.indexOf("MODE") > -1){
-    			desc = desc.replace("MODE", $scope.getCorrectMode(mode));
+    			if(desc.indexOf('senza') > -1){
+    				desc = desc.replace("MODE", $scope.getCorrectMode(mode, 1));
+    			} else {
+    				desc = desc.replace("MODE", $scope.getCorrectMode(mode, 0));
+    			}
     		}
     	}
     	if(coll_name != null && coll_name != ""){
@@ -1686,56 +1741,56 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return desc;
     };
     
-    $scope.getCorrectMode = function(mode){
+    $scope.getCorrectMode = function(mode, type){
     	var corr_mode = "";
     	switch(mode){
 	    	case $scope.CHAL_ALLOWED_MODE_W: 
-	    		corr_mode = "a piedi";
+	    		corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_BK: 
-	    		corr_mode = "in bici";
+	    		corr_mode = (type == 0) ? "in bici" : "la bici";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_BKS: 
-	    		corr_mode = "con bici condivisa";
+	    		corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_T: 
-	    		corr_mode = "in treno";
+	    		corr_mode = (type == 0) ? "in treno" : "il treno";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_B: 
-	    		corr_mode = "in autobus";
+	    		corr_mode = (type == 0) ? "in autobus" : "l'autobus";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_C: 
-	    		corr_mode = "in auto";
+	    		corr_mode = (type == 0) ? "in auto" : "l'automobile";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_Z: 
-	    		corr_mode = "a impatto zero";
+	    		corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_P: 
-	    		corr_mode = "promoted";
+	    		corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_W + "Distance": 
-	    		corr_mode = "a piedi";
+	    		corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_BK + "Distance": 
-	    		corr_mode = "in bici";
+	    		corr_mode = (type == 0) ? "in bici" : "la bici";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_BKS + "Distance": 
-	    		corr_mode = "con bici condivisa";
+	    		corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_T + "Distance": 
-	    		corr_mode = "in treno";
+	    		corr_mode = (type == 0) ? "in treno" : "il treno";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_B + "Distance": 
-	    		corr_mode = "in autobus";
+	    		corr_mode = (type == 0) ? "in autobus" : "l'autobus";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_C + "Distance": 
-	    		corr_mode = "in auto";
+	    		corr_mode = (type == 0) ? "in auto" : "l'automobile";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_Z + "Distance": 
-	    		corr_mode = "a impatto zero";
+	    		corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
 	    		break;
 	    	case $scope.CHAL_ALLOWED_MODE_P + "Distance": 
-	    		corr_mode = "promoted";
+	    		corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
 	    		break;	
 	    	default: break;
     	};
@@ -2431,7 +2486,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    					bikeTripBadges += 1;
 	    					break;
 	    				case "50" + $scope.BG_BIKE_TRIP :
-	    					$scope.userShowBikeTrip50 = false;
+	    					$scope.userShowBikeTrip50 = true;
 	    					bikeTripBadges += "50 viaggio in bici, ";
 	    					bikeShareBadges += 1;
 	    					break;
@@ -2441,12 +2496,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    					bikeTripBadges += 1;
 	    					break;
 	    				case "200" + $scope.BG_BIKE_TRIP :
-	    					$scope.userShowBikeTrip200 = false;
+	    					$scope.userShowBikeTrip200 = true;
 	    					bikeTripBadges += "200 viaggio in bici, ";
 	    					bikeShareBadges += 1;
 	    					break;	
 	    				case "500" + $scope.BG_BIKE_TRIP :
-	    					$scope.userShowBikeTrip500 = false;
+	    					$scope.userShowBikeTrip500 = true;
 	    					bikeTripBadges += "500 viaggio in bici, ";
 	    					bikeShareBadges += 1;
 	    					break;

@@ -1002,8 +1002,8 @@ public class PortalController extends SCController{
 		File green1500 = new File(path + "mail/img/green/greenLeaves1500.png");
 		File green2500 = new File(path + "mail/img/green/greenLeaves2500.png");
 		File green5000 = new File(path + "mail/img/green/greenLeaves5000.png");
-//		File green10000 = new File(path + "mail/img/green/greenLeaves10000.png");
-//		File green20000 = new File(path + "mail/img/green/greenLeaves20000.png");
+		File green10000 = new File(path + "mail/img/green/greenLeaves10000.png");
+		File green20000 = new File(path + "mail/img/green/greenLeaves20000.png");
 		File greenBronze = new File(path + "mail/img/leaderboard/green/leaderboardGreen3.png");
 		File greenSilver = new File(path + "mail/img/leaderboard/green/leaderboardGreen2.png");
 		File greenGold = new File(path + "mail/img/leaderboard/green/leaderboardGreen1.png");
@@ -1017,8 +1017,8 @@ public class PortalController extends SCController{
 		allBadges.add(new BagesData(green1500.getName(), FileUtils.readFileToByteArray(green1500), "image/png", "1500_point_green", "1500 Punti Green Leaves"));
 		allBadges.add(new BagesData(green2500.getName(), FileUtils.readFileToByteArray(green2500), "image/png", "2500_point_green", "2500 Punti Green Leaves"));
 		allBadges.add(new BagesData(green5000.getName(), FileUtils.readFileToByteArray(green5000), "image/png", "5000_point_green", "5000 Punti Green Leaves"));
-//		allBadges.add(new BagesData(green10000.getName(), FileUtils.readFileToByteArray(green10000), "image/png", "10000_point_green", "10000 Punti Green Leaves"));
-//		allBadges.add(new BagesData(green20000.getName(), FileUtils.readFileToByteArray(green20000), "image/png", "20000_point_green", "20000 Punti Green Leaves"));
+		allBadges.add(new BagesData(green10000.getName(), FileUtils.readFileToByteArray(green10000), "image/png", "10000_point_green", "10000 Punti Green Leaves"));
+		allBadges.add(new BagesData(green20000.getName(), FileUtils.readFileToByteArray(green20000), "image/png", "20000_point_green", "20000 Punti Green Leaves"));
 		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green Leaves"));
 		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green Leaves"));
 		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green Leaves"));
@@ -1092,18 +1092,18 @@ public class PortalController extends SCController{
 		File bike10 = new File(path + "mail/img/bike/bikeAficionado10.png");
 		File bike25 = new File(path + "mail/img/bike/bikeAficionado25.png");
 		File bike50 = new File(path + "mail/img/bike/bikeAficionado50.png");
-//		File bike100 = new File(path + "mail/img/bike/bikeAficionado100.png");
-//		File bike200 = new File(path + "mail/img/bike/bikeAficionado200.png");
-//		File bike500 = new File(path + "mail/img/bike/bikeAficionado500.png");
+		File bike100 = new File(path + "mail/img/bike/bikeAficionado100.png");
+		File bike200 = new File(path + "mail/img/bike/bikeAficionado200.png");
+		File bike500 = new File(path + "mail/img/bike/bikeAficionado500.png");
 		
 		allBadges.add(new BagesData(bike1.getName(), FileUtils.readFileToByteArray(bike1), "image/png", "1_bike_trip", "1 Viaggio in Bici"));
 		allBadges.add(new BagesData(bike5.getName(), FileUtils.readFileToByteArray(bike5), "image/png", "5_bike_trip", "5 Viaggi in Bici"));
 		allBadges.add(new BagesData(bike10.getName(), FileUtils.readFileToByteArray(bike10), "image/png", "10_bike_trip", "10 Viaggi in Bici"));
 		allBadges.add(new BagesData(bike25.getName(), FileUtils.readFileToByteArray(bike25), "image/png", "25_bike_trip", "25 Viaggi in Bici"));
 		allBadges.add(new BagesData(bike50.getName(), FileUtils.readFileToByteArray(bike50), "image/png", "50_bike_trip", "50 Viaggi in Bici"));
-//		allBadges.add(new BagesData(bike100.getName(), FileUtils.readFileToByteArray(bike100), "image/png", "100_bike_trip", "100 Viaggi in Bici"));
-//		allBadges.add(new BagesData(bike200.getName(), FileUtils.readFileToByteArray(bike200), "image/png", "200_bike_trip", "200 Viaggi in Bici"));
-//		allBadges.add(new BagesData(bike500.getName(), FileUtils.readFileToByteArray(bike500), "image/png", "500_bike_trip", "500 Viaggi in Bici"));
+		allBadges.add(new BagesData(bike100.getName(), FileUtils.readFileToByteArray(bike100), "image/png", "100_bike_trip", "100 Viaggi in Bici"));
+		allBadges.add(new BagesData(bike200.getName(), FileUtils.readFileToByteArray(bike200), "image/png", "200_bike_trip", "200 Viaggi in Bici"));
+		allBadges.add(new BagesData(bike500.getName(), FileUtils.readFileToByteArray(bike500), "image/png", "500_bike_trip", "500 Viaggi in Bici"));
 		
 		// files for bike sharing
 		File bikeShareBrione = new File(path + "mail/img/bike_sharing/bikeSharingPioneerBrione.png");
@@ -1153,16 +1153,16 @@ public class PortalController extends SCController{
 		File publicTrans25 = new File(path + "mail/img/public_transport/publicTransportAficionado25.png");
 		File publicTrans50 = new File(path + "mail/img/public_transport/publicTransportAficionado50.png");
 		File publicTrans100 = new File(path + "mail/img/public_transport/publicTransportAficionado100.png");
-//		File publicTrans200 = new File(path + "mail/img/public_transport/publicTransportAficionado200.png");
-//		File publicTrans500 = new File(path + "mail/img/public_transport/publicTransportAficionado500.png");
+		File publicTrans200 = new File(path + "mail/img/public_transport/publicTransportAficionado200.png");
+		File publicTrans500 = new File(path + "mail/img/public_transport/publicTransportAficionado500.png");
 		
 		allBadges.add(new BagesData(publicTrans5.getName(), FileUtils.readFileToByteArray(publicTrans5), "image/png", "5_pt_trip", "5 Viaggi Mezzi Pubblici"));
 		allBadges.add(new BagesData(publicTrans10.getName(), FileUtils.readFileToByteArray(publicTrans10), "image/png", "10_pt_trip", "10 Viaggi Mezzi Pubblici"));
 		allBadges.add(new BagesData(publicTrans25.getName(), FileUtils.readFileToByteArray(publicTrans25), "image/png", "25_pt_trip", "25 Viaggi Mezzi Pubblici"));
 		allBadges.add(new BagesData(publicTrans50.getName(), FileUtils.readFileToByteArray(publicTrans50), "image/png", "50_pt_trip", "50 Viaggi Mezzi Pubblici"));
 		allBadges.add(new BagesData(publicTrans100.getName(), FileUtils.readFileToByteArray(publicTrans100), "image/png", "100_pt_trip", "100 Viaggi Mezzi Pubblici"));
-//		allBadges.add(new BagesData(publicTrans200.getName(), FileUtils.readFileToByteArray(publicTrans200), "image/png", "200_pt_trip", "200 Viaggi Mezzi Pubblici"));
-//		allBadges.add(new BagesData(publicTrans500.getName(), FileUtils.readFileToByteArray(publicTrans500), "image/png", "500_pt_trip", "500 Viaggi Mezzi Pubblici"));
+		allBadges.add(new BagesData(publicTrans200.getName(), FileUtils.readFileToByteArray(publicTrans200), "image/png", "200_pt_trip", "200 Viaggi Mezzi Pubblici"));
+		allBadges.add(new BagesData(publicTrans500.getName(), FileUtils.readFileToByteArray(publicTrans500), "image/png", "500_pt_trip", "500 Viaggi Mezzi Pubblici"));
 		
 		// files for zero impact
 		File zeroImpact1 = new File(path + "mail/img/zero_impact/zeroImpact1.png");
@@ -1170,18 +1170,18 @@ public class PortalController extends SCController{
 		File zeroImpact10 = new File(path + "mail/img/zero_impact/zeroImpact10.png");
 		File zeroImpact25 = new File(path + "mail/img/zero_impact/zeroImpact25.png");
 		File zeroImpact50 = new File(path + "mail/img/zero_impact/zeroImpact50.png");
-//		File zeroImpact100 = new File(path + "mail/img/zero_impact/zeroImpact100.png");
-//		File zeroImpact200 = new File(path + "mail/img/zero_impact/zeroImpact200.png");
-//		File zeroImpact500 = new File(path + "mail/img/zero_impact/zeroImpact500.png");
+		File zeroImpact100 = new File(path + "mail/img/zero_impact/zeroImpact100.png");
+		File zeroImpact200 = new File(path + "mail/img/zero_impact/zeroImpact200.png");
+		File zeroImpact500 = new File(path + "mail/img/zero_impact/zeroImpact500.png");
 				
 		allBadges.add(new BagesData(zeroImpact1.getName(), FileUtils.readFileToByteArray(zeroImpact1), "image/png", "1_zero_impact_trip", "1 Viaggio Impatto Zero"));
 		allBadges.add(new BagesData(zeroImpact5.getName(), FileUtils.readFileToByteArray(zeroImpact5), "image/png", "5_zero_impact_trip", "5 Viaggi Impatto Zero"));
 		allBadges.add(new BagesData(zeroImpact10.getName(), FileUtils.readFileToByteArray(zeroImpact10), "image/png", "10_zero_impact_trip", "10 Viaggi Impatto Zero"));
 		allBadges.add(new BagesData(zeroImpact25.getName(), FileUtils.readFileToByteArray(zeroImpact25), "image/png", "25_zero_impact_trip", "25 Viaggi Impatto Zero"));
 		allBadges.add(new BagesData(zeroImpact50.getName(), FileUtils.readFileToByteArray(zeroImpact50), "image/png", "50_zero_impact_trip", "50 Viaggi Impatto Zero"));	
-//		allBadges.add(new BagesData(zeroImpact100.getName(), FileUtils.readFileToByteArray(zeroImpact100), "image/png", "100_zero_impact_trip", "100 Viaggi Impatto Zero"));
-//		allBadges.add(new BagesData(zeroImpact200.getName(), FileUtils.readFileToByteArray(zeroImpact200), "image/png", "200_zero_impact_trip", "200 Viaggi Impatto Zero"));
-//		allBadges.add(new BagesData(zeroImpact500.getName(), FileUtils.readFileToByteArray(zeroImpact500), "image/png", "500_zero_impact_trip", "500 Viaggi Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact100.getName(), FileUtils.readFileToByteArray(zeroImpact100), "image/png", "100_zero_impact_trip", "100 Viaggi Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact200.getName(), FileUtils.readFileToByteArray(zeroImpact200), "image/png", "200_zero_impact_trip", "200 Viaggi Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact500.getName(), FileUtils.readFileToByteArray(zeroImpact500), "image/png", "500_zero_impact_trip", "500 Viaggi Impatto Zero"));
 		
 		// files for leaderboard top 3
 		File firstOfWeek = new File(path + "mail/img/leaderboard/leaderboard1.png");

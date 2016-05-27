@@ -412,6 +412,9 @@ public class ChallengesUtils {
     	if(target > 1 && desc.contains("viaggio")){
     		desc = desc.replace("viaggio", "viaggi");
     	}
+    	if(target == 1 && desc.contains("utenti")){
+    		desc = desc.replace("utenti", "utente");
+    	}
     	if(desc.contains("BONUS")){
     		desc = desc.replace("BONUS", Integer.toString(bonus));
     	}

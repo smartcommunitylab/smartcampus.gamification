@@ -125,6 +125,8 @@ public class ChallengesUtils {
 				correctDesc = challDescList.get(5).getDescription();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_P) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_P + "Distance") == 0){
 				correctDesc = challDescList.get(7).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
+				correctDesc = challDescList.get(26).getDescription();
 			}
 		} else if(type.compareTo(CHAL_TYPE_4) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_Z) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_Z + "Distance") == 0){

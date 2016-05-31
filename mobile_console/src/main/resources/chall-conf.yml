@@ -103,3 +103,7 @@ descriptions:
     type: NEGATEDMODE
     mobilitymode: walk
     description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare spostamenti a piedi pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+  - id: 27
+    type: TRIPNUMBER
+    mobilitymode: walk
+    description: Per vincere la sfida vale il numero di itinerari a piedi pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida. 

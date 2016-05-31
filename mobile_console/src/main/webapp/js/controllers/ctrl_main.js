@@ -757,6 +757,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[5].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P + "Distance"){
     				msg_to_show=$scope.chall_description_array[7].description;
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W + "Distance"){
+    				msg_to_show=$scope.chall_description_array[26].description;
     			} 
     			break;
     		case $scope.CHAL_TYPE_3A:
@@ -770,7 +772,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				msg_to_show=$scope.chall_description_array[5].description;
     			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_P + "Distance"){
     				msg_to_show=$scope.chall_description_array[7].description;
-    			} 
+    			} else if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_W + "Distance"){
+    				msg_to_show=$scope.chall_description_array[26].description;
+    			}
     			break;	
     		case $scope.CHAL_TYPE_4:
     			//if(ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B || ch.mobilityMode == $scope.CHAL_ALLOWED_MODE_B + "Distance"){

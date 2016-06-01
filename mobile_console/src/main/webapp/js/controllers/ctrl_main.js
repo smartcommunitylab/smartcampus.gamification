@@ -1719,6 +1719,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	if(target == 1 && desc.indexOf('utenti') > -1){
     		desc = desc.replace("utenti", "utente");
     	}
+    	if(target == 1 && desc.indexOf("altri") > -1){
+    		desc = desc.replace("altri", "");
+    		desc = desc.replace("km", "altro km");
+    	}
     	if(target > 1 && desc.indexOf('viaggio') > -1){
     		desc = desc.replace("viaggio", "viaggi");
     	}

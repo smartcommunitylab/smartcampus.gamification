@@ -218,6 +218,7 @@ public class ChallengesUtils {
 					Boolean active = (now < endTime);
 					int status = 0;
 	    			ChallengesData tmp_chall = new ChallengesData();
+	    			if(target == 0)target = 1; // to solve division by zero problem
 	    			if(ch_type.compareTo(CHAL_TYPE_1) == 0 || ch_type.compareTo(CHAL_TYPE_1A) == 0){
 	    				int walked_km = customData.getInt(CHAL_K + ch_id + CHAL_K_WALKED_KM);
 	    				String mobility_mode = customData.getString(CHAL_K + ch_id + CHAL_K_MODE);

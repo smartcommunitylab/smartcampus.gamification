@@ -1186,6 +1186,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 				var status = 0;
 				var row_status = 0;
     			var tmp_chall = {};
+    			if(target == 0)target = 1;	// to solve error DAS division by zero
     			switch(ch_type){
     				case $scope.CHAL_TYPE_1:
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];

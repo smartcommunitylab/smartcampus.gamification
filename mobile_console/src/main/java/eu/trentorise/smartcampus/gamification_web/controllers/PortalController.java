@@ -424,7 +424,7 @@ public class PortalController extends SCController{
 	// Here I insert a task that invoke the WS notification
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	@Scheduled(cron="0 30 19 * * FRI") 		// Repeat every Friday at 5 PM
+	@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 5 PM
 	public synchronized void checkNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
@@ -597,44 +597,44 @@ public class PortalController extends SCController{
 				}
 			} else {
 				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
-				List<String> specialPlayers = new ArrayList<String>();
-				specialPlayers.add("23840");
-				specialPlayers.add("23789");
-				specialPlayers.add("23841");
-				specialPlayers.add("23844");
-				specialPlayers.add("10978");
-				specialPlayers.add("23849");
-				specialPlayers.add("23852");
-				specialPlayers.add("23853");
-				specialPlayers.add("23854");
-				specialPlayers.add("23855");
-				specialPlayers.add("23856");
-				specialPlayers.add("23857");
-				specialPlayers.add("23858");
-				specialPlayers.add("11117");
-				specialPlayers.add("23861");
-				specialPlayers.add("23862");
-				specialPlayers.add("23863");
-				specialPlayers.add("23865");
-				specialPlayers.add("23866");
-				specialPlayers.add("23867");
-				specialPlayers.add("23868");
-				specialPlayers.add("23869");
-				specialPlayers.add("23871");
-				specialPlayers.add("23872");
-				specialPlayers.add("23873");
-				specialPlayers.add("23874");
-				specialPlayers.add("23881");
-				specialPlayers.add("23882");
-				specialPlayers.add("23884");
-				specialPlayers.add("10548");
-				specialPlayers.add("23885");
-				specialPlayers.add("23886");
-				specialPlayers.add("23888");
-				specialPlayers.add("23890");
-				specialPlayers.add("23891");
-				specialPlayers.add("23893");
-				specialPlayers.add("23895");
+//				List<String> specialPlayers = new ArrayList<String>();
+//				specialPlayers.add("23840");
+//				specialPlayers.add("23789");
+//				specialPlayers.add("23841");
+//				specialPlayers.add("23844");
+//				specialPlayers.add("10978");
+//				specialPlayers.add("23849");
+//				specialPlayers.add("23852");
+//				specialPlayers.add("23853");
+//				specialPlayers.add("23854");
+//				specialPlayers.add("23855");
+//				specialPlayers.add("23856");
+//				specialPlayers.add("23857");
+//				specialPlayers.add("23858");
+//				specialPlayers.add("11117");
+//				specialPlayers.add("23861");
+//				specialPlayers.add("23862");
+//				specialPlayers.add("23863");
+//				specialPlayers.add("23865");
+//				specialPlayers.add("23866");
+//				specialPlayers.add("23867");
+//				specialPlayers.add("23868");
+//				specialPlayers.add("23869");
+//				specialPlayers.add("23871");
+//				specialPlayers.add("23872");
+//				specialPlayers.add("23873");
+//				specialPlayers.add("23874");
+//				specialPlayers.add("23881");
+//				specialPlayers.add("23882");
+//				specialPlayers.add("23884");
+//				specialPlayers.add("10548");
+//				specialPlayers.add("23885");
+//				specialPlayers.add("23886");
+//				specialPlayers.add("23888");
+//				specialPlayers.add("23890");
+//				specialPlayers.add("23891");
+//				specialPlayers.add("23893");
+//				specialPlayers.add("23895");
 				
 				
 				for(PlayerProd p: iter){
@@ -688,7 +688,7 @@ public class PortalController extends SCController{
 						mailto = mailTo;
 					}
 					
-					if(specialPlayers.contains(p.getSocialId())){
+					//if(specialPlayers.contains(p.getSocialId())){
 					
 					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0){
 						
@@ -738,7 +738,7 @@ public class PortalController extends SCController{
 							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
-					}
+					//}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 				}
 					

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
+import eu.trentorise.smartcampus.gamification_web.models.SurveyData;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
@@ -214,7 +215,8 @@ public class WsProxyController {
 						user.getSurname(), 
 						nickname, 
 						email, 
-						data);
+						data,
+						null);
 				if (StringUtils.hasText(data.getNick_recommandation())) {
 					Player recommender = playerRepositoryDao.findByNick(data.getNick_recommandation());
 					//Player recommender = playerRepositoryDao.findByNickIgnoreCase(corrNick);
@@ -256,7 +258,8 @@ public class WsProxyController {
 						user.getSurname(), 
 						nickname, 
 						email, 
-						data);
+						data,
+						null);
 				if (StringUtils.hasText(data.getNick_recommandation())) {
 					PlayerProd recommender = playerProdRepositoryDao.findByNick(data.getNick_recommandation());
 					//PlayerProd recommender = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
@@ -358,8 +361,36 @@ public class WsProxyController {
 			}
 			result = p.toJSONString();
 		}
-		
 		return result;	
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateSurvey")
+	public @ResponseBody
+	String updateSurvey(HttpServletRequest request, @RequestParam String urlWS, @RequestParam String playerId,  @RequestBody SurveyData data){
+		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data.toString());
+		String result = "";
+		if(isTest.compareTo("true") == 0){
+			Player p = playerRepositoryDao.findBySocialId(playerId);
+			p.setSurveyData(data);
+			if (data != null) {
+				//TODO: call an engine method to update the user status in the specific challenge
+				//sendRecommendationToGamification(recommender.getPid());
+				logger.info("Call survey method for user " + playerId);
+			}
+			playerRepositoryDao.save(p);
+			result = p.toJSONString();
+		} else {
+			PlayerProd p = playerProdRepositoryDao.findBySocialId(playerId);
+			p.setSurveyData(data);
+			playerProdRepositoryDao.save(p);
+			if (data != null) {
+				//TODO: call an engine method to update the user status in the specific challenge
+				//sendRecommendationToGamification(recommender.getPid());
+				logger.info("Call survey method for user " + playerId);
+			}
+			result = p.toJSONString();
+		}
+		return result;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateMail")

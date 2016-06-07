@@ -915,6 +915,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     
     // Method used to retrieve all users niks
     $scope.getNiks = function(id) {
+    	var now = new Date();
     	$scope.setLoading(true);
     	var method = 'GET';
     	var params = null;
@@ -925,11 +926,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			sharedDataService.setPlayerList(result.players);
     			var name = "";
     			var mail = "";
+    			var surveyData = "";
     			var find = false;
     			for(var i = 0; (i < result.players.length) && !find; i++){
     				if(result.players[i].socialId == id){
     					name = result.players[i].nikName;
     					mail = result.players[i].mail;
+    					surveyData = result.players[i].surveyData;
     					find = true;
     				}	
     			}
@@ -944,6 +947,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			} else if(mail == null || mail == ""){
     				// manage Nick for player
     				$scope.retrieveMailForPlayer();
+    			}
+    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_9){
+    				// manage SurveyData for player
+    				$scope.retrieveSurveyDataForPlayer();
     			}
     			
     		}
@@ -992,7 +999,24 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		}
     	});
     	return myDataPromise;
-    };  
+    };
+    
+    // Method used to update an user survey data
+    $scope.updateSurvey = function(userData) {
+    	var method = 'POST';
+    	var params = {
+    		playerId: $scope.userId,
+    	};
+    	var data = userData.syrveyData;
+    	var wsRestUrl = "updateSurvey";
+    	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, data);
+    	myDataPromise.then(function(result){
+    		if(result != null){
+    			console.log("Updated user survey" + JSON.stringify(result));
+    		}
+    	});
+    	return myDataPromise;
+    };
     
     // Method correctPersonalDataBeforeSave: used to correct personal data object before post ws call
     $scope.correctPersonalDataBeforeSave = function(personaldata){
@@ -1092,6 +1116,17 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
 			$scope.playerMail = user.mail;
 			$scope.updateMail(user);
+		});
+    };
+    
+    // Method used to retrieve the player surveyData by opening a modal form that user has to compile
+    $scope.retrieveSurveyDataForPlayer = function(){
+    	var data = null;
+    	var dlg = $dialogs.create('/dialogs/surveyinput.html','surveyDialogCtrl',data,'lg');
+		dlg.result.then(function(user){
+			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
+			$scope.surveyData = user.surveyData;
+			$scope.updateSurvey(user);
 		});
     };
     
@@ -3056,4 +3091,78 @@ cp.controller('mailDialogCtrl',function($scope,$modalInstance,data){
 		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
 			$scope.save();
 	};
-}) // end controller(customDialogCtrl)
+}); // end controller(mailDialogCtrl)
+cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
+	//-- Variables --//
+	$scope.submitNumber = 0;
+	$scope.accepted = false;
+	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	
+	var now = new Date();
+	$scope.negative_exp = "negative";
+	$scope.satisfying_exp = "satisfying";
+	$scope.good_exp = "good";
+	$scope.excellent_exp = "excellent";
+	
+	$scope.nothing_val = "nothing";
+	$scope.little_val = "a little";
+	$scope.enough_val = "enough";
+	$scope.much_val = "much";
+	
+	$scope.no_val = "no";
+	$scope.maybe_val = "maybe";
+	$scope.yes_val = "yes";
+	
+	$scope.walk_mode = "walk";
+	$scope.bike_mode = "bike";
+	$scope.public_transport_mode = "public transport";
+	$scope.car_mode = "car";
+	
+	$scope.all_trips = "all trips";
+	$scope.commuters_trips = "commuters trips";
+	$scope.long_trips = "long trips";
+	$scope.short_trips = "short trips";
+	
+	$scope.no_mode = "nothing";
+	$scope.bike_sharing_mode = "bike sharing";
+	$scope.park_and_ride_mode = "park and ride";
+	$scope.transport_mode = "public transport";
+
+	$scope.user = {
+		surveyData : {
+			gamimg_experience: "",
+			change_of_habits: "",
+			new_habits_maintaining: "",
+			job_tranport_mode: "",
+			free_time_tranport_mode: "",
+			trip_type: "",
+			new_mode_type: "",
+			point_interest_in_game: "",
+			badges_interest_in_game: "",
+			challenges_interest_in_game: "",
+			prize_interest_in_game: "",
+			game_improve_suggestion: "",
+			app_improve_suggestion: "",
+			timestamp: now.getTime()
+		}
+	};
+
+	//-- Methods --//
+	
+	$scope.cancel = function(){
+		$modalInstance.dismiss('Canceled');
+	}; // end cancel
+	
+	$scope.save = function(form){
+		if(form.$valid){
+			$scope.errorMessages = "";
+			// check if nick already present
+			$modalInstance.close($scope.user);	// pass all the form data to the main controller
+		}
+	}; // end save
+	
+	$scope.hitEnter = function(evt){
+		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
+			$scope.save();
+	};
+}); // end controller(mailDialogCtrl)

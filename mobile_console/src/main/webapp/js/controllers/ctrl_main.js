@@ -954,7 +954,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				// manage Nick for player
     				$scope.retrieveMailForPlayer();
     			}
-    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_8){	//TODO: change it to 9
+    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_9){	//TODO: change it to 9
     				// manage SurveyData for player
     				$scope.retrieveSurveyDataForPlayer();
     			}

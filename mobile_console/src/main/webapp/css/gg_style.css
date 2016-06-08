@@ -614,7 +614,7 @@
 	}
 	
 	.required_desc {
-		margin: 0 0 7px 20px;
+		margin: 15px 0 15px 0;
 	}
 	.required_desc > p{
 		font-size: small;

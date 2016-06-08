@@ -291,7 +291,6 @@ public class WsProxyController {
 		logger.info("Sent player registration to gamification engine(mobile-access) "+tmp_res.getStatusCode());
 	}
 	
-	
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateNick")
 	public @ResponseBody
 	String updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
@@ -364,31 +363,45 @@ public class WsProxyController {
 		return result;	
 	}
 	
+	private void sendSurveyToGamification(String playerId){
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("actionId", "survey_complete");
+		data.put("gameId", gameName);
+		data.put("playerId", playerId);
+		data.put("data", new HashMap<String, Object>());
+		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationUrl + "execute", HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
+		logger.info("Sent app survey data to gamification engine "+tmp_res.getStatusCode());
+	}
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateSurvey")
 	public @ResponseBody
-	String updateSurvey(HttpServletRequest request, @RequestParam String urlWS, @RequestParam String playerId,  @RequestBody SurveyData data){
+	String updateSurvey(HttpServletRequest request, @RequestParam String urlWS,  @RequestBody SurveyData data){
 		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data.toString());
 		String result = "";
-		if(isTest.compareTo("true") == 0){
-			Player p = playerRepositoryDao.findBySocialId(playerId);
-			p.setSurveyData(data);
-			if (data != null) {
-				//TODO: call an engine method to update the user status in the specific challenge
-				//sendRecommendationToGamification(recommender.getPid());
-				logger.info("Call survey method for user " + playerId);
+		if(urlWS.contains("=")){
+			String playerId = urlWS.split("=")[1];
+			if(isTest.compareTo("true") == 0){
+				Player p = playerRepositoryDao.findBySocialId(playerId);
+				p.setSurveyData(data);
+				if (data != null) {
+					sendSurveyToGamification(playerId);
+					logger.info("Call survey method for user " + playerId);
+				}
+				playerRepositoryDao.save(p);
+				result = p.toJSONString();
+			} else {
+				PlayerProd p = playerProdRepositoryDao.findBySocialId(playerId);
+				p.setSurveyData(data);
+				playerProdRepositoryDao.save(p);
+				if (data != null) {
+					sendSurveyToGamification(playerId);
+					logger.info("Call survey method for user " + playerId);
+				}
+				result = p.toJSONString();
 			}
-			playerRepositoryDao.save(p);
-			result = p.toJSONString();
 		} else {
-			PlayerProd p = playerProdRepositoryDao.findBySocialId(playerId);
-			p.setSurveyData(data);
-			playerProdRepositoryDao.save(p);
-			if (data != null) {
-				//TODO: call an engine method to update the user status in the specific challenge
-				//sendRecommendationToGamification(recommender.getPid());
-				logger.info("Call survey method for user " + playerId);
-			}
-			result = p.toJSONString();
+			result = "No playerId passed in request";
 		}
 		return result;
 	}

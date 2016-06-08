@@ -5,8 +5,8 @@ public class SurveyData {
 	private String gamimg_experience;
 	private String change_of_habits;
 	private String new_habits_maintaining;
-	private String job_tranport_mode;
-	private String free_time_tranport_mode;
+	private String job_transport_mode;
+	private String free_time_transport_mode;
 	private String trip_type;
 	private String new_mode_type;
 	private String point_interest_in_game;
@@ -22,7 +22,7 @@ public class SurveyData {
 	}
 
 	public SurveyData(String gamimg_experience, String change_of_habits, String new_habits_maintaining,
-			String job_tranport_mode, String free_time_tranport_mode, String trip_type, String new_mode_type,
+			String job_transport_mode, String free_time_transport_mode, String trip_type, String new_mode_type,
 			String point_interest_in_game, String badges_interest_in_game, String challenges_interest_in_game,
 			String prize_interest_in_game, String game_improve_suggestion, String app_improve_suggestion,
 			Long timestamp) {
@@ -30,8 +30,8 @@ public class SurveyData {
 		this.gamimg_experience = gamimg_experience;
 		this.change_of_habits = change_of_habits;
 		this.new_habits_maintaining = new_habits_maintaining;
-		this.job_tranport_mode = job_tranport_mode;
-		this.free_time_tranport_mode = free_time_tranport_mode;
+		this.job_transport_mode = job_transport_mode;
+		this.free_time_transport_mode = free_time_transport_mode;
 		this.trip_type = trip_type;
 		this.new_mode_type = new_mode_type;
 		this.point_interest_in_game = point_interest_in_game;
@@ -55,12 +55,12 @@ public class SurveyData {
 		return new_habits_maintaining;
 	}
 
-	public String getJob_tranport_mode() {
-		return job_tranport_mode;
+	public String getJob_transport_mode() {
+		return job_transport_mode;
 	}
 
-	public String getFree_time_tranport_mode() {
-		return free_time_tranport_mode;
+	public String getFree_time_transport_mode() {
+		return free_time_transport_mode;
 	}
 
 	public String getTrip_type() {
@@ -111,12 +111,12 @@ public class SurveyData {
 		this.new_habits_maintaining = new_habits_maintaining;
 	}
 
-	public void setJob_tranport_mode(String job_tranport_mode) {
-		this.job_tranport_mode = job_tranport_mode;
+	public void setJob_transport_mode(String job_transport_mode) {
+		this.job_transport_mode = job_transport_mode;
 	}
 
-	public void setFree_time_tranport_mode(String free_time_tranport_mode) {
-		this.free_time_tranport_mode = free_time_tranport_mode;
+	public void setFree_time_transport_mode(String free_time_transport_mode) {
+		this.free_time_transport_mode = free_time_transport_mode;
 	}
 
 	public void setTrip_type(String trip_type) {
@@ -158,8 +158,8 @@ public class SurveyData {
 	@Override
 	public String toString() {
 		return "SurveyData [gamimg_experience=" + gamimg_experience + ", change_of_habits=" + change_of_habits
-				+ ", new_habits_maintaining=" + new_habits_maintaining + ", job_tranport_mode=" + job_tranport_mode
-				+ ", free_time_tranport_mode=" + free_time_tranport_mode + ", trip_type=" + trip_type
+				+ ", new_habits_maintaining=" + new_habits_maintaining + ", job_transport_mode=" + job_transport_mode
+				+ ", free_time_transport_mode=" + free_time_transport_mode + ", trip_type=" + trip_type
 				+ ", new_mode_type=" + new_mode_type + ", point_interest_in_game=" + point_interest_in_game
 				+ ", badges_interest_in_game=" + badges_interest_in_game + ", challenges_interest_in_game="
 				+ challenges_interest_in_game + ", prize_interest_in_game=" + prize_interest_in_game
@@ -168,14 +168,23 @@ public class SurveyData {
 	}
 	
 	public String toJSONString() {
+		String gameSuggestion = "";
+		if(game_improve_suggestion != null){
+			gameSuggestion = game_improve_suggestion.replaceAll("[-+.^:,\\n\\t]","");
+		}
+		String appSuggestion = "";
+		if(app_improve_suggestion != null){
+			appSuggestion = app_improve_suggestion.replaceAll("[-+.^:,\\n\\t]","");
+		}
+		
 		return "{\"gamimg_experience\":\"" + gamimg_experience + "\", \"change_of_habits\":\"" + change_of_habits
-				+ "\", \"new_habits_maintaining\":\"" + new_habits_maintaining + "\", \"job_tranport_mode\":\"" + job_tranport_mode
-				+ "\", \"free_time_tranport_mode\":\"" + free_time_tranport_mode + "\", \"trip_type\":\"" + trip_type
+				+ "\", \"new_habits_maintaining\":\"" + new_habits_maintaining + "\", \"job_transport_mode\":\"" + job_transport_mode
+				+ "\", \"free_time_transport_mode\":\"" + free_time_transport_mode + "\", \"trip_type\":\"" + trip_type
 				+ "\", \"new_mode_type\":\"" + new_mode_type + "\", \"point_interest_in_game\":\"" + point_interest_in_game
 				+ "\", \"badges_interest_in_game\":\"" + badges_interest_in_game + "\", \"challenges_interest_in_game\":\""
 				+ challenges_interest_in_game + "\", \"prize_interest_in_game\":\"" + prize_interest_in_game
-				+ "\", \"game_improve_suggestion\":\"" + game_improve_suggestion + "\", \"app_improve_suggestion\":\""
-				+ app_improve_suggestion + "\", \"timestamp\":" + timestamp + "}";
+				+ "\", \"game_improve_suggestion\":\"" + gameSuggestion + "\", \"app_improve_suggestion\":\""
+				+ appSuggestion + "\", \"timestamp\":" + timestamp + "}";
 	}
 
 }

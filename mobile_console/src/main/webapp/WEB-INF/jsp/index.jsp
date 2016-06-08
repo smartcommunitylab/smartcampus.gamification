@@ -2,7 +2,7 @@
 <html ng-app="cp" itemscope itemtype="http://schema.org/Article">
 <head id="myHead" lang="it">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">	<!-- the last two parameters solve the modal resize problem -->
 <title>Play&Go</title>
 
 <link href="css/bootstrap.css" rel="stylesheet">
@@ -306,6 +306,247 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 				<div class="modal-footer">
 					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
 					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" >OK</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+</script>
+<script type="text/ng-template" id="/dialogs/surveyinput.html">
+<div class="modal" id="variablesModal" role="dialog">
+	<form role="form" name="form">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Questionario di fine gioco</h4>
+				</div>
+				<div class="modal-body">
+					<div align="justify">
+					Rispondi a queste veloci e semplici domande per offrire un tuo parere sul gioco 'Play&Go'. <br/><br/>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.gaming_exp.$dirty && form.gaming_exp.$invalid]">
+						<label class="control-label">1) Come valuteresti la tua esperienza di gioco in queste settimane?</label>
+						<table width="100%">
+							<tr>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="negative_exp" required> Negativa</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="satisfying_exp" required> Soddisfacente</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="good_exp" required> Buona</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="excellent_exp" required> Ottima</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.gaming_exp.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.change_of_habits.$dirty && form.change_of_habits.$invalid]">
+						<label class="control-label">2) In quale misura il gioco ti ha indotto a cambiare le tue abitudini di mobilità?</label>
+						<table width="100%">
+							<tr>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="nothing_val" required> Per niente</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="little_val" required> Poco</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="enough_val" required> Abbastanza</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="much_val" required> Molto</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.change_of_habits.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_habits_maintaining.$dirty && form.new_habits_maintaining.$invalid]">
+						<label class="control-label">3) Se hai cambiato le tue abitudini, continueresti a muoverti come suggerito dalla App anche dopo il gioco?</label>
+						<table width="100%">
+							<tr>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> No</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Forse</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Sì</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.new_habits_maintaining.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.job_transport_mode.$dirty && form.job_transport_mode.$invalid]">
+						<label class="control-label">4) Quale modalità di trasporto hai usato prevalentemente durante il gioco per andare al lavoro / scuola?</label>
+						<table width="100%">
+							<tr>
+								<td><label><input type="radio" name="job_transport_mode" ng-model="user.surveyData.job_transport_mode" ng-value="walk_mode" required> A piedi</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="job_transport_mode" ng-model="user.surveyData.job_transport_mode" ng-value="bike_mode" required> In bici</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="job_transport_mode" ng-model="user.surveyData.job_transport_mode" ng-value="public_transport_mode" required> Mezzi pubblici</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="job_transport_mode" ng-model="user.surveyData.job_transport_mode" ng-value="car_mode" required> Auto</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.job_transport_mode.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.free_time_transport_mode.$dirty && form.free_time_transport_mode.$invalid]">
+						<label class="control-label">5) Quale modalità di trasporto hai usato prevalentemente durante il gioco per il tuo tempo libero?</label>
+						<table width="100%">
+							<tr>
+								<td><label><input type="radio" name="free_time_transport_mode" ng-model="user.surveyData.free_time_transport_mode" ng-value="walk_mode" required> A piedi</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="free_time_transport_mode" ng-model="user.surveyData.free_time_transport_mode" ng-value="bike_mode" required> In bici</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="free_time_transport_mode" ng-model="user.surveyData.free_time_transport_mode" ng-value="public_transport_mode" required> Mezzi pubblici</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="free_time_transport_mode" ng-model="user.surveyData.free_time_transport_mode" ng-value="car_mode" required> Auto</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.free_time_transport_mode.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.trip_type.$dirty && form.trip_type.$invalid]">
+						<label class="control-label">6) Per quale tipo di viaggio hai usato la App?</label>
+						<table width="100%">
+							<tr>
+								<td><label><input type="radio" name="trip_type" ng-model="user.surveyData.trip_type" ng-value="all_trips" required> Per qualsiasi viaggio</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="trip_type" ng-model="user.surveyData.trip_type" ng-value="commuters_trips" required> Per viaggi pendolari</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="trip_type" ng-model="user.surveyData.trip_type" ng-value="long_trips" required> Per viaggi lunghi</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="trip_type" ng-model="user.surveyData.trip_type" ng-value="short_trips" required> Per viaggi corti</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.trip_type.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_mode_type.$dirty && form.new_mode_type.$invalid]">
+						<label class="control-label">7) Quale modo hai provato per la prima volta grazie al gioco?</label>
+						<table width="100%">
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="no_mode" required> Nessuno</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="bike_sharing_mode" required> Bike Sharing</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="park_and_ride_mode" required> Park and Ride</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="bike_mode" required> Bici</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="transport_mode" required> Mezzi Pubblici</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.new_mode_type.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_mode_type.$dirty && form.new_mode_type.$invalid]">
+						<label class="control-label">8) Quanto sono stati importanti questi elementi per rimanere attivo nel gioco e continuare a muoverti in modo sostenibile?</label>
+						<ul>
+							<li>
+								<label>Punti e classifiche</label>
+								<table width="100%">
+									<tr>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="little_val" required> Poco</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="much_val" required> Molto</label></td>
+									</tr>
+								</table>
+								<div ng-show="form.point_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+							</li>
+							<li>
+								<label>Badges</label>
+								<table width="100%">
+									<tr>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="little_val" required> Poco</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="much_val" required> Molto</label></td>
+									</tr>
+								</table>
+								<div ng-show="form.badges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+							</li>
+							<li>
+								<label>Sfide</label>
+								<table width="100%">
+									<tr>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="little_val" required> Poco</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="much_val" required> Molto</label></td>
+									</tr>
+								</table>
+								<div ng-show="form.challenges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+							</li>
+							<li>
+								<label>Premi</label>
+								<table width="100%">
+									<tr>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="little_val" required> Poco</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+									</tr>
+									<tr>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="much_val" required> Molto</label></td>
+									</tr>
+								</table>
+								<div ng-show="form.prize_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+							</li>
+						</ul>
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.game_improve_suggestion.$dirty && form.game_improve_suggestion.$invalid]">
+						<label class="control-label" for="game_suggestion">9) Hai qualche suggerimento o idea per migliorare il gioco (e.g., premi che potrebbero interessarti, miglioramenti nel funzionamento del gioco, nuovi concetti e dinamiche di gioco)?</label>
+						<!-- <input type="text" class="form-control" name="game_improve_suggestion" id="game_suggestion" placeholder="Inserisci i tuoi suggerimenti sul gioco" ng-model="user.surveyData.game_improve_suggestion"> -->
+						<textarea class="form-control" name="game_improve_suggestion" id="game_suggestion" placeholder="Inserisci i tuoi suggerimenti sul gioco" ng-model="user.surveyData.game_improve_suggestion"></textarea>
+					</div>
+					<div class="form-group" ng-class="{true: 'has-error'}[form.app_improve_suggestion.$dirty && form.app_improve_suggestion.$invalid]">
+						<label class="control-label" for="app_suggestion">10) Hai qualche suggerimento o idea per migliorare la App ViaggiaRovereto Play&Go (e.g., nuovi servizi o funzionalità, miglioramento delle funzionalità esistenti)?</label>
+						<!-- <input type="text" class="form-control" name="app_improve_suggestion" id="app_suggestion" placeholder="Inserisci i tuoi suggerimenti sulla app" ng-model="user.surveyData.app_improve_suggestion"> -->
+						<textarea class="form-control" name="app_improve_suggestion" id="app_suggestion" placeholder="Inserisci i tuoi suggerimenti sulla app" ng-model="user.surveyData.app_improve_suggestion"></textarea>
+					</div>
+					<div class="required_desc"><p>Il simbolo * indica un campo obbligatorio</p></div>
+					<div align="justify">
+					Ti ringraziamo per aver compilato il questionario e di aver partecipato in modo attivo al miglioramento delle soluzioni proposte!<br/><br/>
+					Gli organizzatori. 
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
+					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="form.$invalid || form.$pristine" >OK</button><!-- ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" -->
 				</div>
 			</div>
 		</div>

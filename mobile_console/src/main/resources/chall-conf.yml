@@ -107,3 +107,7 @@ descriptions:
     type: TRIPNUMBER
     mobilitymode: walk
     description: Per vincere la sfida vale il numero di itinerari a piedi pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+  - id: 28
+    type: SURVEY
+    mobilitymode: none
+    description: Per vincere la sfida compila il questionario di fine gioco che visualizzi accedendo alla webapp (pulsante 'PUNTEGGIO' nella app mobile) durante la validita' della sfida.

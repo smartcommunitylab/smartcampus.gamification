@@ -46,8 +46,11 @@
 			        	Nel seguito le sfide di questa settimana e i tuoi risultati recenti.
 			        </h3>
 			        <div th:if="${n_challenges ne null}">
-				        <h3 th:text="#{week_desc(${next_week_theme})}">
+				        <h3 th:if="${next_week_theme} != 'No'" th:text="#{week_desc(${next_week_theme})}">
 				            Questa sar&agrave; la settimana DELLA BICI
+				        </h3>
+				        <h3 th:if="${next_week_theme} == 'No'" th:text="${week_desc_last}">
+				            Questa sar&agrave; L'ULTIMA SETTIMANA di gioco
 				        </h3>
 				        <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
 				            Ecco le tue SFIDE per questa settimana, mettiti alla prova per superarle:

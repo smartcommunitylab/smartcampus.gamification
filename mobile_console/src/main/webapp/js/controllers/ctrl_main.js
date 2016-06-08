@@ -32,6 +32,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_K_TARGET = "_target";
 	$scope.CHAL_K_BONUS = "_bonus";
 	$scope.CHAL_K_RECOM = "_recommendations_sent_during_challenges";
+	$scope.CHAL_K_SURVEY = "_survey_sent_during_challenges";
 	$scope.CHAL_K_SUCCESS = "_success";
 	$scope.CHAL_K_COUNTER = "_counter";
 	$scope.CHAL_K_POINT_TYPE = "_point_type";
@@ -43,6 +44,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE durante la challenge e guadagni un ulteriore bonus di BONUS punti POINT_TYPE"
 	$scope.CHAL_DESC_6 = "Ottieni almeno TARGET badge nella Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_7 = "Completa la Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
+	$scope.CHAL_DESC_8 = "Compila il questionario di fine gioco e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	$scope.CHAL_TYPE_1 = "PERCENT";
 	$scope.CHAL_TYPE_1A = "BSPERCENT";
@@ -53,6 +55,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.CHAL_TYPE_5 = "POINTSEARNED";
 	$scope.CHAL_TYPE_6 = "NEXTBADGE";
 	$scope.CHAL_TYPE_7 = "BADGECOLLECTION";
+	$scope.CHAL_TYPE_8 = "SURVEYDATA";
 	$scope.CHAL_TYPE_9 = "RECOMMENDATION";
 	/*$scope.CHAL_TYPE_1 = "ch1";
 	$scope.CHAL_TYPE_3 = "ch3";
@@ -115,7 +118,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.start_week_9 = 1465596060000;
 	$scope.week_classification = "green leaves week ";
 	$scope.week_test_classification = "green leaves week test"
-	$scope.useShortClassification = (conf_is_short_classification == "true") ? true : false;	// TODO : pass this variable in portal controller and add in properties file
+	$scope.useShortClassification = (conf_is_short_classification == "true") ? true : false;
 	// max practices displayed in home list
     $scope.maxPlayers = 50;
     $scope.maxPlayersClassification = 500;
@@ -807,6 +810,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		case $scope.CHAL_TYPE_7: 
     			msg_to_show=$scope.chall_description_array[19].description;
     			break;
+    		case $scope.CHAL_TYPE_8: 
+    			msg_to_show=$scope.chall_description_array[27].description;	// survey data complete
+    			break;	
     		case $scope.CHAL_TYPE_9: 
     			var racc_num = ch.target;
     			if(racc_num == 1){
@@ -948,7 +954,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				// manage Nick for player
     				$scope.retrieveMailForPlayer();
     			}
-    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_9){
+    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_8){	//TODO: change it to 9
     				// manage SurveyData for player
     				$scope.retrieveSurveyDataForPlayer();
     			}
@@ -1007,7 +1013,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var params = {
     		playerId: $scope.userId,
     	};
-    	var data = userData.syrveyData;
+    	var data = userData.surveyData;
     	var wsRestUrl = "updateSurvey";
     	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, data);
     	myDataPromise.then(function(result){
@@ -1221,7 +1227,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 				var status = 0;
 				var row_status = 0;
     			var tmp_chall = {};
-    			if(target == 0)target = 1;	// to solve error DAS division by zero
+    			if(target == 0 || target == null)target = 1;	// to solve error DAS division by zero
     			switch(ch_type){
     				case $scope.CHAL_TYPE_1:
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
@@ -1534,6 +1540,41 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     						details: false
     					};
     					break;
+    				case $scope.CHAL_TYPE_8:
+    					var survey = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SURVEY];
+    					if(survey == null)survey = 0;
+    					if(success){
+    						survey = 1;
+    					}
+    					status = survey * 100 / target;
+    					row_status = survey + "/" + target;
+    					if(status > 100)status = 100;
+    					tmp_chall = {
+    						id: challIndxArray[i],
+    						icon: $scope.getCorrectIcon(point_type),
+    						desc: $scope.correctDesc($scope.CHAL_DESC_8, target, bonus, point_type, "", null), //"compila il questionario di fine gioco e guadagni 50 Green Points",
+    						startChTs: startChTs,
+    						endChTs: endChTs,
+    						daysToEnd: daysToEnd,
+    						recommandation: recommandation,
+    						target: target,
+    						bonus: bonus,
+    						bonus_style: $scope.getWidthPosByIntValue(bonus),
+    						bonus_style_small: $scope.getWidthPosByIntValue(bonus) + "_small",
+    						bonus_success: $scope.getWidthPosByIntValueSucc(bonus),
+    						bonus_success_small: $scope.getWidthPosByIntValueSucc(bonus) + "_small",
+    						status: status,
+    						row_status: row_status,
+    						row_status_style: $scope.getWidthPosByStringLength(row_status.length),
+    						row_status_style_small: $scope.getWidthPosByStringLength(row_status.length) + "_small",
+    						active: active,
+    						type: ch_type,
+    						point_type: $scope.getCorrectTypeString(point_type),
+    						success: success,
+    						progress_img: $scope.convertStatusToIcon(status, success),
+    						details: false
+    					};
+    					break;		
     				case $scope.CHAL_TYPE_9:
     					var recommandation = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_RECOM];
     					status = recommandation * 100 / target;
@@ -3126,6 +3167,7 @@ cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
 	$scope.no_mode = "nothing";
 	$scope.bike_sharing_mode = "bike sharing";
 	$scope.park_and_ride_mode = "park and ride";
+	$scope.bike_mode = "bike";
 	$scope.transport_mode = "public transport";
 
 	$scope.user = {
@@ -3133,8 +3175,8 @@ cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
 			gamimg_experience: "",
 			change_of_habits: "",
 			new_habits_maintaining: "",
-			job_tranport_mode: "",
-			free_time_tranport_mode: "",
+			job_transport_mode: "",
+			free_time_transport_mode: "",
 			trip_type: "",
 			new_mode_type: "",
 			point_interest_in_game: "",

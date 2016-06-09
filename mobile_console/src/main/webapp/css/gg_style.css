@@ -630,6 +630,10 @@
 		-webkit-overflow-scrolling: auto !important;
 	}
 	
+	.ovh {
+      overflow:hidden;
+    }
+	
 	.modal-header {
 		position: relative;
 	}

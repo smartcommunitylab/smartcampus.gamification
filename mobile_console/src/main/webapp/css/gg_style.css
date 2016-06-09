@@ -630,9 +630,14 @@
 		-webkit-overflow-scrolling: auto !important;
 	}
 	
-	.ovh {
+/* 	.ovh {
       overflow:hidden;
-    }
+    } */
+    
+    .modal-open {
+    	position: fixed;
+    	overflow: hidden;
+	}
 	
 	.modal-header {
 		position: relative;

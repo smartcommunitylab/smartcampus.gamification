@@ -503,110 +503,35 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 						<div ng-show="form.new_mode_type.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_mode_type.$dirty && form.new_mode_type.$invalid]">
-						<label class="control-label">8) Quanto sono stati importanti questi elementi per rimanere attivo nel gioco e continuare a muoverti in modo sostenibile?</label>
-						<ul>
-							<li>
-								<label>Punti e classifiche</label>
-								<select ng-if="showSelect" type="text" name="point_interest_in_game" class="form-control" ng-model="user.surveyData.point_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
-								</select>	
-								<table width="100%" ng-if="!showSelect">
-									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="little_val" required> Poco</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="much_val" required> Molto</label></td>
-									</tr>
-								</table>
-								<div ng-show="form.point_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
-							</li>
-							<li>
-								<label>Badges</label>
-								<select ng-if="showSelect" type="text" name="badges_interest_in_game" class="form-control" ng-model="user.surveyData.badges_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
-								</select>
-								<table width="100%" ng-if="!showSelect">
-									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="little_val" required> Poco</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="much_val" required> Molto</label></td>
-									</tr>
-								</table>
-								<div ng-show="form.badges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
-							</li>
-							<li>
-								<label>Sfide</label>
-								<select ng-if="showSelect" type="text" name="challenges_interest_in_game" class="form-control" ng-model="user.surveyData.challenges_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
-								</select>
-								<table width="100%" ng-if="!showSelect">
-									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="little_val" required> Poco</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="much_val" required> Molto</label></td>
-									</tr>
-								</table>
-								<div ng-show="form.challenges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
-							</li>
-							<li>
-								<label>Premi</label>
-								<select ng-if="showSelect" type="text" name="prize_interest_in_game" class="form-control" ng-model="user.surveyData.prize_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
-								</select>
-								<table width="100%" ng-if="!showSelect">
-									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="little_val" required> Poco</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
-									</tr>
-									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="much_val" required> Molto</label></td>
-									</tr>
-								</table>
-								<div ng-show="form.prize_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
-							</li>
-						</ul>
+						<label class="control-label">8) Prova</label>
+						<select ng-if="showSelect" type="text" name="new_mode_type" class="form-control" ng-model="user.surveyData.new_mode_type" required>
+							<option value="">Seleziona un valore</option>
+							<option ng-value="no_mode">Nessuno</option>
+							<option ng-value="bike_sharing_mode">Bike Sharing</option>
+							<option ng-value="park_and_ride_mode">Park and Ride</option>
+							<option ng-value="bike_mode">Bici</option>
+							<option ng-value="transport_mode">Mezzi Pubblici</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="no_mode" required> Nessuno</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="bike_sharing_mode" required> Bike Sharing</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="park_and_ride_mode" required> Park and Ride</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="bike_mode" required> Bici</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="transport_mode" required> Mezzi Pubblici</label></td>
+							</tr>
+						</table>
+						<div ng-show="form.new_mode_type.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
 					</div>
+					
 					<div class="form-group" ng-class="{true: 'has-error'}[form.game_improve_suggestion.$dirty && form.game_improve_suggestion.$invalid]">
 						<label class="control-label" for="game_suggestion">9) Hai qualche suggerimento o idea per migliorare il gioco (e.g., premi che potrebbero interessarti, miglioramenti nel funzionamento del gioco, nuovi concetti e dinamiche di gioco)?</label>
 						<!-- <input type="text" class="form-control" name="game_improve_suggestion" id="game_suggestion" placeholder="Inserisci i tuoi suggerimenti sul gioco" ng-model="user.surveyData.game_improve_suggestion"> -->
@@ -625,7 +550,7 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 				</div>
 
 				<div class="modal-footer">
-					<!-- <button type="button" class="btn btn-default" ng-click="cancel()">Annulla</button> -->
+					<button type="button" class="btn btn-danger" ng-click="cancel()">Non ora</button>
 					<button type="button" class="btn btn-primary" ng-click="submitNumber=1;save(form)" ng-disabled="form.$invalid || form.$pristine" >OK</button><!-- ng-disabled="(form.$dirty && form.$invalid) || form.$pristine" -->
 				</div>
 			</div>

@@ -318,7 +318,10 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Questionario di fine gioco</h4>
+					<h4 class="modal-title"><span class="glyphicon glyphicon-user">
+						</span>&nbsp;&nbsp;Questionario di fine gioco&nbsp;&nbsp;
+					</h4>
+					<button type="button" class="btn btn-danger btn-sm btn-left" ng-click="cancel()"><i class="glyphicon glyphicon-remove"></i></button>
 				</div>
 				<div class="modal-body">
 					<div align="justify">

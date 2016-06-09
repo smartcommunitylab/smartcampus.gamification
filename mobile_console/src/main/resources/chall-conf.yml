@@ -110,4 +110,4 @@ descriptions:
   - id: 28
     type: SURVEY
     mobilitymode: none
-    description: Per vincere la sfida compila il questionario di fine gioco che visualizzi accedendo alla webapp (pulsante 'PUNTEGGIO' nella app mobile) durante la validita' della sfida.
+    description: Per vincere la sfida compila il questionario di fine gioco che visualizzi accedendo alla webapp (pulsante 'PUNTEGGIO' nella app mobile o attraverso il link presente nella mail) durante la validita' della sfida.

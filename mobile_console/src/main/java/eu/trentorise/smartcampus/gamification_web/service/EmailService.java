@@ -146,7 +146,6 @@ public class EmailService {
         
     }
     
-    
     public void sendMailGamification(
     		final String firstGameMail, final String recipientName, final String point_green, final String point_health, final String point_pr, final String badge,
             final String position, final String week_number, final String week_theme, final String last_week_number, final Boolean are_challenges, final Boolean are_prizes, final Boolean are_last_week_prizes, 
@@ -198,6 +197,11 @@ public class EmailService {
     		challengesEndingTime = completeEnd[1];
     	}
     	
+    	boolean isLastWeek = false;
+    	if(week_theme.compareTo("Last") == 0){
+    		isLastWeek = true;
+    	}
+    	
         // Prepare the evaluation context
         final Context ctx = new Context(locale);
         ctx.setVariable("name", recipientName);
@@ -208,6 +212,7 @@ public class EmailService {
         ctx.setVariable("n_badges", badges);
         ctx.setVariable("next_week_num", week_number);
         ctx.setVariable("next_week_theme", week_theme);
+        ctx.setVariable("show_last_week", isLastWeek);
         ctx.setVariable("week_num", last_week_number);
         ctx.setVariable("n_challenges", challenges);
         ctx.setVariable("n_lw_challenges", last_week_challenges);

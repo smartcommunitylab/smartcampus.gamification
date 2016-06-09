@@ -1217,21 +1217,29 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			var ch_type = customdata[$scope.CHAL_K+ch_id+$scope.CHAL_K_TYPE];
     			var target = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_TARGET];
 				var bonus = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_BONUS];
+				if(bonus == null || bonus == "")bonus = 0;
 				var endChTs = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_ETS];
 				var startChTs =  customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_STS];
+				if(endChTs == null || endChTs == "")endChTs = 0;
+				if(startChTs == null || startChTs == "")startChTs = 0;
 				var point_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_POINT_TYPE];
+				if(point_type == null || point_type == "")point_type = $scope.CHAL_ALLOWED_PT_GREEN;
 				var now = new Date().getTime();
 				var daysToEnd = $scope.calculateRemainingDays(endChTs, now);
 				var success = (customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] != null) ? customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS] : false;
+				if(success == null || success == "")success = false;
 				var active = (now < endChTs);
 				var status = 0;
 				var row_status = 0;
     			var tmp_chall = {};
     			if(target == 0 || target == null)target = 1;	// to solve error DAS division by zero
+    			if(ch_type == null || ch_type == "")ch_type = $scope.CHAL_TYPE_1;
     			switch(ch_type){
     				case $scope.CHAL_TYPE_1:
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
+    					if(walked_km == null || walked_km == "")walked_km = 0;
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					if(mobility_mode == null || mobility_mode == "")mobility_mode = $scope.CHAL_ALLOWED_MODE_B;
     					status = walked_km * 100 / target;
     					if(walked_km < 1){
     						row_status = Math.round(walked_km * 10) / 10 + "/" + target;
@@ -1268,7 +1276,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;
     				case $scope.CHAL_TYPE_1A:
     					var walked_km = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WALKED_KM];
+    					if(walked_km == null || walked_km == "")walked_km = 0;
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					if(mobility_mode == null || mobility_mode == "")mobility_mode = $scope.CHAL_ALLOWED_MODE_B;
     					status = walked_km * 100 / target;
     					if(walked_km < 1){
     						row_status = Math.round(walked_km * 10) / 10 + "/" + target;
@@ -1305,7 +1315,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;
     				case $scope.CHAL_TYPE_2:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					if(count == null || count == "")count = 0;
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					if(mobility_mode == null || mobility_mode == "")mobility_mode = $scope.CHAL_ALLOWED_MODE_B;
     					status = count * 100 / target;
     					row_status = count + "/" + target;
     					tmp_chall = {
@@ -1337,7 +1349,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;
     				case $scope.CHAL_TYPE_3:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					if(count == null || count == "")count = 0;
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					if(mobility_mode == null || mobility_mode == "")mobility_mode = $scope.CHAL_ALLOWED_MODE_B;
     					status = count * 100 / target;
     					row_status = count + "/" + target;
     					tmp_chall = {
@@ -1369,7 +1383,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;
     				case $scope.CHAL_TYPE_3A:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					if(count == null || count == "")count = 0;
     					var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
+    					if(mobility_mode == null || mobility_mode == "")mobility_mode = $scope.CHAL_ALLOWED_MODE_B;
     					status = count * 100 / target;
     					row_status = count + "/" + target;
     					tmp_chall = {
@@ -1401,6 +1417,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;	
     				case $scope.CHAL_TYPE_4:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					if(count == null || count == "")count = 0;
     					//var mobility_mode = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_MODE];
     					var mobility_mode = $scope.CHAL_ALLOWED_MODE_Z;
     					status = count * 100 / target;
@@ -1434,6 +1451,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;	
     				case $scope.CHAL_TYPE_5:
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
+    					if(success == null || success == "")success = false;
     					var earned_points_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WEAKLY_EARNED_POINT];	// key with _
     					if(earned_points_type == null){
     						earned_points_type = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_WEAKLY_EARNED_POINT2];	// key without _
@@ -1477,7 +1495,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;
     				case $scope.CHAL_TYPE_6:
     					var count = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_COUNTER];
+    					if(count == null || count == "")count = 0;
     					var badge_coll_name = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_BADGE_COLL_NAME];
+    					if(badge_coll_name == null || badge_coll_name == "")badge_coll_name = "green leaves";
     					status = count * 100 / target;
     					row_status = count + "/" + target;
     					tmp_chall = {
@@ -1509,6 +1529,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;	
     				case $scope.CHAL_TYPE_7:
     					var success = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_SUCCESS];
+    					if(success == null || success == "")success = false;
     					if(success){
     						status = 100;
     						row_status = "1/1";
@@ -1577,6 +1598,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     					break;		
     				case $scope.CHAL_TYPE_9:
     					var recommandation = customdata[$scope.CHAL_K + ch_id + $scope.CHAL_K_RECOM];
+    					if(recommandation == null || recommandation == "")recommandation = 0;
     					status = recommandation * 100 / target;
     					row_status = recommandation + "/" + target;
     					if(status > 100)status = 100;

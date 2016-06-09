@@ -627,17 +627,17 @@
 	}
 	
 	.modal {
-		-webkit-overflow-scrolling: auto !important;
+		-webkit-overflow-scrolling: touch !important;
 	}
 	
-/* 	.ovh {
+	/*.ovh {
       overflow:hidden;
     } */
     
-    .modal-open {
+    /* .modal-open {
     	position: fixed;
     	overflow: hidden;
-	}
+	} */
 	
 	.modal-header {
 		position: relative;

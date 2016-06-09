@@ -954,7 +954,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				// manage Nick for player
     				$scope.retrieveMailForPlayer();
     			}
-    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_8){	//TODO: change it to 9
+    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_9){	//TODO: change it to 9
     				// manage SurveyData for player
     				$scope.retrieveSurveyDataForPlayer();
     			}
@@ -3175,7 +3175,8 @@ cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
 	$scope.much_val = "much";
 	
 	$scope.no_val = "no";
-	$scope.maybe_val = "maybe";
+	$scope.maybe_no_val = "maybe no";
+	$scope.maybe_yes_val = "maybe yes";
 	$scope.yes_val = "yes";
 	
 	$scope.walk_mode = "walk";

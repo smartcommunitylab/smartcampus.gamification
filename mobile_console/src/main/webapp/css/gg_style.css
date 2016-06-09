@@ -630,15 +630,6 @@
 		-webkit-overflow-scrolling: touch !important;
 	}
 	
-	/*.ovh {
-      overflow:hidden;
-    } */
-    
-    /* .modal-open {
-    	position: fixed;
-    	overflow: hidden;
-	} */
-	
 	.modal-header {
 		position: relative;
 	}

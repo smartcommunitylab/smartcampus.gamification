@@ -386,7 +386,7 @@ public class WsProxyController {
 				p.setSurveyData(data);
 				if (data != null) {
 					sendSurveyToGamification(playerId);
-					logger.info("Call survey method for user " + playerId);
+					logger.debug("Call survey method for user " + playerId);
 				}
 				playerRepositoryDao.save(p);
 				result = p.toJSONString();
@@ -396,7 +396,7 @@ public class WsProxyController {
 				playerProdRepositoryDao.save(p);
 				if (data != null) {
 					sendSurveyToGamification(playerId);
-					logger.info("Call survey method for user " + playerId);
+					logger.debug("Call survey method for user " + playerId);
 				}
 				result = p.toJSONString();
 			}

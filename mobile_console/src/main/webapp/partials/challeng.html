@@ -40,7 +40,14 @@
 								<div class="info-wrapper"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch)"></i></div><!-- ng-if="!ch.success && ch.active && ch.status != 100" -->
 							</div>
 							<div class="col-md-9 headercol" ng-class="{'headercol-success': ch.success || ch.status == 100, 'headercol-failed': !ch.success && !ch.active && ch.status != 100}">
-								<div class="desc-wrapper"><strong>{{ ch.desc }}.</strong></div>
+								<div class="desc-wrapper">
+									<strong>{{ ch.desc }}.
+									<span ng-if="ch.type == 'SURVEYDATA' && !ch.success"> Clicca 
+										<a href ng-click="retrieveSurveyDataForPlayer()">QUI</a>
+									 per compilare il questionario ora.
+									 </span>
+									</strong>
+								</div>
 								<div class="days-wrapper" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ 'ch_day_to_end_text_label_before' | i18n }}{{ ch.daysToEnd }}<span ng-if="ch.daysToEnd!=1">{{ 'ch_day_to_end_text_label' | i18n }}</span><span ng-if="ch.daysToEnd==1">{{ 'ch_day_to_end_text_label_one_day' | i18n }}</span>!</strong></div>
 								<div class="days-wrapper-failed" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
 								<div class="days-wrapper-success upper-letters" ng-if="ch.success || ch.status == 100">
@@ -73,7 +80,12 @@
 							<!-- <div class="col-xs-2 iconcol"><img ng-if="ch.icon" height="50" width="50" ng-src="{{ ch.icon }}" alt="Sfida" title="Sfida" /></div> -->
 							<div class="col-xs-10 iconcolsmall"><!-- col-xs-8 -->
 								<div class="info-wrapper-small" ng-if="!ch.success && ch.active && ch.status != 100"><i class="glyphicon glyphicon-question-sign" ng-click="openInfoChPanel(ch)"></i></div>
-								<strong>{{ ch.desc }}.</strong>
+								<strong>{{ ch.desc }}.
+								<span ng-if="ch.type == 'SURVEYDATA' && !ch.success"> Clicca 
+										<a href ng-click="retrieveSurveyDataForPlayer()">QUI</a>
+									 per compilare il questionario ora.
+									 </span>
+								</strong>
 								<div class="days-wrapper small" ng-if="!ch.success && ch.active && ch.status != 100"><strong>{{ 'ch_day_to_end_text_label_before' | i18n }}{{ ch.daysToEnd }}<span ng-if="ch.daysToEnd!=1">{{ 'ch_day_to_end_text_label' | i18n }}</span><span ng-if="ch.daysToEnd==1">{{ 'ch_day_to_end_text_label_one_day' | i18n }}</span>!</strong></div>
 								<div class="days-wrapper-failed small" ng-if="!ch.success && !ch.active && ch.status != 100"><strong>{{ 'ch_gameover_message_text_label' | i18n }}{{ ch.row_status }} </strong></div>
 								<div class="days-wrapper-success small upper-letters" ng-if="ch.success || ch.status == 100">

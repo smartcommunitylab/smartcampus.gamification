@@ -381,19 +381,23 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 						<label class="control-label">3) Se hai cambiato le tue abitudini, continueresti a muoverti come suggerito dalla App anche dopo il gioco?</label>
 						<select ng-if="showSelect" type="text" name="new_habits_maintaining" class="form-control" ng-model="user.surveyData.new_habits_maintaining" ng-required="user.surveyData.change_of_habits!=nothing_val">
 							<option value="">Seleziona un valore</option>
-							<option ng-value="no_val">No</option>
-							<option ng-value="maybe_val">Forse</option>
-							<option ng-value="yes_val">Sì</option>
+							<option ng-value="no_val">Assolutamente No</option>
+							<option ng-value="maybe_no_val">Non credo</option>
+							<option ng-value="maybe_yes_val">Probabilmente Sì</option>
+							<option ng-value="yes_val">Sicuramente Sì</option>
 						</select>
 						<table width="100%" ng-if="!showSelect">
 							<tr>
-								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> No</label></td>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Assolutamente No</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Forse</label></td>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Non credo</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Sì</label></td>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Probabilmente Sì</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val">Sicuramente Sì</label></td>
 							</tr>
 						</table>
 						<div ng-show="form.new_habits_maintaining.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>

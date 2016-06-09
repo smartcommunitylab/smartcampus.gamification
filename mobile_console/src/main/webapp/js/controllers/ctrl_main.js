@@ -954,7 +954,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     				// manage Nick for player
     				$scope.retrieveMailForPlayer();
     			}
-    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_9){	//TODO: change it to 9
+    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_8){	//TODO: change it to 9
     				// manage SurveyData for player
     				$scope.retrieveSurveyDataForPlayer();
     			}
@@ -3138,6 +3138,8 @@ cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
 	$scope.submitNumber = 0;
 	$scope.accepted = false;
 	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	
+	$scope.showSelect = true;
 	
 	var now = new Date();
 	$scope.negative_exp = "negative";

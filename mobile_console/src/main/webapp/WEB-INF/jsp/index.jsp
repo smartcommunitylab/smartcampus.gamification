@@ -326,7 +326,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.gaming_exp.$dirty && form.gaming_exp.$invalid]">
 						<label class="control-label">1) Come valuteresti la tua esperienza di gioco in queste settimane?</label>
-						<table width="100%">
+						<select ng-if="showSelect" type="text" name="gaming_exp" class="form-control" ng-model="user.surveyData.gamimg_experience" required>
+							<option value="">Seleziona un valore</option>
+							<option ng-value="negative_exp">Negativa</option>
+							<option ng-value="satisfying_exp">Soddisfacente</option>
+							<option ng-value="good_exp">Buona</option>
+							<option ng-value="excellent_exp">Ottima</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
 							<tr>
 								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="negative_exp" required> Negativa</label></td>
 							</tr>
@@ -344,7 +351,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.change_of_habits.$dirty && form.change_of_habits.$invalid]">
 						<label class="control-label">2) In quale misura il gioco ti ha indotto a cambiare le tue abitudini di mobilità?</label>
-						<table width="100%">
+						<select ng-if="showSelect" type="text" name="change_of_habits" class="form-control" ng-model="user.surveyData.change_of_habits" required>
+							<option value="">Seleziona un valore</option>
+							<option ng-value="nothing_val">Per niente</option>
+							<option ng-value="little_val">Poco</option>
+							<option ng-value="enough_val">Abbastanza</option>
+							<option ng-value="much_val">Molto</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
 							<tr>
 								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="nothing_val" required> Per niente</label></td>
 							</tr>
@@ -362,7 +376,13 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_habits_maintaining.$dirty && form.new_habits_maintaining.$invalid]">
 						<label class="control-label">3) Se hai cambiato le tue abitudini, continueresti a muoverti come suggerito dalla App anche dopo il gioco?</label>
-						<table width="100%">
+						<select ng-if="showSelect" type="text" name="new_habits_maintaining" class="form-control" ng-model="user.surveyData.new_habits_maintaining" ng-required="user.surveyData.change_of_habits!=nothing_val">
+							<option value="">Seleziona un valore</option>
+							<option ng-value="no_val">No</option>
+							<option ng-value="maybe_val">Forse</option>
+							<option ng-value="yes_val">Sì</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
 							<tr>
 								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> No</label></td>
 							</tr>
@@ -377,7 +397,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.job_transport_mode.$dirty && form.job_transport_mode.$invalid]">
 						<label class="control-label">4) Quale modalità di trasporto hai usato prevalentemente durante il gioco per andare al lavoro / scuola?</label>
-						<table width="100%">
+						<select ng-if="showSelect" type="text" name="job_transport_mode" class="form-control" ng-model="user.surveyData.job_transport_mode" required>
+							<option value="">Seleziona un valore</option>
+							<option ng-value="walk_mode">A piedi</option>
+							<option ng-value="bike_mode">In bici</option>
+							<option ng-value="public_transport_mode">Mezzi pubblici</option>
+							<option ng-value="car_mode">Auto</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
 							<tr>
 								<td><label><input type="radio" name="job_transport_mode" ng-model="user.surveyData.job_transport_mode" ng-value="walk_mode" required> A piedi</label></td>
 							</tr>
@@ -395,7 +422,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.free_time_transport_mode.$dirty && form.free_time_transport_mode.$invalid]">
 						<label class="control-label">5) Quale modalità di trasporto hai usato prevalentemente durante il gioco per il tuo tempo libero?</label>
-						<table width="100%">
+						<select ng-if="showSelect" type="text" name="free_time_transport_mode" class="form-control" ng-model="user.surveyData.free_time_transport_mode" required>
+							<option value="">Seleziona un valore</option>
+							<option ng-value="walk_mode">A piedi</option>
+							<option ng-value="bike_mode">In bici</option>
+							<option ng-value="public_transport_mode">Mezzi pubblici</option>
+							<option ng-value="car_mode">Auto</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
 							<tr>
 								<td><label><input type="radio" name="free_time_transport_mode" ng-model="user.surveyData.free_time_transport_mode" ng-value="walk_mode" required> A piedi</label></td>
 							</tr>
@@ -413,7 +447,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.trip_type.$dirty && form.trip_type.$invalid]">
 						<label class="control-label">6) Per quale tipo di viaggio hai usato la App?</label>
-						<table width="100%">
+						<select ng-if="showSelect" type="text" name="trip_type" class="form-control" ng-model="user.surveyData.trip_type" required>
+							<option value="">Seleziona un valore</option>
+							<option ng-value="all_trips">Per qualsiasi viaggio</option>
+							<option ng-value="commuters_trips">Per viaggi pendolari</option>
+							<option ng-value="long_trips">Per viaggi lunghi</option>
+							<option ng-value="short_trips">Per viaggi corti</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
 							<tr>
 								<td><label><input type="radio" name="trip_type" ng-model="user.surveyData.trip_type" ng-value="all_trips" required> Per qualsiasi viaggio</label></td>
 							</tr>
@@ -431,7 +472,15 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_mode_type.$dirty && form.new_mode_type.$invalid]">
 						<label class="control-label">7) Quale modo hai provato per la prima volta grazie al gioco?</label>
-						<table width="100%">
+						<select ng-if="showSelect" type="text" name="new_mode_type" class="form-control" ng-model="user.surveyData.new_mode_type" required>
+							<option value="">Seleziona un valore</option>
+							<option ng-value="no_mode">Nessuno</option>
+							<option ng-value="bike_sharing_mode">Bike Sharing</option>
+							<option ng-value="park_and_ride_mode">Park and Ride</option>
+							<option ng-value="bike_mode">Bici</option>
+							<option ng-value="transport_mode">Mezzi Pubblici</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
 							<tr>
 								<td><label><input type="radio" name="new_mode_type" ng-model="user.surveyData.new_mode_type" ng-value="no_mode" required> Nessuno</label></td>
 							</tr>
@@ -455,7 +504,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 						<ul>
 							<li>
 								<label>Punti e classifiche</label>
-								<table width="100%">
+								<select ng-if="showSelect" type="text" name="point_interest_in_game" class="form-control" ng-model="user.surveyData.point_interest_in_game" required>
+									<option value="">Seleziona un valore</option>
+									<option ng-value="nothing_val">Per niente</option>
+									<option ng-value="little_val">Poco</option>
+									<option ng-value="enough_val">Abbastanza</option>
+									<option ng-value="much_val">Molto</option>
+								</select>	
+								<table width="100%" ng-if="!showSelect">
 									<tr>
 										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
 									</tr>
@@ -473,7 +529,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 							</li>
 							<li>
 								<label>Badges</label>
-								<table width="100%">
+								<select ng-if="showSelect" type="text" name="badges_interest_in_game" class="form-control" ng-model="user.surveyData.badges_interest_in_game" required>
+									<option value="">Seleziona un valore</option>
+									<option ng-value="nothing_val">Per niente</option>
+									<option ng-value="little_val">Poco</option>
+									<option ng-value="enough_val">Abbastanza</option>
+									<option ng-value="much_val">Molto</option>
+								</select>
+								<table width="100%" ng-if="!showSelect">
 									<tr>
 										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
 									</tr>
@@ -491,7 +554,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 							</li>
 							<li>
 								<label>Sfide</label>
-								<table width="100%">
+								<select ng-if="showSelect" type="text" name="challenges_interest_in_game" class="form-control" ng-model="user.surveyData.challenges_interest_in_game" required>
+									<option value="">Seleziona un valore</option>
+									<option ng-value="nothing_val">Per niente</option>
+									<option ng-value="little_val">Poco</option>
+									<option ng-value="enough_val">Abbastanza</option>
+									<option ng-value="much_val">Molto</option>
+								</select>
+								<table width="100%" ng-if="!showSelect">
 									<tr>
 										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
 									</tr>
@@ -509,7 +579,14 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 							</li>
 							<li>
 								<label>Premi</label>
-								<table width="100%">
+								<select ng-if="showSelect" type="text" name="prize_interest_in_game" class="form-control" ng-model="user.surveyData.prize_interest_in_game" required>
+									<option value="">Seleziona un valore</option>
+									<option ng-value="nothing_val">Per niente</option>
+									<option ng-value="little_val">Poco</option>
+									<option ng-value="enough_val">Abbastanza</option>
+									<option ng-value="much_val">Molto</option>
+								</select>
+								<table width="100%" ng-if="!showSelect">
 									<tr>
 										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
 									</tr>

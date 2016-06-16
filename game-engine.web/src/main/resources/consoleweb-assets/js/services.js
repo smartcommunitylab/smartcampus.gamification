@@ -120,7 +120,7 @@ app.factory('gamesFactory',
     		  a = game.pointConcept;
       }
       
-      if(instanceType === 'badge_collections') {
+      if(instanceType === 'badges_collections') {
     		  a = game.badgeCollectionConcept;
       }
       angular.forEach(a, function (i) {

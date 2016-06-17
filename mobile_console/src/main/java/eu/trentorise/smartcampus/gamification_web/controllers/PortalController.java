@@ -752,6 +752,8 @@ public class PortalController extends SCController{
 				} catch (MessagingException e) {
 					logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
 				}
+			} else {
+				logger.info("Ended mail sending process: no mail send (param in conf file set to false)");
 			}
 		//}
 	}

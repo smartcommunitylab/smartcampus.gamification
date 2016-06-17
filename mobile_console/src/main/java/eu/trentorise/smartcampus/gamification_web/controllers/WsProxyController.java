@@ -2,6 +2,7 @@ package eu.trentorise.smartcampus.gamification_web.controllers;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,26 +127,30 @@ public class WsProxyController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/allNiks")
 	public @ResponseBody
-	String getAllNiks(HttpServletRequest request, @RequestParam String urlWS){
+	String getAllNiks(HttpServletRequest request, @RequestParam String urlWS) throws Exception{
 		logger.debug("WS-get All profiles."); //Added for log ws calls info in preliminary phase of portal
-		String result = "{ \"players\":[";
+		List<Object> list = new ArrayList<Object>();
+//		String result = "{ \"players\":[";
 		if(isTest.compareTo("true") == 0){
 			Iterable<Player> iter = playerRepositoryDao.findAll();
 			for(Player p: iter){
 				logger.debug(String.format("Profile result %s", p.getNikName()));
-				result += p.toJSONString() + ",";
+//				result += p.toJSONString() + ",";
+				list.add(p);
 			}
 		} else {
 			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
 			for(PlayerProd p: iter){
 				logger.debug(String.format("Profile result %s", p.getNikName()));
-				result += p.toJSONString() + ",";
+//				result += p.toJSONString() + ",";
+				list.add(p);
 			}
 		}
-		result = result.substring(0, result.length()-1);
-		result += "]}";
-		logger.debug(String.format("WS-get all profiles result %s", result));
-		return result;	
+//		result = result.substring(0, result.length()-1);
+//		result += "]}";
+		Map<String,Object> map = Collections.<String,Object>singletonMap("players", list);
+//		logger.debug(String.format("WS-get all profiles result %s", result));
+		return new ObjectMapper().writeValueAsString(map);	
 	}
 
 	

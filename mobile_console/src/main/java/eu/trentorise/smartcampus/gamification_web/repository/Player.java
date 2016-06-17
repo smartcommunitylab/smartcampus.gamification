@@ -37,10 +37,6 @@ public class Player {
 		this.surveyData = surveyData;
 	}
 
-	public String getPId() {
-		return pid;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -55,10 +51,6 @@ public class Player {
 
 	public String getMail() {
 		return mail;
-	}
-
-	public void setPId(String pid) {
-		this.pid = pid;
 	}
 
 	public void setName(String name) {

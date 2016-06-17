@@ -116,6 +116,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.start_week_7 = 1464386460000;
 	$scope.start_week_8 = 1464991260000;
 	$scope.start_week_9 = 1465596060000;
+	$scope.start_week_10 = 1466373599000;
 	$scope.week_classification = "green leaves week ";
 	$scope.week_test_classification = "green leaves week test"
 	$scope.useShortClassification = (conf_is_short_classification == "true") ? true : false;
@@ -2133,7 +2134,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     // Method getCorrectActualWeek: used to retrieve the correct game week number
     $scope.getCorrectActualWeek = function(now_millis){
     	var actual_week = 0;
-    	if(now_millis >= $scope.start_week_9){
+    	if(now_millis >= $scope.start_week_10){
+    		actual_week = 10;
+    	} else if(now_millis >= $scope.start_week_9){
     		actual_week = 9;
     	} else if(now_millis >= $scope.start_week_8){
     		actual_week = 8;

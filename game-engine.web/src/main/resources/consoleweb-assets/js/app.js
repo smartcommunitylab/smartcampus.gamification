@@ -14,65 +14,66 @@
  *    limitations under the License.
  */
 
-var app = angular.module('gamificationEngine', ['ui.router', 'ui.bootstrap', 'jm.i18next', 'toggle-switch','ui.bootstrap.datetimepicker']);
 
 // Load and set up the translation library i18next
+var app = angular.module('gamificationEngine', ['ui.router', 'ui.bootstrap', 'jm.i18next', 'toggle-switch', 'ui.bootstrap.datetimepicker']);
+
 app.config(function ($i18nextProvider) {
-  'use strict';
-  $i18nextProvider.options = {
-    useCookie: false,
-    useLocalStorage: false,
-    fallbackLng: 'en',
-    resGetPath: 'locales/__lng__/__ns__.json',
-    ns: { 
-        namespaces: ['messages', 'labels'], 
-        defaultNs: 'labels'
-      } 
-  };
+    'use strict';
+    $i18nextProvider.options = {
+        useCookie: false,
+        useLocalStorage: false,
+        fallbackLng: 'en',
+        resGetPath: 'locales/__lng__/__ns__.json',
+        ns: {
+            namespaces: ['messages', 'labels'],
+            defaultNs: 'labels'
+        }
+    };
 });
 
 // Switch application views and states
 app.config(
-  function ($stateProvider, $urlRouterProvider) {
-    $stateProvider
-    .state('home', {
-      url: '/home',
-      templateUrl: 'templates/home.html',
-      controller: 'HomeCtrl',
-      data : {
-    	  page : 'home'
-      }
-    })
+    function ($stateProvider, $urlRouterProvider) {
+        $stateProvider
+            .state('home', {
+                url: '/home',
+                templateUrl: 'templates/home.html',
+                controller: 'HomeCtrl',
+                data: {
+                    page: 'home'
+                }
+            })
 
-    .state('game', {
-      url: '/game/:id?tab',
-      templateUrl: 'templates/game.html',
-      controller: 'GameCtrl',
-      data : {
-    	  page : 'game'
-      }
-    })
-    
-    .state('game-monitor', {
-      url: '/game-monitor/:id',
-      templateUrl: 'templates/game-monitor.html',
-      controller: 'MonitorCtrl',
-      data : {
-    	  page : 'monitor'
-      }
-    })
-    
-    $urlRouterProvider.otherwise("/home");
-  }
+        .state('game', {
+            url: '/game/:id?tab',
+            templateUrl: 'templates/game.html',
+            controller: 'GameCtrl',
+            data: {
+                page: 'game'
+            }
+        })
+
+        .state('game-monitor', {
+            url: '/game-monitor/:id',
+            templateUrl: 'templates/game-monitor.html',
+            controller: 'MonitorCtrl',
+            data: {
+                page: 'monitor'
+            }
+        })
+
+        $urlRouterProvider.otherwise("/home");
+    }
 );
 
-app.directive('autofocus', ['$timeout', function($timeout) {
-	  return {
-		    restrict: 'A',
-		    link : function($scope, $element) {
-		      $timeout(function() {
-		        $element[0].focus();
-		      });
-		    }
-		  }
+app.directive('autofocus', ['$timeout', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function ($scope, $element) {
+            $timeout(function () {
+                $element[0].focus();
+            });
+        }
+    }
 		}]);

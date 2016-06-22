@@ -300,8 +300,6 @@ app.factory('gamesFactory',
             }
             id++;
           });
-
-          var url = '';
          
           instance = {
         		  'id': id,

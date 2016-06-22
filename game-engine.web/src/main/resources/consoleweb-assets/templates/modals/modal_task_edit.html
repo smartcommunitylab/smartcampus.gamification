@@ -23,7 +23,7 @@
   <div class="modal-body">
     <div class="row">
       <div class="col-md-12 text-center">
-        <alert ng-if="!!alerts.taskErr" type="danger" close="closeAlert('taskErr')">{{alerts.taskErr | i18next}}</alert>
+        <uib-alert ng-if="!!alerts.taskErr" type="danger" close="closeAlert('taskErr')">{{alerts.taskErr | i18next}}</uib-alert>
       </div>
     </div>
     <div class="form-group">
@@ -37,7 +37,7 @@
     <div class="form-group">
       <label for="itemToNotificate">{{'labels:lbl_task_itemToNotificate' | i18next}}</label>
       <input type="text" class="form-control" name="itemToNotificate" id="itemToNotificate" data-ng-model="input.itemToNotificate" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" data-ng-pattern="/^\d+$/" required/>
-      <alert type="danger" data-ng-show="taskForm.itemToNotificate.$error.pattern">{{'messages:msg_error_integer' | i18next}}</alert>
+      <uib-alert type="danger" data-ng-show="taskForm.itemToNotificate.$error.pattern">{{'messages:msg_error_integer' | i18next}}</uib-alert>
     </div>
     <div class="form-group">
       <label for="itemType">{{'labels:lbl_task_itemType' | i18next}}</label>

@@ -17,7 +17,7 @@
 app.factory('gamesFactory',
   function ($rootScope, $http, $q, $timeout) {
     // Games data operations factory
-
+    var url = "https://dev.smartcommunitylab.it/gamification";
     // Get games
     var getGames = function () {
       var deferred = $q.defer();
@@ -25,7 +25,7 @@ app.factory('gamesFactory',
       // If games haven't been already loaded
       if (!$rootScope.games || $rootScope.games.length === 0) {
         // Load games
-        $http.get('../console/game').success(function (data) {
+        $http.get(url +'/console/game').success(function (data) {
           $rootScope.games = data;
           deferred.resolve();
         }).error(function () {
@@ -150,7 +150,7 @@ app.factory('gamesFactory',
     var getPoints = function(gameId) {
     	var deferred = $q.defer();
     
-    	$http.get('../console/game/'+gameId+"/point").
+    	$http.get(url + '/console/game/'+gameId+"/point").
     	success(function(data, status, headers, config) {
     		deferred.resolve(data);
         }).
@@ -162,7 +162,7 @@ app.factory('gamesFactory',
     }
     
     var addPoint = function(game,pc) {
-    	$http.post('../console/game/'+game.id+"/point", pc).
+    	$http.post(url + '/console/game/'+game.id+"/point", pc).
     	success(function(data, status, headers, config) {
     		
         }).
@@ -173,7 +173,7 @@ app.factory('gamesFactory',
     var getBadges = function(gameId) {
     	var deferred = $q.defer();
     
-    	$http.get(' ../console/game/'+gameId+"/badgecoll").
+    	$http.get(url + '/console/game/'+gameId+"/badgecoll").
     	success(function(data, status, headers, config) {
     		deferred.resolve(data);
         }).
@@ -185,7 +185,7 @@ app.factory('gamesFactory',
     }
     
     var addBadge = function(game,badge) {
-    	$http.post(' ../console/game/'+game.id+"/badgecoll", badge).
+    	$http.post(url + '/console/game/'+game.id+"/badgecoll", badge).
     	success(function(data, status, headers, config) {
     		
         }).
@@ -198,7 +198,7 @@ app.factory('gamesFactory',
     	// ^\s*($|#|\w+\s*=|(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?(?:,(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?)*)\s+(\?|\*|(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?(?:,(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?)*)\s+(\?|\*|(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\?|\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\s+(\?|\*|(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?)*|\?|\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\s)+(\?|\*|(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?(?:,(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?)*))$
     	// reg exp for cron validation
     	var deferred = $q.defer();
-    	$http.post(' ../console/game/'+game.id+"/task", task).
+    	$http.post(url + '/console/game/'+game.id+"/task", task).
     	success(function(data, status, headers, config) {
     		deferred.resolve(data);
         }).
@@ -213,7 +213,7 @@ app.factory('gamesFactory',
     	// ^\s*($|#|\w+\s*=|(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?(?:,(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?)*)\s+(\?|\*|(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?(?:,(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?)*)\s+(\?|\*|(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\?|\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\s+(\?|\*|(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?)*|\?|\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\s)+(\?|\*|(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?(?:,(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?)*))$
     	// reg exp for cron validation
     	var deferred = $q.defer();
-    	$http.put(' ../console/game/'+game.id+"/task", task).
+    	$http.put(url + '/console/game/'+game.id+"/task", task).
     	success(function(data, status, headers, config) {
     		deferred.resolve();
         }).
@@ -226,7 +226,7 @@ app.factory('gamesFactory',
     
     var deleteTask = function(game,task) {
     	var deferred = $q.defer();
-    	$http.post(' ../console/game/'+game.id+"/task/del", task).
+    	$http.post(url + '/console/game/'+game.id+"/task/del", task).
     	success(function(data, status, headers, config) {
     		deferred.resolve();
         }).
@@ -240,7 +240,7 @@ app.factory('gamesFactory',
     var saveGame = function(game) {
     	var deferred = $q.defer();
     	
-    	$http.post(' ../console/game', game).
+    	$http.post(url + '/console/game', game).
     	success(function(data, status, headers, config) {
     		deferred.resolve(data);
         }).
@@ -266,7 +266,7 @@ app.factory('gamesFactory',
       		 game.name = fields.name;
              game.expiration = fields.expiration;
              
-             $http.post(' ../console/game', game).
+             $http.post(url + '/console/game', game).
              success(function(data, status, headers, config) {
              	 if(!	game.id) { 
              		 $rootScope.games.push(data);
@@ -314,7 +314,7 @@ app.factory('gamesFactory',
         	  game.badgeCollectionConcept.push(instance);
           }
           
-          $http.post(' ../console/game', game).success(function(data, status, headers, config) {
+          $http.post(url + '/console/game', game).success(function(data, status, headers, config) {
         	  deferred.resolve(data);
           }).error(function(data, status, headers, config){
         	  deferred.reject('msg_instance_name_error');
@@ -361,7 +361,7 @@ app.factory('gamesFactory',
     var deleteGame = function (game) {
       var deferred = $q.defer();
 
-      $http.delete(' ../console/game/'+game.id).success(function(data, status, headers, config) {
+      $http.delete(url + '/console/game/'+game.id).success(function(data, status, headers, config) {
     	  angular.forEach($rootScope.games, function (g, index) {
     	        if (g.id == game.id) {
     	          $rootScope.games.splice(index, 1);
@@ -392,7 +392,7 @@ app.factory('gamesFactory',
     var addRule = function (game, rule) {
     	var deferred = $q.defer();
     	
-    	$http.post(' ../console/game/'+game.id+"/rule/db", rule).success(function(data, status, headers, config) {
+    	$http.post(url + '/console/game/'+game.id+"/rule/db", rule).success(function(data, status, headers, config) {
       	  deferred.resolve(data);
         }).error(function(data, status, headers, config){
       	  deferred.reject('msg_instance_name_error');
@@ -404,7 +404,7 @@ app.factory('gamesFactory',
     	var deferred = $q.defer();
     	var rule = {};
     	ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
-    	$http.delete(' ../console/game/'+game.id+"/rule/db/"+ruleId).success(function(data, status, headers, config) {
+    	$http.delete(url + '/console/game/'+game.id+"/rule/db/"+ruleId).success(function(data, status, headers, config) {
       	  deferred.resolve(data);
         }).error(function(data, status, headers, config){
       	  deferred.reject('msg_delete_error');
@@ -414,7 +414,7 @@ app.factory('gamesFactory',
     
     var validateRule = function(ruleContent) {
     	var deferred = $q.defer();
-    	$http.post(' ../console/rule/validate', ruleContent).success(function(data, status, headers, config) {
+    	$http.post(url + '/console/rule/validate', ruleContent).success(function(data, status, headers, config) {
         	  deferred.resolve(data);
           }).error(function(data, status, headers, config){
         	  deferred.reject('msg_generic_error');
@@ -425,7 +425,7 @@ app.factory('gamesFactory',
     var getRule = function(game,ruleId) {
     	var deferred = $q.defer();
     	ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
-    	$http.get(' ../console/game/'+game.id+"/rule/db/"+ruleId).success(function(data, status, headers, config) {
+    	$http.get(url + '/console/game/'+game.id+"/rule/db/"+ruleId).success(function(data, status, headers, config) {
         	  deferred.resolve(data);
           }).error(function(data, status, headers, config){
         	  deferred.reject('msg_rule_error');
@@ -435,7 +435,7 @@ app.factory('gamesFactory',
     
     var getPlayersState = function(gameId,playerFilter,pageRequest, pageSize) {
     	var deferred = $q.defer();
-    	$http.get('../gengine/state/'+gameId, {params: {page:pageRequest, size: pageSize, playerFilter: playerFilter}}).success(function(data, status, headers, config) {
+    	$http.get(url + '/gengine/state/'+gameId, {params: {page:pageRequest, size: pageSize, playerFilter: playerFilter}}).success(function(data, status, headers, config) {
       	  deferred.resolve(data);
         }).error(function(data, status, headers, config){
       	  deferred.reject('msg_generic_error');

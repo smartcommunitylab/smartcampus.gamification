@@ -1,0 +1,21 @@
+{
+  "msg_load_games_error": "Errore durante il caricamento dei giochi!",
+  "msg_leaderboards_error": "Non é possibile creare classifiche senza collezioni di punti a cui riferirsi!",
+  "msg_game_settings_edited": "Le impostazioni del gioco sono state modificate con successo",
+  "msg_points_settings_edited": "Le ipostazioni di questa istanza di punti sono state modificate con successo",
+  "msg_badges_collection_settings_edited": "Le ipostazioni di questa collezione di distintivi sono state modificate con successo",
+  "msg_leaderboard_settings_edited": "Le ipostazioni di questa classifica sono state modificate con successo",
+  "msg_game_name_error": "Inserisci un nome di gioco valido!",
+  "msg_generic_error": "Errore durante l'operazione",
+  "msg_game_name_exists_error": "Esiste già un gioco con lo stesso nome!",
+  "msg_same_name_error": "Inserisci un nome diverso!",
+  "msg_instance_name_error": "Inserisci un nome di istanza valido!",
+  "msg_instance_name_exists_error": "Esiste già un'istanza con lo stesso nome!",
+  "msg_instance_unchanged_error": "Cambia almeno una proprietà",
+  "msg_delete_error": "Errore durante la cancellazione",
+  "msg_rule_error": "Errore durante l'operazione sulla regola",
+  "msg_task_error" : "Errore nell'operazione sul task",
+  "msg_error_integer" : "Il valore deve essere un intero",
+  "msg_error_exist" : "L'elemento esiste già",
+  "msg_no_customdata": "Nessun custom data per il giocatore"
+}

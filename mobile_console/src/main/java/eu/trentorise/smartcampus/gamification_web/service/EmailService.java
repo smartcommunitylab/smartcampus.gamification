@@ -346,7 +346,7 @@ public class EmailService {
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper message = 
                 new MimeMessageHelper(mimeMessage, true /* multipart */, "UTF-8");
-        message.setSubject("Play&Go - Notifica Vincitori");
+        message.setSubject("Play&Go - Notifica"); //Vincitori
         message.setFrom(mailFrom);
         message.setTo(recipientEmail);
 
@@ -361,8 +361,8 @@ public class EmailService {
         message.addInline(standardImages.get(1).getImageName(), imageSourceFoglia04, standardImages.get(1).getImageType());
         
         // Add the inline score image, referenced from the HTML code as "cid:${imageResourceName}"
-        final InputStreamSource imageSourceGreen = new ByteArrayResource(standardImages.get(2).getImageByte());
-        message.addInline(standardImages.get(2).getImageName(), imageSourceGreen, standardImages.get(2).getImageType());
+        /*final InputStreamSource imageSourceGreen = new ByteArrayResource(standardImages.get(2).getImageByte());
+        message.addInline(standardImages.get(2).getImageName(), imageSourceGreen, standardImages.get(2).getImageType());*/
         /*final InputStreamSource imageSourceHealth = new ByteArrayResource(standardImages.get(3).getImageByte());
         message.addInline(standardImages.get(3).getImageName(), imageSourceHealth, standardImages.get(3).getImageType());
         final InputStreamSource imageSourcePr = new ByteArrayResource(standardImages.get(4).getImageByte());

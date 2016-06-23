@@ -33,7 +33,7 @@
 </div>
 
 <div class="row">
-<div class="col-md-2" style="background-color: rgba(21, 53, 110, 0.94); height:100vh; border-radius: 0.7em;" data-ng-include="'templates/game-menu.html'">
+<div class="col-md-2" style="background-color: rgba(21, 53, 110, 0.94); height:100vh; border-radius: 0.7em;" data-ng-include="'game-menu/game-menu.html'">
 </div>
 
 <div class="col-md-10">
@@ -43,6 +43,6 @@
 <h4 data-ng-show="viewName == 'rules'">{{'labels:lbl_rules_menu' | i18next}}</h4>
 <h4 data-ng-show="viewName == 'tasks'">{{'labels:lbl_tasks_menu' | i18next}}</h4>
 <h4 data-ng-show="viewName == 'game-monitor'">{{'labels:lbl_monitor_menu' | i18next}}</h4>
-<div  style="margin-left: 1em;" data-ng-include="'templates/'+viewName+'.html'"></div>
+<div  style="margin-left: 1em;" data-ng-include="viewName+'/'+viewName+'.html'"></div>
 </div>
 </div>

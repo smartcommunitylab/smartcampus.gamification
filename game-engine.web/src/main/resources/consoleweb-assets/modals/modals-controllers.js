@@ -29,7 +29,8 @@ var modals = angular.module('gamificationEngine.modals', [])
 		}
 		// Error alerts object
 		$scope.alerts = {
-			'editGameError': ''
+			'editGameError': '',
+			'invalidHour': ''
 		};
 
 		$scope.closeAlert = function (alertName) {
@@ -38,22 +39,25 @@ var modals = angular.module('gamificationEngine.modals', [])
 
 		// OK button click event-handler
 		$scope.ok = function () {
+			if (document.getElementsByClassName('has-error').length == 0) {
+				var fields = {};
+				fields.name = $scope.newGame.name;
+				fields.expiration = $scope.newGame.expiration && !$scope.newGame.neverending ? $scope.newGame.expiration.getTime() : undefined;
 
-			var fields = {};
-			fields.name = $scope.newGame.name;
-			fields.expiration = $scope.newGame.expiration && !$scope.newGame.neverending ? $scope.newGame.expiration.getTime() : undefined;
-
-			// Edit game
-			gamesFactory.editGame(game, fields).then(
-				function () {
-					// Settings edited
-					$uibModalInstance.close();
-				},
-				function (message) {
-					// Show given error alert
-					$scope.alerts.editGameError = message;
-				}
-			);
+				// Edit game
+				gamesFactory.editGame(game, fields).then(
+					function () {
+						// Settings edited
+						$uibModalInstance.close();
+					},
+					function (message) {
+						// Show given error alert
+						$scope.alerts.editGameError = message;
+					}
+				);
+			} else {
+				$scope.alerts.invalidHour = 'msg_invalid_time';
+			}
 		};
 
 		// CANCEL button click event-handler

@@ -257,11 +257,13 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 	$scope.delete = function () {
 		var idx = 0;
 		var a = [];
+
+		var tmpGame = angular.copy(game);
 		if (type === 'point') {
-			a = game.pointConcept
+			a = tmpGame.pointConcept;
 		}
 		if (type === 'badge') {
-			a = game.badgeCollectionConcept;
+			a = tmpGame.badgeCollectionConcept;
 		}
 		a.forEach(function (c) {
 			if (c.id === instance.id && c.name === instance.name) {
@@ -270,9 +272,14 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 			idx++;
 		});
 
-		gamesFactory.saveGame(game).then(
+		gamesFactory.saveGame(tmpGame).then(
 			function () {
-
+				if (type === 'point') {
+					game.pointConcept = a;
+				}
+				if (type === 'badge') {
+					game.badgeCollectionConcept = a;
+				}
 				$uibModalInstance.close();
 			},
 			function (message) {

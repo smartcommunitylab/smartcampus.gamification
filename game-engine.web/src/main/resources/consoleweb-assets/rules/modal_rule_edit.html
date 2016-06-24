@@ -23,7 +23,7 @@
   <div class="modal-body">
    <div class="row">
       <div class="col-md-12 text-center">
-        <uib-alert ng-if="!!alerts.ruleError" type="danger" close="closeAlert('ruleError')">{{alerts.ruleError | i18next}}</uib-alert>
+        <uib-alert ng-if="!!alerts.ruleError" type="danger" close="closeAlert('ruleError')">{{'messages:msg_rule_error' | i18next}}</uib-alert>
       </div>
       <div class="col-md-12">  
         <uib-alert ng-if="!!alerts.ruleValidation" type="danger" close="closeAlert('ruleValidation')">Rules engine returns error:<br/><br/><p data-ng-repeat="error in alerts.ruleValidation">{{error}}</p></uib-alert>

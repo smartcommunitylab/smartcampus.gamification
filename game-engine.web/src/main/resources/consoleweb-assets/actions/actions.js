@@ -90,6 +90,7 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 					$uibModalInstance.close();
 				},
 				function (message) {
+					game.actions.pop();
 					// Show given error alert
 					// $scope.alerts.editGameError = message;
 				}
@@ -117,7 +118,9 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 					$uibModalInstance.close();
 				},
 				function (message) {
-
+					if (idx !== -1) {
+						game.actions.splice(idx, 0, argument);
+					}
 				}
 			);
 		};

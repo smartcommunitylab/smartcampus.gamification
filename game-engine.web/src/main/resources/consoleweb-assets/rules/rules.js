@@ -73,9 +73,9 @@ angular.module('gamificationEngine.rules', [])
 			$scope.alerts.loadGameError = true;
 		});
 
-		$scope.closeAlert = function (alertName) {
+		/*$scope.closeAlert = function (alertName) {
 			$scope.alerts[alertName] = false;
-		}
+		}*/
 
 		$scope.choose = function () {
 			$scope.path = "OK";
@@ -107,10 +107,14 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 				},
 				function (message) {
 					// Show given error alert
+					console.log('msg_rule_error');
 					$scope.alerts.ruleError = message;
 				});
 		}
 
+		$scope.closeAlert = function (alertName) {
+			$scope.alerts[alertName] = '';
+		};
 
 		$scope.save = function () {
 

@@ -19,5 +19,5 @@
   "msg_error_exist" : "L'elemento esiste già",
   "msg_no_customdata": "Nessun custom data per il giocatore",
   "msg_invalid_time": "Inserire un'ora valida",
-  "msg_empty_fields": "Tutti i campi devono essere completati"
+  "msg_empty_fields": "Tutti i campi devono essere compilati"
 }

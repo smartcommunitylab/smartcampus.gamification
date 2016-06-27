@@ -636,6 +636,10 @@ public class PortalController extends SCController{
 //				specialPlayers.add("23893");
 //				specialPlayers.add("23895");
 				
+				// Add user to exclude from the mailing list
+				List<String> noMailingPlayers = new ArrayList<String>();
+				noMailingPlayers.add("10730");	//"FILIPPO"	
+				noMailingPlayers.add("23755");	//"Fede"
 				
 				for(PlayerProd p: iter){
 					logger.debug(String.format("Profile finded  %s", p.getNikName()));
@@ -687,10 +691,9 @@ public class PortalController extends SCController{
 					if(mailto == null || mailto.compareTo("") == 0){
 						mailto = mailTo;
 					}
-					
 					//if(specialPlayers.contains(p.getSocialId())){
 					
-					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0){
+					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0  && !noMailingPlayers.contains(p.getSocialId())){
 						
 						try {
 							if(notifications != null){
@@ -922,6 +925,11 @@ public class PortalController extends SCController{
 			}
 		} else {
 			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+			// Add user to exclude from the mailing list
+			List<String> noMailingPlayers = new ArrayList<String>();
+			noMailingPlayers.add("10730");	//"FILIPPO"	
+			noMailingPlayers.add("23755");	//"Fede"
+			
 			for(PlayerProd p: iter){
 				logger.debug(String.format("Profile finded  %s", p.getNikName()));
 				try {
@@ -973,7 +981,7 @@ public class PortalController extends SCController{
 					mailto = mailTo;
 				}
 				
-				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
+				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0 && !noMailingPlayers.contains(p.getSocialId())){
 					
 					try {
 						if(notifications != null){

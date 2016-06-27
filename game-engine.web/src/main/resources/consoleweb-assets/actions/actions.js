@@ -3,16 +3,6 @@ angular.module('gamificationEngine.actions', [])
 		$rootScope.currentNav = 'actions';
 		$rootScope.currentGameId = $stateParams.id;
 
-		// Error alerts object
-		$scope.alerts = {
-			'success': '',
-			'error': ''
-		};
-
-		$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = '';
-		}
-
 		//Add action
 		$scope.openAddActionModal = function () {
 			var modalInstance = $uibModal.open({
@@ -47,7 +37,6 @@ angular.module('gamificationEngine.actions', [])
 			});
 		};
 
-
 		// Load game
 		gamesFactory.getGameById($stateParams.id).then(function (game) {
 			$scope.game = game;
@@ -55,24 +44,6 @@ angular.module('gamificationEngine.actions', [])
 			// Show error alert
 			$scope.alerts.loadGameError = true;
 		});
-
-		$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = false;
-		}
-
-		$scope.choose = function () {
-			$scope.path = "OK";
-		};
-
-		$scope.uploadImport = function () {
-			$scope.dataImported = {};
-		};
-
-		$scope.clear = function () {
-			$scope.dataImported = undefined;
-		};
-
-		$scope.confirm = function () {};
 	});
 
 // Edit action instance modal
@@ -85,10 +56,9 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 
 		$scope.ok = function () {
 			$scope.disabled = true;
-			console.log(game.actions);
 			if ($scope.input.actionName && $scope.input.actionName.length > 0) {
 				var found = false;
-				for	(var i = 0; i < game.actions.length && !found; i++) {
+				for (var i = 0; i < game.actions.length && !found; i++) {
 					if ($scope.input.actionName == game.actions[i]) {
 						found = true;
 					}
@@ -105,31 +75,14 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 							$scope.alerts.editGameError = 'messages:' + message;
 							$scope.disabled = false;
 						});
-				}
-				else {
+				} else {
 					$scope.alerts.editGameError = 'messages:msg_same_name_error';
 					$scope.disabled = false;
 				}
-			}
-			else {
+			} else {
 				$scope.alerts.editGameError = 'messages:msg_empty_fields';
 				$scope.disabled = false;
 			}
-			/*if (!!$scope.input.actionName && $scope.input.actionName.length > 0) {
-				game.actions.push($scope.input.actionName);
-			}
-
-			gamesFactory.saveGame(game).then(
-				function () {
-					// Settings edited
-					$uibModalInstance.close();
-				},
-				function (message) {
-					game.actions.pop();
-					// Show given error alert
-					$scope.alerts.editGameError = 'messages:' + message;
-				}
-			);*/
 		};
 
 		$scope.cancel = function () {
@@ -150,7 +103,6 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 			if (idx !== -1) {
 				game.actions.splice(idx, 1);
 			}
-
 
 			gamesFactory.saveGame(game).then(
 				function () {

@@ -19,10 +19,6 @@ angular.module('gamificationEngine.home', [])
 			$scope.alerts.loadGameError = true;
 		});
 
-		$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = false;
-		};
-
 		$scope.openGameModal = function () {
 			// Add new game
 			var modalInstance = $uibModal.open({
@@ -37,7 +33,6 @@ angular.module('gamificationEngine.home', [])
 			});
 		};
 
-
 		$scope.deleteGame = function (game) {
 			// Delete a game
 			var modalInstance = $uibModal.open({
@@ -50,10 +45,6 @@ angular.module('gamificationEngine.home', [])
 					}
 				}
 			});
-		};
-
-		$scope.countActive = function (game, type) {
-			return utilsFactory.countActive(game, type);
 		};
 
 		$scope.getLength = function (game, type) {

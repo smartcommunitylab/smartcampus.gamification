@@ -14,12 +14,6 @@ angular.module('gamificationEngine.game', [])
 			'settingsEdited': false
 		};
 
-		// Navbar names array
-		$scope.pluginNames = {
-			'points': 'points',
-			'badges_collections': 'badges collections',
-		};
-
 		// Tab switching
 		$scope.active = {
 			'points': false,
@@ -62,7 +56,7 @@ angular.module('gamificationEngine.game', [])
 
 
 		$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = false;
+			$scope.alerts[alertName] = '';
 		};
 
 		$scope.goto = function (path) {
@@ -72,14 +66,6 @@ angular.module('gamificationEngine.game', [])
 
 		$scope.goToTab = function (tab) {
 			$window.location.href = '#/game/' + $scope.game.id + '?tab=' + tab;
-		};
-
-		$scope.countActive = function (game, type) {
-			return utilsFactory.countActive(game, type);
-		};
-
-		$scope.getLength = function (game, type) {
-			return utilsFactory.getLength(game, type);
 		};
 
 		$scope.openEditModal = function (id) {
@@ -172,33 +158,10 @@ angular.module('gamificationEngine.game', [])
 modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibModalInstance, game, instance, gamesFactory) {
 	$scope.points = {};
 	$scope.points.name = instance.name;
-	// $scope.points.typology = instance.typology || 'Skill points';
 
 	// Error alerts object
 	$scope.alerts = {
 		'editInstanceError': ''
-	};
-
-	/*$scope.closeAlert = function (alertName) {
-		$scope.alerts[alertName] = '';
-	};*/
-
-	// Functions to manage dropdown button
-
-	$scope.dropdown = {
-		isOpen: false
-	};
-
-	$scope.toggleDropdown = function ($event) {
-		$event.preventDefault();
-		$event.stopPropagation();
-		$scope.dropdown.isOpen = !$scope.dropdown.isOpen;
-
-	};
-
-	$scope.setTypology = function (type, $event) {
-		$scope.points.typology = type;
-		$scope.toggleDropdown($event);
 	};
 
 	// SAVE button click event-handler
@@ -229,10 +192,6 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 	$scope.alerts = {
 		'editInstanceError': ''
 	};
-
-	/*$scope.closeAlert = function (alertName) {
-		$scope.alerts[alertName] = '';
-	};*/
 
 	// SAVE button click event-handler
 	$scope.save = function () {

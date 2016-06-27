@@ -3,16 +3,6 @@ angular.module('gamificationEngine.rules', [])
 		$rootScope.currentNav = 'rules';
 		$rootScope.currentGameId = $stateParams.id;
 
-		// Error alerts object
-		$scope.alerts = {
-			'success': '',
-			'error': ''
-		};
-
-		$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = '';
-		}
-
 		//Add action
 		$scope.openAddRuleModal = function () {
 			var modalInstance = $uibModal.open({
@@ -27,7 +17,6 @@ angular.module('gamificationEngine.rules', [])
 				}
 			});
 		};
-
 
 		//Add action
 		$scope.editRule = function (rule) {
@@ -63,8 +52,6 @@ angular.module('gamificationEngine.rules', [])
 			});
 		};
 
-
-
 		// Load game
 		gamesFactory.getGameById($stateParams.id).then(function (game) {
 			$scope.game = game;
@@ -72,24 +59,6 @@ angular.module('gamificationEngine.rules', [])
 			// Show error alert
 			$scope.alerts.loadGameError = true;
 		});
-
-		/*$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = false;
-		}*/
-
-		$scope.choose = function () {
-			$scope.path = "OK";
-		};
-
-		$scope.uploadImport = function () {
-			$scope.dataImported = {};
-		};
-
-		$scope.clear = function () {
-			$scope.dataImported = undefined;
-		};
-
-		$scope.confirm = function () {};
 	});
 
 // Edit rule instance modal
@@ -98,9 +67,8 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 		$scope.alerts = {
 			'ruleError': ''
 		};
-		var previousName =  '';
-		var previousContent = '';
-	
+		var previousName = '';
+
 		if (rule) {
 			gamesFactory.getRule(game, rule.id).then(
 				function (data) {
@@ -109,23 +77,17 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 						$scope.input.ruleContent = data.content;
 
 						previousName = data.name;
-						previousContent = data.content;
+						//previousContent = data.content;
 					}
 				},
 				function (message) {
 					// Show given error alert
-					console.log(message);
 					$scope.alerts.ruleError = 'messages:' + message;
 				});
 		}
 
-		/*$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = '';
-		};*/
-
 		$scope.save = function () {
 			$scope.disabled = true;
-			console.log(previousName);
 			$scope.alerts.ruleError = '';
 
 			if (!!$scope.input.ruleContent && $scope.input.ruleContent.length > 0 && $scope.input.name && $scope.input.name.length > 0) {
@@ -150,35 +112,7 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 				if (rule) {
 					r = rule;
 				}
-				var id = 1;
-				if (!$scope.input.name) { // name field can't be empty
-					if (game.rules) {
-						var a = [];
-						game.rules.forEach(function (r) {
-							if (r.name.indexOf('rule ') === 0) {
-								a.push(r);
-							}
-						});
-
-						a.sort(function (a, b) {
-							return a.id > b.id;
-						});
-
-						var last = a.slice(-1)[0];
-						if (last) {
-							var name = last.name;
-						}
-
-						var idx = 0;
-						if (name) {
-							idx = name.substring(5);
-						}
-					}
-					r.name = 'rule ' + (parseInt(idx) + 1);
-				} else {
-					r.name = $scope.input.name;
-				}
-
+				r.name = $scope.input.name;
 				r.content = $scope.input.ruleContent;
 
 				if ($scope.input.name === 'constants') {
@@ -245,10 +179,6 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 			'deleteError': '',
 		};
 		$scope.argument = rule.name;
-
-		$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = '';
-		};
 
 		$scope.delete = function () {
 			gamesFactory.deleteRule(game, rule.id).then(

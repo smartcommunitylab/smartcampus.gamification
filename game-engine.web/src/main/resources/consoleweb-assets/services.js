@@ -66,7 +66,6 @@ angular.module('gamificationEngine.services', [])
 			return deferred.promise;
 		};
 
-
 		// Get game by name
 		var getGameByName = function (name) {
 			var found = false;
@@ -76,40 +75,6 @@ angular.module('gamificationEngine.services', [])
 				}
 			});
 			return found;
-		};
-
-		// Get an instance (points / basdges_collection / leaderboard) by its ID
-		var getInstanceById = function (gameId, instanceType, instanceId) {
-			var deferred = $q.defer();
-
-			var inst = {};
-
-			// Load game
-			getGameById(gameId).then(function (game) {
-				var found = false;
-				if (game.concepts) {
-					angular.forEach(game.concepts, function (i) {
-						if (!found && i.id == instanceId) {
-							inst = i;
-							found = true;
-						}
-					});
-				}
-				// If i've found the requested instance
-				if (!!inst) {
-					deferred.resolve({
-						'game': game,
-						'inst': inst
-					});
-				} else {
-					deferred.reject();
-				}
-
-			}, function () {
-				deferred.reject();
-			});
-
-			return deferred.promise;
 		};
 
 		// Boolean. Returns whether exists or not an instance by its name
@@ -131,22 +96,6 @@ angular.module('gamificationEngine.services', [])
 			return found;
 		};
 
-		// Get an instance (points / basdges_collection / leaderboard) by its name
-		var getInstanceByName = function (game, instanceName, instanceType) {
-			var found = false;
-			var obj = {};
-			if (game.concepts) {
-				angular.forEach(game.concepts, function (i) {
-					if (!found && i.name === instanceName) {
-						found = true;
-						obj = i;
-					}
-				});
-				return obj;
-			}
-		};
-
-
 		var getPoints = function (gameId) {
 			var deferred = $q.defer();
 
@@ -161,14 +110,6 @@ angular.module('gamificationEngine.services', [])
 			return deferred.promise;
 		}
 
-		/*var addPoint = function (game, pc) {
-			$http.post(url + '/console/game/' + game.id + "/point", pc).
-			success(function (data, status, headers, config) {
-
-			}).
-			error(function (data, status, headers, config) {});
-		};*/
-
 		var getBadges = function (gameId) {
 			var deferred = $q.defer();
 
@@ -182,16 +123,6 @@ angular.module('gamificationEngine.services', [])
 
 			return deferred.promise;
 		}
-
-		/*var addBadge = function (game, badge) {
-			$http.post(url + '/console/game/' + game.id + "/badgecoll", badge).
-			success(function (data, status, headers, config) {
-
-			}).
-			error(function (data, status, headers, config) {
-
-			});
-		};*/
 
 		var addTask = function (game, task) {
 			// ^\s*($|#|\w+\s*=|(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?(?:,(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?)*)\s+(\?|\*|(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?(?:,(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?)*)\s+(\?|\*|(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\?|\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\s+(\?|\*|(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?)*|\?|\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\s)+(\?|\*|(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?(?:,(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?)*))$
@@ -315,8 +246,6 @@ angular.module('gamificationEngine.services', [])
 					}
 
 					$http.post(url + '/console/game', tmpGame).success(function (data, status, headers, config) {
-						console.log("success");
-
 						if (instanceType == 'points') {
 							game.pointConcept.push(instance);
 						} else if (instanceType == 'badges_collections') {
@@ -325,7 +254,6 @@ angular.module('gamificationEngine.services', [])
 
 						deferred.resolve(data);
 					}).error(function (data, status, headers, config) {
-						console.log("error");
 						deferred.reject('msg_generic_error');
 					});
 				}
@@ -350,7 +278,6 @@ angular.module('gamificationEngine.services', [])
 
 					instance.name = instanceProperties.name;
 				} else {
-					// instanceType = 'leaderboards'
 					if (instance.name == instanceProperties.name && instance.points_dependency == instanceProperties.points_dependency && instance.update_rate == instanceProperties.update_rate) {
 						deferred.reject('msg_instance_unchanged_error');
 					}
@@ -383,20 +310,6 @@ angular.module('gamificationEngine.services', [])
 
 			return deferred.promise;
 		};
-
-		// Delete instance
-		/*var deleteInstance = function (game, instance, instanceType) {
-			var deferred = $q.defer();
-
-			angular.forEach(game.concepts[instanceType], function (i, index) {
-				if (i.id == instance.id) {
-					game.concepts[instanceType].splice(index, 1);
-					deferred.resolve();
-				}
-			});
-
-			return deferred.promise;
-		};*/
 
 		var addRule = function (game, rule) {
 			var deferred = $q.defer();
@@ -462,14 +375,10 @@ angular.module('gamificationEngine.services', [])
 		return {
 			'getGames': getGames,
 			'getGameById': getGameById,
-			'getInstanceById': getInstanceById,
 			'editGame': editGame,
 			'editInstance': editInstance,
 			'deleteGame': deleteGame,
-			//'deleteInstance': deleteInstance,
 			'saveGame': saveGame,
-			//'addPoint': addPoint,
-			//'addBadge': addBadge,
 			'getPoints': getPoints,
 			'getBadges': getBadges,
 			'addRule': addRule,
@@ -484,20 +393,6 @@ angular.module('gamificationEngine.services', [])
 	})
 	.factory('utilsFactory', function () {
 		// Utils factory
-
-		// Count active instances
-		var countActive = function (game, type) {
-			var count = 0;
-			if (!!game && !!game.concepts && !!game.concepts[type]) {
-				angular.forEach(game.concepts[type], function (value) {
-					if (value.is_active) {
-						count++;
-					}
-				});
-			}
-			return count;
-		};
-
 		// Get given instances lenght
 		var getLength = function (game, type) {
 			var len = 0;
@@ -515,6 +410,5 @@ angular.module('gamificationEngine.services', [])
 
 		return {
 			'getLength': getLength,
-			'countActive': countActive
 		};
 	});

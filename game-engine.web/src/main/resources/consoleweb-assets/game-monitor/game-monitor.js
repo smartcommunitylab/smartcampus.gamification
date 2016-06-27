@@ -18,7 +18,7 @@ angular.module('gamificationEngine.monitor', [])
 			$scope.game = game;
 		}, function () {
 			// Show error alert
-			$scope.err = 'msg_generic_error';
+			$scope.err = 'messages:msg_generic_error';
 		});
 
 		var enrichData = function (data) {

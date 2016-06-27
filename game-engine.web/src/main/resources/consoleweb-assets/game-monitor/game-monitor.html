@@ -17,83 +17,83 @@
 -->
 
 <div data-ng-controller="MonitorCtrl">
-<div class="row" style="margin-top: 2em;">
-	<h3>{{game.name}} <strong><small>(gameId: {{game.id}})</small></strong></h3>
-</div>
-	<div class="row">
-	  <div class="col-md-12 text-center">
-	    <uib-alert ng-if="err" type="danger" close="closeAlert()">{{'err' | i18next}}</uib-alert>
-	  </div>
+	<div class="row" style="margin-top: 2em;">
+		<h3>{{game.name}} <strong><small>(gameId: {{game.id}})</small></strong></h3>
 	</div>
-	
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<uib-alert ng-if="err" type="danger">{{'err' | i18next}}</uib-alert>
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="col-md-12">
-		<form data-role="form">
-				<div  class="input-group">
+			<form data-role="form">
+				<div class="input-group">
 					<input id="player" type="text" data-ng-model="playerIdFilter" class="form-control" placeholder="{{'labels:lbl_filter_ph' | i18next}}" autofocus/>
-				 <span class="input-group-btn">
+					<span class="input-group-btn">
 					<button class="btn btn-primary" type="submit" ng-click="filter()" title="{{'labels:tool_filter' | i18next}}">
               			<div class="glyphicon glyphicon-search"></div>
               		</button>
               	</span>
 				</div>
-			</form>	 
+			</form>
 		</div>
 	</div>
-	
-	
+
+
 	<div class="row">
 		<div class="col-md-6 col-md-offset-4">
 			<uib-pagination boundary-links="true" total-items="totalItems" items-per-page="items4Page" data-ng-change="update()" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
 		</div>
 	</div>
-	
+
 	<div class="monitor-row" data-ng-repeat="player in playerStates.content">
 		<div class="row summary-row">
 			<div class="col-md-3">
 				<p>{{'labels:lbl_player' | i18next }}: {{player.playerId}}</p>
 			</div>
-			<div class="col-md-3" >
+			<div class="col-md-3">
 				<p>{{'labels:lbl_summary_score' | i18next }}: {{player.totalScore}}</p>
 			</div>
 			<div class="col-md-3">
 				<p>{{'labels:lbl_summary_badge' | i18next }}: {{player.totalBadges}}</p>
 			</div>
 			<div class="col-md-3">
-			<button type="button" class="pull-right game-btn btn btn-defalt btn-circle right-spaced" data-ng-click="openDetails($index)" data-toggle="collapse" data-target="#player-details" uib-tooltip="{{'labels:tool_details' | i18next}}">
+				<button type="button" class="pull-right game-btn btn btn-defalt btn-circle right-spaced" data-ng-click="openDetails($index)" data-toggle="collapse" data-target="#player-details" uib-tooltip="{{'labels:tool_details' | i18next}}">
         		<span class="glyphicon" data-ng-class="{'glyphicon-chevron-down': expandIdx != $index, 'glyphicon-chevron-up': expandIdx == $index}" ></span>
       		</button>
 			</div>
-			
-      	</div>
-      	<div class="row">
-      	<div class="col-md-12">
-		<div id="player-details-{{$index}}" class="detail-row collapse" data-ng-class="{'in': expandIdx == $index}">
-		<strong>PUNTI:</strong>
-		<div data-ng-repeat="elem in player.state['PointConcept']" class="monitor-box point-box">
-			    <span class="point-type">{{elem.name}}</span> 
-				<div class="score">{{elem.score}}</div>
+
 		</div>
-		<hr/>
-			<strong>BADGES:</strong>
-			<table class="badge-box">
-				<tr data-ng-repeat="elem in player.state['BadgeCollectionConcept']">
-					<td style="width:15%; text-align:right;">{{elem.name}} <span style="color:#4A3B3B; font-size: 10px;">({{elem.badgeEarned.length}})</span> </td>
-					<td style="width:90%;"><span class="badge-elem" data-ng-repeat="badge in elem.badgeEarned  track by $index">{{badge}}</span></td>
-				</tr>
-			
-			</table>
-		<hr/>
-			<strong>CUSTOM DATA:</strong>
-			<div ng-hide="player.hasCustomData">{{'messages:msg_no_customdata' | i18next }}</div>
-			<table class="badge-box" ng-show="player.hasCustomData">
-				<tr data-ng-repeat="(key, value) in player.customData">
-					<td style="width:15%; text-align:right;">{{key}} </td>
-					<td style="width:90%;"><span class="badge-elem">{{value}}</span></td>
-				</tr>
-			</table>
-		</div>
-		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div id="player-details-{{$index}}" class="detail-row collapse" data-ng-class="{'in': expandIdx == $index}">
+					<strong>PUNTI:</strong>
+					<div data-ng-repeat="elem in player.state['PointConcept']" class="monitor-box point-box">
+						<span class="point-type">{{elem.name}}</span>
+						<div class="score">{{elem.score}}</div>
+					</div>
+					<hr/>
+					<strong>BADGES:</strong>
+					<table class="badge-box">
+						<tr data-ng-repeat="elem in player.state['BadgeCollectionConcept']">
+							<td style="width:15%; text-align:right;">{{elem.name}} <span style="color:#4A3B3B; font-size: 10px;">({{elem.badgeEarned.length}})</span> </td>
+							<td style="width:90%;"><span class="badge-elem" data-ng-repeat="badge in elem.badgeEarned  track by $index">{{badge}}</span></td>
+						</tr>
+
+					</table>
+					<hr/>
+					<strong>CUSTOM DATA:</strong>
+					<div ng-hide="player.hasCustomData">{{'messages:msg_no_customdata' | i18next }}</div>
+					<table class="badge-box" ng-show="player.hasCustomData">
+						<tr data-ng-repeat="(key, value) in player.customData">
+							<td style="width:15%; text-align:right;">{{key}} </td>
+							<td style="width:90%;"><span class="badge-elem">{{value}}</span></td>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="row">

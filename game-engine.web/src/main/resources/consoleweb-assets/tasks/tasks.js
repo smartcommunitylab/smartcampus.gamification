@@ -4,10 +4,10 @@ angular.module('gamificationEngine.tasks', [])
 		$rootScope.currentGameId = $stateParams.id;
 
 		// Error alerts object
-		$scope.alerts = {
+		/*$scope.alerts = {
 			'success': '',
 			'error': ''
-		};
+		};*/
 
 		var convertTask = function (task) {
 			// convert in taskDto
@@ -75,7 +75,7 @@ angular.module('gamificationEngine.tasks', [])
 			$scope.game = game;
 		}, function () {
 			// Show error alert
-			//$scope.alerts.loadGameError = true;
+			$scope.alerts.loadGameError = true;
 		});
 	});
 
@@ -101,11 +101,6 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 			$scope.input.itemToNotificate = task.itemsToNotificate;
 			$scope.input.edit = true;
 		}
-
-
-		/*$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = '';
-		};*/
 
 		$scope.ok = function () {
 			$scope.disabled = true;
@@ -136,8 +131,7 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 							$scope.alerts.taskErr = 'messages:' + msg;
 							$scope.disabled = false;
 						});
-					}
-					else {
+					} else {
 						$scope.alerts.taskErr = "messages:msg_error_exist";
 						$scope.disabled = false;
 					}
@@ -158,10 +152,7 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 						$scope.alerts.taskErr = 'messages:' + msg;
 						$scope.disabled = false;
 					});
-
 				}
-
-
 			} else {
 				$scope.alerts.taskErr = 'messages:msg_empty_fields';
 				$scope.disabled = false;
@@ -191,7 +182,6 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 					}
 				}
 			}
-
 
 			gamesFactory.deleteTask(game, task).then(
 				function () {

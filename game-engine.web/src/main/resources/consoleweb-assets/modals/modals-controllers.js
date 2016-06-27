@@ -30,18 +30,12 @@ var modals = angular.module('gamificationEngine.modals', [])
 		// Error alerts object
 		$scope.alerts = {
 			'editGameError': '',
-			'invalidHour': false
 		};
-
-		/*$scope.closeAlert = function (alertName) {
-			$scope.alerts[alertName] = '';
-		}*/
 
 		// OK button click event-handler
 		$scope.ok = function () {
 			$scope.disabled = true;
 			$scope.alerts.editGameError = '';
-			$scope.alerts.invalidHour = false;
 			if (document.getElementsByClassName('has-error').length == 0) {
 				var fields = {};
 				fields.name = $scope.newGame.name;
@@ -60,7 +54,6 @@ var modals = angular.module('gamificationEngine.modals', [])
 					}
 				);
 			} else {
-				//$scope.alerts.invalidHour = true;
 				$scope.alerts.editGameError = 'messages:msg_invalid_time';
 				$scope.disabled = false;
 			}
@@ -75,15 +68,10 @@ var modals = angular.module('gamificationEngine.modals', [])
 // Delete game modal
 .controller('DeleteGameConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, $window, game, gamesFactory) {
 	$scope.argument = game.name;
-	$scope.isGame = true;
 
 	$scope.alerts = {
 		'deleteError': false,
 	}
-
-	/*$scope.closeAlert = function (alertName) {
-		$scope.alerts[alertName] = '';
-	}*/
 
 	// DELETE button click event-handler
 	$scope.delete = function () {
@@ -103,23 +91,3 @@ var modals = angular.module('gamificationEngine.modals', [])
 		$uibModalInstance.dismiss('cancel');
 	}
 });
-
-// Delete instance modal
-/*.controller('DeleteInstanceConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, $window, game, instance, instanceType, gamesFactory) {
-	$scope.argument = instance.name;
-
-	// DELETE button click event-handler
-	$scope.delete = function () {
-		gamesFactory.deleteInstance(game, instance, instanceType).then(function () {
-			// Instance has been deleted
-			// Redirect to homepage
-			$window.location.href = '#/game/' + game.id;
-			$uibModalInstance.close();
-		});
-	};
-
-	// CANCEL button click event-handler
-	$scope.cancel = function () {
-		$uibModalInstance.dismiss('cancel');
-	};
-});*/

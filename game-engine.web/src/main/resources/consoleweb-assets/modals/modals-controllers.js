@@ -39,6 +39,7 @@ var modals = angular.module('gamificationEngine.modals', [])
 
 		// OK button click event-handler
 		$scope.ok = function () {
+			$scope.disabled = true;
 			$scope.alerts.editGameError = '';
 			$scope.alerts.invalidHour = false;
 			if (document.getElementsByClassName('has-error').length == 0) {
@@ -55,11 +56,13 @@ var modals = angular.module('gamificationEngine.modals', [])
 					function (message) {
 						// Show given error alert
 						$scope.alerts.editGameError = 'messages:' + message;
+						$scope.disabled = false;
 					}
 				);
 			} else {
 				//$scope.alerts.invalidHour = true;
 				$scope.alerts.editGameError = 'messages:msg_invalid_time';
+				$scope.disabled = false;
 			}
 		};
 

@@ -84,6 +84,7 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 		};
 
 		$scope.ok = function () {
+			$scope.disabled = true;
 			console.log(game.actions);
 			if ($scope.input.actionName && $scope.input.actionName.length > 0) {
 				var found = false;
@@ -102,14 +103,17 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 						function (message) {
 							game.actions.pop();
 							$scope.alerts.editGameError = 'messages:' + message;
+							$scope.disabled = false;
 						});
 				}
 				else {
 					$scope.alerts.editGameError = 'messages:msg_same_name_error';
+					$scope.disabled = false;
 				}
 			}
 			else {
 				$scope.alerts.editGameError = 'messages:msg_empty_fields';
+				$scope.disabled = false;
 			}
 			/*if (!!$scope.input.actionName && $scope.input.actionName.length > 0) {
 				game.actions.push($scope.input.actionName);

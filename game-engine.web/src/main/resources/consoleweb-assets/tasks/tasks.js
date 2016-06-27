@@ -108,6 +108,7 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 		};*/
 
 		$scope.ok = function () {
+			$scope.disabled = true;
 			$scope.alerts.taskErr = '';
 			var valid = $scope.input.name && $scope.input.itemType && $scope.input.classificationName && $scope.input.schedule && $scope.input.itemToNotificate;
 			if (valid) {
@@ -133,10 +134,12 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 							$uibModalInstance.close();
 						}, function (msg) {
 							$scope.alerts.taskErr = 'messages:' + msg;
+							$scope.disabled = false;
 						});
 					}
 					else {
 						$scope.alerts.taskErr = "messages:msg_error_exist";
+						$scope.disabled = false;
 					}
 				} else {
 					gamesFactory.editTask(game, t).then(function () {
@@ -153,6 +156,7 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 						$uibModalInstance.close();
 					}, function (msg) {
 						$scope.alerts.taskErr = 'messages:' + msg;
+						$scope.disabled = false;
 					});
 
 				}
@@ -160,6 +164,7 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 
 			} else {
 				$scope.alerts.taskErr = 'messages:msg_empty_fields';
+				$scope.disabled = false;
 			}
 
 		};

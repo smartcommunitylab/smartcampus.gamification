@@ -124,6 +124,7 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 		};*/
 
 		$scope.save = function () {
+			$scope.disabled = true;
 			console.log(previousName);
 			$scope.alerts.ruleError = '';
 
@@ -140,6 +141,7 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 
 				if (found) {
 					$scope.alerts.ruleError = 'messages:msg_error_exist';
+					$scope.disabled = false;
 					return;
 				}
 
@@ -194,11 +196,13 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 							r.name = previousName;
 							// Show given error alert
 							$scope.alerts.ruleError = 'messages:' + message;
+							$scope.disabled = false;
 						});
 				} else {
 					gamesFactory.validateRule($scope.input.ruleContent).then(function (data) {
 						if (data.length > 0) {
 							$scope.alerts.ruleValidation = data;
+							$scope.disabled = false;
 							return;
 						}
 						gamesFactory.addRule(game, r).then(
@@ -215,16 +219,19 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 								r.name = previousName;
 								// Show given error alert
 								$scope.alerts.ruleError = 'messages:' + message;
+								$scope.disabled = false;
 							});
 					}, function (msg) {
 						r.name = previousName;
 						$scope.alerts.ruleError = 'messages:' + msg;
+						$scope.disabled = false;
 					});
 				}
 
 
 			} else {
 				$scope.alerts.ruleError = 'messages:msg_empty_fields';
+				$scope.disabled = false;
 			}
 		};
 

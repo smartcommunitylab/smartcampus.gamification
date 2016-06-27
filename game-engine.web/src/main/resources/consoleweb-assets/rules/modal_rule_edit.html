@@ -39,7 +39,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="reset" class="btn btn-default" data-ng-click="cancel()">{{'labels:btn_cancel' | i18next}}</button>
-    <button type="submit" class="btn btn-primary" data-ng-click="save()">{{'labels:btn_save' | i18next}}</button>
+    <button type="reset" class="btn btn-default" data-ng-click="cancel()" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
+    <button type="submit" class="btn btn-primary" data-ng-click="save()" ng-disabled="disabled">{{'labels:btn_save' | i18next}}</button>
   </div>
 </form>

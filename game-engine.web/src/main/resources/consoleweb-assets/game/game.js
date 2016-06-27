@@ -203,12 +203,14 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 
 	// SAVE button click event-handler
 	$scope.save = function () {
+		$scope.disabled = true;
 		gamesFactory.editInstance(game, instance, 'points', $scope.points).then(function () {
 			// Points instance edited
 			$uibModalInstance.close();
 		}, function (message) {
 			// Show error alert
 			$scope.alerts.editInstanceError = 'messages:' + message;
+			$scope.disabled = false;
 		});
 	};
 
@@ -234,12 +236,14 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 
 	// SAVE button click event-handler
 	$scope.save = function () {
+		$scope.disabled = true;
 		gamesFactory.editInstance(game, instance, 'badges_collections', $scope.badges_collection).then(function () {
 			// Badges collection instance edited
 			$uibModalInstance.close();
 		}, function (message) {
 			// Show error alert
 			$scope.alerts.editInstanceError = 'messages:' + message;
+			$scope.disabled = false;
 		});
 	};
 

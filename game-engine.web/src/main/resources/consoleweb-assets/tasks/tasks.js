@@ -103,11 +103,12 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 		}
 
 
-		$scope.closeAlert = function (alertName) {
+		/*$scope.closeAlert = function (alertName) {
 			$scope.alerts[alertName] = '';
-		};
+		};*/
 
 		$scope.ok = function () {
+			$scope.alerts.taskErr = '';
 			var valid = $scope.input.name && $scope.input.itemType && $scope.input.classificationName && $scope.input.schedule && $scope.input.itemToNotificate;
 			if (valid) {
 				t.name = $scope.input.name;
@@ -117,15 +118,26 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 				t.itemsToNotificate = $scope.input.itemToNotificate;
 
 				if (!task) {
-					gamesFactory.addTask(game, t).then(function (data) {
-						if (!game.classificationTask) {
-							game.classificationTask = [];
+					var found = false;
+					for (var i = 0; i < game.classificationTask.length && !found; i++) {
+						if (game.classificationTask[i].name === t.name) {
+							found = true;
 						}
-						game.classificationTask.push(data);
-						$uibModalInstance.close();
-					}, function (msg) {
-						$scope.alerts.taskErr = msg;
-					});
+					}
+					if (!found) {
+						gamesFactory.addTask(game, t).then(function (data) {
+							if (!game.classificationTask) {
+								game.classificationTask = [];
+							}
+							game.classificationTask.push(data);
+							$uibModalInstance.close();
+						}, function (msg) {
+							$scope.alerts.taskErr = 'messages:' + msg;
+						});
+					}
+					else {
+						$scope.alerts.taskErr = "messages:msg_error_exist";
+					}
 				} else {
 					gamesFactory.editTask(game, t).then(function () {
 						var idx = -1;
@@ -140,12 +152,14 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 						}
 						$uibModalInstance.close();
 					}, function (msg) {
-						$scope.alerts.taskErr = msg;
+						$scope.alerts.taskErr = 'messages:' + msg;
 					});
 
 				}
 
 
+			} else {
+				$scope.alerts.taskErr = 'messages:msg_empty_fields';
 			}
 
 		};
@@ -159,7 +173,7 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 		$scope.argument = task.name;
 
 		$scope.alerts = {
-			'deleteError': '',
+			'deleteError': false,
 		};
 		// DELETE button click event-handler
 		$scope.delete = function () {
@@ -182,7 +196,7 @@ modals.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstan
 					}
 				},
 				function (message) {
-					$scope.alerts.deleteError = message;
+					$scope.alerts.deleteError = true;
 				}
 			);
 		};

@@ -23,16 +23,18 @@
   <div class="modal-body">
     <div class="row">
       <div class="col-md-12 text-center">
-        <uib-alert ng-if="!!alerts.taskErr" type="danger" close="closeAlert('taskErr')">{{alerts.taskErr | i18next}}</uib-alert>
+        <uib-alert ng-if="!!alerts.taskErr" type="danger">{{alerts.taskErr | i18next}}</uib-alert>
       </div>
     </div>
     <div class="form-group">
       <label for="name">{{'labels:lbl_name' | i18next}}</label>
-      <input data-ng-readonly="input.edit" type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required />
+      <input data-ng-readonly="input.edit" type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required autofocus ng-if="!input.edit"/>
+	  <input data-ng-readonly="input.edit" type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required ng-if="input.edit"/>
     </div>
     <div class="form-group">
       <label for="schedule">{{'labels:lbl_task_schedule' | i18next}}</label>
-      <input type="text" class="form-control" name="schedule" id="schedule" data-ng-model="input.schedule" placeholder="{{'labels:lbl_enter_new_name' | i18next}}"  required/>
+      <input type="text" class="form-control" name="schedule" id="schedule" data-ng-model="input.schedule" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required autofocus ng-if="input.edit"/>
+	  <input type="text" class="form-control" name="schedule" id="schedule" data-ng-model="input.schedule" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required ng-if="!input.edit"/>
     </div>
     <div class="form-group">
       <label for="itemToNotificate">{{'labels:lbl_task_itemToNotificate' | i18next}}</label>

@@ -20,16 +20,13 @@
 
 <div class="row">
 	<div class="text-center">
-		<uib-alert ng-if="alerts.error" type="danger"
-			close="closeAlert('loadGameError')">{{ msg_code
-		| i18next}}</uib-alert>
+		<uib-alert ng-if="alerts.error" type="danger">{{ msg_code | i18next}}</uib-alert>
 	</div>
 </div>
 <div class="row">
 	<div class="text-center">
 		<uib-alert ng-if="alerts.success" type="success"
-			close="closeAlert('loadGameError')">{{ msg_code
-		| i18next}}</uib-alert>
+			close="closeAlert('loadGameError')">{{ msg_code | i18next}}</uib-alert>
 	</div>
 </div>
 	

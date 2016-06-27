@@ -78,9 +78,40 @@ angular.module('gamificationEngine.actions', [])
 // Edit action instance modal
 modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, action) {
 		$scope.input = {};
-		$scope.ok = function () {
 
-			if (!!$scope.input.actionName && $scope.input.actionName.length > 0) {
+		$scope.alerts = {
+			'editGameError': ''
+		};
+
+		$scope.ok = function () {
+			console.log(game.actions);
+			if ($scope.input.actionName && $scope.input.actionName.length > 0) {
+				var found = false;
+				for	(var i = 0; i < game.actions.length && !found; i++) {
+					if ($scope.input.actionName == game.actions[i]) {
+						found = true;
+					}
+				}
+
+				if (!found) {
+					game.actions.push($scope.input.actionName);
+					gamesFactory.saveGame(game).then(
+						function () {
+							$uibModalInstance.close();
+						},
+						function (message) {
+							game.actions.pop();
+							$scope.alerts.editGameError = 'messages:' + message;
+						});
+				}
+				else {
+					$scope.alerts.editGameError = 'messages:msg_same_name_error';
+				}
+			}
+			else {
+				$scope.alerts.editGameError = 'messages:msg_empty_fields';
+			}
+			/*if (!!$scope.input.actionName && $scope.input.actionName.length > 0) {
 				game.actions.push($scope.input.actionName);
 			}
 
@@ -92,9 +123,9 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 				function (message) {
 					game.actions.pop();
 					// Show given error alert
-					// $scope.alerts.editGameError = message;
+					$scope.alerts.editGameError = 'messages:' + message;
 				}
-			);
+			);*/
 		};
 
 		$scope.cancel = function () {
@@ -104,6 +135,10 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 	// Delete action modal
 	.controller('DeleteActionConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, argument, game, gamesFactory) {
 		$scope.argument = argument;
+
+		$scope.alerts = {
+			'deleteError': false
+		};
 
 		// DELETE button click event-handler
 		$scope.delete = function () {
@@ -120,6 +155,7 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 				function (message) {
 					if (idx !== -1) {
 						game.actions.splice(idx, 0, argument);
+						$scope.alerts.deleteError = true;
 					}
 				}
 			);

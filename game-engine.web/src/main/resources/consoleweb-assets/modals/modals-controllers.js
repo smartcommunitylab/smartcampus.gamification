@@ -30,15 +30,17 @@ var modals = angular.module('gamificationEngine.modals', [])
 		// Error alerts object
 		$scope.alerts = {
 			'editGameError': '',
-			'invalidHour': ''
+			'invalidHour': false
 		};
 
-		$scope.closeAlert = function (alertName) {
+		/*$scope.closeAlert = function (alertName) {
 			$scope.alerts[alertName] = '';
-		}
+		}*/
 
 		// OK button click event-handler
 		$scope.ok = function () {
+			$scope.alerts.editGameError = '';
+			$scope.alerts.invalidHour = false;
 			if (document.getElementsByClassName('has-error').length == 0) {
 				var fields = {};
 				fields.name = $scope.newGame.name;
@@ -52,11 +54,12 @@ var modals = angular.module('gamificationEngine.modals', [])
 					},
 					function (message) {
 						// Show given error alert
-						$scope.alerts.editGameError = message;
+						$scope.alerts.editGameError = 'messages:' + message;
 					}
 				);
 			} else {
-				$scope.alerts.invalidHour = 'msg_invalid_time';
+				//$scope.alerts.invalidHour = true;
+				$scope.alerts.editGameError = 'messages:msg_invalid_time';
 			}
 		};
 
@@ -72,12 +75,12 @@ var modals = angular.module('gamificationEngine.modals', [])
 	$scope.isGame = true;
 
 	$scope.alerts = {
-		'deleteError': '',
+		'deleteError': false,
 	}
 
-	$scope.closeAlert = function (alertName) {
+	/*$scope.closeAlert = function (alertName) {
 		$scope.alerts[alertName] = '';
-	}
+	}*/
 
 	// DELETE button click event-handler
 	$scope.delete = function () {
@@ -88,7 +91,7 @@ var modals = angular.module('gamificationEngine.modals', [])
 			$window.location.href = '#/home';
 			$uibModalInstance.close();
 		}, function (data) {
-			$scope.alerts.deleteError = data;
+			$scope.alerts.deleteError = true;
 		});
 	};
 

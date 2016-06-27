@@ -95,30 +95,39 @@ angular.module('gamificationEngine.rules', [])
 // Edit rule instance modal
 modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, rule) {
 		$scope.input = {};
-		$scope.alerts = {};
-
+		$scope.alerts = {
+			'ruleError': ''
+		};
+		var previousName =  '';
+		var previousContent = '';
+	
 		if (rule) {
 			gamesFactory.getRule(game, rule.id).then(
 				function (data) {
 					if (data) {
 						$scope.input.name = data.name;
 						$scope.input.ruleContent = data.content;
+
+						previousName = data.name;
+						previousContent = data.content;
 					}
 				},
 				function (message) {
 					// Show given error alert
-					console.log('msg_rule_error');
-					$scope.alerts.ruleError = message;
+					console.log(message);
+					$scope.alerts.ruleError = 'messages:' + message;
 				});
 		}
 
-		$scope.closeAlert = function (alertName) {
+		/*$scope.closeAlert = function (alertName) {
 			$scope.alerts[alertName] = '';
-		};
+		};*/
 
 		$scope.save = function () {
+			console.log(previousName);
+			$scope.alerts.ruleError = '';
 
-			if (!!$scope.input.ruleContent && $scope.input.ruleContent.length > 0) {
+			if (!!$scope.input.ruleContent && $scope.input.ruleContent.length > 0 && $scope.input.name && $scope.input.name.length > 0) {
 
 				//check if already exist
 				var found = false;
@@ -130,7 +139,7 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 				}
 
 				if (found) {
-					$scope.alerts.ruleError = 'msg_error_exist';
+					$scope.alerts.ruleError = 'messages:msg_error_exist';
 					return;
 				}
 
@@ -140,7 +149,7 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 					r = rule;
 				}
 				var id = 1;
-				if (!$scope.input.name) {
+				if (!$scope.input.name) { // name field can't be empty
 					if (game.rules) {
 						var a = [];
 						game.rules.forEach(function (r) {
@@ -182,8 +191,9 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 							$uibModalInstance.close();
 						},
 						function (message) {
+							r.name = previousName;
 							// Show given error alert
-							$scope.alerts.ruleError = message;
+							$scope.alerts.ruleError = 'messages:' + message;
 						});
 				} else {
 					gamesFactory.validateRule($scope.input.ruleContent).then(function (data) {
@@ -202,15 +212,19 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 								$uibModalInstance.close();
 							},
 							function (message) {
+								r.name = previousName;
 								// Show given error alert
-								$scope.alerts.ruleError = message;
+								$scope.alerts.ruleError = 'messages:' + message;
 							});
 					}, function (msg) {
-						$scope.alerts.ruleError = msg;
+						r.name = previousName;
+						$scope.alerts.ruleError = 'messages:' + msg;
 					});
 				}
 
 
+			} else {
+				$scope.alerts.ruleError = 'messages:msg_empty_fields';
 			}
 		};
 

@@ -179,9 +179,9 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 		'editInstanceError': ''
 	};
 
-	$scope.closeAlert = function (alertName) {
+	/*$scope.closeAlert = function (alertName) {
 		$scope.alerts[alertName] = '';
-	};
+	};*/
 
 	// Functions to manage dropdown button
 
@@ -208,7 +208,7 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 			$uibModalInstance.close();
 		}, function (message) {
 			// Show error alert
-			$scope.alerts.editInstanceError = message;
+			$scope.alerts.editInstanceError = 'messages:' + message;
 		});
 	};
 
@@ -228,9 +228,9 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 		'editInstanceError': ''
 	};
 
-	$scope.closeAlert = function (alertName) {
+	/*$scope.closeAlert = function (alertName) {
 		$scope.alerts[alertName] = '';
-	};
+	};*/
 
 	// SAVE button click event-handler
 	$scope.save = function () {
@@ -239,7 +239,7 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 			$uibModalInstance.close();
 		}, function (message) {
 			// Show error alert
-			$scope.alerts.editInstanceError = message;
+			$scope.alerts.editInstanceError = 'messages:' + message;
 		});
 	};
 
@@ -252,6 +252,10 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 // Delete concept modal
 .controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {
 	$scope.argument = instance.name;
+
+	$scope.alerts = {
+		'deleteError': false,
+	}
 
 	// DELETE button click event-handler
 	$scope.delete = function () {
@@ -283,7 +287,7 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 				$uibModalInstance.close();
 			},
 			function (message) {
-
+				$scope.alerts.deleteError = true;
 			}
 		);
 	};

@@ -3,12 +3,6 @@ angular.module('gamificationEngine.tasks', [])
 		$rootScope.currentNav = 'tasks';
 		$rootScope.currentGameId = $stateParams.id;
 
-		// Error alerts object
-		/*$scope.alerts = {
-			'success': '',
-			'error': ''
-		};*/
-
 		var convertTask = function (task) {
 			// convert in taskDto
 			if (task.schedule) {
@@ -66,9 +60,6 @@ angular.module('gamificationEngine.tasks', [])
 				}
 			});
 		};
-
-
-
 
 		// Load game
 		gamesFactory.getGameById($stateParams.id).then(function (game) {

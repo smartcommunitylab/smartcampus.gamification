@@ -42,15 +42,15 @@
 			<div class="row">
 				<a class="navbar-brand navbar-brand-bigger" data-ng-click="goHome()" href="#/home">Gamification engine</a>
 			</div>
-			<div class="row">
+			<!--<div class="row">
 				<h4 style="display: block" data-ng-show="page === 'game'">{{'lbl_game_menu' | i18next}}</h4>
 			</div>
 			<div class="row">
 				<h4 style="display: block" data-ng-show="page == 'monitor'">{{'lbl_monitor_menu' | i18next}}</h4>
-			</div>
+			</div>-->
 		</div>
 	</div>
-	<div class="container" style="margin-top: 20px;">
+	<div class="container">
 		<div ui-view></div>
 	</div>
 	<div class="navbar navbar-default navbar-fixed-bottom">
@@ -84,6 +84,7 @@
 	<script src="login/login.js"></script>
 	<script src="rules/rules.js"></script>
 	<script src="tasks/tasks.js"></script>
+	<script src="settings/settings.js"></script>
 	<script src="services.js"></script>
 	<script src="i18next.js"></script>
 </body>

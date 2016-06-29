@@ -3,8 +3,50 @@ angular.module('gamificationEngine.actions', [])
 		$rootScope.currentNav = 'actions';
 		$rootScope.currentGameId = $stateParams.id;
 
+		$scope.input = {};
+
+		var game = $scope.game;
+
+		$scope.alerts = {
+			'editGameError': ''
+		};
+
+		$scope.addAction = function () {
+			$scope.disabled = true;
+			if ($scope.input.actionName && $scope.input.actionName.length > 0) {
+				var found = false;
+				for (var i = 0; i < game.actions.length && !found; i++) {
+					if ($scope.input.actionName == game.actions[i]) {
+						found = true;
+					}
+				}
+
+				if (!found) {
+					game.actions.push($scope.input.actionName);
+					gamesFactory.saveGame(game).then(
+						function () {
+							$scope.disabled = false;
+							$scope.input.actionName = '';
+							$scope.alerts.editGameError = '';
+							console.log("success");
+						},
+						function (message) {
+							game.actions.pop();
+							$scope.alerts.editGameError = 'messages:' + message;
+							$scope.disabled = false;
+						});
+				} else {
+					$scope.alerts.editGameError = 'messages:msg_same_name_error';
+					$scope.disabled = false;
+				}
+			} else {
+				$scope.alerts.editGameError = 'messages:msg_empty_fields';
+				$scope.disabled = false;
+			}
+		};
+
 		//Add action
-		$scope.openAddActionModal = function () {
+		/*$scope.openAddActionModal = function () {
 			var modalInstance = $uibModal.open({
 				templateUrl: 'actions/modal_action_edit.html',
 				controller: 'EditActionModalInstanceCtrl',
@@ -18,7 +60,7 @@ angular.module('gamificationEngine.actions', [])
 					}
 				}
 			});
-		};
+		};*/
 
 		$scope.deleteAction = function (action) {
 			// Delete a game
@@ -47,7 +89,8 @@ angular.module('gamificationEngine.actions', [])
 	});
 
 // Edit action instance modal
-modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, action) {
+modals
+/*.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, action) {
 		$scope.input = {};
 
 		$scope.alerts = {
@@ -88,37 +131,37 @@ modals.controller('EditActionModalInstanceCtrl', function ($scope, $uibModalInst
 		$scope.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
-	})
-	// Delete action modal
+	})*/
+// Delete action modal
 	.controller('DeleteActionConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, argument, game, gamesFactory) {
-		$scope.argument = argument;
+	$scope.argument = argument;
 
-		$scope.alerts = {
-			'deleteError': false
-		};
+	$scope.alerts = {
+		'deleteError': false
+	};
 
-		// DELETE button click event-handler
-		$scope.delete = function () {
-			var idx = game.actions.indexOf(argument);
-			if (idx !== -1) {
-				game.actions.splice(idx, 1);
-			}
+	// DELETE button click event-handler
+	$scope.delete = function () {
+		var idx = game.actions.indexOf(argument);
+		if (idx !== -1) {
+			game.actions.splice(idx, 1);
+		}
 
-			gamesFactory.saveGame(game).then(
-				function () {
-					$uibModalInstance.close();
-				},
-				function (message) {
-					if (idx !== -1) {
-						game.actions.splice(idx, 0, argument);
-						$scope.alerts.deleteError = true;
-					}
+		gamesFactory.saveGame(game).then(
+			function () {
+				$uibModalInstance.close();
+			},
+			function (message) {
+				if (idx !== -1) {
+					game.actions.splice(idx, 0, argument);
+					$scope.alerts.deleteError = true;
 				}
-			);
-		};
+			}
+		);
+	};
 
-		// CANCEL button click event-handler
-		$scope.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-	});
+	// CANCEL button click event-handler
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+});

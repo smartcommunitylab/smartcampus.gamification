@@ -76,7 +76,6 @@ button.btn-default.btn-edit:focus {
 }
 .table-actions {
   max-height: 600px;
-  overflow: auto;
   margin-bottom: 20px;
 }
 .panel-import-actions {
@@ -245,4 +244,36 @@ STATE MONITOR
 #game-id {
 	font-size: 15px;
 	color: #5e5e5e;
+}
+/*
+	input
+*/
+input.text {
+	width: 300px;
+	display: inline;
+}
+.modal-body {
+	padding: 15px 0;
+}
+
+/*
+	tables
+*/
+.table-bordered>tbody>tr>td {
+	border: 2px solid rgb(170,170,170);
+	padding: 5px 15px;
+	vertical-align: middle;
+	line-height: 29px;
+}
+
+.table-bordered {
+    border-collapse: separate;
+    border-spacing: 0 14px;
+	border: 0;
+}
+
+hr {
+	margin: 5px 0;
+	background-color: rgb(159,159,159);
+	height: 2px;
 }

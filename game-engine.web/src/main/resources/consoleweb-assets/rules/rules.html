@@ -18,22 +18,61 @@
 
 <div data-ng-controller="RulesCtrl">
 	<div class="row top-margined">
-		<button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddRuleModal()" uib-tooltip="{{'labels:tool_add' | i18next}}">
+		<!--<button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddRuleModal()" uib-tooltip="{{'labels:tool_add' | i18next}}">
 			<span class="glyphicon glyphicon-plus"></span>
-		</button>
+		</button>-->
+		<div class="col-md-12" uib-collapse="!isCollapsed">
+			<button class="btn btn-success" data-ng-click="isCollapsed = !isCollapsed">{{'labels:lbl_add_rule' | i18next}}</button>
+		</div>
+		<div uib-collapse="isCollapsed" class="col-md-12">
+			<h4>{{title | i18next}} <span ng-show="input.name">&lt;{{input.name}}&gt;</span></h4>
+			<form role="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<uib-alert ng-if="!!alerts.ruleError" type="danger">{{alerts.ruleError | i18next}}</uib-alert>
+						</div>
+						<div class="col-md-12">
+							<uib-alert ng-if="!!alerts.ruleValidation" type="danger">Rules engine returns error:<br/><br/>
+								<p data-ng-repeat="error in alerts.ruleValidation">{{error}}</p>
+							</uib-alert>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="name">{{'labels:lbl_name' | i18next}}</label>
+						<div class="clearfix"></div>
+						<input type="text" class="form-control text" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" autofocus/>
+					</div>
+					<div class="form-group">
+						<label for="name">{{'labels:lbl_rule_content' | i18next}}</label>
+						<div class="clearfix"></div>
+						<textarea class="rule-textarea form-control" data-ng-model="input.ruleContent"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success" data-ng-click="save()" ng-disabled="disabled">{{action | i18next}}</button>
+					<button type="reset" class="btn btn-danger" data-ng-click="cancel()" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
+				</div>
+			</form>
+		</div>
 	</div>
-	<div class="row vertical-spacing top-margined">
-		<div class="table-actions">
+	<hr/>
+	<div class="row vertical-spacing" uib-collapse="!isCollapsed">
+		<div class="table-actions col-md-12">
+			<h5>{{'labels:lbl_rules_menu' | i18next}}</h5>
 			<table class="table table-striped table-bordered">
 				<tbody>
 					<tr data-ng-repeat="rule in game.rules">
 						<td>
 							{{rule.name ? rule.name : rule.id}}
 							<button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteRule(rule)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
-								<span class="glyphicon glyphicon-remove"></span>
+								<span class="glyphicon glyphicon-trash"></span>
 							</button>
 							<button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editRule(rule)" uib-tooltip="{{'labels:tool_edit' | i18next}}">
 								<span class="glyphicon glyphicon-pencil"></span>
+							</button>
+							<button type="button" class="btn btn-warning btn-circle pull-right" style="margin-right: 1em;" data-ng-click="viewRule(rule)" uib-tooltip="{{'labels:tool_view' | i18next}}">
+								<span class="glyphicon glyphicon-eye-open"></span>
 							</button>
 						</td>
 					</tr>

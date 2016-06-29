@@ -28,6 +28,7 @@ var app = angular.module('gamificationEngine', [
 	'gamificationEngine.modals',
 	'gamificationEngine.services',
 	'ui.router',
+	'ngAnimate',
 	'ui.bootstrap',
 	'jm.i18next',
 	'toggle-switch',

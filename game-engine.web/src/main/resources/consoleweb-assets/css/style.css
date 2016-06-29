@@ -132,7 +132,8 @@ button.btn-default.btn-edit:focus {
 
 
 .rule-textarea {
-	height: 30em !important;
+	min-height: 240px;
+	resize: vertical;
 }
 
 /*

@@ -3,37 +3,184 @@ angular.module('gamificationEngine.rules', [])
 		$rootScope.currentNav = 'rules';
 		$rootScope.currentGameId = $stateParams.id;
 
-		//Add action
-		$scope.openAddRuleModal = function () {
-			var modalInstance = $uibModal.open({
-				templateUrl: 'rules/modal_rule_edit.html',
-				controller: 'EditRuleModalInstanceCtrl',
-				backdrop: "static",
-				resolve: {
-					game: function () {
-						return $scope.game;
-					},
-					rule: function () {}
-				}
-			});
-		};
+		$scope.isCollapsed = true;
+		$scope.title = "labels:title_add_rule";
+		$scope.action = "labels:btn_publish";
 
-		//Add action
-		$scope.editRule = function (rule) {
-			var modalInstance = $uibModal.open({
-				templateUrl: 'rules/modal_rule_edit.html',
-				controller: 'EditRuleModalInstanceCtrl',
-				backdrop: "static",
-				resolve: {
-					game: function () {
-						return $scope.game;
-					},
-					rule: function () {
-						return rule;
+		$scope.input = {};
+		$scope.alerts = {
+			'ruleError': ''
+		};
+		var previousName = '';
+
+		var rule;
+		var game = $scope.game;
+		/*if (rule) {
+			gamesFactory.getRule(game, rule.id).then(
+				function (data) {
+					if (data) {
+						$scope.input.name = data.name;
+						$scope.input.ruleContent = data.content;
+
+						previousName = data.name;
+						//previousContent = data.content;
+					}
+				},
+				function (message) {
+					// Show given error alert
+					$scope.alerts.ruleError = 'messages:' + message;
+				});
+		}*/
+
+		$scope.save = function () {
+			$scope.disabled = true;
+			$scope.alerts.ruleError = '';
+
+			if (!!$scope.input.ruleContent && $scope.input.ruleContent.length > 0 && $scope.input.name && $scope.input.name.length > 0) {
+
+				//check if already exist
+				var found = false;
+				if (game.rules && $scope.input.name && (!rule || rule && rule.name !== $scope.input.name)) {
+					for (var i = 0; i < game.rules.length; i++) {
+						found = game.rules[i].name == $scope.input.name;
+						if (found) break;
 					}
 				}
-			});
+
+				if (found) {
+					$scope.alerts.ruleError = 'messages:msg_error_exist';
+					$scope.disabled = false;
+					return;
+				}
+
+				var r = {};
+
+				if (rule) {
+					r = rule;
+				}
+				r.name = $scope.input.name;
+				r.content = $scope.input.ruleContent;
+
+				if ($scope.input.name === 'constants') {
+					gamesFactory.addRule(game, r).then(
+						function (data) {
+							if (!game.rules) {
+								game.rules = [];
+							}
+							if (!rule) {
+								game.rules.push(data);
+							}
+							$scope.disabled = false;
+							$scope.isCollapsed = true;
+						},
+						function (message) {
+							r.name = previousName;
+							// Show given error alert
+							$scope.alerts.ruleError = 'messages:' + message;
+							$scope.disabled = false;
+						});
+				} else {
+					gamesFactory.validateRule($scope.input.ruleContent).then(function (data) {
+						if (data.length > 0) {
+							$scope.alerts.ruleValidation = data;
+							$scope.disabled = false;
+							return;
+						}
+						gamesFactory.addRule(game, r).then(
+							function (data) {
+								if (!game.rules) {
+									game.rules = [];
+								}
+								if (!rule) {
+									game.rules.push(data);
+								}
+								$scope.disabled = false;
+								$scope.isCollapsed = true;
+							},
+							function (message) {
+								r.name = previousName;
+								// Show given error alert
+								$scope.alerts.ruleError = 'messages:' + message;
+								$scope.disabled = false;
+							});
+					}, function (msg) {
+						r.name = previousName;
+						$scope.alerts.ruleError = 'messages:' + msg;
+						$scope.disabled = false;
+					});
+				}
+
+
+			} else {
+				$scope.alerts.ruleError = 'messages:msg_empty_fields';
+				$scope.disabled = false;
+			}
 		};
+
+		$scope.cancel = function () {
+			$scope.isCollapsed = true;
+		}
+
+		$scope.addRule = function () {
+			$scope.isCollapsed = false;
+			$scope.title = "labels:title_add_rule";
+			$scope.action = "labels:btn:publish";
+		}
+
+		$scope.editRule = function (editingRule) {
+			$scope.isCollapsed = false;
+			rule = editingRule;
+			$scope.title = "labels:title_edit_rule";
+			$scope.action = "labels:btn_save";
+
+			if (rule) {
+				gamesFactory.getRule(game, rule.id).then(
+					function (data) {
+						if (data) {
+							$scope.input.name = data.name;
+							$scope.input.ruleContent = data.content;
+
+							previousName = data.name;
+							//previousContent = data.content;
+						}
+					},
+					function (message) {
+						// Show given error alert
+						$scope.alerts.ruleError = 'messages:' + message;
+					});
+			}
+		}
+			//Add action
+			/*$scope.openAddRuleModal = function () {
+				var modalInstance = $uibModal.open({
+					templateUrl: 'rules/modal_rule_edit.html',
+					controller: 'EditRuleModalInstanceCtrl',
+					backdrop: "static",
+					resolve: {
+						game: function () {
+							return $scope.game;
+						},
+						rule: function () {}
+					}
+				});
+			};
+
+			//Add action
+			$scope.editRule = function (rule) {
+				var modalInstance = $uibModal.open({
+					templateUrl: 'rules/modal_rule_edit.html',
+					controller: 'EditRuleModalInstanceCtrl',
+					backdrop: "static",
+					resolve: {
+						game: function () {
+							return $scope.game;
+						},
+						rule: function () {
+							return rule;
+						}
+					}
+				});
+			};*/
 
 		$scope.deleteRule = function (rule) {
 			// Delete a game

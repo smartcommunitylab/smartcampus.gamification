@@ -17,7 +17,8 @@
 -->
 
 <ul class="nav nav-pills nav-stacked">
-	<li data-role="presentation"><a href="javascript:void(0)" data-ng-click="openEditModal()">{{'labels:lbl_edit_game_menu' | i18next}}</a></li>
+	<!--<li data-role="presentation"><a href="javascript:void(0)" data-ng-click="openEditModal()">{{'labels:lbl_edit_game_menu' | i18next}}</a></li>-->
+	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'settings'}"><a href="javascript:void(0)" data-ng-click="goto('settings')">{{'labels:lbl_edit_game_menu' | i18next}}</a></li>
 	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'concepts'}"><a href="javascript:void(0)" data-ng-click="goto('concepts')">{{'labels:lbl_concepts_menu' | i18next}}</a></li>
 	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'actions'}"><a href="javascript:void(0)" data-ng-click="goto('actions')">{{'labels:lbl_actions_menu' | i18next}}</a></li>
 	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'rules'}"><a href="javascript:void(0)" data-ng-click="goto('rules')">{{'labels:lbl_rules_menu' | i18next}}</a></li>

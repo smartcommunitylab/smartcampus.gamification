@@ -68,10 +68,58 @@ angular.module('gamificationEngine.game', [])
 			$window.location.href = '#/game/' + $scope.game.id + '?tab=' + tab;
 		};
 
-		$scope.openEditModal = function (id) {
+		$scope.points = {};
+		var instance = {};
+		$scope.points.name = instance.name;
+
+		// Error alerts object
+		$scope.alerts = {
+			'editInstanceError': ''
+		};
+
+		// SAVE button click event-handler
+		$scope.addPoint = function () {
+			var game = $scope.game;
+			$scope.disabled = true;
+			gamesFactory.editInstance(game, instance, 'points', $scope.points).then(function () {
+				// Points instance edited
+				$scope.disabled = false;
+				//$uibModalInstance.close();
+			}, function (message) {
+				// Show error alert
+				$scope.alerts.editInstanceError = 'messages:' + message;
+				$scope.disabled = false;
+			});
+		};
+
+		$scope.badges_collection = {};
+		$scope.instance = {};
+		$scope.badges_collection.name = instance.name;
+
+		// Error alerts object
+		$scope.alerts = {
+			'editInstanceError': ''
+		};
+
+		// SAVE button click event-handler
+		$scope.addBadge = function () {
+			var game = $scope.game;
+			$scope.disabled = true;
+			gamesFactory.editInstance(game, instance, 'badges_collections', $scope.badges_collection).then(function () {
+				// Badges collection instance edited
+				//$uibModalInstance.close();
+				$scope.disabled = false;
+			}, function (message) {
+				// Show error alert
+				$scope.alerts.editInstanceError = 'messages:' + message;
+				$scope.disabled = false;
+			});
+		};
+
+		/*$scope.openEditModal = function (id) {
 			// Edit a game
 			var modalInstance = $uibModal.open({
-				templateUrl: 'modals/modal_game_edit.html',
+			templateUrl: 'modals/modal_game_edit.html',
 				controller: 'EditGameModalInstanceCtrl',
 				backdrop: "static",
 				resolve: {
@@ -85,9 +133,9 @@ angular.module('gamificationEngine.game', [])
 				// Show 'settings successfully edited' alert
 				$scope.alerts.settingsEdited = true;
 			});
-		};
+		};*/
 
-		$scope.openAddInstanceModal = function () {
+		/*$scope.openAddInstanceModal = function () {
 			// Add new plugin instance
 			switch ($scope.selectedInstance) {
 				case 'points':
@@ -131,7 +179,7 @@ angular.module('gamificationEngine.game', [])
 					}
 				}
 			});
-		};
+		};*/
 
 		$scope.deleteConcept = function (instance, type) {
 			// Delete a game
@@ -155,7 +203,8 @@ angular.module('gamificationEngine.game', [])
 	});
 
 // Edit points instance modal
-modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibModalInstance, game, instance, gamesFactory) {
+modals
+/*.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibModalInstance, game, instance, gamesFactory) {
 	$scope.points = {};
 	$scope.points.name = instance.name;
 
@@ -181,10 +230,10 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 	};
-})
+})*/
 
 // Edit badges collection instance modal
-.controller('EditBadgesCollectionInstanceModalInstanceCtrl', function ($scope, $uibModalInstance, game, instance, gamesFactory) {
+/*.controller('EditBadgesCollectionInstanceModalInstanceCtrl', function ($scope, $uibModalInstance, game, instance, gamesFactory) {
 	$scope.badges_collection = {};
 	$scope.badges_collection.name = instance.name;
 
@@ -210,10 +259,10 @@ modals.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibM
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 	};
-})
+})*/
 
 // Delete concept modal
-.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {
+	.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {
 	$scope.argument = instance.name;
 
 	$scope.alerts = {

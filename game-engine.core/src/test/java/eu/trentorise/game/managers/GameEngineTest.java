@@ -373,6 +373,22 @@ public class GameEngineTest {
 		Assert.assertEquals(false, g.isTerminated());
 	}
 
+	@Test
+	public void constantsTest() {
+		gameManager.saveGameDefinition(defineGame().toGame());
+
+		// add rules
+		ClasspathRule rule = new ClasspathRule(GAME, "constantsFileSample");
+		rule.setName("constants");
+		gameManager.addRule(rule);
+
+		PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
+
+		p = engine
+				.execute(GAME, p, ACTION, new HashMap<String, Object>(), null);
+
+	}
+
 	class ExecutionData {
 		private String actionId;
 		private String userId;

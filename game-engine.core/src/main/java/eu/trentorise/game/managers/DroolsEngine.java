@@ -320,6 +320,10 @@ public class DroolsEngine implements GameEngine {
 
 		if (value instanceof String) {
 			String converted = (String) value;
+			if (NumberUtils.isNumber(converted)
+					&& converted.toLowerCase().contains("l")) {
+				return new Long(converted.substring(0, converted.length() - 1));
+			}
 			if (NumberUtils.isNumber(converted) && !converted.contains(".")) {
 				return new Integer(converted);
 			}

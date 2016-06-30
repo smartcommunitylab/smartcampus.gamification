@@ -11,11 +11,13 @@
 #
 # supported VALUE_TYPE
 # Integer (i.e. var=1)
-# Long (i.e. var=25l or var=25L)
 # Double  (i.e. var=2.3)
 # String  (i.e. var=park)
 # java.util.ArrayList (i.e var=park,street,bikestation)
 
 
-steps_per_100m=150
-
+i_m_a_string=Value
+i_m_a_long=12l
+i_m_a_long1=12L
+i_m_a_int=123333
+i_m_a_double=12.45

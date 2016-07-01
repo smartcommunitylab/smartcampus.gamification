@@ -8,11 +8,13 @@ angular.module('gamificationEngine.actions', [])
 		var game = $scope.game;
 
 		$scope.alerts = {
-			'editGameError': ''
+			'actionError': '',
+			'genericError': ''
 		};
 
 		$scope.addAction = function () {
-			$scope.disabled = true;
+			$scope.alerts.genericError = '';
+			$scope.alerts.actionError = '';
 			if ($scope.input.actionName && $scope.input.actionName.length > 0) {
 				var found = false;
 				for (var i = 0; i < game.actions.length && !found; i++) {
@@ -22,26 +24,24 @@ angular.module('gamificationEngine.actions', [])
 				}
 
 				if (!found) {
+					$scope.disabled = true;
 					game.actions.push($scope.input.actionName);
 					gamesFactory.saveGame(game).then(
 						function () {
 							$scope.disabled = false;
 							$scope.input.actionName = '';
-							$scope.alerts.editGameError = '';
-							console.log("success");
+							//console.log("success");
 						},
 						function (message) {
 							game.actions.pop();
-							$scope.alerts.editGameError = 'messages:' + message;
+							$scope.alerts.genericError = 'messages:' + message;
 							$scope.disabled = false;
 						});
 				} else {
-					$scope.alerts.editGameError = 'messages:msg_same_name_error';
-					$scope.disabled = false;
+					$scope.alerts.actionError = 'messages:msg_same_name_error';
 				}
 			} else {
-				$scope.alerts.editGameError = 'messages:msg_empty_fields';
-				$scope.disabled = false;
+				$scope.alerts.actionError = 'messages:msg_empty_fields';
 			}
 		};
 

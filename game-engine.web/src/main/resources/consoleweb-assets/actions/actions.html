@@ -21,10 +21,15 @@
 		<div class="modal-body">
 			<div class="row">
 				<div class="col-md-12 text-center">
-					<uib-alert ng-if="!!alerts.editGameError" type="danger">{{alerts.editGameError | i18next}}</uib-alert>
+					<uib-alert ng-if="!!alerts.genericError" type="danger">{{alerts.genericError | i18next}}</uib-alert>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<uib-alert ng-if="!!alerts.actionError" type="danger">{{alerts.actionError | i18next}}</uib-alert>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{'has-error': alerts.actionError}">
 				<label for="action">{{'labels:lbl_name' | i18next}}</label>
 				<div class="clearfix"></div>
 				<input type="text" class="form-control text" id="action" data-ng-model="input.actionName" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required autofocus />
@@ -51,7 +56,7 @@
 				<tbody>
 					<tr data-ng-repeat="action in game.actions track by $index">
 						<td>
-							<span>{{action}}</span>
+							{{action}}
 							<button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteAction(action)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
 								<span class="glyphicon glyphicon-trash"></span>
 							</button>

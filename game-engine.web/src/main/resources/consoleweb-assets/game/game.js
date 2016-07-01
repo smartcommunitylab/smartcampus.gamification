@@ -48,9 +48,9 @@ angular.module('gamificationEngine.game', [])
 		});
 
 
-		$scope.closeAlert = function (alertName) {
+		/*$scope.closeAlert = function (alertName) {
 			$scope.alerts[alertName] = '';
-		};
+		};*/
 
 		$scope.goto = function (path) {
 			$scope.viewName = path;

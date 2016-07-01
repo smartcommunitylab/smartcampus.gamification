@@ -4,7 +4,7 @@ angular.module('gamificationEngine.tasks', [])
 		$rootScope.currentGameId = $stateParams.id;
 
 		$scope.isCollapsed = true;
-
+		$scope.title = "labels:title_add_task";
 		var convertTask = function (task) {
 			// convert in taskDto
 			if (task.schedule) {
@@ -15,7 +15,13 @@ angular.module('gamificationEngine.tasks', [])
 		}
 
 		$scope.alerts = {
-			'taskErr': '',
+			'taskErr': false,
+			'nameError': false,
+			'itemsError': false,
+			'cronError': false,
+			'pointsError': false,
+			'classError': false,
+			'rankEdited': false
 		};
 
 		var t = {};
@@ -28,10 +34,38 @@ angular.module('gamificationEngine.tasks', [])
 		//$scope.game = game;
 
 		$scope.save = function () {
-			$scope.disabled = true;
-			$scope.alerts.taskErr = '';
-			var valid = $scope.input.name && $scope.input.itemType && $scope.input.classificationName && $scope.input.schedule && $scope.input.itemToNotificate;
+			$scope.alerts.nameError = false;
+			$scope.alerts.pointsError = false;
+			$scope.alerts.classError = false;
+			$scope.alerts.cronError = false;
+			$scope.alerts.itemsError = false;
+			$scope.alerts.taskErr = false;
+
+			//var valid = $scope.input.name && $scope.input.itemType && $scope.input.classificationName && $scope.input.schedule && $scope.input.itemToNotificate;
+			var valid = true;
+			if (!$scope.input.name) {
+				$scope.alerts.nameError = true;
+				valid = false;
+			}
+			if (!$scope.input.itemType) {
+				$scope.alerts.pointsError = true;
+				valid = false;
+			}
+			if (!$scope.input.classificationName) {
+				$scope.alerts.classError = true;
+				valid = false;
+			}
+			if (!$scope.input.schedule) {
+				$scope.alerts.cronError = true;
+				valid = false;
+			}
+			if (!$scope.input.itemToNotificate) {
+				$scope.alerts.itemsError = true;
+				valid = false;
+			}
+
 			if (valid) {
+				$scope.disabled = true;
 				t.name = $scope.input.name;
 				t.itemType = $scope.input.itemType;
 				t.classificationName = $scope.input.classificationName;
@@ -54,6 +88,7 @@ angular.module('gamificationEngine.tasks', [])
 							//$uibModalInstance.close();
 							$scope.isCollapsed = true;
 							$scope.disabled = false;
+							$scope.alerts.rankEdited = true;
 						}, function (msg) {
 							$scope.alerts.taskErr = 'messages:' + msg;
 							$scope.disabled = false;
@@ -77,66 +112,83 @@ angular.module('gamificationEngine.tasks', [])
 						//$uibModalInstance.close();
 						$scope.isCollapsed = true;
 						$scope.disabled = false;
+						$scope.alerts.rankEdited = true;
 					}, function (msg) {
 						$scope.alerts.taskErr = 'messages:' + msg;
 						$scope.disabled = false;
 					});
 				}
-			} else {
+			}
+			/*else {
 				$scope.alerts.taskErr = 'messages:msg_empty_fields';
 				$scope.disabled = false;
-			}
+			}*/
 
 		};
 
 		$scope.cancel = function () {
+			$scope.alerts.nameError = false;
+			$scope.alerts.pointsError = false;
+			$scope.alerts.classError = false;
+			$scope.alerts.cronError = false;
+			$scope.alerts.itemsError = false;
+			$scope.alerts.taskErr = false;
 			$scope.isCollapsed = true;
 		};
 
+		$scope.addTask = function () {
+			$scope.title = "labels:title_add_task";
+			$scope.input = {};
+			$scope.edit = false;
+			$scope.isCollapsed = false;
+			$scope.alerts.rankEdited = false;
+		};
+
 		$scope.editTask = function (editingTask) {
+			$scope.title = "labels:title_edit_task";
 			task = convertTask(editingTask);
 
-			if (task) {
-				$scope.input.name = task.name;
-				$scope.input.itemType = task.itemType;
-				$scope.input.classificationName = task.classificationName;
-				$scope.input.schedule = task.schedule ? task.schedule.cronExpression : task.cronExpression;
-				$scope.input.itemToNotificate = task.itemsToNotificate;
-				$scope.input.edit = true;
-			}
-			$scope.isCollapsed = false;
-		}
-			/*$scope.openAddTaskModal = function () {
-				var modalInstance = $uibModal.open({
-					templateUrl: 'tasks/modal_task_edit.html',
-					controller: 'EditTaskModalInstanceCtrl',
-					backdrop: "static",
-					resolve: {
-						game: function () {
-							return $scope.game;
-						},
-						task: function () {
-							return;
-						}
-					}
-				});
-			};
+			$scope.input.name = task.name;
+			$scope.input.itemType = task.itemType;
+			$scope.input.classificationName = task.classificationName;
+			$scope.input.schedule = task.schedule ? task.schedule.cronExpression : task.cronExpression;
+			$scope.input.itemToNotificate = task.itemsToNotificate;
 
-			$scope.editTask = function (task) {
-				var modalInstance = $uibModal.open({
-					templateUrl: 'tasks/modal_task_edit.html',
-					controller: 'EditTaskModalInstanceCtrl',
-					backdrop: "static",
-					resolve: {
-						game: function () {
-							return $scope.game;
-						},
-						task: function () {
-							return convertTask(task);
-						}
+			$scope.edit = true;
+			$scope.isCollapsed = false;
+			$scope.alerts.rankEdited = false;
+		};
+		/*$scope.openAddTaskModal = function () {
+			var modalInstance = $uibModal.open({
+				templateUrl: 'tasks/modal_task_edit.html',
+				controller: 'EditTaskModalInstanceCtrl',
+				backdrop: "static",
+				resolve: {
+					game: function () {
+						return $scope.game;
+					},
+					task: function () {
+						return;
 					}
-				});
-			};*/
+				}
+			});
+		};
+
+		$scope.editTask = function (task) {
+			var modalInstance = $uibModal.open({
+				templateUrl: 'tasks/modal_task_edit.html',
+				controller: 'EditTaskModalInstanceCtrl',
+				backdrop: "static",
+				resolve: {
+					game: function () {
+						return $scope.game;
+					},
+					task: function () {
+						return convertTask(task);
+					}
+				}
+			});
+		};*/
 
 		$scope.deleteTask = function (task) {
 			// Delete a game

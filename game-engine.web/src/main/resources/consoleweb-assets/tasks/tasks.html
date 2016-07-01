@@ -21,53 +21,79 @@
 		<!--<button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddTaskModal()" uib-tooltip="{{'labels:tool_add' | i18next}}">
 			<span class="glyphicon glyphicon-plus"></span>
 		</button>-->
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<uib-alert ng-if="!!alerts.rankEdited" type="success" close="alerts.rankEdited = false">{{'messages:msg_rank_edited' | i18next}}</uib-alert>
+			</div>
+		</div>
 		<div uib-collapse="isCollapsed" class="col-md-12">
-			<h4>{{'labels:title_add_task' | i18next}}</h4>
+			<h4>{{title | i18next}}</h4>
 			<form role="form" name="taskForm">
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-12 text-center">
-							<uib-alert ng-if="!!alerts.taskErr" type="danger">{{alerts.taskErr | i18next}}</uib-alert>
+							<uib-alert ng-if="!!alerts.taskErr" type="danger">{{'messages:msg_task_error' | i18next}}</uib-alert>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-6 form-group">
-							<label for="name">{{'labels:lbl_name' | i18next}}</label>
-							<input data-ng-readonly="input.edit" type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required autofocus ng-if="!input.edit" />
-							<input data-ng-readonly="input.edit" type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required ng-if="input.edit" />
+						<div class="col-md-6 text-center">
+							<uib-alert ng-if="!!alerts.nameError" type="danger">{{'messages:msg_empty_fields' | i18next}}</uib-alert>
 						</div>
-						<div class="col-md-6 form-group">
+						<div class="col-md-6 text-center">
+							<uib-alert ng-if="!!alerts.itemsError" type="danger">{{'messages:msg_empty_fields' | i18next}}</uib-alert>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 form-group" ng-class="{'has-error': alerts.nameError}">
+							<label for="name">{{'labels:lbl_name' | i18next}}</label>
+							<input data-ng-readonly="edit" type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required autofocus ng-if="!input.edit" />
+							<input data-ng-readonly="edit" type="text" class="form-control" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required ng-if="input.edit" />
+						</div>
+						<div class="col-md-6 form-group" ng-class="{'has-error': alerts.itemsError}">
 							<label for="itemToNotificate">{{'labels:lbl_task_itemToNotificate' | i18next}}</label>
-							<input type="text" class="form-control" name="itemToNotificate" id="itemToNotificate" data-ng-model="input.itemToNotificate" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" data-ng-pattern="/^\d+$/" required/>
+							<input type="text" class="form-control" name="itemToNotificate" id="itemToNotificate" data-ng-model="input.itemToNotificate" placeholder="{{'labels:lbl_task_itemToNotificate' | i18next}}" data-ng-pattern="/^\d+$/" required/>
 							<uib-alert type="danger" data-ng-show="taskForm.itemToNotificate.$error.pattern">{{'messages:msg_error_integer' | i18next}}</uib-alert>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-6 form-group">
+						<div class="col-md-6 text-center">
+							<uib-alert ng-if="!!alerts.cronError" type="danger">{{'messages:msg_empty_fields' | i18next}}</uib-alert>
+						</div>
+						<div class="col-md-6 text-center">
+							<uib-alert ng-if="!!alerts.pointsError" type="danger">{{'messages:msg_empty_fields' | i18next}}</uib-alert>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 form-group" ng-class="{'has-error': alerts.cronError}">
 							<label for="schedule">{{'labels:lbl_task_schedule' | i18next}}</label>
 							<input type="text" class="form-control" name="schedule" id="schedule" data-ng-model="input.schedule" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required autofocus ng-if="input.edit" />
 							<input type="text" class="form-control" name="schedule" id="schedule" data-ng-model="input.schedule" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required ng-if="!input.edit" />
 						</div>
-						<div class="col-md-6 form-group">
+						<div class="col-md-6 form-group" ng-class="{'has-error': alerts.pointsError}">
 							<label for="itemType">{{'labels:lbl_task_itemType' | i18next}}</label>
 							<select id="itemType" class="form-control" data-ng-model="input.itemType" data-ng-options="point.name as point.name for point in game.pointConcept" required></select>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-6 col-md-offset-6 form-group">
+						<div class="col-md-6 col-md-offset-6 text-center">
+							<uib-alert ng-if="!!alerts.classError" type="danger">{{'messages:msg_empty_fields' | i18next}}</uib-alert>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-md-offset-6 form-group" ng-class="{'has-error': alerts.classError}">
 							<label for="className">{{'labels:lbl_task_classificationName' | i18next}}</label>
 							<input type="text" class="form-control" id="className" data-ng-model="input.classificationName" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required/>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer clearfix">
-					<button type="submit" class="btn btn-success" data-ng-click="save()" ng-disabled="disabled">{{'labels:btn_save' | i18next}}</button>
-					<button type="reset" class="btn btn-danger" data-ng-click="cancel()" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
+					<button class="btn btn-success" data-ng-click="save()" ng-disabled="disabled">{{'labels:btn_save' | i18next}}</button>
+					<button class="btn btn-danger" data-ng-click="cancel()" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
 				</div>
 			</form>
 		</div>
 		<div class="col-md-12" uib-collapse="!isCollapsed">
-			<button class="btn btn-success" data-ng-click="isCollapsed = !isCollapsed">{{'labels:lbl_add_rule' | i18next}}</button>
+			<button class="btn btn-success" data-ng-click="addTask()">{{'labels:title_add_task' | i18next}}</button>
 		</div>
 	</div>
 	<hr/>

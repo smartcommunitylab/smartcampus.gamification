@@ -4,12 +4,17 @@ angular.module('gamificationEngine.rules', [])
 		$rootScope.currentGameId = $stateParams.id;
 
 		$scope.isCollapsed = true;
+		$scope.hideRule = true;
 		$scope.title = "labels:title_add_rule";
 		$scope.action = "labels:btn_publish";
 
+		//$scope.ruleContent = '';
 		$scope.input = {};
 		$scope.alerts = {
-			'ruleError': ''
+			'nameError': false,
+			'contentError': false,
+			'ruleError': '',
+			'ruleEdited': false
 		};
 		var previousName = '';
 
@@ -33,11 +38,23 @@ angular.module('gamificationEngine.rules', [])
 		}*/
 
 		$scope.save = function () {
-			$scope.disabled = true;
+			$scope.alerts.nameError = false;
+			$scope.alerts.contentError = false;
 			$scope.alerts.ruleError = '';
+			$scope.alerts.ruleValidation = '';
+			var valid = true;
 
-			if (!!$scope.input.ruleContent && $scope.input.ruleContent.length > 0 && $scope.input.name && $scope.input.name.length > 0) {
+			if (!$scope.input.ruleContent || $scope.input.ruleContent.length == 0) {
+				$scope.alerts.contentError = true;
+				valid = false;
+			}
+			if (!$scope.input.name || $scope.input.name.length == 0) {
+				$scope.alerts.nameError = true;
+				valid = false;
+			}
 
+			if (valid) {
+				$scope.disabled = true;
 				//check if already exist
 				var found = false;
 				if (game.rules && $scope.input.name && (!rule || rule && rule.name !== $scope.input.name)) {
@@ -72,6 +89,7 @@ angular.module('gamificationEngine.rules', [])
 							}
 							$scope.disabled = false;
 							$scope.isCollapsed = true;
+							$scope.alerts.ruleEdited = true;
 						},
 						function (message) {
 							r.name = previousName;
@@ -96,6 +114,7 @@ angular.module('gamificationEngine.rules', [])
 								}
 								$scope.disabled = false;
 								$scope.isCollapsed = true;
+								$scope.alerts.ruleEdited = true;
 							},
 							function (message) {
 								r.name = previousName;
@@ -111,24 +130,33 @@ angular.module('gamificationEngine.rules', [])
 				}
 
 
-			} else {
-				$scope.alerts.ruleError = 'messages:msg_empty_fields';
-				$scope.disabled = false;
 			}
+			/* else {
+							$scope.alerts.ruleError = 'messages:msg_empty_fields';
+							$scope.disabled = false;
+						}*/
 		};
 
 		$scope.cancel = function () {
 			$scope.isCollapsed = true;
+			$scope.alerts.nameError = false;
+			$scope.alerts.contentError = false;
+			$scope.alerts.ruleError = '';
+			$scope.alerts.ruleValidation = '';
 		}
 
 		$scope.addRule = function () {
+			$scope.input = {};
+			rule = {};
+			$scope.alerts.ruleEdited = false;
 			$scope.isCollapsed = false;
 			$scope.title = "labels:title_add_rule";
-			$scope.action = "labels:btn:publish";
+			$scope.action = "labels:btn_publish";
 		}
 
 		$scope.editRule = function (editingRule) {
 			$scope.isCollapsed = false;
+			$scope.alerts.ruleEdited = false;
 			rule = editingRule;
 			$scope.title = "labels:title_edit_rule";
 			$scope.action = "labels:btn_save";
@@ -150,6 +178,22 @@ angular.module('gamificationEngine.rules', [])
 					});
 			}
 		}
+
+		$scope.showRule = function (rule) {
+				gamesFactory.getRule(game, rule.id).then(
+					function (data) {
+						if (data) {
+							$scope.ruleContent = data.content;
+
+							previousName = data.name;
+							//previousContent = data.content;
+						}
+					},
+					function (message) {
+						// Show given error alert
+						$scope.alerts.ruleError = 'messages:' + message;
+					});
+			}
 			//Add action
 			/*$scope.openAddRuleModal = function () {
 				var modalInstance = $uibModal.open({
@@ -209,7 +253,8 @@ angular.module('gamificationEngine.rules', [])
 	});
 
 // Edit rule instance modal
-modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, rule) {
+modals
+/*.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, rule) {
 		$scope.input = {};
 		$scope.alerts = {
 			'ruleError': ''
@@ -319,34 +364,34 @@ modals.controller('EditRuleModalInstanceCtrl', function ($scope, $uibModalInstan
 		$scope.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
-	})
-	// Delete rule modal
+	})*/
+// Delete rule modal
 	.controller('DeleteRuleModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, rule) {
-		$scope.alerts = {
-			'deleteError': '',
-		};
-		$scope.argument = rule.name;
+	$scope.alerts = {
+		'deleteError': '',
+	};
+	$scope.argument = rule.name;
 
-		$scope.delete = function () {
-			gamesFactory.deleteRule(game, rule.id).then(
-				function (data) {
-					if (data) {
-						var idx = 0;
-						for (idx = 0; idx < game.rules.length; idx++) {
-							if (game.rules[idx].id == rule.id) {
-								break;
-							}
+	$scope.delete = function () {
+		gamesFactory.deleteRule(game, rule.id).then(
+			function (data) {
+				if (data) {
+					var idx = 0;
+					for (idx = 0; idx < game.rules.length; idx++) {
+						if (game.rules[idx].id == rule.id) {
+							break;
 						}
-						game.rules.splice(idx, 1);
-						$uibModalInstance.close();
 					}
-				},
-				function (message) {
-					$scope.alerts.deleteError = message;
-				})
-		};
+					game.rules.splice(idx, 1);
+					$uibModalInstance.close();
+				}
+			},
+			function (message) {
+				$scope.alerts.deleteError = message;
+			})
+	};
 
-		$scope.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-	});
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+});

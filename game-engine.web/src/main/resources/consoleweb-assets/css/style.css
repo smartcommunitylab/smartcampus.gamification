@@ -378,3 +378,18 @@ hr {
 	top: 0;
 	left: 0;
 }
+
+.horizontalCollapse {
+	-webkit-transition: opacity 0.3s ease 0.2s, width 1s ease;
+    -moz-transition: opacity 0.3s ease 0.2s, width 1s ease;
+    -o-transition: opacity 0.3s ease 0.2s, width 1s ease;
+	transition: opacity 0.3s ease 0.2s, width 1s ease;
+    overflow: hidden;
+	padding: 0;
+    width: 0;
+	opacity: 0;
+}
+.horizontalCollapse.in {
+	width: 99%;
+	opacity: 1;
+}

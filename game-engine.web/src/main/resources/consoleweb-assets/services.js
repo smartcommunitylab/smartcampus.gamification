@@ -185,11 +185,11 @@ angular.module('gamificationEngine.services', [])
 		var editGame = function (game, fields) {
 			var deferred = $q.defer();
 
-			if (!fields.name) {
+			/*if (!fields.name) {
 				deferred.reject('msg_game_name_error');
 			} else if (!!getGameByName(fields.name) && game.name !== fields.name) {
 				deferred.reject('msg_game_name_exists_error');
-			} else {
+			} else {*/
 				if (!game.id) {
 					game = {};
 				}
@@ -206,22 +206,24 @@ angular.module('gamificationEngine.services', [])
 				error(function (data, status, headers, config) {
 					deferred.reject('msg_generic_error');
 				});
-			}
+			//}
 			return deferred.promise;
 		};
 
 		// Add or edit instance
-		var editInstance = function (game, instance, instanceType, instanceProperties) {
+		var editInstance = function (game, instanceType, instanceProperties) {
 			var deferred = $q.defer();
-
-			if (!instanceProperties.name) {
+			//var instance = {};
+			
+			/*if (!instanceProperties.name) {
 				deferred.reject('msg_instance_name_error');
-			} else if (instance.id == null) {
+			} else */
+			//if (instance.id == null) {
 				// New instance
-				if (!!existsInstanceByName(game, instanceProperties.name, instanceType)) {
+				/*if (!!existsInstanceByName(game, instanceProperties.name, instanceType)) {
 					// Instance with same name alredy exists
 					deferred.reject('msg_instance_name_exists_error');
-				} else {
+				} else {*/
 					// Create new instance
 					var id = 1;
 					angular.forEach(game.concepts, function (i) {
@@ -231,7 +233,7 @@ angular.module('gamificationEngine.services', [])
 						id++;
 					});
 
-					instance = {
+					var instance = {
 						'id': id,
 						'name': instanceProperties.name
 					};
@@ -246,21 +248,20 @@ angular.module('gamificationEngine.services', [])
 					}
 
 					$http.post(url + '/console/game', tmpGame).success(function (data, status, headers, config) {
-						if (instanceType == 'points') {
+						/*if (instanceType == 'points') {
 							game.pointConcept.push(instance);
 						} else if (instanceType == 'badges_collections') {
 							game.badgeCollectionConcept.push(instance);
-						}
-
-						deferred.resolve(data);
+						}*/
+						deferred.resolve(instance);
 					}).error(function (data, status, headers, config) {
 						deferred.reject('msg_generic_error');
 					});
-				}
-			} else if (!!existsInstanceByName(game, instanceProperties.name, instanceType) && instance.name != instanceProperties.name) {
+				//}
+			//} else if (!!existsInstanceByName(game, instanceProperties.name, instanceType) && instance.name != instanceProperties.name) {
 				// Instance with same name alredy exists
-				deferred.reject('msg_instance_name_exists_error');
-			} else {
+				//deferred.reject('msg_instance_name_exists_error');
+			/*} else {
 				// Edit instance
 
 				// Choose other instance properties to be modified
@@ -288,7 +289,7 @@ angular.module('gamificationEngine.services', [])
 				}
 
 				deferred.resolve();
-			}
+			}*/
 
 			return deferred.promise;
 		};
@@ -317,7 +318,8 @@ angular.module('gamificationEngine.services', [])
 			$http.post(url + '/console/game/' + game.id + "/rule/db", rule).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
-				deferred.reject('msg_instance_name_error');
+				//deferred.reject('msg_instance_name_error');
+				deferred.reject('msg_generic_error');
 			});
 			return deferred.promise;
 		}
@@ -375,7 +377,9 @@ angular.module('gamificationEngine.services', [])
 		return {
 			'getGames': getGames,
 			'getGameById': getGameById,
+			'getGameByName': getGameByName,
 			'editGame': editGame,
+			'existsInstanceByName': existsInstanceByName,
 			'editInstance': editInstance,
 			'deleteGame': deleteGame,
 			'saveGame': saveGame,

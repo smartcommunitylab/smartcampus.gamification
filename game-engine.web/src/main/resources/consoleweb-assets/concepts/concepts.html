@@ -30,6 +30,11 @@
 						<div class="modal-body">
 							<div class="row">
 								<div class="col-md-12 text-center">
+									<uib-alert ng-if="!!alerts.genericError" type="danger">{{'messages:msg_generic_error' | i18next}}</uib-alert>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 text-center">
 									<uib-alert ng-if="!!alerts.editInstanceError" type="danger">{{alerts.editInstanceError | i18next}}</uib-alert>
 								</div>
 							</div>
@@ -61,6 +66,11 @@
 				<div class="table-actions col-md-12">
 					<form role="form">
 						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12 text-center">
+									<uib-alert ng-if="!!alerts.genericError" type="danger">{{'messages:msg_generic_error' | i18next}}</uib-alert>
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-md-12 text-center">
 									<uib-alert ng-if="!!alerts.editInstanceError" type="danger">{{alerts.editInstanceError | i18next}}</uib-alert>

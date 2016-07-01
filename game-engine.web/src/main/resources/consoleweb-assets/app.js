@@ -19,6 +19,7 @@ var app = angular.module('gamificationEngine', [
 	'gamificationEngine.main',
 	'gamificationEngine.actions',
 	'gamificationEngine.game',
+	'gamificationEngine.concepts',
 	'gamificationEngine.monitor',
 	'gamificationEngine.home',
 	'gamificationEngine.login',

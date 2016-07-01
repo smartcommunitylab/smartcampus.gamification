@@ -1,7 +1,11 @@
 angular.module('gamificationEngine.game', [])
-	.controller('GameCtrl', function ($scope, $rootScope, $window, $stateParams, $uibModal, gamesFactory, utilsFactory, $state) {
-		$rootScope.currentNav = 'configure';
+	.controller('GameCtrl', function ($scope, $rootScope, $window, $stateParams, $uibModal, gamesFactory, $state) {
+		$rootScope.currentNav = 'concepts';
 		$rootScope.currentGameId = $stateParams.id;
+
+		// default
+		$scope.viewName = 'concepts';
+		$scope.menuItem = 'concepts';
 
 		if ($state.current.data) {
 			$rootScope.page = $state.current.data.page;
@@ -9,19 +13,20 @@ angular.module('gamificationEngine.game', [])
 
 		// Error alerts object
 		$scope.alerts = {
-			'cantCreateLeaderboards': false,
-			'loadGameError': false,
-			'settingsEdited': false
+			//'cantCreateLeaderboards': false,
+			'loadGameError': false
+			//'settingsEdited': false
 		};
 
 		// Tab switching
-		$scope.active = {
+		/*$scope.active = {
 			'points': false,
 			'badges_collections': false,
-		};
+			'challenges': false
+		};*/
 
 		// Read the tab param to select the right tab. If it isn't given, choose the dafualt tab
-		var tab = $stateParams.tab;
+		/*var tab = $stateParams.tab;
 
 		if (!!tab && (tab == 'points' || tab == 'badges_collections')) {
 			// User choice (tab)
@@ -30,7 +35,7 @@ angular.module('gamificationEngine.game', [])
 		} else {
 			// Default choice = 'points'
 			$scope.selectedInstance = 'points';
-		}
+		}*/
 
 		$scope.game = {};
 
@@ -40,18 +45,6 @@ angular.module('gamificationEngine.game', [])
 		}, function () {
 			// Show error alert
 			$scope.alerts.loadGameError = true;
-		});
-
-		// default
-		$scope.viewName = 'concepts';
-		$scope.menuItem = 'concepts';
-
-		gamesFactory.getPoints($rootScope.currentGameId).then(function (points) {
-			$scope.points = points;
-		});
-
-		gamesFactory.getBadges($rootScope.currentGameId).then(function (badges) {
-			$scope.badges = badges;
 		});
 
 
@@ -64,57 +57,9 @@ angular.module('gamificationEngine.game', [])
 			$scope.menuItem = path;
 		};
 
-		$scope.goToTab = function (tab) {
+		/*$scope.goToTab = function (tab) {
 			$window.location.href = '#/game/' + $scope.game.id + '?tab=' + tab;
-		};
-
-		$scope.points = {};
-		var instance = {};
-		$scope.points.name = instance.name;
-
-		// Error alerts object
-		$scope.alerts = {
-			'editInstanceError': ''
-		};
-
-		// SAVE button click event-handler
-		$scope.addPoint = function () {
-			var game = $scope.game;
-			$scope.disabled = true;
-			gamesFactory.editInstance(game, instance, 'points', $scope.points).then(function () {
-				// Points instance edited
-				$scope.disabled = false;
-				//$uibModalInstance.close();
-			}, function (message) {
-				// Show error alert
-				$scope.alerts.editInstanceError = 'messages:' + message;
-				$scope.disabled = false;
-			});
-		};
-
-		$scope.badges_collection = {};
-		$scope.instance = {};
-		$scope.badges_collection.name = instance.name;
-
-		// Error alerts object
-		$scope.alerts = {
-			'editInstanceError': ''
-		};
-
-		// SAVE button click event-handler
-		$scope.addBadge = function () {
-			var game = $scope.game;
-			$scope.disabled = true;
-			gamesFactory.editInstance(game, instance, 'badges_collections', $scope.badges_collection).then(function () {
-				// Badges collection instance edited
-				//$uibModalInstance.close();
-				$scope.disabled = false;
-			}, function (message) {
-				// Show error alert
-				$scope.alerts.editInstanceError = 'messages:' + message;
-				$scope.disabled = false;
-			});
-		};
+		};*/		
 
 		/*$scope.openEditModal = function (id) {
 			// Edit a game

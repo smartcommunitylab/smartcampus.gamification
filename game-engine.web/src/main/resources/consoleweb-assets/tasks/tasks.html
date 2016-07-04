@@ -27,12 +27,12 @@
 			</div>
 		</div>
 		<div uib-collapse="isCollapsed" class="col-md-12">
-			<h4>{{title | i18next}}</h4>
+			<h4>{{title | i18next}} <span ng-show="input.name">&lt;{{input.name}}&gt;</span></h4>
 			<form role="form" name="taskForm">
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-12 text-center">
-							<uib-alert ng-if="!!alerts.taskErr" type="danger">{{'messages:msg_task_error' | i18next}}</uib-alert>
+							<uib-alert ng-if="!!alerts.taskErr" type="danger">{{alerts.taskErr | i18next}}</uib-alert>
 						</div>
 					</div>
 					<div class="row">
@@ -93,7 +93,7 @@
 			</form>
 		</div>
 		<div class="col-md-12" uib-collapse="!isCollapsed">
-			<button class="btn btn-success" data-ng-click="addTask()">{{'labels:title_add_task' | i18next}}</button>
+			<button class="btn btn-success btn-add" data-ng-click="addTask()">{{'labels:title_add_task' | i18next}}</button>
 		</div>
 	</div>
 	<hr/>

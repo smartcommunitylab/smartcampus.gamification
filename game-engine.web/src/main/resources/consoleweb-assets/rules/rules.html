@@ -69,7 +69,7 @@
 				</div>
 			</div>
 			<div class="col-md-12">
-				<button class="btn btn-success" data-ng-click="addRule()">{{'labels:lbl_add_rule' | i18next}}</button>
+				<button class="btn btn-success btn-add" data-ng-click="addRule()">{{'labels:lbl_add_rule' | i18next}}</button>
 			</div>
 			<div class="table-actions col-md-12">
 				<hr/>
@@ -88,7 +88,7 @@
 											uib-tooltip="{{'labels:tool_edit' | i18next}}">
 										<span class="glyphicon glyphicon-pencil"></span>
 									</button>
-										<button type="button" class="btn btn-warning btn-circle pull-right" style="margin-right: 1em;" data-ng-click="hideRule = !hideRule;showRule(rule)"
+										<button type="button" class="btn btn-warning btn-circle pull-right" style="margin-right: 1em;" data-ng-click="hideRule = !hideRule;showRule($index)"
 											uib-tooltip="{{'labels:tool_view' | i18next}}">
 										<span class="glyphicon" ng-class="{'glyphicon-eye-open': hideRule, 'glyphicon-eye-close': !hideRule}"></span>
 									</button>
@@ -96,7 +96,7 @@
 								</div>
 								<div class="row rule">
 									<div uib-collapse="hideRule" class="col-md-12">
-										<textarea readonly class="form-control rule-detail">{{ruleContent}}</textarea>
+										<textarea readonly class="form-control rule-detail">{{rules[$index]}}</textarea>
 									</div>
 								</div>
 							</td>

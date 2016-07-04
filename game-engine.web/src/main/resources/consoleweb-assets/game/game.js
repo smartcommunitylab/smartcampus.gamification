@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.game', [])
-	.controller('GameCtrl', function ($scope, $rootScope, $window, $stateParams, $uibModal, gamesFactory, $state) {
+	.controller('GameCtrl', function ($scope, $rootScope, $window, $stateParams, gamesFactory, $state) {
 		$rootScope.currentNav = 'concepts';
 		$rootScope.currentGameId = $stateParams.id;
 
@@ -126,7 +126,7 @@ angular.module('gamificationEngine.game', [])
 			});
 		};*/
 
-		$scope.deleteConcept = function (instance, type) {
+		/*$scope.deleteConcept = function (instance, type) {
 			// Delete a game
 			var modalInstance = $uibModal.open({
 				templateUrl: 'modals/modal_delete_confirm.html',
@@ -144,11 +144,11 @@ angular.module('gamificationEngine.game', [])
 					}
 				}
 			});
-		};
+		};*/
 	});
 
 // Edit points instance modal
-modals
+//modals
 /*.controller('EditPointsInstanceModalInstanceCtrl', function ($scope, $uibModalInstance, game, instance, gamesFactory) {
 	$scope.points = {};
 	$scope.points.name = instance.name;
@@ -207,7 +207,7 @@ modals
 })*/
 
 // Delete concept modal
-	.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {
+/*	.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {
 	$scope.argument = instance.name;
 
 	$scope.alerts = {
@@ -253,4 +253,4 @@ modals
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 	};
-});
+});*/

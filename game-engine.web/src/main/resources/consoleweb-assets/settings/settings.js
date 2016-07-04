@@ -26,13 +26,15 @@ angular.module('gamificationEngine.settings', [])
 
 		// OK button click event-handler
 		$scope.saveSettings = function () {
+			var limit = ($scope.alerts.nameError) ? 1 : 0;
 			var valid = true;
+			$scope.alerts.settingsEdited = false;
 			$scope.alerts.editGameError = false;
 			$scope.alerts.nameError = '';
 			$scope.alerts.invalidTime = false;
-
-
-			if (document.getElementsByClassName('has-error').length > 0) {
+			
+			
+			if (document.getElementsByClassName('has-error').length > limit) {
 				$scope.alerts.invalidTime = true;
 				valid = false;
 			}

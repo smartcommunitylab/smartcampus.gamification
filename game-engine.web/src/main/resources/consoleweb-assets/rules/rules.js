@@ -175,7 +175,8 @@ angular.module('gamificationEngine.rules', [])
 						game.rules = [];
 					}
 					if (!rule) {
-						game.rules.push(data);
+						//game.rules.push(data);
+						game.rules.unshift(data);
 					}
 					$scope.disabled = false;
 					$scope.list = true;
@@ -232,11 +233,15 @@ angular.module('gamificationEngine.rules', [])
 			//}
 		}
 
-		$scope.showRule = function (rule) {
+		$scope.rules = [];
+	
+		$scope.showRule = function (index) {
+			var rule = game.rules[index];
 				gamesFactory.getRule(game, rule.id).then(
 					function (data) {
 						if (data) {
-							$scope.ruleContent = data.content;
+							//$scope.ruleContent = data.content;
+							$scope.rules[index] = data.content;
 
 							//previousName = data.name;
 							//previousContent = data.content;
@@ -244,7 +249,7 @@ angular.module('gamificationEngine.rules', [])
 					},
 					function (message) {
 						// Show given error alert
-						$scope.ruleContent = '';
+						$scope.rules[index] = '';
 						$scope.alerts.ruleError = 'messages:' + message;
 					});
 			}

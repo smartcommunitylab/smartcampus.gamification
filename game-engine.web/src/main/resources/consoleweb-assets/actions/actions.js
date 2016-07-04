@@ -25,7 +25,8 @@ angular.module('gamificationEngine.actions', [])
 
 				if (!found) {
 					$scope.disabled = true;
-					game.actions.push($scope.input.actionName);
+					//game.actions.push($scope.input.actionName);
+					game.actions.unshift($scope.input.actionName);
 					gamesFactory.saveGame(game).then(
 						function () {
 							$scope.disabled = false;
@@ -33,7 +34,8 @@ angular.module('gamificationEngine.actions', [])
 							//console.log("success");
 						},
 						function (message) {
-							game.actions.pop();
+							//game.actions.pop();
+							game.actions.shift();
 							$scope.alerts.genericError = 'messages:' + message;
 							$scope.disabled = false;
 						});

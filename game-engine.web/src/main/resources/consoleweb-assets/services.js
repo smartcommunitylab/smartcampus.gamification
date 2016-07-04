@@ -199,7 +199,7 @@ angular.module('gamificationEngine.services', [])
 				$http.post(url + '/console/game', game).
 				success(function (data, status, headers, config) {
 					if (!game.id) {
-						$rootScope.games.push(data);
+						$rootScope.games.unshift(data);
 					}
 					deferred.resolve(data);
 				}).
@@ -242,9 +242,9 @@ angular.module('gamificationEngine.services', [])
 
 					// Choose instance object structure
 					if (instanceType == 'points') {
-						tmpGame.pointConcept.push(instance);
+						tmpGame.pointConcept.unshift(instance);
 					} else if (instanceType == 'badges_collections') {
-						tmpGame.badgeCollectionConcept.push(instance);
+						tmpGame.badgeCollectionConcept.unshift(instance);
 					}
 
 					$http.post(url + '/console/game', tmpGame).success(function (data, status, headers, config) {

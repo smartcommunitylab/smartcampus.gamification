@@ -84,7 +84,8 @@ angular.module('gamificationEngine.tasks', [])
 							if (!game.classificationTask) {
 								game.classificationTask = [];
 							}
-							game.classificationTask.push(data);
+							//game.classificationTask.push(data);
+							game.classificationTask.unshift(data);
 							//$uibModalInstance.close();
 							$scope.isCollapsed = true;
 							$scope.disabled = false;

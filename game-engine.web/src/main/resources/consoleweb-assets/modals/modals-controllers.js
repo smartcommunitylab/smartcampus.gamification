@@ -18,7 +18,7 @@
 var modals = angular.module('gamificationEngine.modals', [])
 	// Edit game modal
 	.controller('EditGameModalInstanceCtrl', function ($scope, $uibModalInstance, game, gamesFactory) {
-		$scope.newGame = {};
+		/*$scope.newGame = {};
 		$scope.newGame.name = game.name;
 
 		if (game.expiration) {
@@ -30,10 +30,70 @@ var modals = angular.module('gamificationEngine.modals', [])
 		// Error alerts object
 		$scope.alerts = {
 			'editGameError': '',
+		};*/
+		//var game = $scope.game;
+		$scope.newGame = {};
+		//$scope.newGame = angular.copy($scope.game);
+
+		$scope.newGame.name = game.name;
+
+		if (game.expiration) {
+			$scope.newGame.expiration = new Date(game.expiration);
+		} else {
+			$scope.newGame.neverending = true;
+			$scope.newGame.expiration = new Date();
+		}
+
+		// Error alerts object
+		$scope.alerts = {
+			'editGameError': false,
+			'nameError': '',
+			'invalidTime': false
 		};
 
 		// OK button click event-handler
 		$scope.ok = function () {
+			var limit = ($scope.alerts.nameError) ? 1 : 0;
+			var valid = true;
+			$scope.alerts.settingsEdited = false;
+			$scope.alerts.editGameError = false;
+			$scope.alerts.nameError = '';
+			$scope.alerts.invalidTime = false;
+
+
+			if (document.getElementsByClassName('has-error').length > limit) {
+				$scope.alerts.invalidTime = true;
+				valid = false;
+			}
+			if (!$scope.newGame.name) {
+				$scope.alerts.nameError = 'messages:msg_game_name_error';
+				valid = false;
+			} else if (!!gamesFactory.getGameByName($scope.newGame.name) && game.name !== $scope.newGame.name) {
+				$scope.alerts.nameError = 'messages:msg_game_name_exists_error';
+				valid = false;
+			}
+
+			if (valid) {
+				$scope.disabled = true;
+				var fields = {};
+				fields.name = $scope.newGame.name;
+				fields.expiration = $scope.newGame.expiration && !$scope.newGame.neverending ? $scope.newGame.expiration.getTime() : undefined;
+
+				// Edit game
+				gamesFactory.editGame(game, fields).then(
+					function () {
+						// Settings edited
+						$uibModalInstance.close();
+					},
+					function (message) {
+						// Show given error alert
+						$scope.alerts.editGameError = 'messages:' + message;
+						$scope.disabled = false;
+					}
+				);
+			}
+		};
+		/*$scope.ok = function () {
 			$scope.disabled = true;
 			$scope.alerts.editGameError = '';
 			if (document.getElementsByClassName('has-error').length == 0) {
@@ -57,7 +117,7 @@ var modals = angular.module('gamificationEngine.modals', [])
 				$scope.alerts.editGameError = 'messages:msg_invalid_time';
 				$scope.disabled = false;
 			}
-		};
+		};*/
 
 		// CANCEL button click event-handler
 		$scope.cancel = function () {

@@ -32,7 +32,7 @@ var app = angular.module('gamificationEngine', [
 	'ngAnimate',
 	'ui.bootstrap',
 	'jm.i18next',
-	'toggle-switch',
+	//'toggle-switch',
 	'ui.bootstrap.datetimepicker'
 ])
 

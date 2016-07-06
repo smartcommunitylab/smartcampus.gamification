@@ -51,6 +51,7 @@ angular.module('gamificationEngine.monitor', [])
 			return data;
 		}
 
+		$scope.hideDetails = true;
 
 
 		gamesFactory.getPlayersState($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {
@@ -61,7 +62,8 @@ angular.module('gamificationEngine.monitor', [])
 			$scope.err = msg;
 		});
 
-		$scope.expand = false;
+		//$scope.expand = false;
+		$scope.playerIdFilter = '';
 
 		$scope.filter = function () {
 			$rootScope.monitorFilter = $scope.playerIdFilter;
@@ -73,16 +75,9 @@ angular.module('gamificationEngine.monitor', [])
 				$scope.err = msg;
 			});
 		}
-		$scope.openDetails = function (idx) {
-			if (idx != $scope.expandIdx) {
-				$scope.expandIdx = idx;
-			} else {
-				$scope.expandIdx = -1000;
-			}
-		};
 
 		$scope.update = function () {
-			$scope.expandIdx = -1000;
+			//$scope.expandIdx = -1000;
 			gamesFactory.getPlayersState($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {
 				data.content = enrichData(data.content);
 				$scope.playerStates = data;

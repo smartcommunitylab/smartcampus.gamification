@@ -73,6 +73,7 @@
   "lbl_player" : "Giocatore",
   "tool_filter" : "filtra",
   "lbl_filter_ph" : "ID giocatore",
-  "lbl_summary_score" : "Punteggio totale",
-  "lbl_summary_badge" : "Distintivi totali"
+  "lbl_summary_score" : "Punti totali",
+  "lbl_summary_badge" : "Distintivi totali",
+  "lbl_total": "Totali"
 }

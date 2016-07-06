@@ -218,16 +218,53 @@ button.btn-default.btn-edit:focus {
 
 STATE MONITOR
 */
-
-.monitor-row {
+.player {
+	display: inline-block;
+}
+.player span.id {
+	line-height: 10px !important;
+	margin: 0;
+	font-size: 17px;
+	font-weight: normal;
+}
+.player span.id.bold {
+	font-weight: bold;
+}
+.player span.points {
+	line-height: 10px !important;
+	display: block;
+	font-size: 13px;
+}
+.record:before, .record:after, .details:before, .details:after {
+	content: none;
+}
+.details h5 {
+	width: 100%;
+	color: rgb(55,159,244);
+	border-bottom: 2px solid rgb(55,159,244);
+}
+.details .total {
+	float: right;
+	font-size: 13px;
+	position: relative;
+	top: -35px;
+}
+.details table {
+	margin: 0 10px;
+}
+.details .value {
+	font-weight: bolder;
+}
+.details .badge-elem {
+	margin-right: 10px;
+}
+/*.monitor-row {
 	background-color: #E6E6E6;
 	margin-bottom: 0.1em;
-	/* min-height: 5.2em; */
 }
 
 .monitor-box {
 	display: inline-block;
-	/* min-height: 5em; */
 }
 
 .summary-row p {
@@ -265,7 +302,7 @@ STATE MONITOR
 .badge-elem {
 	margin-right: 0.3em;
 	color: #4DA9C2;
-}
+}*/
 
 .glyphicon-plus {
 	top: -0.3px;

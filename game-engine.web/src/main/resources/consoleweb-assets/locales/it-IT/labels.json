@@ -77,5 +77,6 @@
   "lbl_summary_badge" : "Distintivi totali",
   "lbl_total": "Totali",
   "lbl_players_list": "Lista giocatori",
-  "lbl_game": "Gioco"
+  "lbl_game": "Gioco",
+  "tool_view": "visualizza"
 }

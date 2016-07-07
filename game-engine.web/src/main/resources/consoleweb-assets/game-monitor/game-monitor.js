@@ -59,7 +59,7 @@ angular.module('gamificationEngine.monitor', [])
 			$scope.playerStates = data;
 			$scope.totalItems = data.totalElements;
 		}, function (msg) {
-			$scope.err = msg;
+			$scope.err = 'messages:' + msg;
 		});
 
 		//$scope.expand = false;
@@ -72,7 +72,7 @@ angular.module('gamificationEngine.monitor', [])
 				$scope.playerStates = data;
 				$scope.totalItems = data.totalElements;
 			}, function (msg) {
-				$scope.err = msg;
+				$scope.err = 'messages:' + msg;
 			});
 		}
 
@@ -83,7 +83,7 @@ angular.module('gamificationEngine.monitor', [])
 				$scope.playerStates = data;
 				$scope.totalItems = data.totalElements;
 			}, function (msg) {
-				$scope.err = msg;
+				$scope.err = 'messages:' + msg;
 			});
 		};
 	});

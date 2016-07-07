@@ -763,7 +763,7 @@ public class PortalController extends SCController{
 	
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
-	@Scheduled(cron="0 30 7 * * SAT") 		// Repeat every Saturday at 7:30 AM
+	@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Saturday at 7:30 AM
 	public synchronized void checkWinnersNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days

@@ -160,8 +160,25 @@
 			        <h3>
 			        	E NON DIMENTICARE di andare nel tuo sito personalizzato cliccando <b><a href="https://tn.smartcommunitylab.it/gamificationweb" th:href="${greengame_url}" target="_blank">QUI</a></b> per fornirci i tuoi commenti e impressioni sul gioco e metterti alla prova con le sfide che abbiamo preparato apposta per te!
 			        </h3>
-			        
-<!-- 			        <img src="img/foglie03.svg" th:src="'cid:' + ${imageResourceName}" /> -->
+					<h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
+				        Ecco le tue SFIDE attive, mettiti alla prova per superarle:
+				    </h3>
+				    <table th:if="${n_challenges ne null}">
+					    <tr th:each="ch : ${n_challenges}" valign="top">
+					        <!-- <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
+					       	<td><strong> - </strong></td>
+					    	<td>
+					    		<div>
+					    			<font size="2"><strong><span th:text="${ch.challDesc}">Descrizione challenge</span></strong><br/>
+					       				<span th:text="${ch.challCompleteDesc}">Descrizione lunga challenge</span>
+					       			</font>
+					    		</div>
+					       	</td>
+					    </tr>
+					</table>
+					<h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
+				        Ricordati che le sfide sono valide fino alle ore <span th:text="${chs_end_time}">23:59</span> del giorno <span th:text="${chs_end_date}">YYY</span>!
+				    </h3>
 
 					<h3>Ti ringraziamo per aver partecipato a questa iniziativa e aver contribuito a rendere la tua citt&agrave; pi&ugrave; smart.</h3>
 			        

@@ -314,6 +314,28 @@ public class EmailService {
     		}
     	}
     	
+    	String challengesStartingTime = "";
+    	String challengesEndingTime = "";
+    	String challengesStartingDate = "";
+    	String challengesEndingDate = "";
+    	Date ch_startTime = null;
+    	Date ch_endTime = null;
+    	SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    	if(challenges != null && challenges.size() > 0){
+    		long startTime = challenges.get(0).getStartDate();
+    		long endTime = challenges.get(0).getEndDate();
+    		ch_startTime = new Date(startTime);
+    		ch_endTime = new Date(endTime);
+    		String challStartingAll = dt.format(ch_startTime);
+    		String challEndingAll = dt.format(ch_endTime);
+    		String[] completeStart = challStartingAll.split(" ");
+    		String[] completeEnd = challEndingAll.split(" ");
+    		challengesStartingDate = completeStart[0];
+    		challengesStartingTime = completeStart[1];
+    		challengesEndingDate = completeEnd[0];
+    		challengesEndingTime = completeEnd[1];
+    	}
+    	
         // Prepare the evaluation context
         final Context ctx = new Context(locale);
         ctx.setVariable("name", recipientName);
@@ -328,6 +350,10 @@ public class EmailService {
         ctx.setVariable("n_challenges", challenges);
         ctx.setVariable("n_lw_challenges", last_week_challenges);
         ctx.setVariable("n_lw_win_challenges", winChallenges);
+        ctx.setVariable("chs_start_date", challengesStartingDate);
+        ctx.setVariable("chs_start_time", challengesStartingTime);
+        ctx.setVariable("chs_end_date", challengesEndingDate);
+        ctx.setVariable("chs_end_time", challengesEndingTime);
         ctx.setVariable("n_prizes", prizes);
         ctx.setVariable("are_prizes", are_prizes);
         ctx.setVariable("are_prizes_last", are_last_week_prizes);

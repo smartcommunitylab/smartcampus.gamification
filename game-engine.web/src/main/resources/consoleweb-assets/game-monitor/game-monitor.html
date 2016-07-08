@@ -19,7 +19,8 @@
 <div data-ng-controller="MonitorCtrl">
 	<div class="row" style="margin-top: 2em;">
 		<div class="col-md-12">
-			<h3>{{'labels:lbl_game' | i18next}}: {{game.name}} <strong><small>(gameId: {{game.id}})</small></strong></h3>
+			<span class="glyphicon glyphicon-menu-left" id="back" style="top:5px" ng-click="goToUrl('#/home')"></span>
+			<h3 style="display:inline">{{'labels:lbl_game' | i18next}}: {{game.name}} <strong><small>(gameId: {{game.id}})</small></strong></h3>
 		</div>
 	</div>
 	<div class="row">

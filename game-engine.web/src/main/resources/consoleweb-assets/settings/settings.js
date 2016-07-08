@@ -97,9 +97,6 @@ angular.module('gamificationEngine.settings', [])
 			}*/
 		};
 		
-		$scope.goToUrl = function (url) {
-			$window.location.href = url;
-		}
 		// CANCEL button click event-handler
 		$scope.cancel = function () {
 			$scope.goto('concepts');

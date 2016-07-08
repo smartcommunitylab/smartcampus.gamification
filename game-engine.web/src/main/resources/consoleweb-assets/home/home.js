@@ -93,15 +93,6 @@ angular.module('gamificationEngine.home', [])
 					}
 				}
 			});
-
-			var g = angular.copy(game);
-			g.stopped = true;
-			//gamesFactory.saveGame(g).then(function () {
-			game.stopped = true;
-			//$scope.alerts.error = false;
-			//}, function () {
-			//	$scope.alerts.error = true;
-			//});
 		};
 
 		/*$scope.getLength = function (game, type) {
@@ -122,12 +113,12 @@ modals.controller('StopGameConfirmModalInstanceCtrl', function ($scope, $uibModa
 	$scope.stop = function () {
 		var g = angular.copy(game);
 		g.stopped = true;
-		//gamesFactory.saveGame(g).then(function () {
-		game.stopped = true;
-		$uibModalInstance.close();
-		//}, function () {
-		//	$scope.error = true;
-		//});
+		gamesFactory.saveGame(g).then(function () {
+			game.stopped = true;
+			$uibModalInstance.close();
+		}, function () {
+			$scope.error = true;
+		});
 	};
 
 	// CANCEL button click event-handler

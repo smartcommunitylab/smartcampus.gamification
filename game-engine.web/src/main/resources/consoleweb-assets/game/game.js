@@ -64,6 +64,10 @@ angular.module('gamificationEngine.game', [])
 			$scope.menuItem = path;
 		};
 
+		$scope.goToUrl = function (url) {
+			$window.location.href = url;
+		}
+
 		/*$scope.goToTab = function (tab) {
 			$window.location.href = '#/game/' + $scope.game.id + '?tab=' + tab;
 		};*/

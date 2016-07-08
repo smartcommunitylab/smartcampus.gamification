@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.monitor', [])
-	.controller('MonitorCtrl', function ($scope, $rootScope, $stateParams, $uibModal, gamesFactory, $state) {
+	.controller('MonitorCtrl', function ($scope, $rootScope, $stateParams, $window, $uibModal, gamesFactory, $state) {
 		$rootScope.currentGameId = $stateParams.id;
 		$scope.currentPage = 1;
 		$scope.items4Page = 10;
@@ -86,4 +86,8 @@ angular.module('gamificationEngine.monitor', [])
 				$scope.err = 'messages:' + msg;
 			});
 		};
+
+		$scope.goToUrl = function (url) {
+			$window.location.href = url;
+		}
 	});

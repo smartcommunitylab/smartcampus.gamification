@@ -438,3 +438,29 @@ hr {
 	width: 99%;
 	opacity: 1;
 }
+
+/*
+	select style
+*/
+div.select {
+	display: inline-block;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+	min-width: 80px;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: #fff;
+    background: #fff url("http://www.scottgood.com/jsg/blog.nsf/images/arrowdown.gif") no-repeat 95% 50%;
+}
+
+div.select select {
+    padding: 5px 8px;
+	width: 100%;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+}

@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.rules', [])
-	.controller('RulesCtrl', function ($scope, $rootScope, $timeout, $stateParams, $uibModal, gamesFactory) {
+	.controller('RulesCtrl', function ($scope, $rootScope, $timeout, $window, $stateParams, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'rules';
 		$rootScope.currentGameId = $stateParams.id;
 
@@ -224,6 +224,8 @@ angular.module('gamificationEngine.rules', [])
 
 						previousName = data.name;
 						//previousContent = data.content;
+						
+						$window.scrollTo(0, 0);
 					}
 				},
 				function (message) {

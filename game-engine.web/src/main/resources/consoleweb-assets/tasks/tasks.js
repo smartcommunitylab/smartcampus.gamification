@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.tasks', [])
-	.controller('TasksCtrl', function ($scope, $rootScope, $stateParams, $timeout, $uibModal, gamesFactory) {
+	.controller('TasksCtrl', function ($scope, $rootScope, $stateParams, $timeout, $window, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'tasks';
 		$rootScope.currentGameId = $stateParams.id;
 
@@ -159,6 +159,8 @@ angular.module('gamificationEngine.tasks', [])
 			$scope.edit = true;
 			$scope.isCollapsed = false;
 			$scope.alerts.rankEdited = false;
+			
+			$window.scrollTo(0, 0);
 		};
 		/*$scope.openAddTaskModal = function () {
 			var modalInstance = $uibModal.open({

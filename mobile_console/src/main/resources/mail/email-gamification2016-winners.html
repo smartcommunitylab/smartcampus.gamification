@@ -158,10 +158,10 @@
 <!-- 			        </h3> -->
 			
 			        <h3>
-			        	E NON DIMENTICARE di andare nel tuo sito personalizzato cliccando <b><a href="https://tn.smartcommunitylab.it/gamificationweb" th:href="${greengame_url}" target="_blank">QUI</a></b> per fornirci i tuoi commenti e impressioni sul gioco e metterti alla prova con le sfide che abbiamo preparato apposta per te!
+			        	E NON DIMENTICARE di andare nel tuo sito personalizzato cliccando <u><b><a href="https://tn.smartcommunitylab.it/gamificationweb" th:href="${greengame_url}" target="_blank">QUI</a></b></u> per fornirci i tuoi commenti e impressioni sul gioco e metterti alla prova con le sfide che abbiamo preparato apposta per te!
 			        </h3>
 					<h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
-				        Ecco le tue SFIDE attive, mettiti alla prova per superarle:
+				        Ecco le tue SFIDE attive, mettiti in gioco per superarle:
 				    </h3>
 				    <table th:if="${n_challenges ne null}">
 					    <tr th:each="ch : ${n_challenges}" valign="top">

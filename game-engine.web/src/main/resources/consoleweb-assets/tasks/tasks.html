@@ -26,6 +26,11 @@
 				<uib-alert ng-if="!!alerts.rankEdited" type="success" close="alerts.rankEdited = false">{{'messages:msg_rank_edited' | i18next}}</uib-alert>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<uib-alert ng-if="!!alerts.rankDeleted" type="success" close="alerts.rankDeleted = false">{{'messages:msg_rank_deleted' | i18next}}</uib-alert>
+			</div>
+		</div>
 		<div uib-collapse="isCollapsed" class="col-md-12">
 			<h4>{{title | i18next}} <span ng-show="input.name">&lt;{{input.name}}&gt;</span></h4>
 			<form role="form" name="taskForm">

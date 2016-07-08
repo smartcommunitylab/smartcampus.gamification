@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.rules', [])
-	.controller('RulesCtrl', function ($scope, $rootScope, $stateParams, $uibModal, gamesFactory) {
+	.controller('RulesCtrl', function ($scope, $rootScope, $timeout, $stateParams, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'rules';
 		$rootScope.currentGameId = $stateParams.id;
 
@@ -15,7 +15,8 @@ angular.module('gamificationEngine.rules', [])
 			'nameError': false,
 			'contentError': false,
 			'ruleError': '',
-			'ruleEdited': false
+			'ruleEdited': false,
+			'ruleDeleted': false
 		};
 		var previousName = '';
 
@@ -299,6 +300,14 @@ angular.module('gamificationEngine.rules', [])
 						return rule;
 					}
 				}
+			});
+			
+			modalInstance.result.then(function () {
+				$scope.alerts.ruleDeleted = true;
+				
+				$timeout(function () {
+					$scope.alerts.ruleDeleted = false;
+				}, 4000);
 			});
 		};
 

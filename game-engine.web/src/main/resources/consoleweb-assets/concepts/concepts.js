@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.concepts', [])
-	.controller('ConceptsCtrl', function ($scope, $rootScope, $uibModal, gamesFactory) {
+	.controller('ConceptsCtrl', function ($scope, $rootScope, $timeout, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'concepts';
 
 		//var game = $scope.game;
@@ -15,7 +15,10 @@ angular.module('gamificationEngine.concepts', [])
 		// Error alerts object
 		$scope.alerts = {
 			'genericError': false,
-			'editInstanceError': ''
+			'editInstanceError': '',
+			'pointDeleted': false,
+			'badgeDeleted': false,
+			'challengeDeleted': false
 		};
 
 		// SAVE button click event-handler
@@ -85,6 +88,29 @@ angular.module('gamificationEngine.concepts', [])
 					type: function () {
 						return type;
 					}
+				}
+			});
+
+			modalInstance.result.then(function () {
+				if (type == 'point') {
+					$scope.alerts.pointDeleted = true;
+
+					$timeout(function () {
+						$scope.alerts.pointDeleted = false;
+					}, 4000);
+
+				} else if (type == 'badge') {
+					$scope.alerts.badgeDeleted = true;
+
+					$timeout(function () {
+						$scope.alerts.badgeDeleted = false;
+					}, 4000);
+				} else if (type == 'challenge') {
+					$scope.alerts.challengeDeleted = true;
+
+					$timeout(function () {
+						$scope.alerts.challengeDeleted = false;
+					}, 4000);
 				}
 			});
 		};

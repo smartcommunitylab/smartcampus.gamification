@@ -19,5 +19,12 @@
   "msg_error_exist" : "L'elemento esiste già",
   "msg_no_customdata": "Nessun custom data per il giocatore",
   "msg_invalid_time": "Inserire un'ora valida",
-  "msg_empty_fields": "Tutti i campi devono essere compilati"
+  "msg_empty_fields": "Tutti i campi devono essere compilati",
+  "msg_rank_edited": "Classifica modificata con successo",
+  "msg_rank_deleted": "Classifica eliminata con successo",
+  "msg_rule_deleted": "Regola eliminata con successo",
+  "msg_action_deleted": "Azione eliminata con successo",
+  "msg_point_deleted": "Punto eliminato con successo",
+  "msg_badge_deleted": "Badge collection eliminata con successo",
+  "msg_challenge_deleted": "Challenge eliminata con successo"
 }

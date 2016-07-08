@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.actions', [])
-	.controller('ActionsCtrl', function ($scope, $rootScope, $stateParams, $uibModal, gamesFactory) {
+	.controller('ActionsCtrl', function ($scope, $rootScope, $stateParams, $timeout, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'actions';
 		$rootScope.currentGameId = $stateParams.id;
 
@@ -9,7 +9,8 @@ angular.module('gamificationEngine.actions', [])
 
 		$scope.alerts = {
 			'actionError': '',
-			'genericError': ''
+			'genericError': '',
+			'actionDeleted': false
 		};
 
 		$scope.addAction = function () {
@@ -79,6 +80,14 @@ angular.module('gamificationEngine.actions', [])
 					}
 				}
 			});
+			
+			modalInstance.result.then(function () {
+				$scope.alerts.actionDeleted = true;
+				
+				$timeout(function () {
+					$scope.alerts.actionDeleted = false;
+				}, 4000);
+			})
 		};
 
 		// Load game

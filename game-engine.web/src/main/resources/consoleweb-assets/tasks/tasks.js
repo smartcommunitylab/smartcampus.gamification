@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.tasks', [])
-	.controller('TasksCtrl', function ($scope, $rootScope, $stateParams, $uibModal, gamesFactory) {
+	.controller('TasksCtrl', function ($scope, $rootScope, $stateParams, $timeout, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'tasks';
 		$rootScope.currentGameId = $stateParams.id;
 
@@ -21,7 +21,8 @@ angular.module('gamificationEngine.tasks', [])
 			'cronError': false,
 			'pointsError': false,
 			'classError': false,
-			'rankEdited': false
+			'rankEdited': false,
+			'rankDeleted': false
 		};
 
 		var t = {};
@@ -205,6 +206,14 @@ angular.module('gamificationEngine.tasks', [])
 						return convertTask(task);
 					}
 				}
+			});
+			
+			modalInstance.result.then(function () {
+				$scope.alerts.rankDeleted = true;
+				
+				$timeout(function () {
+					$scope.alerts.rankDeleted = false;
+				}, 4000);
 			});
 		};
 

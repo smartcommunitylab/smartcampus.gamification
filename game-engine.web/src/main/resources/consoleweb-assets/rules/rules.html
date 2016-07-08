@@ -35,8 +35,7 @@
 					<div class="form-group" ng-class="{'has-error': alerts.nameError}">
 						<label for="name">{{'labels:lbl_name' | i18next}}</label>
 						<div class="clearfix"></div>
-						<input type="text" class="form-control text" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}"
-							autofocus/>
+						<input type="text" class="form-control text" id="name" data-ng-model="input.name" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" autofocus/>
 					</div>
 					<div class="row">
 						<div class="col-md-12">
@@ -67,6 +66,11 @@
 				<div class="col-md-12 text-center">
 					<uib-alert ng-if="!!alerts.ruleEdited" type="success" close="alerts.ruleEdited = false">{{'messages:msg_rule_edited' | i18next}}</uib-alert>
 				</div>
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<uib-alert ng-if="!!alerts.ruleDeleted" type="success" close="alerts.ruleDeleted = false">{{'messages:msg_rule_deleted' | i18next}}</uib-alert>
+					</div>
+				</div>
 			</div>
 			<div class="col-md-12">
 				<button class="btn btn-success btn-add" data-ng-click="addRule()">{{'labels:lbl_add_rule' | i18next}}</button>
@@ -84,12 +88,10 @@
 										<button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteRule(rule)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
 										<span class="glyphicon glyphicon-trash"></span>
 									</button>
-										<button type="button" class="btn btn-primary btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editRule(rule)"
-											uib-tooltip="{{'labels:tool_edit' | i18next}}">
+										<button type="button" class="btn btn-primary btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editRule(rule)" uib-tooltip="{{'labels:tool_edit' | i18next}}">
 										<span class="glyphicon glyphicon-pencil"></span>
 									</button>
-										<button type="button" class="btn btn-warning btn-circle pull-right" style="margin-right: 1em;" data-ng-click="hideRule = !hideRule;showRule($index)"
-											uib-tooltip="{{'labels:tool_view' | i18next}}">
+										<button type="button" class="btn btn-warning btn-circle pull-right" style="margin-right: 1em;" data-ng-click="hideRule = !hideRule;showRule($index)" uib-tooltip="{{'labels:tool_view' | i18next}}">
 										<span class="glyphicon" ng-class="{'glyphicon-eye-open': hideRule, 'glyphicon-eye-close': !hideRule}"></span>
 									</button>
 									</div>

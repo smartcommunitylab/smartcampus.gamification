@@ -26,6 +26,11 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12 text-center">
+					<uib-alert ng-if="!!alerts.actionDeleted" type="success" close="$scope.alerts.actionDeleted = false">{{'messages:msg_action_deleted' | i18next}}</uib-alert>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 text-center">
 					<uib-alert ng-if="!!alerts.actionError" type="danger">{{alerts.actionError | i18next}}</uib-alert>
 				</div>
 			</div>

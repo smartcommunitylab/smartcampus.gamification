@@ -32,6 +32,11 @@
 								<div class="col-md-12 text-center">
 									<uib-alert ng-if="!!alerts.genericError" type="danger">{{'messages:msg_generic_error' | i18next}}</uib-alert>
 								</div>
+								<div class="row">
+									<div class="col-md-12 text-center">
+										<uib-alert ng-if="!!alerts.pointDeleted" type="success" close="$scope.alerts.pointDeleted = false">{{'messages:msg_point_deleted' | i18next}}</uib-alert>
+									</div>
+								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-12 text-center">
@@ -69,6 +74,11 @@
 							<div class="row">
 								<div class="col-md-12 text-center">
 									<uib-alert ng-if="!!alerts.genericError" type="danger">{{'messages:msg_generic_error' | i18next}}</uib-alert>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 text-center">
+									<uib-alert ng-if="!!alerts.badgeDeleted" type="success" close="$scope.alerts.badgeDeleted = false">{{'messages:msg_badge_deleted' | i18next}}</uib-alert>
 								</div>
 							</div>
 							<div class="row">

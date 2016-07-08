@@ -7,12 +7,12 @@
   "btn_tasks": "Task",
   "btn_logout": "Disconnetti",
   "btn_login": "Accedi",
-  "btn_add_game": "Aggiungi un nuovo gioco",
+  "btn_add_game": "Crea un nuovo gioco",
   "lbl_name": "Nome",
   "lbl_enter_name": "Inserisci nome",
   "btn_cancel": "Annulla",
   "btn_ok": "OK",
-  "game_info": "__total__ definiti",
+  "game_info": "definiti",
   "lbl_edit_game": "Modifica impostazioni gioco",
   "lbl_game_name": "Name",
   "lbl_game_expiration": "Chiusura gioco",
@@ -78,5 +78,10 @@
   "lbl_total": "Totali",
   "lbl_players_list": "Lista giocatori",
   "lbl_game": "Gioco",
-  "tool_view": "visualizza"
+  "tool_view": "visualizza",
+  "lbl_stop_game": "Termina gioco",
+  "tool_clone_game": "Clona il gioco",
+  "tool_pause_game": "Ferma il gioco",
+  "tool_active_game": "Riprendi il gioco",
+  "lbl_stop_confirm": "Conferma terminazione"
 }

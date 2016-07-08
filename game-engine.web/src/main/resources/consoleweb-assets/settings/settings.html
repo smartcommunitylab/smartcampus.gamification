@@ -49,12 +49,12 @@
 					</div>
 					<datetimepicker show-spinners="true" placeholder="mm/dd/yyyy" ng-model="newGame.expiration" show-meridian="showMeridian" date-format="dd-MMM-yyyy"></datetimepicker>
 				</div>
-
 			</div>
 		</div>
 		<div class="modal-footer clearfix">
 			<button type="submit" class="btn btn-success" data-ng-click="saveSettings()" ng-disabled="disabled">{{'labels:btn_save' | i18next}}</button>
-			<button type="reset" class="btn btn-danger" data-ng-click="cancel()" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
+			<button ng-show="!new" type="reset" class="btn btn-danger" data-ng-click="cancel()" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
+			<button ng-show="new" type="reset" class="btn btn-danger" data-ng-click="goToUrl('#/home')" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
 		</div>
 	</form>
 </div>

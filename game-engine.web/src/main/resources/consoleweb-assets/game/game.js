@@ -4,8 +4,15 @@ angular.module('gamificationEngine.game', [])
 		$rootScope.currentGameId = $stateParams.id;
 
 		// default
-		$scope.viewName = 'concepts';
-		$scope.menuItem = 'concepts';
+		if ($stateParams.id) {
+			$scope.viewName = 'concepts';
+			$scope.menuItem = 'concepts';
+			$scope.new = false;
+		} else {
+			$scope.viewName = 'settings';
+			$scope.menuItem = 'settings';
+			$scope.new = true;
+		}
 
 		if ($state.current.data) {
 			$rootScope.page = $state.current.data.page;
@@ -15,7 +22,7 @@ angular.module('gamificationEngine.game', [])
 		$scope.alerts = {
 			//'cantCreateLeaderboards': false,
 			'loadGameError': false
-			//'settingsEdited': false
+				//'settingsEdited': false
 		};
 
 		// Tab switching
@@ -59,7 +66,7 @@ angular.module('gamificationEngine.game', [])
 
 		/*$scope.goToTab = function (tab) {
 			$window.location.href = '#/game/' + $scope.game.id + '?tab=' + tab;
-		};*/		
+		};*/
 
 		/*$scope.openEditModal = function (id) {
 			// Edit a game

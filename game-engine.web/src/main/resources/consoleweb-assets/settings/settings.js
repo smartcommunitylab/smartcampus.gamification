@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.settings', [])
-	.controller('SettingsCtrl', function ($scope, $rootScope, $stateParams, gamesFactory) {
+	.controller('SettingsCtrl', function ($scope, $rootScope, $window, $stateParams, gamesFactory) {
 		$rootScope.currentNav = 'settings';
 		$rootScope.currentGameId = $stateParams.id;
 
@@ -32,8 +32,8 @@ angular.module('gamificationEngine.settings', [])
 			$scope.alerts.editGameError = false;
 			$scope.alerts.nameError = '';
 			$scope.alerts.invalidTime = false;
-			
-			
+
+
 			if (document.getElementsByClassName('has-error').length > limit) {
 				$scope.alerts.invalidTime = true;
 				valid = false;
@@ -54,12 +54,15 @@ angular.module('gamificationEngine.settings', [])
 
 				// Edit game
 				gamesFactory.editGame(game, fields).then(
-					function () {
+					function (data) {
 						// Settings edited
 						$scope.game.name = $scope.newGame.name;
 						$scope.game.expiration = $scope.newGame.expiration;
 						$scope.alerts.settingsEdited = true;
 						$scope.disabled = false;
+						if ($scope.new) {
+							$scope.goToUrl('#/game/' + data.id);
+						}
 					},
 					function (message) {
 						// Show given error alert
@@ -93,7 +96,10 @@ angular.module('gamificationEngine.settings', [])
 				$scope.disabled = false;
 			}*/
 		};
-
+		
+		$scope.goToUrl = function (url) {
+			$window.location.href = url;
+		}
 		// CANCEL button click event-handler
 		$scope.cancel = function () {
 			$scope.goto('concepts');

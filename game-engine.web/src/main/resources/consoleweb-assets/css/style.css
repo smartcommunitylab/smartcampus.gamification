@@ -44,14 +44,13 @@ body {
 	margin-top: 20px;
 }
 
-.panel.panel-games {
+/*.panel.panel-games {
 	margin-left: 10px;
 	margin-right: 10px;
 	margin-bottom: 40px;
-	/*overflow: hidden;*/
-}
+}*/
 
-.terminated {
+/*.terminated {
 	background-color: rgba(126, 113, 113, 0.52) !important;
 }
 
@@ -59,7 +58,7 @@ body {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
+}*/
 
 .btn-circle {
 	width: 30px;
@@ -197,7 +196,7 @@ button.btn-default.btn-edit:focus {
 	color: rgb(65, 169, 246);
 }
 
-.panel-heading.table-style {
+/*.panel-heading.table-style {
 	display: table;
 	width: 100%;
 }
@@ -211,7 +210,7 @@ button.btn-default.btn-edit:focus {
 .panel-heading.table-style .game-btn {
 	display: table-cell;
 	vertical-align: middle;
-}
+}*/
 
 
 /*
@@ -439,6 +438,54 @@ hr {
 	opacity: 1;
 }
 
+/*
+	home
+*/
+.game {
+	margin: 10px 0;
+	border: 1px solid rgb(117,117,117);
+	border-radius: 10px;
+	padding: 0 10px;
+	float: left;
+	width: 100%;
+}
+.game .game-title, .game p {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.game .game-title {
+	color: rgb(55,159,244);
+	line-height: 27px;
+	margin: 10px 0 15px 0;
+	cursor: pointer;
+}
+.game .stop {
+	text-transform: uppercase;
+	font-weight: 500;
+	font-size: 14px;
+	color: rgb(55,159,244);
+	cursor: pointer;
+	position: relative;
+	top: 10px;
+	left: 2px;
+}
+.game .actions {
+	float: right;
+	padding: 5px 0;
+}
+.game .actions button {
+	margin: 1px;
+}
+.game .actions button img {
+	width: 75%;
+	position: relative;
+	top: -3px;
+	left: 1px;
+}
+.game.stopped .game-title {
+	color: rgb(117,117,117);
+}
 /*
 	select style
 */

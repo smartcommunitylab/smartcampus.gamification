@@ -218,7 +218,12 @@ public class ChallengesUtils {
 					long now = System.currentTimeMillis();
 					//int daysToEnd = calculateRemainingDays(endChTs, now);
 					Boolean success = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SUCCESS)) ? customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS) : false;
-					long endTime = Long.parseLong(endChTs);
+					long endTime = 0L;
+					try {
+						endTime = Long.parseLong(endChTs);
+					} catch (Exception ex){
+						logger.error(ex.getMessage());
+					}
 					long startTime = 0L;
 					Boolean active = (now < endTime);
 					int status = 0;

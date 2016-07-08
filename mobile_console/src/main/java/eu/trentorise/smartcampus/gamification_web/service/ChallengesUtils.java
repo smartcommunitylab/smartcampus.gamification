@@ -222,6 +222,7 @@ public class ChallengesUtils {
 					try {
 						endTime = Long.parseLong(endChTs);
 					} catch (Exception ex){
+						endTime = 1468792801000L;
 						logger.error(ex.getMessage());
 					}
 					long startTime = 0L;

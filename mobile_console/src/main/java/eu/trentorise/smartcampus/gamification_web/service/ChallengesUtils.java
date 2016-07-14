@@ -222,8 +222,19 @@ public class ChallengesUtils {
 					try {
 						endTime = Long.parseLong(endChTs);
 					} catch (Exception ex){
-						endTime = 1468792801000L;
-						logger.error(ex.getMessage());
+						if(endChTs.contains("E")){
+							String[] completeEnd = endChTs.split("E");
+							String newEndChTs = completeEnd[0];
+							String powedVal = completeEnd[1];
+							double powedNum = Double.parseDouble(powedVal);
+							double doubleValue = Double.parseDouble(newEndChTs);
+							double powVal = Math.pow(10d, powedNum);
+							endTime = (long)(doubleValue * powVal);
+							logger.info("Converted E value to new long " + endTime);
+						} else {
+							endTime = 0L; 
+							logger.error(ex.getMessage());
+						}
 					}
 					long startTime = 0L;
 					Boolean active = (now < endTime);

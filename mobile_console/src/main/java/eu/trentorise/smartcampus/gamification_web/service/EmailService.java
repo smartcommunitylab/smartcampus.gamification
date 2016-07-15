@@ -22,11 +22,11 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
-import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Summary;
 import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
+import eu.trentorise.smartcampus.gamification_web.models.status.ChallengesData;
 
 @Service
 public class EmailService {

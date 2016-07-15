@@ -1,4 +1,4 @@
-package eu.trentorise.smartcampus.gamification_web.models;
+package eu.trentorise.smartcampus.gamification_web.models.status;
 
 public class ChallengesData {
 	
@@ -7,29 +7,33 @@ public class ChallengesData {
 	private String challCompleteDesc = "";
 	private int challTarget = 0;
 	private int status = 0;
+	private double row_status = 0L;
 	private String type = "";
 	private Boolean active = false;
 	private Boolean success = false;
-	long startDate = 0L;
-	long endDate = 0L;
+	private long startDate = 0L;
+	private long endDate = 0L;
+	private int daysToEnd = 0;
 	
 	public ChallengesData(){
 		super();
 	}
 
-	public ChallengesData(String challId, String challDesc, String challCompleteDesc, int challTarget, int status,
-			String type, Boolean active, Boolean success, long startDate, long endDate) {
+	public ChallengesData(String challId, String challDesc, String challCompleteDesc, int challTarget, int status, double row_status,
+			String type, Boolean active, Boolean success, long startDate, long endDate, int daysToEnd) {
 		super();
 		this.challId = challId;
 		this.challDesc = challDesc;
 		this.challCompleteDesc = challCompleteDesc;
 		this.challTarget = challTarget;
 		this.status = status;
+		this.row_status = row_status;
 		this.type = type;
 		this.active = active;
 		this.success = success;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.daysToEnd = daysToEnd;
 	}
 
 	public String getChallId() {
@@ -110,6 +114,22 @@ public class ChallengesData {
 
 	public void setChallCompleteDesc(String challCompleteDesc) {
 		this.challCompleteDesc = challCompleteDesc;
+	}
+
+	public int getDaysToEnd() {
+		return daysToEnd;
+	}
+
+	public void setDaysToEnd(int daysToEnd) {
+		this.daysToEnd = daysToEnd;
+	}
+
+	public double getRow_status() {
+		return row_status;
+	}
+
+	public void setRow_status(double row_status) {
+		this.row_status = row_status;
 	}
 
 	@Override

@@ -35,11 +35,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
+import eu.trentorise.smartcampus.gamification_web.models.PlayerStatus;
 import eu.trentorise.smartcampus.gamification_web.models.SurveyData;
+import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
+import eu.trentorise.smartcampus.gamification_web.service.ChallengesUtils;
+import eu.trentorise.smartcampus.gamification_web.service.StatusUtils;
 import eu.trentorise.smartcampus.profileservice.BasicProfileService;
 import eu.trentorise.smartcampus.profileservice.model.AccountProfile;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
@@ -54,6 +58,10 @@ public class WsProxyController {
 	private String gamificationUrl;
 	
 	@Autowired
+	@Value("${smartcampus.gamification.url}")
+	private String gamificationWebUrl;
+	
+	@Autowired
 	@Value("${smartcampus.urlws.gameconsole}")
 	private String gamificationConsoleUrl;
 	
@@ -66,6 +74,9 @@ public class WsProxyController {
 	
 	@Autowired
     private PlayerProdRepositoryDao playerProdRepositoryDao;
+	
+	@Autowired
+    private ChallengeDescriptionDataSetup challDescriptionSetup;
 	
 	@Autowired
 	@Value("${smartcampus.isTest}")
@@ -470,6 +481,44 @@ public class WsProxyController {
 			val = nameAndVal[1];
 		}
 		return val;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/status")
+	public @ResponseBody
+	PlayerStatus getPlayerStatus(HttpServletRequest request, @RequestParam String token, HttpServletResponse res) throws JSONException{
+		logger.info("WS-get status user token " + token);
+		BasicProfile user = null;
+		try {
+			user = profileService.getBasicProfile(token);
+			if (user == null) {
+				res.setStatus(HttpStatus.UNAUTHORIZED.value());
+				return null;
+			}
+		} catch (Exception e) {
+			res.setStatus(HttpStatus.UNAUTHORIZED.value());
+			return null;
+		}
+		String userId = user.getUserId();
+		Player tp = null;
+		PlayerProd pp = null;
+		String nickName = "";
+		if(isTest.compareTo("true") == 0){
+			tp = playerRepositoryDao.findBySocialId(userId);
+			nickName = tp.getNikName();
+		} else {
+			pp = playerProdRepositoryDao.findBySocialId(userId);
+			nickName = pp.getNikName();
+		}
+		String statusUrl = "state/" + gameName + "/" + userId;
+		String allData = this.getAll(request, statusUrl);
+		
+		ChallengesUtils challUtils = new ChallengesUtils();
+		if(challUtils.getChallLongDescriptionList() == null || challUtils.getChallLongDescriptionList().isEmpty()){
+			challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
+		}
+		
+		StatusUtils statusUtils = new StatusUtils();
+		return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl);
 	}
 	
 	

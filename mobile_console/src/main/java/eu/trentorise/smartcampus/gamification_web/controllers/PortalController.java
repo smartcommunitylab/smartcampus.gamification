@@ -50,7 +50,6 @@ import eu.trentorise.smartcampus.gamification_web.service.EmailService;
 
 import eu.trentorise.smartcampus.aac.AACException;
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
-import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
 import eu.trentorise.smartcampus.gamification_web.models.State;
@@ -58,6 +57,7 @@ import eu.trentorise.smartcampus.gamification_web.models.Summary;
 import eu.trentorise.smartcampus.gamification_web.models.WeekConfData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
+import eu.trentorise.smartcampus.gamification_web.models.status.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProd;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProdRepositoryDao;
@@ -516,7 +516,7 @@ public class PortalController extends SCController{
 						String completeState = getAllChallenges(urlWSState);
 						try {
 							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState);
+							List<List> challLists = challUtils.correctCustomData(completeState, 0);
 							if(challLists != null && challLists.size() == 2){
 								challenges = challLists.get(0);
 								lastWeekChallenges = challLists.get(1);
@@ -663,7 +663,7 @@ public class PortalController extends SCController{
 						String completeState = getAllChallenges(urlWSState);
 						try {
 							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState);
+							List<List> challLists = challUtils.correctCustomData(completeState, 0);
 							if(challLists != null && challLists.size() == 2){
 								challenges = challLists.get(0);
 								lastWeekChallenges = challLists.get(1);
@@ -844,7 +844,7 @@ public class PortalController extends SCController{
 					String completeState = getAllChallenges(urlWSState);
 					try {
 						@SuppressWarnings("rawtypes")
-						List<List> challLists = challUtils.correctCustomData(completeState);
+						List<List> challLists = challUtils.correctCustomData(completeState, 0);
 						if(challLists != null && challLists.size() == 2){
 							challenges = challLists.get(0);
 							lastWeekChallenges = challLists.get(1);
@@ -952,7 +952,7 @@ public class PortalController extends SCController{
 					String completeState = getAllChallenges(urlWSState);
 					try {
 						@SuppressWarnings("rawtypes")
-						List<List> challLists = challUtils.correctCustomData(completeState);
+						List<List> challLists = challUtils.correctCustomData(completeState, 0);
 						if(challLists != null && challLists.size() == 2){
 							challenges = challLists.get(0);
 							lastWeekChallenges = challLists.get(1);

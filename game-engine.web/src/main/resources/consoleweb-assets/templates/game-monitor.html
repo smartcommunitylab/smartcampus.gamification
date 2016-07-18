@@ -22,7 +22,7 @@
 </div>
 	<div class="row">
 	  <div class="col-md-12 text-center">
-	    <alert ng-if="err" type="danger" close="closeAlert()">{{'err' | i18next}}</alert>
+	    <uib-alert ng-if="err" type="danger" close="closeAlert()">{{'err' | i18next}}</uib-alert>
 	  </div>
 	</div>
 	
@@ -44,7 +44,7 @@
 	
 	<div class="row">
 		<div class="col-md-6 col-md-offset-4">
-			<pagination boundary-links="true" total-items="totalItems" items-per-page="items4Page" data-ng-change="update()" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+			<uib-pagination boundary-links="true" total-items="totalItems" items-per-page="items4Page" data-ng-change="update()" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
 		</div>
 	</div>
 	
@@ -60,7 +60,7 @@
 				<p>{{'labels:lbl_summary_badge' | i18next }}: {{player.totalBadges}}</p>
 			</div>
 			<div class="col-md-3">
-			<button type="button" class="pull-right game-btn btn btn-defalt btn-circle right-spaced" data-ng-click="openDetails($index)" data-toggle="collapse" data-target="#player-details" data-tooltip="{{'labels:tool_details' | i18next}}">
+			<button type="button" class="pull-right game-btn btn btn-defalt btn-circle right-spaced" data-ng-click="openDetails($index)" data-toggle="collapse" data-target="#player-details" uib-tooltip="{{'labels:tool_details' | i18next}}">
         		<span class="glyphicon" data-ng-class="{'glyphicon-chevron-down': expandIdx != $index, 'glyphicon-chevron-up': expandIdx == $index}" ></span>
       		</button>
 			</div>
@@ -98,7 +98,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-6 col-md-offset-4">
-			<pagination boundary-links="true" total-items="totalItems" items-per-page="items4Page" data-ng-change="update()" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+			<uib-pagination boundary-links="true" total-items="totalItems" items-per-page="items4Page" data-ng-change="update()" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
 		</div>
 	</div>
 </div>

@@ -19,21 +19,21 @@
 <div data-ng-controller="RulesCtrl">
 <div class="row">
 	<div class="text-center">
-		<alert ng-if="alerts.error" type="danger"
+		<uib-alert ng-if="alerts.error" type="danger"
 			close="closeAlert('loadGameError')">{{ msg_code
-		| i18next}}</alert>
+		| i18next}}</uib-alert>
 	</div>
 </div>
 <div class="row">
 	<div class="text-center">
-		<alert ng-if="alerts.success" type="success"
+		<uib-alert ng-if="alerts.success" type="success"
 			close="closeAlert('loadGameError')">{{ msg_code
-		| i18next}}</alert>
+		| i18next}}</uib-alert>
 	</div>
 </div>
 	
 			<div class="row top-margined">
-					 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddRuleModal()" data-tooltip="{{'labels:tool_add' | i18next}}">
+					 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddRuleModal()" uib-tooltip="{{'labels:tool_add' | i18next}}">
 			          <span class="glyphicon glyphicon-plus"></span>
 			        </button>
 				</div>
@@ -44,10 +44,10 @@
 							<tr data-ng-repeat="rule in game.rules">
 								<td>
 									{{rule.name ? rule.name : rule.id}}
-									 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteRule(rule)" data-tooltip="{{'labels:tool_delete' | i18next}}">
+									 <button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteRule(rule)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
 			         				 <span class="glyphicon glyphicon-remove"></span>
 			        			</button>
-								 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editRule(rule)" data-tooltip="{{'labels:tool_edit' | i18next}}">
+								 <button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editRule(rule)" uib-tooltip="{{'labels:tool_edit' | i18next}}">
 			         				 <span class="glyphicon glyphicon-pencil"></span>
 			        			 </button>
 								</td>

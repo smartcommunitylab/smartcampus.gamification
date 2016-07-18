@@ -19,7 +19,7 @@
 <br />
 <div class="row">
   <div class="col-md-12 text-center">
-    <alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'messages:msg_load_games_error' | i18next}}</alert>
+    <uib-alert ng-if="alerts.loadGameError" type="danger" close="closeAlert('loadGameError')">{{'messages:msg_load_games_error' | i18next}}</uib-alert>
   </div>
 </div>
 <div class="row vertical-spacing">
@@ -40,10 +40,10 @@ Text will be soon placed in the middle of the panel-body
        <div class="panel panel-info panel-games">
         <div class="panel-heading table-style" data-ng-class="{terminated : game.terminated }">
 	      	<a href="" data-ng-click="goto('#/game/' + game.id)"><h3 class="ellipsis game-title">{{game.name}}</h3></a>
-           <button type="button" class="pull-right game-btn btn btn-danger btn-circle right-spaced" data-ng-click="deleteGame(game)" data-tooltip="{{'labels:tool_delete' | i18next}}">
+           <button type="button" class="pull-right game-btn btn btn-danger btn-circle right-spaced" data-ng-click="deleteGame(game)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
         		<span class="glyphicon glyphicon-remove"></span>
       		</button>
-      		<a class="pull-right game-btn btn btn-default btn-circle right-spaced" href="#/game-monitor/{{game.id}}" data-tooltip="{{'labels:lbl_monitor_menu' | i18next}}">
+      		<a class="pull-right game-btn btn btn-default btn-circle right-spaced" href="#/game-monitor/{{game.id}}" uib-tooltip="{{'labels:lbl_monitor_menu' | i18next}}">
         		<span class="glyphicon glyphicon-stats"></span>
       		</a>
           </div>

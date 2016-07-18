@@ -17,7 +17,8 @@
 app.factory('gamesFactory',
   function ($rootScope, $http, $q, $timeout) {
     // Games data operations factory
-    var url = "https://dev.smartcommunitylab.it/gamification";
+    //var url = "https://dev.smartcommunitylab.it/gamification";
+	var url = "../";
     // Get games
     var getGames = function () {
       var deferred = $q.defer();

@@ -378,7 +378,7 @@ public class WsProxyController {
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/status")
 	public @ResponseBody
 	PlayerStatus getPlayerStatus(HttpServletRequest request, @RequestParam String token, HttpServletResponse res) throws JSONException{
-		logger.info("WS-get status user token " + token);
+		logger.debug("WS-get status user token " + token);
 		BasicProfile user = null;
 		try {
 			user = profileService.getBasicProfile(token);
@@ -413,7 +413,7 @@ public class WsProxyController {
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/classification")
 	public @ResponseBody
 	PlayerClassification getPlayerClassification(HttpServletRequest request, @RequestParam String token, @RequestParam(required=false) Long timestamp, @RequestParam(required=false) Integer start, @RequestParam(required=false) Integer end, HttpServletResponse res) throws JSONException{
-		logger.info("WS-get classification user token " + token);
+		logger.debug("WS-get classification user token " + token);
 		PlayerClassification playerClassificationData = new PlayerClassification();
 		BasicProfile user = null;
 		int maxClassificationSize = 500;

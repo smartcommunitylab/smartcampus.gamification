@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -484,112 +485,7 @@ public class PortalController extends SCController{
 				}
 			}
 			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
-			/*if(isTest.compareTo("true") == 0){
-				Iterable<Player> iter = playerRepositoryDao.findAll();
-				for(Player p: iter){
-					logger.debug(String.format("Profile finded  %s", p.getNikName()));
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e1) {
-						logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-					}
-					
-					ArrayList<State> states = null;
-					ArrayList<Notification> notifications = null;
-					ArrayList<BagesData> someBadge = null;
-					List<ChallengesData> challenges = null;
-					List<ChallengesData> lastWeekChallenges = null;
-					
-					try {
-						// WS State Invocation
-						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-						states = getState(urlWSState);
-						// Challenges correction
-						String completeState = getAllChallenges(urlWSState);
-						try {
-							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState, 0);
-							if(challLists != null && challLists.size() == 2){
-								challenges = challLists.get(0);
-								lastWeekChallenges = challLists.get(1);
-							}
-							
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						// WS Notification Invocation
-						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
-						notifications = getNotifications(urlWSNot, timestamp);
-					} catch (InterruptedException ie){
-						logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
-					}
-					
-					if(notifications != null && notifications.size() > 0){
-						ArrayList<BagesData> allBadge = getAllBadges(path);
-						someBadge = checkCorrectBadges(allBadge, notifications);	
-					}
-					
-					String mailto = null;
-					mailto = p.getMail();
-					String playerName = p.getNikName();
-					if(mailto == null || mailto.compareTo("") == 0){
-						mailto = mailTo;
-					}
-					
-					if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
-						try {
-							if(notifications != null){
-								if(states != null && states.size() > 0){
-									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							} else {
-								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							}
-						} catch (MessagingException e) {
-							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
-						}
-					} else {
-						if(notifications != null){
-							if(states != null && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
-							} else {
-								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
-							}
-						} else {
-							if(states != null  && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
-							} else {
-								logger.debug(String.format("Invio mail a %s", playerName));
-							}
-						}
-						if(challenges != null && !challenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
-						}
-						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
-						}
-					}
-					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
-				}
-			} else {*/
-				//Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
-				Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
+			Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
 //				List<String> specialPlayers = new ArrayList<String>();
 //				specialPlayers.add("23840");
 //				specialPlayers.add("23789");
@@ -734,11 +630,8 @@ public class PortalController extends SCController{
 							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
-					//}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 				}
-					
-			//}
 			
 			// Send summary mail
 			if(mailSend.compareTo("true") == 0){
@@ -814,110 +707,6 @@ public class PortalController extends SCController{
 			}
 		}
 		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
-		/*if(isTest.compareTo("true") == 0){
-			Iterable<Player> iter = playerRepositoryDao.findAll();
-			for(Player p: iter){
-				logger.debug(String.format("Profile finded  %s", p.getNikName()));
-				try {
-					Thread.sleep(1500);
-				} catch (InterruptedException e1) {
-					logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-				}
-				
-				ArrayList<State> states = null;
-				ArrayList<Notification> notifications = null;
-				ArrayList<BagesData> someBadge = null;
-				List<ChallengesData> challenges = null;
-				List<ChallengesData> lastWeekChallenges = null;
-				
-				try {
-					// WS State Invocation
-					String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-					states = getState(urlWSState);
-					// Challenges correction
-					String completeState = getAllChallenges(urlWSState);
-					try {
-						@SuppressWarnings("rawtypes")
-						List<List> challLists = challUtils.correctCustomData(completeState, 0);
-						if(challLists != null && challLists.size() == 2){
-							challenges = challLists.get(0);
-							lastWeekChallenges = challLists.get(1);
-						}
-						
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					// WS Notification Invocation
-					String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
-					notifications = getNotifications(urlWSNot, timestamp);
-				} catch (InterruptedException ie){
-					logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
-				}
-				
-				if(notifications != null && notifications.size() > 0){
-					ArrayList<BagesData> allBadge = getAllBadges(path);
-					someBadge = checkCorrectBadges(allBadge, notifications);	
-				}
-				
-				String mailto = null;
-				mailto = p.getMail();
-				String playerName = p.getNikName();
-				if(mailto == null || mailto.compareTo("") == 0){
-					mailto = mailTo;
-				}
-				
-				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
-					try {
-						if(notifications != null){
-							if(states != null && states.size() > 0){
-								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							} else {
-								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							}
-						} else {
-							if(states != null  && states.size() > 0){
-								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							} else {
-								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							}
-						}
-					} catch (MessagingException e) {
-						logger.debug(String.format("Errore invio mail : %s", e.getMessage()));
-					}
-				} else {
-					if(notifications != null){
-						if(states != null && states.size() > 0){
-							logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
-						} else {
-							logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
-						}
-					} else {
-						if(states != null  && states.size() > 0){
-							logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
-						} else {
-							logger.debug(String.format("Invio mail a %s", playerName));
-						}
-					}
-					if(challenges != null && !challenges.isEmpty()){
-						logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
-					}
-					if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-						logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
-					}
-				}
-				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
-			}
-		} else {*/
 			Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
 			// Add user to exclude from the mailing list
 			List<String> noMailingPlayers = new ArrayList<String>();
@@ -1025,7 +814,6 @@ public class PortalController extends SCController{
 				}
 				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 			}
-		//}
 		
 		// Send summary mail
 		if(mailSend.compareTo("true") == 0){

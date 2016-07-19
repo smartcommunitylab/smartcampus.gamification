@@ -161,6 +161,7 @@ public class WsProxyController {
 		logger.info("Sent app recommendation to gamification engine "+tmp_res.getStatusCode());
 	}
 	
+	// Method for mobile player registration (in mobile app)
 	@RequestMapping(method = RequestMethod.POST, value = "/out/rest/register")
 	public @ResponseBody
 	Player registerExternal(@RequestBody PersonalData data, @RequestParam String token, @RequestParam String nickname, HttpServletResponse res) {
@@ -236,6 +237,7 @@ public class WsProxyController {
 		return p;
 	}
 	
+	// Method to force the player creation in gamification engine
 	private void createPlayerInGamification(String playerId) throws Exception{
 		RestTemplate restTemplate = new RestTemplate();
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -247,6 +249,7 @@ public class WsProxyController {
 		logger.info("Sent player registration to gamification engine(mobile-access) "+tmp_res.getStatusCode());
 	}
 	
+	// Method to update the nickname data and personal data (initial survey)
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateNick")
 	public @ResponseBody
 	Player updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
@@ -300,6 +303,7 @@ public class WsProxyController {
 		return p;	
 	}
 	
+	//Method used to send the survey call to gamification engine (if user complete the survey the engine need to be updated with this call)
 	private void sendSurveyToGamification(String playerId){
 		RestTemplate restTemplate = new RestTemplate();
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -311,6 +315,7 @@ public class WsProxyController {
 		logger.info("Sent app survey data to gamification engine "+tmp_res.getStatusCode());
 	}
 	
+	//Method used to update the player ending-survey data
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateSurvey")
 	public @ResponseBody
 	Player updateSurvey(HttpServletRequest request, @RequestParam String urlWS,  @RequestBody SurveyData data) throws Exception{
@@ -332,6 +337,7 @@ public class WsProxyController {
 		return p;
 	}
 	
+	// Method used to update the user mail (if user log to the system with facebook it could be without the mail)
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateMail")
 	public @ResponseBody
 	Player updateMail(HttpServletRequest request, @RequestParam String urlWS){
@@ -350,6 +356,7 @@ public class WsProxyController {
 		return p;
 	}
 	
+	// Method used to check if a user is registered or not to the system (by mobile app)
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/checkuser/{socialId}")
 	public @ResponseBody
 	UserCheck getUserData(HttpServletRequest request, @PathVariable String socialId){
@@ -375,6 +382,7 @@ public class WsProxyController {
 		return val;
 	}
 	
+	// Method used to get the user status data (by mobyle app)
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/status")
 	public @ResponseBody
 	PlayerStatus getPlayerStatus(HttpServletRequest request, @RequestParam String token, HttpServletResponse res) throws JSONException{
@@ -410,6 +418,7 @@ public class WsProxyController {
 		return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl);
 	}
 	
+	// Method used to get the user classification data (by mobyle app)
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/classification")
 	public @ResponseBody
 	PlayerClassification getPlayerClassification(HttpServletRequest request, @RequestParam String token, @RequestParam(required=false) Long timestamp, @RequestParam(required=false) Integer start, @RequestParam(required=false) Integer end, HttpServletResponse res) throws JSONException{
@@ -445,8 +454,8 @@ public class WsProxyController {
 			logger.error("Exception in all nick names reading " + ex.getMessage());
 		}
 		StatusUtils statusUtils = new StatusUtils();
-		ClassificationData actualPlayerClass = statusUtils.correctPlayerClassificationData(statusData, userId, nickName, timestamp);
-		List<ClassificationData> playersClass = statusUtils.correctClassificationData(allData, allNicks, timestamp);
+		ClassificationData actualPlayerClass = statusUtils.correctPlayerClassificationData(statusData, userId, nickName, timestamp, type);
+		List<ClassificationData> playersClass = statusUtils.correctClassificationData(allData, allNicks, timestamp, type);
 		
 		// Sorting
 		Collections.sort(playersClass, Collections.reverseOrder());

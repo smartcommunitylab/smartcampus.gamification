@@ -379,7 +379,7 @@ public class ChallengesUtils {
     	int remainingDays = 0;
     	if(now < endTime){
     		long tmpMillis = endTime - now;
-    		remainingDays = (int) Math.ceil(tmpMillis / MILLIS_IN_DAY);
+    		remainingDays = (int) Math.ceil((float)tmpMillis / MILLIS_IN_DAY);
     	}
     	return remainingDays;
     }

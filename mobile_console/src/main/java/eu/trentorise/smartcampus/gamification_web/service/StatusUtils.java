@@ -30,8 +30,10 @@ public class StatusUtils {
 	private static final String PC_NAME = "name";
 	private static final String PC_SCORE = "score";
 	private static final String PC_CLASSIFICATION_WEEK = "green leaves week ";
+	private static final String PC_CLASSIFICATION_WEEK_TEST = "green leaves week test";
 	
 	public static final long GAME_STARTING_TIME = 1460757600000L;	// for RV 16 april
+	public static final long GAME_STARTING_TIME_TEST = 1468101601000L; // for TN test 10 july
 	public static final long MILLIS_IN_WEEK = 1000 * 60 * 60 * 24 * 7;
 	
 	public StatusUtils() {
@@ -101,13 +103,13 @@ public class StatusUtils {
     	return ps;
     }
 	
-	public ClassificationData correctPlayerClassificationData(String profile, String playerId, String nickName, Long timestamp) throws JSONException{
+	public ClassificationData correctPlayerClassificationData(String profile, String playerId, String nickName, Long timestamp, String type) throws JSONException{
     	ClassificationData playerClass = new ClassificationData();
     	if(profile != null && profile.compareTo("") != 0){
     		
     		int score = 0;
     		long time = (timestamp == null || timestamp.longValue() == 0L) ? System.currentTimeMillis() : timestamp.longValue();
-    		int weekNum = getActualWeek(time);
+    		int weekNum = getActualWeek(time, type);
     		
     		JSONObject profileData = new JSONObject(profile);
     		JSONObject stateData = (!profileData.isNull(STATE)) ? profileData.getJSONObject(STATE) : null;
@@ -122,9 +124,15 @@ public class StatusUtils {
         					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
         				}
     				} else {												// specific week
-	    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
-	    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-	    				}
+    					if(type.compareTo("test") == 0){
+	    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
+		    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+		    				}
+    					} else {
+	    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
+		    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+		    				}
+    					}
     				}
     			}
     			playerClass.setNickName(nickName);
@@ -136,13 +144,13 @@ public class StatusUtils {
     	return playerClass;
     }
 	
-	public List<ClassificationData> correctClassificationData(String allStatus, List<Player> allNicks, Long timestamp) throws JSONException{
+	public List<ClassificationData> correctClassificationData(String allStatus, List<Player> allNicks, Long timestamp, String type) throws JSONException{
 		List<ClassificationData> playerClassList = new ArrayList<ClassificationData>();
     	if(allStatus != null && allStatus.compareTo("") != 0){
     		
     		int score = 0;
     		long time = (timestamp == null || timestamp.longValue() == 0L) ? System.currentTimeMillis() : timestamp;
-    		int weekNum = getActualWeek(time);
+    		int weekNum = getActualWeek(time, type);
     		
     		JSONObject allPlayersData = new JSONObject(allStatus);
     		JSONArray allPlayersDataList = (!allPlayersData.isNull("content")) ? allPlayersData.getJSONArray("content") : null;
@@ -162,9 +170,15 @@ public class StatusUtils {
 		        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
 		        				}
 		    				} else {												// specific week
-			    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
-			    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-			    				}
+		    					if(type.compareTo("test") == 0){
+			    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
+				    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+				    				}
+		    					} else {
+				    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
+				    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+				    				}
+		    					}
 		    				}
 		    			}
 		    			
@@ -223,9 +237,9 @@ public class StatusUtils {
 		return pc;
 	}
 	
-	private int getActualWeek(long timestamp){
+	private int getActualWeek(long timestamp, String type){
 		int currWeek = 0;
-		long millisFromGameStart = timestamp - GAME_STARTING_TIME;
+		long millisFromGameStart = (type.compareTo("test") == 0) ? timestamp - GAME_STARTING_TIME_TEST : timestamp - GAME_STARTING_TIME;
 		currWeek = (int)Math.ceil((float)millisFromGameStart / MILLIS_IN_WEEK);
 		return currWeek;
 	}

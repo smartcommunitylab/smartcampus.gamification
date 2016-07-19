@@ -125,11 +125,11 @@ public class StatusUtils {
         				}
     				} else {												// specific week
     					if(type.compareTo("test") == 0){
-	    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
+	    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
 		    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
 		    				}
     					} else {
-	    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
+	    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
 		    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
 		    				}
     					}
@@ -171,11 +171,11 @@ public class StatusUtils {
 		        				}
 		    				} else {												// specific week
 		    					if(type.compareTo("test") == 0){
-			    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
+			    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
 				    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
 				    				}
 		    					} else {
-				    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
+				    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
 				    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
 				    				}
 		    					}

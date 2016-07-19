@@ -116,6 +116,17 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	$scope.start_week_7 = 1464386460000;
 	$scope.start_week_8 = 1464991260000;
 	$scope.start_week_9 = 1465596060000;
+	$scope.start_week_10 = 1466373599000;
+	$scope.start_week_11 = 1466805601000;	// 25/06
+	$scope.start_week_12 = 1467410401000;	// 02/07
+	$scope.start_week_13 = 1468015201000;	// 09/07
+	$scope.start_week_14 = 1468620001000;	// 16/07
+	$scope.start_week_15 = 1469224801000;	// 23/07
+	$scope.start_week_16 = 1469829601000;	// 30/07
+	$scope.start_week_17 = 1470434401000;	// 06/08
+	$scope.start_week_18 = 1471039201000;	// 13/08
+	$scope.start_week_19 = 1471644001000;	// 20/08
+	$scope.start_week_20 = 1472248801000;	// 27/08
 	$scope.week_classification = "green leaves week ";
 	$scope.week_test_classification = "green leaves week test"
 	$scope.useShortClassification = (conf_is_short_classification == "true") ? true : false;
@@ -929,16 +940,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
     		if(result != null){
-    			sharedDataService.setPlayerList(result.players);
+    			sharedDataService.setPlayerList(result);
     			var name = "";
     			var mail = "";
     			var surveyData = "";
     			var find = false;
-    			for(var i = 0; (i < result.players.length) && !find; i++){
-    				if(result.players[i].socialId == id){
-    					name = result.players[i].nikName;
-    					mail = result.players[i].mail;
-    					surveyData = result.players[i].surveyData;
+    			for(var i = 0; (i < result.length) && !find; i++){
+    				if(result[i].socialId == id){
+    					name = result[i].nikName;
+    					mail = result[i].mail;
+    					surveyData = result[i].surveyData;
     					find = true;
     				}	
     			}
@@ -949,7 +960,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			}
     			if($scope.myNick == null || $scope.myNick == ""){
     				// manage Nick for player
-    				$scope.retrieveNickForPlayer(result.players, mail);
+    				$scope.retrieveNickForPlayer(result, mail);
     			} else if(mail == null || mail == ""){
     				// manage Nick for player
     				$scope.retrieveMailForPlayer();
@@ -2133,7 +2144,29 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     // Method getCorrectActualWeek: used to retrieve the correct game week number
     $scope.getCorrectActualWeek = function(now_millis){
     	var actual_week = 0;
-    	if(now_millis >= $scope.start_week_9){
+    	if(now_millis >= $scope.start_week_20){
+    		actual_week = 20;
+    	} else if(now_millis >= $scope.start_week_19){
+    		actual_week = 19;
+    	} else if(now_millis >= $scope.start_week_18){
+    		actual_week = 18;
+    	} else if(now_millis >= $scope.start_week_17){
+    		actual_week = 17;
+    	} else if(now_millis >= $scope.start_week_16){
+    		actual_week = 16;
+    	} else if(now_millis >= $scope.start_week_15){
+    		actual_week = 15;
+    	} else if(now_millis >= $scope.start_week_14){
+    		actual_week = 14;
+    	} else if(now_millis >= $scope.start_week_13){
+    		actual_week = 13;
+    	} else if(now_millis >= $scope.start_week_12){
+    		actual_week = 12;
+    	} else if(now_millis >= $scope.start_week_11){
+    		actual_week = 11;
+    	} else if(now_millis >= $scope.start_week_10){
+    		actual_week = 10;
+    	} else if(now_millis >= $scope.start_week_9){
     		actual_week = 9;
     	} else if(now_millis >= $scope.start_week_8){
     		actual_week = 8;

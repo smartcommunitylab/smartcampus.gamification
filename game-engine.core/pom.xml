@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.trentorise</groupId>
 	<artifactId>game-engine.core</artifactId>
+	<version>1.0.1</version>
 
 	<dependencyManagement>
 		<dependencies>
@@ -175,9 +176,12 @@
 
 	<repositories>
 		<repository>
+			<id>SmartCommunityLab</id>
+			<url>http://repository.smartcommunitylab.it/content/groups/public</url>
+		</repository>
+		<repository>
 			<id>clojars.org</id>
 			<url>http://clojars.org/repo</url>
 		</repository>
 	</repositories>
-	<version>1.0.1</version>
 </project>

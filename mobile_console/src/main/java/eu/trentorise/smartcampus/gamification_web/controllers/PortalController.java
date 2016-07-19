@@ -50,7 +50,6 @@ import eu.trentorise.smartcampus.gamification_web.service.EmailService;
 
 import eu.trentorise.smartcampus.aac.AACException;
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
-import eu.trentorise.smartcampus.gamification_web.models.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
 import eu.trentorise.smartcampus.gamification_web.models.State;
@@ -58,14 +57,11 @@ import eu.trentorise.smartcampus.gamification_web.models.Summary;
 import eu.trentorise.smartcampus.gamification_web.models.WeekConfData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
+import eu.trentorise.smartcampus.gamification_web.models.status.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
-import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProd;
-import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
-import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
-import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.SponsorBannerDataSetup;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
@@ -90,13 +86,7 @@ public class PortalController extends SCController{
     private PlayerRepositoryDao playerRepositoryDao;
     
     @Autowired
-    private PlayerProdRepositoryDao playerProdRepositoryDao;
-    
-    @Autowired
     private AuthPlayerRepositoryDao authPlayerRepositoryDao;
-    
-    @Autowired
-    private AuthPlayerProdRepositoryDao authPlayerProdRepositoryDao;
     
     @Autowired
     private ChallengeDescriptionDataSetup challDescriptionSetup;
@@ -226,18 +216,20 @@ public class PortalController extends SCController{
 			JSONObject attributes = new JSONObject(mappaAttributi);
 			String attribute_mail = attributes.getString(mailKey);
 			
-			if(isTest.compareTo("true") == 0){
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			//if(isTest.compareTo("true") == 0){
+				
 				// Check if the user belongs to the list of the testers (in test)
-				Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());	// app user table
+				Player player_check = playerRepositoryDao.findBySocialIdAndType(user.getUserId(),type);	// app user table
 				if(player_check == null){
 					//String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
 					logger.debug(String.format("Player to add: mail %s.", attribute_mail));
 					if(attribute_mail != null){
 						if(authorizationTable.compareTo("true") == 0){
-							AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
+							AuthPlayer auth_p = authPlayerRepositoryDao.findByMailAndType(attribute_mail, type);
 							if(auth_p != null){
 								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null, null);
+								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null, null, type);
 								playerRepositoryDao.save(new_p);
 								// here I call an api from gengine console
 								createPlayerInGamification(user.getUserId());
@@ -248,7 +240,7 @@ public class PortalController extends SCController{
 						} else {
 							// case of no authentication table and user not in user table: I add the user
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
-							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null, null);
+							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null, null, type);
 							playerRepositoryDao.save(new_p);
 							// here I call an api from gengine console
 							createPlayerInGamification(user.getUserId());
@@ -256,9 +248,9 @@ public class PortalController extends SCController{
 						}
 					}
 				}
-			} else {
+			//} else {
 				// Check if the user belongs to the list of the testers (in test)
-				PlayerProd player_check = playerProdRepositoryDao.findBySocialId(user.getUserId());
+				/*PlayerProd player_check = playerProdRepositoryDao.findBySocialId(user.getUserId());
 				if(player_check == null){
 					//String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
 					logger.info(String.format("Player to add: mail %s.", attribute_mail));
@@ -285,8 +277,8 @@ public class PortalController extends SCController{
 							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
-				}
-			}
+				}*/
+			//}
 		} catch (Exception ex){
 			logger.error(String.format("Errore di conversione: %s", ex.getMessage()));
 			return new ModelAndView("redirect:/logout");
@@ -424,7 +416,7 @@ public class PortalController extends SCController{
 	// Here I insert a task that invoke the WS notification
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 5 PM
+	//@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 5 PM
 	public synchronized void checkNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
@@ -492,111 +484,8 @@ public class PortalController extends SCController{
 					mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 				}
 			}
-			if(isTest.compareTo("true") == 0){
-				Iterable<Player> iter = playerRepositoryDao.findAll();
-				for(Player p: iter){
-					logger.debug(String.format("Profile finded  %s", p.getNikName()));
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e1) {
-						logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-					}
-					
-					ArrayList<State> states = null;
-					ArrayList<Notification> notifications = null;
-					ArrayList<BagesData> someBadge = null;
-					List<ChallengesData> challenges = null;
-					List<ChallengesData> lastWeekChallenges = null;
-					
-					try {
-						// WS State Invocation
-						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-						states = getState(urlWSState);
-						// Challenges correction
-						String completeState = getAllChallenges(urlWSState);
-						try {
-							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState);
-							if(challLists != null && challLists.size() == 2){
-								challenges = challLists.get(0);
-								lastWeekChallenges = challLists.get(1);
-							}
-							
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						// WS Notification Invocation
-						String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
-						notifications = getNotifications(urlWSNot, timestamp);
-					} catch (InterruptedException ie){
-						logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
-					}
-					
-					if(notifications != null && notifications.size() > 0){
-						ArrayList<BagesData> allBadge = getAllBadges(path);
-						someBadge = checkCorrectBadges(allBadge, notifications);	
-					}
-					
-					String mailto = null;
-					mailto = p.getMail();
-					String playerName = p.getNikName();
-					if(mailto == null || mailto.compareTo("") == 0){
-						mailto = mailTo;
-					}
-					
-					if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
-						try {
-							if(notifications != null){
-								if(states != null && states.size() > 0){
-									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							} else {
-								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								} else {
-									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
-											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-								}
-							}
-						} catch (MessagingException e) {
-							logger.error(String.format("Errore invio mail : %s", e.getMessage()));
-						}
-					} else {
-						if(notifications != null){
-							if(states != null && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
-							} else {
-								logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
-							}
-						} else {
-							if(states != null  && states.size() > 0){
-								logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
-							} else {
-								logger.debug(String.format("Invio mail a %s", playerName));
-							}
-						}
-						if(challenges != null && !challenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
-						}
-						if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
-						}
-					}
-					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
-				}
-			} else {
-				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
 //				List<String> specialPlayers = new ArrayList<String>();
 //				specialPlayers.add("23840");
 //				specialPlayers.add("23789");
@@ -636,8 +525,12 @@ public class PortalController extends SCController{
 //				specialPlayers.add("23893");
 //				specialPlayers.add("23895");
 				
+				// Add user to exclude from the mailing list
+				List<String> noMailingPlayers = new ArrayList<String>();
+				noMailingPlayers.add("10730");	//"FILIPPO"	
+				noMailingPlayers.add("23755");	//"Fede"
 				
-				for(PlayerProd p: iter){
+				for(Player p: iter){
 					logger.debug(String.format("Profile finded  %s", p.getNikName()));
 					try {
 						Thread.sleep(1500);
@@ -659,7 +552,7 @@ public class PortalController extends SCController{
 						String completeState = getAllChallenges(urlWSState);
 						try {
 							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState);
+							List<List> challLists = challUtils.correctCustomData(completeState, 0);
 							if(challLists != null && challLists.size() == 2){
 								challenges = challLists.get(0);
 								lastWeekChallenges = challLists.get(1);
@@ -687,10 +580,9 @@ public class PortalController extends SCController{
 					if(mailto == null || mailto.compareTo("") == 0){
 						mailto = mailTo;
 					}
-					
 					//if(specialPlayers.contains(p.getSocialId())){
 					
-					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0){
+					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0  && !noMailingPlayers.contains(p.getSocialId())){
 						
 						try {
 							if(notifications != null){
@@ -738,11 +630,8 @@ public class PortalController extends SCController{
 							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
-					//}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 				}
-					
-			}
 			
 			// Send summary mail
 			if(mailSend.compareTo("true") == 0){
@@ -752,16 +641,18 @@ public class PortalController extends SCController{
 				} catch (MessagingException e) {
 					logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
 				}
+			} else {
+				logger.info("Ended mail sending process: no mail send (param in conf file set to false)");
 			}
 		//}
 	}
 	
 	@SuppressWarnings("unchecked")
-	//@Scheduled(fixedRate = 2*60*1000) // Repeat once a minute
-	//@Scheduled(cron="0 0 11 * * MON") 	// Repeat every Monday at 11 AM
+	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
+	//@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
 	public synchronized void checkWinnersNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
-		long millis = System.currentTimeMillis() - (3*24*60*60*1000);	// Delta in millis of N days: now 3 days
+		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
 		String timestamp = "?timestamp=" + millis;
 		//String timestamp = "";
 		
@@ -815,8 +706,13 @@ public class PortalController extends SCController{
 				mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 			}
 		}
-		if(isTest.compareTo("true") == 0){
-			Iterable<Player> iter = playerRepositoryDao.findAll();
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
+			// Add user to exclude from the mailing list
+			List<String> noMailingPlayers = new ArrayList<String>();
+			noMailingPlayers.add("10730");	//"FILIPPO"	
+			noMailingPlayers.add("23755");	//"Fede"
+			
 			for(Player p: iter){
 				logger.debug(String.format("Profile finded  %s", p.getNikName()));
 				try {
@@ -839,110 +735,7 @@ public class PortalController extends SCController{
 					String completeState = getAllChallenges(urlWSState);
 					try {
 						@SuppressWarnings("rawtypes")
-						List<List> challLists = challUtils.correctCustomData(completeState);
-						if(challLists != null && challLists.size() == 2){
-							challenges = challLists.get(0);
-							lastWeekChallenges = challLists.get(1);
-						}
-						
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					// WS Notification Invocation
-					String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
-					notifications = getNotifications(urlWSNot, timestamp);
-				} catch (InterruptedException ie){
-					logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
-				}
-				
-				if(notifications != null && notifications.size() > 0){
-					ArrayList<BagesData> allBadge = getAllBadges(path);
-					someBadge = checkCorrectBadges(allBadge, notifications);	
-				}
-				
-				String mailto = null;
-				mailto = p.getMail();
-				String playerName = p.getNikName();
-				if(mailto == null || mailto.compareTo("") == 0){
-					mailto = mailTo;
-				}
-				
-				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
-					try {
-						if(notifications != null){
-							if(states != null && states.size() > 0){
-								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null,		// health and pr point are null
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							} else {
-								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							}
-						} else {
-							if(states != null  && states.size() > 0){
-								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							} else {
-								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
-										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
-							}
-						}
-					} catch (MessagingException e) {
-						logger.debug(String.format("Errore invio mail : %s", e.getMessage()));
-					}
-				} else {
-					if(notifications != null){
-						if(states != null && states.size() > 0){
-							logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
-						} else {
-							logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
-						}
-					} else {
-						if(states != null  && states.size() > 0){
-							logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
-						} else {
-							logger.debug(String.format("Invio mail a %s", playerName));
-						}
-					}
-					if(challenges != null && !challenges.isEmpty()){
-						logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
-					}
-					if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
-						logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
-					}
-				}
-				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
-			}
-		} else {
-			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
-			for(PlayerProd p: iter){
-				logger.debug(String.format("Profile finded  %s", p.getNikName()));
-				try {
-					Thread.sleep(1500);
-				} catch (InterruptedException e1) {
-					logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-				}
-				
-				ArrayList<State> states = null;
-				ArrayList<Notification> notifications = null;
-				ArrayList<BagesData> someBadge = null;
-				List<ChallengesData> challenges = null;
-				List<ChallengesData> lastWeekChallenges = null;
-				
-				try {
-					// WS State Invocation
-					String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-					states = getState(urlWSState);
-					// Challenges correction
-					String completeState = getAllChallenges(urlWSState);
-					try {
-						@SuppressWarnings("rawtypes")
-						List<List> challLists = challUtils.correctCustomData(completeState);
+						List<List> challLists = challUtils.correctCustomData(completeState, 0);
 						if(challLists != null && challLists.size() == 2){
 							challenges = challLists.get(0);
 							lastWeekChallenges = challLists.get(1);
@@ -971,7 +764,7 @@ public class PortalController extends SCController{
 					mailto = mailTo;
 				}
 				
-				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){
+				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0 && !noMailingPlayers.contains(p.getSocialId())){
 					
 					try {
 						if(notifications != null){
@@ -1021,7 +814,6 @@ public class PortalController extends SCController{
 				}
 				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 			}
-		}
 		
 		// Send summary mail
 		if(mailSend.compareTo("true") == 0){

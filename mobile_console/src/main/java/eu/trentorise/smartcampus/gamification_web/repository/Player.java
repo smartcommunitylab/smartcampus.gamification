@@ -11,6 +11,7 @@ public class Player {
 	
 	@Id
 	private String pid;
+	private String type;	// test or prod
 	private String socialId;
 	
 	private String name;
@@ -25,7 +26,7 @@ public class Player {
 	}
 
 	public Player(String pid, String socialId, String name, String surname, String nikName,
-			String mail, PersonalData personalData, SurveyData surveyData) {
+			String mail, PersonalData personalData, SurveyData surveyData, String type) {
 		super();
 		this.pid = pid;
 		this.socialId = socialId;
@@ -35,6 +36,7 @@ public class Player {
 		this.mail = mail;
 		this.personalData = personalData;
 		this.surveyData = surveyData;
+		this.type = type;
 	}
 
 	public String getName() {
@@ -101,6 +103,14 @@ public class Player {
 		this.surveyData = surveyData;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String toJSONString() {
 		String pdata = null;
 		if(personalData!=null){
@@ -110,7 +120,7 @@ public class Player {
 		if(surveyData!=null){
 			sdata = surveyData.toJSONString();
 		}
-		return "{\"pid\":\"" + pid + "\", \"socialId\":\"" + socialId + "\", \"name\":\""
+		return "{\"pid\":\"" + pid + "\", \"socialId\":\"" + socialId + "\", \"type\":\"" + type + "\", \"name\":\""
 				+ name + "\", \"surname\":\"" + surname + "\", \"nikName\":\"" + nikName
 				+ "\", \"mail\":\"" + mail + "\", \"personalData\":" + pdata + ", \"surveyData\":" + sdata +"}";
 	}

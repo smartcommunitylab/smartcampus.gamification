@@ -9,5 +9,9 @@ public interface AuthPlayerRepositoryDao extends CrudRepository<AuthPlayer, Stri
 	public AuthPlayer findByPid(String id);
 	
 	public AuthPlayer findByMail(String mail);
+	
+	public AuthPlayer findByPidAndType(String id, String type);
+	
+	public AuthPlayer findByMailAndType(String mail, String type);
 
 }

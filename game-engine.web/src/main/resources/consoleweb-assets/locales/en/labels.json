@@ -74,5 +74,10 @@
   "tool_filter" : "filter",
   "lbl_filter_ph" : "ID player",
   "lbl_summary_score" : "Total score",
-  "lbl_summary_badge" : "Total badges"
+  "lbl_summary_badge" : "Total badges",
+  "lbl_add_rule" : "Create new rule",
+  "title_add_rule" : "Create new rule",
+  "title_add_task" : "Create new classification",
+  "btn_publish" : "Publish",
+  "lbl_total" : "Total score"
 }

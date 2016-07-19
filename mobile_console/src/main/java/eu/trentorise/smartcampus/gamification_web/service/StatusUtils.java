@@ -138,6 +138,9 @@ public class StatusUtils {
     			playerClass.setNickName(nickName);
     			playerClass.setPlayerId(playerId);
     			playerClass.setScore(score);
+    			if(nickName == null || nickName.compareTo("") == 0){
+    				playerClass.setPosition(-1);	// used for user without nickName
+    			}
     		}
     		
     	}

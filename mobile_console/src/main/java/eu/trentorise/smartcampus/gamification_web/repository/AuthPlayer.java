@@ -13,19 +13,20 @@ public class AuthPlayer {
 	private String surname;
 	private String nikName;
 	private String mail;
+	private String type;
 	
 	public AuthPlayer() {
 		super();
 	}
 
-	public AuthPlayer(String pid, String name, String surname, String nikName,
-			String mail) {
+	public AuthPlayer(String pid, String name, String surname, String nikName, String mail, String type) {
 		super();
 		this.pid = pid;
 		this.name = name;
 		this.surname = surname;
 		this.nikName = nikName;
 		this.mail = mail;
+		this.type = type;
 	}
 
 	public String getPId() {
@@ -76,6 +77,13 @@ public class AuthPlayer {
 		this.pid = pid;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String toJSONString() {
 		return "{\"pid\":\"" + pid + "\", \"name\":\""

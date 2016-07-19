@@ -940,16 +940,16 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, null);
     	myDataPromise.then(function(result){
     		if(result != null){
-    			sharedDataService.setPlayerList(result.players);
+    			sharedDataService.setPlayerList(result);
     			var name = "";
     			var mail = "";
     			var surveyData = "";
     			var find = false;
-    			for(var i = 0; (i < result.players.length) && !find; i++){
-    				if(result.players[i].socialId == id){
-    					name = result.players[i].nikName;
-    					mail = result.players[i].mail;
-    					surveyData = result.players[i].surveyData;
+    			for(var i = 0; (i < result.length) && !find; i++){
+    				if(result[i].socialId == id){
+    					name = result[i].nikName;
+    					mail = result[i].mail;
+    					surveyData = result[i].surveyData;
     					find = true;
     				}	
     			}
@@ -960,7 +960,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			}
     			if($scope.myNick == null || $scope.myNick == ""){
     				// manage Nick for player
-    				$scope.retrieveNickForPlayer(result.players, mail);
+    				$scope.retrieveNickForPlayer(result, mail);
     			} else if(mail == null || mail == ""){
     				// manage Nick for player
     				$scope.retrieveMailForPlayer();

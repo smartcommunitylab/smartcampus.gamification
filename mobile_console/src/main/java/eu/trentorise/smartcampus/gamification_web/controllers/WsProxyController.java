@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,12 +34,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
+import eu.trentorise.smartcampus.gamification_web.models.PlayerClassification;
 import eu.trentorise.smartcampus.gamification_web.models.PlayerStatus;
 import eu.trentorise.smartcampus.gamification_web.models.SurveyData;
+import eu.trentorise.smartcampus.gamification_web.models.UserCheck;
+import eu.trentorise.smartcampus.gamification_web.models.classification.ClassificationData;
 import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
-import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
-import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.service.ChallengesUtils;
 import eu.trentorise.smartcampus.gamification_web.service.StatusUtils;
@@ -71,9 +71,6 @@ public class WsProxyController {
 	
 	@Autowired
     private PlayerRepositoryDao playerRepositoryDao;
-	
-	@Autowired
-    private PlayerProdRepositoryDao playerProdRepositoryDao;
 	
 	@Autowired
     private ChallengeDescriptionDataSetup challDescriptionSetup;
@@ -138,30 +135,18 @@ public class WsProxyController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/allNiks")
 	public @ResponseBody
-	String getAllNiks(HttpServletRequest request, @RequestParam String urlWS) throws Exception{
+	List<Player> getAllNiks(HttpServletRequest request, @RequestParam String urlWS) throws Exception{
 		logger.debug("WS-get All profiles."); //Added for log ws calls info in preliminary phase of portal
-		List<Object> list = new ArrayList<Object>();
-//		String result = "{ \"players\":[";
-		if(isTest.compareTo("true") == 0){
-			Iterable<Player> iter = playerRepositoryDao.findAll();
-			for(Player p: iter){
-				logger.debug(String.format("Profile result %s", p.getNikName()));
-//				result += p.toJSONString() + ",";
-				list.add(p);
-			}
-		} else {
-			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
-			for(PlayerProd p: iter){
-				logger.debug(String.format("Profile result %s", p.getNikName()));
-//				result += p.toJSONString() + ",";
-				list.add(p);
-			}
+		List<Player> list = new ArrayList<Player>();
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
+		for(Player p: iter){
+			logger.debug(String.format("Profile result %s", p.getNikName()));
+			list.add(p);
 		}
-//		result = result.substring(0, result.length()-1);
-//		result += "]}";
-		Map<String,Object> map = Collections.<String,Object>singletonMap("players", list);
-//		logger.debug(String.format("WS-get all profiles result %s", result));
-		return new ObjectMapper().writeValueAsString(map);	
+		//Map<String,Object> map = Collections.<String,Object>singletonMap("players", list);
+		//return new ObjectMapper().writeValueAsString(map);
+		return list;
 	}
 
 	
@@ -178,7 +163,7 @@ public class WsProxyController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/out/rest/register")
 	public @ResponseBody
-	String registerExternal(@RequestBody PersonalData data, @RequestParam String token, @RequestParam String nickname, HttpServletResponse res) {
+	Player registerExternal(@RequestBody PersonalData data, @RequestParam String token, @RequestParam String nickname, HttpServletResponse res) {
 		logger.debug("External registration. ");
 		
 		BasicProfile user = null;
@@ -206,95 +191,49 @@ public class WsProxyController {
 		}
 		String id = user.getUserId();
 		logger.debug("External registration: found user profile with id "+id);
-		
-		if(isTest.compareTo("true") == 0){
-			Player withNick = playerRepositoryDao.findByNick(nickname);
-			//String corrNick = "^" + data.getNick_recommandation() + "$";
-			//Player withNick = playerRepositoryDao.findByNickIgnoreCase(corrNick);
-			if (withNick != null && !withNick.getSocialId().equals(id)) {
-				logger.debug("External registration: nickname conflict with user "+withNick.getPid());
-				res.setStatus(HttpStatus.CONFLICT.value());
-				return null;
-			}
-					
-			Player p = playerRepositoryDao.findBySocialId(id);
-			if (p != null) {
-				logger.debug("External registration: user exists, updating data and nick");
-				p.setNikName(nickname);
-				p.setPersonalData(data);
-			} else {
-				logger.debug("External registration: new user");
-				data.setTimestamp(System.currentTimeMillis());
-				p = new Player(
-						user.getUserId(), 
-						user.getUserId(), 
-						user.getName(), 
-						user.getSurname(), 
-						nickname, 
-						email, 
-						data,
-						null);
-				if (StringUtils.hasText(data.getNick_recommandation())) {
-					Player recommender = playerRepositoryDao.findByNick(data.getNick_recommandation());
-					//Player recommender = playerRepositoryDao.findByNickIgnoreCase(corrNick);
-					if (recommender != null) {
-						sendRecommendationToGamification(recommender.getPid());
-					}
-				}
-				try {
-					createPlayerInGamification(user.getUserId());
-					if(email != null)logger.info("Added user (mobile-registration) " + email);
-				} catch (Exception e) {
-					logger.error("Exception in user registration to gamification " + e.getMessage());
-				}
-			}
-			playerRepositoryDao.save(p);
-			
-			return p.toJSONString();
-		} else {
-			PlayerProd withNick = playerProdRepositoryDao.findByNick(nickname);
-			//String corrNick = "^" + data.getNick_recommandation() + "$";
-			//PlayerProd withNick = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
-			if (withNick != null && !withNick.getSocialId().equals(id)) {
-				logger.debug("External registration: nickname conflict with user "+withNick.getPid());
-				res.setStatus(HttpStatus.CONFLICT.value());
-				return null;
-			}
-			PlayerProd p = playerProdRepositoryDao.findBySocialId(id);
-			if (p != null) {
-				logger.debug("External registration: user exists, updating data and nick");
-				p.setNikName(nickname);
-				p.setPersonalData(data);
-			} else {
-				logger.debug("External registration: new user");
-				data.setTimestamp(System.currentTimeMillis());
-				p = new PlayerProd(
-						user.getUserId(), 
-						user.getUserId(), 
-						user.getName(), 
-						user.getSurname(), 
-						nickname, 
-						email, 
-						data,
-						null);
-				if (StringUtils.hasText(data.getNick_recommandation())) {
-					PlayerProd recommender = playerProdRepositoryDao.findByNick(data.getNick_recommandation());
-					//PlayerProd recommender = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
-					if (recommender != null) {
-						sendRecommendationToGamification(recommender.getPid());
-					}
-				}
-				try {
-					createPlayerInGamification(user.getUserId());
-					if(email != null)logger.info("Added user (mobile registration) " + email);
-				} catch (Exception e) {
-					logger.error("Exception in user registration to gamification " + e.getMessage());
-				}
-			}
-			playerProdRepositoryDao.save(p);
-			return p.toJSONString();
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		Player withNick = playerRepositoryDao.findByNickAndType(nickname, type);
+		//String corrNick = "^" + data.getNick_recommandation() + "$";
+		//Player withNick = playerRepositoryDao.findByNickIgnoreCaseAndType(corrNick, type);
+		if (withNick != null && !withNick.getSocialId().equals(id)) {
+			logger.debug("External registration: nickname conflict with user "+withNick.getPid());
+			res.setStatus(HttpStatus.CONFLICT.value());
+			return null;
 		}
-
+		Player p = playerRepositoryDao.findBySocialIdAndType(id, type);
+		if (p != null) {
+			logger.debug("External registration: user exists, updating data and nick");
+			p.setNikName(nickname);
+			p.setPersonalData(data);
+		} else {
+			logger.debug("External registration: new user");
+			data.setTimestamp(System.currentTimeMillis());
+			p = new Player(
+					user.getUserId(), 
+					user.getUserId(), 
+					user.getName(), 
+					user.getSurname(), 
+					nickname, 
+					email, 
+					data,
+					null,
+					type);
+			if (StringUtils.hasText(data.getNick_recommandation())) {
+				Player recommender = playerRepositoryDao.findByNickAndType(data.getNick_recommandation(), type);
+				//PlayerProd recommender = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
+				if (recommender != null) {
+					sendRecommendationToGamification(recommender.getPid());
+				}
+			}
+			try {
+				createPlayerInGamification(user.getUserId());
+				if(email != null)logger.info("Added user (mobile registration) " + email);
+			} catch (Exception e) {
+				logger.error("Exception in user registration to gamification " + e.getMessage());
+			}
+		}
+		playerRepositoryDao.save(p);
+		return p;
 	}
 	
 	private void createPlayerInGamification(String playerId) throws Exception{
@@ -310,9 +249,8 @@ public class WsProxyController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateNick")
 	public @ResponseBody
-	String updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
+	Player updateNick(HttpServletRequest request, @RequestParam String urlWS, @RequestBody Map<String, Object> data){
 		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data);
-		String result = "";
 		String name = "";
 		String mail = "";
 		String id = data.get("id").toString();
@@ -345,39 +283,21 @@ public class WsProxyController {
 				logger.error("JSON exception " + e.getMessage());
 			}
 		}
-		
-		if(isTest.compareTo("true") == 0){
-			Player p = playerRepositoryDao.findBySocialId(id);
-			p.setNikName(name);
-			p.setMail(mail);
-			p.setPersonalData(pdata);
-			if (pdata.getNick_recommandation() != null) {
-				Player recommender = playerRepositoryDao.findByNick(pdata.getNick_recommandation());
-				//String corrNick = "^" + pdata.getNick_recommandation() + "$";
-				//Player recommender = playerRepositoryDao.findByNickIgnoreCase(corrNick);
-				if (recommender != null) {
-					sendRecommendationToGamification(recommender.getPid());
-				}
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		Player p = playerRepositoryDao.findBySocialIdAndType(id, type);
+		p.setNikName(name);
+		p.setMail(mail);
+		p.setPersonalData(pdata);
+		playerRepositoryDao.save(p);
+		if (pdata.getNick_recommandation() != null) {
+			Player recommender = playerRepositoryDao.findByNickAndType(pdata.getNick_recommandation(), type);
+			//String corrNick = "^" + pdata.getNick_recommandation() + "$";
+			//Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(corrNick, type);
+			if (recommender != null) {
+				sendRecommendationToGamification(recommender.getPid());
 			}
-			playerRepositoryDao.save(p);
-			result = p.toJSONString();
-		} else {
-			PlayerProd p = playerProdRepositoryDao.findBySocialId(id);
-			p.setNikName(name);
-			p.setMail(mail);
-			p.setPersonalData(pdata);
-			playerProdRepositoryDao.save(p);
-			if (pdata.getNick_recommandation() != null) {
-				PlayerProd recommender = playerProdRepositoryDao.findByNick(pdata.getNick_recommandation());
-				//String corrNick = "^" + pdata.getNick_recommandation() + "$";
-				//PlayerProd recommender = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
-				if (recommender != null) {
-					sendRecommendationToGamification(recommender.getPid());
-				}
-			}
-			result = p.toJSONString();
 		}
-		return result;	
+		return p;	
 	}
 	
 	private void sendSurveyToGamification(String playerId){
@@ -393,85 +313,57 @@ public class WsProxyController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateSurvey")
 	public @ResponseBody
-	String updateSurvey(HttpServletRequest request, @RequestParam String urlWS,  @RequestBody SurveyData data){
+	Player updateSurvey(HttpServletRequest request, @RequestParam String urlWS,  @RequestBody SurveyData data) throws Exception{
 		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data.toString());
-		String result = "";
+		Player p = null;
 		if(urlWS.contains("=")){
 			String playerId = urlWS.split("=")[1];
-			if(isTest.compareTo("true") == 0){
-				Player p = playerRepositoryDao.findBySocialId(playerId);
-				p.setSurveyData(data);
-				if (data != null) {
-					sendSurveyToGamification(playerId);
-					logger.debug("Call survey method for user " + playerId);
-				}
-				playerRepositoryDao.save(p);
-				result = p.toJSONString();
-			} else {
-				PlayerProd p = playerProdRepositoryDao.findBySocialId(playerId);
-				p.setSurveyData(data);
-				playerProdRepositoryDao.save(p);
-				if (data != null) {
-					sendSurveyToGamification(playerId);
-					logger.debug("Call survey method for user " + playerId);
-				}
-				result = p.toJSONString();
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			p = playerRepositoryDao.findBySocialIdAndType(playerId, type);
+			p.setSurveyData(data);
+			playerRepositoryDao.save(p);
+			if (data != null) {
+				sendSurveyToGamification(playerId);
+				logger.debug("Call survey method for user " + playerId);
 			}
 		} else {
-			result = "No playerId passed in request";
+			 throw new Exception("No playerId passed in request");
 		}
-		return result;
+		return p;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateMail")
 	public @ResponseBody
-	String updateMail(HttpServletRequest request, @RequestParam String urlWS){
+	Player updateMail(HttpServletRequest request, @RequestParam String urlWS){
 		String[] allData = urlWS.split("\\?");
 		String[] allParams = allData[1].split("\\&");
 		String playerid = getFieldValue(allParams[0]);
 		String mail = getFieldValue(allParams[1]);
 		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + mail);
-		String result = "";
+		Player p = null;
 		if(mail != null && mail.compareTo("") != 0){
-			if(isTest.compareTo("true") == 0){
-				Player p = playerRepositoryDao.findBySocialId(playerid);
-				p.setMail(mail);
-				playerRepositoryDao.save(p);
-				result = p.toJSONString();
-			} else {
-				PlayerProd p = playerProdRepositoryDao.findBySocialId(playerid);
-				p.setMail(mail);
-				playerProdRepositoryDao.save(p);
-				result = p.toJSONString();
-			}
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			p = playerRepositoryDao.findBySocialIdAndType(playerid, type);
+			p.setMail(mail);
+			playerRepositoryDao.save(p);
 		}
-		return result;
+		return p;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/checkuser/{socialId}")
 	public @ResponseBody
-	String getUserData(HttpServletRequest request, @PathVariable String socialId){
+	UserCheck getUserData(HttpServletRequest request, @PathVariable String socialId){
 		logger.debug("WS-get checkuser " + socialId);
 		boolean result = false;
-		String correctResult = "{";
-		
-		if(isTest.compareTo("true") == 0){
-			Player p = playerRepositoryDao.findBySocialId(socialId);
-			if(p != null && p.getNikName() != null && p.getNikName().compareTo("") != 0){
-				logger.debug(String.format("Profile find result %s", p.toJSONString()));
-				result = true;
-			}
-		} else {
-			PlayerProd pp = playerProdRepositoryDao.findBySocialId(socialId);
-			if(pp != null && pp.getNikName() != null && pp.getNikName().compareTo("") != 0){
-				logger.debug(String.format("Profile find result %s", pp.toJSONString()));
-				result = true;
-			}
-		}
-		
-		correctResult += "\"registered\":" + result + "}";
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		Player p = playerRepositoryDao.findBySocialIdAndType(socialId, type);
+		if(p != null && p.getNikName() != null && p.getNikName().compareTo("") != 0){
+			logger.debug(String.format("Profile find result %s", p.toJSONString()));
+			result = true;
+		}		
+		UserCheck uc = new UserCheck(result);
 		logger.debug(String.format("WS-get check if user %s already access app: %s", socialId, result));
-		return correctResult;
+		return uc;
 	}
 	
 	private String getFieldValue(String completeParam){
@@ -499,15 +391,12 @@ public class WsProxyController {
 			return null;
 		}
 		String userId = user.getUserId();
-		Player tp = null;
-		PlayerProd pp = null;
+		Player p = null;
 		String nickName = "";
-		if(isTest.compareTo("true") == 0){
-			tp = playerRepositoryDao.findBySocialId(userId);
-			nickName = tp.getNikName();
-		} else {
-			pp = playerProdRepositoryDao.findBySocialId(userId);
-			nickName = pp.getNikName();
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		p = playerRepositoryDao.findBySocialIdAndType(userId, type);
+		if(p != null){
+			nickName = p.getNikName();
 		}
 		String statusUrl = "state/" + gameName + "/" + userId;
 		String allData = this.getAll(request, statusUrl);
@@ -519,6 +408,51 @@ public class WsProxyController {
 		
 		StatusUtils statusUtils = new StatusUtils();
 		return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/classification")
+	public @ResponseBody
+	PlayerClassification getPlayerClassification(HttpServletRequest request, @RequestParam String token, @RequestParam(required=false) Long timestamp, @RequestParam(required=false) Integer start, @RequestParam(required=false) Integer end, HttpServletResponse res) throws JSONException{
+		logger.info("WS-get classification user token " + token);
+		PlayerClassification playerClassificationData = new PlayerClassification();
+		BasicProfile user = null;
+		int maxClassificationSize = 500;
+		try {
+			user = profileService.getBasicProfile(token);
+			if (user == null) {
+				res.setStatus(HttpStatus.UNAUTHORIZED.value());
+				return null;
+			}
+		} catch (Exception e) {
+			res.setStatus(HttpStatus.UNAUTHORIZED.value());
+			return null;
+		}
+		String userId = user.getUserId();
+		Player p = null;
+		String nickName = "";
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		p = playerRepositoryDao.findBySocialIdAndType(userId, type);
+		nickName = (p != null) ? p.getNikName() : null;
+		
+		String classUrl = "state/" + gameName + "?page=1&size=" + maxClassificationSize;
+		String allData = this.getAll(request, classUrl);		// call to get all user status (classification)
+		String statusUrl = "state/" + gameName + "/" + userId;
+		String statusData = this.getAll(request, statusUrl);	// call to get actual user status (user scores)
+		List<Player> allNicks = null;
+		try {
+			allNicks = this.getAllNiks(request, "");
+		} catch (Exception ex){
+			logger.error("Exception in all nick names reading " + ex.getMessage());
+		}
+		StatusUtils statusUtils = new StatusUtils();
+		ClassificationData actualPlayerClass = statusUtils.correctPlayerClassificationData(statusData, userId, nickName, timestamp);
+		List<ClassificationData> playersClass = statusUtils.correctClassificationData(allData, allNicks, timestamp);
+		
+		// Sorting
+		Collections.sort(playersClass, Collections.reverseOrder());
+		playerClassificationData = statusUtils.completeClassificationPosition(playersClass, actualPlayerClass, start, end);
+		
+		return playerClassificationData;
 	}
 	
 	

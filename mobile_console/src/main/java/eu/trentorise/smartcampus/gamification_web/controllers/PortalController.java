@@ -29,7 +29,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -59,13 +58,9 @@ import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
 import eu.trentorise.smartcampus.gamification_web.models.status.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
-import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProd;
-import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
-import eu.trentorise.smartcampus.gamification_web.repository.PlayerProd;
-import eu.trentorise.smartcampus.gamification_web.repository.PlayerProdRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.SponsorBannerDataSetup;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
@@ -90,13 +85,7 @@ public class PortalController extends SCController{
     private PlayerRepositoryDao playerRepositoryDao;
     
     @Autowired
-    private PlayerProdRepositoryDao playerProdRepositoryDao;
-    
-    @Autowired
     private AuthPlayerRepositoryDao authPlayerRepositoryDao;
-    
-    @Autowired
-    private AuthPlayerProdRepositoryDao authPlayerProdRepositoryDao;
     
     @Autowired
     private ChallengeDescriptionDataSetup challDescriptionSetup;
@@ -226,18 +215,20 @@ public class PortalController extends SCController{
 			JSONObject attributes = new JSONObject(mappaAttributi);
 			String attribute_mail = attributes.getString(mailKey);
 			
-			if(isTest.compareTo("true") == 0){
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			//if(isTest.compareTo("true") == 0){
+				
 				// Check if the user belongs to the list of the testers (in test)
-				Player player_check = playerRepositoryDao.findBySocialId(user.getUserId());	// app user table
+				Player player_check = playerRepositoryDao.findBySocialIdAndType(user.getUserId(),type);	// app user table
 				if(player_check == null){
 					//String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
 					logger.debug(String.format("Player to add: mail %s.", attribute_mail));
 					if(attribute_mail != null){
 						if(authorizationTable.compareTo("true") == 0){
-							AuthPlayer auth_p = authPlayerRepositoryDao.findByMail(attribute_mail);
+							AuthPlayer auth_p = authPlayerRepositoryDao.findByMailAndType(attribute_mail, type);
 							if(auth_p != null){
 								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null, null);
+								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null, null, type);
 								playerRepositoryDao.save(new_p);
 								// here I call an api from gengine console
 								createPlayerInGamification(user.getUserId());
@@ -248,7 +239,7 @@ public class PortalController extends SCController{
 						} else {
 							// case of no authentication table and user not in user table: I add the user
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
-							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null, null);
+							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null, null, type);
 							playerRepositoryDao.save(new_p);
 							// here I call an api from gengine console
 							createPlayerInGamification(user.getUserId());
@@ -256,9 +247,9 @@ public class PortalController extends SCController{
 						}
 					}
 				}
-			} else {
+			//} else {
 				// Check if the user belongs to the list of the testers (in test)
-				PlayerProd player_check = playerProdRepositoryDao.findBySocialId(user.getUserId());
+				/*PlayerProd player_check = playerProdRepositoryDao.findBySocialId(user.getUserId());
 				if(player_check == null){
 					//String attribute_mail = account.getAttribute(objectArray[0].toString(), "openid.ext1.value.email");
 					logger.info(String.format("Player to add: mail %s.", attribute_mail));
@@ -285,8 +276,8 @@ public class PortalController extends SCController{
 							logger.info(String.format("Add new player: created player %s.", new_p.toJSONString()));
 						}
 					}
-				}
-			}
+				}*/
+			//}
 		} catch (Exception ex){
 			logger.error(String.format("Errore di conversione: %s", ex.getMessage()));
 			return new ModelAndView("redirect:/logout");
@@ -492,7 +483,8 @@ public class PortalController extends SCController{
 					mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 				}
 			}
-			if(isTest.compareTo("true") == 0){
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			/*if(isTest.compareTo("true") == 0){
 				Iterable<Player> iter = playerRepositoryDao.findAll();
 				for(Player p: iter){
 					logger.debug(String.format("Profile finded  %s", p.getNikName()));
@@ -595,8 +587,9 @@ public class PortalController extends SCController{
 					}
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 				}
-			} else {
-				Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+			} else {*/
+				//Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+				Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
 //				List<String> specialPlayers = new ArrayList<String>();
 //				specialPlayers.add("23840");
 //				specialPlayers.add("23789");
@@ -641,7 +634,7 @@ public class PortalController extends SCController{
 				noMailingPlayers.add("10730");	//"FILIPPO"	
 				noMailingPlayers.add("23755");	//"Fede"
 				
-				for(PlayerProd p: iter){
+				for(Player p: iter){
 					logger.debug(String.format("Profile finded  %s", p.getNikName()));
 					try {
 						Thread.sleep(1500);
@@ -745,7 +738,7 @@ public class PortalController extends SCController{
 					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 				}
 					
-			}
+			//}
 			
 			// Send summary mail
 			if(mailSend.compareTo("true") == 0){
@@ -763,7 +756,7 @@ public class PortalController extends SCController{
 	
 	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
-	@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
+	//@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
 	public synchronized void checkWinnersNotification() throws IOException {
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
@@ -820,7 +813,8 @@ public class PortalController extends SCController{
 				mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 			}
 		}
-		if(isTest.compareTo("true") == 0){
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		/*if(isTest.compareTo("true") == 0){
 			Iterable<Player> iter = playerRepositoryDao.findAll();
 			for(Player p: iter){
 				logger.debug(String.format("Profile finded  %s", p.getNikName()));
@@ -923,14 +917,14 @@ public class PortalController extends SCController{
 				}
 				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 			}
-		} else {
-			Iterable<PlayerProd> iter = playerProdRepositoryDao.findAll();
+		} else {*/
+			Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
 			// Add user to exclude from the mailing list
 			List<String> noMailingPlayers = new ArrayList<String>();
 			noMailingPlayers.add("10730");	//"FILIPPO"	
 			noMailingPlayers.add("23755");	//"Fede"
 			
-			for(PlayerProd p: iter){
+			for(Player p: iter){
 				logger.debug(String.format("Profile finded  %s", p.getNikName()));
 				try {
 					Thread.sleep(1500);
@@ -1031,7 +1025,7 @@ public class PortalController extends SCController{
 				}
 				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
 			}
-		}
+		//}
 		
 		// Send summary mail
 		if(mailSend.compareTo("true") == 0){

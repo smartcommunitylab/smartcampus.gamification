@@ -7,17 +7,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import eu.trentorise.smartcampus.gamification_web.models.PlayerClassification;
 import eu.trentorise.smartcampus.gamification_web.models.PlayerStatus;
+import eu.trentorise.smartcampus.gamification_web.models.classification.ClassificationData;
 import eu.trentorise.smartcampus.gamification_web.models.status.BadgeCollectionConcept;
 import eu.trentorise.smartcampus.gamification_web.models.status.BadgeConcept;
 import eu.trentorise.smartcampus.gamification_web.models.status.ChallengeConcept;
 import eu.trentorise.smartcampus.gamification_web.models.status.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.status.PlayerData;
 import eu.trentorise.smartcampus.gamification_web.models.status.PointConcept;
+import eu.trentorise.smartcampus.gamification_web.repository.Player;
 
 public class StatusUtils {
 
 	private static final String STATE = "state";
+	private static final String PLAYER_ID = "playerId";
 	private static final String BADGE_COLLECTION_CONCEPT = "BadgeCollectionConcept";
 	private static final String BC_NAME = "name";
 	private static final String BC_BADGE_EARNED = "badgeEarned";
@@ -25,6 +29,10 @@ public class StatusUtils {
 	private static final String PC_GREEN_LEAVES = "green leaves";
 	private static final String PC_NAME = "name";
 	private static final String PC_SCORE = "score";
+	private static final String PC_CLASSIFICATION_WEEK = "green leaves week ";
+	
+	public static final long GAME_STARTING_TIME = 1460757600000L;	// for RV 16 april
+	public static final long MILLIS_IN_WEEK = 1000 * 60 * 60 * 24 * 7;
 	
 	public StatusUtils() {
 	}
@@ -85,17 +93,161 @@ public class StatusUtils {
 				}
     		}
     		
-    		//Iterator keys = stateData.keys();
-    		//while( keys.hasNext() ) {
-    		//    String key = (String)keys.next();
-    		//    String value = stateData.getString(key);    
-    		//}
     		ps.setPlayerData(playerData);
     		ps.setBadgeCollectionConcept(bcc_list);
     		ps.setPointConcept(pointConcept);
     		ps.setChallengeConcept(cc);
     	}
     	return ps;
+    }
+	
+	public ClassificationData correctPlayerClassificationData(String profile, String playerId, String nickName, Long timestamp) throws JSONException{
+    	ClassificationData playerClass = new ClassificationData();
+    	if(profile != null && profile.compareTo("") != 0){
+    		
+    		int score = 0;
+    		long time = (timestamp == null || timestamp.longValue() == 0L) ? System.currentTimeMillis() : timestamp.longValue();
+    		int weekNum = getActualWeek(time);
+    		
+    		JSONObject profileData = new JSONObject(profile);
+    		JSONObject stateData = (!profileData.isNull(STATE)) ? profileData.getJSONObject(STATE) : null;
+    		JSONArray pointConceptData = null;
+    		if(stateData != null){
+    			pointConceptData = stateData.getJSONArray(POINT_CONCEPT);
+    			for(int i = 0; i < pointConceptData.length(); i++){
+    				JSONObject point = pointConceptData.getJSONObject(i);
+    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
+    				if(timestamp == null || timestamp.longValue() == 0L){	// global
+    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+        				}
+    				} else {												// specific week
+	    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
+	    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+	    				}
+    				}
+    			}
+    			playerClass.setNickName(nickName);
+    			playerClass.setPlayerId(playerId);
+    			playerClass.setScore(score);
+    		}
+    		
+    	}
+    	return playerClass;
+    }
+	
+	public List<ClassificationData> correctClassificationData(String allStatus, List<Player> allNicks, Long timestamp) throws JSONException{
+		List<ClassificationData> playerClassList = new ArrayList<ClassificationData>();
+    	if(allStatus != null && allStatus.compareTo("") != 0){
+    		
+    		int score = 0;
+    		long time = (timestamp == null || timestamp.longValue() == 0L) ? System.currentTimeMillis() : timestamp;
+    		int weekNum = getActualWeek(time);
+    		
+    		JSONObject allPlayersData = new JSONObject(allStatus);
+    		JSONArray allPlayersDataList = (!allPlayersData.isNull("content")) ? allPlayersData.getJSONArray("content") : null;
+    		if(allPlayersDataList != null){
+    			for(int i = 0 ; i < allPlayersDataList.length(); i++){
+		    		JSONObject profileData = allPlayersDataList.getJSONObject(i);
+		    		String playerId = (!profileData.isNull(PLAYER_ID)) ? profileData.getString(PLAYER_ID) : "0";
+		    		JSONObject stateData = (!profileData.isNull(STATE)) ? profileData.getJSONObject(STATE) : null;
+		    		JSONArray pointConceptData = null;
+		    		if(stateData != null){
+		    			pointConceptData = stateData.getJSONArray(POINT_CONCEPT);
+		    			for(int j = 0; j < pointConceptData.length(); j++){
+		    				JSONObject point = pointConceptData.getJSONObject(j);
+		    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
+		    				if(timestamp == null || timestamp.longValue() == 0L){	// global
+		    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+		        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+		        				}
+		    				} else {												// specific week
+			    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
+			    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+			    				}
+		    				}
+		    			}
+		    			
+		    			String nickName = getPlayerNameById(allNicks, playerId);
+		    			ClassificationData playerClass = new ClassificationData();
+		    			playerClass.setNickName(nickName);
+		    			playerClass.setPlayerId(playerId);
+		    			playerClass.setScore(score);
+		    			if(nickName != null && nickName.compareTo("") != 0){	// if nickName present (user registered and active)
+		    				playerClassList.add(playerClass);
+		    			}
+		    		}
+    			}
+    		}
+    		
+    	}
+    	return playerClassList;
+    }
+	
+	public PlayerClassification completeClassificationPosition(List<ClassificationData> playersClass, ClassificationData actualPlayerClass, Integer from, Integer to){
+		List<ClassificationData> playersClassCorr = new ArrayList<ClassificationData>();
+		int from_index = 0;
+		int to_index = playersClass.size();
+		PlayerClassification pc = new PlayerClassification();
+		ClassificationData prec_pt = null;
+		for(int i = 0; i < playersClass.size(); i++){
+			ClassificationData pt = playersClass.get(i);
+			if(i > 0){
+				if(pt.getScore() < prec_pt.getScore()){
+	    			pt.setPosition(i + 1);
+	    		} else {
+	    			pt.setPosition(prec_pt.getPosition());
+	    		}
+			} else {
+				pt.setPosition(i + 1);
+			}
+			prec_pt = pt;
+			if(pt.getPlayerId().compareTo(actualPlayerClass.getPlayerId()) == 0){
+				actualPlayerClass.setPosition(pt.getPosition());
+			}
+			playersClassCorr.add(pt);
+		}
+		if(from != null){
+			from_index = from.intValue();
+		}
+		if(to != null){
+			to_index = to.intValue();
+		}
+		if(from_index < 0)from_index = 0;
+		if(from_index > playersClass.size())from_index = playersClass.size() - 1;
+		if(to_index < 0)to_index = 0;
+		if(to_index > playersClass.size())to_index = playersClass.size();
+		if(from_index > to_index)from_index = to_index;
+		pc.setClassificationList(playersClassCorr.subList(from_index, to_index));
+		pc.setActualUser(actualPlayerClass);
+		return pc;
+	}
+	
+	private int getActualWeek(long timestamp){
+		int currWeek = 0;
+		long millisFromGameStart = timestamp - GAME_STARTING_TIME;
+		currWeek = (int)Math.ceil((float)millisFromGameStart / MILLIS_IN_WEEK);
+		return currWeek;
+	}
+	
+	private String getPlayerNameById(List<Player> allNicks, String id) throws JSONException{
+    	boolean find = false;
+    	String name = "";
+    	if(allNicks != null && !allNicks.isEmpty()){
+    		//JSONObject playersData = new JSONObject(allNickJson);
+    		//JSONArray allNicksObjects = (!playersData.isNull("players")) ? playersData.getJSONArray("players") : null;
+    		for(int i = 0; (i < allNicks.size()) && !find; i++){
+    			Player player = allNicks.get(i);
+    			if(player != null){
+    				String socialId = player.getSocialId();
+    				if(socialId.compareTo(id) == 0){
+    					name = player.getNikName();
+    					find = true;
+    				}
+    			}
+    		}
+    	}
+    	return name;
     }
 	
 	private String getUrlFromBadgeName(String gamificationUrl, String b_name){

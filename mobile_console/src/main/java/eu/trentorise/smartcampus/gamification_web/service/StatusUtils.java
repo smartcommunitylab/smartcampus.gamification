@@ -250,6 +250,9 @@ public class StatusUtils {
 		int currWeek = 0;
 		long millisFromGameStart = (type.compareTo("test") == 0) ? timestamp - GAME_STARTING_TIME_TEST : timestamp - GAME_STARTING_TIME;
 		currWeek = (int)Math.ceil((float)millisFromGameStart / MILLIS_IN_WEEK);
+		if(type.compareTo("test") == 0){
+			currWeek = 2;	// forced actual week to 2 week in dev test
+		}
 		return currWeek;
 	}
 	

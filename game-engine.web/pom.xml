@@ -162,4 +162,11 @@
 		</plugins>
 		<finalName>${project.artifactId}</finalName>
 	</build>
+	
+	<repositories>
+		<repository>
+			<id>SmartCommunityLab</id>
+			<url>http://repository.smartcommunitylab.it/content/groups/public</url>
+		</repository>
+	</repositories>
 </project>

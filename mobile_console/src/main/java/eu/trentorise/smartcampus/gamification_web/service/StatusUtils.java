@@ -231,11 +231,17 @@ public class StatusUtils {
 			to_index = to.intValue();
 		}
 		if(from_index < 0)from_index = 0;
-		if(from_index > playersClass.size())from_index = playersClass.size() - 1;
+		if(from_index > playersClass.size())from_index = playersClass.size();
 		if(to_index < 0)to_index = 0;
 		if(to_index > playersClass.size())to_index = playersClass.size();
-		if(from_index > to_index)from_index = to_index;
-		pc.setClassificationList(playersClassCorr.subList(from_index, to_index));
+		if(from_index >= to_index)from_index = to_index;
+		List<ClassificationData> cleanedList = new ArrayList<ClassificationData>();
+		try {
+			cleanedList = playersClassCorr.subList(from_index, to_index);
+		} catch (Exception ex){
+			// do nothings
+		}
+		pc.setClassificationList(cleanedList);
 		pc.setActualUser(actualPlayerClass);
 		return pc;
 	}

@@ -129,7 +129,9 @@ public class WsProxyController {
 		} catch (Exception ex){
 			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
-		result = tmp_res.getBody();
+		if(tmp_res != null){
+			result = tmp_res.getBody();
+		}
 		return result;	
 	}
 	

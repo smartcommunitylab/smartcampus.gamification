@@ -382,6 +382,10 @@ public class StatusUtils {
 		if(b_name.compareTo("Stadio_parking") == 0){
 			return gamificationUrl + "/img/pr/prPioneerStadio.svg";
 		}
+		// TODO: change this solution to real parking badges url (for TN add all p&r badges)
+		if(b_name.contains("parking")){
+			return gamificationUrl + "/img/pr/p&rLeaves.svg";
+		}
 		
 		// badges for bike
 		if(b_name.compareTo("1_bike_trip") == 0){

@@ -455,6 +455,11 @@ public class StatusUtils {
 		if(b_name.compareTo("Mart - Rovereto_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerMART.svg";
 		}
+		// TODO: change this solution to real bike station url (for TN add all bike station badges)
+		if(b_name.contains("BSstation")){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneer.svg";
+		}
+		
 		// badges for recommendation
 		if(b_name.compareTo("3_recommendations") == 0){
 			return gamificationUrl + "/img/recommendation/inviteFriends3.svg";

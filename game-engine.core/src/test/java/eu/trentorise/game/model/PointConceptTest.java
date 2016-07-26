@@ -1,5 +1,9 @@
 package eu.trentorise.game.model;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
@@ -14,9 +18,13 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.managers.GameWorkflow;
+import eu.trentorise.game.model.core.ClasspathRule;
+import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
+import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,6 +36,12 @@ public class PointConceptTest {
 
 	@Autowired
 	private MongoTemplate mongo;
+
+	@Autowired
+	private GameService gameSrv;
+
+	@Autowired
+	private GameWorkflow workflow;
 
 	@Before
 	public void cleanDB() {
@@ -138,6 +152,39 @@ public class PointConceptTest {
 
 		Assert.assertEquals(new Double(29), p.getCurrentPeriodScore(0));
 		Assert.assertEquals(new Double(15), p.getCurrentPeriodScore(1));
+	}
+
+	@Test
+	public void tryInRules() throws InterruptedException {
+		final String GAME = "periodic";
+		final String OWNER = "periodicOwner";
+		final String ACTION = "incremental";
+
+		Game game = new Game();
+
+		game.setId(GAME);
+		game.setName(GAME);
+		game.setOwner(OWNER);
+
+		game.setActions(new HashSet<String>());
+		game.getActions().add(ACTION);
+
+		PointConcept pc = new PointConcept("green");
+		final long ONE_DAY = 24 * 3600 * 1000;
+		pc.addPeriod(new LocalDate().toDate(), ONE_DAY);
+		game.setConcepts(new HashSet<GameConcept>());
+		game.getConcepts().add(pc);
+
+		gameSrv.saveGameDefinition(game);
+
+		// add rules
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/points.drl"));
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("walkDistance", 2d);
+		workflow.apply(GAME, ACTION, "my player", data, null);
+		Thread.sleep(30000);
+
+		// playerSrv.loadState(GAME, "my player", false);
 
 	}
 }

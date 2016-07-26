@@ -112,8 +112,20 @@ public class PointConcept extends GameConcept {
 				periodIdentifier).getCurrentScore() : 0d;
 	}
 
-	// getPreviousValue
-	// getNextValue
+	public Double getPeriodPreviousScore(String periodIdentifier) {
+		LinkedList<PeriodInstance> instances = periods.get(periodIdentifier)
+				.getInstances();
+		return periods.containsKey(periodIdentifier) ? instances.get(
+				instances.size() - 1).getScore() : 0d;
+
+	}
+
+	public Double getPeriodPreviousScore(String periodIdentifier, int steps) {
+		LinkedList<PeriodInstance> instances = periods.get(periodIdentifier)
+				.getInstances();
+		return periods.containsKey(periodIdentifier) ? instances.get(
+				instances.size() - 1).getScore() : 0d;
+	}
 
 	private class Period {
 		private Date start;

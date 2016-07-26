@@ -56,11 +56,11 @@ public class PointConceptTest {
 		PointConcept pc = new PointConcept("testPoint");
 		LocalDate start1 = new LocalDate(2016, 7, 10);
 		long period1 = 7 * 24 * 3600 * 1000; // one week millisec
-		pc.addPeriod(start1.toDate(), period1);
+		pc.addPeriod("period1", start1.toDate(), period1);
 		pc.setScore(15d);
 		pc.setScore(25d);
 
-		Assert.assertEquals(new Double(25), pc.getCurrentPeriodScore(0));
+		Assert.assertEquals(new Double(25), pc.getPeriodCurrentScore(0));
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class PointConceptTest {
 		PointConcept pc = new PointConcept("testPoint");
 		LocalDate start1 = new LocalDate(2016, 7, 10);
 		long period1 = 7 * 24 * 3600 * 1000; // one week millisec
-		pc.addPeriod(start1.toDate(), period1);
+		pc.addPeriod("period1", start1.toDate(), period1);
 		pc.setScore(15d);
 		pc.setScore(35d);
 
@@ -83,7 +83,7 @@ public class PointConceptTest {
 
 		PointConcept p = (PointConcept) loaded.getState().iterator().next();
 
-		Assert.assertEquals(new Double(35), p.getCurrentPeriodScore(0));
+		Assert.assertEquals(new Double(35), p.getPeriodCurrentScore(0));
 	}
 
 	@Test
@@ -94,11 +94,11 @@ public class PointConceptTest {
 		PointConcept pc = new PointConcept("testPoint");
 		LocalDate start = new LocalDate(2016, 7, 10);
 		long period = 7 * 24 * 3600 * 1000; // one week millisec
-		pc.addPeriod(start.toDate(), period);
+		pc.addPeriod("period1", start.toDate(), period);
 
 		start = new LocalDate(2016, 7, 25);
 		period = 24 * 3600 * 1000;
-		pc.addPeriod(start.toDate(), period);
+		pc.addPeriod("period2", start.toDate(), period);
 
 		pc.setScore(21d);
 
@@ -110,8 +110,8 @@ public class PointConceptTest {
 
 		PointConcept p = (PointConcept) loaded.getState().iterator().next();
 
-		Assert.assertEquals(new Double(21), p.getCurrentPeriodScore(0));
-		Assert.assertEquals(new Double(21), p.getCurrentPeriodScore(1));
+		Assert.assertEquals(new Double(21), p.getPeriodCurrentScore(0));
+		Assert.assertEquals(new Double(21), p.getPeriodCurrentScore(1));
 
 	}
 
@@ -123,11 +123,11 @@ public class PointConceptTest {
 		PointConcept pc = new PointConcept("testPoint");
 		LocalDate start = new LocalDate(2016, 7, 10);
 		long period = 7 * 24 * 3600 * 1000; // one week millisec
-		pc.addPeriod(start.toDate(), period);
+		pc.addPeriod("period1", start.toDate(), period);
 
 		start = new LocalDate(2016, 7, 25);
 		period = 3600 * 1000;
-		pc.addPeriod(start.toDate(), period);
+		pc.addPeriod("period2", start.toDate(), period);
 
 		DateTime executionTime = new DateTime(2016, 7, 26, 1, 5, 10);
 		pc.executionMoment = executionTime.getMillis();
@@ -150,8 +150,8 @@ public class PointConceptTest {
 		PointConcept p = (PointConcept) loaded.getState().iterator().next();
 		p.executionMoment = pc.executionMoment;
 
-		Assert.assertEquals(new Double(29), p.getCurrentPeriodScore(0));
-		Assert.assertEquals(new Double(15), p.getCurrentPeriodScore(1));
+		Assert.assertEquals(new Double(29), p.getPeriodCurrentScore("period1"));
+		Assert.assertEquals(new Double(15), p.getPeriodCurrentScore("period2"));
 	}
 
 	@Test
@@ -171,7 +171,7 @@ public class PointConceptTest {
 
 		PointConcept pc = new PointConcept("green");
 		final long ONE_DAY = 24 * 3600 * 1000;
-		pc.addPeriod(new LocalDate().toDate(), ONE_DAY);
+		pc.addPeriod("period1", new LocalDate().toDate(), ONE_DAY);
 		game.setConcepts(new HashSet<GameConcept>());
 		game.getConcepts().add(pc);
 

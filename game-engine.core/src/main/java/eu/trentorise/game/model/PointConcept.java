@@ -91,24 +91,23 @@ public class PointConcept extends GameConcept {
 		}
 	}
 
-	public void addPeriod(Date start, long period) {
-		Period p = new Period(start, period);
-		if (!periods.containsKey(p.getIdentifier())) {
-			periods.put(p.getIdentifier(), p);
+	public void addPeriod(String identifier, Date start, long period) {
+		Period p = new Period(identifier, start, period);
+		if (!periods.containsKey(identifier)) {
+			periods.put(identifier, p);
 		}
 	}
 
-	public void deletePeriod(Date start, long period) {
-		Period p = new Period(start, period);
-		periods.remove(p.getIdentifier());
+	public void deletePeriod(String identifier) {
+		periods.remove(identifier);
 	}
 
-	public Double getCurrentPeriodScore(int periodIndex) {
+	public Double getPeriodCurrentScore(int periodIndex) {
 		return new ArrayList<>(periods.values()).get(periodIndex)
 				.getCurrentScore();
 	}
 
-	public Double getCurrentPeriodScore(String periodIdentifier) {
+	public Double getPeriodCurrentScore(String periodIdentifier) {
 		return periods.containsKey(periodIdentifier) ? periods.get(
 				periodIdentifier).getCurrentScore() : 0d;
 	}
@@ -122,10 +121,10 @@ public class PointConcept extends GameConcept {
 		private String identifier;
 		private LinkedList<PeriodInstance> instances = new LinkedList<>();
 
-		public Period(Date start, long period) {
+		public Period(String identifier, Date start, long period) {
 			this.start = start;
 			this.period = period;
-			identifier = createIdentifier(start, period);
+			this.identifier = identifier;
 		}
 
 		public Period(Map<String, Object> jsonProps) {
@@ -138,11 +137,6 @@ public class PointConcept extends GameConcept {
 				instances.add(new PeriodInstance(tempInstance));
 			}
 
-		}
-
-		private String createIdentifier(Date start, long period) {
-			DateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-			return formatter.format(start) + "+" + period;
 		}
 
 		public String getIdentifier() {

@@ -5,7 +5,7 @@ when
     $pc : PointConcept(name == "green", $score : score > 0)
 then
     
-    log("listen score: " + $pc.getCurrentPeriodScore(0));
+    log("listen score: " + $pc.getPeriodCurrentScore(0));
 end
 
 rule "update green points"

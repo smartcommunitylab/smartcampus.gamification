@@ -21,6 +21,16 @@ angular.module('gamificationEngine.concepts', [])
 			'challengeDeleted': false
 		};
 
+		$scope.hide = true;
+		$scope.tmpPeriods = [];
+		
+		$scope.addPeriod = function() {
+			$scope.tmpPeriods.push({name:'', start: new Date(), period : 1});
+		}
+		
+		$scope.deleteTmpPeriod =function(index) {
+			$scope.tmpPeriods.splice(index,1);
+		}
 		// SAVE button click event-handler
 		$scope.addPoint = function () {
 			$scope.alerts.editInstanceError = '';
@@ -32,6 +42,8 @@ angular.module('gamificationEngine.concepts', [])
 				$scope.alerts.editInstanceError = 'messages:msg_instance_name_exists_error';
 			} else {
 				$scope.disabled = true;
+				// added periods to point to save
+				$scope.points.periods = $scope.tmpPeriods;
 				gamesFactory.editInstance($scope.game, 'points', $scope.points).then(function (instance) {
 					// Points instance edited
 					//$scope.game.pointConcept.push(instance);
@@ -115,7 +127,21 @@ angular.module('gamificationEngine.concepts', [])
 			});
 		};
 
+		$scope.process = function(p) {
+			p.identifier = 'ciccio';
+		};
 		gamesFactory.getPoints($rootScope.currentGameId).then(function (points) {
+			// process periods data to view state
+			points.forEach(function(point) {
+				if(point.periods) {
+					let periodKeys = Object.keys(point.periods);
+					point.periodList = [];
+					periodKeys.forEach(function(k) {
+						point.periods[k].period = point.periods[k].period / (24 * 3600 * 1000);
+						point.periodList.push(point.periods[k]);
+					});
+				}
+			});
 			$scope.points = points;
 		});
 

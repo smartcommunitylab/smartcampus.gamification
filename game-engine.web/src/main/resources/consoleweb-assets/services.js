@@ -18,7 +18,7 @@ angular.module('gamificationEngine.services', [])
 	.factory('gamesFactory', function ($rootScope, $http, $q, $timeout) {
 		// Games data operations factory
 		//var url = "https://dev.smartcommunitylab.it/gamification";
-		var url = "../";
+		var url = "..";
 		// Get games
 		var getGames = function () {
 			var deferred = $q.defer();
@@ -46,7 +46,7 @@ angular.module('gamificationEngine.services', [])
 
 			// Load games
 			getGames().then(function () {
-				var found = false;
+				var found = false; 
 				angular.forEach($rootScope.games, function (g) {
 					if (!found && g.id == id) {
 						game = g;
@@ -234,9 +234,15 @@ angular.module('gamificationEngine.services', [])
 						id++;
 					});
 
+					let periods = {};
+					let dayMillis = 24 * 3600 * 1000;
+					angular.forEach(instanceProperties.periods,function(value,key){
+						periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name};
+					});
 					var instance = {
 						'id': id,
-						'name': instanceProperties.name
+						'name': instanceProperties.name,
+						'periods' : periods
 					};
 
 					var tmpGame = angular.copy(game);

@@ -60,13 +60,26 @@ public class PointConcept extends GameConcept {
 	@JsonCreator
 	public PointConcept(Map<String, Object> jsonProps) {
 		super(jsonProps);
-		score = (Double) jsonProps.get("score");
+		Object score = jsonProps.get("score");
+		// fix: in some case PointConcept JSON representation contains 0 value
+		// in score field
+		// and so it is cast to Integer
+		if (score != null) {
+			if (score instanceof Double) {
+				score = (Double) jsonProps.get("score");
+			}
+			if (score instanceof Integer) {
+				score = ((Integer) jsonProps.get("score")).doubleValue();
+			}
+		}
 		Map<String, Object> temp = (Map<String, Object>) jsonProps
 				.get("periods");
-		Set<Entry<String, Object>> entries = temp.entrySet();
-		for (Entry<String, Object> entry : entries) {
-			periods.put(entry.getKey(),
-					new Period((Map<String, Object>) entry.getValue()));
+		if (temp != null) {
+			Set<Entry<String, Object>> entries = temp.entrySet();
+			for (Entry<String, Object> entry : entries) {
+				periods.put(entry.getKey(), new Period(
+						(Map<String, Object>) entry.getValue()));
+			}
 		}
 	}
 
@@ -141,12 +154,22 @@ public class PointConcept extends GameConcept {
 
 		public Period(Map<String, Object> jsonProps) {
 			start = new Date((long) jsonProps.get("start"));
-			period = (Long) jsonProps.get("period");
+			Object periodField = jsonProps.get("period");
+			if (periodField != null) {
+				if (periodField instanceof Long) {
+					period = (Long) periodField;
+				}
+				if (periodField instanceof Integer) {
+					period = Integer.valueOf((Integer) periodField).longValue();
+				}
+			}
 			identifier = (String) jsonProps.get("identifier");
 			List<Map<String, Object>> tempInstances = (List<Map<String, Object>>) jsonProps
 					.get("instances");
-			for (Map<String, Object> tempInstance : tempInstances) {
-				instances.add(new PeriodInstance(tempInstance));
+			if (tempInstances != null) {
+				for (Map<String, Object> tempInstance : tempInstances) {
+					instances.add(new PeriodInstance(tempInstance));
+				}
 			}
 
 		}
@@ -255,9 +278,38 @@ public class PointConcept extends GameConcept {
 		}
 
 		public PeriodInstance(Map<String, Object> jsonProps) {
-			score = (Double) jsonProps.get("score");
-			start = (Long) jsonProps.get("start");
-			end = (Long) jsonProps.get("end");
+			Object scoreField = jsonProps.get("score");
+			Object startField = jsonProps.get("start");
+			Object endField = jsonProps.get("end");
+			if (scoreField != null) {
+				if (scoreField instanceof Double) {
+					score = (Double) scoreField;
+				}
+
+				if (scoreField instanceof Integer) {
+					score = Integer.valueOf((Integer) scoreField).doubleValue();
+				}
+			}
+
+			if (startField != null) {
+				if (startField instanceof Long) {
+					start = (Long) startField;
+				}
+
+				if (startField instanceof Integer) {
+					start = Integer.valueOf((Integer) startField).longValue();
+				}
+			}
+
+			if (endField != null) {
+				if (endField instanceof Long) {
+					end = (Long) endField;
+				}
+
+				if (endField instanceof Integer) {
+					end = Integer.valueOf((Integer) endField).longValue();
+				}
+			}
 		}
 
 		public Double increaseScore(Double value) {

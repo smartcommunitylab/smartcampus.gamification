@@ -47,6 +47,7 @@ angular.module('gamificationEngine.concepts', [])
 				gamesFactory.editInstance($scope.game, 'points', $scope.points).then(function (instance) {
 					// Points instance edited
 					//$scope.game.pointConcept.push(instance);
+					instance = processPointPeriods(instance);
 					$scope.game.pointConcept.unshift(instance);
 					$scope.points.name = '';
 					$scope.disabled = false;
@@ -133,22 +134,28 @@ angular.module('gamificationEngine.concepts', [])
 		gamesFactory.getPoints($rootScope.currentGameId).then(function (points) {
 			// process periods data to view state
 			points.forEach(function(point) {
-				if(point.periods) {
-					let periodKeys = Object.keys(point.periods);
-					point.periodList = [];
-					periodKeys.forEach(function(k) {
-						point.periods[k].period = point.periods[k].period / (24 * 3600 * 1000);
-						point.periodList.push(point.periods[k]);
-					});
-				}
+				point = processPointPeriods(point);
 			});
 			$scope.points = points;
+			$scope.game.pointConcept = (points);
 		});
 
 		gamesFactory.getBadges($rootScope.currentGameId).then(function (badges) {
 			$scope.badges = badges;
 		});
 	});
+
+	function processPointPeriods(point) {
+		if(point.periods) {
+			let periodKeys = Object.keys(point.periods);
+			point.periodList = [];
+			periodKeys.forEach(function(k) {
+				point.periods[k].period = point.periods[k].period / (24 * 3600 * 1000);
+				point.periodList.push(point.periods[k]);
+			});
+		}
+		return point;
+	}
 
 modals.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {
 	$scope.argument = instance.name;

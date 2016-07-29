@@ -2,7 +2,7 @@ package eu.trentorise.game.model
 
 rule "listen increment"
 when
-    $pc : PointConcept(name == "green", $score : score > 0)
+    $pc : PointConcept(name == "green") @watch(score)
 then
     
     log("listen score: " + $pc.getPeriodCurrentScore(0));
@@ -24,9 +24,9 @@ then
 	Long dist2 = Math.round(bus + train);
     //log("dist2 " + dist2);
     if(dist1 >= 2) {
-    	//modify($pc){ setScore($pc.getScore() + 2 * dist1) }
-    	$pc.setScore($pc.getScore() + 2 * dist1);
-    	update($pc);
+    	modify($pc){ setScore($pc.getScore() + 2 * dist1) }
+    	//$pc.setScore($pc.getScore() + 2 * dist1);
+    	//update($pc);
     }
     log("Score: " + $pc.getScore());
 end

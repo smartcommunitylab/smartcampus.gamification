@@ -60,16 +60,16 @@ public class PointConcept extends GameConcept {
 	@JsonCreator
 	public PointConcept(Map<String, Object> jsonProps) {
 		super(jsonProps);
-		Object score = jsonProps.get("score");
+		Object scoreField = jsonProps.get("score");
 		// fix: in some case PointConcept JSON representation contains 0 value
 		// in score field
 		// and so it is cast to Integer
-		if (score != null) {
-			if (score instanceof Double) {
-				score = (Double) jsonProps.get("score");
+		if (scoreField != null) {
+			if (scoreField instanceof Double) {
+				score = (Double) scoreField;
 			}
-			if (score instanceof Integer) {
-				score = ((Integer) jsonProps.get("score")).doubleValue();
+			if (scoreField instanceof Integer) {
+				score = ((Integer) scoreField).doubleValue();
 			}
 		}
 		Map<String, Object> temp = (Map<String, Object>) jsonProps

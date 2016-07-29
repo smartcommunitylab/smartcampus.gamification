@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
@@ -198,7 +200,8 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
+	public TeamState removeFromTeam(String gameId, String teamId,
+			String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -212,6 +215,12 @@ public class PlayerManager implements PlayerService {
 	@Override
 	public PlayerState updateCustomData(String gameId, String playerId,
 			Map<String, Object> data) {
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public ChallengeConcept assignChallenge(String gameId, String playerId,
+			String modelName, String instanceName, Map<String, Object> data, Date start, Date end) {
 		throw new UnsupportedOperationException("method not implemented");
 	}
 }

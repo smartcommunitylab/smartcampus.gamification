@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +58,7 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LoggingRuleListener;
 import eu.trentorise.game.model.Action;
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.InputData;
@@ -141,7 +143,25 @@ public class DroolsEngine implements GameEngine {
 		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId(),
 				state instanceof TeamState)));
 
-		cmds.add(CommandFactory.newInsertElements(state.getState()));
+		// filter state removing all ended or completed challenges for the
+		// player
+		Set<GameConcept> filteredByChallenge = new HashSet<>(state.getState());
+		Set<GameConcept> archivedChallenges = new HashSet<>();
+		Date now = new Date();
+		for (Iterator<GameConcept> iter = filteredByChallenge.iterator(); iter
+				.hasNext();) {
+			GameConcept gc = iter.next();
+			if (gc instanceof ChallengeConcept) {
+				ChallengeConcept challenge = (ChallengeConcept) gc;
+				if (challenge.isCompleted() || challenge.getStart().after(now)
+						|| challenge.getEnd().before(now)) {
+					iter.remove();
+					archivedChallenges.add(gc);
+				}
+			}
+
+		}
+		cmds.add(CommandFactory.newInsertElements(filteredByChallenge));
 		cmds.add(CommandFactory.newInsert(state.getCustomData()));
 		cmds.add(CommandFactory.newFireAllRules());
 
@@ -162,7 +182,9 @@ public class DroolsEngine implements GameEngine {
 		ExecutionResults results = kSession.execute(CommandFactory
 				.newBatchExecution(cmds));
 
-		Set<GameConcept> newState = new HashSet<GameConcept>();
+		// new state contains archived challenges and all GameConcept
+		// loaded in engine session
+		Set<GameConcept> newState = new HashSet<GameConcept>(archivedChallenges);
 
 		Iterator<QueryResultsRow> iter = ((QueryResults) results
 				.getValue("retrieveState")).iterator();

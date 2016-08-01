@@ -1,0 +1,13 @@
+package eu.trentorise.game.model
+
+rule "challenge"
+when
+    $challenge : ChallengeConcept(modelName == "prize")
+    $pc : PointConcept(name == "green leaves")
+then
+	log("Challenge PRIZE winner");
+	$challenge.completed();
+	$pc.increment(100d);
+    update($pc);
+end
+

@@ -394,7 +394,7 @@ public class DBPlayerManager implements PlayerService {
 		challenge.setName(instanceName);
 
 		// save in playerState
-		PlayerState state = loadState(gameId, playerId, false);
+		PlayerState state = loadState(gameId, playerId, true);
 
 		state.getState().add(challenge);
 		persistConcepts(gameId, playerId,

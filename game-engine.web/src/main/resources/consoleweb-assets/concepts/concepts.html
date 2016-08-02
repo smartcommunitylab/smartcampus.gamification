@@ -201,11 +201,83 @@
 				</tbody>
 			</table>
 		</div>
-		</uib-tab> <!-- TO INTEGRATE 
-			<uib-tab heading="{{'labels:lbl_challenges' | i18next}}">
-				<div class="table-actions">
+		</uib-tab> <uib-tab heading="{{'labels:lbl_challenges' | i18next}}">
+		<div class="table-actions col-md-12" ng-controller="ChallengeCtrl">
+			<form role="form">
+				<div class="form-group"
+					<label for="newChallengeInstanceName">{{'labels:lbl_name' |
+						i18next}}</label>
 				</div>
-			</uib-tab>
-			--> </uib-tabset>
+				<div class="clearfix"></div>
+				<div>
+					<input type="text" class="form-control text"
+						id="newChallengeInstanceName" ng-model="challenge.name" required
+						autofocus />
+				</div>
+				<!-- ADD model fields -->
+				<div>
+					<button type="button" class="btn btn-success"
+						data-ng-click="addField()"
+						uib-tooltip="{{'labels:tool_add' | i18next}}"
+						ng-disabled="disabled">Add field</button>
+				</div>
+				<table class="table table-striped table-bordered">
+					<tr ng-repeat="field in challenge.fields track by $index">
+						<td><input class="form-control" type="text"
+							ng-model="challenge.fields[$index]" /></td>
+						<td>
+							<button type="button"
+								class="btn btn-danger btn-circle pull-right"
+								data-ng-click="deleteVariable($index)"
+								uib-tooltip="{{'labels:tool_delete' | i18next}}">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</td>
+					</tr>
+				</table>
+				<div>
+					<button type="button" class="btn btn-success"
+						data-ng-click="addModel()"
+						uib-tooltip="{{'labels:tool_add' | i18next}}"
+						ng-disabled="disabled">
+						<!-- span class="glyphicon glyphicon-plus"></span-->
+						Save model
+					</button>
+				</div>
+			</form>
+			<table class="table table-striped table-bordered">
+				<tbody>
+					<tr data-ng-repeat="model in savedChallenges">
+						<td>{{model.name}}
+							<button type="button"
+								class="btn btn-danger btn-circle pull-right"
+								data-ng-click="deleteModel($index)"
+								uib-tooltip="{{'labels:tool_delete' | i18next}}">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+							<button type="button"
+								class="btn btn-warning btn-circle pull-right"
+								style="margin-right: 1em;"
+								data-ng-click="hide = !hide;showPoint($index)"
+								uib-tooltip="{{'labels:tool_view' | i18next}}">
+								<span class="glyphicon"
+									ng-class="{'glyphicon-eye-open': hide, 'glyphicon-eye-close': !hide}"></span>
+							</button>
+							<div class="row rule">
+								<div uib-collapse="hide" class="col-md-12">
+									<table class="table table-striped table-bordered">
+									<tr ng-repeat="v in model.variables">
+									<td>{{v}}</td>
+									</tr>
+									</table>
+								</div>
+							</div>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+		</uib-tab> </uib-tabset>
 	</div>
 </div>

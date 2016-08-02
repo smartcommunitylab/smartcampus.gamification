@@ -1,4 +1,4 @@
-angular.module('gamificationEngine.concepts', [])
+var concepts = angular.module('gamificationEngine.concepts', [])
 	.controller('ConceptsCtrl', function ($scope, $rootScope, $timeout, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'concepts';
 

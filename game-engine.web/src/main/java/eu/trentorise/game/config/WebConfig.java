@@ -61,7 +61,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(authInterceptor).addPathPatterns(
-				"/console/game/**");
+				"/console/game/**", "/model/game/**");
 	}
 
 	@Override

@@ -83,5 +83,6 @@
   "tool_clone_game": "Clona il gioco",
   "tool_pause_game": "Ferma il gioco",
   "tool_active_game": "Riprendi il gioco",
-  "lbl_stop_confirm": "Conferma terminazione"
+  "lbl_stop_confirm": "Conferma terminazione",
+  "lbl_challenges" : "Modelli di Challenge"
 }

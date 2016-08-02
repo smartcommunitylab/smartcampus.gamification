@@ -87,5 +87,6 @@
   "lbl_add_rule" : "Crea nuova regola",
   "title_add_rule" : "Crea nuova regola",
   "title_add_task" : "Create nuova classica",
-  "btn_publish" : "Pubblica"
+  "btn_publish" : "Pubblica",
+  "lbl_challenges" : "Modelli di Challenge"
 }

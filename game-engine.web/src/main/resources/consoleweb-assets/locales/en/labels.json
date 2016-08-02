@@ -79,5 +79,6 @@
   "title_add_rule" : "Create new rule",
   "title_add_task" : "Create new classification",
   "btn_publish" : "Publish",
-  "lbl_total" : "Total score"
+  "lbl_total" : "Total score",
+  "lbl_challenges" : "Challenge Models"
 }

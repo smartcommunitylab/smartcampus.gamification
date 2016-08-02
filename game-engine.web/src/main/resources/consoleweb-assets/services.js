@@ -380,6 +380,42 @@ angular.module('gamificationEngine.services', [])
 
 			return deferred.promise;
 		}
+		
+		var saveChallengeModel = function(gameId, model) {
+			var deferred = $q.defer();
+			model.variables = [];
+			angular.copy(model.fields , model.variables);
+			delete model.fields;
+			$http.post(url + '/model/game/'+ gameId+'/challenge', model).success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+
+			return deferred.promise;
+		}
+		
+		var readChallengeModels = function(gameId) {
+			var deferred = $q.defer();
+			$http.get(url + '/model/game/'+ gameId+'/challenge').success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+
+			return deferred.promise;
+		}
+		
+		var deleteChallengeModel = function(gameId,modelId) {
+			var deferred = $q.defer();
+			$http.delete(url + '/model/game/'+ gameId+'/challenge/' + modelId).success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+
+			return deferred.promise;
+		}
 
 		return {
 			'getGames': getGames,
@@ -400,6 +436,9 @@ angular.module('gamificationEngine.services', [])
 			'editTask': editTask,
 			'validateRule': validateRule,
 			'getPlayersState': getPlayersState,
+			'saveChallengeModel' : saveChallengeModel,
+			'readChallengeModels' : readChallengeModels,
+			'deleteChallengeModel' : deleteChallengeModel
 		};
 	})
 	.factory('utilsFactory', function () {

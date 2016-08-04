@@ -19,6 +19,8 @@ package eu.trentorise.game.model.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
@@ -31,7 +33,7 @@ public abstract class GameTask {
 
 	public abstract void execute(GameContext ctx);
 
-	protected abstract List<String> getExecutionActions();
+	public abstract List<String> getExecutionActions();
 
 	public List<String> retrieveActions() {
 		List<String> list = getExecutionActions();
@@ -46,6 +48,10 @@ public abstract class GameTask {
 	}
 
 	public GameTask(String name, TaskSchedule schedule) {
+		if (StringUtils.isBlank(name)) {
+			throw new IllegalArgumentException(
+					"task name cannot be null or empty");
+		}
 		this.name = name;
 		this.setSchedule(schedule);
 	}

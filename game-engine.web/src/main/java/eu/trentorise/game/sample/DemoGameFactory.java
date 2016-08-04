@@ -34,7 +34,7 @@ import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.services.GameService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 
 @Component
 public class DemoGameFactory {
@@ -100,32 +100,32 @@ public class DemoGameFactory {
 			TaskSchedule finalClassSchedule = new TaskSchedule();
 			finalClassSchedule.setCronExpression(FINAL_CLASS_CRONEXP);
 
-			ClassificationTask task1 = new ClassificationTask(
+			GeneralClassificationTask task1 = new GeneralClassificationTask(
 					finalClassSchedule, 3, "green leaves",
 					"final classification green");
 			game.getTasks().add(task1);
 
-			ClassificationTask task2 = new ClassificationTask(
+			GeneralClassificationTask task2 = new GeneralClassificationTask(
 					finalClassSchedule, 3, "health",
 					"final classification health");
 			game.getTasks().add(task2);
 
-			ClassificationTask task3 = new ClassificationTask(
+			GeneralClassificationTask task3 = new GeneralClassificationTask(
 					finalClassSchedule, 3, "p+r", "final classification p+r");
 			game.getTasks().add(task3);
 
 			// week classifications
-			ClassificationTask task4 = new ClassificationTask(
+			GeneralClassificationTask task4 = new GeneralClassificationTask(
 					weekClassSchedule, 1, "green leaves",
 					"week classification green");
 			game.getTasks().add(task4);
 
-			ClassificationTask task5 = new ClassificationTask(
+			GeneralClassificationTask task5 = new GeneralClassificationTask(
 					weekClassSchedule, 1, "health",
 					"week classification health");
 			game.getTasks().add(task5);
 
-			ClassificationTask task6 = new ClassificationTask(
+			GeneralClassificationTask task6 = new GeneralClassificationTask(
 					weekClassSchedule, 1, "p+r", "week classification p+r");
 			game.getTasks().add(task6);
 

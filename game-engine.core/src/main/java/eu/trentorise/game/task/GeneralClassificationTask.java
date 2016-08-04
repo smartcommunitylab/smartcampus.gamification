@@ -16,210 +16,43 @@
 
 package eu.trentorise.game.task;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.model.core.GameTask;
 
-public class ClassificationTask extends GameTask {
+public class GeneralClassificationTask extends ClassificationTask {
 
 	private final Logger logger = LoggerFactory
-			.getLogger(ClassificationTask.class);
+			.getLogger(GeneralClassificationTask.class);
 
-	private Integer itemsToNotificate;
 	private String itemType;
-	private String classificationName;
 
-	private static final int DEFAULT_VALUE = 3;
-
-	private static final String ACTION_CLASSIFICATION = "classification";
-
-	public ClassificationTask(TaskSchedule schedule, String itemType,
+	public GeneralClassificationTask(TaskSchedule schedule, String itemType,
 			String classificationName) {
 		super(classificationName, schedule);
-		this.itemsToNotificate = DEFAULT_VALUE;
-		this.itemType = itemType;
-		this.classificationName = classificationName;
-	}
-
-	public ClassificationTask(TaskSchedule schedule, int itemsToNotificate,
-			String itemType, String classificationName) {
-		super(classificationName, schedule);
-		this.itemsToNotificate = itemsToNotificate;
-		this.itemType = itemType;
-		this.classificationName = classificationName;
-	}
-
-	public ClassificationTask() {
-
-	}
-
-	@Override
-	public void execute(GameContext ctx) {
-		if (ctx == null) {
-			logger.warn("gameContext null");
-			return;
-		}
-
-		if (StringUtils.isBlank(classificationName)
-				|| StringUtils.isBlank(itemType)) {
+		if (StringUtils.isBlank(itemType)) {
 			throw new IllegalArgumentException(
-					"classificationName and itemType cannot be null or empty");
+					"itemType cannot be null or empty");
 		}
-		// read all game players
-		List<String> players = ctx.readPlayers();
-		// load players status
-
-		List<PlayerState> states = new ArrayList<PlayerState>();
-		for (String p : players) {
-			states.add(ctx.readStatus(p));
-		}
-
-		ClassificationList classification = new ClassificationList(states);
-
-		// debug logging
-		if (logger.isDebugEnabled()) {
-			for (ClassificationItem item : classification.getClassification()) {
-				logger.debug("{}: player {} score {}", classificationName,
-						item.getPlayerId(), item.getScore());
-
-			}
-		}
-
-		int position = 1, nextPosition = 1, index;
-		Double lastScore = null;
-		boolean sameScore = false;
-		for (ClassificationItem item : classification) {
-
-			sameScore = lastScore != null && lastScore == item.getScore();
-			index = nextPosition - 1;
-
-			if (index >= itemsToNotificate && !sameScore) {
-				break;
-			}
-
-			Classification c = new Classification();
-
-			c.setName(classificationName);
-			c.setScoreType(itemType);
-			if (sameScore) {
-				c.setPosition(position);
-			} else {
-				c.setPosition(nextPosition);
-				position = nextPosition;
-			}
-			lastScore = item.getScore();
-			nextPosition++;
-
-			List<Object> factObjs = new ArrayList<Object>();
-			factObjs.add(c);
-			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), null,
-					factObjs);
-		}
-
+		this.itemType = itemType;
 	}
 
-	private PointConcept retrieveConcept(PlayerState p, String pointType) {
-		for (GameConcept gc : p.getState()) {
-			if (gc instanceof PointConcept
-					&& ((PointConcept) gc).getName().equals(pointType)) {
-				return (PointConcept) gc;
-			}
+	public GeneralClassificationTask(TaskSchedule schedule,
+			int itemsToNotificate, String itemType, String classificationName) {
+		super(itemsToNotificate, classificationName, schedule);
+		if (StringUtils.isBlank(itemType)) {
+			throw new IllegalArgumentException(
+					"itemType cannot be null or empty");
 		}
-
-		return null;
+		this.itemType = itemType;
 	}
 
-	private class ClassificationList implements Iterable<ClassificationItem> {
-		private List<ClassificationItem> classification;
-
-		public ClassificationList(List<PlayerState> states) {
-			init(states);
-		}
-
-		private void init(List<PlayerState> states) {
-			classification = new ArrayList<ClassificationItem>();
-			for (PlayerState state : states) {
-				classification.add(new ClassificationItem(retrieveConcept(
-						state, itemType).getScore(), state.getPlayerId()));
-			}
-
-			Collections.sort(classification,
-					Collections.reverseOrder(new ClassificationSorter()));
-
-		}
-
-		private class ClassificationSorter implements
-				Comparator<ClassificationItem> {
-
-			public ClassificationSorter() {
-			}
-
-			public int compare(ClassificationItem o1, ClassificationItem o2) {
-				return Double.compare(o1.getScore(), o2.getScore());
-			}
-
-		}
-
-		public List<ClassificationItem> getClassification() {
-			return classification;
-		}
-
-		public void setClassification(List<ClassificationItem> classification) {
-			this.classification = classification;
-		}
-
-		public Iterator<ClassificationItem> iterator() {
-			return classification.iterator();
-		}
-	}
-
-	private class ClassificationItem {
-		private double score;
-		private String playerId;
-
-		public ClassificationItem(double score, String playerId) {
-			this.score = score;
-			this.playerId = playerId;
-		}
-
-		public double getScore() {
-			return score;
-		}
-
-		public void setScore(double score) {
-			this.score = score;
-		}
-
-		public String getPlayerId() {
-			return playerId;
-		}
-
-		public void setPlayerId(String playerId) {
-			this.playerId = playerId;
-		}
-
-	}
-
-	public Integer getItemsToNotificate() {
-		return itemsToNotificate;
-	}
-
-	public void setItemsToNotificate(Integer itemsToNotificate) {
-		this.itemsToNotificate = itemsToNotificate;
+	public GeneralClassificationTask() {
 	}
 
 	public String getItemType() {
@@ -230,16 +63,20 @@ public class ClassificationTask extends GameTask {
 		this.itemType = itemType;
 	}
 
-	public String getClassificationName() {
-		return classificationName;
-	}
+	@Override
+	protected double retrieveScore(PlayerState state) {
+		for (GameConcept gc : state.getState()) {
+			if (gc instanceof PointConcept
+					&& ((PointConcept) gc).getName().equals(itemType)) {
+				return ((PointConcept) gc).getScore();
+			}
+		}
 
-	public void setClassificationName(String classificationName) {
-		this.classificationName = classificationName;
+		return 0d;
 	}
 
 	@Override
-	protected List<String> getExecutionActions() {
-		return Arrays.asList(ACTION_CLASSIFICATION);
+	protected String getScoreType() {
+		return itemType;
 	}
 }

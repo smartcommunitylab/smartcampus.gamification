@@ -21,7 +21,7 @@ import java.util.Set;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 
 public class GameDTO {
 	private String id;
@@ -32,7 +32,7 @@ public class GameDTO {
 	private long expiration;
 	private boolean terminated;
 
-	private Set<ClassificationTask> classificationTask = new HashSet<>();
+	private Set<GeneralClassificationTask> classificationTask = new HashSet<>();
 	private Set<PointConcept> pointConcept = new HashSet<>();
 	private Set<BadgeCollectionConcept> badgeCollectionConcept = new HashSet<>();
 
@@ -76,11 +76,11 @@ public class GameDTO {
 		this.rules = rules;
 	}
 
-	public Set<ClassificationTask> getClassificationTask() {
+	public Set<GeneralClassificationTask> getClassificationTask() {
 		return classificationTask;
 	}
 
-	public void setClassificationTask(Set<ClassificationTask> classificationTask) {
+	public void setClassificationTask(Set<GeneralClassificationTask> classificationTask) {
 		this.classificationTask = classificationTask;
 	}
 

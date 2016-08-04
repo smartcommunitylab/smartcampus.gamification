@@ -51,7 +51,7 @@ import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 
 /**
  * 
@@ -447,37 +447,37 @@ public class GameEngineTest {
 		// final classifications
 		TaskSchedule schedule = new TaskSchedule();
 		schedule.setCronExpression("0 20 * * * *");
-		ClassificationTask task1 = new ClassificationTask(schedule, 3,
+		GeneralClassificationTask task1 = new GeneralClassificationTask(schedule, 3,
 				"green leaves", "final classification green");
 		game.getTasks().add(task1);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task2 = new ClassificationTask(schedule, 3,
+		GeneralClassificationTask task2 = new GeneralClassificationTask(schedule, 3,
 				"health", "final classification health");
 		game.getTasks().add(task2);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task3 = new ClassificationTask(schedule, 3, "p+r",
+		GeneralClassificationTask task3 = new GeneralClassificationTask(schedule, 3, "p+r",
 				"final classification p+r");
 		game.getTasks().add(task3);
 
 		// week classifications // schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task4 = new ClassificationTask(schedule, 1,
+		GeneralClassificationTask task4 = new GeneralClassificationTask(schedule, 1,
 				"green leaves", "week classification green");
 		game.getTasks().add(task4);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task5 = new ClassificationTask(schedule, 1,
+		GeneralClassificationTask task5 = new GeneralClassificationTask(schedule, 1,
 				"health", "week classification health");
 		game.getTasks().add(task5);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task6 = new ClassificationTask(schedule, 1, "p+r",
+		GeneralClassificationTask task6 = new GeneralClassificationTask(schedule, 1, "p+r",
 				"week classification p+r");
 		game.getTasks().add(task6);
 

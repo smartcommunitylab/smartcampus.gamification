@@ -49,7 +49,7 @@ import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.utils.Converter;
 
 @RestController
@@ -249,7 +249,7 @@ public class ConsoleController {
 			if (g.getTasks() == null) {
 				g.setTasks(new HashSet<GameTask>());
 			}
-			ClassificationTask t = converter.convertClassificationTask(task);
+			GeneralClassificationTask t = converter.convertClassificationTask(task);
 			t.setName(task.getName());
 			if (g.getTasks().contains(t)) {
 				throw new IllegalArgumentException("task name already exist");
@@ -277,7 +277,7 @@ public class ConsoleController {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
 			if (g.getTasks() != null) {
-				ClassificationTask t = converter
+				GeneralClassificationTask t = converter
 						.convertClassificationTask(task);
 				t.setName(task.getName());
 				g.getTasks().remove(t);
@@ -302,11 +302,11 @@ public class ConsoleController {
 		if (g != null) {
 			if (g.getTasks() != null) {
 				for (GameTask gt : g.getTasks()) {
-					if (gt instanceof ClassificationTask
+					if (gt instanceof GeneralClassificationTask
 							&& gt.getName().equals(task.getName())) {
-						ClassificationTask t = converter
+						GeneralClassificationTask t = converter
 								.convertClassificationTask(task);
-						ClassificationTask ct = (ClassificationTask) gt;
+						GeneralClassificationTask ct = (GeneralClassificationTask) gt;
 						ct.setItemsToNotificate(t.getItemsToNotificate());
 						ct.setClassificationName(t.getClassificationName());
 						ct.setItemType(t.getItemType());

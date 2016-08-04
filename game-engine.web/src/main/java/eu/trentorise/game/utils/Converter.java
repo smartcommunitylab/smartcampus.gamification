@@ -41,7 +41,7 @@ import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.services.GameService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 
 @Component
 public class Converter {
@@ -100,9 +100,9 @@ public class Converter {
 			}
 
 			if (game.getTasks() != null) {
-				gDTO.setClassificationTask(new HashSet<ClassificationTask>());
+				gDTO.setClassificationTask(new HashSet<GeneralClassificationTask>());
 				for (GameTask gt : game.getTasks()) {
-					gDTO.getClassificationTask().add((ClassificationTask) gt);
+					gDTO.getClassificationTask().add((GeneralClassificationTask) gt);
 				}
 			}
 		}
@@ -145,7 +145,7 @@ public class Converter {
 		return g;
 	}
 
-	public TaskDTO convertClassificationTask(ClassificationTask t) {
+	public TaskDTO convertClassificationTask(GeneralClassificationTask t) {
 		TaskDTO task = null;
 		if (t != null) {
 			task = new TaskDTO();
@@ -159,10 +159,10 @@ public class Converter {
 		return task;
 	}
 
-	public ClassificationTask convertClassificationTask(TaskDTO t) {
-		ClassificationTask task = null;
+	public GeneralClassificationTask convertClassificationTask(TaskDTO t) {
+		GeneralClassificationTask task = null;
 		if (t != null) {
-			task = new ClassificationTask();
+			task = new GeneralClassificationTask();
 			task.setClassificationName(t.getClassificationName());
 			if (t.getCronExpression() != null) {
 				TaskSchedule sched = new TaskSchedule();

@@ -98,7 +98,7 @@ public class GamePersistence {
 								.getContextClassLoader()
 								.loadClass(obj.getType())));
 			} catch (Exception e) {
-				logger.error("Problem to load class {}", obj.getType());
+				logger.error("Problem to load class {}", obj.getType(), e);
 			}
 		}
 		game.setTasks(t);

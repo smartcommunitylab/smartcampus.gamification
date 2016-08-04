@@ -40,7 +40,7 @@ public class PointConcept extends GameConcept {
 
 	private Double score = 0.0;
 
-	private Map<String, Period> periods = new LinkedHashMap<String, Period>();
+	private Map<String, PeriodInternal> periods = new LinkedHashMap<String, PeriodInternal>();
 
 	long executionMoment = System.currentTimeMillis();
 
@@ -51,10 +51,6 @@ public class PointConcept extends GameConcept {
 
 	public PointConcept(String name) {
 		super(name);
-	}
-
-	public PointConcept() {
-
 	}
 
 	@JsonCreator
@@ -77,10 +73,30 @@ public class PointConcept extends GameConcept {
 		if (temp != null) {
 			Set<Entry<String, Object>> entries = temp.entrySet();
 			for (Entry<String, Object> entry : entries) {
-				periods.put(entry.getKey(), new Period(
+				periods.put(entry.getKey(), new PeriodInternal(
 						(Map<String, Object>) entry.getValue()));
 			}
 		}
+	}
+
+	public Period getPeriod(String periodName) {
+		return periods.get(periodName);
+	}
+
+	/*
+	 * Actually I must have this methods to permit Jackson to correctly
+	 * serialize the inner class
+	 */
+	public Map<String, PeriodInternal> getPeriods() {
+		return periods;
+	}
+
+	/*
+	 * Actually I must have this methods to permit Jackson to correctly
+	 * serialize the inner class
+	 */
+	public void setPeriods(Map<String, PeriodInternal> periods) {
+		this.periods = periods;
 	}
 
 	public Double getScore() {
@@ -99,13 +115,13 @@ public class PointConcept extends GameConcept {
 	}
 
 	private void increasePeriodicPoints(Double score) {
-		for (Period p : periods.values()) {
+		for (PeriodInternal p : periods.values()) {
 			p.increaseScore(score, executionMoment);
 		}
 	}
 
 	public void addPeriod(String identifier, Date start, long period) {
-		Period p = new Period(identifier, start, period);
+		PeriodInternal p = new PeriodInternal(identifier, start, period);
 		if (!periods.containsKey(identifier)) {
 			periods.put(identifier, p);
 		}
@@ -140,19 +156,27 @@ public class PointConcept extends GameConcept {
 				instances.size() - 1).getScore() : 0d;
 	}
 
-	private class Period {
+	public interface Period {
+		public Date getStart();
+
+		public long getPeriod();
+
+		public String getIdentifier();
+	}
+
+	private class PeriodInternal implements Period {
 		private Date start;
 		private long period;
 		private String identifier;
 		private LinkedList<PeriodInstance> instances = new LinkedList<>();
 
-		public Period(String identifier, Date start, long period) {
+		public PeriodInternal(String identifier, Date start, long period) {
 			this.start = start;
 			this.period = period;
 			this.identifier = identifier;
 		}
 
-		public Period(Map<String, Object> jsonProps) {
+		public PeriodInternal(Map<String, Object> jsonProps) {
 			start = new Date((long) jsonProps.get("start"));
 			Object periodField = jsonProps.get("period");
 			if (periodField != null) {
@@ -172,10 +196,6 @@ public class PointConcept extends GameConcept {
 				}
 			}
 
-		}
-
-		public String getIdentifier() {
-			return identifier;
 		}
 
 		private PeriodInstance getCurrentInstance() {
@@ -265,6 +285,10 @@ public class PointConcept extends GameConcept {
 		public void setIdentifier(String identifier) {
 			this.identifier = identifier;
 		}
+
+		public String getIdentifier() {
+			return identifier;
+		}
 	}
 
 	private class PeriodInstance {
@@ -350,11 +374,4 @@ public class PointConcept extends GameConcept {
 		}
 	}
 
-	public Map<String, Period> getPeriods() {
-		return periods;
-	}
-
-	public void setPeriods(Map<String, Period> periods) {
-		this.periods = periods;
-	}
 }

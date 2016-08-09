@@ -25,12 +25,14 @@ import java.util.Map;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang.StringUtils;
+import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
+import org.quartz.impl.triggers.CalendarIntervalTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,8 @@ public class QuartzTaskManager extends TaskDataManager {
 
 	private final Logger logger = LoggerFactory
 			.getLogger(QuartzTaskManager.class);
+
+	private static final int DAY = 24 * 60 * 60 * 1000;
 
 	private void init() {
 		try {
@@ -140,16 +144,31 @@ public class QuartzTaskManager extends TaskDataManager {
 				jobFactory.afterPropertiesSet();
 				JobDetail job = jobFactory.getObject();
 
-				CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
-				String cronExpression = task.getSchedule().getCronExpression();
-				// fix for version 2.2.1 of CronTrigger
-				triggerFactory
-						.setCronExpression(fixCronExpression(cronExpression));
-				triggerFactory.setName(task.getName());
-				triggerFactory.setGroup(ctx.getGameRefId());
-				triggerFactory.setJobDetail(job);
-				triggerFactory.afterPropertiesSet();
-				Trigger trigger = triggerFactory.getObject();
+				Trigger trigger = null;
+				if (task.getSchedule().getCronExpression() != null) {
+					CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
+					String cronExpression = task.getSchedule()
+							.getCronExpression();
+					// fix for version 2.2.1 of CronTrigger
+					triggerFactory
+							.setCronExpression(fixCronExpression(cronExpression));
+					triggerFactory.setName(task.getName());
+					triggerFactory.setGroup(ctx.getGameRefId());
+					triggerFactory.setJobDetail(job);
+					triggerFactory.afterPropertiesSet();
+					trigger = triggerFactory.getObject();
+				} else {
+					CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
+					calTrigger.setName(task.getName());
+					calTrigger.setGroup(ctx.getGameRefId());
+					calTrigger.setStartTime(task.getSchedule().getStart());
+					Repeat repeat = extractRepeat((int) task.getSchedule()
+							.getPeriod());
+					calTrigger.setRepeatInterval(repeat.getInterval());
+					calTrigger.setRepeatIntervalUnit(repeat.getUnit());
+					trigger = calTrigger;
+
+				}
 				scheduler.scheduleJob(job, trigger);
 				logger.info("Created and started job task {} in group {}",
 						task.getName(), ctx.getGameRefId());
@@ -161,6 +180,52 @@ public class QuartzTaskManager extends TaskDataManager {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
+	}
+
+	private Repeat extractRepeat(int period) {
+		final int MILLIS_IN_MINUTE = 60000;
+		final int MILLIS_IN_HOUR = 3600000;
+		final int MILLIS_IN_DAY = 86400000;
+		int result = period / MILLIS_IN_DAY;
+		IntervalUnit unit = null;
+		if (result * MILLIS_IN_DAY == period) {
+			unit = IntervalUnit.DAY;
+		} else {
+			result = period / MILLIS_IN_HOUR;
+			if (result * MILLIS_IN_HOUR == period) {
+				unit = IntervalUnit.HOUR;
+			} else {
+				result = period / MILLIS_IN_MINUTE;
+				if (result * MILLIS_IN_MINUTE == period) {
+					unit = IntervalUnit.MINUTE;
+				} else {
+					throw new IllegalArgumentException(
+							"period must representing valid minutes, hours or days value");
+				}
+			}
+		}
+		logger.debug("extract repeat every {} unit {}", result, unit.toString());
+		return new Repeat(result, unit);
+
+	}
+
+	private class Repeat {
+		private int interval;
+		private IntervalUnit unit;
+
+		public Repeat(int interval, IntervalUnit unit) {
+			this.interval = interval;
+			this.unit = unit;
+		}
+
+		public int getInterval() {
+			return interval;
+		}
+
+		public IntervalUnit getUnit() {
+			return unit;
+		}
+
 	}
 
 	/**

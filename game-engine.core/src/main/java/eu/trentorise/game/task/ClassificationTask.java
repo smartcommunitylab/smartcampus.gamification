@@ -22,18 +22,16 @@ public abstract class ClassificationTask extends GameTask {
 	private final Logger logger = LoggerFactory
 			.getLogger(ClassificationTask.class);
 
-	private Integer itemsToNotificate;
-	private String classificationName;
-
 	private static final int DEFAULT_VALUE = 3;
 
 	private static final String ACTION_CLASSIFICATION = "classification";
 
-	public ClassificationTask(String classificationName,
-			TaskSchedule schedule) {
+	private Integer itemsToNotificate = DEFAULT_VALUE;
+	private String classificationName;
+
+	public ClassificationTask(String classificationName, TaskSchedule schedule) {
 		super(classificationName, schedule);
 		this.classificationName = classificationName;
-		this.itemsToNotificate = DEFAULT_VALUE;
 
 	}
 
@@ -54,6 +52,8 @@ public abstract class ClassificationTask extends GameTask {
 			logger.warn("gameContext null");
 			return;
 		}
+
+		logger.debug("Execute of task {}", classificationName);
 
 		// read all game players
 		List<String> players = ctx.readPlayers();

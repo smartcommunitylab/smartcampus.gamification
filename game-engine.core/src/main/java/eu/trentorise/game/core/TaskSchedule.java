@@ -16,9 +16,12 @@
 
 package eu.trentorise.game.core;
 
+import java.util.Date;
+
 public class TaskSchedule {
 	private String cronExpression;
-
+	private Date start;
+	private long period;
 	private CronFrequency frequency;
 
 	public String getCronExpression() {
@@ -50,6 +53,22 @@ public class TaskSchedule {
 			return cronExpr;
 		}
 
+	}
+
+	public Date getStart() {
+		return start;
+	}
+
+	public void setStart(Date start) {
+		this.start = start;
+	}
+
+	public long getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(long period) {
+		this.period = period;
 	}
 
 }

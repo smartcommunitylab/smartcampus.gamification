@@ -16,10 +16,9 @@
 
 package eu.trentorise.game.bean;
 
-public class TaskDTO {
+public class ClassificationDTO {
 	private String name;
 	private String gameId;
-	private String cronExpression;
 	private int itemsToNotificate;
 	private String itemType;
 	private String classificationName;
@@ -38,14 +37,6 @@ public class TaskDTO {
 
 	public void setGameId(String gameId) {
 		this.gameId = gameId;
-	}
-
-	public String getCronExpression() {
-		return cronExpression;
-	}
-
-	public void setCronExpression(String cronExpression) {
-		this.cronExpression = cronExpression;
 	}
 
 	public int getItemsToNotificate() {

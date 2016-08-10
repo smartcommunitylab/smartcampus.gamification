@@ -26,9 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
-import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
@@ -102,7 +102,8 @@ public class Converter {
 			if (game.getTasks() != null) {
 				gDTO.setClassificationTask(new HashSet<GeneralClassificationTask>());
 				for (GameTask gt : game.getTasks()) {
-					gDTO.getClassificationTask().add((GeneralClassificationTask) gt);
+					gDTO.getClassificationTask().add(
+							(GeneralClassificationTask) gt);
 				}
 			}
 		}
@@ -145,10 +146,11 @@ public class Converter {
 		return g;
 	}
 
-	public TaskDTO convertClassificationTask(GeneralClassificationTask t) {
-		TaskDTO task = null;
+	public GeneralClassificationDTO convertClassificationTask(
+			GeneralClassificationTask t) {
+		GeneralClassificationDTO task = null;
 		if (t != null) {
-			task = new TaskDTO();
+			task = new GeneralClassificationDTO();
 			task.setClassificationName(t.getClassificationName());
 			task.setCronExpression(t.getSchedule() != null ? t.getSchedule()
 					.getCronExpression() : null);
@@ -159,7 +161,8 @@ public class Converter {
 		return task;
 	}
 
-	public GeneralClassificationTask convertClassificationTask(TaskDTO t) {
+	public GeneralClassificationTask convertClassificationTask(
+			GeneralClassificationDTO t) {
 		GeneralClassificationTask task = null;
 		if (t != null) {
 			task = new GeneralClassificationTask();

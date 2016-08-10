@@ -32,9 +32,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
-import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
@@ -235,8 +235,9 @@ public class ConsoleController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task")
-	public TaskDTO addClassificationTask(@PathVariable String gameId,
-			@RequestBody TaskDTO task) {
+	public GeneralClassificationDTO addClassificationTask(
+			@PathVariable String gameId,
+			@RequestBody GeneralClassificationDTO task) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -249,7 +250,8 @@ public class ConsoleController {
 			if (g.getTasks() == null) {
 				g.setTasks(new HashSet<GameTask>());
 			}
-			GeneralClassificationTask t = converter.convertClassificationTask(task);
+			GeneralClassificationTask t = converter
+					.convertClassificationTask(task);
 			t.setName(task.getName());
 			if (g.getTasks().contains(t)) {
 				throw new IllegalArgumentException("task name already exist");
@@ -267,7 +269,7 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task/del")
 	public void deleteClassificationTask(@PathVariable String gameId,
-			@RequestBody TaskDTO task) {
+			@RequestBody GeneralClassificationDTO task) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -291,7 +293,7 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/task")
 	public void editClassificationTask(@PathVariable String gameId,
-			@RequestBody TaskDTO task) {
+			@RequestBody GeneralClassificationDTO task) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

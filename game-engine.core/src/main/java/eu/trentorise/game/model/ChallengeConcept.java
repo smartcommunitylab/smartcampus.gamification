@@ -59,11 +59,11 @@ public class ChallengeConcept extends GameConcept {
 	 */
 	public boolean completed() {
 		completed = true;
+		dateCompleted = new Date();
 		return true;
 	}
 
 	public boolean isCompleted() {
-		dateCompleted = new Date();
 		return completed;
 	}
 

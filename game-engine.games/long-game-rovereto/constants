@@ -1,0 +1,60 @@
+# insert your constants to use in game rules
+# 
+# SAMPLE USAGE 
+# 
+# constants file
+# var_name = var_value
+# 
+#
+# usage in rule
+# global VALUE_TYPE var_name;
+#
+# supported VALUE_TYPE
+# Integer (i.e. var=1)
+# Double  (i.e. var=2.3)
+# String  (i.e. var=park)
+# java.util.ArrayList (i.e var=park,street,bikestation)
+
+
+# GREEN POINTS for Walk, Bike, BikeSharing
+green_walk_points=10
+green_bike_points=5
+zero_impact_booster=0.5
+sustainable_booster=0.2
+recommendation_bonus=20
+
+#GREEN POINTS for public transport (BOTH bus AND train)
+green_bus_points_base=10
+green_bus_points_step0=15
+green_bus_points_step1=20
+green_bus_points_step2=30
+green_bus_points_step3=40
+
+bus_threshold_step0=1.0
+bus_threshold_step1=5.0
+bus_threshold_step2=10.0
+bus_threshold_step3=30.0
+
+
+#Size for fixed-size Badge Collections
+bike_sharing_pioneer_size = 14
+park_and_ride_pioneer_size = 2
+
+#soglie di rilevanza per modo
+walk_min=0.1
+walk_max=3.5
+bike_max=7.0
+
+#soglie di rilevanza per challenge "try mode" 
+busDistance_try_min=0.5
+bikeDistance_try_min=0.5
+trainDistance_try_min=5.0
+walkDistance_try_min=0.1
+
+#starting times (millisec) for weekly green leaves classifications
+#April 1
+#week_1_start = 1459504800000 
+#April 20
+#week_2_start = 1461110400000 
+#April 21
+#week_3_start = 1461196800000

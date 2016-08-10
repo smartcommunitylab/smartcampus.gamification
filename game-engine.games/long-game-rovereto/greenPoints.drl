@@ -1,0 +1,118 @@
+package eu.trentorise.game.model
+
+global Integer green_walk_points;
+global Integer green_bike_points;
+global Integer green_sustainable_bonus;
+global Integer recommendation_bonus;
+global Integer green_bus_points_base;
+global Integer green_bus_points_step0;
+global Integer green_bus_points_step1;
+global Integer green_bus_points_step2;
+global Integer green_bus_points_step3;
+global Double zero_impact_booster;
+global Double sustainable_booster;
+
+global Double bus_threshold_step0;
+global Double bus_threshold_step1;
+global Double bus_threshold_step2;
+global Double bus_threshold_step3;
+global Double walk_min;
+global Double walk_max;
+global Double bike_max;
+
+
+declare PRItinerary end
+
+declare PointDelta
+	delta : long
+	pointType : String
+end
+
+rule "public transport update green points"
+when
+	InputData($bus : data["busDistance"] !=null || $train : data["trainDistance"] != null , $sustainable : data["sustainable"])
+	$pc : PointConcept(name == "green leaves")
+then
+
+	boolean isSustainable = $sustainable != null ? (Boolean)$sustainable : false;
+	Double score_sustainable = 0.0;
+	
+	log("apply \'public transport update green points\'");	
+	if ($bus == null) 
+		$bus = 0d;
+	if ($train == null)
+		$train = 0d;
+	Double ptDistance = (Double)$bus + (Double)$train;
+	Integer ptPoints;
+	if (ptDistance >= bus_threshold_step0 && ptDistance < bus_threshold_step1)
+		ptPoints = green_bus_points_step0;
+	else if (ptDistance >= bus_threshold_step1 && ptDistance < bus_threshold_step2)
+		ptPoints = green_bus_points_step1;
+	else if (ptDistance >= bus_threshold_step2 && ptDistance < bus_threshold_step3)
+		ptPoints = green_bus_points_step2;
+	else if (ptDistance >= bus_threshold_step3)
+		ptPoints = green_bus_points_step3;
+	else
+		ptPoints = green_bus_points_base;
+		
+	if (isSustainable)
+	 	score_sustainable = ptPoints * sustainable_booster;
+		
+	$pc.setScore($pc.getScore() + Math.round(ptPoints + score_sustainable));
+	update($pc);
+	insert(new PointDelta(Math.round(ptPoints + score_sustainable),"green leaves")); 
+end
+
+rule "0-impact - sustainable - walk - bike - update green points"
+when
+	InputData($bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"], $train : data["trainDistance"], $car : data["carDistance"], $sustainable : data["sustainable"])
+	$pc : PointConcept( name == "green leaves")
+then
+	boolean zeroImpact = ($walk != null || $bike != null) && (($bus == null || ((Double)$bus) == 0) &&  ($car == null || ((Double)$car) == 0) && ($train == null || ((Double)$train) == 0));
+	boolean isSustainable = $sustainable != null ? (Boolean)$sustainable : false;
+	
+	Double score_zeroImpact = 0.0;
+	Double score_sustainable = 0.0;
+	
+	Double walkDistance = $walk != null ? (Double) $walk : 0.0;
+	walkDistance = walkDistance < walk_min ? 0.0 : walkDistance;
+	walkDistance = walkDistance > walk_max ? walk_max : walkDistance;
+	
+	Double bikeDistance = $bike != null ? (Double) $bike : 0.0;
+	bikeDistance = bikeDistance > bike_max ? bike_max : bikeDistance;
+	
+	Double score = (walkDistance * green_walk_points)  + (bikeDistance * green_bike_points);
+	
+	if (zeroImpact)
+		score_zeroImpact = zero_impact_booster * score;	
+ 	if (isSustainable)
+	 	score_sustainable = score * sustainable_booster;
+	
+	$pc.setScore($pc.getScore() + Math.round(score + score_zeroImpact + score_sustainable));
+	update($pc);
+	insert(new PointDelta(Math.round(score + score_zeroImpact + score_sustainable),"green leaves"));
+end
+
+/*rule "green sustainable bonus"
+	salience 1
+when
+    InputData(data['sustainable'] == true)
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'green sustainable bonus\'");
+	$pc.setScore($pc.getScore() + green_sustainable_bonus);
+    update($pc);
+    insert(new PointDelta(green_sustainable_bonus,"green leaves")); 
+end*/
+
+rule "recommendation bonus"
+	salience 1
+when
+	Action ($id : id == "app_sent_recommandation")
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'recommendation bonus\'");
+	$pc.setScore($pc.getScore() + recommendation_bonus);
+    update($pc);
+    insert(new PointDelta(recommendation_bonus,"green leaves")); 
+end

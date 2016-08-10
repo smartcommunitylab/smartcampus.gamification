@@ -1,0 +1,70 @@
+template header
+
+ch_ID
+ch_mode
+ch_player
+ch_point_type
+
+package eu.trentorise.game.model
+
+// CH3 - Fai almeno <X> viaggi in BIKE SHARING e avrai <Y> punti bonus
+
+/* Parameters for the template
+ch_ID = unique Challenge ID (ALWAYS!): obtained via UUID
+ch_mode   NOTE! not used for Bike Sharing
+ch_player = unique Player ID - for now simply Object.toString()
+ch_point_type
+*/
+
+/* additional parameters retrieved from custom data
+CustomData to have   []=used by
+    ID is a unique string that identifies the challenge instance
+  
+  - ch_ID_startChTs [rule] [presentation]
+  - ch_ID_endChTs [rule] [presentation]
+  - ch_ID_bonus [presentation]
+  - ch_ID_type [presentation]
+  - ch_ID_counter [rule] [presentation]
+  - ch_ID_target [rule] [presentation]
+  - ch_ID_success [rule] [presentation]
+  - ch_ID_point_type [presentation] type of bonus point -> it must contain the name of PointConcept ("green leaves" for example)
+  - ch_ID_mode [presentation] modality of trip [values allowed: walk, bike, bikesharing, train, bus, car]
+*/
+	
+template TravelModeTemplate
+
+rule "ch_@{ch_ID}_trace"
+/* Player @{ch_player}: fai almeno viaggi in @{ch_mode} e vinci @{ch_point_type} */
+lock-on-active
+when
+	/* check for valid bike sharing trip*/ 
+	InputData($distance : data["bikeDistance"]!=null, $distance > bikeDistance_try_min, data["bikesharing"] == true)
+	$c: CustomData($now: System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, $counter : this['ch_@{ch_ID}_counter'])
+	$pc : PointConcept(name == "@{ch_point_type}")
+	Player(id == "@{ch_player}") 
+then
+	log('ch_@{ch_ID}_trace');
+	if($counter == null) {
+		$c.put("ch_@{ch_ID}_counter", 1);
+	} else {
+		$c.put("ch_@{ch_ID}_counter", (Integer) $counter + 1);
+	}
+	update($c); 
+end
+
+rule 'ch_@{ch_ID}_check'
+when
+	$c : CustomData($now : System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, this['ch_@{ch_ID}_counter'] == this['ch_@{ch_ID}_target'],
+		$success : this['ch_@{ch_ID}_success'] != true)
+	$pc : PointConcept(name == "@{ch_point_type}")
+	Player(id == "@{ch_player}")
+then
+	$pc.setScore($pc.getScore() + (Integer)$c.get("ch_@{ch_ID}_bonus"));
+	$c.put('ch_@{ch_ID}_success',true);
+	insert(new PointDelta((Integer)$c.get("ch_@{ch_ID}_bonus"),"@{ch_point_type}"));
+	log('ch_@{ch_ID} BIKE SHARING TRIPS success');
+	update($c);
+	update($pc); 
+end
+	
+end template

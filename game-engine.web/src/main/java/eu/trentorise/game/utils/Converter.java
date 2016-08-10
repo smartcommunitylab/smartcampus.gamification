@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
+import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TeamDTO;
@@ -42,6 +43,7 @@ import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.GeneralClassificationTask;
+import eu.trentorise.game.task.IncrementalClassificationTask;
 
 @Component
 public class Converter {
@@ -177,6 +179,42 @@ public class Converter {
 			task.setName(t.getName());
 		}
 		return task;
+	}
+
+	public IncrementalClassificationTask convertClassificationTask(
+			IncrementalClassificationDTO t) {
+		IncrementalClassificationTask task = null;
+		if (t != null) {
+			Set<GameConcept> concepts = gameSrv.readConceptInstances(t
+					.getGameId());
+
+			PointConcept pc = null;
+			for (GameConcept gc : concepts) {
+				if (gc instanceof PointConcept
+						&& gc.getName().equals(t.getItemType())) {
+					pc = (PointConcept) gc;
+				}
+			}
+			task = new IncrementalClassificationTask(pc, t.getPeriodName(),
+					t.getClassificationName());
+			task.setItemsToNotificate(t.getItemsToNotificate());
+			task.setName(t.getName());
+		}
+		return task;
+	}
+
+	public IncrementalClassificationDTO convertClassificationTask(
+			IncrementalClassificationTask classification) {
+		IncrementalClassificationDTO result = null;
+		if (classification != null) {
+			result = new IncrementalClassificationDTO();
+			result.setClassificationName(classification.getClassificationName());
+			result.setItemType(classification.getPointConceptName());
+			result.setPeriodName(classification.getPeriodName());
+			result.setItemsToNotificate(classification.getItemsToNotificate());
+		}
+
+		return result;
 	}
 
 	public PlayerState convertPlayerState(PlayerStateDTO ps) {

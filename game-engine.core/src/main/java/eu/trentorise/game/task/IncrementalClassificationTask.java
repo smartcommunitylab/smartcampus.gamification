@@ -22,6 +22,16 @@ public class IncrementalClassificationTask extends ClassificationTask {
 	public IncrementalClassificationTask(PointConcept pc, String periodName,
 			String classificationName) {
 		super();
+		updatePointConceptData(pc, periodName);
+		super.setClassificationName(classificationName);
+		super.setName(classificationName);
+	}
+
+	public IncrementalClassificationTask() {
+		super();
+	}
+
+	public final void updatePointConceptData(PointConcept pc, String periodName) {
 		if (pc != null) {
 			Period period = pc.getPeriod(periodName);
 			pointConceptName = pc.getName();
@@ -31,14 +41,8 @@ public class IncrementalClassificationTask extends ClassificationTask {
 			TaskSchedule schedule = new TaskSchedule();
 			schedule.setStart(startPeriodic);
 			schedule.setPeriod(periodLength);
-			super.setClassificationName(classificationName);
-			super.setName(classificationName);
 			super.setSchedule(schedule);
 		}
-	}
-
-	public IncrementalClassificationTask() {
-		super();
 	}
 
 	@Override
@@ -58,6 +62,22 @@ public class IncrementalClassificationTask extends ClassificationTask {
 	@Override
 	protected String getScoreType() {
 		return pointConceptName;
+	}
+
+	public String getPointConceptName() {
+		return pointConceptName;
+	}
+
+	public void setPointConceptName(String pointConceptName) {
+		this.pointConceptName = pointConceptName;
+	}
+
+	public String getPeriodName() {
+		return periodName;
+	}
+
+	public void setPeriodName(String periodName) {
+		this.periodName = periodName;
 	}
 
 }

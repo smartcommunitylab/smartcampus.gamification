@@ -80,5 +80,6 @@
   "title_add_task" : "Create new classification",
   "btn_publish" : "Publish",
   "lbl_total" : "Total score",
-  "lbl_challenges" : "Challenge Models"
+  "lbl_challenges" : "Challenge Models",
+  "lbl_task_periodName" : "Period name"
 }

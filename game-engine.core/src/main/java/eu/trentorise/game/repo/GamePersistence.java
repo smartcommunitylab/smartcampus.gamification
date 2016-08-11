@@ -30,6 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 
 @Document(collection = "game")
 public class GamePersistence {
@@ -91,6 +93,14 @@ public class GamePersistence {
 		Set<GameTask> t = new HashSet<GameTask>();
 		ObjectMapper mapper = new ObjectMapper();
 		for (GenericObjectPersistence obj : tasks) {
+			// fix: Use @JsonDeserialize to maintain compatibility with
+			// databases previous of version 2.0.0 in which
+			// classificationTask was a concrete class representing general
+			// classifications
+			if (obj.getType().equals(
+					ClassificationTask.class.getCanonicalName())) {
+				obj.setType(GeneralClassificationTask.class.getCanonicalName());
+			}
 			try {
 				t.add(mapper.convertValue(
 						obj.getObj(),

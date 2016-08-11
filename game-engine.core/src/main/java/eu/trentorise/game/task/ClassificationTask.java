@@ -10,17 +10,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.GameTask;
 
-// fix: Use @JsonDeserialize to maintain compatibility with databases previous of version 2.0.0 in which
-// classificationTask was a concrete class representing general classifications
-@JsonDeserialize(as = GeneralClassificationTask.class)
 public abstract class ClassificationTask extends GameTask {
 
 	private final Logger logger = LoggerFactory
@@ -46,6 +43,7 @@ public abstract class ClassificationTask extends GameTask {
 		this.itemsToNotificate = itemsToNotificate;
 	}
 
+	@JsonCreator
 	public ClassificationTask() {
 		super();
 	}

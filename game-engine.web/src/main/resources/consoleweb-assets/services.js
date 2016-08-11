@@ -234,21 +234,22 @@ angular.module('gamificationEngine.services', [])
 						id++;
 					});
 
-					let periods = {};
-					let dayMillis = 24 * 3600 * 1000;
-					angular.forEach(instanceProperties.periods,function(value,key){
-						periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name};
-					});
+					
 					var instance = {
 						'id': id,
-						'name': instanceProperties.name,
-						'periods' : periods
+						'name': instanceProperties.name
 					};
 
 					var tmpGame = angular.copy(game);
 
 					// Choose instance object structure
 					if (instanceType == 'points') {
+						let periods = {};
+						let dayMillis = 24 * 3600 * 1000;
+						angular.forEach(instanceProperties.periods,function(value,key){
+							periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name};
+						});
+						instance.periods = periods;
 						tmpGame.pointConcept.unshift(instance);
 					} else if (instanceType == 'badges_collections') {
 						tmpGame.badgeCollectionConcept.unshift(instance);

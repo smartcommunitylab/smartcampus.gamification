@@ -51,6 +51,7 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 					$scope.pointsView.unshift(processPointPeriods(instance));
 					$scope.game.pointConcept.unshift(instance);
 					$scope.points.name = '';
+					$scope.tmpPeriods = [];
 					$scope.disabled = false;
 					//$uibModalInstance.close();
 				}, function (message) {
@@ -101,6 +102,9 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 					},
 					type: function () {
 						return type;
+					},
+					pointsView : function() {
+						return $scope.pointsView;
 					}
 				}
 			});
@@ -161,7 +165,7 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 		return processedPoint;
 	}
 
-modals.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {
+modals.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, pointsView, gamesFactory) {
 	$scope.argument = instance.name;
 
 	$scope.alerts = {
@@ -183,6 +187,9 @@ modals.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $ui
 		a.forEach(function (c) {
 			if (c.id === instance.id && c.name === instance.name) {
 				a.splice(idx, 1);
+				if (type === 'point') {
+					pointsView.splice(idx,1);
+				}
 			}
 			idx++;
 		});

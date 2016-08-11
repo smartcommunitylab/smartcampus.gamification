@@ -240,8 +240,13 @@ angular.module('gamificationEngine.tasks', [])
 			$scope.input.name = task.name;
 			$scope.input.itemType = task.itemType;
 			$scope.input.classificationName = task.classificationName;
-			$scope.input.schedule = task.schedule ? task.schedule.cronExpression : task.cronExpression;
 			$scope.input.itemToNotificate = task.itemsToNotificate;
+			$scope.input.type = task.type;
+			if(task.type === 'general') {
+				$scope.input.schedule = task.schedule ? task.schedule.cronExpression : task.cronExpression;
+			} else {
+				$scope.input.periodName = task.periodName;
+			}
 
 			$scope.edit = true;
 			$scope.isCollapsed = false;

@@ -237,6 +237,7 @@ public class Converter {
 			result.setItemType(classification.getPointConceptName());
 			result.setPeriodName(classification.getPeriodName());
 			result.setItemsToNotificate(classification.getItemsToNotificate());
+			result.setName(classification.getName());
 		}
 
 		return result;

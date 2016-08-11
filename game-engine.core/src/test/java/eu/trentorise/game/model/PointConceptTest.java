@@ -129,7 +129,8 @@ public class PointConceptTest {
 		period = 3600 * 1000;
 		pc.addPeriod("period2", start.toDate(), period);
 
-		DateTime executionTime = new DateTime(2016, 7, 26, 1, 5, 10);
+		DateTime executionTime = new DateTime();
+
 		pc.executionMoment = executionTime.getMillis();
 		pc.setScore(10d);
 
@@ -137,6 +138,9 @@ public class PointConceptTest {
 				.getMillis();
 		pc.setScore(11d);
 		pc.setScore(14d);
+
+		pc.executionMoment = executionTime.hourOfDay().addToCopy(1).getMillis();
+		pc.setScore(15d);
 
 		pc.executionMoment = executionTime.hourOfDay().addToCopy(2).getMillis();
 		pc.setScore(29d);
@@ -151,7 +155,9 @@ public class PointConceptTest {
 		p.executionMoment = pc.executionMoment;
 
 		Assert.assertEquals(new Double(29), p.getPeriodCurrentScore("period1"));
-		Assert.assertEquals(new Double(15), p.getPeriodCurrentScore("period2"));
+		Assert.assertEquals(new Double(14), p.getPeriodCurrentScore("period2"));
+		Assert.assertEquals(new Double(1), p.getPeriodPreviousScore("period2"));
+		Assert.assertEquals(new Double(0), p.getPeriodPreviousScore("period45"));
 	}
 
 	@Test

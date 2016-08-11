@@ -35,7 +35,7 @@ public class ClassificationController {
 	private Converter converter;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/incclassification")
-	public IncrementalClassificationTask create(@PathVariable String gameId,
+	public IncrementalClassificationDTO create(@PathVariable String gameId,
 			@RequestBody IncrementalClassificationDTO classification) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -62,7 +62,7 @@ public class ClassificationController {
 		} else {
 			throw new IllegalArgumentException("game not exist");
 		}
-		return converter.convertClassificationTask(classification);
+		return classification;
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/incclassification/{classificationId}")
@@ -77,6 +77,7 @@ public class ClassificationController {
 
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
+			classification.setGameId(gameId);
 			if (g.getTasks() != null) {
 				for (GameTask gt : g.getTasks()) {
 					if (gt instanceof IncrementalClassificationTask
@@ -97,7 +98,7 @@ public class ClassificationController {
 							for (GameConcept gc : g.getConcepts()) {
 								if (gc instanceof PointConcept
 										&& gc.getName().equals(
-												ct.getPointConceptName())) {
+												classification.getItemType())) {
 									ct.updatePointConceptData(
 											(PointConcept) gc,
 											classification.getPeriodName());
@@ -177,6 +178,7 @@ public class ClassificationController {
 					if (gt instanceof IncrementalClassificationTask
 							&& gt.getName().equals(classificationId)) {
 						g.getTasks().remove((IncrementalClassificationTask) gt);
+						gameSrv.saveGameDefinition(g);
 						taskSrv.destroyTask(gt, gameId);
 						break;
 					}

@@ -240,15 +240,18 @@ public class QuartzTaskManager extends TaskDataManager {
 	 * @return
 	 */
 	private String fixCronExpression(String cronExp) {
-		String[] tokens = cronExp.split(" ");
-		int dayOfMonthPosition = 3;
-		int dayOfWeekPosition = 5;
-		if (!"?".equals(tokens[dayOfMonthPosition])) {
-			tokens[dayOfWeekPosition] = "?";
-		}
-		String cron = StringUtils.join(tokens, " ");
+		String cron = null;
+		if (cronExp != null) {
+			String[] tokens = cronExp.split(" ");
+			int dayOfMonthPosition = 3;
+			int dayOfWeekPosition = 5;
+			if (!"?".equals(tokens[dayOfMonthPosition])) {
+				tokens[dayOfWeekPosition] = "?";
+			}
+			cron = StringUtils.join(tokens, " ");
 
-		logger.info("fix cron expression for Quartz 2.2.1 issue: {}", cron);
+			logger.info("fix cron expression for Quartz 2.2.1 issue: {}", cron);
+		}
 		return cron;
 	}
 
@@ -269,16 +272,30 @@ public class QuartzTaskManager extends TaskDataManager {
 		try {
 			job = scheduler.getJobDetail(new JobKey(task.getName(), gameId));
 			if (job != null) {
-				CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
-				String cronExpression = task.getSchedule().getCronExpression();
-				// fix for version 2.2.1 of CronTrigger
-				triggerFactory
-						.setCronExpression(fixCronExpression(cronExpression));
-				triggerFactory.setName(task.getName());
-				triggerFactory.setGroup(gameId);
-				triggerFactory.setJobDetail(job);
-				triggerFactory.afterPropertiesSet();
-				Trigger trigger = triggerFactory.getObject();
+				Trigger trigger = null;
+				if (task.getSchedule().getCronExpression() != null) {
+					CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
+					String cronExpression = task.getSchedule()
+							.getCronExpression();
+					// fix for version 2.2.1 of CronTrigger
+					triggerFactory
+							.setCronExpression(fixCronExpression(cronExpression));
+					triggerFactory.setName(task.getName());
+					triggerFactory.setGroup(gameId);
+					triggerFactory.setJobDetail(job);
+					triggerFactory.afterPropertiesSet();
+					trigger = triggerFactory.getObject();
+				} else {
+					CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
+					calTrigger.setName(task.getName());
+					calTrigger.setGroup(gameId);
+					calTrigger.setStartTime(task.getSchedule().getStart());
+					Repeat repeat = extractRepeat((int) task.getSchedule()
+							.getPeriod());
+					calTrigger.setRepeatInterval(repeat.getInterval());
+					calTrigger.setRepeatIntervalUnit(repeat.getUnit());
+					trigger = calTrigger;
+				}
 				scheduler.rescheduleJob(new TriggerKey(task.getName(), gameId),
 						trigger);
 				logger.info("task {} updated", task.getName());

@@ -424,7 +424,7 @@ modals
 				}
 			}
 		}
-
+		if(task.type === 'general'){
 		gamesFactory.deleteTask(game, task).then(
 			function () {
 				$uibModalInstance.close();
@@ -436,6 +436,19 @@ modals
 				$scope.alerts.deleteError = true;
 			}
 		);
+		}else {
+			gamesFactory.deleteIncrementalClassification(game, task).then(
+					function () {
+						$uibModalInstance.close();
+						if (idx > -1) {
+							game.classificationTask.splice(idx, 1);
+						}
+					},
+					function (message) {
+						$scope.alerts.deleteError = true;
+					}
+				);
+		}
 	};
 
 	// CANCEL button click event-handler

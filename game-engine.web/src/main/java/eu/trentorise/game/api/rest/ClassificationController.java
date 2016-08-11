@@ -44,6 +44,7 @@ public class ClassificationController {
 		}
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
+			classification.setGameId(gameId);
 			if (g.getTasks() != null) {
 				IncrementalClassificationTask incClassification = converter
 						.convertClassificationTask(classification);
@@ -63,10 +64,6 @@ public class ClassificationController {
 		}
 		return converter.convertClassificationTask(classification);
 	}
-
-	//
-	// Update classification
-	// PUT /model/game/{id}/incclassification/{classificationId}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/incclassification/{classificationId}")
 	public void update(@PathVariable String gameId,

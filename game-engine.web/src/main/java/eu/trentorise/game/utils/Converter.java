@@ -22,9 +22,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.bean.ClassificationDTO;
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
@@ -50,6 +53,9 @@ public class Converter {
 
 	@Autowired
 	private GameService gameSrv;
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(Converter.class);
 
 	public GameDTO convertGame(Game game) {
 		GameDTO gDTO = null;
@@ -102,10 +108,15 @@ public class Converter {
 			}
 
 			if (game.getTasks() != null) {
-				gDTO.setClassificationTask(new HashSet<GeneralClassificationTask>());
+				gDTO.setClassificationTask(new HashSet<ClassificationDTO>());
 				for (GameTask gt : game.getTasks()) {
-					gDTO.getClassificationTask().add(
-							(GeneralClassificationTask) gt);
+					ClassificationDTO c = null;
+					if (gt instanceof GeneralClassificationTask) {
+						c = convertClassificationTask((GeneralClassificationTask) gt);
+					} else {
+						c = convertClassificationTask((IncrementalClassificationTask) gt);
+					}
+					gDTO.getClassificationTask().add(c);
 				}
 			}
 		}
@@ -142,7 +153,16 @@ public class Converter {
 
 		if (game.getClassificationTask() != null) {
 			g.setTasks(new HashSet<GameTask>());
-			g.getTasks().addAll(game.getClassificationTask());
+			for (ClassificationDTO c : game.getClassificationTask()) {
+				if (c instanceof GeneralClassificationDTO) {
+					g.getTasks()
+							.add(convertClassificationTask((GeneralClassificationDTO) c));
+				} else {
+					g.getTasks()
+							.add(convertClassificationTask((IncrementalClassificationDTO) c));
+
+				}
+			}
 		}
 
 		return g;
@@ -185,8 +205,13 @@ public class Converter {
 			IncrementalClassificationDTO t) {
 		IncrementalClassificationTask task = null;
 		if (t != null) {
-			Set<GameConcept> concepts = gameSrv.readConceptInstances(t
-					.getGameId());
+			Set<GameConcept> concepts = null;
+			if (t.getGameId() != null) {
+				concepts = gameSrv.readConceptInstances(t.getGameId());
+			} else {
+				logger.warn("Try to convert IncrementalClassificationDTO with null gameId field");
+				concepts = new HashSet<>();
+			}
 
 			PointConcept pc = null;
 			for (GameConcept gc : concepts) {

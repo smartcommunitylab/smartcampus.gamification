@@ -16,12 +16,20 @@
 
 package eu.trentorise.game.bean;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+		@JsonSubTypes.Type(value = IncrementalClassificationDTO.class, name = "incremental"),
+		@JsonSubTypes.Type(value = GeneralClassificationDTO.class, name = "general") })
 public class ClassificationDTO {
 	private String name;
 	private String gameId;
 	private int itemsToNotificate;
 	private String itemType;
 	private String classificationName;
+	private String type;
 
 	public String getName() {
 		return name;
@@ -61,6 +69,14 @@ public class ClassificationDTO {
 
 	public void setClassificationName(String classificationName) {
 		this.classificationName = classificationName;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

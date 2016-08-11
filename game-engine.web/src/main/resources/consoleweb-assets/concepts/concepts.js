@@ -5,6 +5,7 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 		//var game = $scope.game;
 
 		$scope.points = {};
+		$scope.pointsView = [];
 		//var instance = {};
 		//$scope.points.name = instance.name;
 
@@ -47,7 +48,7 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 				gamesFactory.editInstance($scope.game, 'points', $scope.points).then(function (instance) {
 					// Points instance edited
 					//$scope.game.pointConcept.push(instance);
-					instance = processPointPeriods(instance);
+					$scope.pointsView.unshift(processPointPeriods(instance));
 					$scope.game.pointConcept.unshift(instance);
 					$scope.points.name = '';
 					$scope.disabled = false;
@@ -132,12 +133,14 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 			p.identifier = 'ciccio';
 		};
 		gamesFactory.getPoints($rootScope.currentGameId).then(function (points) {
+			$scope.game.pointConcept = points;
 			// process periods data to view state
+			var processedPoints = [];
 			points.forEach(function(point) {
-				point = processPointPeriods(point);
+				processedPoints.push(processPointPeriods(point));
 			});
-			$scope.points = points;
-			$scope.game.pointConcept = (points);
+			$scope.points = processedPoints;
+			$scope.pointsView = processedPoints;
 		});
 
 		gamesFactory.getBadges($rootScope.currentGameId).then(function (badges) {
@@ -146,15 +149,16 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 	});
 
 	function processPointPeriods(point) {
-		if(point.periods) {
-			let periodKeys = Object.keys(point.periods);
-			point.periodList = [];
+		var processedPoint = angular.copy(point);
+		if(processedPoint.periods) {
+			let periodKeys = Object.keys(processedPoint.periods);
+			processedPoint.periodList = [];
 			periodKeys.forEach(function(k) {
-				point.periods[k].period = point.periods[k].period / (24 * 3600 * 1000);
-				point.periodList.push(point.periods[k]);
+				processedPoint.periods[k].period = processedPoint.periods[k].period / (24 * 3600 * 1000);
+				processedPoint.periodList.push(processedPoint.periods[k]);
 			});
 		}
-		return point;
+		return processedPoint;
 	}
 
 modals.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, instance, game, type, gamesFactory) {

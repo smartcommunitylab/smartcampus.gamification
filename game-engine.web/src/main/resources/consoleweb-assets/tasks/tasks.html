@@ -165,7 +165,7 @@
 				<div class="col-md-offset-8 col-md-4">
 					<button class="btn btn-danger pull-right" data-ng-click="cancel()"
 						ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
-					<button class="btn btn-success pull-right" style="margin-right:1px;" data-ng-click="save()"
+					<button class="btn btn-success pull-right" style="margin-right:1px;" data-ng-click="input.type=== 'incremental' ? saveIncremental() : save()"
 						ng-disabled="disabled">{{'labels:btn_save' | i18next}}</button>
 				</div>
 				</div>

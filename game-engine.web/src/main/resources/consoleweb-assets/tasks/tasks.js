@@ -34,6 +34,92 @@ angular.module('gamificationEngine.tasks', [])
 		var task;
 		//$scope.game = game;
 
+		
+		$scope.saveIncremental = function() {
+			$scope.alerts.nameError = false;
+			$scope.alerts.pointsError = false;
+			$scope.alerts.classError = false;
+			$scope.alerts.itemsError = false;
+			$scope.alerts.taskErr = false;
+			var valid = true;
+			if (!$scope.input.name) {
+				$scope.alerts.nameError = true;
+				valid = false;
+			}
+			if (!$scope.input.itemType) {
+				$scope.alerts.pointsError = true;
+				valid = false;
+			}
+			if (!$scope.input.classificationName) {
+				$scope.alerts.classError = true;
+				valid = false;
+			}
+			
+			if (!$scope.input.itemToNotificate) {
+				$scope.alerts.itemsError = true;
+				valid = false;
+			}
+
+			if (valid) {
+				$scope.disabled = true;
+				t.name = $scope.input.name;
+				t.itemType = $scope.input.itemType;
+				t.classificationName = $scope.input.classificationName;
+				t.periodName = $scope.input.periodName;
+				t.itemsToNotificate = $scope.input.itemToNotificate;
+				t.type = $scope.input.type;
+				
+				if (!task) {
+					var found = false;
+					for (var i = 0; i < game.classificationTask.length && !found; i++) {
+						if (game.classificationTask[i].name === t.name) {
+							found = true;
+						}
+					}
+					if (!found) {
+						gamesFactory.addIncrementalClassification(game, t).then(function (data) {
+							if (!game.classificationTask) {
+								game.classificationTask = [];
+							}
+							//game.classificationTask.push(data);
+							game.classificationTask.unshift(data);
+							//$uibModalInstance.close();
+							$scope.isCollapsed = true;
+							$scope.disabled = false;
+							$scope.alerts.rankEdited = true;
+						}, function (msg) {
+							$scope.alerts.taskErr = 'messages:' + msg;
+							$scope.disabled = false;
+						});
+					} else {
+						$scope.alerts.taskErr = "messages:msg_error_exist";
+						$scope.disabled = false;
+					}
+				} else {
+					gamesFactory.editIncrementalClassification(game, t).then(function () {
+						var idx = -1;
+						for (var i = 0; i < game.classificationTask.length; i++) {
+							if (game.classificationTask[i].name === t.name) {
+								idx = i;
+								break;
+							}
+						}
+						if (idx > -1) {
+							game.classificationTask.splice(idx, 1, t);
+						}
+						//$uibModalInstance.close();
+						$scope.isCollapsed = true;
+						$scope.disabled = false;
+						$scope.alerts.rankEdited = true;
+					}, function (msg) {
+						$scope.alerts.taskErr = 'messages:' + msg;
+						$scope.disabled = false;
+					});
+				}
+			}
+		}
+		
+		
 		$scope.save = function () {
 			$scope.alerts.nameError = false;
 			$scope.alerts.pointsError = false;
@@ -72,6 +158,7 @@ angular.module('gamificationEngine.tasks', [])
 				t.classificationName = $scope.input.classificationName;
 				t.cronExpression = $scope.input.schedule;
 				t.itemsToNotificate = $scope.input.itemToNotificate;
+				t.type = $scope.input.type;
 
 				if (!task) {
 					var found = false;

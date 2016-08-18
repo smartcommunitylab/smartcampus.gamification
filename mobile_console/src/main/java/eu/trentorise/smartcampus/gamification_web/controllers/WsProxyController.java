@@ -166,27 +166,28 @@ public class WsProxyController {
 	// Method for mobile player registration (in mobile app)
 	@RequestMapping(method = RequestMethod.POST, value = "/out/rest/register")
 	public @ResponseBody
-	Player registerExternal(@RequestBody PersonalData data, @RequestParam String token, @RequestParam String nickname, HttpServletResponse res) {
+	Player registerExternal(@RequestBody PersonalData data, @RequestParam String token, @RequestParam(required=false) String email, @RequestParam String nickname, HttpServletResponse res) {
 		logger.debug("External registration. ");
 		
 		BasicProfile user = null;
 		AccountProfile account = null;
-		String email = null;
 		try {
 			user = profileService.getBasicProfile(token);
 			if (user == null) {
 				res.setStatus(HttpStatus.UNAUTHORIZED.value());
 				return null;
 			}
-			account = profileService.getAccountProfile(token);
-			for (String aName : account.getAccountNames()) {
-				for (String key : account.getAccountAttributes(aName).keySet()) {
-					if (key.toLowerCase().contains("email")) {
-						email = account.getAccountAttributes(aName).get(key);
-						if (email != null) break;
+			if(email == null){
+				account = profileService.getAccountProfile(token);
+				for (String aName : account.getAccountNames()) {
+					for (String key : account.getAccountAttributes(aName).keySet()) {
+						if (key.toLowerCase().contains("email")) {
+							email = account.getAccountAttributes(aName).get(key);
+							if (email != null) break;
+						}
 					}
+					if (email != null) break;
 				}
-				if (email != null) break;
 			}
 		} catch (Exception e) {
 			res.setStatus(HttpStatus.UNAUTHORIZED.value());

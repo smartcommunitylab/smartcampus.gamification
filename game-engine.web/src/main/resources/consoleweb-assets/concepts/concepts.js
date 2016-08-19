@@ -26,7 +26,12 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 		$scope.tmpPeriods = [];
 		
 		$scope.addPeriod = function() {
-			$scope.tmpPeriods.push({name:'', start: new Date(), period : 1});
+			let initialDate = new Date();
+			initialDate.setHours(0);
+			initialDate.setMinutes(0);
+			initialDate.setSeconds(0);
+			initialDate.setMilliseconds(0);
+			$scope.tmpPeriods.push({name:'', start: initialDate, period : 1});
 		}
 		
 		$scope.deleteTmpPeriod =function(index) {

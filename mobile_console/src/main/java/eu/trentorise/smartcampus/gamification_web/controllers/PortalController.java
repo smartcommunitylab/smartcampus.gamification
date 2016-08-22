@@ -558,7 +558,6 @@ public class PortalController extends SCController{
 								lastWeekChallenges = challLists.get(1);
 							}
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						
@@ -741,7 +740,6 @@ public class PortalController extends SCController{
 							lastWeekChallenges = challLists.get(1);
 						}
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
@@ -1241,6 +1239,7 @@ public class PortalController extends SCController{
 		return orderedList;
 	}
 	
+	// Method used to read a week conf data file and store all values in a list of WeekConfData object
 	public List<WeekConfData> readWeekConfFile(String src) {
 		BufferedReader br = null;
 		String line = "";
@@ -1284,6 +1283,7 @@ public class PortalController extends SCController{
 		return confWeekFileData;
 	}
 	
+	// Method used to read a week prizes file and store all data in a list of WeekPrizeData object
 	public List<WeekPrizeData> readWeekPrizesFile(String src) {
 		BufferedReader br = null;
 		String line = "";
@@ -1320,6 +1320,7 @@ public class PortalController extends SCController{
 		return prizeWeekFileData;
 	}
 	
+	// Method used to read the week prizes data from conf file. More prizes for one week are allowed
 	public List<WeekPrizeData> readWeekPrizesFileData(String weeknum, List<WeekPrizeData> allPrizes) {
 		List<WeekPrizeData> prizeWeekData = new ArrayList<WeekPrizeData>();
 		for(int i = 0; i < allPrizes.size(); i++){

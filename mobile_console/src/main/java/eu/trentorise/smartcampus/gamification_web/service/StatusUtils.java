@@ -16,6 +16,7 @@ import eu.trentorise.smartcampus.gamification_web.models.status.ChallengeConcept
 import eu.trentorise.smartcampus.gamification_web.models.status.ChallengesData;
 import eu.trentorise.smartcampus.gamification_web.models.status.PlayerData;
 import eu.trentorise.smartcampus.gamification_web.models.status.PointConcept;
+import eu.trentorise.smartcampus.gamification_web.models.status.PointConceptPeriod;
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
 
 public class StatusUtils {
@@ -29,6 +30,13 @@ public class StatusUtils {
 	private static final String PC_GREEN_LEAVES = "green leaves";
 	private static final String PC_NAME = "name";
 	private static final String PC_SCORE = "score";
+	private static final String PC_PERIOD = "periods";
+	private static final String PC_WEEKLY = "weekly";
+	private static final String PC_START = "start";
+	private static final String PC_PERIOD_DURATION = "period";
+	private static final String PC_IDENTIFIER = "identifier";
+	private static final String PC_INSTANCES = "instances";
+	private static final String PC_END = "end";
 	private static final String PC_CLASSIFICATION_WEEK = "green leaves week ";
 	private static final String PC_CLASSIFICATION_WEEK_TEST = "green leaves week test";
 	
@@ -70,20 +78,46 @@ public class StatusUtils {
     				BadgeCollectionConcept bcc = new BadgeCollectionConcept(bc_name, bc_badges);
     				bcc_list.add(bcc);
     			}
-    			pointConceptData = stateData.getJSONArray(POINT_CONCEPT);
+    			pointConceptData = stateData.getJSONArray(POINT_CONCEPT);	// to update for new gamification version
     			for(int i = 0; i < pointConceptData.length(); i++){
     				JSONObject point = pointConceptData.getJSONObject(i);
     				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
     				int pc_score = 0;
+    				String periodType = "";
+    				long start = 0L;
+    				long periodDuration = 0L;
+    				String identifier = "weekly";
+    				List<PointConceptPeriod> instances = new ArrayList<PointConceptPeriod>();
     				if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
     					pc_score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-    					PointConcept pt = new PointConcept(pc_name, pc_score);
+    					JSONObject pc_period = (!point.isNull(PC_PERIOD)) ? point.getJSONObject(PC_PERIOD) : null;
+    					if(pc_period != null){
+    						JSONObject pc_weekly = (!point.isNull(PC_WEEKLY)) ? point.getJSONObject(PC_WEEKLY) : null;
+    						if(pc_weekly != null){
+    							start = (!point.isNull(PC_START)) ? pc_weekly.getLong(PC_START) : 0L;
+    							periodDuration = (!point.isNull(PC_PERIOD_DURATION)) ? pc_weekly.getLong(PC_PERIOD_DURATION) : 0L;
+    							identifier = (!point.isNull(PC_IDENTIFIER)) ? pc_weekly.getString(PC_IDENTIFIER) : "weekly";
+    							JSONArray pc_instances = point.getJSONArray(PC_INSTANCES);
+    							if(pc_instances != null){
+    								for(int j = 0; j < pc_instances.length(); j++){
+    									JSONObject pc_instance = pc_instances.getJSONObject(j);
+    									int instance_score = (!pc_instance.isNull(PC_SCORE)) ? pc_instance.getInt(PC_SCORE) : 0;
+    									long instance_start = (!pc_instance.isNull(PC_START)) ? pc_instance.getLong(PC_START) : 0L;
+    									long instance_end = (!pc_instance.isNull(PC_END)) ? pc_instance.getLong(PC_END) : 0L;
+    									PointConceptPeriod tmpPeriod = new PointConceptPeriod(instance_score, instance_start, instance_end);
+    									instances.add(tmpPeriod);
+    								}
+    							}
+    						}
+    					}
+    					
+    					PointConcept pt = new PointConcept(pc_name, pc_score, periodType, start, periodDuration, identifier, instances);
     					pointConcept.add(pt);
     				}
     			}
-    			
+    			// new Challenge management part
     			try {
-					List<List> challLists = challUtils.correctCustomData(profile, 1);
+					List<List> challLists = challUtils.correctChallengeData(profile, 1, pointConcept, bcc_list);
 					if(challLists != null && challLists.size() == 2){
 						challenges = challLists.get(0);
 						oldChallenges = challLists.get(1);

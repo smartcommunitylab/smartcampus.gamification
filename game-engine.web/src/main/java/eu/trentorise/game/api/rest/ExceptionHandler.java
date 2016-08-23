@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import eu.trentorise.game.core.ResourceNotFoundException;
+
 @ControllerAdvice
 public class ExceptionHandler {
 
@@ -29,5 +31,11 @@ public class ExceptionHandler {
 	public void handleIllegalArgument(HttpServletResponse res, Exception e)
 			throws IOException {
 		res.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+	}
+
+	@org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
+	public void handleResourceNotFound(HttpServletResponse res, Exception e)
+			throws IOException {
+		res.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 	}
 }

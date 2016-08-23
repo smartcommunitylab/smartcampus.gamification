@@ -46,7 +46,7 @@
 			        	Nel seguito le sfide di questa settimana e i tuoi risultati recenti.
 			        </h3>
 			        <div th:if="${n_challenges ne null}">
-				        <h3 th:if="${show_last_week} == false" th:text="#{week_desc(${next_week_theme})}">
+				        <h3 th:if="${show_last_week} == false and ${next_week_theme} ne 'No'" th:text="#{week_desc(${next_week_theme})}">
 				            Questa sar&agrave; la settimana DELLA BICI
 				        </h3>
 				        <h3 th:if="${show_last_week} == true">
@@ -79,15 +79,15 @@
 				        <table th:if="${n_prizes ne null}" width="95%">
 				        	<tr align="left">
 				        		<th width="2%"></th>
-				        		<th width="35%">Premio</th>
-				        		<th width="43%">Traguardo</th>
-				        		<th width="20%">Offerto da</th>
+				        		<th width="40%">Premio</th>
+				        		<th width="58%">Traguardo</th>
+				        		<!-- <th width="20%">Offerto da</th> -->
 				        	</tr>
 						    <tr th:each="p : ${n_prizes}" valign="top">
 						        <td>- </td>
 						        <td><font size="2" ><strong><span th:text="${p.prize}">tessera mitt</span></strong></font></td>
 						        <td><font size="2" > <span th:text="${p.target}">primo posto green point</span></font></td>
-						       	<td><font size="2" > <span th:text="${p.sponsor}">AMR</span></font></td>
+						       	<!-- <td><font size="2" > <span th:text="${p.sponsor}">AMR</span></font></td> -->
 						    </tr>
 					    </table>
 			        </div>

@@ -47,17 +47,19 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.trentorise.smartcampus.gamification_web.service.ChallengesUtils;
 import eu.trentorise.smartcampus.gamification_web.service.EmailService;
-
+import eu.trentorise.smartcampus.gamification_web.service.StatusUtils;
 import eu.trentorise.smartcampus.aac.AACException;
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
-import eu.trentorise.smartcampus.gamification_web.models.State;
+import eu.trentorise.smartcampus.gamification_web.models.PlayerStatus;
 import eu.trentorise.smartcampus.gamification_web.models.Summary;
 import eu.trentorise.smartcampus.gamification_web.models.WeekConfData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekPrizeData;
 import eu.trentorise.smartcampus.gamification_web.models.WeekWinnersData;
+import eu.trentorise.smartcampus.gamification_web.models.status.ChallengeConcept;
 import eu.trentorise.smartcampus.gamification_web.models.status.ChallengesData;
+import eu.trentorise.smartcampus.gamification_web.models.status.PointConcept;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayer;
 import eu.trentorise.smartcampus.gamification_web.repository.AuthPlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptionDataSetup;
@@ -166,11 +168,14 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.mail.startgame}")
     private String mailStartGame;
+    @Autowired
+	@Value("${smartcampus.gamification.url}")
+	private String gamificationWebUrl;
     
-    private final String JSON_STATE = "state";
+    /*private final String JSON_STATE = "state";
     private final String JSON_POINTCONCEPT = "PointConcept";
     private final String JSON_NAME = "name";
-    private final String JSON_SCORE = "score";
+    private final String JSON_SCORE = "score";*/
     private final String JSON_GAMEID = "gameId";
     private final String JSON_PLAYERID = "playerId";
     private final String JSON_TIMESTAMP = "timestamp";
@@ -229,7 +234,7 @@ public class PortalController extends SCController{
 							AuthPlayer auth_p = authPlayerRepositoryDao.findByMailAndType(attribute_mail, type);
 							if(auth_p != null){
 								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), null, null, type);
+								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), true, null, null, type);
 								playerRepositoryDao.save(new_p);
 								// here I call an api from gengine console
 								createPlayerInGamification(user.getUserId());
@@ -240,7 +245,7 @@ public class PortalController extends SCController{
 						} else {
 							// case of no authentication table and user not in user table: I add the user
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
-							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, null, null, type);
+							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, true, null, null, type);
 							playerRepositoryDao.save(new_p);
 							// here I call an api from gengine console
 							createPlayerInGamification(user.getUserId());
@@ -414,10 +419,10 @@ public class PortalController extends SCController{
 //	}
 	
 	// Here I insert a task that invoke the WS notification
-	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
 	//@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 5 PM
 	public synchronized void checkNotification() throws IOException {
+		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
 		String timestamp = "?timestamp=" + millis;
@@ -453,7 +458,6 @@ public class PortalController extends SCController{
 		//} catch (MessagingException e1) {
 		//	e1.printStackTrace();
 		//}
-		
 			// New method
 			logger.debug(String.format("Check Notification task. Cycle - %d", i++));
 			// Here I have to read the mail conf file data
@@ -525,37 +529,42 @@ public class PortalController extends SCController{
 //				specialPlayers.add("23893");
 //				specialPlayers.add("23895");
 				
-				// Add user to exclude from the mailing list
-				List<String> noMailingPlayers = new ArrayList<String>();
-				noMailingPlayers.add("10730");	//"FILIPPO"	
-				noMailingPlayers.add("23755");	//"Fede"
-				
-				for(Player p: iter){
-					logger.debug(String.format("Profile finded  %s", p.getNikName()));
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e1) {
-						logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-					}
+			// Add user to exclude from the mailing list
+			//List<String> noMailingPlayers = new ArrayList<String>();
+			//noMailingPlayers.add("10730");	//"FILIPPO"	
+			//noMailingPlayers.add("23755");	//"Fede"
+			
+			for(Player p: iter){
+				logger.debug(String.format("Profile finded  %s", p.getNikName()));
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e1) {
+					logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
+				}
 					
-					ArrayList<State> states = null;
+				if(p.isSendMail()){
+					//ArrayList<State> states = null;
+					List<PointConcept> states = null;
 					ArrayList<Notification> notifications = null;
 					ArrayList<BagesData> someBadge = null;
 					List<ChallengesData> challenges = null;
 					List<ChallengesData> lastWeekChallenges = null;
-					
+				
 					try {
 						// WS State Invocation
 						String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-						states = getState(urlWSState);
+						//states = getState(urlWSState);
 						// Challenges correction
 						String completeState = getAllChallenges(urlWSState);
 						try {
-							@SuppressWarnings("rawtypes")
-							List<List> challLists = challUtils.correctCustomData(completeState, 0);
-							if(challLists != null && challLists.size() == 2){
-								challenges = challLists.get(0);
-								lastWeekChallenges = challLists.get(1);
+							PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0);
+							states = completePlayerStatus.getPointConcept();
+							ChallengeConcept challLists = completePlayerStatus.getChallengeConcept();
+							//@SuppressWarnings("rawtypes")
+							//List<List> challLists = challUtils.correctCustomData(completeState, 0);
+							if(challLists != null){
+								challenges = challLists.getActiveChallengeData();
+								lastWeekChallenges = challLists.getOldChallengeData();
 							}
 						} catch (JSONException e) {
 							e.printStackTrace();
@@ -580,13 +589,11 @@ public class PortalController extends SCController{
 						mailto = mailTo;
 					}
 					//if(specialPlayers.contains(p.getSocialId())){
-					
-					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0  && !noMailingPlayers.contains(p.getSocialId())){
-						
+					if(mailSend.compareTo("true") == 0 && playerName != null && playerName.compareTo("") != 0){	//  && !noMailingPlayers.contains(p.getSocialId())
 						try {
 							if(notifications != null){
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
@@ -596,7 +603,7 @@ public class PortalController extends SCController{
 								}
 							} else {
 								if(states != null  && states.size() > 0){
-									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
 											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 								} else {
@@ -629,8 +636,11 @@ public class PortalController extends SCController{
 							logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
 						}
 					}
-					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
+					summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null && states.get(0) != null) ? Integer.toString(states.get(0).getScore()) : "", (notifications != null) ? notifications.toString() : ""));
+				} else {
+					logger.info("Mail non inviata a " + p.getNikName()+ ". L'utente ha richiesto la disattivazione delle notifiche.");
 				}
+			}
 			
 			// Send summary mail
 			if(mailSend.compareTo("true") == 0){
@@ -646,10 +656,10 @@ public class PortalController extends SCController{
 		//}
 	}
 	
-	@SuppressWarnings("unchecked")
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
 	//@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
 	public synchronized void checkWinnersNotification() throws IOException {
+		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
 		String timestamp = "?timestamp=" + millis;
@@ -706,38 +716,43 @@ public class PortalController extends SCController{
 			}
 		}
 		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
-			Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
+		Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
 			// Add user to exclude from the mailing list
-			List<String> noMailingPlayers = new ArrayList<String>();
-			noMailingPlayers.add("10730");	//"FILIPPO"	
-			noMailingPlayers.add("23755");	//"Fede"
+			//List<String> noMailingPlayers = new ArrayList<String>();
+			//noMailingPlayers.add("10730");	//"FILIPPO"	
+			//noMailingPlayers.add("23755");	//"Fede"
 			
-			for(Player p: iter){
-				logger.debug(String.format("Profile finded  %s", p.getNikName()));
-				try {
-					Thread.sleep(1500);
-				} catch (InterruptedException e1) {
-					logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
-				}
-				
-				ArrayList<State> states = null;
+		for(Player p: iter){
+			logger.debug(String.format("Profile finded  %s", p.getNikName()));
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e1) {
+				logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
+			}
+			
+			if(p.isSendMail()){
+				//ArrayList<State> states = null;
+				List<PointConcept> states = null;
 				ArrayList<Notification> notifications = null;
 				ArrayList<BagesData> someBadge = null;
 				List<ChallengesData> challenges = null;
 				List<ChallengesData> lastWeekChallenges = null;
-				
+			
 				try {
 					// WS State Invocation
 					String urlWSState = "state/" + gameName + "/" + p.getSocialId();
-					states = getState(urlWSState);
+					//states = getState(urlWSState);
 					// Challenges correction
 					String completeState = getAllChallenges(urlWSState);
 					try {
-						@SuppressWarnings("rawtypes")
-						List<List> challLists = challUtils.correctCustomData(completeState, 0);
-						if(challLists != null && challLists.size() == 2){
-							challenges = challLists.get(0);
-							lastWeekChallenges = challLists.get(1);
+						PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0);
+						states = completePlayerStatus.getPointConcept();
+						ChallengeConcept challLists = completePlayerStatus.getChallengeConcept();
+						//@SuppressWarnings("rawtypes")
+						//List<List> challLists = challUtils.correctCustomData(completeState, 0);
+						if(challLists != null){
+							challenges = challLists.getActiveChallengeData();
+							lastWeekChallenges = challLists.getOldChallengeData();
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -762,12 +777,11 @@ public class PortalController extends SCController{
 					mailto = mailTo;
 				}
 				
-				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0 && !noMailingPlayers.contains(p.getSocialId())){
-					
+				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){ //&& !noMailingPlayers.contains(p.getSocialId())
 					try {
 						if(notifications != null){
 							if(states != null  && states.size() > 0){
-								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
 										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 							} else {
@@ -777,7 +791,7 @@ public class PortalController extends SCController{
 							}
 						} else {
 							if(states != null  && states.size() > 0){
-								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore(), null, null, null, null, // health and pr point are null
+								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
 										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
 							} else {
@@ -811,8 +825,10 @@ public class PortalController extends SCController{
 					}
 				}
 				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
+			} else {
+				logger.info("Mail non inviata a " + p.getNikName()+ ". L'utente ha richiesto la disattivazione delle notifiche.");	
 			}
-		
+		}
 		// Send summary mail
 		if(mailSend.compareTo("true") == 0){
 			// Here I send the summary mail (only if the sendMail parameter is true)
@@ -1056,14 +1072,13 @@ public class PortalController extends SCController{
 	}
 	
 	
-	/**
+/*	*//**
 	 * Method used to retrieve the state of a specific user and to send the find data via mail
 	 * @param urlWS: url of the ws
 	 * @return state ArrayList
 	 * @throws InterruptedException 
-	 */
+	 *//*
 	private ArrayList<State> getState(String urlWS) throws InterruptedException{
-		
 		RestTemplate restTemplate = new RestTemplate();
 		logger.debug("State WS GET " + urlWS);
 		String result = "";
@@ -1086,7 +1101,7 @@ public class PortalController extends SCController{
 		}
 		
 		return states;
-	}
+	}*/
 	
 	/**
 	 * Method used to retrieve the state of a specific user and to send the find data via mail
@@ -1107,7 +1122,6 @@ public class PortalController extends SCController{
 			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
 		result = tmp_res.getBody();
-		
 		return result;
 	}	
 	
@@ -1177,7 +1191,7 @@ public class PortalController extends SCController{
 	 * @param result: input string with the json of the ws
 	 * @return Notification ArrayList
 	 */
-	private ArrayList<State> chekState(String result){
+	/*private ArrayList<State> chekState(String result){
 		ArrayList<State> stateList = new ArrayList<State>();
 		logger.debug(String.format("Result from WS: %s", result));
 		
@@ -1200,22 +1214,22 @@ public class PortalController extends SCController{
 		}
 		
 		return orderState(stateList);
-	}
+	}*/
 	
-	private String cleanStringFieldScore(String fieldString){
+	/*private String cleanStringFieldScore(String fieldString){
 		String field = fieldString.trim();
 		Float score_num_f = Float.valueOf(field);
 		int score_num_i = score_num_f.intValue();
 		String cleanedScore = Integer.toString(score_num_i);
 		return cleanedScore;
-	}
+	}*/
 	
 	/**
 	 * Method orderState: used to order the state array
 	 * @param toOrder
 	 * @return
 	 */
-	private ArrayList<State> orderState(ArrayList<State> toOrder){
+	/*private ArrayList<State> orderState(ArrayList<State> toOrder){
 		ArrayList<State> orderedList = new ArrayList<State>();
 		// I order the list with green score at the first, health score at the second and pr at the third
 		for(int i = 0; i < toOrder.size(); i++){
@@ -1237,7 +1251,7 @@ public class PortalController extends SCController{
 			}
 		}
 		return orderedList;
-	}
+	}*/
 	
 	// Method used to read a week conf data file and store all values in a list of WeekConfData object
 	public List<WeekConfData> readWeekConfFile(String src) {

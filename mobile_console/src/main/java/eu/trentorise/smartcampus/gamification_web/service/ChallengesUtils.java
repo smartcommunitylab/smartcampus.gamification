@@ -671,6 +671,10 @@ public class ChallengesUtils {
 		if(cName.contains(SERVER_CHAL_ALLOWED_MODE_P)){
 			corrMobility = CHAL_ALLOWED_MODE_P;
 		}
+		// NB consider to add cable
+		//if(cName.contains(SERVER_CHAL_ALLOWED_MODE_P)){
+		//	corrMobility = CHAL_ALLOWED_MODE_P;
+		//}
 		return corrMobility;
 	}
 	

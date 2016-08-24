@@ -2,27 +2,27 @@ descriptions:
   - id: 1
     type: PERCENT
     mobilitymode: bike
-    description: Per vincere la sfida vale la somma dei Km viaggiati in bici o bike sharing nel corso degli itinerari pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale la somma dei Km viaggiati in bici o bike sharing nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 2
     type: PERCENT
     mobilitymode: bikesharing
-    description: Per vincere la sfida vale la somma dei Km viaggiati in bike sharing nel corso degli itinerari pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale la somma dei Km viaggiati in bike sharing nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 3
     type: PERCENT
     mobilitymode: walk
-    description: Per vincere la sfida vale la somma dei Km camminati (solo tratte superiori a 100 metri) nel corso degli itinerari pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale la somma dei Km camminati (solo tratte superiori a 100 metri) nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 4
     type: TRIPNUMBER
     mobilitymode: bikesharing
-    description: Per vincere la sfida vale il numero di itinerari che utilizzano il bike sharing pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari che utilizzano il bike sharing pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 5
     type: TRIPNUMBER
     mobilitymode: bus
-    description: Per vincere la sfida vale il numero di itinerari che utilizzano il trasporto pubblico pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari che utilizzano il trasporto pubblico pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 6
     type: TRIPNUMBER
     mobilitymode: train
-    description: Per vincere la sfida vale il numero di itinerari che utilizzano il treno pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari che utilizzano il treno pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 7
     type: ZEROIMPACT
     mobilitymode: zeroimpact
@@ -30,7 +30,7 @@ descriptions:
   - id: 8
     type: TRIPNUMBER
     mobilitymode: promoted
-    description: Gli itinerari 'promoted' sono quelli consigliati ed evidenziati in verde da ViaggiaRovereto Play&Go.
+    description: Gli itinerari 'promoted' sono quelli consigliati ed evidenziati in verde da ViaggiaTrento Play&Go.
   - id: 9
     type: PERCENT
     mobilitymode: all
@@ -82,31 +82,31 @@ descriptions:
   - id: 21
     type: NEGATEDMODE
     mobilitymode: bikesharing
-    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il bike sharing pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il bike sharing pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 22
     type: NEGATEDMODE
     mobilitymode: bus
-    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il trasporto pubblico pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il trasporto pubblico pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 23
     type: NEGATEDMODE
     mobilitymode: train
-    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il treno pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il treno pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 24
     type: NEGATEDMODE
     mobilitymode: bike
-    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare la bici pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare la bici pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 25
     type: NEGATEDMODE
     mobilitymode: car
-    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare l'automobile pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare l'automobile pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 26
     type: NEGATEDMODE
     mobilitymode: walk
-    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare spostamenti a piedi pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare spostamenti a piedi pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 27
     type: TRIPNUMBER
     mobilitymode: walk
-    description: Per vincere la sfida vale il numero di itinerari a piedi pianificati con ViaggiaRovereto Play&Go e compiuti durante la validita' della sfida.
+    description: Per vincere la sfida vale il numero di itinerari a piedi pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
   - id: 28
     type: SURVEY
     mobilitymode: none

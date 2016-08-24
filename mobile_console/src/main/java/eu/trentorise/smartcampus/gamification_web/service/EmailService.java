@@ -169,10 +169,12 @@ public class EmailService {
     	}
     	// Correct the win challenges
     	List<ChallengesData> winChallenges = new ArrayList<ChallengesData>();
-    	for(int i = 0; i < last_week_challenges.size(); i++){
-    		if(last_week_challenges.get(i).getSuccess()){
-    			winChallenges.add(last_week_challenges.get(i));
-    		}
+    	if(last_week_challenges != null){
+	    	for(int i = 0; i < last_week_challenges.size(); i++){
+	    		if(last_week_challenges.get(i).getSuccess()){
+	    			winChallenges.add(last_week_challenges.get(i));
+	    		}
+	    	}
     	}
     	
     	String challengesStartingTime = "";
@@ -247,9 +249,9 @@ public class EmailService {
         boolean isFirstMail = Boolean.parseBoolean(firstGameMail);
         String htmlContent = "";
         if(isFirstMail){
-        	htmlContent = this.templateEngine.process("email-gamification2016-startgame.html", ctx);
+        	htmlContent = this.templateEngine.process("email-gamification2016-startgame-tn.html", ctx);
         } else {
-        	htmlContent = this.templateEngine.process("email-gamification2016.html", ctx);
+        	htmlContent = this.templateEngine.process("email-gamification2016-tn.html", ctx);
         }
         message.setText(htmlContent, true /* isHtml */);
         
@@ -377,7 +379,7 @@ public class EmailService {
         message.setTo(recipientEmail);
 
         // Create the HTML body using Thymeleaf
-        final String htmlContent = this.templateEngine.process("email-gamification2016-winners.html", ctx);
+        final String htmlContent = this.templateEngine.process("email-gamification2016-winners-tn.html", ctx);
         message.setText(htmlContent, true /* isHtml */);
         
         // Add the inline titles image, referenced from the HTML code as "cid:${imageResourceName}"

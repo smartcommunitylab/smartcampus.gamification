@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.joda.time.Interval;
 import org.kie.api.definition.type.PropertyReactive;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -154,6 +155,11 @@ public class PointConcept extends GameConcept {
 		return result;
 	}
 
+	public Double getPeriodScore(String periodIdentifier, long moment) {
+		return periods.containsKey(periodIdentifier) ? periods.get(
+				periodIdentifier).getScore(moment) : 0d;
+	}
+
 	// public Double getPeriodPreviousScore(String periodIdentifier, int steps)
 	// {
 	// LinkedList<PeriodInstance> instances = periods.get(periodIdentifier)
@@ -217,6 +223,14 @@ public class PointConcept extends GameConcept {
 			}
 		}
 
+		public Double getScore(long moment) {
+			try {
+				return retrieveInstance(moment).getScore();
+			} catch (NullPointerException e) {
+				return 0d;
+			}
+		}
+
 		public Double increaseScore(Double value, long moment) {
 			try {
 				PeriodInstance instance = retrieveInstance(moment);
@@ -236,25 +250,25 @@ public class PointConcept extends GameConcept {
 			long endInstance = -1;
 			if (instances.isEmpty() || instances.getLast().getEnd() < moment) {
 				startInstance = instances.isEmpty() ? start.getTime()
-						: instances.getLast().getEnd() + 1;
+						: instances.getLast().getEnd();
 				endInstance = instances.isEmpty() ? startInstance + period
 						: instances.getLast().getEnd() + period;
 				instance = new PeriodInstance(startInstance, endInstance);
 				instances.add(instance);
-
 				while (endInstance < moment) {
-					startInstance = endInstance + 1;
+					startInstance = endInstance;
 					endInstance = endInstance + period;
 					instance = new PeriodInstance(startInstance, endInstance);
 					instances.add(instance);
 				}
 			} else {
-
+				Interval periodInterval = null;
 				for (Iterator<PeriodInstance> iter = instances
 						.descendingIterator(); iter.hasNext();) {
 					PeriodInstance instanceTemp = iter.next();
-					if (moment > instanceTemp.getStart()
-							&& moment < instanceTemp.getEnd()) {
+					periodInterval = new Interval(instanceTemp.getStart(),
+							instanceTemp.getEnd());
+					if (periodInterval.contains(moment)) {
 						instance = instanceTemp;
 						break;
 					}
@@ -374,7 +388,7 @@ public class PointConcept extends GameConcept {
 		@Override
 		public String toString() {
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			return String.format("[start: %s, end: %s, score: %s",
+			return String.format("[start: %s, end: %s, score: %s]",
 					formatter.format(new Date(start)),
 					formatter.format(new Date(end)), score);
 		}

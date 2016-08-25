@@ -61,7 +61,7 @@
 								<li>3) terzo classificato: <strong>n.1 abbonamento stagionale-estivo per piscina</strong>.</li>
 							</ul>
 				 			In alcune settimane di Gioco saranno inoltre messi a diposizione dei premi settimanali che andranno a premiare i primi classificati nella classifica settimanale a punti Green Leaves.<br/><br/>
-							Una premiazione, con consegna degli attestati e dei premi summenzionati, avverr&agrave; presso e a cura del Comune di Rovereto al termine del Gioco.<br/><br/>
+							Una premiazione, con consegna degli attestati e dei premi summenzionati, avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/><br/>
 							I premi finali sono gentilmente offerti da:<br/><br/>
 							<div class="row" align="center">
 								<div class="col-md-6">
@@ -103,7 +103,7 @@
 								<li>3) terzo classificato: <strong>n.1 abbonamento stagionale-estivo per piscina</strong>.</li>
 							</ul>
 				 			In alcune settimane di Gioco saranno inoltre messi a diposizione dei premi settimanali che andranno a premiare i primi classificati nella classifica settimanale a punti Green Leaves.<br/>
-							Una premiazione, con consegna degli attestati e dei premi summenzionati, avverr&agrave; presso e a cura del Comune di Rovereto al termine del Gioco.<br/>
+							Una premiazione, con consegna degli attestati e dei premi summenzionati, avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/>
 							I premi finali sono gentilmente offerti da:<br/><br/>
 							<div class="row" align="center">
 								<div class="col-xs-12">

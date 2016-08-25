@@ -53,7 +53,7 @@
 						<div class="panel-body">
 					    <h4>TRATTAMENTO DEI DATI PERSONALI</h4>
 						<div align="justify">
-							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaRovereto si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
+							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaTrento si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
 							I tuoi dati personali verranno trattati nel pieno rispetto della vigente normativa sulla privacy, <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >come da seguente documento</a>.
 						</div>
 						<br/>
@@ -76,7 +76,7 @@
 						<div class="panel-body">
 					    <h4>TRATTAMENTO DEI DATI PERSONALI</h4>
 						<div align="justify">
-							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaRovereto si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
+							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaTrento si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
 							I tuoi dati personali verranno trattati nel pieno rispetto della vigente normativa sulla privacy, <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >come da seguente documento</a>.
 						</div>
 						<br/>

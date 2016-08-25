@@ -130,9 +130,9 @@ public class StatusUtils {
 					if(challLists != null && challLists.size() == 2){
 						challenges = challLists.get(0);
 						oldChallenges = challLists.get(1);
-						cc.setActiveChallengeData(challenges);
-						cc.setOldChallengeData(oldChallenges);
 					}
+					cc.setActiveChallengeData(challenges);	// default is [] so I have to initialize the list anyway
+					cc.setOldChallengeData(oldChallenges);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

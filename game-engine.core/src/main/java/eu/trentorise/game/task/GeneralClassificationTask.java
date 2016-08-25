@@ -16,14 +16,16 @@
 
 package eu.trentorise.game.task;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.managers.ClassificationFactory;
+import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.core.GameConcept;
 
 public class GeneralClassificationTask extends ClassificationTask {
 
@@ -63,20 +65,26 @@ public class GeneralClassificationTask extends ClassificationTask {
 		this.itemType = itemType;
 	}
 
-	@Override
-	protected double retrieveScore(PlayerState state) {
-		for (GameConcept gc : state.getState()) {
-			if (gc instanceof PointConcept
-					&& ((PointConcept) gc).getName().equals(itemType)) {
-				return ((PointConcept) gc).getScore();
-			}
-		}
-
-		return 0d;
-	}
+	// @Override
+	// protected double retrieveScore(PlayerState state) {
+	// for (GameConcept gc : state.getState()) {
+	// if (gc instanceof PointConcept
+	// && ((PointConcept) gc).getName().equals(itemType)) {
+	// return ((PointConcept) gc).getScore();
+	// }
+	// }
+	//
+	// return 0d;
+	// }
 
 	@Override
 	protected String getScoreType() {
 		return itemType;
+	}
+
+	@Override
+	protected ClassificationBuilder createBuilder(List<PlayerState> states) {
+		return ClassificationFactory.createGeneralClassification(states,
+				getScoreType());
 	}
 }

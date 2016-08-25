@@ -36,7 +36,7 @@ import eu.trentorise.game.task.IncrementalClassificationTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
-public class ClassificationTest {
+public class ClassificationTaskTest {
 
 	@Autowired
 	private GameService gameSrv;

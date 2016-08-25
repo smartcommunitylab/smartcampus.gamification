@@ -1,15 +1,17 @@
 package eu.trentorise.game.task;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.managers.ClassificationFactory;
+import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.PointConcept.Period;
-import eu.trentorise.game.model.core.GameConcept;
 
 public class IncrementalClassificationTask extends ClassificationTask {
 
@@ -45,19 +47,19 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		}
 	}
 
-	@Override
-	protected double retrieveScore(PlayerState state) {
-		for (GameConcept gc : state.getState()) {
-			if (gc.getName().equals(pointConceptName)
-					&& gc instanceof PointConcept) {
-				PointConcept pc = (PointConcept) gc;
-				return pc.getPeriodCurrentScore(periodName);
-			}
-		}
-		logger.warn(String
-				.format("PointConcept %s not found", pointConceptName));
-		return 0d;
-	}
+	// @Override
+	// protected double retrieveScore(PlayerState state) {
+	// for (GameConcept gc : state.getState()) {
+	// if (gc.getName().equals(pointConceptName)
+	// && gc instanceof PointConcept) {
+	// PointConcept pc = (PointConcept) gc;
+	// return pc.getPeriodCurrentScore(periodName);
+	// }
+	// }
+	// logger.warn(String
+	// .format("PointConcept %s not found", pointConceptName));
+	// return 0d;
+	// }
 
 	@Override
 	protected String getScoreType() {
@@ -78,6 +80,12 @@ public class IncrementalClassificationTask extends ClassificationTask {
 
 	public void setPeriodName(String periodName) {
 		this.periodName = periodName;
+	}
+
+	@Override
+	protected ClassificationBuilder createBuilder(List<PlayerState> states) {
+		return ClassificationFactory.createIncrementalClassification(states,
+				pointConceptName, periodName);
 	}
 
 }

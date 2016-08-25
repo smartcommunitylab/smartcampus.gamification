@@ -184,8 +184,8 @@ public class PortalController extends SCController{
 	/*
 	 * OAUTH2
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/")
-	public ModelAndView index_gameweb(HttpServletRequest request) throws SecurityException, ProfileServiceException {
+	@RequestMapping(method = RequestMethod.GET, value = "/protected")
+	public ModelAndView index_gameweb_protected(HttpServletRequest request) throws SecurityException, ProfileServiceException {
 		Map<String, Object> model = new HashMap<String, Object>();
 		BasicProfile user = null;
 		try {
@@ -288,10 +288,12 @@ public class PortalController extends SCController{
 			logger.error(String.format("Errore di conversione: %s", ex.getMessage()));
 			return new ModelAndView("redirect:/logout");
 		}
-		
-		//SubjectDn subj = new SubjectDn(utente.getSubjectdn());
-		//logger.error(String.format("Subjextdn : cn: %s; ou: %s: o: %s; c: %s", subj.getCn(), subj.getOu(),subj.getO(),subj.getC()));
-		
+		return new ModelAndView("index", model);
+	}
+    
+    @RequestMapping(method = RequestMethod.GET, value = "/")
+	public ModelAndView index_gameweb(HttpServletRequest request) throws SecurityException, ProfileServiceException {
+		Map<String, Object> model = new HashMap<String, Object>();
 		return new ModelAndView("index", model);
 	}
 
@@ -326,7 +328,7 @@ public class PortalController extends SCController{
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 				SecurityContextHolder.getContext());
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/protected");
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/login")
@@ -543,6 +545,7 @@ public class PortalController extends SCController{
 				}
 					
 				if(p.isSendMail()){
+					String unsubcribionLink = mainURL + "/out/rest/unsubscribeMail/" + p.getSocialId();
 					//ArrayList<State> states = null;
 					List<PointConcept> states = null;
 					ArrayList<Notification> notifications = null;
@@ -595,21 +598,21 @@ public class PortalController extends SCController{
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 								} else {
 									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 								} else {
 									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 								}
 							}
 						} catch (MessagingException e) {
@@ -731,6 +734,7 @@ public class PortalController extends SCController{
 			}
 			
 			if(p.isSendMail()){
+				String unsubcribionLink = mainURL + "/out/rest/unsubscribeMail/" + p.getSocialId();
 				//ArrayList<State> states = null;
 				List<PointConcept> states = null;
 				ArrayList<Notification> notifications = null;
@@ -783,21 +787,21 @@ public class PortalController extends SCController{
 							if(states != null  && states.size() > 0){
 								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 							} else {
 								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 							}
 						} else {
 							if(states != null  && states.size() > 0){
 								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 							} else {
 								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
 							}
 						}
 					} catch (MessagingException e) {
@@ -906,6 +910,12 @@ public class PortalController extends SCController{
 		File prGold = new File(path + "mail/img/pr/prGoldMedal.png");
 		File prManifattura = new File(path + "mail/img/pr/prPioneerManifattura.png");
 		File prStadio = new File(path + "mail/img/pr/prPioneerStadio.png");
+		File prRagazzi99 = new File(path + "mail/img/pr/prPioneerRagazzi99.png");
+		File prLidorno = new File(path + "mail/img/pr/prPioneerLidorno.png");
+		File prViaFersina = new File(path + "mail/img/pr/prPioneerViaFersina.png");
+		File prAreaZuffo = new File(path + "mail/img/pr/prPioneerAreaZuffo.png");
+		File prMonteBaldo = new File(path + "mail/img/pr/prPioneerMonteBaldo.png");
+		File prVillazzanoFS = new File(path + "mail/img/pr/prPioneerVillazzanoStazioneFS.png");
 		
 		allBadges.add(new BagesData(prKing.getName(), FileUtils.readFileToByteArray(prKing), "image/png", "king_week_pr", "Re della Settimana - Park&Ride"));
 		allBadges.add(new BagesData(pr10.getName(), FileUtils.readFileToByteArray(pr10), "image/png", "10_point_pr", "10 Punti Park&Ride"));
@@ -918,6 +928,12 @@ public class PortalController extends SCController{
 		allBadges.add(new BagesData(prGold.getName(), FileUtils.readFileToByteArray(prGold), "image/png", "gold_medal_pr", "Medaglia d'Oro - Park&Ride"));
 		allBadges.add(new BagesData(prManifattura.getName(), FileUtils.readFileToByteArray(prManifattura), "image/png", "Manifattura_parking", "Parcheggio Manifattura - Park&Ride"));
 		allBadges.add(new BagesData(prStadio.getName(), FileUtils.readFileToByteArray(prStadio), "image/png", "Stadio_parking", "Parcheggio Stadio - Park&Ride"));
+		allBadges.add(new BagesData(prRagazzi99.getName(), FileUtils.readFileToByteArray(prRagazzi99), "image/png", "Via Ragazzi del '99_parking", "Via ragazzi del 99 - Park&Ride"));
+		allBadges.add(new BagesData(prLidorno.getName(), FileUtils.readFileToByteArray(prLidorno), "image/png", "Via Lidorno_parking", "Via Lidorno - Park&Ride"));
+		allBadges.add(new BagesData(prViaFersina.getName(), FileUtils.readFileToByteArray(prViaFersina), "image/png", "Ghiaie via Fersina_parking", "Ghiaie via Fersina - Park&Ride"));
+		allBadges.add(new BagesData(prAreaZuffo.getName(), FileUtils.readFileToByteArray(prAreaZuffo), "image/png", "Ghiaie via Fersina_parking", "Ghiaie via Fersina - Park&Ride"));
+		allBadges.add(new BagesData(prMonteBaldo.getName(), FileUtils.readFileToByteArray(prMonteBaldo), "image/png", "Monte Baldo_parking", "Monte Baldo - Park&Ride"));
+		allBadges.add(new BagesData(prVillazzanoFS.getName(), FileUtils.readFileToByteArray(prVillazzanoFS), "image/png", "Via Asiago, Stazione FS Villazzano_parking", "Stazione FS Villazzano - Park&Ride"));
 		
 		// files for special badges
 		File specialEmotion = new File(path + "mail/img/special/emotion.png");

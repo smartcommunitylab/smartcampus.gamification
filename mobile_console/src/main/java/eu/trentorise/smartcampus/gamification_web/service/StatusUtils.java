@@ -491,6 +491,24 @@ public class StatusUtils {
 		if(b_name.compareTo("Stadio_parking") == 0){
 			return gamificationUrl + "/img/pr/prPioneerStadio.svg";
 		}
+		if(b_name.compareTo("Via Ragazzi del '99_parking") == 0){
+			return gamificationUrl + "/img/pr/prPioneerRagazzi99.svg";
+		}
+		if(b_name.compareTo("Via Lidorno_parking") == 0){
+			return gamificationUrl + "/img/pr/prPioneerLidorno.svg";
+		}
+		if(b_name.compareTo("Ghiaie via Fersina_parking") == 0){
+			return gamificationUrl + "/img/pr/prPioneerViaFersina.svg";
+		}
+		if(b_name.compareTo("Ex-Zuffo_parking") == 0){
+			return gamificationUrl + "/img/pr/prPioneerAreaZuffo.svg";
+		}
+		if(b_name.compareTo("Monte Baldo_parking") == 0){
+			return gamificationUrl + "/img/pr/prPioneerMonteBaldo.svg";
+		}
+		if(b_name.compareTo("Via Asiago, Stazione FS Villazzano_parking") == 0){
+			return gamificationUrl + "/img/pr/prPioneerVillazzanoStazioneFS.svg";
+		}
 		// TODO: change this solution to real parking badges url (for TN add all p&r badges)
 		if(b_name.contains("parking")){
 			return gamificationUrl + "/img/pr/p&rLeaves.svg";

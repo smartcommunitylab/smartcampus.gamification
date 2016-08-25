@@ -60,7 +60,7 @@ var conf_week_sponsor_data="<%=request.getAttribute("week_sponsor_data")%>";
 var conf_is_test="<%=request.getAttribute("isTest")%>";
 var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
 var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
-
+var conf_wsresult="<%=request.getAttribute("wsresult")%>";
 
 	<%-- Prevent the backspace key from navigating back. --%>
 	$(document).unbind('keydown').bind('keydown', function (event) {
@@ -110,7 +110,7 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
             	</a>
             </li> 
             
-            <li ng-if="!disableAllLinks" class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li>
+            <!-- <li ng-if="!disableAllLinks" class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li> -->
            <!--  <li ng-if="!disableAllLinks" class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
             <li ng-if="!disableAllLinks" class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li> -->
             <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
@@ -122,7 +122,7 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
           <ul class="nav navbar-nav navbar-right" >
 			<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
 			<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
-            <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li><!-- ng-click="logout()" -->
+            <!-- <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
           </ul>
         </div><!-- /.nav-collapse -->
         </div>
@@ -142,7 +142,7 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 			            		<img height="22" src="img/navMobile.svg">
 			            	</a>
 			            	<ul class="dropdown-menu" role="menu">
-			            		<li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li>
+			            		<!-- <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li> -->
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" ><strong>{{ 'left_menu-privacy' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" ><strong>{{ 'left_menu-prizes' | i18n }}</strong></a></li>
@@ -151,7 +151,7 @@ var conf_short_classification_size="<%=request.getAttribute("short_classificatio
 								<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li> -->
 								<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li> -->
 			          			<li class="divider"></li>
-			          			<li><a href="logout" ng-click="logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li>
+			          			<!-- <li><a href="logout" ng-click="logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li> -->
 			            	</ul>
 			            </li>
 			         </ul>

@@ -167,6 +167,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.is_test = (conf_is_test=="true")?true:false;
     $scope.citizenId = userId;
     $scope.user_token = token;
+    $scope.wsresult = (conf_wsresult == "true")?true:false;
     
     // Method used to retrieve the field value from the complete object string
     $scope.getFieldValue = function(fieldsObject){
@@ -365,6 +366,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
                   			
     $scope.isActiveEngLang = function(){
     	return engLanguage;
+    };
+    
+    $scope.goToApp = function(){
+    	window.location.href = "./enter";
     };
     
     // Home menu bar section

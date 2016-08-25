@@ -155,7 +155,7 @@ public class EmailService {
             final List<WeekPrizeData> prizes,
             final List<WeekWinnersData> winners,
             final List<MailImage> standardImages,
-            final String recipientEmail, final String greengame_url, final Locale locale)
+            final String recipientEmail, final String greengame_url, String unsubscribtionLink, final Locale locale)
             throws MessagingException {
         
     	logger.debug(String.format("Gamification Mail Prepare for %s - OK", recipientName));
@@ -230,6 +230,7 @@ public class EmailService {
         ctx.setVariable("n_winners", last_week_winners);
         ctx.setVariable("u_position", position);
         ctx.setVariable("greengame_url", greengame_url);
+        ctx.setVariable("unsubscribtionLink", unsubscribtionLink);
         ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNFoglie04", standardImages.get(1).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNGreenScore", standardImages.get(2).getImageName()); // so that we can reference it from HTML
@@ -296,7 +297,7 @@ public class EmailService {
             final List<WeekPrizeData> prizes,
             final List<WeekWinnersData> winners,
             final List<MailImage> standardImages,
-            final String recipientEmail, final String greengame_url, final Locale locale)
+            final String recipientEmail, final String greengame_url, String unsubscribtionLink, final Locale locale)
             throws MessagingException {
         
     	logger.debug(String.format("Gamification Mail Prepare for %s - OK", recipientName));
@@ -363,6 +364,7 @@ public class EmailService {
         ctx.setVariable("n_winners", last_week_winners);
         ctx.setVariable("u_position", position);
         ctx.setVariable("greengame_url", greengame_url);
+        ctx.setVariable("unsubscribtionLink", unsubscribtionLink);
         ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNFoglie04", standardImages.get(1).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNGreenScore", standardImages.get(2).getImageName()); // so that we can reference it from HTML

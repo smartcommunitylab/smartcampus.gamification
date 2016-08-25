@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
 import eu.trentorise.smartcampus.gamification_web.models.PlayerClassification;
@@ -358,6 +359,26 @@ public class WsProxyController {
 			playerRepositoryDao.save(p);
 		}
 		return p;
+	}
+	
+	// Method used to unsubscribe user to mailing list
+	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/unsubscribeMail/{socialId}")
+	public 
+	ModelAndView unsubscribeMail(HttpServletRequest request, @PathVariable String socialId){
+		Map<String, Object> model = new HashMap<String, Object>();
+		logger.debug("WS-GET. Method unsubscribeMail. Passed data : " + socialId);
+		Player p = null;
+		try {
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			p = playerRepositoryDao.findBySocialIdAndType(socialId, type);
+			p.setSendMail(false);
+			playerRepositoryDao.save(p);
+		} catch (Exception ex){
+			logger.error("Error in mailing unsubscribtion " + ex.getMessage());
+		}
+		boolean res = (p != null) ? true : false;
+		model.put("wsresult", res);
+		return new ModelAndView("unsubscribe", model);
 	}
 	
 	// Method used to check if a user is registered or not to the system (by mobile app)

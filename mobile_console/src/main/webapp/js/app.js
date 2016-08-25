@@ -23,7 +23,7 @@ cp.config(['$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider) {
   	$routeProvider
   		.when('/', {
-    		templateUrl: 'partials/profile.html',
+    		templateUrl: 'partials/game_rules.html', //'partials/profile.html',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})

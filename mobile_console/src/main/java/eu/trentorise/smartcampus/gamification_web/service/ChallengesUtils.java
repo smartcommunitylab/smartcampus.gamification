@@ -574,6 +574,13 @@ public class ChallengesUtils {
 		    				int initialBadges = challData.getInitialBadgeNum();
 		    				String badge_coll_name = challData.getBadgeCollectionName();
 		    				int count = getEarnedBadgesFromList(bcc_list, badge_coll_name, initialBadges);
+		    				if(!active){	// NB: fix to avoid situation with challenge not win and count > target
+		    					if(ch_success){
+		    						count = target;
+		    					} else {
+		    						count = target - 1;
+		    					}
+		    				}
 		    				row_status = round(count, 2);
 		    				status = count * 100 / target;
 		    				ch_desc = correctDesc(CHAL_DESC_6, target, ch_bonus, ch_point_type, "", badge_coll_name);

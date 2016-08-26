@@ -422,7 +422,7 @@ public class PortalController extends SCController{
 	
 	// Here I insert a task that invoke the WS notification
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	//@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 5 PM
+	//@Scheduled(cron="0 0 15 * * FRI") 		// Repeat every Friday at 3 PM
 	public synchronized void checkNotification() throws IOException {
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
@@ -986,6 +986,24 @@ public class PortalController extends SCController{
 		File bikeShareStazione = new File(path + "mail/img/bike_sharing/bikeSharingPioneerStazione.png");
 		File bikeShareZonaIndustriale = new File(path + "mail/img/bike_sharing/bikeSharingPioneerZonaIndustriale.png");
 		File bikeShareMart = new File(path + "mail/img/bike_sharing/bikeSharingPioneerMART.png");
+		// Real TN bike station url
+		/*File bikeShareFFSSOspedale = new File(path + "mail/img/bike_sharing/bikeSharingPioneerFFSSOspedale.png");
+		File bikeSharePiazzaVenezia = new File(path + "mail/img/bike_sharing/bikeSharingPioneerPiazzaVenezia.png");
+		File bikeSharePiscina = new File(path + "mail/img/bike_sharing/bikeSharingPioneerPiscina.png");
+		File bikeSharePiazzaMostra = new File(path + "mail/img/bike_sharing/bikeSharingPioneerPiazzaMostra.png");
+		File bikeShareCentroSantaChiara = new File(path + "mail/img/bike_sharing/bikeSharingPioneerCentroSantaChiara.png");
+		File bikeSharePiazzaCenta = new File(path + "mail/img/bike_sharing/bikeSharingPioneerPiazzaCenta.png");
+		File bikeShareBiblioteca = new File(path + "mail/img/bike_sharing/bikeSharingPioneerBiblioteca.png");
+		File bikeShareStazioneAutocorriere = new File(path + "mail/img/bike_sharing/bikeSharingPioneerStazioneAutocorriere.png");
+		File bikeShareUniversita = new File(path + "mail/img/bike_sharing/bikeSharingPioneerUniversita.png");
+		File bikeShareBezzi = new File(path + "mail/img/bike_sharing/bikeSharingPioneerBezzi.png");
+		File bikeShareMuse = new File(path + "mail/img/bike_sharing/bikeSharingPioneerMuse.png");
+		File bikeShareAziendaSanitaria = new File(path + "mail/img/bike_sharing/bikeSharingPioneerAziendaSanitaria.png");
+		File bikeShareTopCenter = new File(path + "mail/img/bike_sharing/bikeSharingPioneerTopCenter.png");
+		File bikeShareBrenCenter = new File(path + "mail/img/bike_sharing/bikeSharingPioneerBrenCenter.png");
+		File bikeShareLidorno = new File(path + "mail/img/bike_sharing/bikeSharingPioneerLidorno.png");
+		File bikeShareGardolo = new File(path + "mail/img/bike_sharing/bikeSharingPioneerGardolo.png");
+		File bikeShareAeroporto = new File(path + "mail/img/bike_sharing/bikeSharingPioneerAeroporto.png");*/
 				
 		allBadges.add(new BagesData(bikeShareBrione.getName(), FileUtils.readFileToByteArray(bikeShareBrione), "image/png", "Brione - Rovereto_BSstation", "Parcheggio Bike Sharing Brione"));
 		allBadges.add(new BagesData(bikeShareLizzana.getName(), FileUtils.readFileToByteArray(bikeShareLizzana), "image/png", "Lizzana - Rovereto_BSstation", "Parcheggio Bike Sharing Lizzana"));
@@ -1001,6 +1019,24 @@ public class PortalController extends SCController{
 		allBadges.add(new BagesData(bikeShareStazione.getName(), FileUtils.readFileToByteArray(bikeShareStazione), "image/png", "Stazione FF.SS. - Rovereto_BSstation", "Parcheggio Bike Sharing Stazione FF.SS."));
 		allBadges.add(new BagesData(bikeShareZonaIndustriale.getName(), FileUtils.readFileToByteArray(bikeShareZonaIndustriale), "image/png", "Zona Industriale - Rovereto_BSstation", "Parcheggio Bike Sharing Zona Industriale"));
 		allBadges.add(new BagesData(bikeShareMart.getName(), FileUtils.readFileToByteArray(bikeShareMart), "image/png", "Mart - Rovereto_BSstation", "Parcheggio Bike Sharing MART"));
+		//TN bikeSharing stations
+		/*allBadges.add(new BagesData(bikeShareFFSSOspedale.getName(), FileUtils.readFileToByteArray(bikeShareFFSSOspedale), "image/png", "Stazione FFSS - Ospedale_BSstation", "Parcheggio Bike Sharing Stazione FF.SS. Ospedale"));
+		allBadges.add(new BagesData(bikeSharePiazzaVenezia.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaVenezia), "image/png", "Piazza Venezia_BSstation", "Parcheggio Bike Sharing Piazza Venezia"));
+		allBadges.add(new BagesData(bikeSharePiscina.getName(), FileUtils.readFileToByteArray(bikeSharePiscina), "image/png", "Piscina_BSstation", "Parcheggio Bike Sharing Piscina"));
+		allBadges.add(new BagesData(bikeSharePiazzaMostra.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaMostra), "image/png", "Piazza della Mostra_BSstation", "Parcheggio Bike Sharing Piazza Mostra"));
+		allBadges.add(new BagesData(bikeShareCentroSantaChiara.getName(), FileUtils.readFileToByteArray(bikeShareCentroSantaChiara), "image/png", "Centro Santa Chiara_BSstation", "Parcheggio Bike Sharing Centro S.Chiara"));
+		allBadges.add(new BagesData(bikeSharePiazzaCenta.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaCenta), "image/png", "Piazza di Centa_BSstation", "Parcheggio Bike Sharing Piazza di Centa"));
+		allBadges.add(new BagesData(bikeShareBiblioteca.getName(), FileUtils.readFileToByteArray(bikeShareBiblioteca), "image/png", "Biblioteca_BSstation", "Parcheggio Bike Sharing Biblioteca"));
+		allBadges.add(new BagesData(bikeShareStazioneAutocorriere.getName(), FileUtils.readFileToByteArray(bikeShareStazioneAutocorriere), "image/png", "Stazione Autocorriere_BSstation", "Parcheggio Bike Sharing Stazione Autocorriere"));
+		allBadges.add(new BagesData(bikeShareUniversita.getName(), FileUtils.readFileToByteArray(bikeShareUniversita), "image/png", "Università_BSstation", "Parcheggio Bike Sharing Universita'"));
+		allBadges.add(new BagesData(bikeShareBezzi.getName(), FileUtils.readFileToByteArray(bikeShareBezzi), "image/png", "Bezzi_BSstation", "Parcheggio Bike Sharing Bezzi"));
+		allBadges.add(new BagesData(bikeShareMuse.getName(), FileUtils.readFileToByteArray(bikeShareMuse), "image/png", "Muse_BSstation", "Parcheggio Bike Sharing Muse"));
+		allBadges.add(new BagesData(bikeShareAziendaSanitaria.getName(), FileUtils.readFileToByteArray(bikeShareAziendaSanitaria), "image/png", "Azienda Sanitaria_BSstation", "Parcheggio Bike Sharing Azienda Sanitaria"));
+		allBadges.add(new BagesData(bikeShareTopCenter.getName(), FileUtils.readFileToByteArray(bikeShareTopCenter), "image/png", "Top Center_BSstation", "Parcheggio Bike Sharing Top Center"));
+		allBadges.add(new BagesData(bikeShareBrenCenter.getName(), FileUtils.readFileToByteArray(bikeShareBrenCenter), "image/png", "Bren Center_BSstation", "Parcheggio Bike Sharing Bren Center"));
+		allBadges.add(new BagesData(bikeShareLidorno.getName(), FileUtils.readFileToByteArray(bikeShareLidorno), "image/png", "Lidorno_BSstation", "Parcheggio Bike Sharing Lidorno"));
+		allBadges.add(new BagesData(bikeShareGardolo.getName(), FileUtils.readFileToByteArray(bikeShareGardolo), "image/png", "Gardolo_BSstation", "Parcheggio Bike Sharing Gardolo"));
+		allBadges.add(new BagesData(bikeShareAeroporto.getName(), FileUtils.readFileToByteArray(bikeShareAeroporto), "image/png", "Aeroporto_BSstation", "Parcheggio Bike Sharing Aeroporto"));*/
 		
 		// files for recommendation
 		File recommendations3 = new File(path + "mail/img/recommendation/inviteFriends3.png");

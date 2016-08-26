@@ -111,3 +111,7 @@ descriptions:
     type: SURVEY
     mobilitymode: none
     description: Per vincere la sfida compila il questionario di fine gioco che visualizzi accedendo al tuo sito personalizzato durante la validita' della sfida.
+  - id: 29
+    type: TRIPNUMBER
+    mobilitymode: cable
+    description: Per vincere la sfida vale il numero di itinerari che utilizzano la funivia pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.

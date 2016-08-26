@@ -65,6 +65,7 @@ public class ChallengesUtils {
 	private final String SERVER_CHAL_ALLOWED_MODE_P = "Promoted";
 	private final String SERVER_CHAL_ALLOWED_MODE_R = "Recommendations";
 	private final String SERVER_CHAL_ALLOWED_MODE_PE = "green leaves";
+	private final String SERVER_CHAL_ALLOWED_MODE_CAB = "Cable";
 	private final String CHAL_ALLOWED_MODE_W = "walk";
 	private final String CHAL_ALLOWED_MODE_BK = "bike";
 	private final String CHAL_ALLOWED_MODE_BKS = "bikesharing";
@@ -74,6 +75,7 @@ public class ChallengesUtils {
 	private final String CHAL_ALLOWED_MODE_C_NEG = "no car";
 	private final String CHAL_ALLOWED_MODE_Z = "zeroimpact";
 	private final String CHAL_ALLOWED_MODE_P = "promoted";
+	private final String CHAL_ALLOWED_MODE_CAB = "cable";
 	private final String CHAL_ALLOWED_MODE_W_DIS = "walkDistance";
 	private final String CHAL_ALLOWED_MODE_BK_DIS = "bikeDistance";
 	private final String CHAL_ALLOWED_MODE_BKS_DIS = "bikesharingDistance";
@@ -166,6 +168,8 @@ public class ChallengesUtils {
 				correctDesc = challDescList.get(7).getDescription();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
 				correctDesc = challDescList.get(26).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_CAB) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_CAB + "Distance") == 0){
+				correctDesc = challDescList.get(28).getDescription();
 			}
 		} else if(type.compareTo(CHAL_TYPE_4) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_Z) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_Z + "Distance") == 0){
@@ -671,10 +675,10 @@ public class ChallengesUtils {
 		if(cName.contains(SERVER_CHAL_ALLOWED_MODE_P)){
 			corrMobility = CHAL_ALLOWED_MODE_P;
 		}
-		// NB consider to add cable
-		//if(cName.contains(SERVER_CHAL_ALLOWED_MODE_P)){
-		//	corrMobility = CHAL_ALLOWED_MODE_P;
-		//}
+		// NB: new part for cable
+		if(cName.contains(SERVER_CHAL_ALLOWED_MODE_CAB)){
+			corrMobility = CHAL_ALLOWED_MODE_CAB;
+		}
 		return corrMobility;
 	}
 	
@@ -799,6 +803,9 @@ public class ChallengesUtils {
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_P) == 0){
     		corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_CAB) == 0){
+    		corr_mode = (type == 0) ? "in funivia" : "la funivia";	// New part for cable
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_W_DIS) == 0){
     		corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";

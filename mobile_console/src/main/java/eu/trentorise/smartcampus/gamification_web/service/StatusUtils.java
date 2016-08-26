@@ -491,6 +491,7 @@ public class StatusUtils {
 		if(b_name.compareTo("Stadio_parking") == 0){
 			return gamificationUrl + "/img/pr/prPioneerStadio.svg";
 		}
+		// Real parking TN badges url
 		if(b_name.compareTo("Via Ragazzi del '99_parking") == 0){
 			return gamificationUrl + "/img/pr/prPioneerRagazzi99.svg";
 		}
@@ -509,7 +510,6 @@ public class StatusUtils {
 		if(b_name.compareTo("Via Asiago, Stazione FS Villazzano_parking") == 0){
 			return gamificationUrl + "/img/pr/prPioneerVillazzanoStazioneFS.svg";
 		}
-		// TODO: change this solution to real parking badges url (for TN add all p&r badges)
 		if(b_name.contains("parking")){
 			return gamificationUrl + "/img/pr/p&rLeaves.svg";
 		}
@@ -582,11 +582,61 @@ public class StatusUtils {
 		if(b_name.compareTo("Mart - Rovereto_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerMART.svg";
 		}
-		// TODO: change this solution to real bike station url (for TN add all bike station badges)
+		// Real TN bike station url
+		if(b_name.compareTo("Stazione FFSS - Ospedale_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerFFSSOspedale.svg";
+		}
+		if(b_name.compareTo("Piazza Venezia_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiazzaVenezia.svg";
+		}
+		if(b_name.compareTo("Piscina_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiscina.svg";
+		}
+		if(b_name.compareTo("Piazza della Mostra_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiazzaMostra.svg";
+		}
+		if(b_name.compareTo("Centro Santa Chiara_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerCentroSantaChiara.svg";
+		}
+		if(b_name.compareTo("Piazza di Centa_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiazzaCenta.svg";
+		}
+		if(b_name.compareTo("Biblioteca_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerBiblioteca.svg";
+		}
+		if(b_name.compareTo("Stazione Autocorriere_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerStazioneAutocorriere.svg";
+		}
+		if(b_name.compareTo("Università_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerUniversita.svg";
+		}
+		if(b_name.compareTo("Bezzi_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerBezzi.svg";
+		}
+		if(b_name.compareTo("Muse_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerMuse.svg";
+		}
+		if(b_name.compareTo("Azienda Sanitaria_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerAziendaSanitaria.svg";
+		}
+		if(b_name.compareTo("Top Center_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerTopCenter.svg";
+		}
+		if(b_name.compareTo("Bren Center_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerBrenCenter.svg";
+		}
+		if(b_name.compareTo("Lidorno_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerLidorno.svg";
+		}
+		if(b_name.compareTo("Gardolo_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerGardolo.svg";
+		}
+		if(b_name.compareTo("Aeroporto_BSstation") == 0){
+			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerAeroporto.svg";
+		}
 		if(b_name.contains("BSstation")){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneer.svg";
 		}
-		
 		// badges for recommendation
 		if(b_name.compareTo("3_recommendations") == 0){
 			return gamificationUrl + "/img/recommendation/inviteFriends3.svg";

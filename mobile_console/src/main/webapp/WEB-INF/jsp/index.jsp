@@ -116,7 +116,7 @@ var conf_wsresult="<%=request.getAttribute("wsresult")%>";
             <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
             <li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" >{{ 'left_menu-privacy' | i18n }}</a></li>
             <li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" >{{ 'left_menu-prizes' | i18n }}</a></li>
-            <li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" >{{ 'left_menu-credits' | i18n }}</a></li>
+            <!-- <li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" >{{ 'left_menu-credits' | i18n }}</a></li> -->
             
           </ul>
           <ul class="nav navbar-nav navbar-right" >
@@ -146,7 +146,7 @@ var conf_wsresult="<%=request.getAttribute("wsresult")%>";
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" ><strong>{{ 'left_menu-privacy' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" ><strong>{{ 'left_menu-prizes' | i18n }}</strong></a></li>
-								<li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" ><strong>{{ 'left_menu-credits' | i18n }}</strong></a></li>
+								<!-- <li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" ><strong>{{ 'left_menu-credits' | i18n }}</strong></a></li> -->
 								<!-- <li class="divider"></li> -->
 								<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li> -->
 								<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li> -->

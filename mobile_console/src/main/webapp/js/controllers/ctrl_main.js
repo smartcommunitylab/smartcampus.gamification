@@ -284,6 +284,99 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	$scope.showBannerPAT = $scope.checkIfCurrentSponsor('PAT');
     };
     
+    $scope.getWeekNumFromTimestamp = function(timeStamp){
+    	var weekNum = 0;
+    	if(timeStamp >= 1473458400000){	//10 set 16 00:00:00
+    		weekNum = 1;
+    	}
+    	if(timeStamp >= 1474063200000){	//17 set 16 00:00:00
+    		weekNum = 2;
+    	}
+    	if(timeStamp >= 1474668000000){	//24 set 16 00:00:00
+    		weekNum = 3;
+    	}
+    	if(timeStamp >= 1475272800000){	//1 ott 16 00:00:00
+    		weekNum = 4;
+    	}
+    	if(timeStamp >= 1475877600000){	//8 ott 16 00:00:00
+    		weekNum = 5;
+    	}
+    	if(timeStamp >= 1476482400000){	//15 ott 16 00:00:00
+    		weekNum = 6;
+    	}
+    	if(timeStamp >= 1477087200000){	//22 ott 16 00:00:00
+    		weekNum = 7;
+    	}
+    	if(timeStamp >= 1477692000000){	//29 ott 16 00:00:00
+    		weekNum = 8;
+    	}
+    	if(timeStamp >= 1478300400000){	//5 now 16 00:00:00
+    		weekNum = 9;
+    	}
+    	if(timeStamp >= 1478905200000){	//12 now 16 00:00:00
+    		weekNum = 10;
+    	}
+    	if(timeStamp >= 1479510000000){	//19 now 16 00:00:00
+    		weekNum = 11;
+    	}
+    	if(timeStamp >= 1480114800000){	//26 now 16 00:00:00
+    		weekNum = 12;
+    	}
+    	
+    	return weekNum;
+    };
+    
+    $scope.checkWeekPrizeList = function(){
+    	var now = new Date().getTime();
+    	var weekNum = $scope.getWeekNumFromTimestamp(now);
+    	$scope.corrPrizesList = [];
+    	var prizesList = [
+    	    { "week": 1, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 1, "prize":"n.1 biglietto ingresso MUSE + n.1 biglietto visita guidata", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 2, "prize":"n.1 abbonamento Trentino Volley", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 2, "prize":"n.1 abbonamento Trentino Rosa", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 2, "prize":"n.2 biglietto ingresso MUSE + n.2 biglietto visita guidata", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 2, "prize":"n.2 biglietto ingresso MUSE + n.2 biglietto visita guidata", "classification":"terzo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 2, "prize":"n.1 pacco ACI", "classification":"quarto estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 3, "prize":"n.1 abbonamento Trentino Volley", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 3, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 3, "prize":"n.1 tessera GRAVITY ingresso MUSE", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 4, "prize":"n.1 abbonamento Trentino Rosa", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 4, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 4, "prize":"n.2 biglietti spettacolo teatrale", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 5, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 5, "prize":"n.2 biglietti  Trentino Volley", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 5, "prize":"n.2 biglietti spettacolo teatrale", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 6, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 6, "prize":"n.2 biglietti Aquila Basket", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 6, "prize":"n.2 biglietti spettacolo teatrale", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 7, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 7, "prize":"n.2 biglietti Aquila Basket", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 7, "prize":"n.2 biglietti spettacolo teatrale", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 8, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 8, "prize":"n.2 biglietti Aquila Basket", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 8, "prize":"n.2 biglietti spettacolo teatrale", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 9, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 9, "prize":"n.2 biglietti spettacolo teatrale", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 9, "prize":"n.1 sciarpa Aquila Basket", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 10, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 10, "prize":"n.2 biglietti spettacolo teatrale", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 10, "prize":"n.1 abbonamento notturno per sciare", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 11, "prize":"n.1 tessera ICE ingresso MUSE", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 11, "prize":"n.2 biglietti spettacolo teatrale", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 11, "prize":"n.2 biglietti Trentino Rosa", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 12, "prize":"n.2 biglietti spettacolo teatrale", "classification":"primo posto classifica settimanale green leaves" },
+    	    { "week": 12, "prize":"n.1 abbonamento notturno per sciare", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
+    	    { "week": 12, "prize":"n.1 sciarpa Aquila Basket", "classification":"secondo estratto nella Top 10 settimanale della classifica green leaves" }
+    	];
+    	
+    	for(var i = 0; i < prizesList.length; i++){
+    		if(prizesList[i].week == weekNum){
+    			$scope.corrPrizesList.push(prizesList[i]);
+    		}
+    	}
+    };
+    
         
     // Configure point type to show in pages
     $scope.point_types = conf_point_types;

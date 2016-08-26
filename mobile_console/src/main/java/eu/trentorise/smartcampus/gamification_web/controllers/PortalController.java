@@ -422,7 +422,7 @@ public class PortalController extends SCController{
 	
 	// Here I insert a task that invoke the WS notification
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	@Scheduled(cron="0 40 15 * * FRI") 		// Repeat every Friday at 3:30 PM
+	@Scheduled(cron="0 30 15 * * FRI") 		// Repeat every Friday at 3:30 PM
 	public synchronized void checkNotification() throws IOException {
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
@@ -442,7 +442,7 @@ public class PortalController extends SCController{
 		File greenScore = new File(path + "mail/img/green/greenLeavesbase.png");
 		File healthScore = new File(path + "mail/img/health/healthLeavesBase.png");
 		File prScore = new File(path + "mail/img/pr/prLeaves.png");
-		File footer = new File(path + "mail/img/footer.png");
+		File footer = new File(path + "mail/img/templateMail.png");
 		File foglie03 = new File(path + "mail/img/foglie03.png");
 		File foglie04 = new File(path + "mail/img/foglie04.png");
 		standardImages.add(new MailImage(foglie03.getName(), FileUtils.readFileToByteArray(foglie03), "image/png"));
@@ -680,7 +680,7 @@ public class PortalController extends SCController{
 		File greenScore = new File(path + "mail/img/green/greenLeavesbase.png");
 		File healthScore = new File(path + "mail/img/health/healthLeavesBase.png");
 		File prScore = new File(path + "mail/img/pr/prLeaves.png");
-		File footer = new File(path + "mail/img/footer.png");
+		File footer = new File(path + "mail/img/templateMail.png");
 		File foglie03 = new File(path + "mail/img/foglie03.png");
 		File foglie04 = new File(path + "mail/img/foglie04.png");
 		standardImages.add(new MailImage(foglie03.getName(), FileUtils.readFileToByteArray(foglie03), "image/png"));

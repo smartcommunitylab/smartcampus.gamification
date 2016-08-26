@@ -3,6 +3,7 @@ package eu.trentorise.game.api.rest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -11,16 +12,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.core.ResourceNotFoundException;
+import eu.trentorise.game.managers.ClassificationFactory;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
@@ -34,6 +39,9 @@ public class ClassificationController {
 
 	@Autowired
 	private TaskService taskSrv;
+
+	@Autowired
+	private PlayerService playerSrv;
 
 	@Autowired
 	private Converter converter;
@@ -370,6 +378,117 @@ public class ClassificationController {
 			}
 		} else {
 			throw new IllegalArgumentException("game not exist");
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/incclassification/{classificationId}")
+	public ClassificationBoard getIncrementalClassification(
+			@PathVariable String gameId, @PathVariable String classificationId,
+			@RequestParam(defaultValue = "-1") long timestamp) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			classificationId = URLDecoder.decode(classificationId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(
+					"classificationId is not UTF-8 encoded");
+		}
+
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		ClassificationBoard result = null;
+		if (g != null) {
+			if (g.getTasks() != null) {
+				for (GameTask gt : g.getTasks()) {
+					if (gt instanceof IncrementalClassificationTask
+							&& gt.getName().equals(classificationId)) {
+						IncrementalClassificationTask classificationDefinition = (IncrementalClassificationTask) gt;
+						if (timestamp > 0) {
+							result = ClassificationFactory
+									.createIncrementalClassification(
+											playerSrv.loadStates(gameId),
+											classificationDefinition
+													.getPointConceptName(),
+											classificationDefinition
+													.getPeriodName(),
+											new Date(timestamp))
+									.getClassificationBoard();
+						} else {
+							result = ClassificationFactory
+									.createIncrementalClassification(
+											playerSrv.loadStates(gameId),
+											classificationDefinition
+													.getPointConceptName(),
+											classificationDefinition
+													.getPeriodName())
+									.getClassificationBoard();
+						}
+
+					}
+				}
+			}
+		} else {
+			throw new IllegalArgumentException(String.format(
+					"game %s not exist", gameId));
+		}
+
+		if (result == null) {
+			throw new IllegalArgumentException(String.format(
+					"classification %s not exist in game %s", classificationId,
+					gameId));
+		} else {
+			return result;
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/classification/{classificationId}")
+	public ClassificationBoard getGeneralClassification(
+			@PathVariable String gameId, @PathVariable String classificationId) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			classificationId = URLDecoder.decode(classificationId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(
+					"classificationId is not UTF-8 encoded");
+		}
+
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		ClassificationBoard result = null;
+		if (g != null) {
+			if (g.getTasks() != null) {
+				for (GameTask gt : g.getTasks()) {
+					if (gt instanceof GeneralClassificationTask
+							&& gt.getName().equals(classificationId)) {
+						GeneralClassificationTask classificationDefinition = (GeneralClassificationTask) gt;
+
+						result = ClassificationFactory
+								.createGeneralClassification(
+										playerSrv.loadStates(gameId),
+										classificationDefinition.getItemType())
+								.getClassificationBoard();
+
+					}
+				}
+			}
+		} else {
+			throw new IllegalArgumentException(String.format(
+					"game %s not exist", gameId));
+		}
+
+		if (result == null) {
+			throw new IllegalArgumentException(String.format(
+					"classification %s not exist in game %s", classificationId,
+					gameId));
+		} else {
+			return result;
 		}
 	}
 }

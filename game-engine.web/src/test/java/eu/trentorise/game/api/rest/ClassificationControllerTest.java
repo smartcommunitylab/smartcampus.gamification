@@ -1,0 +1,212 @@
+package eu.trentorise.game.api.rest;
+
+import java.util.HashSet;
+
+import javax.annotation.PostConstruct;
+
+import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import eu.trentorise.game.config.AppConfig;
+import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.WebConfig;
+import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.repo.GamePersistence;
+import eu.trentorise.game.repo.NotificationPersistence;
+import eu.trentorise.game.repo.StatePersistence;
+import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.task.GeneralClassificationTask;
+import eu.trentorise.game.task.IncrementalClassificationTask;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
+		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
+@WebAppConfiguration
+public class ClassificationControllerTest {
+
+	@Autowired
+	private GameService gameSrv;
+
+	@Autowired
+	private PlayerService playerSrv;
+
+	@Autowired
+	private MongoTemplate mongo;
+
+	@Autowired
+	private WebApplicationContext wac;
+
+	private MockMvc mocker;
+
+	private ObjectMapper mapper;
+
+	private static final String GAME = "gameTest";
+	private static final String ACTION = "save_itinerary";
+	private static final String GEN_CLASSIFICATION_NAME = "nuova classifica settimanale";
+	private static final String INC_CLASSIFICATION_NAME = "nuova classifica settimanale incremEntalE";
+
+	@PostConstruct
+	public void init() {
+		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+		mapper = new ObjectMapper();
+	}
+
+	@Before
+	public void cleanDB() {
+		// clean mongo
+		mongo.dropCollection(StatePersistence.class);
+		mongo.dropCollection(GamePersistence.class);
+		mongo.dropCollection(NotificationPersistence.class);
+	}
+
+	private Game defineGame() {
+		Game game = new Game();
+
+		game.setId(GAME);
+		game.setName(GAME);
+
+		game.setActions(new HashSet<String>());
+		game.getActions().add(ACTION);
+		game.getActions().add("classification");
+
+		game.setConcepts(new HashSet<GameConcept>());
+
+		PointConcept green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+				24 * 60 * 60000);
+
+		game.setTasks(new HashSet<GameTask>());
+
+		GeneralClassificationTask genClass = new GeneralClassificationTask();
+		genClass.setName(GEN_CLASSIFICATION_NAME);
+		genClass.setItemType("green leaves");
+		genClass.setItemsToNotificate(3);
+		game.getTasks().add(genClass);
+
+		IncrementalClassificationTask incClass = new IncrementalClassificationTask();
+		incClass.setName(INC_CLASSIFICATION_NAME);
+		incClass.setPointConceptName("green leaves");
+		incClass.setPeriodName("period1");
+		incClass.setItemsToNotificate(3);
+		game.getTasks().add(incClass);
+
+		return game;
+	}
+
+	@Test
+	public void incrementalClassification() {
+		Game game = defineGame();
+		gameSrv.saveGameDefinition(game);
+
+		PlayerState state = new PlayerState(GAME, "player1");
+		PointConcept green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+				24 * 60 * 60000);
+		green.setScore(10d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player2");
+		green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+				24 * 60 * 60000);
+		green.setScore(12d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player3");
+		green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+				24 * 60 * 60000);
+		green.setScore(4d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders.get("/data/game/"
+					+ GAME + "/incclassification/" + INC_CLASSIFICATION_NAME);
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void generalClassification() {
+		Game game = defineGame();
+		gameSrv.saveGameDefinition(game);
+
+		PlayerState state = new PlayerState(GAME, "player1");
+		PointConcept green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+				24 * 60 * 60000);
+		green.setScore(10d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player2");
+		green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+				24 * 60 * 60000);
+		green.setScore(12d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player3");
+		green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+				24 * 60 * 60000);
+		green.setScore(4d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders.get("/data/game/"
+					+ GAME + "/classification/" + GEN_CLASSIFICATION_NAME);
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+	}
+}
+
+/**
+ * Without @EnablaWebMvc MockMvc not work correctly to simulate controller
+ * Cannot add annotation to WebConfig to conflict with WebMvcConfigurerAdapter
+ * extension
+ * 
+ * @author mirko perillo
+ * 
+ */
+@EnableWebMvc
+class TestMVCConfiguration extends WebConfig {
+
+}

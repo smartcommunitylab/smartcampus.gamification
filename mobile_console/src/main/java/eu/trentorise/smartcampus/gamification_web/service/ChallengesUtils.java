@@ -629,7 +629,9 @@ public class ChallengesUtils {
 			    			}
 		    			} else {
 				    		if(now < ch_endTime){	// if challenge is not ended
-				    			challenges.add(tmp_chall);
+				    			if(now >= ch_startTime){
+				    				challenges.add(tmp_chall);
+				    			}
 				    		} else if(now >= ch_endTime){	//CHAL_TS_OFFSET
 				    			oldChallenges.add(tmp_chall);	// last week challenges
 				    		}

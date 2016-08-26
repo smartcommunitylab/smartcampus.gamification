@@ -129,15 +129,16 @@ public class ClassificationFactoryTest {
 		// incremental current period
 		List<ClassificationPosition> c1 = ClassificationFactory
 				.createIncrementalClassification(getStates1(), "red", "period1")
-				.getClassification();
+				.getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Patrick Mulligan", c1.get(0).getPlayerId());
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
 		Assert.assertEquals("Cletus Casady", c1.get(2).getPlayerId());
 		Assert.assertEquals("Tanis Nieves", c1.get(3).getPlayerId());
 
-		c1 = ClassificationFactory.createIncrementalClassification(
-				getStates1(), "yellow", "period1").getClassification();
+		c1 = ClassificationFactory
+				.createIncrementalClassification(getStates1(), "yellow",
+						"period1").getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Cletus Casady", c1.get(0).getPlayerId());
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
@@ -145,10 +146,13 @@ public class ClassificationFactoryTest {
 		Assert.assertEquals("Patrick Mulligan", c1.get(3).getPlayerId());
 
 		// incremental given a date (today-1)
-		c1 = ClassificationFactory.createIncrementalClassification(
-				getStates1(), "red", "period1",
-				new DateTime().withTimeAtStartOfDay().minusDays(1).toDate())
-				.getClassification();
+		c1 = ClassificationFactory
+				.createIncrementalClassification(
+						getStates1(),
+						"red",
+						"period1",
+						new DateTime().withTimeAtStartOfDay().minusDays(1)
+								.toDate()).getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Tanis Nieves", c1.get(0).getPlayerId());
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
@@ -156,22 +160,24 @@ public class ClassificationFactoryTest {
 		Assert.assertEquals("Patrick Mulligan", c1.get(3).getPlayerId());
 
 		// incremental yellow given end instance date
-		c1 = ClassificationFactory.createIncrementalClassification(
-				getStates1(), "yellow", "period1",
-				startPeriod.plusDays(2).toDate()).getClassification();
+		c1 = ClassificationFactory
+				.createIncrementalClassification(getStates1(), "yellow",
+						"period1", startPeriod.plusDays(2).toDate())
+				.getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Cletus Casady", c1.get(0).getPlayerId());
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
 		Assert.assertEquals("Tanis Nieves", c1.get(2).getPlayerId());
 		Assert.assertEquals("Patrick Mulligan", c1.get(3).getPlayerId());
 
-		c1 = ClassificationFactory.createIncrementalClassification(
-				getStates1(),
-				"yellow",
-				"period1",
-				new DateTime().withDate(startPeriod.plusDays(2))
-						.withTimeAtStartOfDay().minusMinutes(1).toDate())
-				.getClassification();
+		c1 = ClassificationFactory
+				.createIncrementalClassification(
+						getStates1(),
+						"yellow",
+						"period1",
+						new DateTime().withDate(startPeriod.plusDays(2))
+								.withTimeAtStartOfDay().minusMinutes(1)
+								.toDate()).getClassificationBoard().getBoard();
 
 		Assert.assertEquals(Double.valueOf(0),
 				Double.valueOf(c1.get(0).getScore()));
@@ -192,7 +198,7 @@ public class ClassificationFactoryTest {
 						"blue",
 						"period1",
 						new DateTime().withTimeAtStartOfDay().minusDays(1)
-								.toDate()).getClassification();
+								.toDate()).getClassificationBoard().getBoard();
 
 		Assert.assertEquals(Double.valueOf(0),
 				Double.valueOf(c1.get(0).getScore()));
@@ -212,7 +218,7 @@ public class ClassificationFactoryTest {
 						"yellow",
 						"period11",
 						new DateTime().withTimeAtStartOfDay().minusDays(1)
-								.toDate()).getClassification();
+								.toDate()).getClassificationBoard().getBoard();
 
 		Assert.assertEquals(Double.valueOf(0),
 				Double.valueOf(c1.get(0).getScore()));
@@ -229,7 +235,7 @@ public class ClassificationFactoryTest {
 		List<ClassificationPosition> c1 = ClassificationFactory
 				.createIncrementalClassification(getStates1(), "yellow",
 						"period1", startPeriod.minusDays(1).toDate())
-				.getClassification();
+				.getClassificationBoard().getBoard();
 
 		Assert.assertEquals(Double.valueOf(0),
 				Double.valueOf(c1.get(0).getScore()));
@@ -246,7 +252,7 @@ public class ClassificationFactoryTest {
 
 		List<ClassificationPosition> c1 = ClassificationFactory
 				.createGeneralClassification(getStates1(), "red")
-				.getClassification();
+				.getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Patrick Mulligan", c1.get(0).getPlayerId());
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());

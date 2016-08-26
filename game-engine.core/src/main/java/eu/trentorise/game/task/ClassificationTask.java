@@ -68,7 +68,7 @@ public abstract class ClassificationTask extends GameTask {
 		ClassificationBuilder builder = createBuilder(states);
 
 		List<ClassificationPosition> classification = builder
-				.getClassification();
+				.getClassificationBoard().getBoard();
 		// debug logging
 		if (logger.isDebugEnabled()) {
 			for (ClassificationPosition position : classification) {

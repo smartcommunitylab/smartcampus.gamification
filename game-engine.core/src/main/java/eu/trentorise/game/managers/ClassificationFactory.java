@@ -14,13 +14,15 @@ import org.slf4j.LoggerFactory;
 import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ClassificationPosition;
+import eu.trentorise.game.model.core.ClassificationType;
 import eu.trentorise.game.model.core.GameConcept;
 
 public class ClassificationFactory {
 
 	public interface ClassificationBuilder {
-		public List<ClassificationPosition> getClassification();
+		public ClassificationBoard getClassificationBoard();
 	}
 
 	public static ClassificationBuilder createGeneralClassification(
@@ -48,13 +50,10 @@ class GeneralClassificationBuilder extends AbstractClassificationBuilder {
 	private static final Logger logger = LoggerFactory
 			.getLogger(GeneralClassificationBuilder.class);
 
-	private String pointConceptName;
-
 	public GeneralClassificationBuilder(List<PlayerState> states,
 			String pointConceptName) {
-		super(states);
+		super(states, ClassificationType.GENERAL, pointConceptName);
 
-		this.pointConceptName = pointConceptName;
 	}
 
 	@Override
@@ -76,20 +75,17 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(IncrementalClassificationBuilder.class);
-	private String pointConceptName;
 	private String periodName;
 
 	public IncrementalClassificationBuilder(List<PlayerState> states,
 			String pointConceptName, String periodName) {
-		super(states);
-		this.pointConceptName = pointConceptName;
+		super(states, ClassificationType.INCREMENTAL, pointConceptName);
 		this.periodName = periodName;
 	}
 
 	public IncrementalClassificationBuilder(List<PlayerState> states,
 			String pointConceptName, String periodName, long moment) {
-		super(states, moment);
-		this.pointConceptName = pointConceptName;
+		super(states, ClassificationType.INCREMENTAL, pointConceptName, moment);
 		this.periodName = periodName;
 	}
 
@@ -117,13 +113,21 @@ abstract class AbstractClassificationBuilder implements ClassificationBuilder {
 
 	private List<PlayerState> states;
 	private long moment = -1;
+	private ClassificationType classificationType;
+	protected String pointConceptName;
 
-	public AbstractClassificationBuilder(List<PlayerState> states) {
+	public AbstractClassificationBuilder(List<PlayerState> states,
+			ClassificationType type, String pointConceptName) {
 		this.states = states;
+		this.classificationType = type;
+		this.pointConceptName = pointConceptName;
 	}
 
-	public AbstractClassificationBuilder(List<PlayerState> states, long moment) {
+	public AbstractClassificationBuilder(List<PlayerState> states,
+			ClassificationType type, String pointConceptName, long moment) {
 		this.states = states;
+		this.classificationType = type;
+		this.pointConceptName = pointConceptName;
 		if (moment > 0) {
 			this.moment = moment;
 		}
@@ -132,16 +136,19 @@ abstract class AbstractClassificationBuilder implements ClassificationBuilder {
 	protected abstract double retrieveScore(PlayerState state, long moment);
 
 	@Override
-	public List<ClassificationPosition> getClassification() {
-		return IteratorUtils.toList(new ClassificationBoard(states, moment)
-				.iterator());
+	public ClassificationBoard getClassificationBoard() {
+		ClassificationBoard board = new ClassificationBoard();
+		board.setBoard(IteratorUtils.toList(new Board(states, moment)
+				.iterator()));
+		board.setType(classificationType);
+		board.setPointConceptName(pointConceptName);
+		return board;
 	}
 
-	private class ClassificationBoard implements
-			Iterable<ClassificationPosition> {
+	private class Board implements Iterable<ClassificationPosition> {
 		private List<ClassificationPosition> classification;
 
-		public ClassificationBoard(List<PlayerState> states, long moment) {
+		public Board(List<PlayerState> states, long moment) {
 			init(states, moment);
 		}
 

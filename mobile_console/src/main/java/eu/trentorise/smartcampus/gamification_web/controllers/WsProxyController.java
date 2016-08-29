@@ -53,6 +53,7 @@ import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
 public class WsProxyController {
 	
 	private static transient final Logger logger = Logger.getLogger(WsProxyController.class);
+	private static final String GREEN_CLASSIFICATION = "green leaves";
 
 	@Autowired
 	@Value("${smartcampus.urlws.gamification}")
@@ -470,6 +471,11 @@ public class WsProxyController {
 		
 		String classUrl = "state/" + gameName + "?page=1&size=" + maxClassificationSize;
 		String allData = this.getAll(request, classUrl);		// call to get all user status (classification)
+		// MB: part for new incremental classification: uncomment when server support this call
+		//if(timestamp != null){
+		//	String incClassUrl = "data/game/" + gameName + "/incclassification/"  + GREEN_CLASSIFICATION;
+		//	allData = this.getAll(request, incClassUrl);
+		//}
 		String statusUrl = "state/" + gameName + "/" + userId;
 		String statusData = this.getAll(request, statusUrl);	// call to get actual user status (user scores)
 		List<Player> allNicks = null;
@@ -480,7 +486,13 @@ public class WsProxyController {
 		}
 		StatusUtils statusUtils = new StatusUtils();
 		ClassificationData actualPlayerClass = statusUtils.correctPlayerClassificationData(statusData, userId, nickName, timestamp, type);
-		List<ClassificationData> playersClass = statusUtils.correctClassificationData(allData, allNicks, timestamp, type);
+		List<ClassificationData> playersClass = new ArrayList<ClassificationData>();
+		// MB: part for new incremental classification: uncomment when server support this call
+		//if(timestamp != null){
+		//	playersClass = statusUtils.correctClassificationIncData(allData, allNicks, timestamp, type);
+		//} else {
+			playersClass = statusUtils.correctClassificationData(allData, allNicks, timestamp, type);
+		//}	
 		
 		// Sorting
 		Collections.sort(playersClass, Collections.reverseOrder());

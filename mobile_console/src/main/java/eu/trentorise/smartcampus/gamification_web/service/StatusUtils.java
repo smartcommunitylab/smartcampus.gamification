@@ -32,14 +32,14 @@ public class StatusUtils {
 	private static final String PC_NAME = "name";
 	private static final String PC_SCORE = "score";
 	private static final String PC_PERIOD = "periods";
-	private static final String PC_WEEKLY = "weekly";
+	//private static final String PC_WEEKLY = "weekly";
 	private static final String PC_START = "start";
 	private static final String PC_PERIOD_DURATION = "period";
 	private static final String PC_IDENTIFIER = "identifier";
 	private static final String PC_INSTANCES = "instances";
 	private static final String PC_END = "end";
-	private static final String PC_CLASSIFICATION_WEEK = "green leaves week ";
-	private static final String PC_CLASSIFICATION_WEEK_TEST = "green leaves week test";
+	//private static final String PC_CLASSIFICATION_WEEK = "green leaves week ";
+	//private static final String PC_CLASSIFICATION_WEEK_TEST = "green leaves week test";
 	
 	public static final long GAME_STARTING_TIME = 1460757600000L;	// for RV 16 april
 	public static final long GAME_STARTING_TIME_TEST = 1468101601000L; // for TN test 10 july
@@ -163,9 +163,6 @@ public class StatusUtils {
     			for(int i = 0; i < pointConceptData.length(); i++){
     				JSONObject point = pointConceptData.getJSONObject(i);
     				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
-    				long start = 0L;
-    				long periodDuration = 0L;
-    				String identifier = "weekly";
     				if(timestamp == null || timestamp.longValue() == 0L){	// global
     					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
         					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
@@ -180,9 +177,6 @@ public class StatusUtils {
         							String key = keys.next();
         							JSONObject pc_weekly = pc_period.getJSONObject(key);
         							if(pc_weekly != null){
-            							start = (!pc_weekly.isNull(PC_START)) ? pc_weekly.getLong(PC_START) : 0L;
-            							periodDuration = (!pc_weekly.isNull(PC_PERIOD_DURATION)) ? pc_weekly.getLong(PC_PERIOD_DURATION) : 0L;
-            							identifier = (!pc_weekly.isNull(PC_IDENTIFIER)) ? pc_weekly.getString(PC_IDENTIFIER) : "weekly";
             							JSONArray pc_instances = pc_weekly.getJSONArray(PC_INSTANCES);
             							if(pc_instances != null){
             								boolean found = false;
@@ -247,9 +241,6 @@ public class StatusUtils {
 		    			for(int j = 0; j < pointConceptData.length(); j++){
 		    				JSONObject point = pointConceptData.getJSONObject(j);
 		    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
-		    				long start = 0L;
-		    				long periodDuration = 0L;
-		    				String identifier = "weekly";
 		    				if(timestamp == null || timestamp.longValue() == 0L){	// global
 		    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
 		        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
@@ -264,9 +255,6 @@ public class StatusUtils {
 		        							String key = keys.next();
 		        							JSONObject pc_weekly = pc_period.getJSONObject(key);
 		        							if(pc_weekly != null){
-		            							start = (!pc_weekly.isNull(PC_START)) ? pc_weekly.getLong(PC_START) : 0L;
-		            							periodDuration = (!pc_weekly.isNull(PC_PERIOD_DURATION)) ? pc_weekly.getLong(PC_PERIOD_DURATION) : 0L;
-		            							identifier = (!pc_weekly.isNull(PC_IDENTIFIER)) ? pc_weekly.getString(PC_IDENTIFIER) : "weekly";
 		            							JSONArray pc_instances = pc_weekly.getJSONArray(PC_INSTANCES);
 		            							if(pc_instances != null){
 		            								boolean found = false;
@@ -309,6 +297,52 @@ public class StatusUtils {
     			}
     		}
     		
+    	}
+    	return playerClassList;
+    }
+	
+	public List<ClassificationData> correctClassificationIncData(String allStatus, List<Player> allNicks, Long timestamp, String type) throws JSONException{
+		List<ClassificationData> playerClassList = new ArrayList<ClassificationData>();
+		
+		allStatus = "{"
+			+  "\"pointConceptName\": \"green leaves\","
+			+  "\"type\": \"INCREMENTAL\","
+			+  "\"board\": ["
+			+  "{"
+			+    	"\"score\": 12,"
+			+    	"\"playerId\": \"3\""
+			+  "},"
+			+  "{"
+			+   	"\"score\": 10,"
+			+   	"\"playerId\": \"16\""
+			+   "},"
+			+   "{"
+			+   	"\"score\": 4,"
+			+   	"\"playerId\": \"4\""
+			+   "}"
+			+ "]"
+		+ "}";
+		
+    	if(allStatus != null && allStatus.compareTo("") != 0){
+    		JSONObject allIncClassData = new JSONObject(allStatus);
+    		if(allIncClassData != null){
+    			JSONArray allPlayersDataList = (!allIncClassData.isNull("board")) ? allIncClassData.getJSONArray("board") : null;
+    			if(allPlayersDataList != null){
+    				for(int i = 0 ; i < allPlayersDataList.length(); i++){
+    		    		JSONObject profileData = allPlayersDataList.getJSONObject(i);
+    		    		String playerId = (!profileData.isNull(PLAYER_ID)) ? profileData.getString(PLAYER_ID) : "0";
+    		    		Integer playerScore = (!profileData.isNull(PC_SCORE)) ? profileData.getInt(PC_SCORE) : 0;
+    		    		String nickName = getPlayerNameById(allNicks, playerId);
+		    			ClassificationData playerClass = new ClassificationData();
+		    			playerClass.setNickName(nickName);
+		    			playerClass.setPlayerId(playerId);
+		    			playerClass.setScore(playerScore);
+		    			if(nickName != null && nickName.compareTo("") != 0){	// if nickName present (user registered and active)
+		    				playerClassList.add(playerClass);
+		    			}
+    				}	
+    			}
+    		}
     	}
     	return playerClassList;
     }
@@ -358,7 +392,7 @@ public class StatusUtils {
 		return pc;
 	}
 	
-	private int getActualWeek(long timestamp, String type){
+	/*private int getActualWeek(long timestamp, String type){
 		int currWeek = 0;
 		long millisFromGameStart = (type.compareTo("test") == 0) ? timestamp - GAME_STARTING_TIME_TEST : timestamp - GAME_STARTING_TIME;
 		currWeek = (int)Math.ceil((float)millisFromGameStart / MILLIS_IN_WEEK);
@@ -366,7 +400,7 @@ public class StatusUtils {
 			currWeek = 2;	// forced actual week to 2 week in dev test
 		}
 		return currWeek;
-	}
+	}*/
 	
 	private String getPlayerNameById(List<Player> allNicks, String id) throws JSONException{
     	boolean find = false;

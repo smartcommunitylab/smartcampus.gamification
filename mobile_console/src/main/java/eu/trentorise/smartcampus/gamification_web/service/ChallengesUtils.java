@@ -114,6 +114,8 @@ public class ChallengesUtils {
 	private static final String CHAL_MODEL_COMPLETE_BADGE_COLL = "completeBadgeCollection";
 	private static final String CHAL_MODEL_SURVEY = "survey";
 	private static final String STATE = "state";
+	// week delta in milliseconds
+	private static final Long W_DELTA = 2000L;
 	
 	private static final Logger logger = Logger.getLogger(ChallengesUtils.class);
 	
@@ -700,7 +702,7 @@ public class ChallengesUtils {
 					List<PointConceptPeriod> allPeriods = pt.getInstances();
 					for(PointConceptPeriod pcp : allPeriods){
 						if(chalStart != null && chalEnd != null){
-							if(pcp.getStart() <= chalStart && pcp.getEnd() >= chalEnd){	// the week duration instance is major or equals the challenge duration 
+							if((pcp.getStart() - W_DELTA) <= chalStart && (pcp.getEnd() + W_DELTA) >= chalEnd){	// the week duration instance is major or equals the challenge duration 
 								actualStatus = pcp.getScore();
 								break;
 							}

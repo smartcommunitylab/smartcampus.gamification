@@ -18,6 +18,7 @@ public class Player {
 	private String surname;
 	private String nikName;
 	private String mail;
+	private String language;
 	private boolean sendMail;
 	private PersonalData personalData;
 	private SurveyData surveyData;
@@ -27,7 +28,7 @@ public class Player {
 	}
 
 	public Player(String pid, String socialId, String name, String surname, String nikName,
-			String mail, boolean sendMail, PersonalData personalData, SurveyData surveyData, String type) {
+			String mail, String language, boolean sendMail, PersonalData personalData, SurveyData surveyData, String type) {
 		super();
 		this.pid = pid;
 		this.socialId = socialId;
@@ -35,6 +36,7 @@ public class Player {
 		this.surname = surname;
 		this.nikName = nikName;
 		this.mail = mail;
+		this.language = language;
 		this.sendMail = sendMail;
 		this.personalData = personalData;
 		this.surveyData = surveyData;
@@ -119,6 +121,14 @@ public class Player {
 
 	public void setSendMail(boolean sendMail) {
 		this.sendMail = sendMail;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
 	public String toJSONString() {

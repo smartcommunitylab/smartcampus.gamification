@@ -168,7 +168,7 @@ public class WsProxyController {
 	// Method for mobile player registration (in mobile app)
 	@RequestMapping(method = RequestMethod.POST, value = "/out/rest/register")
 	public @ResponseBody
-	Player registerExternal(@RequestBody PersonalData data, @RequestParam String token, @RequestParam(required=false) String email, @RequestParam String nickname, HttpServletResponse res) {
+	Player registerExternal(@RequestBody PersonalData data, @RequestParam String token, @RequestParam(required=false) String email, @RequestParam(required=false, defaultValue="it") String language, @RequestParam String nickname, HttpServletResponse res) {
 		logger.debug("External registration. ");
 		
 		BasicProfile user = null;
@@ -221,6 +221,7 @@ public class WsProxyController {
 					user.getSurname(), 
 					nickname, 
 					email, 
+					language,
 					true,	// default sendMail attribute value is true
 					data,
 					null,

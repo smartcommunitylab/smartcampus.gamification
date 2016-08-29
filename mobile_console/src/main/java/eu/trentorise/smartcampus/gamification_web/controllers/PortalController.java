@@ -203,6 +203,17 @@ public class PortalController extends SCController{
 			model.put("isTest", isTest);
 			model.put("isShortClassification", isShortClassification);
 			model.put("short_classification_size", shortClassificationSize);
+			
+			// Here i retrieve and pass the prize list
+			URL resource = getClass().getResource("/");
+			String path = resource.getPath();
+			String conf_directory = "conf_file";
+			if(isTest.compareTo("true") == 0){
+				conf_directory = "conf_file_test";
+			}
+			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+			model.put("prizes", mailPrizeFileData);
+			
 			logger.debug(String
 					.format("I am in get root. User id: " + user.getUserId()));
 			AccountProfile account = profileService.getAccountProfile(getToken(request));
@@ -294,6 +305,16 @@ public class PortalController extends SCController{
     @RequestMapping(method = RequestMethod.GET, value = "/")
 	public ModelAndView index_gameweb(HttpServletRequest request) throws SecurityException, ProfileServiceException {
 		Map<String, Object> model = new HashMap<String, Object>();
+		// Here i retrieve and pass the prize list
+		URL resource = getClass().getResource("/");
+		String path = resource.getPath();
+		String conf_directory = "conf_file";
+		if(isTest.compareTo("true") == 0){
+			conf_directory = "conf_file_test";
+		}
+		List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+		model.put("prizes", mailPrizeFileData);
+		
 		return new ModelAndView("index", model);
 	}
 
@@ -379,9 +400,17 @@ public class PortalController extends SCController{
 	@RequestMapping(method = RequestMethod.GET, value = "/view_prizes")
 	public ModelAndView preSecurePrizesPage(HttpServletRequest request) {
 		logger.debug(String.format("I am in prizes info page"));
-		ModelAndView model = new ModelAndView();
-		model.setViewName("g_prizes");
-		return model;
+		Map<String, Object> model = new HashMap<String, Object>();
+		// Here i retrieve and pass the prize list
+		URL resource = getClass().getResource("/");
+		String path = resource.getPath();
+		String conf_directory = "conf_file";
+		if(isTest.compareTo("true") == 0){
+			conf_directory = "conf_file_test";
+		}
+		List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+		model.put("prizes", mailPrizeFileData);
+		return new ModelAndView("g_prizes", model);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/view_rules")

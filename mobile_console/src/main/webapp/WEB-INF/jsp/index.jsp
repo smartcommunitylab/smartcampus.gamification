@@ -61,6 +61,7 @@ var conf_is_test="<%=request.getAttribute("isTest")%>";
 var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
 var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
 var conf_wsresult="<%=request.getAttribute("wsresult")%>";
+var conf_prizes="<%=request.getAttribute("prizes")%>";
 
 	<%-- Prevent the backspace key from navigating back. --%>
 	$(document).unbind('keydown').bind('keydown', function (event) {
@@ -113,9 +114,9 @@ var conf_wsresult="<%=request.getAttribute("wsresult")%>";
             <!-- <li ng-if="!disableAllLinks" class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" >{{ 'left_menu-profile' | i18n }}</a></li> -->
            <!--  <li ng-if="!disableAllLinks" class="{{ isActiveChalleng() }}"><a href="#/challeng/{{ gameId }}" ng-click="showChalleng()" ><strong>{{ 'left_menu-challeng' | i18n }}</strong></a></li>
             <li ng-if="!disableAllLinks" class="{{ isActiveClassification() }}"><a href="#/classification/{{ gameId }}" ng-click="showClassification()" >{{ 'left_menu-classification' | i18n }}</a></li> -->
+            <li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" >{{ 'left_menu-prizes' | i18n }}</a></li>
             <li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" >{{ 'left_menu-rules' | i18n }}</a></li>
             <li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" >{{ 'left_menu-privacy' | i18n }}</a></li>
-            <li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" >{{ 'left_menu-prizes' | i18n }}</a></li>
             <!-- <li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" >{{ 'left_menu-credits' | i18n }}</a></li> -->
             
           </ul>
@@ -143,9 +144,9 @@ var conf_wsresult="<%=request.getAttribute("wsresult")%>";
 			            	</a>
 			            	<ul class="dropdown-menu" role="menu">
 			            		<!-- <li class="{{ isActiveProfile() }}"><a href="#/profile/{{ gameId }}" ng-click="showProfile()" ><strong>{{ 'left_menu-profile' | i18n }}</strong></a></li> -->
+			            		<li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" ><strong>{{ 'left_menu-prizes' | i18n }}</strong></a></li>
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" ><strong>{{ 'left_menu-privacy' | i18n }}</strong></a></li>
-            					<li class="{{ isActivePrizes() }}"><a href="#/prizes" ng-click="showPrizes()" ><strong>{{ 'left_menu-prizes' | i18n }}</strong></a></li>
 								<!-- <li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" ><strong>{{ 'left_menu-credits' | i18n }}</strong></a></li> -->
 								<!-- <li class="divider"></li> -->
 								<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li> -->

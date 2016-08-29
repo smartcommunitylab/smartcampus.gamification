@@ -43,40 +43,60 @@
 <script src="lib/xeditable.min.js"></script>
 <script src="lib/angular-base64.min.js"></script>
 <base href="/gamificationweb/" />
+
+<script>
+var token="<%=request.getAttribute("token")%>";
+var userId="<%=request.getAttribute("user_id")%>";
+var conf_gameid="<%=request.getAttribute("gameid")%>";
+var conf_point_types="<%=request.getAttribute("point_types")%>";
+var conf_chall_messages="<%=request.getAttribute("challenge_desc_messages")%>";
+var conf_week_sponsor_data="<%=request.getAttribute("week_sponsor_data")%>";
+var conf_is_test="<%=request.getAttribute("isTest")%>";
+var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
+var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
+var conf_wsresult="<%=request.getAttribute("wsresult")%>";
+var conf_prizes="<%=request.getAttribute("prizes")%>";
+</script>
 </head>
 <body>
-	<div class="container">
+	<div class="container" ng-controller="MainCtrl">
 		<div id="big-prizes-page">
 			<div class="row">
 				<div ng-class="col-md-10">
-					<div class="panel panel-success-trasparent" >
-		  				<div class="panel-body">
-						<h4>RISULTATI E INCENTIVI</h4>
+					<div id="my-rules-head-title" align="center">
+						{{ 'left_menu-prizes' | i18n }}
+					</div>
+					<div class="panel panel-success-trasparent" align="justify" ng-init="checkWeekPrizeList()" ng-show="p_WeekNum > 0">
+					   <div class="panel-body">
+						<h4>PREMI SETTIMANALI</h4>
+						<div align="justify">
+							I premi per la {{ p_WeekNum }}^a settimana di gioco sono:<br/>
+							<ul ng-repeat="p in corrPrizesList">
+								<li><strong>{{ p.prize }}</strong>: {{ p.classification }};</li>
+							</ul>
+						</div>
+					   </div>		
+					</div>
+					<div class="panel panel-success-trasparent" align="justify">
+					   <div class="panel-body">
+						<h4>PREMI FINALI</h4>
 						<div align="justify">
 							Alla fine del Gioco, ogni Giocatore ricever&agrave; un attestato che riporter&agrave; i risultati raggiunti.
-							I primi tre Giocatori nella <strong>classifica globale a punti Green Leaves</strong> alla fine del Gioco riceveranno i seguenti premi:<br/>
+							I nove giocatori Giocatori in testa alla <strong>classifica globale a punti Green Leaves</strong> (vedasi "FUNZIONAMENTO DEL GIOCO") alla fine del Gioco riceveranno i seguenti premi:<br/>
 							<ul>
-								<li>1) primo classificato: <strong>n. 1 abbonamento semestrale in palestra</strong>;</li>
-								<li>2) secondo classificato: <strong>n. 1 bicicletta city bike per adulti</strong>;</li>
-								<li>3) terzo classificato: <strong>n.1 abbonamento stagionale-estivo per piscina</strong>.</li>
+								<li>1) primo classificato: <strong>n. 1 soggiorno di tre giorni e due notti per due persone in una struttura alberghiera di 4 stelle del territorio;</strong>;</li>
+								<li>2) secondo classificato: <strong>n. 1 buono di quattro biglietti per lo spettacolo di Natale al Teatro Sociale</strong>;</li>
+								<li>3) terzo classificato: <strong>n.1 abbonamento Trentino Volley</strong>.</li>
+								<li>4) quarto classificato: <strong>n.1 abbonamento Trentino Rosa</strong>.</li>
+								<li>5) quinto classificato: <strong>maglia e pallone autografati dai giocatori dell'Aquila basket</strong>.</li>
+								<li>6) sesto classificato: <strong>n.1 tessera individuale ingresso al Muse con profilo MiniTrib&ugrave;' (1 genitore + figli)</strong>.</li>
+								<li>7) settimo classificato: <strong>n.1 abbonamento singolo al car sharing</strong>.</li>
+								<li>8) ottavo classificato: <strong>n.1 volo in aereo di 10 min sulla citt&agrave; di Trento</strong>.</li>
+								<li>9) nono classificato: <strong>n.1 abbonamento giornaliero per sciare sul Bondone</strong>.</li>
 							</ul>
-				 			In alcune settimane di Gioco saranno inoltre messi a diposizione dei premi settimanali che andranno a premiare i primi classificati nella classifica settimanale a punti Green Leaves.<br/><br/>
-							Una premiazione, con consegna degli attestati e dei premi summenzionati, avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/><br/>
-							I premi finali sono gentilmente offerti da:<br/><br/>
-							<div class="row" align="center">
-								<div class="col-md-6">
-									<a href="http://www.2001team.com/rovereto/" title="centro natatorio leno" alt="centro natatorio leno" target="_blank">
-										<img src="img/centro_natatorio.png" width="200px">
-									</a>
-								</div>
-								<div class="col-md-6">
-									<a href="http://www.tettamantibike.it" title="tettamanti bike" alt="tettamanti bike" target="_blank">
-										<img src="img/tettamanti.png" width="250px">
-									</a>
-								</div>
-							</div>
+							Una premiazione, con consegna degli attestati e dei premi avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/><br/>
 						</div>
-					   </div>	
+					   </div>		
 					</div>
 				</div>
 			</div>
@@ -91,20 +111,39 @@
 		<div id="small-prizes-page">
 			<div class="row">
 				<div ng-class="col-xs-12">
-					<div class="panel panel-success-trasparent" >
-		  				<div class="panel-body">
-						<h4>RISULTATI E INCENTIVI</h4>
+					<div id="my-rules-head-title" align="center">
+						{{ 'left_menu-prizes' | i18n }}
+					</div>
+					<div class="panel panel-success-trasparent" align="justify" ng-init="checkWeekPrizeList()" ng-show="p_WeekNum > 0">
+					   <div class="panel-body">
+						<h4>PREMI SETTIMANALI</h4>
+						<div align="justify">
+							I premi per la {{ p_WeekNum }}^a settimana di gioco sono:<br/>
+							<ul ng-repeat="p in corrPrizesList">
+								<li><strong>{{ p.prize }}</strong>: {{ p.classification }};</li>
+							</ul>
+						</div>
+					   </div>		
+					</div>
+					<div class="panel panel-success-trasparent" align="justify">
+					   <div class="panel-body panel-body-nopadding">
+						<h4>PREMI FINALI</h4>
 						<div align="justify">
 							Alla fine del Gioco, ogni Giocatore ricever&agrave; un attestato che riporter&agrave; i risultati raggiunti.
-							I primi tre Giocatori nella <strong>classifica globale a punti Green Leaves</strong> alla fine del Gioco riceveranno i seguenti premi:
+							I nove giocatori Giocatori in testa alla <strong>classifica globale a punti Green Leaves</strong> (vedasi "FUNZIONAMENTO DEL GIOCO") alla fine del Gioco riceveranno i seguenti premi:<br/>
 							<ul>
-								<li>1) primo classificato: <strong>n. 1 abbonamento semestrale in palestra</strong>;</li>
-								<li>2) secondo classificato: <strong>n. 1 bicicletta city bike per adulti</strong>;</li>
-								<li>3) terzo classificato: <strong>n.1 abbonamento stagionale-estivo per piscina</strong>.</li>
+								<li>1) primo classificato: <strong>n. 1 soggiorno di tre giorni e due notti per due persone in una struttura alberghiera di 4 stelle del territorio;</strong>;</li>
+								<li>2) secondo classificato: <strong>n. 1 buono di quattro biglietti per lo spettacolo di Natale al Teatro Sociale</strong>;</li>
+								<li>3) terzo classificato: <strong>n.1 abbonamento Trentino Volley</strong>.</li>
+								<li>4) quarto classificato: <strong>n.1 abbonamento Trentino Rosa</strong>.</li>
+								<li>5) quinto classificato: <strong>maglia e pallone autografati dai giocatori dell'Aquila basket</strong>.</li>
+								<li>6) sesto classificato: <strong>n.1 tessera individuale ingresso al Muse con profilo MiniTrib&ugrave;' (1 genitore + figli)</strong>.</li>
+								<li>7) settimo classificato: <strong>n.1 abbonamento singolo al car sharing</strong>.</li>
+								<li>8) ottavo classificato: <strong>n.1 volo in aereo di 10 min sulla citt&agrave; di Trento</strong>.</li>
+								<li>9) nono classificato: <strong>n.1 abbonamento giornaliero per sciare sul Bondone</strong>.</li>
 							</ul>
-				 			In alcune settimane di Gioco saranno inoltre messi a diposizione dei premi settimanali che andranno a premiare i primi classificati nella classifica settimanale a punti Green Leaves.<br/>
-							Una premiazione, con consegna degli attestati e dei premi summenzionati, avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/>
-							I premi finali sono gentilmente offerti da:<br/><br/>
+							Una premiazione, con consegna degli attestati e dei premi avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/><br/>
+							<!-- I premi finali sono gentilmente offerti da:<br/><br/>
 							<div class="row" align="center">
 								<div class="col-xs-12">
 									<a href="http://www.2001team.com/rovereto/" title="centro natatorio leno" alt="centro natatorio leno" target="_blank">
@@ -116,9 +155,9 @@
 										<img src="img/tettamanti.png" width="250px">
 									</a>
 								</div>
-							</div>
+							</div> -->
 						</div>
-					   </div>	
+					   </div>		
 					</div>
 				</div>
 			</div>

@@ -156,6 +156,7 @@ public class StatusUtils {
     		
     		JSONObject profileData = new JSONObject(profile);
     		JSONObject stateData = (!profileData.isNull(STATE)) ? profileData.getJSONObject(STATE) : null;
+    		//System.out.println("My state " + stateData.toString());
     		JSONArray pointConceptData = null;
     		if(stateData != null){
     			pointConceptData = stateData.getJSONArray(POINT_CONCEPT);
@@ -237,6 +238,8 @@ public class StatusUtils {
     			for(int i = 0 ; i < allPlayersDataList.length(); i++){
 		    		JSONObject profileData = allPlayersDataList.getJSONObject(i);
 		    		String playerId = (!profileData.isNull(PLAYER_ID)) ? profileData.getString(PLAYER_ID) : "0";
+		    		score = 0;	// here I reset the score value to avoid classification problem
+		    		//System.out.println("User " + playerId + " state " + profileData.toString());
 		    		JSONObject stateData = (!profileData.isNull(STATE)) ? profileData.getJSONObject(STATE) : null;
 		    		JSONArray pointConceptData = null;
 		    		if(stateData != null){

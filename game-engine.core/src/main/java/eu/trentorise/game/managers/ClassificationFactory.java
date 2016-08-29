@@ -43,6 +43,13 @@ public class ClassificationFactory {
 				periodName, date.getTime());
 	}
 
+	public static ClassificationBuilder createIncrementalClassification(
+			List<PlayerState> states, String pointConceptName,
+			String periodName, int periodInstanceIndex) {
+		return new IncrementalClassificationBuilder(states, pointConceptName,
+				periodName, periodInstanceIndex);
+	}
+
 }
 
 class GeneralClassificationBuilder extends AbstractClassificationBuilder {
@@ -76,6 +83,7 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 	private static final Logger logger = LoggerFactory
 			.getLogger(IncrementalClassificationBuilder.class);
 	private String periodName;
+	private int periodInstanceIndex;
 
 	public IncrementalClassificationBuilder(List<PlayerState> states,
 			String pointConceptName, String periodName) {
@@ -89,6 +97,13 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 		this.periodName = periodName;
 	}
 
+	public IncrementalClassificationBuilder(List<PlayerState> states,
+			String pointConceptName, String periodName, int periodInstanceIndex) {
+		super(states, ClassificationType.INCREMENTAL, pointConceptName);
+		this.periodName = periodName;
+		this.periodInstanceIndex = periodInstanceIndex;
+	}
+
 	@Override
 	protected double retrieveScore(PlayerState state, long moment) {
 		for (GameConcept gc : state.getState()) {
@@ -97,6 +112,8 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 				PointConcept pc = (PointConcept) gc;
 				if (moment > 0) {
 					return pc.getPeriodScore(periodName, moment);
+				} else if (periodInstanceIndex > -1) {
+					return pc.getPeriodScore(periodName, periodInstanceIndex);
 				} else {
 					return pc.getPeriodCurrentScore(periodName);
 				}

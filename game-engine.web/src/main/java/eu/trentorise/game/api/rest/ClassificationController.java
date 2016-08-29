@@ -384,7 +384,8 @@ public class ClassificationController {
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/incclassification/{classificationId}")
 	public ClassificationBoard getIncrementalClassification(
 			@PathVariable String gameId, @PathVariable String classificationId,
-			@RequestParam(defaultValue = "-1") long timestamp) {
+			@RequestParam(defaultValue = "-1") long timestamp,
+			@RequestParam(defaultValue = "-1") int periodInstanceIndex) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -398,6 +399,11 @@ public class ClassificationController {
 					"classificationId is not UTF-8 encoded");
 		}
 
+		if (timestamp != -1 && periodInstanceIndex != -1) {
+			throw new IllegalArgumentException(
+					"Not use both timestamp and periodIndex parameters in the same request");
+		}
+
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		ClassificationBoard result = null;
 		if (g != null) {
@@ -406,7 +412,7 @@ public class ClassificationController {
 					if (gt instanceof IncrementalClassificationTask
 							&& gt.getName().equals(classificationId)) {
 						IncrementalClassificationTask classificationDefinition = (IncrementalClassificationTask) gt;
-						if (timestamp > 0) {
+						if (timestamp > -1) {
 							result = ClassificationFactory
 									.createIncrementalClassification(
 											playerSrv.loadStates(gameId),
@@ -415,6 +421,16 @@ public class ClassificationController {
 											classificationDefinition
 													.getPeriodName(),
 											new Date(timestamp))
+									.getClassificationBoard();
+						} else if (periodInstanceIndex > -1) {
+							result = ClassificationFactory
+									.createIncrementalClassification(
+											playerSrv.loadStates(gameId),
+											classificationDefinition
+													.getPointConceptName(),
+											classificationDefinition
+													.getPeriodName(),
+											periodInstanceIndex)
 									.getClassificationBoard();
 						} else {
 							result = ClassificationFactory

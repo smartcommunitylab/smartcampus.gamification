@@ -126,7 +126,7 @@ public class PointConceptTest {
 		pc.addPeriod("period1", start.toDate(), period);
 
 		start = new LocalDate(2016, 7, 25);
-		period = 3600 * 1000;
+		period = 3600 * 1000; // one hour millisec ?
 		pc.addPeriod("period2", start.toDate(), period);
 
 		DateTime executionTime = new DateTime();
@@ -154,10 +154,29 @@ public class PointConceptTest {
 		PointConcept p = (PointConcept) loaded.getState().iterator().next();
 		p.executionMoment = pc.executionMoment;
 
+		/*
+		 * period1 : now 29
+		 * 
+		 * period2 : hour-1 4, now 10, hour+1 1, hour+2, 14
+		 */
+
 		Assert.assertEquals(new Double(29), p.getPeriodCurrentScore("period1"));
 		Assert.assertEquals(new Double(14), p.getPeriodCurrentScore("period2"));
 		Assert.assertEquals(new Double(1), p.getPeriodPreviousScore("period2"));
 		Assert.assertEquals(new Double(0), p.getPeriodPreviousScore("period45"));
+		Assert.assertEquals(new Double(29), p.getPeriodScore("period1", 0));
+		Assert.assertEquals(new Double(14), p.getPeriodScore("period2", 0));
+		Assert.assertEquals(new Double(1), p.getPeriodScore("period2", 1));
+		Assert.assertEquals(new Double(10), p.getPeriodScore("period2", 2));
+		Assert.assertEquals(new Double(14), p.getPeriodScore("period2",
+				executionTime.plusHours(2).getMillis()));
+		Assert.assertEquals(new Double(10),
+				p.getPeriodScore("period2", executionTime.getMillis()));
+
+		Assert.assertEquals(new Double(0), p.getPeriodScore("period2",
+				executionTime.plusDays(1).getMillis()));
+
+		Assert.assertEquals(new Double(0), p.getPeriodScore("period2", 10));
 	}
 
 	@Test

@@ -55,7 +55,9 @@ var conf_is_test="<%=request.getAttribute("isTest")%>";
 var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
 var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
 var conf_wsresult="<%=request.getAttribute("wsresult")%>";
+var conf_lang="<%=request.getAttribute("language")%>";
 var conf_prizes="<%=request.getAttribute("prizes")%>";
+var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 </script>
 </head>
 <body>
@@ -68,10 +70,13 @@ var conf_prizes="<%=request.getAttribute("prizes")%>";
 					</div>
 					<div class="panel panel-success-trasparent" align="justify" ng-init="checkWeekPrizeList()" ng-show="p_WeekNum > 0">
 					   <div class="panel-body">
-						<h4>PREMI SETTIMANALI</h4>
+						<h4>{{ 'week_prize_title' | i18n }}</h4>
 						<div align="justify">
-							I premi per la {{ p_WeekNum }}^a settimana di gioco sono:<br/>
-							<ul ng-repeat="p in corrPrizesList">
+							{{ 'week_prize_text_1' | i18n }} {{ p_WeekNum }}{{ 'week_prize_text_2' | i18n }}<br/>
+							<ul ng-repeat="p in corrPrizesList" ng-if="retrieveUsedLang() == 'ita'">
+								<li><strong>{{ p.prize }}</strong>: {{ p.classification }};</li>
+							</ul>
+							<ul ng-repeat="p in corrPrizesListEng" ng-if="retrieveUsedLang() == 'eng'">
 								<li><strong>{{ p.prize }}</strong>: {{ p.classification }};</li>
 							</ul>
 						</div>
@@ -79,25 +84,24 @@ var conf_prizes="<%=request.getAttribute("prizes")%>";
 					</div>
 					<div class="panel panel-success-trasparent" align="justify">
 					   <div class="panel-body">
-						<h4>PREMI FINALI</h4>
+						<h4>{{ 'global_prize_title' | i18n }}</h4>
 						<div align="justify">
-							Alla fine del Gioco, ogni Giocatore ricever&agrave; un attestato che riporter&agrave; i risultati raggiunti.
-							I nove giocatori Giocatori in testa alla <strong>classifica globale a punti Green Leaves</strong> (vedasi "FUNZIONAMENTO DEL GIOCO") alla fine del Gioco riceveranno i seguenti premi:<br/>
+							{{ 'global_prize_text_1' | i18n }}<strong>{{ 'global_prize_text_2' | i18n }}</strong>{{ 'global_prize_text_3' | i18n }}<br/>
 							<ul>
-								<li>1) primo classificato: <strong>n. 1 soggiorno di tre giorni e due notti per due persone in una struttura alberghiera di 4 stelle del territorio</strong>;</li>
-								<li>2) secondo classificato: <strong>n. 1 buono di quattro biglietti per lo spettacolo di Natale al Teatro Sociale</strong>;</li>
-								<li>3) terzo classificato: <strong>n.1 abbonamento Trentino Volley</strong>;</li>
-								<li>4) quarto classificato: <strong>n.1 abbonamento Trentino Rosa</strong>;</li>
-								<li>5) quinto classificato: <strong>maglia e pallone autografati dai giocatori dell'Aquila basket</strong>;</li>
-								<li>6) sesto classificato: <strong>n.1 tessera individuale ingresso al Muse con profilo MiniTrib&ugrave;' (1 genitore + figli)</strong>;</li>
-								<li>7) settimo classificato: <strong>n.1 abbonamento singolo al car sharing</strong>;</li>
-								<li>8) ottavo classificato: <strong>n.1 volo in aereo di 10 min sulla citt&agrave; di Trento</strong>;</li>
-								<li>9) nono classificato: <strong>n.1 abbonamento giornaliero per sciare sul Bondone</strong>.</li>
+								<li>1) {{ 'global_prize_classification_pos_1' | i18n }} <strong>{{ 'global_prize_classification_description_1' | i18n }}</strong>;</li>
+								<li>2) {{ 'global_prize_classification_pos_2' | i18n }} <strong>{{ 'global_prize_classification_description_2' | i18n }}</strong>;</li>
+								<li>3) {{ 'global_prize_classification_pos_3' | i18n }} <strong>{{ 'global_prize_classification_description_3' | i18n }}</strong>;</li>
+								<li>4) {{ 'global_prize_classification_pos_4' | i18n }} <strong>{{ 'global_prize_classification_description_4' | i18n }}</strong>;</li>
+								<li>5) {{ 'global_prize_classification_pos_5' | i18n }} <strong>{{ 'global_prize_classification_description_5' | i18n }}</strong>;</li>
+								<li>6) {{ 'global_prize_classification_pos_6' | i18n }} <strong>{{ 'global_prize_classification_description_6' | i18n }}</strong>;</li>
+								<li>7) {{ 'global_prize_classification_pos_7' | i18n }} <strong>{{ 'global_prize_classification_description_7' | i18n }}</strong>;</li>
+								<li>8) {{ 'global_prize_classification_pos_8' | i18n }} <strong>{{ 'global_prize_classification_description_8' | i18n }}</strong>;</li>
+								<li>9) {{ 'global_prize_classification_pos_9' | i18n }} <strong>{{ 'global_prize_classification_description_9' | i18n }}</strong>.</li>
 							</ul>
-							Una premiazione, con consegna degli attestati e dei premi avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/><br/>
+							{{ 'global_prize_text_4' | i18n }}<br/><br/>
 						</div>
 					   </div>		
-					</div>
+					</div>	
 				</div>
 			</div>
 			<div class="row">
@@ -116,49 +120,38 @@ var conf_prizes="<%=request.getAttribute("prizes")%>";
 					</div>
 					<div class="panel panel-success-trasparent" align="justify" ng-init="checkWeekPrizeList()" ng-show="p_WeekNum > 0">
 					   <div class="panel-body">
-						<h4>PREMI SETTIMANALI</h4>
+						<h4>{{ 'week_prize_title' | i18n }}</h4>
 						<div align="justify">
-							I premi per la {{ p_WeekNum }}^a settimana di gioco sono:<br/>
-							<ul ng-repeat="p in corrPrizesList">
+							{{ 'week_prize_text_1' | i18n }} {{ p_WeekNum }}{{ 'week_prize_text_2' | i18n }}<br/>
+							<ul ng-repeat="p in corrPrizesList" ng-if="retrieveUsedLang() == 'ita'">
+								<li><strong>{{ p.prize }}</strong>: {{ p.classification }};</li>
+							</ul>
+							<ul ng-repeat="p in corrPrizesListEng" ng-if="retrieveUsedLang() == 'eng'">
 								<li><strong>{{ p.prize }}</strong>: {{ p.classification }};</li>
 							</ul>
 						</div>
 					   </div>		
 					</div>
 					<div class="panel panel-success-trasparent" align="justify">
-					   <div class="panel-body panel-body-nopadding">
-						<h4>PREMI FINALI</h4>
+					   <div class="panel-body">
+						<h4>{{ 'global_prize_title' | i18n }}</h4>
 						<div align="justify">
-							Alla fine del Gioco, ogni Giocatore ricever&agrave; un attestato che riporter&agrave; i risultati raggiunti.
-							I nove giocatori Giocatori in testa alla <strong>classifica globale a punti Green Leaves</strong> (vedasi "FUNZIONAMENTO DEL GIOCO") alla fine del Gioco riceveranno i seguenti premi:<br/>
+							{{ 'global_prize_text_1' | i18n }}<strong>{{ 'global_prize_text_2' | i18n }}</strong>{{ 'global_prize_text_3' | i18n }}<br/>
 							<ul>
-								<li>1) primo classificato: <strong>n. 1 soggiorno di tre giorni e due notti per due persone in una struttura alberghiera di 4 stelle del territorio</strong>;</li>
-								<li>2) secondo classificato: <strong>n. 1 buono di quattro biglietti per lo spettacolo di Natale al Teatro Sociale</strong>;</li>
-								<li>3) terzo classificato: <strong>n.1 abbonamento Trentino Volley</strong>;</li>
-								<li>4) quarto classificato: <strong>n.1 abbonamento Trentino Rosa</strong>;</li>
-								<li>5) quinto classificato: <strong>maglia e pallone autografati dai giocatori dell'Aquila basket</strong>;</li>
-								<li>6) sesto classificato: <strong>n.1 tessera individuale ingresso al Muse con profilo MiniTrib&ugrave;' (1 genitore + figli)</strong>;</li>
-								<li>7) settimo classificato: <strong>n.1 abbonamento singolo al car sharing</strong>;</li>
-								<li>8) ottavo classificato: <strong>n.1 volo in aereo di 10 min sulla citt&agrave; di Trento</strong>;</li>
-								<li>9) nono classificato: <strong>n.1 abbonamento giornaliero per sciare sul Bondone</strong>.</li>
+								<li>1) {{ 'global_prize_classification_pos_1' | i18n }} <strong>{{ 'global_prize_classification_description_1' | i18n }}</strong>;</li>
+								<li>2) {{ 'global_prize_classification_pos_2' | i18n }} <strong>{{ 'global_prize_classification_description_2' | i18n }}</strong>;</li>
+								<li>3) {{ 'global_prize_classification_pos_3' | i18n }} <strong>{{ 'global_prize_classification_description_3' | i18n }}</strong>;</li>
+								<li>4) {{ 'global_prize_classification_pos_4' | i18n }} <strong>{{ 'global_prize_classification_description_4' | i18n }}</strong>;</li>
+								<li>5) {{ 'global_prize_classification_pos_5' | i18n }} <strong>{{ 'global_prize_classification_description_5' | i18n }}</strong>;</li>
+								<li>6) {{ 'global_prize_classification_pos_6' | i18n }} <strong>{{ 'global_prize_classification_description_6' | i18n }}</strong>;</li>
+								<li>7) {{ 'global_prize_classification_pos_7' | i18n }} <strong>{{ 'global_prize_classification_description_7' | i18n }}</strong>;</li>
+								<li>8) {{ 'global_prize_classification_pos_8' | i18n }} <strong>{{ 'global_prize_classification_description_8' | i18n }}</strong>;</li>
+								<li>9) {{ 'global_prize_classification_pos_9' | i18n }} <strong>{{ 'global_prize_classification_description_9' | i18n }}</strong>.</li>
 							</ul>
-							Una premiazione, con consegna degli attestati e dei premi avverr&agrave; presso e a cura del Comune di Trento al termine del Gioco.<br/><br/>
-							<!-- I premi finali sono gentilmente offerti da:<br/><br/>
-							<div class="row" align="center">
-								<div class="col-xs-12">
-									<a href="http://www.2001team.com/rovereto/" title="centro natatorio leno" alt="centro natatorio leno" target="_blank">
-										<img src="img/centro_natatorio.png" width="200px">
-									</a>
-								</div>
-								<div class="col-xs-12">
-									<a href="http://www.tettamantibike.it" title="tettamanti bike" alt="tettamanti bike" target="_blank">
-										<img src="img/tettamanti.png" width="250px">
-									</a>
-								</div>
-							</div> -->
+							{{ 'global_prize_text_4' | i18n }}<br/><br/>
 						</div>
 					   </div>		
-					</div>
+					</div>	
 				</div>
 			</div>
 			<div class="row">

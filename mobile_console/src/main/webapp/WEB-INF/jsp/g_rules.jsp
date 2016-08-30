@@ -51,36 +51,33 @@
 				<div ng-class="col-md-10">
 					<div class="panel panel-success-trasparent" >
 		  				<div class="panel-body">
-						    <h4>Benvenuto nel Gioco Trento Play&Go!</h4>
+						    <h4>{{ 'welcome_rules_page_title' | i18n }}</h4>
 							<div align="justify">
-								Partecipare &egrave; semplice: pianifica i tuoi viaggi con ViaggiaTrento Play&amp;Go e scegli delle soluzioni di mobilit&agrave; sostenibile per guadagnare punti e avanzare nel gioco. 
-								Divertiti a collezionare punti, badges e mettiti alla prova con le challenges settimanali. Sfida i tuoi amici a scalare le classifiche: ogni settimana puoi vincere ricchi premi e 
-								contribuire, divertendoti, a rendere la tua citt&agrave; pi&ugrave; sostenibile e smart!
+								{{ 'welcome_rules_page_text' | i18n }}
 							</div>
 							<br/>
-							<h4>Come si gioca?</h4>
+							<h4>{{ 'game_rules_page_title' | i18n }}</h4>
 							<div align="left">
-								Pianifica i tuoi viaggi con ViaggiaTrento Play&Go (<strong>"Pianifica viaggio"</strong> nella home), salva il tuo itinerario (<strong>"Salva itinerario"</strong> nella pagina di dettaglio) e ricordati di tracciare il tuo 
-								percorso quando esegui il viaggio (<strong>"Inizia"</strong> e <strong>"Termina"</strong> in dettaglio viaggio ne "I miei viaggi"). Per i viaggi a piedi o in bici puoi tracciare direttamente i tuoi percorsi senza pianificare 
-								(<strong>"A piedi"</strong> e <strong>"In bici"</strong> nella home).
-								Ogni viaggio ti permette di guadagnare <strong>punti Green Leaves</strong> in proporzione ai km fatti 
-								con mezzi sostenibili (a piedi, in bici/bike sharing, con i mezzi pubblici o i parcheggi di attestamento).
+								{{ 'game_rules_page_text_1' | i18n }}<strong>{{ 'game_rules_page_text_2' | i18n }}</strong>{{ 'game_rules_page_text_3' | i18n }}<strong>{{ 'game_rules_page_text_4' | i18n }}</strong>{{ 'game_rules_page_text_5' | i18n }}
+								<strong>{{ 'game_rules_page_text_6' | i18n }}</strong>{{ 'game_rules_page_text_7' | i18n }}<strong>{{ 'game_rules_page_text_8' | i18n }}</strong>{{ 'game_rules_page_text_9' | i18n }}
+								<strong>{{ 'game_rules_page_text_10' | i18n }}</strong>{{ 'game_rules_page_text_7' | i18n }}<strong>{{ 'game_rules_page_text_11' | i18n }}</strong>
+								{{ 'game_rules_page_text_12' | i18n }}<strong>{{ 'game_rules_page_text_13' | i18n }}</strong>{{ 'game_rules_page_text_14' | i18n }}
 							</div>
 							<div align="left">
-								Puoi vincere dei bonus in punti Green Leaves:<br>
+								{{ 'game_rules_page_text_15' | i18n }}<br>
 								<ul>
-									<li>Scegliendo dei viaggi ad emissioni zero di CO2, cio&egrave; esclusivamente in bici o a piedi; </li>
-									<li>Superando le tue sfide settimanali, quando ti vengono proposte;</li>
-									<li>Invitando i tuoi amici a registrarsi al gioco: &egrave; sufficiente che il tuo amico, in fase di registrazione, indichi il tuo nickname Giocatore.</li>
+									<li>{{ 'game_rules_page_text_16' | i18n }}</li>
+									<li>{{ 'game_rules_page_text_17' | i18n }}</li>
+									<li>{{ 'game_rules_page_text_18' | i18n }}</li>
 								</ul>
 							</div>
 							<br/>
-							<h4>Incentivi e premi</h4>
+							<h4>{{ 'prize_rules_page_title' | i18n }}</h4>
 							<div align="left">
-								Durante il gioco sono previsti <strong>premi settimanali e finali</strong> che andranno a premiare i primi classificati nella classifica (settimanale e generale, rispettivamente) a punti Green Leaves.
+								{{ 'prize_rules_page_text_1' | i18n }}<strong>{{ 'prize_rules_page_text_2' | i18n }}</strong>{{ 'prize_rules_page_text_3' | i18n }}
 								<br/>
-								Il gioco &egrave; accessibile tramite App Android e iPhone, tuttavia Google e Apple non sponsorizzano in alcun modo questo gioco e non offrono premi.<br/>
-								Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" target="_blank" alt="regolamento" title="regolamento" >regolamento Play&Go</a>.
+								{{ 'prize_rules_page_text_4' | i18n }}<br/>
+								{{ 'prize_rules_page_text_5' | i18n }}<a href="pdf/regolamento.pdf" target="_blank" alt="regolamento" title="regolamento" >{{ 'prize_rules_page_text_6' | i18n }}</a>.
 							</div>
 						</div>
 					</div>
@@ -99,36 +96,33 @@
 				<div ng-class="col-xs-12">
 					<div class="panel panel-success-trasparent" >
 		  				<div class="panel-body">
-						    <h4>Benvenuto nel Gioco Trento Play&Go!</h4>
+						    <h4>{{ 'welcome_rules_page_title' | i18n }}</h4>
 							<div align="justify">
-								Partecipare &egrave; semplice: pianifica i tuoi viaggi con ViaggiaTrento Play&amp;Go e scegli delle soluzioni di mobilit&agrave; sostenibile per guadagnare punti e avanzare nel gioco. 
-								Divertiti a collezionare punti, badges e mettiti alla prova con le challenges settimanali. Sfida i tuoi amici a scalare le classifiche: ogni settimana puoi vincere ricchi premi e 
-								contribuire, divertendoti, a rendere la tua citt&agrave; pi&ugrave; sostenibile e smart!
+								{{ 'welcome_rules_page_text' | i18n }}
 							</div>
 							<br/>
-							<h4>Come si gioca?</h4>
+							<h4>{{ 'game_rules_page_title' | i18n }}</h4>
 							<div align="left">
-								Pianifica i tuoi viaggi con ViaggiaTrento Play&Go (<strong>"Pianifica viaggio"</strong> nella home), salva il tuo itinerario (<strong>"Salva itinerario"</strong> nella pagina di dettaglio) e ricordati di tracciare il tuo 
-								percorso quando esegui il viaggio (<strong>"Inizia"</strong> e <strong>"Termina"</strong> in dettaglio viaggio ne "I miei viaggi"). Per i viaggi a piedi o in bici puoi tracciare direttamente i tuoi percorsi senza pianificare 
-								(<strong>"A piedi"</strong> e <strong>"In bici"</strong> nella home).
-								Ogni viaggio ti permette di guadagnare <strong>punti Green Leaves</strong> in proporzione ai km fatti 
-								con mezzi sostenibili (a piedi, in bici/bike sharing, con i mezzi pubblici o i parcheggi di attestamento).
+								{{ 'game_rules_page_text_1' | i18n }}<strong>{{ 'game_rules_page_text_2' | i18n }}</strong>{{ 'game_rules_page_text_3' | i18n }}<strong>{{ 'game_rules_page_text_4' | i18n }}</strong>{{ 'game_rules_page_text_5' | i18n }}
+								<strong>{{ 'game_rules_page_text_6' | i18n }}</strong>{{ 'game_rules_page_text_7' | i18n }}<strong>{{ 'game_rules_page_text_8' | i18n }}</strong>{{ 'game_rules_page_text_9' | i18n }}
+								<strong>{{ 'game_rules_page_text_10' | i18n }}</strong>{{ 'game_rules_page_text_7' | i18n }}<strong>{{ 'game_rules_page_text_11' | i18n }}</strong>
+								{{ 'game_rules_page_text_12' | i18n }}<strong>{{ 'game_rules_page_text_13' | i18n }}</strong>{{ 'game_rules_page_text_14' | i18n }}
 							</div>
 							<div align="left">
-								Puoi vincere dei bonus in punti Green Leaves:<br>
+								{{ 'game_rules_page_text_15' | i18n }}<br>
 								<ul>
-									<li>Scegliendo dei viaggi ad emissioni zero di CO2, cio&egrave; esclusivamente in bici o a piedi; </li>
-									<li>Superando le tue sfide settimanali, quando ti vengono proposte;</li>
-									<li>Invitando i tuoi amici a registrarsi al gioco: &egrave; sufficiente che il tuo amico, in fase di registrazione, indichi il tuo nickname Giocatore.</li>
+									<li>{{ 'game_rules_page_text_16' | i18n }}</li>
+									<li>{{ 'game_rules_page_text_17' | i18n }}</li>
+									<li>{{ 'game_rules_page_text_18' | i18n }}</li>
 								</ul>
 							</div>
 							<br/>
-							<h4>Incentivi e premi</h4>
+							<h4>{{ 'prize_rules_page_title' | i18n }}</h4>
 							<div align="left">
-								Durante il gioco sono previsti <strong>premi settimanali e finali</strong> che andranno a premiare i primi classificati nella classifica (settimanale e generale, rispettivamente) a punti Green Leaves.
+								{{ 'prize_rules_page_text_1' | i18n }}<strong>{{ 'prize_rules_page_text_2' | i18n }}</strong>{{ 'prize_rules_page_text_3' | i18n }}
 								<br/>
-								Il gioco &egrave; accessibile tramite App Android e iPhone, tuttavia Google e Apple non sponsorizzano in alcun modo questo gioco e non offrono premi.<br/>
-								Al seguente link puoi scaricare il regolamento completo del gioco: <a href="pdf/regolamento.pdf" target="_blank" alt="regolamento" title="regolamento" >regolamento Play&Go</a>.
+								{{ 'prize_rules_page_text_4' | i18n }}<br/>
+								{{ 'prize_rules_page_text_5' | i18n }}<a href="pdf/regolamento.pdf" target="_blank" alt="regolamento" title="regolamento" >{{ 'prize_rules_page_text_6' | i18n }}</a>.
 							</div>
 						</div>
 					</div>

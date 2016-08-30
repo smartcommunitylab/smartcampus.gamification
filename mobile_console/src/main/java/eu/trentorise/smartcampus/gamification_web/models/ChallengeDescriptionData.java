@@ -9,6 +9,7 @@ public class ChallengeDescriptionData implements Serializable {
 	private String type;
 	private String mobilitymode;
 	private String description;
+	private String description_eng;	// to avoid English language
 	
 	public String getId() {
 		return id;
@@ -42,6 +43,14 @@ public class ChallengeDescriptionData implements Serializable {
 		this.description = description;
 	}
 	
+	public String getDescription_eng() {
+		return description_eng;
+	}
+
+	public void setDescription_eng(String description_eng) {
+		this.description_eng = description_eng;
+	}
+
 	@Override
 	public String toString() {
 		return "ChallengeDescriptionData [id=" + id + ", type=" + type + ", mobilitymode=" + mobilitymode

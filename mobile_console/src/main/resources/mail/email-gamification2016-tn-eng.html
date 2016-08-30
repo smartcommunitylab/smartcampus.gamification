@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+<!--     	<link href="../../webapp/css/bootstrap.css" rel="stylesheet" /> -->
+<!-- 		<link href="../../webapp/css/bootstrap-theme.min.css" rel="stylesheet" /> -->
+        <title th:remove="all">Play&amp;Go Update</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+    	<div class="container-fluid">
+    		<div class="row" style="width:700px">
+    			<div class="col-md-6" >
+				    <div style="margin: 50px 5px 5px 5px" align="center">
+				    	<table style="padding: 20px;">
+				    		<tr>
+				    			<td valign="middle" align="center">
+				    				<img src="img/foglie03.png" th:src="'cid:' + ${imageRNFoglie03}" width="60px" alt="" title="" />
+				    			</td>
+				    			<td rowspan="2" valign="middle" align="center">
+									<h1>
+										<font face="Raleway-bold" size="48" color="gray"><strong>Play&amp;Go</strong></font>
+									</h1>
+									<h2>
+										<font face="Raleway">with ViaggiaTrento</font>
+									</h2>
+								</td>
+				    			<td></td>
+				    		</tr>
+				    		<tr>
+				    			<td></td>		
+								<td valign="middle" align="center">
+									<img src="img/foglie04.png" th:src="'cid:' + ${imageRNFoglie04}" width="60px" alt="" title="" />
+				    			</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+	    	</div>
+	    	<div class="row" style="width:700px">
+	    		<div class="col-md-6 col-md-offset-1">
+			        <h3 th:text="#{greeting(${name})}">
+			            Hello Utente,
+			        </h3>
+			        <h3>
+			        	we are entering the week <strong th:text="${next_week_num}">X+1</strong> of play.<br/>
+			        	The following list highlights the challenges this week and your recent results.
+			        </h3>
+			        <div th:if="${n_challenges ne null}">
+				        <h3 th:if="${show_last_week} == false and ${next_week_theme} ne 'No'" th:text="#{week_desc(${next_week_theme})}">
+				            This will be the week of THE BIKE
+				        </h3>
+				        <h3 th:if="${show_last_week} == true">
+				            This will be the LAST WEEK of play
+				        </h3>
+				        <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
+				            Here are your active CHALLENGES , get in the game to overcome them:
+				        </h3>
+				        <table th:if="${n_challenges ne null}">
+						    <tr th:each="ch : ${n_challenges}" valign="top">
+						        <!-- <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
+						       	<td><strong> - </strong></td>
+						    	<td>
+						    		<div>
+						    			<font size="2"><strong><span th:text="${ch.challDesc}">Descrizione challenge</span></strong><br/>
+						       				<span th:text="${ch.challCompleteDesc}">Descrizione lunga challenge</span>
+						       			</font>
+						    		</div>
+						       	</td>
+						    </tr>
+					    </table>
+					    <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
+				            The challenges are valid at <span th:text="${chs_start_time}">00:00</span> of the day <span th:text="${chs_start_date}">XXX</span> and finish at <span th:text="${chs_end_time}">23:59</span> of the day <span th:text="${chs_end_date}">YYY</span>!
+				        </h3>
+			        </div>
+			        <div th:if="${n_prizes ne null and are_prizes}">
+				        <h3>
+				            The prizes for the week <strong th:text="${next_week_num}">X+1</strong> are:
+				        </h3>
+				        <table th:if="${n_prizes ne null}" width="95%">
+				        	<tr align="left">
+				        		<th width="2%"></th>
+				        		<th width="40%">Prize</th>
+				        		<th width="58%">Target</th>
+				        		<!-- <th width="20%">Offerto da</th> -->
+				        	</tr>
+						    <tr th:each="p : ${n_prizes}" valign="top">
+						        <td>- </td>
+						        <td><font size="2" ><strong><span th:text="${p.prize}">tessera mitt</span></strong></font></td>
+						        <td><font size="2" > <span th:text="${p.target}">primo posto green point</span></font></td>
+						       	<!-- <td><font size="2" > <span th:text="${p.sponsor}">AMR</span></font></td> -->
+						    </tr>
+					    </table>
+			        </div>
+			        <br/>
+			        <h3>
+				    	YOUR RESULTS of week <strong th:text="${week_num}">X</strong> are:
+				    </h3>
+			        <!-- <div th:if="${are_prizes_last}">
+				        <h3>
+				        	PREMI SETTIMANALI
+				        </h3>
+				        <h3>
+				        	Complimenti ai vincitori dei premi di questa settimana:
+				        </h3>
+				        <table th:if="${n_winners ne null}" width="85%">
+				        	<tr align="left">
+				        		<th width="20%">Giocatore</th>
+				        		<th width="20%">Premio</th>
+				        		<th width="60%">Traguardo</th>
+				        	</tr>
+						    <tr th:each="w : ${n_winners}">
+						        <td><font size="2" > - <strong th:text="${w.nickPlayer}">Nick giocatore</strong></font></td>
+						        <td><font size="2" ><span th:text="${w.prizesDesc}">1 ingresso al MART</span></font></td>
+						       	<td><font size="2" ><span th:text="${w.prizesTarget}">Primo posto green leaves</span></font></td>
+						    </tr>
+					    </table>
+			        </div> -->
+			        <!-- <h3>
+			        	I TUOI RISULTATI
+			        </h3>
+			        <h3>
+			        	complimenti, ecco i tuoi risultati di gioco:
+			        </h3> -->
+			        <div style="margin: 50px 5px 5px 150px">
+				        <table>
+					        <tr>
+						       	<td>
+						       		<img src="img/green/greenLeavesbase.png" th:src="'cid:' + ${imageRNGreenScore}" width="90px" alt="" title="" />
+								</td>
+							   	<td><font size="3" ><strong th:text="#{green_points(${g_point})}">Green Leaves Points</strong></font></td>
+							</tr>
+							<!-- <tr>
+						       	<td>
+						       		<img src="img/health/healthLeavesBase.png" th:src="'cid:' + ${imageRNHealthScore}" width="100px" alt="" title="" />
+								</td>
+							   	<td><font size="3" ><strong th:text="#{health_points(${h_point})}">Punti salute</strong></font></td>
+							</tr>
+							<tr>
+						       	<td>
+						       		<img src="img/pr/prLeaves.png" width="100px"  th:src="'cid:' + ${imageRNPrScore}" alt="" title="" />
+								</td>
+							   	<td><font size="3" ><strong th:text="#{pr_points(${p_point})}">Punti parkAndride</strong></font></td>
+							</tr> -->
+						</table>
+					</div>
+			        
+			        <!-- th:if="${name.length() gt 10}" -->
+			        <div th:if="${n_lw_win_challenges ne null and not #lists.isEmpty(n_lw_win_challenges)}">
+				        <h3>
+				            You have exceeded the challenges:
+				        </h3>
+				        <table th:if="${n_lw_win_challenges ne null}">
+						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" valign="top" >
+						        <!-- <td><font size="2" ><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
+						       	<td><font size="2" ><strong> - <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td>
+						    </tr>
+					    </table>
+			        </div>
+			        
+			        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{new_badges}">
+			            In addition you have earned the following badge:
+			        </h3>
+			        <div style="margin: 50px 5px 5px 150px" >
+				        <table th:if="${n_badges ne null}">
+					        <tr th:each="b : ${n_badges}">
+					        	<td><img src="img/green/greenLeavesbase.png" width="90px"  th:src="'cid:' + ${b.imageName}" alt="" title="" /></td>
+						       	<td><font size="3" > <strong th:text="${b.showedTextEng}">Badge Name</strong></font></td>
+						    </tr>
+				        </table>
+			        </div>
+			        
+			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
+			            This week you have not earned new badges. Play again to earn more points and get new badges!
+			        </h3>
+			        <h3>
+			        	To see your complete results and standings updated see the app ViaggaTrento in the Play&amp;Go section. For more details and information on the app visit the smartcommunity website or click <b><a href="http://www.smartcommunitylab.it/apps/viaggia-trento-playgo" th:href="${greengame_url}" target="_blank">HERE</a></b>.
+			        </h3>
+			        <h4>
+			        	If you do not wish to receive the following email notification off the Service by clicking <b><a href="http://localhost:8080/gamificationweb/out/rest/unsubscribeMail/3" th:href="${unsubscribtionLink}" target="_blank">HERE</a></b>.
+			        </h4>
+			        
+<!-- 			        <img src="img/foglie03.svg" th:src="'cid:' + ${imageResourceName}" /> -->
+			        
+			        <h3>
+			            Good luck, <br />
+						&emsp;<em>Play&amp;Go staff</em>
+			        </h3>
+		        </div>
+	        </div>
+        </div>
+        <footer>
+        	<br />
+        	<br />
+        	<br />
+        	<div class="row">
+	    		<div class="col-md-6 col-md-offset-1">
+					<img src="img/footer.png" width="650px" th:src="'cid:' + ${imageResourceName}" alt="" title="" />
+				</div>
+			</div>
+		</footer>
+    </body>
+</html>

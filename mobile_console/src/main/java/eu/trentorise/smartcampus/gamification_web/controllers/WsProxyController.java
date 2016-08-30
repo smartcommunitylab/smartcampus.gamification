@@ -370,16 +370,19 @@ public class WsProxyController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		logger.debug("WS-GET. Method unsubscribeMail. Passed data : " + socialId);
 		Player p = null;
+		String user_language = "it";
 		try {
 			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 			p = playerRepositoryDao.findBySocialIdAndType(socialId, type);
 			p.setSendMail(false);
 			playerRepositoryDao.save(p);
+			user_language = (p.getLanguage() != null && p.getLanguage().compareTo("") != 0) ? p.getLanguage() : "it";
 		} catch (Exception ex){
 			logger.error("Error in mailing unsubscribtion " + ex.getMessage());
 		}
 		boolean res = (p != null) ? true : false;
 		model.put("wsresult", res);
+		model.put("language", user_language);
 		return new ModelAndView("unsubscribe", model);
 	}
 	
@@ -428,10 +431,12 @@ public class WsProxyController {
 		String userId = user.getUserId();
 		Player p = null;
 		String nickName = "";
+		String language = "it";
 		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 		p = playerRepositoryDao.findBySocialIdAndType(userId, type);
 		if(p != null){
 			nickName = p.getNikName();
+			language = ((p.getLanguage() != null) && (p.getLanguage().compareTo("") != 0)) ? p.getLanguage() : "it";
 		}
 		String statusUrl = "state/" + gameName + "/" + userId;
 		String allData = this.getAll(request, statusUrl);
@@ -442,7 +447,7 @@ public class WsProxyController {
 		}
 		
 		StatusUtils statusUtils = new StatusUtils();
-		return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl, 1);
+		return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl, 1, language);
 	}
 	
 	// Method used to get the user classification data (by mobyle app)

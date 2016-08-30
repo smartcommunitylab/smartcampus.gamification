@@ -41,6 +41,7 @@
 
 <script type="text/javascript">
 	var conf_wsresult="<%=request.getAttribute("wsresult")%>";
+	var conf_lang="<%=request.getAttribute("language")%>";
 	var token="<%=request.getAttribute("token")%>";
 	var userId="<%=request.getAttribute("user_id")%>";
 	var conf_gameid="<%=request.getAttribute("gameid")%>";
@@ -50,6 +51,8 @@
 	var conf_is_test="<%=request.getAttribute("isTest")%>";
 	var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
 	var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
+	var conf_prizes="<%=request.getAttribute("prizes")%>";
+	var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 	
 	var cookieEnabled = (navigator.cookieEnabled) ? true : false;	
 	if (typeof navigator.cookieEnabled == "undefined" && !cookieEnabled)
@@ -78,7 +81,7 @@
 							<!-- <div class="row" style="height: 20px" align="center" ng-if="isIe10==true">
 								<h4><font color="red">Alcune funzionalit&agrave; del portale non sono supportate in Internet Explorer. Utilizza un altro browser per accedere al portale.</font></h4>
 							</div> -->
-							<div style="margin: 50px 5px 5px 5px" align="center">
+							<div style="margin: 50px 5px 5px 5px" align="center" ng-if="itaLang">
 								<h1>
 									<font face="Raleway-bold" size="48" color="gray"><strong>Play&Go</strong></font>
 								</h1>
@@ -93,6 +96,23 @@
 								<p class="big-text" align="left" ng-if="!wsresult">La tua richiesta di disattivazione delle notifiche via mail<strong> non ha avuto esito positivo</strong>. Riprova pi&ugrave; tardi.<br />
 								Grazie per la tua partecipazione al gioco ViaggiaTrento Play&amp;Go, continua a muoverti in modo green e ad usare la app!<br /><br />
 								&emsp;<em>Lo staff di Play&amp;Go</em>
+								</p>
+							</div>
+							<div style="margin: 50px 5px 5px 5px" align="center" ng-if="!itaLang">
+								<h1>
+									<font face="Raleway-bold" size="48" color="gray"><strong>Play&Go</strong></font>
+								</h1>
+								<h2>
+									<font face="Raleway">with ViaggiaTrento</font>
+								</h2>
+								<h2>&nbsp;</h2>
+								<p class="big-text" align="left" ng-if="wsresult">Your request to off the mail notification service <strong> is successful</strong>. Therefore you will no longer receive any notification.<br />
+								Thanks for your participation in the ViaggiaTrento Play&amp;Go game, keep moving so green and to use the app!<br /><br />
+								&emsp;<em>Play&amp;Go staff</em>
+								</p>
+								<p class="big-text" align="left" ng-if="!wsresult">Your request to off the mail notification service <strong> has failed</strong>. Please try later.<br />
+								Thanks for your participation in the ViaggiaTrento Play&amp;Go game, keep moving so green and to use the app!<br /><br />
+								&emsp;<em>Play&amp;Go staff</em>
 								</p>
 							</div>
 							<!-- <div class="row" style="height: 150px; margin-top: 80px" align="center">

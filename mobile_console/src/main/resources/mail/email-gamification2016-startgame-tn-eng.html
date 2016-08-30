@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+<!--     	<link href="../../webapp/css/bootstrap.css" rel="stylesheet" /> -->
+<!-- 		<link href="../../webapp/css/bootstrap-theme.min.css" rel="stylesheet" /> -->
+        <title th:remove="all">Play&amp;Go Update</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+    	<div class="container-fluid">
+    		<div class="row" style="width:700px">
+    			<div class="col-md-6" >
+				    <div style="margin: 50px 5px 5px 5px" align="center">
+				    	<table style="padding: 20px;">
+				    		<tr>
+				    			<td valign="middle" align="center">
+				    				<img src="img/foglie03.png" th:src="'cid:' + ${imageRNFoglie03}" width="60px" alt="" title="" />
+				    			</td>
+				    			<td rowspan="2" valign="middle" align="center">
+									<h1>
+										<font face="Raleway-bold" size="48" color="gray"><strong>Play&amp;Go</strong></font>
+									</h1>
+									<h2>
+										<font face="Raleway">with ViaggiaTrento</font>
+									</h2>
+								</td>
+				    			<td></td>
+				    		</tr>
+				    		<tr>
+				    			<td></td>		
+								<td valign="middle" align="center">
+									<img src="img/foglie04.png" th:src="'cid:' + ${imageRNFoglie04}" width="60px" alt="" title="" />
+				    			</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+	    	</div>
+	    	<div class="row" style="width:700px">
+	    		<div class="col-md-6 col-md-offset-1">
+			        <h3 th:text="#{greeting(${name})}">
+			            Hello Utente,
+			        </h3>
+			        <h3>
+			        	we are entering the week <strong th:text="${next_week_num}">X+1</strong> of play.
+			        	<span th:if="${g_point} > 0"><br/>Keep playing and moving smart!</span>
+			        </h3>
+			        <h3>
+				        Since September 10 will be active weekly challenges and custom awards.
+				    </h3>
+			        <div th:if="${g_point} > 0">
+				        <h3>
+					    	Result of week <strong th:text="${week_num}">X</strong> of play.
+					    </h3>
+				        <h3>
+				        	YOUR RESULTS
+				        </h3>
+				        <h3>
+				        	Congratulations, that's your game results:
+				        </h3>
+				        <div style="margin: 50px 5px 5px 150px">
+					        <table>
+						        <tr>
+							       	<td>
+							       		<img src="img/green/greenLeavesbase.png" th:src="'cid:' + ${imageRNGreenScore}" width="90px" alt="" title="" />
+									</td>
+								   	<td><font size="3" ><strong th:text="#{green_points(${g_point})}">Green Leaves Points</strong></font></td>
+								</tr>
+							</table>
+						</div>
+				        
+				        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{new_badges}">
+				            In addition , during the week you earned:
+				        </h3>
+				        <div style="margin: 50px 5px 5px 150px" >
+					        <table th:if="${n_badges ne null}">
+						        <tr th:each="b : ${n_badges}">
+						        	<td><img src="img/green/greenLeavesbase.png" width="90px"  th:src="'cid:' + ${b.imageName}" alt="" title="" /></td>
+							       	<td><font size="3" >Badge : <strong th:text="${b.showedTextEng}">Badge Name</strong></font></td>
+							    </tr>
+					        </table>
+				        </div>
+			        </div>
+			        <div th:if="${g_point} == 0">
+				        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
+				            This week you have not earned Green Leaves points. <br/>Try to play and a smart move!
+				        </h3>
+				        <font size="3" >Earn points is easy:</font>
+				        <table>
+						    <tr valign="top">
+						       	<td> - </td>
+						       	<td><font size="3" >Plan your trips with ViaggiaTrento Play&amp;Go (<strong>"Planning trip"</strong> in home);</font></td>
+						    </tr>
+						    <tr valign="top">
+						       	<td> - </td>
+						       	<td><font size="3" >Save your itinerary (<strong>"Save Trip"</strong> in the details page);</font></td>
+						    </tr>
+						    <tr valign="top">
+						       	<td> - </td>
+						       	<td><font size="3" >Remember to plot your path when you run the trip (<strong>"Start"</strong> and <strong>"Stop"</strong> in trip details in <strong>"My trips"</strong>);</font></td>
+						    </tr>
+					    </table><br/>
+					    <font size="3" >Each trip lets you earn <strong>Green Leaves points</strong> in proportion with the kms done in a sustainable mode (walking, by byke/bike sharing, with public trasport).</font>
+			        </div>
+			        <h3>
+			        	To see your complete results and the updated rankings see the app ViaggaTrento in the Play&amp;Go section.
+			        </h3>
+			        <p>
+			        	<font size="3" >
+			        		For any questions please do not hesitate to contact us: <strong><a href="mailto:europa@comune.trento.tn.it">europa@comune.trento.tn.it</a></strong>.
+			        	</font>
+			        </p>
+			        <h3>
+			            Good luck, <br />
+						&emsp;<em>Play&amp;Go Staff</em>
+			        </h3>
+		        </div>
+	        </div>
+        </div>
+        <footer>
+        	<br />
+        	<br />
+        	<br />
+        	<div class="row">
+	    		<div class="col-md-6 col-md-offset-1">
+					<img src="img/footer.png" width="700px" th:src="'cid:' + ${imageResourceName}" alt="" title="" />
+				</div>
+			</div>
+		</footer>
+    </body>
+</html>

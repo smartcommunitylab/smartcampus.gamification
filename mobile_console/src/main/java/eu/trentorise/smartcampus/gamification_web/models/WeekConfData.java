@@ -4,6 +4,7 @@ public class WeekConfData {
 
 	private String weekNum = "";
 	private String weekTheme = "";
+	private String weekThemeEng = "";
 	private boolean challenges = false;
 	private boolean prizes = false;
 	private boolean prizesLast = false;
@@ -57,15 +58,24 @@ public class WeekConfData {
 		this.isActual = isActual;
 	}
 
+	public String getWeekThemeEng() {
+		return weekThemeEng;
+	}
+
+	public void setWeekThemeEng(String weekThemeEng) {
+		this.weekThemeEng = weekThemeEng;
+	}
+
 	public WeekConfData() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public WeekConfData(String weekNum, String weekTheme, boolean challenges, boolean prizes, boolean prizesLast,
+	public WeekConfData(String weekNum, String weekTheme, String weekThemeEng, boolean challenges, boolean prizes, boolean prizesLast,
 			boolean isAcutal) {
 		super();
 		this.weekNum = weekNum;
 		this.weekTheme = weekTheme;
+		this.weekThemeEng = weekThemeEng;
 		this.challenges = challenges;
 		this.prizes = prizes;
 		this.prizesLast = prizesLast;

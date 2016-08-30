@@ -60,7 +60,7 @@
 	"description": "Link classifica"
 }, {
 	"key": "left_menu-rules",
-	"value": "Regole",
+	"value": "Rules",
 	"description": "Link regolamento"
 }, {
 	"key": "left_menu-privacy",
@@ -68,7 +68,7 @@
 	"description": "Link privacy"
 }, {
 	"key": "left_menu-prizes",
-	"value": "Premi",
+	"value": "Prizes",
 	"description": "Link premi"
 }, {
 	"key": "home_title_page-classification-global",
@@ -460,19 +460,19 @@
 	"description": "label messaggio sfida persa in pagina challenges"
 }, {
 	"key": "ch_win_message_text_label",
-	"value": "HAI VINTO ",
+	"value": "YOU WON ",
 	"description": "label messaggio sfida vinta in pagina challenges"
 }, {
 	"key": "ch_empty_list",
-	"value": "In questo momento del gioco le sfide personalizzate non sono ancora attive. Continua a giocare e verrai avvisato quando saranno attivate.",
+	"value": "In this point of game the challenges are not actived yet. Play again and you will notified when the challenges are actived.",
 	"description": "label messaggio nessuna sfida in pagina challenges"
 }, {
 	"key": "hello_home-title",
-	"value": "Ciao",
+	"value": "Hello",
 	"description": "testo titolo in header pagine prima di nickname"
 }, {
 	"key": "week_prize_from_title",
-	"value": "QUESTA SETTIMANA I PREMI SONO OFFERTI DA ",
+	"value": "THIS WEEL THE PRIZES ARE OFFERED BY ",
 	"description": "testo banner sponsor premio settimana"
 }, {
 	"key": "left_menu-credits",
@@ -480,31 +480,259 @@
 	"description": "titolo pagina credits"
 }, {
 	"key": "no_named_user",
-	"value": "Sconosciuto",
+	"value": "Unknown",
 	"description": "Testo per utente senza nickname"
 }, {
 	"key": "global_class_tab_title",
-	"value": "Globale",
+	"value": "Global classification",
 	"description": "Testo per classifica globale"
 }, {
 	"key": "actual_week_class_tab_title",
-	"value": "Settimana corrente",
+	"value": "Current week classification",
 	"description": "Testo per classifica settimana corrente"
 }, {
 	"key": "last_week_class_tab_title",
-	"value": "Settimana scorsa",
+	"value": "Last week classification",
 	"description": "Testo per classifica settimana scorsa"
 }, {
 	"key": "classification_position_player_text_1",
-	"value": "Sei al ",
+	"value": "You are at ",
 	"description": "Testo per posizione utente parte 1"
 }, {
 	"key": "classification_position_player_text_2",
-	"value": "^o posto con ",
+	"value": " position with ",
 	"description": "Testo per posizione utente parte 2"
 }, {
 	"key": "classification_position_player_text_3",
-	"value": " punti.",
+	"value": " points.",
 	"description": "Testo per posizione utente parte 3"
+}, {
+	"key": "week_prize_title",
+	"value": "WEEKLY PRIZES",
+	"description": "Testo per titolo premi settimanali"
+}, {
+	"key": "global_prize_title",
+	"value": "FINAL PRIZES",
+	"description": "Testo per titolo premi finali"
+}, {
+	"key": "week_prize_text_1",
+	"value": "The prizes for the week ",
+	"description": "Testo per premi settimanali parte 1"
+}, {
+	"key": "week_prize_text_2",
+	"value": " are:",
+	"description": "Testo per premi settimanali parte 2"
+}, {
+	"key": "global_prize_text_1",
+	"value": "At the end of the game , each player will receive a certificate that will bring the results achieved. The nine players at the head of ",
+	"description": "Testo per premi globali parte 1"
+}, {
+	"key": "global_prize_text_2",
+	"value": " Green Leaves global classification ",
+	"description": "Testo per premi globali parte 2"
+}, {
+	"key": "global_prize_text_3",
+	"value": "(see 'OPERATION OF THE GAME') at the end of the game will receive this prizes: ",
+	"description": "Testo per premi globali parte 3"
+}, {
+	"key": "global_prize_text_4",
+	"value": "An awards ceremony with presentation of certificates and awards will take place at and by the Municipality of Trent at the end of the game .",
+	"description": "Testo per premi globali parte 4"
+}, {
+	"key": "global_prize_classification_pos_1",
+	"value": "first place:",
+	"description": "Testo per classifica globale posizione 1"
+}, {
+	"key": "global_prize_classification_description_1",
+	"value": "n. 1 stay of three days and two nights for two people in a hotel of 4 stars of the territory",
+	"description": "Testo per descrizione classifica globale posizione 1"
+}, {
+	"key": "global_prize_classification_pos_2",
+	"value": "second place:",
+	"description": "Testo per classifica globale posizione 2"
+}, {
+	"key": "global_prize_classification_description_2",
+	"value": "n. 1 bonus of four tickets for the Christmas show at the Teatro Sociale",
+	"description": "Testo per descrizione classifica globale posizione 2"
+}, {
+	"key": "global_prize_classification_pos_3",
+	"value": "third place:",
+	"description": "Testo per classifica globale posizione 3"
+}, {
+	"key": "global_prize_classification_description_3",
+	"value": "n. 1 subscription Trentino Volley",
+	"description": "Testo per descrizione classifica globale posizione 3"
+}, {
+	"key": "global_prize_classification_pos_4",
+	"value": "fourth place:",
+	"description": "Testo per classifica globale posizione 4"
+}, {
+	"key": "global_prize_classification_description_4",
+	"value": "n. 1 subscription Trentino Rosa",
+	"description": "Testo per descrizione classifica globale posizione 4"
+}, {
+	"key": "global_prize_classification_pos_5",
+	"value": "fifth place:",
+	"description": "Testo per classifica globale posizione 5"
+}, {
+	"key": "global_prize_classification_description_5",
+	"value": "shirt and ball autographed by Aquila basket players",
+	"description": "Testo per descrizione classifica globale posizione 5"
+}, {
+	"key": "global_prize_classification_pos_6",
+	"value": "sixth place:",
+	"description": "Testo per classifica globale posizione 6"
+}, {
+	"key": "global_prize_classification_description_6",
+	"value": "n. 1 individual entrance to Muse card with MiniTribù profile (1 parent + children)",
+	"description": "Testo per descrizione classifica globale posizione 6"
+}, {
+	"key": "global_prize_classification_pos_7",
+	"value": "seventh place:",
+	"description": "Testo per classifica globale posizione 7"
+}, {
+	"key": "global_prize_classification_description_7",
+	"value": "n. 1 single subscription to car sharing",
+	"description": "Testo per descrizione classifica globale posizione 7"
+}, {
+	"key": "global_prize_classification_pos_8",
+	"value": "eighth place:",
+	"description": "Testo per classifica globale posizione 8"
+}, {
+	"key": "global_prize_classification_description_8",
+	"value": "a 10 min flight by plane over the city of Trento",
+	"description": "Testo per descrizione classifica globale posizione 8"
+}, {
+	"key": "global_prize_classification_pos_9",
+	"value": "nineth place:",
+	"description": "Testo per classifica globale posizione 9"
+}, {
+	"key": "global_prize_classification_description_9",
+	"value": "n. 1 day pass to ski on the Bondone mountain",
+	"description": "Testo per descrizione classifica globale posizione 9"
+}, {
+	"key": "privacy_page_title",
+	"value": "PROCESSING OF PERSONAL DATA",
+	"description": "Testo per titolo pagina privacy"
+}, {
+	"key": "privacy_page_text",
+	"value": "In order to allow playing the games with ViaggiaTrento Play&Go it is needed the collection and processing of information on planned and saved trips, track of the trips made ​​through the App, and the results of the game. Your personal data will be processed in full compliance with current legislation on privacy,",
+	"description": "Testo per titolo pagina privacy"
+}, {
+	"key": "privacy_page_link",
+	"value": "as specified in the following document",
+	"description": "Testo per titolo pagina privacy"
+}, {
+	"key": "welcome_rules_page_title",
+	"value": "Welcome in Trento Play&Go game!",
+	"description": "Testo per titolo pagina rules"
+}, {
+	"key": "game_rules_page_title",
+	"value": "How to play?",
+	"description": "Testo per titolo pagina rules"
+}, {
+	"key": "prize_rules_page_title",
+	"value": "Incentives and rewards",
+	"description": "Testo per titolo pagina rules"
+}, {
+	"key": "welcome_rules_page_text",
+	"value": "Joining is simple: plan your trips with ViaggiaTrento Play&Go and choose the sustainable mobility solutions to earn points and advance in the game. Have fun collecting points, badges and test yourself with weekly challenges. Challenge your friends to climb the charts: every week you can win prizes and help, while having fun, to make your city more sustainable and smart!",
+	"description": "Testo per contentuto pagina rules"
+}, {
+	"key": "game_rules_page_text_1",
+	"value": "Plan your trips with ViaggiaTrento Play&Go (",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_2",
+	"value": "'Plan trip'",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_3",
+	"value": " in the home), save your itinerary (",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_4",
+	"value": "'Save route'",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_5",
+	"value": " on the detail page) and remember to plot your path when you run the trip (",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_6",
+	"value": "'start'",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_7",
+	"value": " and ",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_8",
+	"value": "'stop'",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_9",
+	"value": " on trip details in 'My trips'). For travel on foot or by bike you can directly track your routes without planning (",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_10",
+	"value": "'On foot'",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_11",
+	"value": "'By bike'",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_12",
+	"value": "in the home). Each trip lets you earn ",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_13",
+	"value": "Green Leaves points",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_14",
+	"value": " in proportion to the kms done in sustainable mode (walking, by bike/bike sharing, with public transport or the abutting parkings).",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_15",
+	"value": "You can win bonus points in Green Leaves:",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_16",
+	"value": "Choosing zero CO2 emission travel, ie exclusively by bike or on foot;",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_17",
+	"value": "Overcoming your weekly challenges , when you are proposed;",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "game_rules_page_text_18",
+	"value": "Inviting your friends to register to the game: it is enough that your friend, when registering, give your Player nickname",
+	"description": "Testo per contenuto pagina rules"
+}, {
+	"key": "prize_rules_page_text_1",
+	"value": "During the game are planned ",
+	"description": "Testo per contentuto pagina rules"
+}, {
+	"key": "prize_rules_page_text_2",
+	"value": "weekly and final awards",
+	"description": "Testo per contentuto pagina rules"
+}, {
+	"key": "prize_rules_page_text_3",
+	"value": " which will reward the top finishers in the ranking (weekly and general, respectively ) in Green Leaves points.",
+	"description": "Testo per contentuto pagina rules"
+}, {
+	"key": "prize_rules_page_text_4",
+	"value": "The game is available through App Android and iPhone , but Google and Apple do not sponsor any way in this game and do not offer prizes.",
+	"description": "Testo per contentuto pagina rules"
+}, {
+	"key": "prize_rules_page_text_5",
+	"value": "At the following link you can download the complete rules of the game: ",
+	"description": "Testo per contentuto pagina rules"
+}, {
+	"key": "prize_rules_page_text_6",
+	"value": "Play&Go regulation",
+	"description": "Testo per contentuto pagina rules"
 }
 ]

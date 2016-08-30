@@ -51,10 +51,9 @@
 				<div ng-class="col-md-10">
 					<div class="panel panel-success-trasparent" >
 						<div class="panel-body">
-					    <h4>TRATTAMENTO DEI DATI PERSONALI</h4>
+					    <h4>{{ 'privacy_page_title' | i18n }}</h4>
 						<div align="justify">
-							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaTrento si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
-							I tuoi dati personali verranno trattati nel pieno rispetto della vigente normativa sulla privacy, <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >come da seguente documento</a>.
+							{{ 'privacy_page_text' | i18n }}<a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >{{ 'privacy_page_link' | i18n }}</a>.
 						</div>
 						<br/>
 					   </div>
@@ -74,10 +73,9 @@
 				<div ng-class="col-xs-12">
 					<div class="panel panel-success-trasparent" >
 						<div class="panel-body">
-					    <h4>TRATTAMENTO DEI DATI PERSONALI</h4>
+					    <h4>{{ 'privacy_page_title' | i18n }}</h4>
 						<div align="justify">
-							Al fine di permettere lo svolgimento del gioco Play&Go con ViaggiaTrento si rendono necessari la raccolta ed il trattamento delle informazioni relative ai viaggi pianificati e salvati, al tracciato dei viaggi effettuati tramite App, e ai risultati del gioco. 
-							I tuoi dati personali verranno trattati nel pieno rispetto della vigente normativa sulla privacy, <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >come da seguente documento</a>.
+							{{ 'privacy_page_text' | i18n }}<a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >{{ 'privacy_page_link' | i18n }}</a>.
 						</div>
 						<br/>
 					   </div>

@@ -180,6 +180,8 @@ public class PortalController extends SCController{
     private final String JSON_PLAYERID = "playerId";
     private final String JSON_TIMESTAMP = "timestamp";
     private final String JSON_BADGE = "badge";
+    private static final String ITA_LANG = "it";
+    private static final String ENG_LANG = "en";
     
 	/*
 	 * OAUTH2
@@ -212,7 +214,9 @@ public class PortalController extends SCController{
 				conf_directory = "conf_file_test";
 			}
 			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+			List<WeekPrizeData> mailPrizeFileDataEng = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize_en.csv");
 			model.put("prizes", mailPrizeFileData);
+			model.put("prizes_eng", mailPrizeFileDataEng);
 			
 			logger.debug(String
 					.format("I am in get root. User id: " + user.getUserId()));
@@ -313,7 +317,9 @@ public class PortalController extends SCController{
 			conf_directory = "conf_file_test";
 		}
 		List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+		List<WeekPrizeData> mailPrizeFileDataEng = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize_en.csv");
 		model.put("prizes", mailPrizeFileData);
+		model.put("prizes_eng", mailPrizeFileDataEng);
 		
 		return new ModelAndView("index", model);
 	}
@@ -409,7 +415,9 @@ public class PortalController extends SCController{
 			conf_directory = "conf_file_test";
 		}
 		List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+		List<WeekPrizeData> mailPrizeFileDataEng = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize_en.csv");
 		model.put("prizes", mailPrizeFileData);
+		model.put("prizes_eng", mailPrizeFileDataEng);
 		return new ModelAndView("g_prizes", model);
 	}
 	
@@ -498,11 +506,13 @@ public class PortalController extends SCController{
 			}
 			List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/" + conf_directory + "/game_week_configuration.csv");
 			List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize.csv");
+			List<WeekPrizeData> mailPrizeFileDataEng = readWeekPrizesFile(path + "mail/" + conf_directory + "/game_week_prize_en.csv");
 			List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/" + conf_directory + "/game_week_winners.csv");
 			List<WeekPrizeData> mailPrizeActualData = new ArrayList<WeekPrizeData>();
 			// here I have to add the new mail parameters readed from csv files
 			String actual_week = "";
 			String actual_week_theme = "";
+			String actual_week_theme_eng = "";
 			String last_week = "";
 			Boolean are_chall = false;
 			Boolean are_prizes = false;
@@ -512,6 +522,7 @@ public class PortalController extends SCController{
 				if(tmpWConf.isActual()){
 					actual_week = tmpWConf.getWeekNum();
 					actual_week_theme = tmpWConf.getWeekTheme();
+					actual_week_theme_eng = tmpWConf.getWeekThemeEng();
 					last_week = Integer.toString(Integer.parseInt(actual_week) - 1);
 					are_chall = tmpWConf.isChallenges();
 					are_prizes = tmpWConf.isPrizes();
@@ -521,49 +532,6 @@ public class PortalController extends SCController{
 			}
 			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 			Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
-//				List<String> specialPlayers = new ArrayList<String>();
-//				specialPlayers.add("23840");
-//				specialPlayers.add("23789");
-//				specialPlayers.add("23841");
-//				specialPlayers.add("23844");
-//				specialPlayers.add("10978");
-//				specialPlayers.add("23849");
-//				specialPlayers.add("23852");
-//				specialPlayers.add("23853");
-//				specialPlayers.add("23854");
-//				specialPlayers.add("23855");
-//				specialPlayers.add("23856");
-//				specialPlayers.add("23857");
-//				specialPlayers.add("23858");
-//				specialPlayers.add("11117");
-//				specialPlayers.add("23861");
-//				specialPlayers.add("23862");
-//				specialPlayers.add("23863");
-//				specialPlayers.add("23865");
-//				specialPlayers.add("23866");
-//				specialPlayers.add("23867");
-//				specialPlayers.add("23868");
-//				specialPlayers.add("23869");
-//				specialPlayers.add("23871");
-//				specialPlayers.add("23872");
-//				specialPlayers.add("23873");
-//				specialPlayers.add("23874");
-//				specialPlayers.add("23881");
-//				specialPlayers.add("23882");
-//				specialPlayers.add("23884");
-//				specialPlayers.add("10548");
-//				specialPlayers.add("23885");
-//				specialPlayers.add("23886");
-//				specialPlayers.add("23888");
-//				specialPlayers.add("23890");
-//				specialPlayers.add("23891");
-//				specialPlayers.add("23893");
-//				specialPlayers.add("23895");
-				
-			// Add user to exclude from the mailing list
-			//List<String> noMailingPlayers = new ArrayList<String>();
-			//noMailingPlayers.add("10730");	//"FILIPPO"	
-			//noMailingPlayers.add("23755");	//"Fede"
 			
 			for(Player p: iter){
 				logger.debug(String.format("Profile finded  %s", p.getNikName()));
@@ -581,6 +549,7 @@ public class PortalController extends SCController{
 					ArrayList<BagesData> someBadge = null;
 					List<ChallengesData> challenges = null;
 					List<ChallengesData> lastWeekChallenges = null;
+					Locale mailLoc = Locale.ITALIAN;
 				
 					try {
 						// WS State Invocation
@@ -588,8 +557,17 @@ public class PortalController extends SCController{
 						//states = getState(urlWSState);
 						// Challenges correction
 						String completeState = getAllChallenges(urlWSState);
+						String language = p.getLanguage();
+						if(language == null || language.compareTo("") == 0){
+							language = ITA_LANG;
+						}
+						if(language.compareTo(ENG_LANG) == 0){
+							actual_week_theme = actual_week_theme_eng;
+							mailLoc = Locale.ENGLISH;
+							mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileDataEng);
+						}
 						try {
-							PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0);
+							PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0, language);
 							states = completePlayerStatus.getPointConcept();
 							ChallengeConcept challLists = completePlayerStatus.getChallengeConcept();
 							//@SuppressWarnings("rawtypes")
@@ -627,21 +605,21 @@ public class PortalController extends SCController{
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 								} else {
 									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 								} else {
 									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 								}
 							}
 						} catch (MessagingException e) {
@@ -777,8 +755,12 @@ public class PortalController extends SCController{
 					//states = getState(urlWSState);
 					// Challenges correction
 					String completeState = getAllChallenges(urlWSState);
+					String language = p.getLanguage();
+					if(language == null || language.compareTo("") == 0){
+						language = ITA_LANG;
+					}
 					try {
-						PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0);
+						PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0, language);
 						states = completePlayerStatus.getPointConcept();
 						ChallengeConcept challLists = completePlayerStatus.getChallengeConcept();
 						//@SuppressWarnings("rawtypes")
@@ -891,20 +873,20 @@ public class PortalController extends SCController{
 		File greenSilver = new File(path + "mail/img/leaderboard/green/leaderboardGreen2.png");
 		File greenGold = new File(path + "mail/img/leaderboard/green/leaderboardGreen1.png");
 		
-		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king_week_green", "Re della Settimana - Green Leaves"));
-		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50_point_green", "50 Punti Green Leaves"));
-		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100_point_green", "100 Punti Green Leaves"));
-		allBadges.add(new BagesData(green200.getName(), FileUtils.readFileToByteArray(green200), "image/png", "200_point_green", "200 Punti Green Leaves"));
-		allBadges.add(new BagesData(green400.getName(), FileUtils.readFileToByteArray(green400), "image/png", "400_point_green", "400 Punti Green Leaves"));
-		allBadges.add(new BagesData(green800.getName(), FileUtils.readFileToByteArray(green800), "image/png", "800_point_green", "800 Punti Green Leaves"));
-		allBadges.add(new BagesData(green1500.getName(), FileUtils.readFileToByteArray(green1500), "image/png", "1500_point_green", "1500 Punti Green Leaves"));
-		allBadges.add(new BagesData(green2500.getName(), FileUtils.readFileToByteArray(green2500), "image/png", "2500_point_green", "2500 Punti Green Leaves"));
-		allBadges.add(new BagesData(green5000.getName(), FileUtils.readFileToByteArray(green5000), "image/png", "5000_point_green", "5000 Punti Green Leaves"));
-		allBadges.add(new BagesData(green10000.getName(), FileUtils.readFileToByteArray(green10000), "image/png", "10000_point_green", "10000 Punti Green Leaves"));
-		allBadges.add(new BagesData(green20000.getName(), FileUtils.readFileToByteArray(green20000), "image/png", "20000_point_green", "20000 Punti Green Leaves"));
-		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green Leaves"));
-		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green Leaves"));
-		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green Leaves"));
+		allBadges.add(new BagesData(greenKing.getName(), FileUtils.readFileToByteArray(greenKing), "image/png", "king_week_green", "Re della Settimana - Green Leaves", "King of the Week - Green Leaves"));
+		allBadges.add(new BagesData(green50.getName(), FileUtils.readFileToByteArray(green50), "image/png", "50_point_green", "50 Punti Green Leaves", "50 Green Leaves Points"));
+		allBadges.add(new BagesData(green100.getName(), FileUtils.readFileToByteArray(green100), "image/png", "100_point_green", "100 Punti Green Leaves", "100 Green Leaves Points"));
+		allBadges.add(new BagesData(green200.getName(), FileUtils.readFileToByteArray(green200), "image/png", "200_point_green", "200 Punti Green Leaves", "200 Green Leaves Points"));
+		allBadges.add(new BagesData(green400.getName(), FileUtils.readFileToByteArray(green400), "image/png", "400_point_green", "400 Punti Green Leaves", "400 Green Leaves Points"));
+		allBadges.add(new BagesData(green800.getName(), FileUtils.readFileToByteArray(green800), "image/png", "800_point_green", "800 Punti Green Leaves", "800 Green Leaves Points"));
+		allBadges.add(new BagesData(green1500.getName(), FileUtils.readFileToByteArray(green1500), "image/png", "1500_point_green", "1500 Punti Green Leaves", "1500 Green Leaves Points"));
+		allBadges.add(new BagesData(green2500.getName(), FileUtils.readFileToByteArray(green2500), "image/png", "2500_point_green", "2500 Punti Green Leaves", "2500 Green Leaves Points"));
+		allBadges.add(new BagesData(green5000.getName(), FileUtils.readFileToByteArray(green5000), "image/png", "5000_point_green", "5000 Punti Green Leaves", "5000 Green Leaves Points"));
+		allBadges.add(new BagesData(green10000.getName(), FileUtils.readFileToByteArray(green10000), "image/png", "10000_point_green", "10000 Punti Green Leaves", "10000 Green Leaves Points"));
+		allBadges.add(new BagesData(green20000.getName(), FileUtils.readFileToByteArray(green20000), "image/png", "20000_point_green", "20000 Punti Green Leaves", "20000 Green Leaves Points"));
+		allBadges.add(new BagesData(greenBronze.getName(), FileUtils.readFileToByteArray(greenBronze), "image/png", "bronze-medal-green", "Medaglia di Bronzo - Green Leaves", "Bronze Medal - Green Leaves"));
+		allBadges.add(new BagesData(greenSilver.getName(), FileUtils.readFileToByteArray(greenSilver), "image/png", "silver-medal-green", "Medaglia d'Argento - Green Leaves", "Silver Medal - Green Leaves"));
+		allBadges.add(new BagesData(greenGold.getName(), FileUtils.readFileToByteArray(greenGold), "image/png", "gold-medal-green", "Medaglia d'Oro - Green Leaves", "Gold Medal - Green Leaves"));
 				
 		// files for health badges
 		File healthKing = new File(path + "mail/img/health/healthKingWeek.png");
@@ -917,15 +899,15 @@ public class PortalController extends SCController{
 		File healthSilver = new File(path + "mail/img/health/healthSilverMedal.png");
 		File healthGold = new File(path + "mail/img/health/healthGoldMedal.png");
 		
-		allBadges.add(new BagesData(healthKing.getName(), FileUtils.readFileToByteArray(healthKing), "image/png", "king_week_health", "Re della Settimana - Salute"));
-		allBadges.add(new BagesData(health10.getName(), FileUtils.readFileToByteArray(health10), "image/png", "10_point_health", "10 Punti Salute"));
-		allBadges.add(new BagesData(health25.getName(), FileUtils.readFileToByteArray(health25), "image/png", "25_point_health", "25 Punti Salute"));
-		allBadges.add(new BagesData(health50.getName(), FileUtils.readFileToByteArray(health50), "image/png", "50_point_health", "50 Punti Salute"));
-		allBadges.add(new BagesData(health100.getName(), FileUtils.readFileToByteArray(health100), "image/png", "100_point_health", "100 Punti Salute"));
-		allBadges.add(new BagesData(health200.getName(), FileUtils.readFileToByteArray(health200), "image/png", "200_point_health", "200 Punti Salute"));
-		allBadges.add(new BagesData(healthBronze.getName(), FileUtils.readFileToByteArray(healthBronze), "image/png", "bronze_medal_health", "Medaglia di Bronzo - Salute"));
-		allBadges.add(new BagesData(healthSilver.getName(), FileUtils.readFileToByteArray(healthSilver), "image/png", "silver_medal_health", "Medaglia d'Argento - Salute"));
-		allBadges.add(new BagesData(healthGold.getName(), FileUtils.readFileToByteArray(healthGold), "image/png", "gold_medal_health", "Medaglia d'Oro - Salute"));
+		allBadges.add(new BagesData(healthKing.getName(), FileUtils.readFileToByteArray(healthKing), "image/png", "king_week_health", "Re della Settimana - Salute", "King of the Week - Health"));
+		allBadges.add(new BagesData(health10.getName(), FileUtils.readFileToByteArray(health10), "image/png", "10_point_health", "10 Punti Salute", "10 Health Points"));
+		allBadges.add(new BagesData(health25.getName(), FileUtils.readFileToByteArray(health25), "image/png", "25_point_health", "25 Punti Salute", "25 Health Points"));
+		allBadges.add(new BagesData(health50.getName(), FileUtils.readFileToByteArray(health50), "image/png", "50_point_health", "50 Punti Salute", "50 Health Points"));
+		allBadges.add(new BagesData(health100.getName(), FileUtils.readFileToByteArray(health100), "image/png", "100_point_health", "100 Punti Salute", "100 Health Points"));
+		allBadges.add(new BagesData(health200.getName(), FileUtils.readFileToByteArray(health200), "image/png", "200_point_health", "200 Punti Salute", "200 Health Points"));
+		allBadges.add(new BagesData(healthBronze.getName(), FileUtils.readFileToByteArray(healthBronze), "image/png", "bronze_medal_health", "Medaglia di Bronzo - Salute", "Bronze Medal - Health"));
+		allBadges.add(new BagesData(healthSilver.getName(), FileUtils.readFileToByteArray(healthSilver), "image/png", "silver_medal_health", "Medaglia d'Argento - Salute", "Silver Medal - Health"));
+		allBadges.add(new BagesData(healthGold.getName(), FileUtils.readFileToByteArray(healthGold), "image/png", "gold_medal_health", "Medaglia d'Oro - Salute", "Gold Medal - Health"));
 		
 		// files for pr badges
 		File prKing = new File(path + "mail/img/pr/prKingWeek.png");
@@ -946,23 +928,23 @@ public class PortalController extends SCController{
 		File prMonteBaldo = new File(path + "mail/img/pr/prPioneerMonteBaldo.png");
 		File prVillazzanoFS = new File(path + "mail/img/pr/prPioneerVillazzanoStazioneFS.png");
 		
-		allBadges.add(new BagesData(prKing.getName(), FileUtils.readFileToByteArray(prKing), "image/png", "king_week_pr", "Re della Settimana - Park&Ride"));
-		allBadges.add(new BagesData(pr10.getName(), FileUtils.readFileToByteArray(pr10), "image/png", "10_point_pr", "10 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr20.getName(), FileUtils.readFileToByteArray(pr20), "image/png", "20_point_pr", "20 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr50.getName(), FileUtils.readFileToByteArray(pr50), "image/png", "50_point_pr", "50 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr100.getName(), FileUtils.readFileToByteArray(pr100), "image/png", "100_point_pr", "100 Punti Park&Ride"));
-		allBadges.add(new BagesData(pr200.getName(), FileUtils.readFileToByteArray(pr200), "image/png", "200_point_pr", "200 Punti Park&Ride"));
-		allBadges.add(new BagesData(prBronze.getName(), FileUtils.readFileToByteArray(prBronze), "image/png", "bronze_medal_pr", "Medaglia di Bronzo - Park&Ride"));
-		allBadges.add(new BagesData(prSilver.getName(), FileUtils.readFileToByteArray(prSilver), "image/png", "silver_medal_pr", "Medaglia d'Argento - Park&Ride"));
-		allBadges.add(new BagesData(prGold.getName(), FileUtils.readFileToByteArray(prGold), "image/png", "gold_medal_pr", "Medaglia d'Oro - Park&Ride"));
-		allBadges.add(new BagesData(prManifattura.getName(), FileUtils.readFileToByteArray(prManifattura), "image/png", "Manifattura_parking", "Parcheggio Manifattura - Park&Ride"));
-		allBadges.add(new BagesData(prStadio.getName(), FileUtils.readFileToByteArray(prStadio), "image/png", "Stadio_parking", "Parcheggio Stadio - Park&Ride"));
-		allBadges.add(new BagesData(prRagazzi99.getName(), FileUtils.readFileToByteArray(prRagazzi99), "image/png", "Via Ragazzi del '99_parking", "Via ragazzi del 99 - Park&Ride"));
-		allBadges.add(new BagesData(prLidorno.getName(), FileUtils.readFileToByteArray(prLidorno), "image/png", "Via Lidorno_parking", "Via Lidorno - Park&Ride"));
-		allBadges.add(new BagesData(prViaFersina.getName(), FileUtils.readFileToByteArray(prViaFersina), "image/png", "Ghiaie via Fersina_parking", "Ghiaie via Fersina - Park&Ride"));
-		allBadges.add(new BagesData(prAreaZuffo.getName(), FileUtils.readFileToByteArray(prAreaZuffo), "image/png", "Ghiaie via Fersina_parking", "Ghiaie via Fersina - Park&Ride"));
-		allBadges.add(new BagesData(prMonteBaldo.getName(), FileUtils.readFileToByteArray(prMonteBaldo), "image/png", "Monte Baldo_parking", "Monte Baldo - Park&Ride"));
-		allBadges.add(new BagesData(prVillazzanoFS.getName(), FileUtils.readFileToByteArray(prVillazzanoFS), "image/png", "Via Asiago, Stazione FS Villazzano_parking", "Stazione FS Villazzano - Park&Ride"));
+		allBadges.add(new BagesData(prKing.getName(), FileUtils.readFileToByteArray(prKing), "image/png", "king_week_pr", "Re della Settimana - Park&Ride", "King of the Week - Park&Ride"));
+		allBadges.add(new BagesData(pr10.getName(), FileUtils.readFileToByteArray(pr10), "image/png", "10_point_pr", "10 Punti Park&Ride", "10 Park&Ride Points"));
+		allBadges.add(new BagesData(pr20.getName(), FileUtils.readFileToByteArray(pr20), "image/png", "20_point_pr", "20 Punti Park&Ride", "20 Park&Ride Points"));
+		allBadges.add(new BagesData(pr50.getName(), FileUtils.readFileToByteArray(pr50), "image/png", "50_point_pr", "50 Punti Park&Ride", "50 Park&Ride Points"));
+		allBadges.add(new BagesData(pr100.getName(), FileUtils.readFileToByteArray(pr100), "image/png", "100_point_pr", "100 Punti Park&Ride", "100 Park&Ride Points"));
+		allBadges.add(new BagesData(pr200.getName(), FileUtils.readFileToByteArray(pr200), "image/png", "200_point_pr", "200 Punti Park&Ride", "200 Park&Ride Points"));
+		allBadges.add(new BagesData(prBronze.getName(), FileUtils.readFileToByteArray(prBronze), "image/png", "bronze_medal_pr", "Medaglia di Bronzo - Park&Ride", "Bronze Medal - Park&Ride"));
+		allBadges.add(new BagesData(prSilver.getName(), FileUtils.readFileToByteArray(prSilver), "image/png", "silver_medal_pr", "Medaglia d'Argento - Park&Ride", "Silver Medal - Park&Ride"));
+		allBadges.add(new BagesData(prGold.getName(), FileUtils.readFileToByteArray(prGold), "image/png", "gold_medal_pr", "Medaglia d'Oro - Park&Ride", "Gold Medal - Park&Ride"));
+		allBadges.add(new BagesData(prManifattura.getName(), FileUtils.readFileToByteArray(prManifattura), "image/png", "Manifattura_parking", "Parcheggio Manifattura - Park&Ride", "Manifattura Park - Park&Ride"));
+		allBadges.add(new BagesData(prStadio.getName(), FileUtils.readFileToByteArray(prStadio), "image/png", "Stadio_parking", "Parcheggio Stadio - Park&Ride", "Stadio Park - Park&Ride"));
+		allBadges.add(new BagesData(prRagazzi99.getName(), FileUtils.readFileToByteArray(prRagazzi99), "image/png", "Via Ragazzi del '99_parking", "Via ragazzi del 99 - Park&Ride", "Via ragazzi del 99 Park - Park&Ride"));
+		allBadges.add(new BagesData(prLidorno.getName(), FileUtils.readFileToByteArray(prLidorno), "image/png", "Via Lidorno_parking", "Via Lidorno - Park&Ride", "Via Lidorno Park - Park&Ride"));
+		allBadges.add(new BagesData(prViaFersina.getName(), FileUtils.readFileToByteArray(prViaFersina), "image/png", "Ghiaie via Fersina_parking", "Ghiaie via Fersina - Park&Ride", "Ghiaie Park - Park&Ride"));
+		allBadges.add(new BagesData(prAreaZuffo.getName(), FileUtils.readFileToByteArray(prAreaZuffo), "image/png", "Ex-Zuffo_parking", "Ex Zuffo - Park&Ride", "Ex Zuffo Park - Park&Ride"));
+		allBadges.add(new BagesData(prMonteBaldo.getName(), FileUtils.readFileToByteArray(prMonteBaldo), "image/png", "Monte Baldo_parking", "Monte Baldo - Park&Ride", "Monte Baldo Park - Park&Ride"));
+		allBadges.add(new BagesData(prVillazzanoFS.getName(), FileUtils.readFileToByteArray(prVillazzanoFS), "image/png", "Via Asiago, Stazione FS Villazzano_parking", "Stazione FS Villazzano - Park&Ride", "Villazzano FS Station - Park&Ride"));
 		
 		// files for special badges
 		File specialEmotion = new File(path + "mail/img/special/emotion.png");
@@ -973,13 +955,13 @@ public class PortalController extends SCController{
 		File specialParcheggioCentro = new File(path + "mail/img/special/special_p_centro.png");
 		File specialPleALeoni = new File(path + "mail/img/special/special_p_p.le.a.leoni.png");
 		
-		allBadges.add(new BagesData(specialEmotion.getName(), FileUtils.readFileToByteArray(specialEmotion), "image/png", "e-motion", "E-Motion"));
-		allBadges.add(new BagesData(specialZeroImpact.getName(), FileUtils.readFileToByteArray(specialZeroImpact), "image/png", "zero-impact", "Impatto Zero"));
-		allBadges.add(new BagesData(specialStadioPark.getName(), FileUtils.readFileToByteArray(specialStadioPark), "image/png", "Stadio-park", "Parcheggio Stadio Quercia"));
-		allBadges.add(new BagesData(specialManifattura.getName(), FileUtils.readFileToByteArray(specialManifattura), "image/png", "Ex Manifattura-park", "Parcheggio Ex Manifattura"));
-		allBadges.add(new BagesData(specialCentroStorico.getName(), FileUtils.readFileToByteArray(specialCentroStorico), "image/png", "Centro Storico-park", "Parcheggio Centro Storico"));
-		allBadges.add(new BagesData(specialParcheggioCentro.getName(), FileUtils.readFileToByteArray(specialParcheggioCentro), "image/png", "Parcheggio Centro-park", "Parcheggio Centro"));
-		allBadges.add(new BagesData(specialPleALeoni.getName(), FileUtils.readFileToByteArray(specialPleALeoni), "image/png", "P.le A.Leoni-park", "Parcheggio Piazzale Leoni"));
+		allBadges.add(new BagesData(specialEmotion.getName(), FileUtils.readFileToByteArray(specialEmotion), "image/png", "e-motion", "E-Motion", "E-Motion"));
+		allBadges.add(new BagesData(specialZeroImpact.getName(), FileUtils.readFileToByteArray(specialZeroImpact), "image/png", "zero-impact", "Impatto Zero", "Zero Impact"));
+		allBadges.add(new BagesData(specialStadioPark.getName(), FileUtils.readFileToByteArray(specialStadioPark), "image/png", "Stadio-park", "Parcheggio Stadio Quercia", "Stadio Quercia Park"));
+		allBadges.add(new BagesData(specialManifattura.getName(), FileUtils.readFileToByteArray(specialManifattura), "image/png", "Ex Manifattura-park", "Parcheggio Ex Manifattura", "Ex Manifattura Park"));
+		allBadges.add(new BagesData(specialCentroStorico.getName(), FileUtils.readFileToByteArray(specialCentroStorico), "image/png", "Centro Storico-park", "Parcheggio Centro Storico", "Centro Storico Park"));
+		allBadges.add(new BagesData(specialParcheggioCentro.getName(), FileUtils.readFileToByteArray(specialParcheggioCentro), "image/png", "Parcheggio Centro-park", "Parcheggio Centro", "Centro Park"));
+		allBadges.add(new BagesData(specialPleALeoni.getName(), FileUtils.readFileToByteArray(specialPleALeoni), "image/png", "P.le A.Leoni-park", "Parcheggio Piazzale Leoni", "Piazzale Leoni Park"));
 		
 		// files for bike
 		File bike1 = new File(path + "mail/img/bike/bikeAficionado1.png");
@@ -991,14 +973,14 @@ public class PortalController extends SCController{
 		File bike200 = new File(path + "mail/img/bike/bikeAficionado200.png");
 		File bike500 = new File(path + "mail/img/bike/bikeAficionado500.png");
 		
-		allBadges.add(new BagesData(bike1.getName(), FileUtils.readFileToByteArray(bike1), "image/png", "1_bike_trip", "1 Viaggio in Bici"));
-		allBadges.add(new BagesData(bike5.getName(), FileUtils.readFileToByteArray(bike5), "image/png", "5_bike_trip", "5 Viaggi in Bici"));
-		allBadges.add(new BagesData(bike10.getName(), FileUtils.readFileToByteArray(bike10), "image/png", "10_bike_trip", "10 Viaggi in Bici"));
-		allBadges.add(new BagesData(bike25.getName(), FileUtils.readFileToByteArray(bike25), "image/png", "25_bike_trip", "25 Viaggi in Bici"));
-		allBadges.add(new BagesData(bike50.getName(), FileUtils.readFileToByteArray(bike50), "image/png", "50_bike_trip", "50 Viaggi in Bici"));
-		allBadges.add(new BagesData(bike100.getName(), FileUtils.readFileToByteArray(bike100), "image/png", "100_bike_trip", "100 Viaggi in Bici"));
-		allBadges.add(new BagesData(bike200.getName(), FileUtils.readFileToByteArray(bike200), "image/png", "200_bike_trip", "200 Viaggi in Bici"));
-		allBadges.add(new BagesData(bike500.getName(), FileUtils.readFileToByteArray(bike500), "image/png", "500_bike_trip", "500 Viaggi in Bici"));
+		allBadges.add(new BagesData(bike1.getName(), FileUtils.readFileToByteArray(bike1), "image/png", "1_bike_trip", "1 Viaggio in Bici", "1 Bike Trip"));
+		allBadges.add(new BagesData(bike5.getName(), FileUtils.readFileToByteArray(bike5), "image/png", "5_bike_trip", "5 Viaggi in Bici", "5 Bike Trips"));
+		allBadges.add(new BagesData(bike10.getName(), FileUtils.readFileToByteArray(bike10), "image/png", "10_bike_trip", "10 Viaggi in Bici", "10 Bike Trips"));
+		allBadges.add(new BagesData(bike25.getName(), FileUtils.readFileToByteArray(bike25), "image/png", "25_bike_trip", "25 Viaggi in Bici", "25 Bike Trips"));
+		allBadges.add(new BagesData(bike50.getName(), FileUtils.readFileToByteArray(bike50), "image/png", "50_bike_trip", "50 Viaggi in Bici", "50 Bike Trips"));
+		allBadges.add(new BagesData(bike100.getName(), FileUtils.readFileToByteArray(bike100), "image/png", "100_bike_trip", "100 Viaggi in Bici", "100 Bike Trips"));
+		allBadges.add(new BagesData(bike200.getName(), FileUtils.readFileToByteArray(bike200), "image/png", "200_bike_trip", "200 Viaggi in Bici", "200 Bike Trips"));
+		allBadges.add(new BagesData(bike500.getName(), FileUtils.readFileToByteArray(bike500), "image/png", "500_bike_trip", "500 Viaggi in Bici", "500 Bike Trips"));
 		
 		// files for bike sharing
 		File bikeShareBrione = new File(path + "mail/img/bike_sharing/bikeSharingPioneerBrione.png");
@@ -1034,38 +1016,38 @@ public class PortalController extends SCController{
 		File bikeShareGardolo = new File(path + "mail/img/bike_sharing/bikeSharingPioneerGardolo.png");
 		File bikeShareAeroporto = new File(path + "mail/img/bike_sharing/bikeSharingPioneerAeroporto.png");
 				
-		allBadges.add(new BagesData(bikeShareBrione.getName(), FileUtils.readFileToByteArray(bikeShareBrione), "image/png", "Brione - Rovereto_BSstation", "Parcheggio Bike Sharing Brione"));
-		allBadges.add(new BagesData(bikeShareLizzana.getName(), FileUtils.readFileToByteArray(bikeShareLizzana), "image/png", "Lizzana - Rovereto_BSstation", "Parcheggio Bike Sharing Lizzana"));
-		allBadges.add(new BagesData(bikeShareMarco.getName(), FileUtils.readFileToByteArray(bikeShareMarco), "image/png", "Marco - Rovereto_BSstation", "Parcheggio Bike Sharing Marco"));
-		allBadges.add(new BagesData(bikeShareMunicipio.getName(), FileUtils.readFileToByteArray(bikeShareMunicipio), "image/png", "Municipio - Rovereto_BSstation", "Parcheggio Bike Sharing Municipio"));
-		allBadges.add(new BagesData(bikeShareNoriglio.getName(), FileUtils.readFileToByteArray(bikeShareNoriglio), "image/png", "Noriglio - Rovereto_BSstation", "Parcheggio Bike Sharing Noriglio"));
-		allBadges.add(new BagesData(bikeShareOrsi.getName(), FileUtils.readFileToByteArray(bikeShareOrsi), "image/png", "Orsi - Rovereto_BSstation", "Parcheggio Bike Sharing Piazzale Orsi"));
-		allBadges.add(new BagesData(bikeShareOspedale.getName(), FileUtils.readFileToByteArray(bikeShareOspedale), "image/png", "Ospedale - Rovereto_BSstation", "Parcheggio Bike Sharing Ospedale"));
-		allBadges.add(new BagesData(bikeSharePaoli.getName(), FileUtils.readFileToByteArray(bikeSharePaoli), "image/png", "Via Paoli - Rovereto_BSstation", "Parcheggio Bike Sharing Via Paoli"));
-		allBadges.add(new BagesData(bikeSharePROsmini.getName(), FileUtils.readFileToByteArray(bikeSharePROsmini), "image/png", "P. Rosmini - Rovereto_BSstation", "Parcheggio Bike Sharing P. Rosmini"));
-		allBadges.add(new BagesData(bikeShareQuercia.getName(), FileUtils.readFileToByteArray(bikeShareQuercia), "image/png", "Quercia - Rovereto_BSstation", "Parcheggio Bike Sharing Quercia"));
-		allBadges.add(new BagesData(bikeShareSacco.getName(), FileUtils.readFileToByteArray(bikeShareSacco), "image/png", "Sacco - Rovereto_BSstation", "Parcheggio Bike Sharing Sacco"));
-		allBadges.add(new BagesData(bikeShareStazione.getName(), FileUtils.readFileToByteArray(bikeShareStazione), "image/png", "Stazione FF.SS. - Rovereto_BSstation", "Parcheggio Bike Sharing Stazione FF.SS."));
-		allBadges.add(new BagesData(bikeShareZonaIndustriale.getName(), FileUtils.readFileToByteArray(bikeShareZonaIndustriale), "image/png", "Zona Industriale - Rovereto_BSstation", "Parcheggio Bike Sharing Zona Industriale"));
-		allBadges.add(new BagesData(bikeShareMart.getName(), FileUtils.readFileToByteArray(bikeShareMart), "image/png", "Mart - Rovereto_BSstation", "Parcheggio Bike Sharing MART"));
+		allBadges.add(new BagesData(bikeShareBrione.getName(), FileUtils.readFileToByteArray(bikeShareBrione), "image/png", "Brione - Rovereto_BSstation", "Parcheggio Bike Sharing Brione", "Brione Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareLizzana.getName(), FileUtils.readFileToByteArray(bikeShareLizzana), "image/png", "Lizzana - Rovereto_BSstation", "Parcheggio Bike Sharing Lizzana", "Lizzana Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareMarco.getName(), FileUtils.readFileToByteArray(bikeShareMarco), "image/png", "Marco - Rovereto_BSstation", "Parcheggio Bike Sharing Marco", "Marco Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareMunicipio.getName(), FileUtils.readFileToByteArray(bikeShareMunicipio), "image/png", "Municipio - Rovereto_BSstation", "Parcheggio Bike Sharing Municipio", "Municipio Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareNoriglio.getName(), FileUtils.readFileToByteArray(bikeShareNoriglio), "image/png", "Noriglio - Rovereto_BSstation", "Parcheggio Bike Sharing Noriglio", "Noriglio Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareOrsi.getName(), FileUtils.readFileToByteArray(bikeShareOrsi), "image/png", "Orsi - Rovereto_BSstation", "Parcheggio Bike Sharing Piazzale Orsi", "Piazzale Orsi Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareOspedale.getName(), FileUtils.readFileToByteArray(bikeShareOspedale), "image/png", "Ospedale - Rovereto_BSstation", "Parcheggio Bike Sharing Ospedale", "Ospedale Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeSharePaoli.getName(), FileUtils.readFileToByteArray(bikeSharePaoli), "image/png", "Via Paoli - Rovereto_BSstation", "Parcheggio Bike Sharing Via Paoli", "Via Paoli Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeSharePROsmini.getName(), FileUtils.readFileToByteArray(bikeSharePROsmini), "image/png", "P. Rosmini - Rovereto_BSstation", "Parcheggio Bike Sharing P. Rosmini", "P. Rosmini Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareQuercia.getName(), FileUtils.readFileToByteArray(bikeShareQuercia), "image/png", "Quercia - Rovereto_BSstation", "Parcheggio Bike Sharing Quercia", "Quercia Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareSacco.getName(), FileUtils.readFileToByteArray(bikeShareSacco), "image/png", "Sacco - Rovereto_BSstation", "Parcheggio Bike Sharing Sacco", "Sacco Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareStazione.getName(), FileUtils.readFileToByteArray(bikeShareStazione), "image/png", "Stazione FF.SS. - Rovereto_BSstation", "Parcheggio Bike Sharing Stazione FF.SS.", "Stazione FF.SS. Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareZonaIndustriale.getName(), FileUtils.readFileToByteArray(bikeShareZonaIndustriale), "image/png", "Zona Industriale - Rovereto_BSstation", "Parcheggio Bike Sharing Zona Industriale", "Zona Industriale Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareMart.getName(), FileUtils.readFileToByteArray(bikeShareMart), "image/png", "Mart - Rovereto_BSstation", "Parcheggio Bike Sharing MART", "MART Bike Sharing Park"));
 		//TN bikeSharing stations
-		allBadges.add(new BagesData(bikeShareFFSSOspedale.getName(), FileUtils.readFileToByteArray(bikeShareFFSSOspedale), "image/png", "Stazione FFSS - Ospedale_BSstation", "Parcheggio Bike Sharing Stazione FF.SS. Ospedale"));
-		allBadges.add(new BagesData(bikeSharePiazzaVenezia.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaVenezia), "image/png", "Piazza Venezia_BSstation", "Parcheggio Bike Sharing Piazza Venezia"));
-		allBadges.add(new BagesData(bikeSharePiscina.getName(), FileUtils.readFileToByteArray(bikeSharePiscina), "image/png", "Piscina_BSstation", "Parcheggio Bike Sharing Piscina"));
-		allBadges.add(new BagesData(bikeSharePiazzaMostra.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaMostra), "image/png", "Piazza della Mostra_BSstation", "Parcheggio Bike Sharing Piazza Mostra"));
-		allBadges.add(new BagesData(bikeShareCentroSantaChiara.getName(), FileUtils.readFileToByteArray(bikeShareCentroSantaChiara), "image/png", "Centro Santa Chiara_BSstation", "Parcheggio Bike Sharing Centro S.Chiara"));
-		allBadges.add(new BagesData(bikeSharePiazzaCenta.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaCenta), "image/png", "Piazza di Centa_BSstation", "Parcheggio Bike Sharing Piazza di Centa"));
-		allBadges.add(new BagesData(bikeShareBiblioteca.getName(), FileUtils.readFileToByteArray(bikeShareBiblioteca), "image/png", "Biblioteca_BSstation", "Parcheggio Bike Sharing Biblioteca"));
-		allBadges.add(new BagesData(bikeShareStazioneAutocorriere.getName(), FileUtils.readFileToByteArray(bikeShareStazioneAutocorriere), "image/png", "Stazione Autocorriere_BSstation", "Parcheggio Bike Sharing Stazione Autocorriere"));
-		allBadges.add(new BagesData(bikeShareUniversita.getName(), FileUtils.readFileToByteArray(bikeShareUniversita), "image/png", "Università_BSstation", "Parcheggio Bike Sharing Universita'"));
-		allBadges.add(new BagesData(bikeShareBezzi.getName(), FileUtils.readFileToByteArray(bikeShareBezzi), "image/png", "Bezzi_BSstation", "Parcheggio Bike Sharing Bezzi"));
-		allBadges.add(new BagesData(bikeShareMuse.getName(), FileUtils.readFileToByteArray(bikeShareMuse), "image/png", "Muse_BSstation", "Parcheggio Bike Sharing Muse"));
-		allBadges.add(new BagesData(bikeShareAziendaSanitaria.getName(), FileUtils.readFileToByteArray(bikeShareAziendaSanitaria), "image/png", "Azienda Sanitaria_BSstation", "Parcheggio Bike Sharing Azienda Sanitaria"));
-		allBadges.add(new BagesData(bikeShareTopCenter.getName(), FileUtils.readFileToByteArray(bikeShareTopCenter), "image/png", "Top Center_BSstation", "Parcheggio Bike Sharing Top Center"));
-		allBadges.add(new BagesData(bikeShareBrenCenter.getName(), FileUtils.readFileToByteArray(bikeShareBrenCenter), "image/png", "Bren Center_BSstation", "Parcheggio Bike Sharing Bren Center"));
-		allBadges.add(new BagesData(bikeShareLidorno.getName(), FileUtils.readFileToByteArray(bikeShareLidorno), "image/png", "Lidorno_BSstation", "Parcheggio Bike Sharing Lidorno"));
-		allBadges.add(new BagesData(bikeShareGardolo.getName(), FileUtils.readFileToByteArray(bikeShareGardolo), "image/png", "Gardolo_BSstation", "Parcheggio Bike Sharing Gardolo"));
-		allBadges.add(new BagesData(bikeShareAeroporto.getName(), FileUtils.readFileToByteArray(bikeShareAeroporto), "image/png", "Aeroporto_BSstation", "Parcheggio Bike Sharing Aeroporto"));
+		allBadges.add(new BagesData(bikeShareFFSSOspedale.getName(), FileUtils.readFileToByteArray(bikeShareFFSSOspedale), "image/png", "Stazione FFSS - Ospedale - Trento_BSstation", "Parcheggio Bike Sharing Stazione FF.SS. Ospedale", "Stazine FF.SS Ospedale Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeSharePiazzaVenezia.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaVenezia), "image/png", "Piazza Venezia - Trento_BSstation", "Parcheggio Bike Sharing Piazza Venezia", "Piazza Venezia Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeSharePiscina.getName(), FileUtils.readFileToByteArray(bikeSharePiscina), "image/png", "Piscina - Trento_BSstation", "Parcheggio Bike Sharing Piscina", "Piscina Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeSharePiazzaMostra.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaMostra), "image/png", "Piazza della Mostra - Trento_BSstation", "Parcheggio Bike Sharing Piazza Mostra", "Piazza Mostra Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareCentroSantaChiara.getName(), FileUtils.readFileToByteArray(bikeShareCentroSantaChiara), "image/png", "Centro Santa Chiara - Trento_BSstation", "Parcheggio Bike Sharing Centro S.Chiara", "Centro S.Chiara Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeSharePiazzaCenta.getName(), FileUtils.readFileToByteArray(bikeSharePiazzaCenta), "image/png", "Piazza di Centa - Trento_BSstation", "Parcheggio Bike Sharing Piazza di Centa", "Piazza Centa Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareBiblioteca.getName(), FileUtils.readFileToByteArray(bikeShareBiblioteca), "image/png", "Biblioteca - Trento_BSstation", "Parcheggio Bike Sharing Biblioteca", "Biblioteca Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareStazioneAutocorriere.getName(), FileUtils.readFileToByteArray(bikeShareStazioneAutocorriere), "image/png", "Stazione Autocorriere - Trento_BSstation", "Parcheggio Bike Sharing Stazione Autocorriere", "Stazione Autocorriere Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareUniversita.getName(), FileUtils.readFileToByteArray(bikeShareUniversita), "image/png", "Università - Trento_BSstation", "Parcheggio Bike Sharing Universita'", "Universita Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareBezzi.getName(), FileUtils.readFileToByteArray(bikeShareBezzi), "image/png", "Bezzi - Trento_BSstation", "Parcheggio Bike Sharing Bezzi", "Bezzi Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareMuse.getName(), FileUtils.readFileToByteArray(bikeShareMuse), "image/png", "Muse - Trento_BSstation", "Parcheggio Bike Sharing Muse", "Muse Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareAziendaSanitaria.getName(), FileUtils.readFileToByteArray(bikeShareAziendaSanitaria), "image/png", "Azienda Sanitaria - Trento_BSstation", "Parcheggio Bike Sharing Azienda Sanitaria", "Azienda Sanitaria Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareTopCenter.getName(), FileUtils.readFileToByteArray(bikeShareTopCenter), "image/png", "Top Center - Trento_BSstation", "Parcheggio Bike Sharing Top Center", "Top Center Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareBrenCenter.getName(), FileUtils.readFileToByteArray(bikeShareBrenCenter), "image/png", "Bren Center - Trento_BSstation", "Parcheggio Bike Sharing Bren Center", "Bren Center Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareLidorno.getName(), FileUtils.readFileToByteArray(bikeShareLidorno), "image/png", "Lidorno - Trento_BSstation", "Parcheggio Bike Sharing Lidorno", "Lidorno Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareGardolo.getName(), FileUtils.readFileToByteArray(bikeShareGardolo), "image/png", "Gardolo - Trento_BSstation", "Parcheggio Bike Sharing Gardolo", "Gardolo Bike Sharing Park"));
+		allBadges.add(new BagesData(bikeShareAeroporto.getName(), FileUtils.readFileToByteArray(bikeShareAeroporto), "image/png", "Aeroporto - Trento_BSstation", "Parcheggio Bike Sharing Aeroporto", "Aeroporto Bike Sharing Park"));
 		
 		// files for recommendation
 		File recommendations3 = new File(path + "mail/img/recommendation/inviteFriends3.png");
@@ -1073,10 +1055,10 @@ public class PortalController extends SCController{
 		File recommendations10 = new File(path + "mail/img/recommendation/inviteFriends10.png");
 		File recommendations25 = new File(path + "mail/img/recommendation/inviteFriends25.png");
 				
-		allBadges.add(new BagesData(recommendations3.getName(), FileUtils.readFileToByteArray(recommendations3), "image/png", "3_recommendations", "3 Amici Invitati"));
-		allBadges.add(new BagesData(recommendations5.getName(), FileUtils.readFileToByteArray(recommendations5), "image/png", "5_recommendations", "5 Amici Invitati"));
-		allBadges.add(new BagesData(recommendations10.getName(), FileUtils.readFileToByteArray(recommendations10), "image/png", "10_recommendations", "10 Amici Invitati"));
-		allBadges.add(new BagesData(recommendations25.getName(), FileUtils.readFileToByteArray(recommendations25), "image/png", "25_recommendations", "25 Amici Invitati"));
+		allBadges.add(new BagesData(recommendations3.getName(), FileUtils.readFileToByteArray(recommendations3), "image/png", "3_recommendations", "3 Amici Invitati", "3 Friends recommendation"));
+		allBadges.add(new BagesData(recommendations5.getName(), FileUtils.readFileToByteArray(recommendations5), "image/png", "5_recommendations", "5 Amici Invitati", "5 Friends recommendation"));
+		allBadges.add(new BagesData(recommendations10.getName(), FileUtils.readFileToByteArray(recommendations10), "image/png", "10_recommendations", "10 Amici Invitati", "10 Friends recommendation"));
+		allBadges.add(new BagesData(recommendations25.getName(), FileUtils.readFileToByteArray(recommendations25), "image/png", "25_recommendations", "25 Amici Invitati", "25 Friends recommendation"));
 				
 		// files for public transport
 		File publicTrans5 = new File(path + "mail/img/public_transport/publicTransportAficionado5.png");
@@ -1087,13 +1069,13 @@ public class PortalController extends SCController{
 		File publicTrans200 = new File(path + "mail/img/public_transport/publicTransportAficionado200.png");
 		File publicTrans500 = new File(path + "mail/img/public_transport/publicTransportAficionado500.png");
 		
-		allBadges.add(new BagesData(publicTrans5.getName(), FileUtils.readFileToByteArray(publicTrans5), "image/png", "5_pt_trip", "5 Viaggi Mezzi Pubblici"));
-		allBadges.add(new BagesData(publicTrans10.getName(), FileUtils.readFileToByteArray(publicTrans10), "image/png", "10_pt_trip", "10 Viaggi Mezzi Pubblici"));
-		allBadges.add(new BagesData(publicTrans25.getName(), FileUtils.readFileToByteArray(publicTrans25), "image/png", "25_pt_trip", "25 Viaggi Mezzi Pubblici"));
-		allBadges.add(new BagesData(publicTrans50.getName(), FileUtils.readFileToByteArray(publicTrans50), "image/png", "50_pt_trip", "50 Viaggi Mezzi Pubblici"));
-		allBadges.add(new BagesData(publicTrans100.getName(), FileUtils.readFileToByteArray(publicTrans100), "image/png", "100_pt_trip", "100 Viaggi Mezzi Pubblici"));
-		allBadges.add(new BagesData(publicTrans200.getName(), FileUtils.readFileToByteArray(publicTrans200), "image/png", "200_pt_trip", "200 Viaggi Mezzi Pubblici"));
-		allBadges.add(new BagesData(publicTrans500.getName(), FileUtils.readFileToByteArray(publicTrans500), "image/png", "500_pt_trip", "500 Viaggi Mezzi Pubblici"));
+		allBadges.add(new BagesData(publicTrans5.getName(), FileUtils.readFileToByteArray(publicTrans5), "image/png", "5_pt_trip", "5 Viaggi Mezzi Pubblici", "5 Public Trasport Trips"));
+		allBadges.add(new BagesData(publicTrans10.getName(), FileUtils.readFileToByteArray(publicTrans10), "image/png", "10_pt_trip", "10 Viaggi Mezzi Pubblici", "10 Public Trasport Trips"));
+		allBadges.add(new BagesData(publicTrans25.getName(), FileUtils.readFileToByteArray(publicTrans25), "image/png", "25_pt_trip", "25 Viaggi Mezzi Pubblici", "25 Public Trasport Trips"));
+		allBadges.add(new BagesData(publicTrans50.getName(), FileUtils.readFileToByteArray(publicTrans50), "image/png", "50_pt_trip", "50 Viaggi Mezzi Pubblici", "50 Public Trasport Trips"));
+		allBadges.add(new BagesData(publicTrans100.getName(), FileUtils.readFileToByteArray(publicTrans100), "image/png", "100_pt_trip", "100 Viaggi Mezzi Pubblici", "100 Public Trasport Trips"));
+		allBadges.add(new BagesData(publicTrans200.getName(), FileUtils.readFileToByteArray(publicTrans200), "image/png", "200_pt_trip", "200 Viaggi Mezzi Pubblici", "200 Public Trasport Trips"));
+		allBadges.add(new BagesData(publicTrans500.getName(), FileUtils.readFileToByteArray(publicTrans500), "image/png", "500_pt_trip", "500 Viaggi Mezzi Pubblici", "500 Public Trasport Trips"));
 		
 		// files for zero impact
 		File zeroImpact1 = new File(path + "mail/img/zero_impact/zeroImpact1.png");
@@ -1105,23 +1087,23 @@ public class PortalController extends SCController{
 		File zeroImpact200 = new File(path + "mail/img/zero_impact/zeroImpact200.png");
 		File zeroImpact500 = new File(path + "mail/img/zero_impact/zeroImpact500.png");
 				
-		allBadges.add(new BagesData(zeroImpact1.getName(), FileUtils.readFileToByteArray(zeroImpact1), "image/png", "1_zero_impact_trip", "1 Viaggio Impatto Zero"));
-		allBadges.add(new BagesData(zeroImpact5.getName(), FileUtils.readFileToByteArray(zeroImpact5), "image/png", "5_zero_impact_trip", "5 Viaggi Impatto Zero"));
-		allBadges.add(new BagesData(zeroImpact10.getName(), FileUtils.readFileToByteArray(zeroImpact10), "image/png", "10_zero_impact_trip", "10 Viaggi Impatto Zero"));
-		allBadges.add(new BagesData(zeroImpact25.getName(), FileUtils.readFileToByteArray(zeroImpact25), "image/png", "25_zero_impact_trip", "25 Viaggi Impatto Zero"));
-		allBadges.add(new BagesData(zeroImpact50.getName(), FileUtils.readFileToByteArray(zeroImpact50), "image/png", "50_zero_impact_trip", "50 Viaggi Impatto Zero"));	
-		allBadges.add(new BagesData(zeroImpact100.getName(), FileUtils.readFileToByteArray(zeroImpact100), "image/png", "100_zero_impact_trip", "100 Viaggi Impatto Zero"));
-		allBadges.add(new BagesData(zeroImpact200.getName(), FileUtils.readFileToByteArray(zeroImpact200), "image/png", "200_zero_impact_trip", "200 Viaggi Impatto Zero"));
-		allBadges.add(new BagesData(zeroImpact500.getName(), FileUtils.readFileToByteArray(zeroImpact500), "image/png", "500_zero_impact_trip", "500 Viaggi Impatto Zero"));
+		allBadges.add(new BagesData(zeroImpact1.getName(), FileUtils.readFileToByteArray(zeroImpact1), "image/png", "1_zero_impact_trip", "1 Viaggio Impatto Zero", "1 Zero Impact Trip"));
+		allBadges.add(new BagesData(zeroImpact5.getName(), FileUtils.readFileToByteArray(zeroImpact5), "image/png", "5_zero_impact_trip", "5 Viaggi Impatto Zero", "5 Zero Impact Trips"));
+		allBadges.add(new BagesData(zeroImpact10.getName(), FileUtils.readFileToByteArray(zeroImpact10), "image/png", "10_zero_impact_trip", "10 Viaggi Impatto Zero", "10 Zero Impact Trips"));
+		allBadges.add(new BagesData(zeroImpact25.getName(), FileUtils.readFileToByteArray(zeroImpact25), "image/png", "25_zero_impact_trip", "25 Viaggi Impatto Zero", "25 Zero Impact Trips"));
+		allBadges.add(new BagesData(zeroImpact50.getName(), FileUtils.readFileToByteArray(zeroImpact50), "image/png", "50_zero_impact_trip", "50 Viaggi Impatto Zero", "50 Zero Impact Trips"));	
+		allBadges.add(new BagesData(zeroImpact100.getName(), FileUtils.readFileToByteArray(zeroImpact100), "image/png", "100_zero_impact_trip", "100 Viaggi Impatto Zero", "100 Zero Impact Trips"));
+		allBadges.add(new BagesData(zeroImpact200.getName(), FileUtils.readFileToByteArray(zeroImpact200), "image/png", "200_zero_impact_trip", "200 Viaggi Impatto Zero", "200 Zero Impact Trips"));
+		allBadges.add(new BagesData(zeroImpact500.getName(), FileUtils.readFileToByteArray(zeroImpact500), "image/png", "500_zero_impact_trip", "500 Viaggi Impatto Zero", "500 Zero Impact Trips"));
 		
 		// files for leaderboard top 3
 		File firstOfWeek = new File(path + "mail/img/leaderboard/leaderboard1.png");
 		File secondOfWeek = new File(path + "mail/img/leaderboard/leaderboard2.png");
 		File thirdOfWeek = new File(path + "mail/img/leaderboard/leaderboard3.png");
 						
-		allBadges.add(new BagesData(firstOfWeek.getName(), FileUtils.readFileToByteArray(firstOfWeek), "image/png", "1st_of_the_week", "Primo della settimana"));
-		allBadges.add(new BagesData(secondOfWeek.getName(), FileUtils.readFileToByteArray(secondOfWeek), "image/png", "2nd_of_the_week", "Secondo della settimana"));
-		allBadges.add(new BagesData(thirdOfWeek.getName(), FileUtils.readFileToByteArray(thirdOfWeek), "image/png", "3rd_of_the_week", "Terzo della settimana"));
+		allBadges.add(new BagesData(firstOfWeek.getName(), FileUtils.readFileToByteArray(firstOfWeek), "image/png", "1st_of_the_week", "Primo della settimana", "First of the Week"));
+		allBadges.add(new BagesData(secondOfWeek.getName(), FileUtils.readFileToByteArray(secondOfWeek), "image/png", "2nd_of_the_week", "Secondo della settimana", "Second of the Week"));
+		allBadges.add(new BagesData(thirdOfWeek.getName(), FileUtils.readFileToByteArray(thirdOfWeek), "image/png", "3rd_of_the_week", "Terzo della settimana", "Third of the Week"));
 		
 		return allBadges;
 	}
@@ -1349,17 +1331,18 @@ public class PortalController extends SCController{
 				String[] weekConfValues = line.split(cvsSplitBy);
 				String weekNum = weekConfValues[0];
 				String weekTheme = weekConfValues[1];
-				String areChallenges = weekConfValues[2];
-				String arePrizes = weekConfValues[3];
-				String arePrizesLast= weekConfValues[4];
-				String actualWeek = weekConfValues[5];
+				String weekThemeEng = weekConfValues[2];
+				String areChallenges = weekConfValues[3];
+				String arePrizes = weekConfValues[4];
+				String arePrizesLast= weekConfValues[5];
+				String actualWeek = weekConfValues[6];
 				logger.debug(String.format("Week conf file: week num %s, theme %s, challenges %s, prizes %s, prizes last %s, actual week %s", weekNum, weekTheme, areChallenges, arePrizes, arePrizesLast, actualWeek));
 				// value conversion from string to boolean
 				Boolean areChall = (areChallenges.compareTo("Y") == 0) ? true : false;
 				Boolean arePriz = (arePrizes.compareTo("Y") == 0) ? true : false;
 				Boolean arePrizLast = (arePrizesLast.compareTo("Y") == 0) ? true : false;
 				Boolean isActual = (actualWeek.compareTo("Y") == 0) ? true : false;
-				WeekConfData wconf = new WeekConfData(weekNum, weekTheme, areChall, arePriz, arePrizLast, isActual);
+				WeekConfData wconf = new WeekConfData(weekNum, weekTheme, weekThemeEng, areChall, arePriz, arePrizLast, isActual);
 				confWeekFileData.add(wconf);
 			}
 		} catch (FileNotFoundException e) {

@@ -49,7 +49,7 @@ public class StatusUtils {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public PlayerStatus correctPlayerData(String profile, String playerId, String gameId, String nickName, ChallengesUtils challUtils, String gamificationUrl, int challType) throws JSONException{
+	public PlayerStatus correctPlayerData(String profile, String playerId, String gameId, String nickName, ChallengesUtils challUtils, String gamificationUrl, int challType, String language) throws JSONException{
 		List<ChallengesData> challenges = new ArrayList<ChallengesData>();
     	List<ChallengesData> oldChallenges = new ArrayList<ChallengesData>();
     	List<PointConcept> pointConcept = new ArrayList<PointConcept>();
@@ -126,7 +126,7 @@ public class StatusUtils {
     			}
     			// new Challenge management part
     			try {
-					List<List> challLists = challUtils.correctChallengeData(profile, challType, pointConcept, bcc_list);
+					List<List> challLists = challUtils.correctChallengeData(profile, challType, language, pointConcept, bcc_list);
 					if(challLists != null && challLists.size() == 2){
 						challenges = challLists.get(0);
 						oldChallenges = challLists.get(1);
@@ -620,55 +620,55 @@ public class StatusUtils {
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerMART.svg";
 		}
 		// Real TN bike station url
-		if(b_name.compareTo("Stazione FFSS - Ospedale_BSstation") == 0){
+		if(b_name.compareTo("Stazione FFSS - Ospedale - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerFFSSOspedale.svg";
 		}
-		if(b_name.compareTo("Piazza Venezia_BSstation") == 0){
+		if(b_name.compareTo("Piazza Venezia - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiazzaVenezia.svg";
 		}
-		if(b_name.compareTo("Piscina_BSstation") == 0){
+		if(b_name.compareTo("Piscina - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiscina.svg";
 		}
-		if(b_name.compareTo("Piazza della Mostra_BSstation") == 0){
+		if(b_name.compareTo("Piazza della Mostra - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiazzaMostra.svg";
 		}
-		if(b_name.compareTo("Centro Santa Chiara_BSstation") == 0){
+		if(b_name.compareTo("Centro Santa Chiara - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerCentroSantaChiara.svg";
 		}
-		if(b_name.compareTo("Piazza di Centa_BSstation") == 0){
+		if(b_name.compareTo("Piazza di Centa - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerPiazzaCenta.svg";
 		}
-		if(b_name.compareTo("Biblioteca_BSstation") == 0){
+		if(b_name.compareTo("Biblioteca - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerBiblioteca.svg";
 		}
-		if(b_name.compareTo("Stazione Autocorriere_BSstation") == 0){
+		if(b_name.compareTo("Stazione Autocorriere - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerStazioneAutocorriere.svg";
 		}
-		if(b_name.compareTo("Università_BSstation") == 0){
+		if(b_name.compareTo("Università - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerUniversita.svg";
 		}
-		if(b_name.compareTo("Bezzi_BSstation") == 0){
+		if(b_name.compareTo("Bezzi - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerBezzi.svg";
 		}
-		if(b_name.compareTo("Muse_BSstation") == 0){
+		if(b_name.compareTo("Muse - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerMuse.svg";
 		}
-		if(b_name.compareTo("Azienda Sanitaria_BSstation") == 0){
+		if(b_name.compareTo("Azienda Sanitaria - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerAziendaSanitaria.svg";
 		}
-		if(b_name.compareTo("Top Center_BSstation") == 0){
+		if(b_name.compareTo("Top Center - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerTopCenter.svg";
 		}
-		if(b_name.compareTo("Bren Center_BSstation") == 0){
+		if(b_name.compareTo("Bren Center - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerBrenCenter.svg";
 		}
-		if(b_name.compareTo("Lidorno_BSstation") == 0){
+		if(b_name.compareTo("Lidorno - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerLidorno.svg";
 		}
-		if(b_name.compareTo("Gardolo_BSstation") == 0){
+		if(b_name.compareTo("Gardolo - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerGardolo.svg";
 		}
-		if(b_name.compareTo("Aeroporto_BSstation") == 0){
+		if(b_name.compareTo("Aeroporto - Trento_BSstation") == 0){
 			return gamificationUrl + "/img/bike_sharing/bikeSharingPioneerAeroporto.svg";
 		}
 		if(b_name.contains("BSstation")){

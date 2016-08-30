@@ -61,7 +61,9 @@ var conf_is_test="<%=request.getAttribute("isTest")%>";
 var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
 var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
 var conf_wsresult="<%=request.getAttribute("wsresult")%>";
+var conf_lang="<%=request.getAttribute("language")%>";
 var conf_prizes="<%=request.getAttribute("prizes")%>";
+var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 
 	<%-- Prevent the backspace key from navigating back. --%>
 	$(document).unbind('keydown').bind('keydown', function (event) {
@@ -121,8 +123,8 @@ var conf_prizes="<%=request.getAttribute("prizes")%>";
             
           </ul>
           <ul class="nav navbar-nav navbar-right" >
-			<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li> -->
-			<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li> -->
+			<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()">IT</a></li>
+			<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()">EN</a></li>
             <!-- <li><a href="logout" ng-click="logout()">{{ 'menu_bar-logout' | i18n }}</a></li> -->
           </ul>
         </div><!-- /.nav-collapse -->

@@ -50,7 +50,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_2_ENG = "Do at least TARGET trip without MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_3_ENG = "Do at least TARGET trip MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_5_ENG = "Get at least TARGET POINT_TYPE points and you will have BONUS additinal POINT_TYPE bonus points";
-	private final String CHAL_DESC_6_ENG = "Get at least TARGET badge in BADGE_COLL_NAME Badge Collectionand and you will get a bonus of BONUS POINT_TYPE points";
+	private final String CHAL_DESC_6_ENG = "Get at least TARGET badge in BADGE_COLL_NAME Badge Collection and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_7_ENG = "Complete a Bange Collection and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_8_ENG = "Fill out the end-game survay and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_9_ENG = "Recommend the app at least TARGET users and you will gain a bonus of BONUS POINT_TYPE points";
@@ -125,8 +125,8 @@ public class ChallengesUtils {
 	private static final String CHAL_MODEL_COMPLETE_BADGE_COLL = "completeBadgeCollection";
 	private static final String CHAL_MODEL_SURVEY = "survey";
 	private static final String STATE = "state";
-	private static final String ITA_LANG = "ita";
-	private static final String ENG_LANG = "eng";
+	private static final String ITA_LANG = "it";
+	private static final String ENG_LANG = "en";
 	// week delta in milliseconds
 	private static final Long W_DELTA = 2000L;
 	
@@ -145,81 +145,80 @@ public class ChallengesUtils {
 	public ChallengesUtils() {
 	}
 	
-	private String getLongDescriptionByChall(String type, String mobMode, String target, String pointType){
+	private String getLongDescriptionByChall(String type, String mobMode, String target, String pointType, String language){
 		String correctDesc = "";
 		List<ChallengeDescriptionData> challDescList = getChallLongDescriptionList();
 		if(type.compareTo(CHAL_TYPE_1) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
-				correctDesc = challDescList.get(0).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(0).getDescription() : challDescList.get(0).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
-				correctDesc = challDescList.get(1).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(1).getDescription() : challDescList.get(1).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
-				correctDesc = challDescList.get(2).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(2).getDescription() : challDescList.get(2).getDescription_eng();
 			}
 		} else if(type.compareTo(CHAL_TYPE_2) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
-				correctDesc = challDescList.get(21).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(21).getDescription() : challDescList.get(21).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
-				correctDesc = challDescList.get(23).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(23).getDescription() : challDescList.get(23).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
-				correctDesc = challDescList.get(20).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(20).getDescription() : challDescList.get(20).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_T) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_T + "Distance") == 0){
-				correctDesc = challDescList.get(22).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(22).getDescription() : challDescList.get(22).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_C) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_C + "Distance") == 0){
-				correctDesc = challDescList.get(24).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(24).getDescription() : challDescList.get(24).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
-				correctDesc = challDescList.get(25).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(25).getDescription() : challDescList.get(25).getDescription_eng();
 			} 
 		} else if(type.compareTo(CHAL_TYPE_3) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
-				correctDesc = challDescList.get(4).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(4).getDescription() : challDescList.get(4).getDescription();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
-				correctDesc = challDescList.get(8).getDescription().replace("[bici, bike sharing, bus, treno]","la bici");
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(8).getDescription().replace("[bici, bike sharing, bus, treno]","la bici") : challDescList.get(8).getDescription_eng().replace("[bike, bike sharing, bus, train]","the bike");
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
-				correctDesc = challDescList.get(3).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(3).getDescription() : challDescList.get(3).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_T) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_T + "Distance") == 0){
-				correctDesc = challDescList.get(5).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(5).getDescription() : challDescList.get(5).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_P) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_P + "Distance") == 0){
-				correctDesc = challDescList.get(7).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(7).getDescription() : challDescList.get(7).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
-				correctDesc = challDescList.get(26).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(26).getDescription() : challDescList.get(26).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_CAB) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_CAB + "Distance") == 0){
-				correctDesc = challDescList.get(28).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(28).getDescription() : challDescList.get(28).getDescription_eng();
 			}
 		} else if(type.compareTo(CHAL_TYPE_4) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_Z) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_Z + "Distance") == 0){
-				correctDesc = challDescList.get(6).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(6).getDescription() : challDescList.get(6).getDescription_eng();
 			}
 		} else if(type.compareTo(CHAL_TYPE_5) == 0){
-			correctDesc = challDescList.get(10).getDescription().replace("X", target).replace("punti [green leaves, bici, salute, impatto 0]", pointType);
+			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(10).getDescription().replace("X", target).replace("punti [green leaves, bici, salute, impatto 0]", pointType) : challDescList.get(10).getDescription_eng().replace("X", target).replace("[green leaves, bike, ealth, 0 impact] points", pointType);
 		} else if(type.compareTo(CHAL_TYPE_6) == 0){
 			if(mobMode.compareTo("green leaves") == 0){
-				correctDesc = challDescList.get(14).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(14).getDescription() : challDescList.get(14).getDescription_eng();
 			} else if(mobMode.compareTo("bike sharing pioneer") == 0){
-				correctDesc = challDescList.get(13).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(13).getDescription() : challDescList.get(13).getDescription_eng();
 			} else if(mobMode.compareTo("sustainable life") == 0){
-				correctDesc = challDescList.get(15).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(15).getDescription() : challDescList.get(15).getDescription_eng();
 			} else if(mobMode.compareTo("park and ride pioneer") == 0){
-				correctDesc = challDescList.get(12).getDescription();	// park and ride
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(12).getDescription() : challDescList.get(12).getDescription_eng();	// park and ride
 			}	
 		} else if(type.compareTo(CHAL_TYPE_7) == 0){
-			correctDesc = challDescList.get(19).getDescription();
+			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(19).getDescription() : challDescList.get(19).getDescription_eng();
 		} else if(type.compareTo(CHAL_TYPE_8) == 0){
-			correctDesc = challDescList.get(27).getDescription();
+			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(27).getDescription() : challDescList.get(27).getDescription_eng();
 		} else if(type.compareTo(CHAL_TYPE_9) == 0){
 			int racc_num = Integer.parseInt(target);
 			if(racc_num == 1){
-				correctDesc = challDescList.get(9).getDescription().replace("X", target).replace("tuoi amici si devono", "tuo amico si deve");
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(9).getDescription().replace("X", target).replace("tuoi amici si devono", "tuo amico si deve") : challDescList.get(9).getDescription_eng().replace("X", target).replace("friends of yours have to", "friend of yours has to");
 			} else {
-				correctDesc = challDescList.get(9).getDescription().replace("X", target);
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(9).getDescription().replace("X", target) : challDescList.get(9).getDescription_eng().replace("X", target);
 			}
 		}
 		return correctDesc;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public List<List> correctCustomData(String profile, int type) throws JSONException{
-		String language = ITA_LANG;
+	public List<List> correctCustomData(String profile, int type, String language) throws JSONException{
     	List<String> challIndxArray = new ArrayList<String>();
     	List<ChallengesData> challenges = new ArrayList<ChallengesData>();
     	List<ChallengesData> oldChallenges = new ArrayList<ChallengesData>();
@@ -308,32 +307,32 @@ public class ChallengesUtils {
 	    				String mobility_mode = (!customData.isNull(CHAL_K + ch_id + CHAL_K_MODE)) ? customData.getString(CHAL_K + ch_id + CHAL_K_MODE) : CHAL_ALLOWED_MODE_B;
 	    				status = (walked_km * 100) / target;
 	    				if(status > 100)status = 100;
-	    				desc = correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode, null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_1, target, bonus, point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1_ENG, target, bonus, point_type, mobility_mode, null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_2) == 0){
 	    				int count = (!customData.isNull(CHAL_K + ch_id + CHAL_K_COUNTER)) ? customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER) : 0;
 	    				row_status = round(count, 2);
 	    				String mobility_mode = (!customData.isNull(CHAL_K + ch_id + CHAL_K_MODE)) ? customData.getString(CHAL_K + ch_id + CHAL_K_MODE) : CHAL_ALLOWED_MODE_B;
 	    				status = count * 100 / target;
-	    				desc = correctDesc(CHAL_DESC_2, target, bonus, point_type, mobility_mode, null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_2, target, bonus, point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_2_ENG, target, bonus, point_type, mobility_mode, null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_3) == 0){
 	    				int count = (!customData.isNull(CHAL_K + ch_id + CHAL_K_COUNTER)) ? customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER) : 0;
 	    				row_status = round(count, 2);
 	    				String mobility_mode = (!customData.isNull(CHAL_K + ch_id + CHAL_K_MODE)) ? customData.getString(CHAL_K + ch_id + CHAL_K_MODE) : CHAL_ALLOWED_MODE_B;
 	    				status = count * 100 / target;
-	    				desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_3_ENG, target, bonus, point_type, mobility_mode, null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_4) == 0){
 	    				int count = (!customData.isNull(CHAL_K + ch_id + CHAL_K_COUNTER)) ? customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER) : 0;
 	    				row_status = round(count, 2);
 	    				String mobility_mode = CHAL_ALLOWED_MODE_Z;
 	    				status = count * 100 / target;
-	    				desc = correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_3, target, bonus, point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_3_ENG, target, bonus, point_type, mobility_mode, null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, mobility_mode, target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_5) == 0){
 	    				success = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SUCCESS)) ? customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS) : false;
@@ -346,16 +345,16 @@ public class ChallengesUtils {
 	    				row_status = round(earned_points, 2);
 	    				status = earned_points * 100 / target;
 	    				if(status > 100)status = 100;
-	    				desc = correctDesc(CHAL_DESC_5, target, bonus, point_type, "", null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_5, target, bonus, point_type, "", null, language) : correctDesc(CHAL_DESC_5_ENG, target, bonus, point_type, "", null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_6) == 0){
 	    				int count = (!customData.isNull(CHAL_K + ch_id + CHAL_K_COUNTER)) ? customData.getInt(CHAL_K + ch_id + CHAL_K_COUNTER) : 0;
 	    				row_status = round(count, 2);
 	    				String badge_coll_name = (!customData.isNull(CHAL_K + ch_id + CHAL_K_BADGE_COLL_NAME)) ? customData.getString(CHAL_K + ch_id + CHAL_K_BADGE_COLL_NAME) : CHAL_ALLOWED_PT_GREEN;
 	    				status = count * 100 / target;
-	    				desc = correctDesc(CHAL_DESC_6, target, bonus, point_type, "", badge_coll_name, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, badge_coll_name, target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_6, target, bonus, point_type, "", badge_coll_name, language) : correctDesc(CHAL_DESC_6_ENG, target, bonus, point_type, "", badge_coll_name, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, badge_coll_name, target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_7) == 0){
 	    				success = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SUCCESS)) ? customData.getBoolean(CHAL_K + ch_id + CHAL_K_SUCCESS) : false;
@@ -363,8 +362,8 @@ public class ChallengesUtils {
 							status = 100;
 							row_status = 1.00;
 						}
-	    				desc = correctDesc(CHAL_DESC_7, target, bonus, point_type, "", null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_7, target, bonus, point_type, "", null, language) : correctDesc(CHAL_DESC_7_ENG, target, bonus, point_type, "", null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_8) == 0){
 	    				int survey = (!customData.isNull(CHAL_K + ch_id + CHAL_K_SURVEY)) ? customData.getInt(CHAL_K + ch_id + CHAL_K_SURVEY) : 0;
@@ -374,16 +373,16 @@ public class ChallengesUtils {
     					}
 	    				status = survey * 100 / target;
 	    				if(status > 100)status = 100;
-	    				desc = correctDesc(CHAL_DESC_8, target, bonus, point_type, "", null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_8, target, bonus, point_type, "", null, language) : correctDesc(CHAL_DESC_8_ENG, target, bonus, point_type, "", null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type, language));
 	    			}
 	    			if(ch_type.compareTo(CHAL_TYPE_9) == 0){
 	    				int recommandation = (!customData.isNull(CHAL_K + ch_id + CHAL_K_RECOM)) ? customData.getInt(CHAL_K + ch_id + CHAL_K_RECOM) : 0;
 	    				row_status = round(recommandation, 2);
 	    				status = recommandation * 100 / target;
 	    				if(status > 100)status = 100;
-	    				desc = correctDesc(CHAL_DESC_9, target, bonus, point_type, "", null, language);
-	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type));
+	    				desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_9, target, bonus, point_type, "", null, language) : correctDesc(CHAL_DESC_9_ENG, target, bonus, point_type, "", null, language);
+	    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(ch_type, "", target + "", point_type, language));
 	    			}
 	    			tmp_chall.setChallId(id);
     				tmp_chall.setChallDesc(desc);
@@ -433,8 +432,7 @@ public class ChallengesUtils {
 	
 	// Method correctChallengeData: used to retrieve the challenge data objects from the user profile data
 	@SuppressWarnings("rawtypes")
-	public List<List> correctChallengeData(String profile, int type, List<PointConcept> pointConcept, List<BadgeCollectionConcept> bcc_list) throws JSONException{
-		String language = ITA_LANG;
+	public List<List> correctChallengeData(String profile, int type, String language, List<PointConcept> pointConcept, List<BadgeCollectionConcept> bcc_list) throws JSONException{
 		List<ChallengesData> challenges = new ArrayList<ChallengesData>();
     	List<ChallengesData> oldChallenges = new ArrayList<ChallengesData>();
     	List<List> challengesList = new ArrayList<List>();
@@ -534,8 +532,8 @@ public class ChallengesUtils {
 		    				row_status = round(walked_km, 2);
 		    				status = (walked_km * 100) / target;
 		    				if(status > 100)status = 100;
-		    				ch_desc = correctDesc(CHAL_DESC_1, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type));
+		    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_1, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_ABSOLUTE_INC) == 0){
 		    				// check how to merge old challenge type in this type
@@ -546,8 +544,8 @@ public class ChallengesUtils {
 		    					int count = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
 			    				row_status = round(count, 2);
 			    				status = count * 100 / target;
-			    				ch_desc = correctDesc(CHAL_DESC_2, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type));
+			    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_2, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_2_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
 		    				} else if(counterName.contains(SERVER_CHAL_ALLOWED_MODE_R)){
 		    					// recommendation
 		    					old_ch_type = CHAL_TYPE_9;
@@ -555,8 +553,8 @@ public class ChallengesUtils {
 			    				row_status = round(recommandation, 2);
 			    				status = recommandation * 100 / target;
 			    				if(status > 100)status = 100;
-			    				ch_desc = correctDesc(CHAL_DESC_9, target, ch_bonus, ch_point_type, "", null, language);
-			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type));
+			    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_9, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_9_ENG, target, ch_bonus, ch_point_type, "", null, language);
+			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
 		    				} else if(counterName.contains(SERVER_CHAL_ALLOWED_MODE_PE)){
 		    					// point earned
 		    					old_ch_type = CHAL_TYPE_5;
@@ -564,8 +562,8 @@ public class ChallengesUtils {
 			    				row_status = round(earned_points, 2);
 			    				status = earned_points * 100 / target;
 			    				if(status > 100)status = 100;
-			    				ch_desc = correctDesc(CHAL_DESC_5, target, ch_bonus, ch_point_type, "", null, language);
-			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type));
+			    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_5, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_5_ENG, target, ch_bonus, ch_point_type, "", null, language);
+			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
 		    				} else if(counterName.contains(SERVER_CHAL_ALLOWED_MODE_Z)){
 		    					// zero impact
 		    					old_ch_type = CHAL_TYPE_4;
@@ -573,8 +571,8 @@ public class ChallengesUtils {
 		    					int count = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
 			    				row_status = round(count, 2);
 			    				status = count * 100 / target;
-			    				ch_desc = correctDesc(CHAL_DESC_3, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type));
+			    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_3, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_3_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
 		    				} else { 
 		    					// tripnum
 		    					old_ch_type = CHAL_TYPE_3;
@@ -582,8 +580,8 @@ public class ChallengesUtils {
 		    					int count = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
 			    				row_status = round(count, 2);
 			    				status = count * 100 / target;
-			    				ch_desc = correctDesc(CHAL_DESC_3, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type));
+			    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_3, target, ch_bonus, ch_point_type, mobility_mode, null, language) :  correctDesc(CHAL_DESC_3_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
 		    				}
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_NEXT_BADGE) == 0){
@@ -600,8 +598,8 @@ public class ChallengesUtils {
 		    				}
 		    				row_status = round(count, 2);
 		    				status = count * 100 / target;
-		    				ch_desc = correctDesc(CHAL_DESC_6, target, ch_bonus, ch_point_type, "", badge_coll_name, language);
-		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, badge_coll_name, target + "", ch_point_type));
+		    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_6, target, ch_bonus, ch_point_type, "", badge_coll_name, language) : correctDesc(CHAL_DESC_6_ENG, target, ch_bonus, ch_point_type, "", badge_coll_name, language);
+		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, badge_coll_name, target + "", ch_point_type, language));
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_COMPLETE_BADGE_COLL) == 0){
 		    				old_ch_type = CHAL_TYPE_7;
@@ -609,8 +607,8 @@ public class ChallengesUtils {
 								status = 100;
 								row_status = 1.00;
 							}
-		    				ch_desc = correctDesc(CHAL_DESC_7, target, ch_bonus, ch_point_type, "", null, language);
-		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type));
+		    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_7, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_7_ENG, target, ch_bonus, ch_point_type, "", null, language);
+		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_SURVEY) == 0){
 		    				old_ch_type = CHAL_TYPE_8;
@@ -621,8 +619,8 @@ public class ChallengesUtils {
 	    					}
 		    				status = survey * 100 / target;
 		    				if(status > 100)status = 100;
-		    				ch_desc = correctDesc(CHAL_DESC_8, target, ch_bonus, ch_point_type, "", null, language);
-		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type));
+		    				ch_desc = (language == ITA_LANG) ? correctDesc(CHAL_DESC_8, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_8_ENG, target, ch_bonus, ch_point_type, "", null, language);
+		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
 		    			}
 		    			tmp_chall.setChallId(ch_id);
 	    				tmp_chall.setChallDesc(ch_desc);
@@ -803,15 +801,15 @@ public class ChallengesUtils {
     		if(desc.contains("MODE")){
     			if(language.compareTo(ITA_LANG) == 0){
 	    			if(desc.contains("senza")){
-	    				desc = desc.replace("MODE", getCorrectMode(mode, 1));
+	    				desc = desc.replace("MODE", getCorrectMode(mode, 1, language));
 	    			} else {
-	    				desc = desc.replace("MODE", getCorrectMode(mode, 0));
+	    				desc = desc.replace("MODE", getCorrectMode(mode, 0, language));
 	    			}
     			} else {
     				if(desc.contains("without")){
-	    				desc = desc.replace("MODE", getCorrectMode(mode, 1));
+	    				desc = desc.replace("MODE", getCorrectMode(mode, 1, language));
 	    			} else {
-	    				desc = desc.replace("MODE", getCorrectMode(mode, 0));
+	    				desc = desc.replace("MODE", getCorrectMode(mode, 0, language));
 	    			}
     			}
     		}
@@ -824,58 +822,126 @@ public class ChallengesUtils {
     	return desc;
     }
     
-    private String getCorrectMode(String mode, int type){
+    private String getCorrectMode(String mode, int type, String language){
     	String corr_mode = "";
     	if(mode.compareTo(CHAL_ALLOWED_MODE_W) == 0){
-    		corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
+    		} else {
+    			corr_mode = (type == 0) ? "walking" : "travel on foot";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BK) == 0){
-    		corr_mode = (type == 0) ? "in bici" : "la bici";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in bici" : "la bici";
+    		} else {
+    			corr_mode = (type == 0) ? "by bike" : "the bike";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0){
-    		corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
+    		} else {
+    			corr_mode = (type == 0) ? "with shared bike" : "bike sharing";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_T) == 0){
-    		corr_mode = (type == 0) ? "in treno" : "il treno";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in treno" : "il treno";
+    		} else {
+    			corr_mode = (type == 0) ? "by train" : "the train";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_B) == 0){
-    		corr_mode = (type == 0) ? "in autobus" : "l'autobus";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in autobus" : "l'autobus";
+    		} else {
+    			corr_mode = (type == 0) ? "by bus" : "the bus";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_C) == 0){
-    		corr_mode = (type == 0) ? "in auto" : "l'automobile";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in auto" : "l'automobile";
+    		} else {
+    			corr_mode = (type == 0) ? "by car" : "the car";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_Z) == 0){
-    		corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
+    		} else {
+    			corr_mode = (type == 0) ? "zero impact" : "zero impact trips";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_P) == 0){
-    		corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
+    		} else {
+    			corr_mode = (type == 0) ? "promoted" : "promoted trips";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_CAB) == 0){
-    		corr_mode = (type == 0) ? "in funivia" : "la funivia";	// New part for cable
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in funivia" : "la funivia";	// New part for cable
+    		} else {
+    			corr_mode = (type == 0) ? "by cable" : "the cable";	// New part for cable
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_W_DIS) == 0){
-    		corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "a piedi" : "spostamenti a piedi";
+    		} else {
+    			corr_mode = (type == 0) ? "walking" : "travel on foot";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BK_DIS) == 0){
-    		corr_mode = (type == 0) ? "in bici" : "la bici";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in bici" : "la bici";
+    		} else {
+    			corr_mode = (type == 0) ? "by bike" : "the bike";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_BKS_DIS) == 0){
-    		corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "con bici condivisa" : "la bici condivisa";
+    		} else {
+    			corr_mode = (type == 0) ? "with shared bike" : "bike sharing";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_T_DIS) == 0){
-    		corr_mode = (type == 0) ? "in treno" : "il treno";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in treno" : "il treno";
+    		} else {
+    			corr_mode = (type == 0) ? "by train" : "the train";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_B_DIS) == 0){
-    		corr_mode = (type == 0) ? "in autobus" : "l'autobus";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in autobus" : "l'autobus";
+    		} else {
+    			corr_mode = (type == 0) ? "by bus" : "the bus";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_C_DIS) == 0){
-    		corr_mode = (type == 0) ? "in auto" : "l'automobile";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "in auto" : "l'automobile";
+    		} else {
+    			corr_mode = (type == 0) ? "by car" : "the car";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_Z_DIS) == 0){
-    		corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "a impatto zero" : "spostamenti a impatto zero";
+    		} else {
+    			corr_mode = (type == 0) ? "zero impact" : "zero impact trips";
+    		}
     	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_P_DIS) == 0){
-    		corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
+    		if(language == ITA_LANG){
+    			corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
+    		} else {
+    			corr_mode = (type == 0) ? "promoted" : "promoted trips";
+    		}
     	}
     	return corr_mode;
     }

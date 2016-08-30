@@ -168,6 +168,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     $scope.citizenId = userId;
     $scope.user_token = token;
     $scope.wsresult = (conf_wsresult == "true")?true:false;
+    $scope.itaLang = (conf_lang == "it")?true:false;
     
     // Method used to retrieve the field value from the complete object string
     $scope.getFieldValue = function(fieldsObject){
@@ -353,7 +354,9 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var weekNum = $scope.getWeekNumFromTimestamp(now);
     	$scope.p_WeekNum = weekNum;
     	$scope.corrPrizesList = [];
+    	$scope.corrPrizesListEng = [];
     	var prizesList = $scope.convertConfPrizeObjectToJSONArray(conf_prizes);
+    	var prizesListEng = $scope.convertConfPrizeObjectToJSONArray(conf_prizes_eng);
     	/*var prizesList = [
     	    { "week": 1, "prize":"n.1 volo in aereo sulla citta'", "classification":"primo posto classifica settimanale green leaves" },
     	    { "week": 1, "prize":"n.1 biglietto ingresso MUSE + n.1 biglietto visita guidata", "classification":"primo estratto nella Top 10 settimanale della classifica green leaves" },
@@ -398,6 +401,13 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 	    	for(var i = 0; i < prizesList.length; i++){
 	    		if(prizesList[i].week == weekNum){
 	    			$scope.corrPrizesList.push(prizesList[i]);
+	    		}
+	    	}
+    	}
+    	if(prizesListEng){
+	    	for(var i = 0; i < prizesListEng.length; i++){
+	    		if(prizesListEng[i].week == weekNum){
+	    			$scope.corrPrizesListEng.push(prizesListEng[i]);
 	    		}
 	    	}
     	}
@@ -459,6 +469,10 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	localize.setLanguage('it-IT');
     	sharedDataService.setUsedLanguage('ita');
     };
+    
+    $scope.retrieveUsedLang = function(){
+    	return sharedDataService.getUsedLanguage();
+    }
     
     $scope.setUserLocale = function(lan){
     	var lan_uri = '';

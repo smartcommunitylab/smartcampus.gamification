@@ -250,9 +250,9 @@ public class EmailService {
         boolean isFirstMail = Boolean.parseBoolean(firstGameMail);
         String htmlContent = "";
         if(isFirstMail){
-        	htmlContent = this.templateEngine.process("email-gamification2016-startgame-tn.html", ctx);
+        	htmlContent = (locale == Locale.ITALIAN) ? this.templateEngine.process("email-gamification2016-startgame-tn.html", ctx) : this.templateEngine.process("email-gamification2016-startgame-tn-eng.html", ctx);
         } else {
-        	htmlContent = this.templateEngine.process("email-gamification2016-tn.html", ctx);
+        	htmlContent = (locale == Locale.ITALIAN) ? this.templateEngine.process("email-gamification2016-tn.html", ctx) : this.templateEngine.process("email-gamification2016-tn-eng.html", ctx);
         }
         message.setText(htmlContent, true /* isHtml */);
         
@@ -381,7 +381,7 @@ public class EmailService {
         message.setTo(recipientEmail);
 
         // Create the HTML body using Thymeleaf
-        final String htmlContent = this.templateEngine.process("email-gamification2016-winners-tn.html", ctx);
+        final String htmlContent = (locale == Locale.ITALIAN) ? this.templateEngine.process("email-gamification2016-winners-tn.html", ctx) : this.templateEngine.process("email-gamification2016-winners-tn-eng.html", ctx);
         message.setText(htmlContent, true /* isHtml */);
         
         // Add the inline titles image, referenced from the HTML code as "cid:${imageResourceName}"

@@ -512,6 +512,7 @@ public class PortalController extends SCController{
 			// here I have to add the new mail parameters readed from csv files
 			String actual_week = "";
 			String actual_week_theme = "";
+			String actual_week_theme_it = "";
 			String actual_week_theme_eng = "";
 			String last_week = "";
 			Boolean are_chall = false;
@@ -521,7 +522,7 @@ public class PortalController extends SCController{
 				WeekConfData tmpWConf = mailConfigurationFileData.get(i);
 				if(tmpWConf.isActual()){
 					actual_week = tmpWConf.getWeekNum();
-					actual_week_theme = tmpWConf.getWeekTheme();
+					actual_week_theme_it = tmpWConf.getWeekTheme();
 					actual_week_theme_eng = tmpWConf.getWeekThemeEng();
 					last_week = Integer.toString(Integer.parseInt(actual_week) - 1);
 					are_chall = tmpWConf.isChallenges();
@@ -565,6 +566,10 @@ public class PortalController extends SCController{
 							actual_week_theme = actual_week_theme_eng;
 							mailLoc = Locale.ENGLISH;
 							mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileDataEng);
+						} else {
+							actual_week_theme = actual_week_theme_it;
+							mailLoc = Locale.ITALIAN;
+							mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 						}
 						try {
 							PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0, language);
@@ -704,11 +709,14 @@ public class PortalController extends SCController{
 		// Here I have to read the mail conf file data
 		List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
 		List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
+		List<WeekPrizeData> mailPrizeFileDataEng = readWeekPrizesFile(path + "mail/conf_file/game_week_prize_en.csv");
 		List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/conf_file/game_week_winners.csv");
 		List<WeekPrizeData> mailPrizeActualData = new ArrayList<WeekPrizeData>();
 		// here I have to add the new mail parameters readed from csv files
 		String actual_week = "";
 		String actual_week_theme = "";
+		String actual_week_theme_it = "";
+		String actual_week_theme_eng = "";
 		String last_week = "";
 		Boolean are_chall = false;
 		Boolean are_prizes = false;
@@ -717,7 +725,8 @@ public class PortalController extends SCController{
 			WeekConfData tmpWConf = mailConfigurationFileData.get(i);
 			if(tmpWConf.isActual()){
 				actual_week = tmpWConf.getWeekNum();
-				actual_week_theme = tmpWConf.getWeekTheme();
+				actual_week_theme_it = tmpWConf.getWeekTheme();
+				actual_week_theme_eng = tmpWConf.getWeekThemeEng();
 				last_week = Integer.toString(Integer.parseInt(actual_week) - 1);
 				are_chall = tmpWConf.isChallenges();
 				are_prizes = tmpWConf.isPrizes();
@@ -748,6 +757,7 @@ public class PortalController extends SCController{
 				ArrayList<BagesData> someBadge = null;
 				List<ChallengesData> challenges = null;
 				List<ChallengesData> lastWeekChallenges = null;
+				Locale mailLoc = Locale.ITALIAN;
 			
 				try {
 					// WS State Invocation
@@ -758,6 +768,15 @@ public class PortalController extends SCController{
 					String language = p.getLanguage();
 					if(language == null || language.compareTo("") == 0){
 						language = ITA_LANG;
+					}
+					if(language.compareTo(ENG_LANG) == 0){
+						actual_week_theme = actual_week_theme_eng;
+						mailLoc = Locale.ENGLISH;
+						mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileDataEng);
+					} else {
+						actual_week_theme = actual_week_theme_it;
+						mailLoc = Locale.ITALIAN;
+						mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
 					}
 					try {
 						PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0, language);
@@ -798,21 +817,21 @@ public class PortalController extends SCController{
 							if(states != null  && states.size() > 0){
 								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 							} else {
 								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 							}
 						} else {
 							if(states != null  && states.size() > 0){
 								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 							} else {
 								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, Locale.ITALIAN);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
 							}
 						}
 					} catch (MessagingException e) {

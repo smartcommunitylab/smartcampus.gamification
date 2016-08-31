@@ -165,52 +165,54 @@ public class StatusUtils {
     		//System.out.println("My state " + stateData.toString());
     		JSONArray pointConceptData = null;
     		if(stateData != null){
-    			pointConceptData = stateData.getJSONArray(POINT_CONCEPT);
-    			for(int i = 0; i < pointConceptData.length(); i++){
-    				JSONObject point = pointConceptData.getJSONObject(i);
-    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
-    				if(timestamp == null || timestamp.longValue() == 0L){	// global
-    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
-        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-        				}
-    				} else { // specific week
-    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
-    						JSONObject pc_period = (!point.isNull(PC_PERIOD)) ? point.getJSONObject(PC_PERIOD) : null;
-        					if(pc_period != null){
-        						@SuppressWarnings("unchecked")
-								Iterator<String> keys = pc_period.keys();
-        						while(keys.hasNext()){
-        							String key = keys.next();
-        							JSONObject pc_weekly = pc_period.getJSONObject(key);
-        							if(pc_weekly != null){
-            							JSONArray pc_instances = pc_weekly.getJSONArray(PC_INSTANCES);
-            							if(pc_instances != null){
-            								boolean found = false;
-            								for(int j = 0; (j < pc_instances.length()) && !found; j++){
-            									JSONObject pc_instance = pc_instances.getJSONObject(j);
-            									int instance_score = (!pc_instance.isNull(PC_SCORE)) ? pc_instance.getInt(PC_SCORE) : 0;
-            									long instance_start = (!pc_instance.isNull(PC_START)) ? pc_instance.getLong(PC_START) : 0L;
-            									long instance_end = (!pc_instance.isNull(PC_END)) ? pc_instance.getLong(PC_END) : 0L;
-            									if(timestamp >= instance_start && timestamp <= instance_end){
-            										score = instance_score;
-            										found = true;
-            									}
-            								}
-            							}
-            						}
-        						}
-        					}
+    			pointConceptData = (!stateData.isNull(POINT_CONCEPT)) ? stateData.getJSONArray(POINT_CONCEPT) : null;
+    			if(pointConceptData != null){
+	    			for(int i = 0; i < pointConceptData.length(); i++){
+	    				JSONObject point = pointConceptData.getJSONObject(i);
+	    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
+	    				if(timestamp == null || timestamp.longValue() == 0L){	// global
+	    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+	        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+	        				}
+	    				} else { // specific week
+	    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+	    						JSONObject pc_period = (!point.isNull(PC_PERIOD)) ? point.getJSONObject(PC_PERIOD) : null;
+	        					if(pc_period != null){
+	        						@SuppressWarnings("unchecked")
+									Iterator<String> keys = pc_period.keys();
+	        						while(keys.hasNext()){
+	        							String key = keys.next();
+	        							JSONObject pc_weekly = pc_period.getJSONObject(key);
+	        							if(pc_weekly != null){
+	            							JSONArray pc_instances = pc_weekly.getJSONArray(PC_INSTANCES);
+	            							if(pc_instances != null){
+	            								boolean found = false;
+	            								for(int j = 0; (j < pc_instances.length()) && !found; j++){
+	            									JSONObject pc_instance = pc_instances.getJSONObject(j);
+	            									int instance_score = (!pc_instance.isNull(PC_SCORE)) ? pc_instance.getInt(PC_SCORE) : 0;
+	            									long instance_start = (!pc_instance.isNull(PC_START)) ? pc_instance.getLong(PC_START) : 0L;
+	            									long instance_end = (!pc_instance.isNull(PC_END)) ? pc_instance.getLong(PC_END) : 0L;
+	            									if(timestamp >= instance_start && timestamp <= instance_end){
+	            										score = instance_score;
+	            										found = true;
+	            									}
+	            								}
+	            							}
+	            						}
+	        						}
+	        					}
+		    				}
+	    					/*if(type.compareTo("test") == 0){
+		    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+			    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+			    				}
+	    					} else {
+		    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+			    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+			    				}
+	    					}*/
 	    				}
-    					/*if(type.compareTo("test") == 0){
-	    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
-		    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-		    				}
-    					} else {
-	    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
-		    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-		    				}
-    					}*/
-    				}
+	    			}
     			}
     			playerClass.setNickName(nickName);
     			playerClass.setPlayerId(playerId);
@@ -243,54 +245,55 @@ public class StatusUtils {
 		    		JSONObject stateData = (!profileData.isNull(STATE)) ? profileData.getJSONObject(STATE) : null;
 		    		JSONArray pointConceptData = null;
 		    		if(stateData != null){
-		    			pointConceptData = stateData.getJSONArray(POINT_CONCEPT);
-		    			for(int j = 0; j < pointConceptData.length(); j++){
-		    				JSONObject point = pointConceptData.getJSONObject(j);
-		    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
-		    				if(timestamp == null || timestamp.longValue() == 0L){	// global
-		    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
-		        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-		        				}
-		    				} else {												// specific week
-		    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
-		    						JSONObject pc_period = (!point.isNull(PC_PERIOD)) ? point.getJSONObject(PC_PERIOD) : null;
-		        					if(pc_period != null){
-		        						@SuppressWarnings("unchecked")
-										Iterator<String> keys = pc_period.keys();
-		        						while(keys.hasNext()){
-		        							String key = keys.next();
-		        							JSONObject pc_weekly = pc_period.getJSONObject(key);
-		        							if(pc_weekly != null){
-		            							JSONArray pc_instances = pc_weekly.getJSONArray(PC_INSTANCES);
-		            							if(pc_instances != null){
-		            								boolean found = false;
-		            								for(int z = 0; (z < pc_instances.length()) && !found; z++){
-		            									JSONObject pc_instance = pc_instances.getJSONObject(z);
-		            									int instance_score = (!pc_instance.isNull(PC_SCORE)) ? pc_instance.getInt(PC_SCORE) : 0;
-		            									long instance_start = (!pc_instance.isNull(PC_START)) ? pc_instance.getLong(PC_START) : 0L;
-		            									long instance_end = (!pc_instance.isNull(PC_END)) ? pc_instance.getLong(PC_END) : 0L;
-		            									if(timestamp >= instance_start && timestamp <= instance_end){
-		            										score = instance_score;
-		            										found = true;
-		            									}
-		            								}
-		            							}
-		            						}
-		        						}
-		        					}
-		    					}	
-		    					/*if(type.compareTo("test") == 0){
-			    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
-				    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-				    				}
-		    					} else {
-				    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
-				    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
-				    				}
-		    					}*/
-		    				}
+		    			pointConceptData = (!stateData.isNull(POINT_CONCEPT)) ? stateData.getJSONArray(POINT_CONCEPT) : null;
+		    			if(pointConceptData != null){
+			    			for(int j = 0; j < pointConceptData.length(); j++){
+			    				JSONObject point = pointConceptData.getJSONObject(j);
+			    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
+			    				if(timestamp == null || timestamp.longValue() == 0L){	// global
+			    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+			        					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+			        				}
+			    				} else {												// specific week
+			    					if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+			    						JSONObject pc_period = (!point.isNull(PC_PERIOD)) ? point.getJSONObject(PC_PERIOD) : null;
+			        					if(pc_period != null){
+			        						@SuppressWarnings("unchecked")
+											Iterator<String> keys = pc_period.keys();
+			        						while(keys.hasNext()){
+			        							String key = keys.next();
+			        							JSONObject pc_weekly = pc_period.getJSONObject(key);
+			        							if(pc_weekly != null){
+			            							JSONArray pc_instances = pc_weekly.getJSONArray(PC_INSTANCES);
+			            							if(pc_instances != null){
+			            								boolean found = false;
+			            								for(int z = 0; (z < pc_instances.length()) && !found; z++){
+			            									JSONObject pc_instance = pc_instances.getJSONObject(z);
+			            									int instance_score = (!pc_instance.isNull(PC_SCORE)) ? pc_instance.getInt(PC_SCORE) : 0;
+			            									long instance_start = (!pc_instance.isNull(PC_START)) ? pc_instance.getLong(PC_START) : 0L;
+			            									long instance_end = (!pc_instance.isNull(PC_END)) ? pc_instance.getLong(PC_END) : 0L;
+			            									if(timestamp >= instance_start && timestamp <= instance_end){
+			            										score = instance_score;
+			            										found = true;
+			            									}
+			            								}
+			            							}
+			            						}
+			        						}
+			        					}
+			    					}	
+			    					/*if(type.compareTo("test") == 0){
+				    					if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST + weekNum) == 0){
+					    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+					    				}
+			    					} else {
+					    				if(pc_name != null && pc_name.compareTo(PC_CLASSIFICATION_WEEK + weekNum) == 0){
+					    					score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+					    				}
+			    					}*/
+			    				}
+			    			}
 		    			}
-		    			
 		    			String nickName = getPlayerNameById(allNicks, playerId);
 		    			ClassificationData playerClass = new ClassificationData();
 		    			playerClass.setNickName(nickName);
@@ -356,44 +359,49 @@ public class StatusUtils {
 	public PlayerClassification completeClassificationPosition(List<ClassificationData> playersClass, ClassificationData actualPlayerClass, Integer from, Integer to){
 		List<ClassificationData> playersClassCorr = new ArrayList<ClassificationData>();
 		int from_index = 0;
-		int to_index = playersClass.size();
 		PlayerClassification pc = new PlayerClassification();
-		ClassificationData prec_pt = null;
-		for(int i = 0; i < playersClass.size(); i++){
-			ClassificationData pt = playersClass.get(i);
-			if(i > 0){
-				if(pt.getScore() < prec_pt.getScore()){
-	    			pt.setPosition(i + 1);
-	    		} else {
-	    			pt.setPosition(prec_pt.getPosition());
-	    		}
-			} else {
-				pt.setPosition(i + 1);
-			}
-			prec_pt = pt;
-			if(pt.getPlayerId().compareTo(actualPlayerClass.getPlayerId()) == 0){
-				actualPlayerClass.setPosition(pt.getPosition());
-			}
-			playersClassCorr.add(pt);
-		}
-		if(from != null){
-			from_index = from.intValue();
-		}
-		if(to != null){
-			to_index = to.intValue();
-		}
-		if(from_index < 0)from_index = 0;
-		if(from_index > playersClass.size())from_index = playersClass.size();
-		if(to_index < 0)to_index = 0;
-		if(to_index > playersClass.size())to_index = playersClass.size();
-		if(from_index >= to_index)from_index = to_index;
 		List<ClassificationData> cleanedList = new ArrayList<ClassificationData>();
-		try {
-			cleanedList = playersClassCorr.subList(from_index, to_index);
-		} catch (Exception ex){
-			// do nothings
+		if(playersClass != null && !playersClass.isEmpty()){
+			int to_index = playersClass.size();
+			ClassificationData prec_pt = null;
+			for(int i = 0; i < playersClass.size(); i++){
+				ClassificationData pt = playersClass.get(i);
+				if(i > 0){
+					if(pt.getScore() < prec_pt.getScore()){
+		    			pt.setPosition(i + 1);
+		    		} else {
+		    			pt.setPosition(prec_pt.getPosition());
+		    		}
+				} else {
+					pt.setPosition(i + 1);
+				}
+				prec_pt = pt;
+				if(pt.getPlayerId().compareTo(actualPlayerClass.getPlayerId()) == 0){
+					actualPlayerClass.setPosition(pt.getPosition());
+				}
+				playersClassCorr.add(pt);
+			}
+			if(from != null){
+				from_index = from.intValue();
+			}
+			if(to != null){
+				to_index = to.intValue();
+			}
+			if(from_index < 0)from_index = 0;
+			if(from_index > playersClass.size())from_index = playersClass.size();
+			if(to_index < 0)to_index = 0;
+			if(to_index > playersClass.size())to_index = playersClass.size();
+			if(from_index >= to_index)from_index = to_index;
+			try {
+				cleanedList = playersClassCorr.subList(from_index, to_index);
+			} catch (Exception ex){
+				// do nothings
+			}
+			pc.setClassificationList(cleanedList);
+		} else {
+			pc.setClassificationList(playersClass);
+			actualPlayerClass.setPosition(0);
 		}
-		pc.setClassificationList(cleanedList);
 		pc.setActualUser(actualPlayerClass);
 		return pc;
 	}

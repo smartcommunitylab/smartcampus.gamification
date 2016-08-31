@@ -323,7 +323,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	if(timeStamp >= 1473458400000){	//10 set 16 00:00:00
     		return 1;
     	}
-    	return 1;
+    	return 0;
     };
     
     // Method used to retrieve the prizes objects data list from the relative string value

@@ -12,8 +12,8 @@ descriptions:
   - id: 3
     type: PERCENT
     mobilitymode: walk
-    description: Per vincere la sfida vale la somma dei Km camminati (solo tratte superiori a 100 metri) nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: To overcome the challenge is needed the sum of kms traveled by foot (at least 100 meters) planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
+    description: Per vincere la sfida vale la somma dei Km camminati (solo tratte superiori a 250 metri) nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
+    description_eng: To overcome the challenge is needed the sum of kms traveled by foot (at least 250 meters) planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 4
     type: TRIPNUMBER
     mobilitymode: bikesharing

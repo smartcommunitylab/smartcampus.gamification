@@ -43,9 +43,25 @@
 <script src="lib/xeditable.min.js"></script>
 <script src="lib/angular-base64.min.js"></script>
 <base href="/gamificationweb/" />
+
+<script>
+var token="<%=request.getAttribute("token")%>";
+var userId="<%=request.getAttribute("user_id")%>";
+var conf_gameid="<%=request.getAttribute("gameid")%>";
+var conf_point_types="<%=request.getAttribute("point_types")%>";
+var conf_chall_messages="<%=request.getAttribute("challenge_desc_messages")%>";
+var conf_week_sponsor_data="<%=request.getAttribute("week_sponsor_data")%>";
+var conf_is_test="<%=request.getAttribute("isTest")%>";
+var conf_is_short_classification="<%=request.getAttribute("isShortClassification")%>";
+var conf_short_classification_size="<%=request.getAttribute("short_classification_size")%>";
+var conf_wsresult="<%=request.getAttribute("wsresult")%>";
+var conf_lang="<%=request.getAttribute("language")%>";
+var conf_prizes="<%=request.getAttribute("prizes")%>";
+var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
+</script>
 </head>
 <body>
-	<div class="container">
+	<div class="container" ng-controller="MainCtrl">
 		<div id="big-rules-page">
 			<div class="row">
 				<div ng-class="col-md-10">

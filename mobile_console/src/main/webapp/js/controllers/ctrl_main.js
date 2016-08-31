@@ -850,6 +850,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return $scope.profTabs[index].activeClass;
     };
     
+    if($scope.retrieveUsedLang() == "ita"){
+    	$scope.setItalianLanguage();
+    } else {
+    	$scope.setEnglishLanguage();
+    }
+    
     // -------------------------------------------------------------------------------------
     
     

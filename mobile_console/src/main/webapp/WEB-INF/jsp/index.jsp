@@ -150,9 +150,9 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 			            		<li class="{{ isActiveRules() }}"><a href="#/rules" ng-click="showRules()" ><strong>{{ 'left_menu-rules' | i18n }}</strong></a></li>
             					<li class="{{ isActivePrivacy() }}"><a href="#/privacy" ng-click="showPrivacy()" ><strong>{{ 'left_menu-privacy' | i18n }}</strong></a></li>
 								<!-- <li class="{{ isActiveCredits() }}"><a href="#/credits" ng-click="showCredits()" ><strong>{{ 'left_menu-credits' | i18n }}</strong></a></li> -->
-								<!-- <li class="divider"></li> -->
-								<!-- <li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li> -->
-								<!-- <li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li> -->
+								<li class="divider"></li>
+								<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li>
+								<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li>
 			          			<li class="divider"></li>
 			          			<!-- <li><a href="logout" ng-click="logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li> -->
 			            	</ul>

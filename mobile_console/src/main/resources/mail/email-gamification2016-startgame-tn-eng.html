@@ -42,7 +42,7 @@
 			            Hello Utente,
 			        </h3>
 			        <h3>
-			        	we are entering the week <strong th:text="${next_week_num}">X+1</strong> of play.
+			        	game week <strong th:text="${next_week_num}">X+1</strong> is about to start.<br/>
 			        	<span th:if="${g_point} > 0"><br/>Keep playing and moving smart!</span>
 			        </h3>
 			        <h3>
@@ -50,14 +50,8 @@
 				    </h3>
 			        <div th:if="${g_point} > 0">
 				        <h3>
-					    	Result of week <strong th:text="${week_num}">X</strong> of play.
+					    	YOUR GAME RESULTS for week <strong th:text="${week_num}">X</strong> are:
 					    </h3>
-				        <h3>
-				        	YOUR RESULTS
-				        </h3>
-				        <h3>
-				        	Congratulations, that's your game results:
-				        </h3>
 				        <div style="margin: 50px 5px 5px 150px">
 					        <table>
 						        <tr>
@@ -70,7 +64,7 @@
 						</div>
 				        
 				        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{new_badges}">
-				            In addition , during the week you earned:
+				            And you obtained the following badges:
 				        </h3>
 				        <div style="margin: 50px 5px 5px 150px" >
 					        <table th:if="${n_badges ne null}">
@@ -83,7 +77,7 @@
 			        </div>
 			        <div th:if="${g_point} == 0">
 				        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
-				            This week you have not earned Green Leaves points. <br/>Try to play and a smart move!
+				            On the last week you did not earn any badge. Keep playing to earn more points and get new badges!
 				        </h3>
 				        <font size="3" >Earn points is easy:</font>
 				        <table>
@@ -103,7 +97,7 @@
 					    <font size="3" >Each trip lets you earn <strong>Green Leaves points</strong> in proportion with the kms done in a sustainable mode (walking, by byke/bike sharing, with public trasport).</font>
 			        </div>
 			        <h3>
-			        	To see your complete results and the updated rankings see the app ViaggaTrento in the Play&amp;Go section.
+			        	You can find your detailed game status and up-to-date leaderboards by opening the App ViaggiaTrento Play&amp;Go and clicking on Play&amp;Go->Score. If you need further information on the App visit the SmartCommunity Web site or click <b><a href="http://www.smartcommunitylab.it/apps/viaggia-trento-playgo" th:href="${greengame_url}" target="_blank">HERE</a></b>.
 			        </h3>
 			        <p>
 			        	<font size="3" >

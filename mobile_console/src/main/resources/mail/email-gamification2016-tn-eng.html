@@ -42,18 +42,18 @@
 			            Hello Utente,
 			        </h3>
 			        <h3>
-			        	we are entering the week <strong th:text="${next_week_num}">X+1</strong> of play.<br/>
-			        	The following list highlights the challenges this week and your recent results.
+			        	game week <strong th:text="${next_week_num}">X+1</strong> is about to start.<br/>
+			        	Below, you can find your weekly challenges and your recent game results.
 			        </h3>
 			        <div th:if="${n_challenges ne null}">
 				        <h3 th:if="${show_last_week} == false and ${next_week_theme} ne 'No'" th:text="#{week_desc(${next_week_theme})}">
-				            This will be the week of THE BIKE
+				            This will be the THE BIKE week
 				        </h3>
 				        <h3 th:if="${show_last_week} == true">
 				            This will be the LAST WEEK of play
 				        </h3>
 				        <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
-				            Here are your active CHALLENGES , get in the game to overcome them:
+				            Here are your weekly CHALLENGES, put yourself to test and try to achieve them:
 				        </h3>
 				        <table th:if="${n_challenges ne null}">
 						    <tr th:each="ch : ${n_challenges}" valign="top">
@@ -69,18 +69,18 @@
 						    </tr>
 					    </table>
 					    <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
-				            The challenges are valid at <span th:text="${chs_start_time}">00:00</span> of the day <span th:text="${chs_start_date}">XXX</span> and finish at <span th:text="${chs_end_time}">23:59</span> of the day <span th:text="${chs_end_date}">YYY</span>!
+				            Challenges start at <span th:text="${chs_start_time}">00:00</span> on <span th:text="${chs_start_date}">XXX</span> and you can accomplish them till <span th:text="${chs_end_time}">23:59</span> of <span th:text="${chs_end_date}">YYY</span>!
 				        </h3>
 			        </div>
 			        <div th:if="${n_prizes ne null and are_prizes}">
 				        <h3>
-				            The prizes for the week <strong th:text="${next_week_num}">X+1</strong> are:
+				            The prizes for week <strong th:text="${next_week_num}">X+1</strong> are the following:
 				        </h3>
 				        <table th:if="${n_prizes ne null}" width="95%">
 				        	<tr align="left">
 				        		<th width="2%"></th>
 				        		<th width="40%">Prize</th>
-				        		<th width="58%">Target</th>
+				        		<th width="58%">Winner</th>
 				        		<!-- <th width="20%">Offerto da</th> -->
 				        	</tr>
 						    <tr th:each="p : ${n_prizes}" valign="top">
@@ -93,7 +93,7 @@
 			        </div>
 			        <br/>
 			        <h3>
-				    	YOUR RESULTS of week <strong th:text="${week_num}">X</strong> are:
+				    	YOUR GAME RESULTS for week <strong th:text="${week_num}">X</strong> are:
 				    </h3>
 			        <!-- <div th:if="${are_prizes_last}">
 				        <h3>
@@ -147,7 +147,7 @@
 			        <!-- th:if="${name.length() gt 10}" -->
 			        <div th:if="${n_lw_win_challenges ne null and not #lists.isEmpty(n_lw_win_challenges)}">
 				        <h3>
-				            You have exceeded the challenges:
+				            You completed the following challenges:
 				        </h3>
 				        <table th:if="${n_lw_win_challenges ne null}">
 						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" valign="top" >
@@ -158,7 +158,7 @@
 			        </div>
 			        
 			        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{new_badges}">
-			            In addition you have earned the following badge:
+			            And you obtained the following badges:
 			        </h3>
 			        <div style="margin: 50px 5px 5px 150px" >
 				        <table th:if="${n_badges ne null}">
@@ -170,13 +170,13 @@
 			        </div>
 			        
 			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}">
-			            This week you have not earned new badges. Play again to earn more points and get new badges!
+			            On the last week you did not earn any badge. Keep playing to earn more points and get new badges!
 			        </h3>
 			        <h3>
-			        	To see your complete results and standings updated see the app ViaggaTrento in the Play&amp;Go section. For more details and information on the app visit the smartcommunity website or click <b><a href="http://www.smartcommunitylab.it/apps/viaggia-trento-playgo" th:href="${greengame_url}" target="_blank">HERE</a></b>.
+			        	You can find your detailed game status and up-to-date leaderboards by opening the App ViaggiaTrento Play&amp;Go and clicking on Play&amp;Go->Score. If you need further information on the App visit the SmartCommunity Web site or click <b><a href="http://www.smartcommunitylab.it/apps/viaggia-trento-playgo" th:href="${greengame_url}" target="_blank">HERE</a></b>.
 			        </h3>
 			        <h4>
-			        	If you do not wish to receive the following email notification off the Service by clicking <b><a href="http://localhost:8080/gamificationweb/out/rest/unsubscribeMail/3" th:href="${unsubscribtionLink}" target="_blank">HERE</a></b>.
+			        	In case you do not want to receive these email notifications, you can disable the service at any time by clicking <b><a href="http://localhost:8080/gamificationweb/out/rest/unsubscribeMail/3" th:href="${unsubscribtionLink}" target="_blank">HERE</a></b>.
 			        </h4>
 			        
 <!-- 			        <img src="img/foglie03.svg" th:src="'cid:' + ${imageResourceName}" /> -->

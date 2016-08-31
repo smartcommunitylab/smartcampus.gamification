@@ -524,19 +524,19 @@
 	"description": "Testo per premi settimanali parte 2"
 }, {
 	"key": "global_prize_text_1",
-	"value": "At the end of the game , each player will receive a certificate that will bring the results achieved. The nine players at the head of ",
+	"value": "At the end of the game, each player will receive a certificate presenting his personal game results. The top nine players in the global ",
 	"description": "Testo per premi globali parte 1"
 }, {
 	"key": "global_prize_text_2",
-	"value": " Green Leaves global classification ",
+	"value": " Green Leaves leaderboard ",
 	"description": "Testo per premi globali parte 2"
 }, {
 	"key": "global_prize_text_3",
-	"value": "(see 'OPERATION OF THE GAME') at the end of the game will receive this prizes: ",
+	"value": "(see 'GAME REGULATION') at the end of the game, will receive the following prizes: ",
 	"description": "Testo per premi globali parte 3"
 }, {
 	"key": "global_prize_text_4",
-	"value": "An awards ceremony with presentation of certificates and awards will take place at and by the Municipality of Trent at the end of the game .",
+	"value": "Participation certificates and prizes will be awarded at the end of the game during a public event, which will be held at and by Comune di Trento.",
 	"description": "Testo per premi globali parte 4"
 }, {
 	"key": "global_prize_classification_pos_1",
@@ -544,7 +544,7 @@
 	"description": "Testo per classifica globale posizione 1"
 }, {
 	"key": "global_prize_classification_description_1",
-	"value": "n. 1 stay of three days and two nights for two people in a hotel of 4 stars of the territory",
+	"value": "3 days and 2 nights for two people in a 4 start hotel in Trento region",
 	"description": "Testo per descrizione classifica globale posizione 1"
 }, {
 	"key": "global_prize_classification_pos_2",
@@ -552,7 +552,7 @@
 	"description": "Testo per classifica globale posizione 2"
 }, {
 	"key": "global_prize_classification_description_2",
-	"value": "n. 1 bonus of four tickets for the Christmas show at the Teatro Sociale",
+	"value": "4 tickets for the Christmas event at Teatro Sociale",
 	"description": "Testo per descrizione classifica globale posizione 2"
 }, {
 	"key": "global_prize_classification_pos_3",
@@ -560,7 +560,7 @@
 	"description": "Testo per classifica globale posizione 3"
 }, {
 	"key": "global_prize_classification_description_3",
-	"value": "n. 1 subscription Trentino Volley",
+	"value": "n.1 season ticket to Trentino Volley",
 	"description": "Testo per descrizione classifica globale posizione 3"
 }, {
 	"key": "global_prize_classification_pos_4",
@@ -568,7 +568,7 @@
 	"description": "Testo per classifica globale posizione 4"
 }, {
 	"key": "global_prize_classification_description_4",
-	"value": "n. 1 subscription Trentino Rosa",
+	"value": "n.1 season ticket to Trentino Rosa",
 	"description": "Testo per descrizione classifica globale posizione 4"
 }, {
 	"key": "global_prize_classification_pos_5",
@@ -576,7 +576,7 @@
 	"description": "Testo per classifica globale posizione 5"
 }, {
 	"key": "global_prize_classification_description_5",
-	"value": "shirt and ball autographed by Aquila basket players",
+	"value": "n.1 jersey and n.1 basketball signed by Aquila Basket players",
 	"description": "Testo per descrizione classifica globale posizione 5"
 }, {
 	"key": "global_prize_classification_pos_6",
@@ -584,7 +584,7 @@
 	"description": "Testo per classifica globale posizione 6"
 }, {
 	"key": "global_prize_classification_description_6",
-	"value": "n. 1 individual entrance to Muse card with MiniTribù profile (1 parent + children)",
+	"value": "n.1 MiniTriu' ticket for Muse (1 parent + children)",
 	"description": "Testo per descrizione classifica globale posizione 6"
 }, {
 	"key": "global_prize_classification_pos_7",
@@ -592,7 +592,7 @@
 	"description": "Testo per classifica globale posizione 7"
 }, {
 	"key": "global_prize_classification_description_7",
-	"value": "n. 1 single subscription to car sharing",
+	"value": "n.1 car sharing yearly ticket",
 	"description": "Testo per descrizione classifica globale posizione 7"
 }, {
 	"key": "global_prize_classification_pos_8",
@@ -600,7 +600,7 @@
 	"description": "Testo per classifica globale posizione 8"
 }, {
 	"key": "global_prize_classification_description_8",
-	"value": "a 10 min flight by plane over the city of Trento",
+	"value": "n.1 Trento sky-tour (10 minutes)",
 	"description": "Testo per descrizione classifica globale posizione 8"
 }, {
 	"key": "global_prize_classification_pos_9",
@@ -608,7 +608,7 @@
 	"description": "Testo per classifica globale posizione 9"
 }, {
 	"key": "global_prize_classification_description_9",
-	"value": "n. 1 day pass to ski on the Bondone mountain",
+	"value": "n.1 daily skiing ticket for Bondone",
 	"description": "Testo per descrizione classifica globale posizione 9"
 }, {
 	"key": "privacy_page_title",

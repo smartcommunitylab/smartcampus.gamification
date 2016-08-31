@@ -644,7 +644,7 @@
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_2",
-	"value": "'Plan trip'",
+	"value": "'Plan journey'",
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_3",
@@ -652,7 +652,7 @@
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_4",
-	"value": "'Save route'",
+	"value": "'Save journey'",
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_5",
@@ -668,19 +668,19 @@
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_8",
-	"value": "'stop'",
+	"value": "'stop journey'",
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_9",
-	"value": " on trip details in 'My trips'). For travel on foot or by bike you can directly track your routes without planning (",
+	"value": " on trip details in 'My journeys'). For travel on foot or by bike you can directly track your routes without planning (",
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_10",
-	"value": "'On foot'",
+	"value": "'walk'",
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_11",
-	"value": "'By bike'",
+	"value": "'bike'",
 	"description": "Testo per contenuto pagina rules"
 }, {
 	"key": "game_rules_page_text_12",

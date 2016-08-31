@@ -74,8 +74,10 @@ public class StatusUtils {
     				for(int j = 0; j < bc_badgesEarned.length(); j++){
     					String b_name = bc_badgesEarned.getString(j);
     					String b_url = getUrlFromBadgeName(gamificationUrl, b_name);
-    					BadgeConcept badge = new BadgeConcept(b_name, b_url);
-    					bc_badges.add(badge);
+    					if(!b_url.contains("/img/pr/p&rLeaves.svg")){ // not in default ParkAndRide badges
+    						BadgeConcept badge = new BadgeConcept(b_name, b_url);
+        					bc_badges.add(badge);
+    					}
     				}
     				BadgeCollectionConcept bcc = new BadgeCollectionConcept(bc_name, bc_badges);
     				bcc_list.add(bcc);

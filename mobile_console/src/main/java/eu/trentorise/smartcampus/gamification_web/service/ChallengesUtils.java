@@ -191,7 +191,7 @@ public class ChallengesUtils {
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(6).getDescription() : challDescList.get(6).getDescription_eng();
 			}
 		} else if(type.compareTo(CHAL_TYPE_5) == 0){
-			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(10).getDescription().replace("X", target).replace("punti [green leaves, bici, salute, impatto 0]", pointType) : challDescList.get(10).getDescription_eng().replace("X", target).replace("[green leaves, bike, ealth, 0 impact] points", pointType);
+			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(10).getDescription().replace("X", target).replace("punti [green leaves, bici, salute, impatto 0]", pointType) : challDescList.get(10).getDescription_eng().replace("X", target).replace("[green leaves, bike, health, 0 impact] points", pointType);
 		} else if(type.compareTo(CHAL_TYPE_6) == 0){
 			if(mobMode.compareTo("green leaves") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(14).getDescription() : challDescList.get(14).getDescription_eng();

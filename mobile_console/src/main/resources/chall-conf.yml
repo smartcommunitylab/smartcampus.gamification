@@ -3,144 +3,144 @@ descriptions:
     type: PERCENT
     mobilitymode: bike
     description: Per vincere la sfida vale la somma dei Km viaggiati in bici o bike sharing nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the sum of kms traveled by bike or bike sharing planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 2
     type: PERCENT
     mobilitymode: bikesharing
     description: Per vincere la sfida vale la somma dei Km viaggiati in bike sharing nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the sum of kms traveled by bike sharing planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 3
     type: PERCENT
     mobilitymode: walk
     description: Per vincere la sfida vale la somma dei Km camminati (solo tratte superiori a 100 metri) nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the sum of kms traveled by foot (at least 100 meters) planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 4
     type: TRIPNUMBER
     mobilitymode: bikesharing
     description: Per vincere la sfida vale il numero di itinerari che utilizzano il bike sharing pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the numbers of trips traveled by bike sharing planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 5
     type: TRIPNUMBER
     mobilitymode: bus
     description: Per vincere la sfida vale il numero di itinerari che utilizzano il trasporto pubblico pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the numbers of trips traveled with public transport planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 6
     type: TRIPNUMBER
     mobilitymode: train
     description: Per vincere la sfida vale il numero di itinerari che utilizzano il treno pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the numbers of trips traveled with train planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 7
     type: ZEROIMPACT
     mobilitymode: zeroimpact
     description: Gli itinerari a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi.
-    description_eng: Prova
+    description_eng: The zero impact trips are those which comprise only routes by bike, bike sharing or on foot.
   - id: 8
     type: TRIPNUMBER
     mobilitymode: promoted
     description: Gli itinerari 'promoted' sono quelli consigliati ed evidenziati in verde da ViaggiaTrento Play&Go.
-    description_eng: Prova
+    description_eng: The 'promoted' trips are those recommended and highlighted in green in ViaggiaTrento Play&Go.
   - id: 9
     type: PERCENT
     mobilitymode: all
     description: Per vincere la sfida effettua almeno un viaggio utilizzando [bici, bike sharing, bus, treno] nel corso del periodo di validita' della sfida.
-    description_eng: Prova
+    description_eng: To win the challenge makes at least one trip using [bike, bike sharing, bus, train] during the period of validity of the challenge.
   - id: 10
     type: RECOMMENDATION
     mobilitymode: all
     description: Per vincere la sfida, almeno X tuoi amici si devono registrare al gioco indicando il tuo nickname nell'apposito campo durante la registrazione.
-    description_eng: Prova
+    description_eng: To win the challenge, at least X your friends have to register to the game by indicating your nickname in the appropriate field during registration.
   - id: 11
     type: POINTSEARNED
     mobilitymode: all
     description: Per vincere la sfida accumula almeno X punti [green leaves, bici, salute, impatto 0] nel corso del periodo di validita' della sfida.
-    description_eng: Prova
+    description_eng: To win the challenge accumulates at least X [green leaves, bike, health, 0 impact] points during the period of validity of the challenge.
   - id: 12
     type: TOPPOSITION
     mobilitymode: all
     description: Per vincere la sfida raggiungi alla fine del periodo di validita' della sfida almeno la X-esima posizione nella classifica [green leaves, bici, salute, impatto 0].
-    description_eng: Prova
+    description_eng: To win the challenge you have to reach at least the X -th position in the ranking at the end of the period of validity of the challenge.
   - id: 13
     type: PIONEER
     mobilitymode: parkandride
-    description: Per vincere la sfida utilizza nel corso del periodo di validita' della sfida un parcheggio Park&Ride (Stadio o ex-Manifattura) che non hai ancora visitato.
-    description_eng: Prova
+    description: Per vincere la sfida utilizza nel corso del periodo di validita' della sfida un parcheggio Park&Ride (Via Ragazzi del '99, Via Lidorno, Ghiaie via Fersina, Ex-Zuffo, Monte Baldo e Via Asiago Stazione FS Villazzano) che non hai ancora visitato.
+    description_eng: To win the challenge you have to use a Park&Ride park (Via Ragazzi del '99, Via Lidorno, Ghiaie via Fersina, Ex-Zuffo, Monte Baldo and Via Asiago Stazione FS Villazzano) you not visited yet during the period of validity of the challenge.
   - id: 14
     type: PIONEER
     mobilitymode: bikesharing
     description: Per vincere la sfida utilizza nel corso del periodo di validita' della sfida una o piu' stazione di bike sharing che non hai ancora visitato.
-    description_eng: Prova
+    description_eng: To win the challenge you have to use a Bike Sharing station you not visited yet during the period of validity of the challenge.
   - id: 15
     type: NEXTBADGE
     mobilitymode: green
     description: I badge della collezione green leaves vengono assegnati al raggiungimento di 50, 100, 200, 400, 800, 1500, 2500, 5000, 10000 e 20000 punti.
-    description_eng: Prova
+    description_eng: Badges from Green Leaves collection are assigned when you reach 50, 100, 200, 400, 800, 1500, 2500, 5000, 10000 and 20000 points.
   - id: 16
     type: NEXTBADGE
     mobilitymode: zeroimpact
     description: I badge della collezione 'sustainable life' (o impatto zero) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 punti (i viaggi a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi).
-    description_eng: Prova
+    description_eng: Badges from sustainable life (zero impact) collection are assigned when you reach 1, 5, 10, 25, 50, 100, 200, 500 points (zero impact trips are those which comprise only routes by bike, bike sharing or on foot).
   - id: 17
     type: NEXTBADGE
     mobilitymode: bus
     description: I badge della collezione public transport (viaggi in bus) vengono assegnati al raggiungimento di 5, 10, 25, 50, 100, 200 e 500 punti.
-    description_eng: Prova
+    description_eng: Badges from public transport (bus trips) collection are assigned when you reach 5, 10, 25, 50, 100, 200, 500 points.
   - id: 18
     type: NEXTBADGE
     mobilitymode: bike
     description: I badge della collezione bici (viaggi in bici e bici condivisa) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 punti.
-    description_eng: Prova
+    description_eng: Badges from bike aficionado (bike and bike sharing trips) collection are assigned when you reach 1, 5, 10, 25, 50, 100, 200, 500 points.
   - id: 19
     type: NEXTBADGE
     mobilitymode: recommendation
     description: I badge della collezione 'invita i tuoi amici' vengono assegnati al raggiungimento di 3, 5, 10, 25 punti.
-    description_eng: Prova
+    description_eng: Badges from recommendations collection are assigned when you reach 3, 5, 10, 25 points.
   - id: 20
     type: BADGECOLLECTION
     mobilitymode: recommendation
     description: Per vincere la sfida devi completare una badge collection. Nello specifico abbiamo la collection green leaves composta dai badge di 50, 100, 200, 400, 800, 1500, 2500, 5000, 10000 e 20000 punti, la collection impatto zero composta dai badge di 1, 5, 10, 25, 50, 100, 200 e 500 punti, la collection public transport composta dai badge di 5, 10, 25, 50, 100, 200 e 500 punti, la collection bici composta dai badge di 1, 5, 10, 25, 50, 100, 200 e 500 punti e la collection 'invita i tuoi amici' composta dai badge di 3, 5, 10, 25 punti.
-    description_eng: Prova
+    description_eng: To win the challenge you have to complete a badge collection. In the game there is the green leaves collection composed by badges of 50, 100, 200, 400, 800, 1500, 2500, 5000, 10000 and 20000 points, the sustainable life collection composed by badges of 1, 5, 10, 25, 50, 100, 200 and 500 points, the public transport collection composed by badges of 5, 10, 25, 50, 100, 200 and 500 points, the bike aficionado collection composed by badges of 1, 5, 10, 25, 50, 100, 200 and 500 points and the recommendation collection composed by badges of 3, 5, 10, 25 points.
   - id: 21
     type: NEGATEDMODE
     mobilitymode: bikesharing
     description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il bike sharing pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng:  To overcome the challenge is needed the number of trips traveled without use bike sharing planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 22
     type: NEGATEDMODE
     mobilitymode: bus
     description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il trasporto pubblico pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the number of trips traveled without use public transport planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 23
     type: NEGATEDMODE
     mobilitymode: train
     description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare il treno pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the number of trips traveled without use train planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 24
     type: NEGATEDMODE
     mobilitymode: bike
     description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare la bici pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the number of trips traveled without use the bike planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 25
     type: NEGATEDMODE
     mobilitymode: car
     description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare l'automobile pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the number of trips traveled without use the car planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 26
     type: NEGATEDMODE
     mobilitymode: walk
     description: Per vincere la sfida vale il numero di itinerari effettuati senza utilizzare spostamenti a piedi pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the number of trips traveled without walking planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 27
     type: TRIPNUMBER
     mobilitymode: walk
     description: Per vincere la sfida vale il numero di itinerari a piedi pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge is needed the number of trips traveled by foot planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.
   - id: 28
     type: SURVEY
     mobilitymode: none
     description: Per vincere la sfida compila il questionario di fine gioco che visualizzi accedendo al tuo sito personalizzato durante la validita' della sfida.
-    description_eng: Prova
+    description_eng: To overcome the challenge you have to complete the final survay of the game during the validity of the challenge.
   - id: 29
     type: TRIPNUMBER
     mobilitymode: cable
     description: Per vincere la sfida vale il numero di itinerari che utilizzano la funivia pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: Prova   
+    description_eng: To overcome the challenge is needed the number of trips traveled in cable planned with ViaggiaTrento Play&Go and committed during the validity of the challenge.

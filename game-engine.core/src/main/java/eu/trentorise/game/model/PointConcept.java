@@ -43,6 +43,7 @@ public class PointConcept extends GameConcept {
 
 	private Map<String, PeriodInternal> periods = new LinkedHashMap<String, PeriodInternal>();
 
+	@JsonIgnore
 	long executionMoment = System.currentTimeMillis();
 
 	public PointConcept(String name, long moment) {
@@ -142,17 +143,22 @@ public class PointConcept extends GameConcept {
 				periodIdentifier).getCurrentScore() : 0d;
 	}
 
+	public PeriodInstance getPeriodCurrentInstance(int periodIndex) {
+		return new ArrayList<>(periods.values()).get(periodIndex)
+				.getCurrentInstance();
+	}
+
+	public PeriodInstance getPeriodCurrentInstance(String periodIdentifier) {
+		return periods.containsKey(periodIdentifier) ? periods.get(
+				periodIdentifier).getCurrentInstance() : null;
+	}
+
 	public Double getPeriodPreviousScore(String periodIdentifier) {
-		Double result = 0d;
-		PeriodInternal p = periods.get(periodIdentifier);
-		if (p != null) {
-			LinkedList<PeriodInstance> instances = p.getInstances();
-			try {
-				result = instances.get(instances.size() - 2).getScore();
-			} catch (IndexOutOfBoundsException e) {
-			}
-		}
-		return result;
+		return getPeriodScore(periodIdentifier, 1);
+	}
+
+	public PeriodInstance getPeriodPreviousInstance(String periodIdentifier) {
+		return getPeriodInstance(periodIdentifier, 1);
 	}
 
 	public Double getPeriodScore(String periodIdentifier, long moment) {
@@ -160,14 +166,36 @@ public class PointConcept extends GameConcept {
 				periodIdentifier).getScore(moment) : 0d;
 	}
 
+	public PeriodInstance getPeriodInstance(String periodIdentifier, long moment) {
+		return periods.containsKey(periodIdentifier) ? periods.get(
+				periodIdentifier).retrieveInstance(moment) : null;
+	}
+
 	public Double getPeriodScore(String periodIdentifier, int instanceIndex) {
 		Double result = 0d;
 		PeriodInternal p = periods.get(periodIdentifier);
 		if (p != null) {
-			LinkedList<PeriodInstance> instances = p.getInstances();
+			LinkedList<PeriodInstanceImpl> instances = p.getInstances();
 			try {
 				result = instances.get(instances.size() - 1 - instanceIndex)
 						.getScore();
+			} catch (IndexOutOfBoundsException e) {
+			}
+		}
+
+		return result;
+	}
+
+	public PeriodInstance getPeriodInstance(String periodIdentifier,
+			int instanceIndex) {
+		PeriodInstance result = null;
+		PeriodInternal p = periods.get(periodIdentifier);
+		if (p != null) {
+			LinkedList<PeriodInstanceImpl> instances = p.getInstances();
+			try {
+				PeriodInstance current = getPeriodCurrentInstance(periodIdentifier);
+				result = instances.get((current != null ? current.getIndex()
+						: 0) - instanceIndex);
 			} catch (IndexOutOfBoundsException e) {
 			}
 		}
@@ -183,11 +211,21 @@ public class PointConcept extends GameConcept {
 		public String getIdentifier();
 	}
 
+	public interface PeriodInstance {
+		public Double getScore();
+
+		public long getStart();
+
+		public long getEnd();
+
+		public int getIndex();
+	}
+
 	private class PeriodInternal implements Period {
 		private Date start;
 		private long period;
 		private String identifier;
-		private LinkedList<PeriodInstance> instances = new LinkedList<>();
+		private LinkedList<PeriodInstanceImpl> instances = new LinkedList<>();
 
 		public PeriodInternal(String identifier, Date start, long period) {
 			this.start = start;
@@ -211,13 +249,13 @@ public class PointConcept extends GameConcept {
 					.get("instances");
 			if (tempInstances != null) {
 				for (Map<String, Object> tempInstance : tempInstances) {
-					instances.add(new PeriodInstance(tempInstance));
+					instances.add(new PeriodInstanceImpl(tempInstance));
 				}
 			}
 
 		}
 
-		private PeriodInstance getCurrentInstance() {
+		private PeriodInstanceImpl getCurrentInstance() {
 			return retrieveInstance(executionMoment);
 		}
 
@@ -240,19 +278,19 @@ public class PointConcept extends GameConcept {
 
 		public Double increaseScore(Double value, long moment) {
 			try {
-				PeriodInstance instance = retrieveInstance(moment);
+				PeriodInstanceImpl instance = retrieveInstance(moment);
 				return instance.increaseScore(value);
 			} catch (IllegalArgumentException e) {
 				return 0d;
 			}
 		}
 
-		private PeriodInstance retrieveInstance(long moment) {
+		private PeriodInstanceImpl retrieveInstance(long moment) {
 			if (moment < start.getTime()) {
 				throw new IllegalArgumentException(
 						"moment is previous than startDate of period");
 			}
-			PeriodInstance instance = null;
+			PeriodInstanceImpl instance = null;
 			long startInstance = -1;
 			long endInstance = -1;
 			if (instances.isEmpty() || instances.getLast().getEnd() < moment) {
@@ -260,19 +298,22 @@ public class PointConcept extends GameConcept {
 						: instances.getLast().getEnd();
 				endInstance = instances.isEmpty() ? startInstance + period
 						: instances.getLast().getEnd() + period;
-				instance = new PeriodInstance(startInstance, endInstance);
+				instance = new PeriodInstanceImpl(startInstance, endInstance);
 				instances.add(instance);
+				instance.setIndex(instances.size() - 1);
 				while (endInstance < moment) {
 					startInstance = endInstance;
 					endInstance = endInstance + period;
-					instance = new PeriodInstance(startInstance, endInstance);
+					instance = new PeriodInstanceImpl(startInstance,
+							endInstance);
 					instances.add(instance);
+					instance.setIndex(instances.size() - 1);
 				}
 			} else {
 				Interval periodInterval = null;
-				for (Iterator<PeriodInstance> iter = instances
+				for (Iterator<PeriodInstanceImpl> iter = instances
 						.descendingIterator(); iter.hasNext();) {
-					PeriodInstance instanceTemp = iter.next();
+					PeriodInstanceImpl instanceTemp = iter.next();
 					periodInterval = new Interval(instanceTemp.getStart(),
 							instanceTemp.getEnd());
 					if (periodInterval.contains(moment)) {
@@ -301,11 +342,11 @@ public class PointConcept extends GameConcept {
 			this.period = period;
 		}
 
-		public LinkedList<PeriodInstance> getInstances() {
+		public LinkedList<PeriodInstanceImpl> getInstances() {
 			return instances;
 		}
 
-		public void setInstances(LinkedList<PeriodInstance> instances) {
+		public void setInstances(LinkedList<PeriodInstanceImpl> instances) {
 			this.instances = instances;
 		}
 
@@ -318,20 +359,22 @@ public class PointConcept extends GameConcept {
 		}
 	}
 
-	private class PeriodInstance {
+	private class PeriodInstanceImpl implements PeriodInstance {
 		private Double score = 0d;
 		private long start;
 		private long end;
+		private int index;
 
-		public PeriodInstance(long start, long end) {
+		public PeriodInstanceImpl(long start, long end) {
 			this.start = start;
 			this.end = end;
 		}
 
-		public PeriodInstance(Map<String, Object> jsonProps) {
+		public PeriodInstanceImpl(Map<String, Object> jsonProps) {
 			Object scoreField = jsonProps.get("score");
 			Object startField = jsonProps.get("start");
 			Object endField = jsonProps.get("end");
+			Object indexField = jsonProps.get("index");
 			if (scoreField != null) {
 				if (scoreField instanceof Double) {
 					score = (Double) scoreField;
@@ -359,6 +402,12 @@ public class PointConcept extends GameConcept {
 
 				if (endField instanceof Integer) {
 					end = Integer.valueOf((Integer) endField).longValue();
+				}
+			}
+
+			if (indexField != null) {
+				if (indexField instanceof Integer) {
+					index = Integer.valueOf((Integer) indexField);
 				}
 			}
 		}
@@ -399,6 +448,32 @@ public class PointConcept extends GameConcept {
 					formatter.format(new Date(start)),
 					formatter.format(new Date(end)), score);
 		}
+
+		public int getIndex() {
+			return index;
+		}
+
+		public void setIndex(int index) {
+			this.index = index;
+		}
+	}
+
+	/*
+	 * ExecutionMoment should be a private immutable field. Actually I need
+	 * public getter/setter to expose the field to some tests with temporary
+	 * constraints...TO IMPROVE
+	 */
+	public long getExecutionMoment() {
+		return executionMoment;
+	}
+
+	/*
+	 * ExecutionMoment should be a private immutable field. Actually I need
+	 * public getter/setter to expose the field to some tests with temporary
+	 * constraints...TO IMPROVE
+	 */
+	public void setExecutionMoment(long executionMoment) {
+		this.executionMoment = executionMoment;
 	}
 
 }

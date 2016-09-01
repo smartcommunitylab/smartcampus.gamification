@@ -22,10 +22,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.ClassificationFactory;
 import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.core.ClassificationType;
 
 public class GeneralClassificationTask extends ClassificationTask {
 
@@ -86,5 +88,14 @@ public class GeneralClassificationTask extends ClassificationTask {
 	protected ClassificationBuilder createBuilder(List<PlayerState> states) {
 		return ClassificationFactory.createGeneralClassification(states,
 				getScoreType());
+	}
+
+	@Override
+	protected Classification createClassificationObject(GameContext ctx,
+			double score, String scoreType, int position) {
+		Classification c = new Classification(getClassificationName(),
+				position, scoreType, ClassificationType.GENERAL);
+		c.setScore(score);
+		return c;
 	}
 }

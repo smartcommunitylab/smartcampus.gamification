@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,17 +19,15 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.AppContextProvider;
+import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
-import eu.trentorise.game.repo.GamePersistence;
-import eu.trentorise.game.repo.NotificationPersistence;
-import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -53,15 +53,20 @@ public class ClassificationTaskTest {
 	@Autowired
 	private GameEngine engine;
 
+	@Autowired
+	private AppContextProvider provider;
+
 	private static final long WAIT_EXEC = 15 * 1000;
 
 	@Before
 	public void cleanDB() {
 		// clean mongo
-		mongo.dropCollection(StatePersistence.class);
-		mongo.dropCollection(GamePersistence.class);
-		mongo.dropCollection(NotificationPersistence.class);
-		mongo.dropCollection(ChallengeModel.class);
+		mongo.getDb().dropDatabase();
+	}
+
+	@After
+	public void after() {
+		cleanDB();
 	}
 
 	@Test
@@ -165,6 +170,157 @@ public class ClassificationTaskTest {
 		}
 		if (!found) {
 			Assert.fail("gameconcepts not found");
+		}
+	}
+
+	@Test
+	public void incrementalWithRule() throws InterruptedException {
+		cleanDB();
+		final String GAME = "classification";
+		final String OWNER = "testOwner";
+		final String ACTION = "myAction";
+		final String PLAYER_1 = "eddie brock";
+		final String PLAYER_2 = "mac gargan";
+		final String PLAYER_3 = "jonah jameson";
+		final long PERIOD_LENGTH = 24 * 3600000l; // one day
+
+		Game game = new Game();
+
+		game.setId(GAME);
+		game.setName(GAME);
+		game.setOwner(OWNER);
+
+		game.setActions(new HashSet<String>());
+		game.getActions().add(ACTION);
+
+		PointConcept green = new PointConcept("green leaves");
+		green.addPeriod("important", new LocalDate().minusDays(2).toDate(),
+				PERIOD_LENGTH);
+
+		game.setConcepts(new HashSet<GameConcept>());
+		game.getConcepts().add(green);
+		game.getConcepts().add(new BadgeCollectionConcept("green leaves"));
+
+		game.setTasks(new HashSet<GameTask>());
+
+		IncrementalClassificationTask task = new IncrementalClassificationTask(
+				green, "important", "final classification green");
+
+		game.getTasks().add(task);
+
+		gameSrv.saveGameDefinition(game);
+
+		// add rules
+		ClasspathRule rule = new ClasspathRule(GAME, "rules/" + GAME
+				+ "/constants");
+		rule.setName("constants");
+		gameSrv.addRule(rule);
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
+				+ "/greenBadges.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
+				+ "/greenPoints.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
+				+ "/finalClassificationBadges.drl"));
+
+		// define a dataset of player states
+		DateTime timeMachine = new DateTime().withTimeAtStartOfDay()
+				.plusMinutes(1).minusDays(2);
+
+		// today -2
+		PlayerState p1 = new PlayerState(GAME, PLAYER_1);
+		p1.setState(new HashSet<GameConcept>());
+		PointConcept g = new PointConcept("green leaves");
+		g.addPeriod("important", new LocalDate().minusDays(2).toDate(),
+				PERIOD_LENGTH);
+		g.setExecutionMoment(timeMachine.getMillis());
+		g.increment(5d);
+		p1.getState().add(g);
+		playerSrv.saveState(p1);
+		PlayerState p2 = new PlayerState(GAME, PLAYER_2);
+		p2.setState(new HashSet<GameConcept>());
+		PointConcept g1 = new PointConcept("green leaves");
+		g1.addPeriod("important", new LocalDate().minusDays(2).toDate(),
+				PERIOD_LENGTH);
+		g1.setExecutionMoment(timeMachine.getMillis());
+		g1.increment(7d);
+		p2.getState().add(g1);
+		playerSrv.saveState(p2);
+		PlayerState p3 = new PlayerState(GAME, PLAYER_3);
+		p3.setState(new HashSet<GameConcept>());
+		PointConcept g2 = new PointConcept("green leaves");
+		g2.addPeriod("important", new LocalDate().minusDays(2).toDate(),
+				PERIOD_LENGTH);
+		g2.setExecutionMoment(timeMachine.getMillis());
+		g2.increment(3d);
+		p3.getState().add(g2);
+		playerSrv.saveState(p3);
+
+		// today -1
+		g.setExecutionMoment(timeMachine.plusDays(1).getMillis());
+		g.increment(1d);
+		playerSrv.saveState(p1);
+		g1.setExecutionMoment(timeMachine.plusDays(1).getMillis());
+		g1.increment(9d);
+		playerSrv.saveState(p2);
+		g2.setExecutionMoment(timeMachine.plusDays(1).getMillis());
+		g2.increment(3d);
+		playerSrv.saveState(p3);
+
+		// today
+		g.setExecutionMoment(timeMachine.plusDays(2).getMillis());
+		g.increment(2d);
+		playerSrv.saveState(p1);
+		g1.setExecutionMoment(timeMachine.plusDays(2).getMillis());
+		g1.increment(10d);
+		playerSrv.saveState(p2);
+		g2.setExecutionMoment(timeMachine.plusDays(2).getMillis());
+		g2.increment(31d);
+		playerSrv.saveState(p3);
+
+		task.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, task));
+
+		task.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, task));
+
+		task.execute((GameContext) provider.getApplicationContext().getBean(
+				"gameCtx", GAME, task));
+
+		Thread.sleep(WAIT_EXEC);
+
+		p1 = playerSrv.loadState(GAME, PLAYER_1, false);
+		for (GameConcept gc : p1.getState()) {
+			if (gc instanceof BadgeCollectionConcept
+					&& gc.getName().equals("green leaves")) {
+				Assert.assertArrayEquals(new String[] { "silver-medal-green",
+						"bronze-medal-green" }, ((BadgeCollectionConcept) gc)
+						.getBadgeEarned().toArray(new String[1]));
+				break;
+			}
+		}
+
+		p2 = playerSrv.loadState(GAME, PLAYER_2, false);
+		for (GameConcept gc : p2.getState()) {
+			if (gc instanceof BadgeCollectionConcept
+					&& gc.getName().equals("green leaves")) {
+				Assert.assertArrayEquals(new String[] { "gold-medal-green-1",
+						"10-point-green", "gold-medal-green-2",
+						"silver-medal-green" }, ((BadgeCollectionConcept) gc)
+						.getBadgeEarned().toArray(new String[1]));
+				break;
+			}
+		}
+
+		p3 = playerSrv.loadState(GAME, PLAYER_3, false);
+		for (GameConcept gc : p3.getState()) {
+			if (gc instanceof BadgeCollectionConcept
+					&& gc.getName().equals("green leaves")) {
+				Assert.assertArrayEquals(new String[] { "bronze-medal-green",
+						"10-point-green", "silver-medal-green",
+						"gold-medal-green-3" }, ((BadgeCollectionConcept) gc)
+						.getBadgeEarned().toArray(new String[1]));
+				break;
+			}
 		}
 	}
 }

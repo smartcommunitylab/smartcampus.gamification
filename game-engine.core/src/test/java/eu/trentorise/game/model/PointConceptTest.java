@@ -121,11 +121,11 @@ public class PointConceptTest {
 		final String PLAYER_ID = "1000";
 
 		PointConcept pc = new PointConcept("testPoint");
-		LocalDate start = new LocalDate(2016, 7, 10);
-		long period = 7 * 24 * 3600 * 1000; // one week millisec
+		LocalDate start = new LocalDate().minusDays(1);
+		long period = 24 * 3600 * 1000; // one day millisec
 		pc.addPeriod("period1", start.toDate(), period);
 
-		start = new LocalDate(2016, 7, 25);
+		start = new LocalDate();
 		period = 3600 * 1000; // one hour millisec ?
 		pc.addPeriod("period2", start.toDate(), period);
 
@@ -134,15 +134,14 @@ public class PointConceptTest {
 		pc.executionMoment = executionTime.getMillis();
 		pc.setScore(10d);
 
-		pc.executionMoment = executionTime.hourOfDay().addToCopy(-1)
-				.getMillis();
+		pc.executionMoment = executionTime.minusHours(1).getMillis();
 		pc.setScore(11d);
 		pc.setScore(14d);
 
-		pc.executionMoment = executionTime.hourOfDay().addToCopy(1).getMillis();
+		pc.executionMoment = executionTime.plusHours(1).getMillis();
 		pc.setScore(15d);
 
-		pc.executionMoment = executionTime.hourOfDay().addToCopy(2).getMillis();
+		pc.executionMoment = executionTime.plusHours(2).getMillis();
 		pc.setScore(29d);
 
 		PlayerState ps = new PlayerState(GAME_ID, PLAYER_ID);
@@ -177,6 +176,31 @@ public class PointConceptTest {
 				executionTime.plusDays(1).getMillis()));
 
 		Assert.assertEquals(new Double(0), p.getPeriodScore("period2", 10));
+
+		Assert.assertEquals(Double.valueOf(14),
+				p.getPeriodCurrentInstance("period2").getScore());
+		DateTime testTime = DateTime.now().withMinuteOfHour(0)
+				.withSecondOfMinute(0).withMillisOfSecond(0);
+		Assert.assertEquals(testTime.plusHours(2).getMillis(), p
+				.getPeriodCurrentInstance("period2").getStart());
+		Assert.assertEquals(testTime.plusHours(2).getMillis() + period, p
+				.getPeriodCurrentInstance("period2").getEnd());
+
+		Assert.assertEquals(Double.valueOf(14),
+				p.getPeriodInstance("period2", 0).getScore());
+		Assert.assertEquals(testTime.plusHours(2).getMillis(), p
+				.getPeriodInstance("period2", 0).getStart());
+		Assert.assertEquals(testTime.plusHours(2).getMillis() + period, p
+				.getPeriodInstance("period2", 0).getEnd());
+
+		Assert.assertNull(p.getPeriodInstance("period2", 20));
+
+		Assert.assertEquals(new Double(10), p.getPeriodInstance("period2", 2)
+				.getScore());
+		Assert.assertEquals(testTime.getMillis(),
+				p.getPeriodInstance("period2", 2).getStart());
+		Assert.assertEquals(testTime.getMillis() + period,
+				p.getPeriodInstance("period2", 2).getEnd());
 	}
 
 	@Test

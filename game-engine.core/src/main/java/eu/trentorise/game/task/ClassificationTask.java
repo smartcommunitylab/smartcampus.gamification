@@ -90,18 +90,25 @@ public abstract class ClassificationTask extends GameTask {
 				break;
 			}
 
-			Classification c = new Classification();
+			// Classification c = new Classification();
 
-			c.setName(classificationName);
-			c.setScoreType(getScoreType());
-			if (sameScore) {
-				c.setPosition(position);
-			} else {
-				c.setPosition(nextPosition);
+			// c.setName(classificationName);
+			// c.setScoreType(getScoreType());
+			// if (sameScore) {
+			// c.setPosition(position);
+			// } else {
+			// c.setPosition(nextPosition);
+			// position = nextPosition;
+			// }
+
+			if (!sameScore) {
 				position = nextPosition;
 			}
 			lastScore = item.getScore();
 			nextPosition++;
+
+			Classification c = createClassificationObject(ctx, item.getScore(),
+					getScoreType(), position);
 
 			List<Object> factObjs = new ArrayList<Object>();
 			factObjs.add(c);
@@ -191,6 +198,9 @@ public abstract class ClassificationTask extends GameTask {
 	// protected abstract double retrieveScore(PlayerState state);
 
 	protected abstract String getScoreType();
+
+	protected abstract Classification createClassificationObject(
+			GameContext ctx, double score, String scoreType, int position);
 
 	/*
 	 * protected PointConcept retrieveConcept(PlayerState p, String pointType) {

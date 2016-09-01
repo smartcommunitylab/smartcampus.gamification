@@ -1,17 +1,24 @@
 package eu.trentorise.game.task;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.ClassificationFactory;
 import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.PointConcept.Period;
+import eu.trentorise.game.model.core.ClassificationPosition;
+import eu.trentorise.game.model.core.ClassificationType;
 
 public class IncrementalClassificationTask extends ClassificationTask {
 
@@ -20,6 +27,11 @@ public class IncrementalClassificationTask extends ClassificationTask {
 
 	private String pointConceptName;
 	private String periodName;
+	private long startupPeriodInstance;
+	private long periodLength;
+
+	private static final String EXECUTION_TIME_PARAM = "executionTime";
+	private static final String START_INSTANCE_PARAM = "startInstance";
 
 	public IncrementalClassificationTask(PointConcept pc, String periodName,
 			String classificationName) {
@@ -38,32 +50,132 @@ public class IncrementalClassificationTask extends ClassificationTask {
 			Period period = pc.getPeriod(periodName);
 			pointConceptName = pc.getName();
 			this.periodName = periodName;
-			Date startPeriodic = period.getStart();
-			long periodLength = period.getPeriod();
+			startupPeriodInstance = period.getStart().getTime();
+			periodLength = period.getPeriod();
 			TaskSchedule schedule = new TaskSchedule();
-			schedule.setStart(startPeriodic);
+			schedule.setStart(new DateTime(period.getStart()).plusMillis(
+					(int) periodLength).toDate());
 			schedule.setPeriod(periodLength);
 			super.setSchedule(schedule);
 		}
 	}
 
-	// @Override
-	// protected double retrieveScore(PlayerState state) {
-	// for (GameConcept gc : state.getState()) {
-	// if (gc.getName().equals(pointConceptName)
-	// && gc instanceof PointConcept) {
-	// PointConcept pc = (PointConcept) gc;
-	// return pc.getPeriodCurrentScore(periodName);
-	// }
-	// }
-	// logger.warn(String
-	// .format("PointConcept %s not found", pointConceptName));
-	// return 0d;
-	// }
-
 	@Override
 	protected String getScoreType() {
 		return pointConceptName;
+	}
+
+	/*
+	 * TO REFACTOR..not used..override of execute method to manage
+	 * incremantalMetainfo (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.trentorise.game.task.ClassificationTask#createClassificationObject
+	 * (eu.trentorise.game.core.GameContext, double, java.lang.String, int)
+	 */
+	@Override
+	protected Classification createClassificationObject(GameContext ctx,
+			double score, String scoreType, int position) {
+		return null;
+	}
+
+	/*
+	 * Not good to override execute method of parent class
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.trentorise.game.task.ClassificationTask#execute(eu.trentorise.game
+	 * .core.GameContext)
+	 */
+	@Override
+	public void execute(GameContext ctx) {
+		if (ctx == null) {
+			logger.warn("gameContext null");
+			return;
+		}
+
+		logger.debug("Execute of task {}", getClassificationName());
+
+		// read all game players
+		List<String> players = ctx.readPlayers();
+		// load players status
+
+		List<PlayerState> states = new ArrayList<PlayerState>();
+		for (String p : players) {
+			states.add(ctx.readStatus(p));
+		}
+
+		// ClassificationBuilder builder = createBuilder(states);
+
+		int position = 1, nextPosition = 1, index;
+		Double lastScore = null;
+		boolean sameScore = false;
+
+		Map<String, Object> taskData = (Map<String, Object>) ctx.readTaskData();
+		if (taskData == null) {
+			taskData = new HashMap<String, Object>();
+		}
+
+		int executionTime = 0;
+		long startInstance = startupPeriodInstance;
+		if (taskData.containsKey(EXECUTION_TIME_PARAM)) {
+			executionTime = (int) taskData.get(EXECUTION_TIME_PARAM);
+		}
+		executionTime++;
+
+		if (taskData.containsKey(START_INSTANCE_PARAM)) {
+			startInstance = (long) taskData.get(START_INSTANCE_PARAM);
+		}
+
+		long start = startInstance + periodLength * executionTime - 1;
+		long end = start + periodLength;
+
+		ClassificationBuilder builder = ClassificationFactory
+				.createIncrementalClassification(states, pointConceptName,
+						periodName, new Date(start));
+
+		List<ClassificationPosition> classification = builder
+				.getClassificationBoard().getBoard();
+
+		// debug logging
+		if (logger.isDebugEnabled()) {
+			for (ClassificationPosition entry : classification) {
+				logger.debug("{}: player {} score {}", getClassificationName(),
+						entry.getPlayerId(), entry.getScore());
+
+			}
+		}
+
+		for (ClassificationPosition item : classification) {
+
+			sameScore = lastScore != null && lastScore == item.getScore();
+			index = nextPosition - 1;
+
+			if (index >= getItemsToNotificate() && !sameScore) {
+				break;
+			}
+
+			if (!sameScore) {
+				position = nextPosition;
+			}
+			lastScore = item.getScore();
+			nextPosition++;
+
+			Classification c = new Classification(getClassificationName(),
+					position, getScoreType(), ClassificationType.INCREMENTAL,
+					start, end, executionTime);
+			c.setScore(lastScore);
+
+			List<Object> factObjs = new ArrayList<Object>();
+			factObjs.add(c);
+			ctx.sendAction(getExecutionActions().get(0), item.getPlayerId(),
+					null, factObjs);
+		}
+
+		taskData.put(EXECUTION_TIME_PARAM, executionTime);
+		taskData.put(START_INSTANCE_PARAM, startInstance);
+		ctx.writeTaskData(taskData);
 	}
 
 	public String getPointConceptName() {
@@ -82,10 +194,31 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		this.periodName = periodName;
 	}
 
+	/*
+	 * not used because class override method execute (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.trentorise.game.task.ClassificationTask#createBuilder(java.util.List)
+	 */
 	@Override
 	protected ClassificationBuilder createBuilder(List<PlayerState> states) {
-		return ClassificationFactory.createIncrementalClassification(states,
-				pointConceptName, periodName);
+		return null;
+	}
+
+	public long getStartupPeriodInstance() {
+		return startupPeriodInstance;
+	}
+
+	public void setStartupPeriodInstance(long startupPeriodInstance) {
+		this.startupPeriodInstance = startupPeriodInstance;
+	}
+
+	public long getPeriodLength() {
+		return periodLength;
+	}
+
+	public void setPeriodLength(long periodLength) {
+		this.periodLength = periodLength;
 	}
 
 }

@@ -34,4 +34,6 @@ public interface TaskService {
 	public String saveData(String gameId, String taskName, Object data);
 
 	public List<Object> readData(String gameId, String taskName);
+
+	public void deleteData(String gameId, String taskName);
 }

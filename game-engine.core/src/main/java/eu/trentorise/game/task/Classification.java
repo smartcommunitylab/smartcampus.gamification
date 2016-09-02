@@ -28,7 +28,7 @@ public class Classification {
 	private double score;
 	private String scoreType;
 	private ClassificationType classificationType;
-	private int executionTime = -1;
+	private int classificationRunNumber = -1;
 	private PeriodReference periodReference;
 
 	public Classification(String name, int position, String scoreType,
@@ -40,14 +40,15 @@ public class Classification {
 	}
 
 	public Classification(String name, int position, String scoreType,
-			ClassificationType classificationType, long startTimestamp,
-			long endTimestamp, int executionTime) {
+			ClassificationType classificationType, int instanceIndex,
+			long startTimestamp, long endTimestamp, int executionTime) {
 		this.name = name;
 		this.position = position;
 		this.scoreType = scoreType;
 		this.classificationType = classificationType;
-		this.executionTime = executionTime;
-		periodReference = new PeriodReferenceImpl(startTimestamp, endTimestamp);
+		this.classificationRunNumber = executionTime;
+		periodReference = new PeriodReferenceImpl(instanceIndex,
+				startTimestamp, endTimestamp);
 	}
 
 	public Classification() {
@@ -59,6 +60,8 @@ public class Classification {
 		public long getEndTimestamp();
 
 		public String periodRepresentation();
+
+		public int getInstanceIndex();
 
 	}
 
@@ -90,8 +93,11 @@ public class Classification {
 		private long startTimestamp;
 		private long endTimestamp;
 		private String periodRepresentation;
+		private int instanceIndex;
 
-		public PeriodReferenceImpl(long startTimestamp, long endTimestamp) {
+		public PeriodReferenceImpl(int instanceIndex, long startTimestamp,
+				long endTimestamp) {
+			this.instanceIndex = instanceIndex;
 			this.startTimestamp = startTimestamp;
 			this.endTimestamp = endTimestamp;
 			periodRepresentation = getRepresentation(startTimestamp,
@@ -101,10 +107,10 @@ public class Classification {
 
 		@Override
 		public String toString() {
-			return String.format(
-					"start: %s, end: %s, periodRepresentation: %s", new Date(
-							startTimestamp), new Date(endTimestamp),
-					periodRepresentation);
+			return String
+					.format("[instanceIndex: %s, start: %s, end: %s, periodRepresentation: %s]",
+							instanceIndex, new Date(startTimestamp), new Date(
+									endTimestamp), periodRepresentation);
 		}
 
 		private String getRepresentation(long start, long end) {
@@ -128,6 +134,11 @@ public class Classification {
 			return periodRepresentation;
 		}
 
+		@Override
+		public int getInstanceIndex() {
+			return 0;
+		}
+
 	}
 
 	@Override
@@ -135,7 +146,7 @@ public class Classification {
 		return String
 				.format("{name: %s, classificationType: %s, scoreType: %s, score: %s, position: %s, executionTime: %s, periodReference: %s}",
 						name, classificationType, scoreType, score, position,
-						executionTime, periodReference);
+						classificationRunNumber, periodReference);
 	}
 
 	public ClassificationType getClassificationType() {
@@ -162,11 +173,11 @@ public class Classification {
 		this.score = score;
 	}
 
-	public int getExecutionTime() {
-		return executionTime;
+	public int getClassificationRunNumber() {
+		return classificationRunNumber;
 	}
 
-	public void setExecutionTime(int executionTime) {
-		this.executionTime = executionTime;
+	public void setClassificationRunNumber(int classificationRunNumber) {
+		this.classificationRunNumber = classificationRunNumber;
 	}
 }

@@ -59,4 +59,8 @@ public abstract class TaskDataManager implements TaskService {
 		return gameId + ":" + taskName;
 	}
 
+	@Override
+	public void deleteData(String gameId, String taskName) {
+		taskDataRepo.delete(generateId(gameId, taskName));
+	}
 }

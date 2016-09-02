@@ -256,14 +256,21 @@ public class QuartzTaskManager extends TaskDataManager {
 	}
 
 	public boolean destroyTask(GameTask task, String gameId) {
+		boolean operationResult = false;
 		try {
 			if (scheduler.isStarted()) {
-				return scheduler.deleteJob(new JobKey(task.getName(), gameId));
+
+				operationResult = scheduler.deleteJob(new JobKey(
+						task.getName(), gameId));
+				if (operationResult) {
+					deleteData(gameId, task.getName());
+				}
+				return operationResult;
 			}
 		} catch (SchedulerException e) {
 			logger.error("Scheduler exception removing task");
 		}
-		return false;
+		return operationResult;
 	}
 
 	@Override

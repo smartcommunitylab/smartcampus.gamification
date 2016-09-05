@@ -121,7 +121,6 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		}
 
 		int executionTime = 0;
-		long startInstance = startupPeriodInstance;
 
 		if (taskData.containsKey(EXECUTION_TIME_PARAM)) {
 			executionTime = (int) taskData.get(EXECUTION_TIME_PARAM);
@@ -129,15 +128,16 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		executionTime++;
 
 		if (taskData.containsKey(START_INSTANCE_PARAM)) {
-			startInstance = (long) taskData.get(START_INSTANCE_PARAM);
+			startupPeriodInstance = (long) taskData.get(START_INSTANCE_PARAM);
 		}
 
 		if (taskData.containsKey(START_INSTANCE_INDEX_PARAM)) {
 			startupInstanceIndex = (int) taskData
 					.get(START_INSTANCE_INDEX_PARAM);
+			startupInstanceIndex++;
 		}
 
-		long start = startInstance + periodLength * (executionTime - 1);
+		long start = startupPeriodInstance + periodLength * (executionTime - 1);
 		long end = start + periodLength;
 
 		ClassificationBuilder builder = ClassificationFactory
@@ -147,12 +147,28 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		List<ClassificationPosition> classification = builder
 				.getClassificationBoard().getBoard();
 
+		logger.info(String
+				.format("run task %s: startupInstanceIndex (saved in game def or task data) %s",
+						ctx.getTask().getName(), startupInstanceIndex));
+		logger.info(String
+				.format("run task %s: startupPeriodInstance (saved in game def or task data) %s",
+						ctx.getTask().getName(),
+						new Date(startupPeriodInstance).toString()));
+		logger.info(String.format(
+				"run task %s: period start task run reference %s", ctx
+						.getTask().getName(), new Date(start).toString()));
+		logger.info(String.format("run task %s: periodLength %s", ctx.getTask()
+				.getName(), periodLength));
+		logger.info(String.format("run task %s: periodName %s", ctx.getTask()
+				.getName(), periodName));
+		logger.info(String.format("run task %s: pointConceptName %s", ctx
+				.getTask().getName(), pointConceptName));
+
 		// debug logging
 		if (logger.isDebugEnabled()) {
 			for (ClassificationPosition entry : classification) {
 				logger.debug("{}: player {} score {}", getClassificationName(),
 						entry.getPlayerId(), entry.getScore());
-
 			}
 		}
 
@@ -181,11 +197,10 @@ public class IncrementalClassificationTask extends ClassificationTask {
 			ctx.sendAction(getExecutionActions().get(0), item.getPlayerId(),
 					null, factObjs);
 
-			startupInstanceIndex++;
 		}
 
 		taskData.put(EXECUTION_TIME_PARAM, executionTime);
-		taskData.put(START_INSTANCE_PARAM, startInstance);
+		taskData.put(START_INSTANCE_PARAM, startupPeriodInstance);
 		taskData.put(START_INSTANCE_INDEX_PARAM, startupInstanceIndex);
 		ctx.writeTaskData(taskData);
 	}

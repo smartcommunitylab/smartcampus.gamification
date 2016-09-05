@@ -263,7 +263,9 @@ public class QuartzTaskManager extends TaskDataManager {
 				operationResult = scheduler.deleteJob(new JobKey(
 						task.getName(), gameId));
 				if (operationResult) {
+					logger.info("task {} destroyed", task.getName());
 					deleteData(gameId, task.getName());
+					logger.info("data of task {} deleted", task.getName());
 				}
 				return operationResult;
 			}

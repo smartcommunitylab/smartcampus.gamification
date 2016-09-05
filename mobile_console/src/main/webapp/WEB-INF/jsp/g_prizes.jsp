@@ -96,7 +96,8 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 								<li>6) {{ 'global_prize_classification_pos_6' | i18n }} <strong>{{ 'global_prize_classification_description_6' | i18n }}</strong>;</li>
 								<li>7) {{ 'global_prize_classification_pos_7' | i18n }} <strong>{{ 'global_prize_classification_description_7' | i18n }}</strong>;</li>
 								<li>8) {{ 'global_prize_classification_pos_8' | i18n }} <strong>{{ 'global_prize_classification_description_8' | i18n }}</strong>;</li>
-								<li>9) {{ 'global_prize_classification_pos_9' | i18n }} <strong>{{ 'global_prize_classification_description_9' | i18n }}</strong>.</li>
+								<li>9) {{ 'global_prize_classification_pos_9' | i18n }} <strong>{{ 'global_prize_classification_description_9' | i18n }}</strong>;</li>
+								<li>10) {{ 'global_prize_classification_pos_10' | i18n }} <strong>{{ 'global_prize_classification_description_10' | i18n }}</strong>.</li>
 							</ul>
 							{{ 'global_prize_text_4' | i18n }}<br/><br/>
 						</div>
@@ -146,7 +147,8 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 								<li>6) {{ 'global_prize_classification_pos_6' | i18n }} <strong>{{ 'global_prize_classification_description_6' | i18n }}</strong>;</li>
 								<li>7) {{ 'global_prize_classification_pos_7' | i18n }} <strong>{{ 'global_prize_classification_description_7' | i18n }}</strong>;</li>
 								<li>8) {{ 'global_prize_classification_pos_8' | i18n }} <strong>{{ 'global_prize_classification_description_8' | i18n }}</strong>;</li>
-								<li>9) {{ 'global_prize_classification_pos_9' | i18n }} <strong>{{ 'global_prize_classification_description_9' | i18n }}</strong>.</li>
+								<li>9) {{ 'global_prize_classification_pos_9' | i18n }} <strong>{{ 'global_prize_classification_description_9' | i18n }}</strong>;</li>
+								<li>10) {{ 'global_prize_classification_pos_10' | i18n }} <strong>{{ 'global_prize_classification_description_10' | i18n }}</strong>.</li>
 							</ul>
 							{{ 'global_prize_text_4' | i18n }}<br/><br/>
 						</div>

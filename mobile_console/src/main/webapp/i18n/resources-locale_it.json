@@ -524,7 +524,7 @@
 	"description": "Testo per premi settimanali parte 2"
 }, {
 	"key": "global_prize_text_1",
-	"value": "Alla fine del Gioco, ogni Giocatore ricevera' un attestato che riportera' i risultati raggiunti. I nove giocatori in testa alla",
+	"value": "Alla fine del Gioco, ogni Giocatore ricevera' un attestato che riportera' i risultati raggiunti. I dieci giocatori in testa alla",
 	"description": "Testo per premi globali parte 1"
 }, {
 	"key": "global_prize_text_2",
@@ -560,16 +560,16 @@
 	"description": "Testo per classifica globale posizione 3"
 }, {
 	"key": "global_prize_classification_description_3",
-	"value": "n.1 abbonamento Trentino Volley",
-	"description": "Testo per descrizione classifica globale posizione 3"
+	"value": "n.1 tessera individuale ingresso al Muse con profilo MiniTribu' (1 genitore + figli)",
+	"description": "Testo per descrizione classifica globale posizione 6"
 }, {
 	"key": "global_prize_classification_pos_4",
 	"value": "quarto classificato:",
 	"description": "Testo per classifica globale posizione 4"
 }, {
 	"key": "global_prize_classification_description_4",
-	"value": "n.1 abbonamento Trentino Rosa",
-	"description": "Testo per descrizione classifica globale posizione 4"
+	"value": "n.1 abbonamento al car sharing",
+	"description": "Testo per descrizione classifica globale posizione 7"
 }, {
 	"key": "global_prize_classification_pos_5",
 	"value": "quinto classificato:",
@@ -584,32 +584,40 @@
 	"description": "Testo per classifica globale posizione 6"
 }, {
 	"key": "global_prize_classification_description_6",
-	"value": "n.1 tessera individuale ingresso al Muse con profilo MiniTribu' (1 genitore + figli)",
-	"description": "Testo per descrizione classifica globale posizione 6"
+	"value": "n.1 volo in aereo sulla città di Trento",
+	"description": "Testo per descrizione classifica globale posizione 8"
 }, {
 	"key": "global_prize_classification_pos_7",
 	"value": "settimo classificato:",
 	"description": "Testo per classifica globale posizione 7"
 }, {
 	"key": "global_prize_classification_description_7",
-	"value": "n.1 abbonamento singolo al car sharing",
-	"description": "Testo per descrizione classifica globale posizione 7"
+	"value": "n.1 abbonamento giornaliero per sciare sul Bondone",
+	"description": "Testo per descrizione classifica globale posizione 9"
 }, {
 	"key": "global_prize_classification_pos_8",
 	"value": "ottavo classificato:",
 	"description": "Testo per classifica globale posizione 8"
 }, {
 	"key": "global_prize_classification_description_8",
-	"value": "n.1 volo in aereo di 10 min sulla città di Trento",
-	"description": "Testo per descrizione classifica globale posizione 8"
+	"value": "n.2 biglietti Trentino Volley",
+	"description": "Testo per descrizione classifica globale posizione 3"
 }, {
 	"key": "global_prize_classification_pos_9",
 	"value": "nono classificato:",
 	"description": "Testo per classifica globale posizione 9"
 }, {
 	"key": "global_prize_classification_description_9",
-	"value": "n.1 abbonamento giornaliero per sciare sul Bondone",
-	"description": "Testo per descrizione classifica globale posizione 9"
+	"value": "n.2 biglietti Trentino Rosa",
+	"description": "Testo per descrizione classifica globale posizione 4"
+}, {
+	"key": "global_prize_classification_pos_10",
+	"value": "decimo classificato:",
+	"description": "Testo per classifica globale posizione 10"
+}, {
+	"key": "global_prize_classification_description_10",
+	"value": "n.1 pacco ACI",
+	"description": "Testo per descrizione classifica globale posizione 10"
 }, {
 	"key": "privacy_page_title",
 	"value": "TRATTAMENTO DEI DATI PERSONALI",

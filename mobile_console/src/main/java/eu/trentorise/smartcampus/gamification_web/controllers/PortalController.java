@@ -403,7 +403,7 @@ public class PortalController extends SCController{
 		return model;
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/view_prizes")
+	@RequestMapping(method = RequestMethod.GET, value = "/view_prizes_ext")	// Changed url to ws to fail the direct external page url redirect
 	public ModelAndView preSecurePrizesPage(HttpServletRequest request) {
 		logger.debug(String.format("I am in prizes info page"));
 		Map<String, Object> model = new HashMap<String, Object>();

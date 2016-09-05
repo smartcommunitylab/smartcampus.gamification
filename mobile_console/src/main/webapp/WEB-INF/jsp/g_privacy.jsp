@@ -69,7 +69,7 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						<div class="panel-body">
 					    <h4>{{ 'privacy_page_title' | i18n }}</h4>
 						<div align="justify">
-							{{ 'privacy_page_text' | i18n }}<a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >{{ 'privacy_page_link' | i18n }}</a>.
+							{{ 'privacy_page_text' | i18n }} <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >{{ 'privacy_page_link' | i18n }}</a>.
 						</div>
 						<br/>
 					   </div>
@@ -91,7 +91,7 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						<div class="panel-body">
 					    <h4>{{ 'privacy_page_title' | i18n }}</h4>
 						<div align="justify">
-							{{ 'privacy_page_text' | i18n }}<a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >{{ 'privacy_page_link' | i18n }}</a>.
+							{{ 'privacy_page_text' | i18n }} <a href="pdf/normativa.pdf" target="_blank" alt="normativa privacy" title="normativa privacy" >{{ 'privacy_page_link' | i18n }}</a>.
 						</div>
 						<br/>
 					   </div>

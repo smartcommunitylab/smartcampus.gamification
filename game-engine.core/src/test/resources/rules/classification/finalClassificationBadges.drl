@@ -11,7 +11,7 @@ GREEN FINAL CLASSIFICATION
 rule "final classification gold badge green d1"
 	salience -1000
 when
-	$c : Classification( name == 'final classification green', position == 1, executionTime == 1)
+	$c : Classification( name == 'final classification green', position == 1, classificationRunNumber == 1)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green-1')
@@ -25,7 +25,7 @@ end
 rule "final classification gold badge green d2"
 	salience -1000
 when
-	$c : Classification( name == 'final classification green', position == 1, executionTime == 2)
+	$c : Classification( name == 'final classification green', position == 1, classificationRunNumber == 2)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green-2')
@@ -40,7 +40,7 @@ end
 rule "final classification gold badge green d3"
 	salience -1000
 when
-	$c : Classification( name == 'final classification green', position == 1, executionTime == 3)
+	$c : Classification( name == 'final classification green', position == 1, classificationRunNumber == 3)
     Game( $gameId: id)
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green-3')

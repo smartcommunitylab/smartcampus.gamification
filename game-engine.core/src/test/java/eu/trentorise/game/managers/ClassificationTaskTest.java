@@ -173,6 +173,10 @@ public class ClassificationTaskTest {
 		}
 	}
 
+	/*
+	 * I want to test a scenario with some execution sequences, but cause to
+	 * executionMoment in PointConcept, I'm able to test only actual execution
+	 */
 	@Test
 	public void incrementalWithRule() throws InterruptedException {
 		cleanDB();
@@ -280,11 +284,11 @@ public class ClassificationTaskTest {
 		task.execute((GameContext) provider.getApplicationContext().getBean(
 				"gameCtx", GAME, task));
 
-		task.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, task));
+		// task.execute((GameContext) provider.getApplicationContext().getBean(
+		// "gameCtx", GAME, task));
 
-		task.execute((GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", GAME, task));
+		// task.execute((GameContext) provider.getApplicationContext().getBean(
+		// "gameCtx", GAME, task));
 
 		Thread.sleep(WAIT_EXEC);
 
@@ -292,9 +296,10 @@ public class ClassificationTaskTest {
 		for (GameConcept gc : p1.getState()) {
 			if (gc instanceof BadgeCollectionConcept
 					&& gc.getName().equals("green leaves")) {
-				Assert.assertArrayEquals(new String[] { "silver-medal-green",
-						"bronze-medal-green" }, ((BadgeCollectionConcept) gc)
-						.getBadgeEarned().toArray(new String[1]));
+				Assert.assertArrayEquals(
+						new String[] { "bronze-medal-green" },
+						((BadgeCollectionConcept) gc).getBadgeEarned().toArray(
+								new String[1]));
 				break;
 			}
 		}
@@ -303,9 +308,8 @@ public class ClassificationTaskTest {
 		for (GameConcept gc : p2.getState()) {
 			if (gc instanceof BadgeCollectionConcept
 					&& gc.getName().equals("green leaves")) {
-				Assert.assertArrayEquals(new String[] { "gold-medal-green-1",
-						"10-point-green", "gold-medal-green-2",
-						"silver-medal-green" }, ((BadgeCollectionConcept) gc)
+				Assert.assertArrayEquals(new String[] { "silver-medal-green",
+						"10-point-green" }, ((BadgeCollectionConcept) gc)
 						.getBadgeEarned().toArray(new String[1]));
 				break;
 			}
@@ -315,9 +319,8 @@ public class ClassificationTaskTest {
 		for (GameConcept gc : p3.getState()) {
 			if (gc instanceof BadgeCollectionConcept
 					&& gc.getName().equals("green leaves")) {
-				Assert.assertArrayEquals(new String[] { "bronze-medal-green",
-						"10-point-green", "silver-medal-green",
-						"gold-medal-green-3" }, ((BadgeCollectionConcept) gc)
+				Assert.assertArrayEquals(new String[] { "gold-medal-green-1",
+						"10-point-green" }, ((BadgeCollectionConcept) gc)
 						.getBadgeEarned().toArray(new String[1]));
 				break;
 			}

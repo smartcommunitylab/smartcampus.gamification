@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,8 @@ import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
@@ -220,8 +223,16 @@ public class Converter {
 					pc = (PointConcept) gc;
 				}
 			}
-			task = new IncrementalClassificationTask(pc, t.getPeriodName(),
-					t.getClassificationName());
+
+			if (StringUtils.isBlank(t.getDelayUnit())) {
+				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
+						t.getClassificationName());
+			} else {
+				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
+						t.getClassificationName(), new TimeInterval(
+								t.getDelayValue(), TimeUnit.valueOf(t
+										.getDelayUnit())));
+			}
 			task.setItemsToNotificate(t.getItemsToNotificate());
 			task.setName(t.getName());
 		}
@@ -238,6 +249,12 @@ public class Converter {
 			result.setPeriodName(classification.getPeriodName());
 			result.setItemsToNotificate(classification.getItemsToNotificate());
 			result.setName(classification.getName());
+			if (classification.getSchedule().getDelay() != null) {
+				result.setDelayValue(classification.getSchedule().getDelay()
+						.getValue());
+				result.setDelayUnit(classification.getSchedule().getDelay()
+						.getUnit().toString());
+			}
 		}
 
 		return result;

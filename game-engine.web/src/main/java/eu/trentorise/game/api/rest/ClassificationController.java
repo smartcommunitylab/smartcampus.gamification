@@ -293,7 +293,8 @@ public class ClassificationController {
 												classification.getItemType())) {
 									ct.updatePointConceptData(
 											(PointConcept) gc,
-											classification.getPeriodName());
+											classification.getPeriodName(),
+											null);
 									break;
 								}
 							}

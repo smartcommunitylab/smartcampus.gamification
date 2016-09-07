@@ -28,6 +28,8 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -83,6 +85,31 @@ public class ClassificationTaskTest {
 		g.setTasks(new HashSet<GameTask>());
 		IncrementalClassificationTask incClass = new IncrementalClassificationTask(
 				p, "period1", "newClassification");
+		g.getTasks().add(incClass);
+		g = gameSrv.saveGameDefinition(g);
+		// temp and not complete fix. When GameSrv is initialized startupTask
+		// runs using dirty
+		// data present in game collection
+		// cleaning MUST be improved
+		taskSrv.destroyTask(incClass, g.getId());
+		taskSrv.createTask(incClass, g.getId());
+	}
+
+	@Test
+	public void incrementalWithDelay() {
+		Game g = new Game();
+		g.setId("test");
+
+		PointConcept p = new PointConcept("yellow");
+		final long EVERY_MINUTE = 60000;
+		p.addPeriod("period1", new LocalDate().toDate(), EVERY_MINUTE);
+		g.setConcepts(new HashSet<GameConcept>());
+		g.getConcepts().add(p);
+
+		g.setTasks(new HashSet<GameTask>());
+		IncrementalClassificationTask incClass = new IncrementalClassificationTask(
+				p, "period1", "newClassification", new TimeInterval(2,
+						TimeUnit.MINUTE));
 		g.getTasks().add(incClass);
 		g = gameSrv.saveGameDefinition(g);
 		// temp and not complete fix. When GameSrv is initialized startupTask

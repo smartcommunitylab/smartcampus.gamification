@@ -25,15 +25,24 @@ angular.module('gamificationEngine.tasks', [])
 			'rankDeleted': false
 		};
 
-		var t = {};
+		$scope.timeunit= [{label: 'Day', value: 'DAY'}, {label: 'Hour', value: 'HOUR'}, {label: 'Minute', value: 'MINUTE'}];
+		
+		//var t = {};
 		$scope.input = {};
-
+		$scope.delay = {showField: false};
+		
 		// default value
 		$scope.input.itemToNotificate = 3;
 		var game = $scope.game;
 		var task;
 		//$scope.game = game;
 
+		$scope.resetDelayField = function() {
+			if(!$scope.delay.showField) {
+				delete $scope.delay.value;
+				delete $scope.delay.unit;
+			}
+		}
 		
 		$scope.saveIncremental = function() {
 			$scope.alerts.nameError = false;
@@ -62,12 +71,17 @@ angular.module('gamificationEngine.tasks', [])
 
 			if (valid) {
 				$scope.disabled = true;
+				var t = {};
 				t.name = $scope.input.name;
 				t.itemType = $scope.input.itemType;
 				t.classificationName = $scope.input.classificationName;
 				t.periodName = $scope.input.periodName;
 				t.itemsToNotificate = $scope.input.itemToNotificate;
 				t.type = $scope.input.type;
+				if($scope.delay.showField) {
+					t.delayValue = $scope.delay.value;
+					t.delayUnit = $scope.delay.unit.value;
+				}
 				
 				if (!task) {
 					var found = false;
@@ -153,6 +167,7 @@ angular.module('gamificationEngine.tasks', [])
 
 			if (valid) {
 				$scope.disabled = true;
+				var t = {};
 				t.name = $scope.input.name;
 				t.itemType = $scope.input.itemType;
 				t.classificationName = $scope.input.classificationName;
@@ -247,7 +262,16 @@ angular.module('gamificationEngine.tasks', [])
 			} else {
 				$scope.input.periodName = task.periodName;
 			}
-
+			$scope.delay.value = task.delayValue;
+			if(task.delayUnit) {
+				for(var i = 0; i < $scope.timeunit.length; i++) {
+					if($scope.timeunit[i].value === task.delayUnit){
+						$scope.delay.unit = $scope.timeunit[i];
+						break;
+					}
+				}
+			}
+			$scope.delay.showField = task.delayValue !== undefined;
 			$scope.edit = true;
 			$scope.isCollapsed = false;
 			$scope.alerts.rankEdited = false;

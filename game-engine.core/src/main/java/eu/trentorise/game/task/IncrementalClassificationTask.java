@@ -19,6 +19,7 @@ import eu.trentorise.game.model.PointConcept.Period;
 import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClassificationPosition;
 import eu.trentorise.game.model.core.ClassificationType;
+import eu.trentorise.game.model.core.TimeInterval;
 
 public class IncrementalClassificationTask extends ClassificationTask {
 
@@ -38,7 +39,15 @@ public class IncrementalClassificationTask extends ClassificationTask {
 	public IncrementalClassificationTask(PointConcept pc, String periodName,
 			String classificationName) {
 		super();
-		updatePointConceptData(pc, periodName);
+		updatePointConceptData(pc, periodName, null);
+		super.setClassificationName(classificationName);
+		super.setName(classificationName);
+	}
+
+	public IncrementalClassificationTask(PointConcept pc, String periodName,
+			String classificationName, TimeInterval delay) {
+		super();
+		updatePointConceptData(pc, periodName, delay);
 		super.setClassificationName(classificationName);
 		super.setName(classificationName);
 	}
@@ -47,7 +56,8 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		super();
 	}
 
-	public final void updatePointConceptData(PointConcept pc, String periodName) {
+	public final void updatePointConceptData(PointConcept pc,
+			String periodName, TimeInterval delay) {
 		if (pc != null) {
 			Period period = pc.getPeriod(periodName);
 			PeriodInstance instance = pc.getPeriodCurrentInstance(periodName);
@@ -59,6 +69,7 @@ public class IncrementalClassificationTask extends ClassificationTask {
 			TaskSchedule schedule = new TaskSchedule();
 			schedule.setStart(new Date(instance.getEnd()));
 			schedule.setPeriod(periodLength);
+			schedule.setDelay(delay);
 			super.setSchedule(schedule);
 		}
 	}

@@ -25,7 +25,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
@@ -92,6 +94,9 @@ public class GamePersistence {
 		game.setRules(rules);
 		Set<GameTask> t = new HashSet<GameTask>();
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+		mapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING,
+				true);
 		for (GenericObjectPersistence obj : tasks) {
 			// fix: Use @JsonDeserialize to maintain compatibility with
 			// databases previous of version 2.0.0 in which

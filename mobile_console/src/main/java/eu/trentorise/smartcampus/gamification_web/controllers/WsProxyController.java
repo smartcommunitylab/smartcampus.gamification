@@ -53,11 +53,15 @@ import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
 public class WsProxyController {
 	
 	private static transient final Logger logger = Logger.getLogger(WsProxyController.class);
-	private static final String GREEN_CLASSIFICATION = "green leaves";
+	private static final String GREEN_CLASSIFICATION = "week classification green";
 
 	@Autowired
 	@Value("${smartcampus.urlws.gamification}")
 	private String gamificationUrl;
+	
+	@Autowired
+	@Value("${smartcampus.urlws.gameclass}")
+	private String gamificationUrlClassification;
 	
 	@Autowired
 	@Value("${smartcampus.gamification.url}")
@@ -128,6 +132,25 @@ public class WsProxyController {
 		try {
 			//result = restTemplate.getForObject(gamificationUrl + urlWS, String.class);
 			tmp_res = restTemplate.exchange(gamificationUrl + urlWS, HttpMethod.GET, new HttpEntity<Object>(createHeaders()),String.class);
+		} catch (Exception ex){
+			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
+		}
+		if(tmp_res != null){
+			result = tmp_res.getBody();
+		}
+		return result;	
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/rest/allGetClassification")
+	public @ResponseBody
+	String getAllClassification(HttpServletRequest request, @RequestParam String urlWS){
+		RestTemplate restTemplate = new RestTemplate();
+		logger.debug("WS-GET. Method " + urlWS);	//Added for log ws calls info in preliminary phase of portal
+		String result = "";
+		ResponseEntity<String> tmp_res = null;
+		try {
+			//result = restTemplate.getForObject(gamificationUrl + urlWS, String.class);
+			tmp_res = restTemplate.exchange(gamificationUrlClassification + urlWS, HttpMethod.GET, new HttpEntity<Object>(createHeaders()),String.class);
 		} catch (Exception ex){
 			logger.error(String.format("Exception in proxyController get ws. Method: %s. Details: %s", urlWS, ex.getMessage()));
 		}
@@ -475,13 +498,15 @@ public class WsProxyController {
 		p = playerRepositoryDao.findBySocialIdAndType(userId, type);
 		nickName = (p != null) ? p.getNikName() : null;
 		
-		String classUrl = "state/" + gameName + "?page=1&size=" + maxClassificationSize;
-		String allData = this.getAll(request, classUrl);		// call to get all user status (classification)
+		String allData = "";
 		// MB: part for new incremental classification: uncomment when server support this call
-		//if(timestamp != null){
-		//	String incClassUrl = "data/game/" + gameName + "/incclassification/"  + GREEN_CLASSIFICATION;
-		//	allData = this.getAll(request, incClassUrl);
-		//}
+		if(timestamp != null){
+			String incClassUrl = "game/" + gameName + "/incclassification/"  + GREEN_CLASSIFICATION + "?timestamp=" + timestamp;
+			allData = this.getAllClassification(request, incClassUrl);
+		} else {
+			String classUrl = "state/" + gameName + "?page=1&size=" + maxClassificationSize;
+			allData = this.getAll(request, classUrl);		// call to get all user status (classification)
+		}
 		String statusUrl = "state/" + gameName + "/" + userId;
 		String statusData = this.getAll(request, statusUrl);	// call to get actual user status (user scores)
 		List<Player> allNicks = null;
@@ -494,11 +519,11 @@ public class WsProxyController {
 		ClassificationData actualPlayerClass = statusUtils.correctPlayerClassificationData(statusData, userId, nickName, timestamp, type);
 		List<ClassificationData> playersClass = new ArrayList<ClassificationData>();
 		// MB: part for new incremental classification: uncomment when server support this call
-		//if(timestamp != null){
-		//	playersClass = statusUtils.correctClassificationIncData(allData, allNicks, timestamp, type);
-		//} else {
+		if(timestamp != null){
+			playersClass = statusUtils.correctClassificationIncData(allData, allNicks, timestamp, type);
+		} else {
 			playersClass = statusUtils.correctClassificationData(allData, allNicks, timestamp, type);
-		//}	
+		}	
 		
 		// Sorting
 		Collections.sort(playersClass, Collections.reverseOrder());

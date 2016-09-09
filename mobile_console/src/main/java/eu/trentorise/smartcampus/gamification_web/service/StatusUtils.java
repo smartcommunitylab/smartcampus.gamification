@@ -313,7 +313,7 @@ public class StatusUtils {
 	public List<ClassificationData> correctClassificationIncData(String allStatus, List<Player> allNicks, Long timestamp, String type) throws JSONException{
 		List<ClassificationData> playerClassList = new ArrayList<ClassificationData>();
 		
-		allStatus = "{"
+		/*allStatus = "{"
 			+  "\"pointConceptName\": \"green leaves\","
 			+  "\"type\": \"INCREMENTAL\","
 			+  "\"board\": ["
@@ -330,7 +330,7 @@ public class StatusUtils {
 			+   	"\"playerId\": \"4\""
 			+   "}"
 			+ "]"
-		+ "}";
+		+ "}";*/
 		
     	if(allStatus != null && allStatus.compareTo("") != 0){
     		JSONObject allIncClassData = new JSONObject(allStatus);

@@ -361,8 +361,8 @@ public class StatusUtils {
 		int from_index = 0;
 		PlayerClassification pc = new PlayerClassification();
 		List<ClassificationData> cleanedList = new ArrayList<ClassificationData>();
+		boolean myPosFind = false;
 		if(playersClass != null && !playersClass.isEmpty()){
-			int to_index = playersClass.size();
 			ClassificationData prec_pt = null;
 			for(int i = 0; i < playersClass.size(); i++){
 				ClassificationData pt = playersClass.get(i);
@@ -377,10 +377,21 @@ public class StatusUtils {
 				}
 				prec_pt = pt;
 				if(pt.getPlayerId().compareTo(actualPlayerClass.getPlayerId()) == 0){
+					myPosFind = true;
 					actualPlayerClass.setPosition(pt.getPosition());
 				}
 				playersClassCorr.add(pt);
 			}
+			if(!myPosFind){
+				ClassificationData lastPlayer = playersClass.get(playersClass.size()-1);
+				if(lastPlayer.getScore() == actualPlayerClass.getScore()){
+					actualPlayerClass.setPosition(lastPlayer.getPosition());
+				} else {
+					actualPlayerClass.setPosition(lastPlayer.getPosition() + 1);
+				}
+				playersClassCorr.add(actualPlayerClass);
+			}
+			int to_index = playersClassCorr.size();
 			if(from != null){
 				from_index = from.intValue();
 			}
@@ -388,9 +399,9 @@ public class StatusUtils {
 				to_index = to.intValue();
 			}
 			if(from_index < 0)from_index = 0;
-			if(from_index > playersClass.size())from_index = playersClass.size();
+			if(from_index > playersClassCorr.size())from_index = playersClassCorr.size();
 			if(to_index < 0)to_index = 0;
-			if(to_index > playersClass.size())to_index = playersClass.size();
+			if(to_index > playersClassCorr.size())to_index = playersClassCorr.size();
 			if(from_index >= to_index)from_index = to_index;
 			try {
 				cleanedList = playersClassCorr.subList(from_index, to_index);

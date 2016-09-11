@@ -1102,17 +1102,17 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     			if(name != null && name != ''){
     				sharedDataService.setNickName(name);
     			}
-    			if($scope.myNick == null || $scope.myNick == ""){
+    			//if($scope.myNick == null || $scope.myNick == ""){
     				// manage Nick for player
-    				$scope.retrieveNickForPlayer(result, mail);
-    			} else if(mail == null || mail == ""){
+    			//	$scope.retrieveNickForPlayer(result, mail);
+    			//} else if(mail == null || mail == ""){
     				// manage Nick for player
-    				$scope.retrieveMailForPlayer();
-    			}
-    			if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_9){
+    			//	$scope.retrieveMailForPlayer();
+    			//}
+    			//if((surveyData == null || surveyData == "") && now.getTime() > $scope.start_week_9){
     				// manage SurveyData for player
-    				$scope.retrieveSurveyDataForPlayer();
-    			}
+    			//	$scope.retrieveSurveyDataForPlayer();
+    			//}
     			
     		}
     	});
@@ -1252,44 +1252,44 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
     
     // Method used to retrieve the player nickname by opening a modal form that the user has to complete
-    $scope.retrieveNickForPlayer = function(nickList, mail){
-    	var data = {
-    		nickList : nickList,
-    		mail: mail
-    	}
-    	var dlg = $dialogs.create('/dialogs/nickinput.html','nicknameDialogCtrl',data,'lg');
-		dlg.result.then(function(user){
-			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
-			$scope.myNick = user.nickname;
-			sharedDataService.setNickName(user.nickname);
-			$scope.updateNiks(user);		// commented for test
+    //$scope.retrieveNickForPlayer = function(nickList, mail){
+    //	var data = {
+    //		nickList : nickList,
+    //		mail: mail
+    //	}
+    //	var dlg = $dialogs.create('/dialogs/nickinput.html','nicknameDialogCtrl',data,'lg');
+	//	dlg.result.then(function(user){
+	//		console.log("Data retrieved from initial dialog " + JSON.stringify(user));
+	//		$scope.myNick = user.nickname;
+	//		sharedDataService.setNickName(user.nickname);
+	//		$scope.updateNiks(user);		// commented for test
 			//if(user.invitation != null && user.invitation != "") {
 			//	var rec_player = $scope.retrievePlayerFromNick(user.invitation);
 			//}
-		});
-    };
+	//	});
+    //};
     
     // Method used to retrieve the player mail by opening a modal form that user has to complete
-    $scope.retrieveMailForPlayer = function(){
-    	var data = null;
-    	var dlg = $dialogs.create('/dialogs/mailinput.html','mailDialogCtrl',data,'lg');
-		dlg.result.then(function(user){
-			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
-			$scope.playerMail = user.mail;
-			$scope.updateMail(user);
-		});
-    };
+    //$scope.retrieveMailForPlayer = function(){
+    //	var data = null;
+    //	var dlg = $dialogs.create('/dialogs/mailinput.html','mailDialogCtrl',data,'lg');
+	//	dlg.result.then(function(user){
+	//		console.log("Data retrieved from initial dialog " + JSON.stringify(user));
+	//		$scope.playerMail = user.mail;
+	//		$scope.updateMail(user);
+	//	});
+    //};
     
     // Method used to retrieve the player surveyData by opening a modal form that user has to compile
-    $scope.retrieveSurveyDataForPlayer = function(){
-    	var data = null;
-    	var dlg = $dialogs.create('/dialogs/surveyinput.html','surveyDialogCtrl',data,'lg');
-		dlg.result.then(function(user){
-			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
-			$scope.surveyData = user.surveyData;
-			$scope.updateSurvey(user);
-		});
-    };
+    //$scope.retrieveSurveyDataForPlayer = function(){
+    //	var data = null;
+    //	var dlg = $dialogs.create('/dialogs/surveyinput.html','surveyDialogCtrl',data,'lg');
+	//	dlg.result.then(function(user){
+	//		console.log("Data retrieved from initial dialog " + JSON.stringify(user));
+	//		$scope.surveyData = user.surveyData;
+	//		$scope.updateSurvey(user);
+	//	});
+    //};
     
     // Method used to load only the used data from the players list
     $scope.correctProfileData = function(profile){
@@ -3173,240 +3173,240 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     };
 
 }]);
-cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
-	//-- Variables --//
-	$scope.submitNumber = 0;
-	$scope.accepted = false;
-	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	
-	$scope.ages = [
-	    {val: 1, label: '< 20 anni'},
-	    {val: 2, label: '20 - 40 anni'},
-	    {val: 3, label: '40 - 70 anni'},
-	    {val: 4, label: '> 70 anni'}
-	];
-	
-	$scope.user = {
-		mail : data.mail,
-		nickname : '',
-		age: '',
-		transport: null,
-		vehicle: [
-		   false,
-		   false,
-		   false,
-		   false,
-		   false,
-		   false,
-		   false
-		   ],
-		averagekm: 0,
-		invitation: ''
-	};
-	$scope.showMessages = false;
-
-	//-- Methods --//
-	
-	$scope.cancel = function(){
-		$modalInstance.dismiss('Canceled');
-	}; // end cancel
-	
-	$scope.save = function(form){
-		if(form.$valid){
-			$scope.errorMessages = "";
-			// check if nick already present
-			if(!$scope.checkIfNickAlreadyPresent($scope.user.nickname)){
-				if($scope.user.invitation != null && $scope.user.invitation != ""){
-					if($scope.checkIfNickAlreadyPresent($scope.user.invitation)){
-						$modalInstance.close($scope.user);	// pass all the form data to the main controller
-					} else {
-						$scope.showInvitationMessages = true;
-						$scope.errorInvitationMessages = "Nickname non trovato. Contatta chi ti ha invitato al gioco per avere il nickname corretto."
-					}
-				} else {
-					$modalInstance.close($scope.user);	// pass all the form data to the main controller
-				}
-			} else {
-				$scope.showMessages = true;
-				$scope.errorMessages = "Nickname gia' usato da un altro utente. Scegli un altro nick che ti rappresenti."
-			}
-		}
-	}; // end save
-	
-	$scope.hitEnter = function(evt){
-		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.nickname,null) || angular.equals($scope.user.nickname,'')))
-			$scope.save();
-	};
-	
-	$scope.clearErroMessages = function(){
-		$scope.errorMessages = "";
-		$scope.showMessages = false;
-	}
-	
-	// Method checkIfNickAlreadyPresent: used to control if a nickname is already used in the player's table
-	// (added lower case transformation to consider string with same chars but different formatting
-	$scope.checkIfNickAlreadyPresent = function(nick){
-		for(var i = 0; i < data.nickList.length; i++){
-			//if(data.nickList[i].nikName.toLowerCase() == nick.trim().toLowerCase()){	// case insensitive
-			if(data.nickList[i].nikName == nick.trim()){								// case sensitive
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	$scope.checkAllUnselected = function(check_group){
-		if(check_group){
-			if(check_group.train != null){
-				if(!check_group.train && !check_group.bus && !check_group.sauto && !check_group.sbike){
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				if(!check_group.auto && !check_group.bike && !check_group.walk){
-					return true;
-				} else {
-					return false;
-				}
-			}
-		} else {
-			return false;
-		}
-	}
-	
-	$scope.clearVehicle = function(){
-		$scope.user.vehicle = [false, false, false, false, false, false, false];
-	};
-	
-	$scope.someSelectedTrans = function (object) {
-		var somes = false;
-		if(object){
-			for(var i = 0; i < object.length; i++){
-				if(object[i]){
-					somes = true;
-				}
-			}
-		}
-		return somes;
-	}
-	
-	$scope.someSelectedPrivat = function (object) {
-		var somes = false;
-		if(object){
-			for(var i = 0; i < object.length; i++){
-				if(object[i]){
-					somes = true;
-				}
-			}
-		}
-		return somes;
-	}
-}); // end controller(customDialogCtrl)
-cp.controller('mailDialogCtrl',function($scope,$modalInstance,data){
-	//-- Variables --//
-	$scope.submitNumber = 0;
-	$scope.accepted = false;
-	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	
-	$scope.user = {
-		mail : null,
-	};
-
-	//-- Methods --//
-	
-	$scope.cancel = function(){
-		$modalInstance.dismiss('Canceled');
-	}; // end cancel
-	
-	$scope.save = function(form){
-		if(form.$valid){
-			$scope.errorMessages = "";
-			// check if nick already present
-			$modalInstance.close($scope.user);	// pass all the form data to the main controller
-		}
-	}; // end save
-	
-	$scope.hitEnter = function(evt){
-		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
-			$scope.save();
-	};
-}); // end controller(mailDialogCtrl)
-cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
-	//-- Variables --//
-	$scope.submitNumber = 0;
-	$scope.accepted = false;
-	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	
-	$scope.showSelect = true;
-	
-	var now = new Date();
-	$scope.negative_exp = "negative";
-	$scope.satisfying_exp = "satisfying";
-	$scope.good_exp = "good";
-	$scope.excellent_exp = "excellent";
-	
-	$scope.nothing_val = "nothing";
-	$scope.little_val = "a little";
-	$scope.enough_val = "enough";
-	$scope.much_val = "much";
-	
-	$scope.no_val = "no";
-	$scope.maybe_no_val = "maybe no";
-	$scope.maybe_yes_val = "maybe yes";
-	$scope.yes_val = "yes";
-	
-	$scope.walk_mode = "walk";
-	$scope.bike_mode = "bike";
-	$scope.public_transport_mode = "public transport";
-	$scope.car_mode = "car";
-	
-	$scope.all_trips = "all trips";
-	$scope.commuters_trips = "commuters trips";
-	$scope.long_trips = "long trips";
-	$scope.short_trips = "short trips";
-	
-	$scope.no_mode = "nothing";
-	$scope.bike_sharing_mode = "bike sharing";
-	$scope.park_and_ride_mode = "park and ride";
-	$scope.bike_mode = "bike";
-	$scope.transport_mode = "public transport";
-
-	$scope.user = {
-		surveyData : {
-			gamimg_experience: "",
-			change_of_habits: "",
-			new_habits_maintaining: "",
-			job_transport_mode: "",
-			free_time_transport_mode: "",
-			trip_type: "",
-			new_mode_type: "",
-			point_interest_in_game: "",
-			badges_interest_in_game: "",
-			challenges_interest_in_game: "",
-			prize_interest_in_game: "",
-			game_improve_suggestion: "",
-			app_improve_suggestion: "",
-			timestamp: now.getTime()
-		}
-	};
-
-	//-- Methods --//
-	
-	$scope.cancel = function(){
-		$modalInstance.dismiss('Canceled');
-	}; // end cancel
-	
-	$scope.save = function(form){
-		if(form.$valid){
-			$scope.errorMessages = "";
-			// check if nick already present
-			$modalInstance.close($scope.user);	// pass all the form data to the main controller
-		}
-	}; // end save
-	
-	$scope.hitEnter = function(evt){
-		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
-			$scope.save();
-	};
-}); // end controller(mailDialogCtrl)
+//cp.controller('nicknameDialogCtrl',function($scope,$modalInstance,data){
+//	//-- Variables --//
+//	$scope.submitNumber = 0;
+//	$scope.accepted = false;
+//	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+//	
+//	$scope.ages = [
+//	    {val: 1, label: '< 20 anni'},
+//	    {val: 2, label: '20 - 40 anni'},
+//	    {val: 3, label: '40 - 70 anni'},
+//	    {val: 4, label: '> 70 anni'}
+//	];
+//	
+//	$scope.user = {
+//		mail : data.mail,
+//		nickname : '',
+//		age: '',
+//		transport: null,
+//		vehicle: [
+//		   false,
+//		   false,
+//		   false,
+//		   false,
+//		   false,
+//		   false,
+//		   false
+//		   ],
+//		averagekm: 0,
+//		invitation: ''
+//	};
+//	$scope.showMessages = false;
+//
+//	//-- Methods --//
+//	
+//	$scope.cancel = function(){
+//		$modalInstance.dismiss('Canceled');
+//	}; // end cancel
+//	
+//	$scope.save = function(form){
+//		if(form.$valid){
+//			$scope.errorMessages = "";
+//			// check if nick already present
+//			if(!$scope.checkIfNickAlreadyPresent($scope.user.nickname)){
+//				if($scope.user.invitation != null && $scope.user.invitation != ""){
+//					if($scope.checkIfNickAlreadyPresent($scope.user.invitation)){
+//						$modalInstance.close($scope.user);	// pass all the form data to the main controller
+//					} else {
+//						$scope.showInvitationMessages = true;
+//						$scope.errorInvitationMessages = "Nickname non trovato. Contatta chi ti ha invitato al gioco per avere il nickname corretto."
+//					}
+//				} else {
+//					$modalInstance.close($scope.user);	// pass all the form data to the main controller
+//				}
+//			} else {
+//				$scope.showMessages = true;
+//				$scope.errorMessages = "Nickname gia' usato da un altro utente. Scegli un altro nick che ti rappresenti."
+//			}
+//		}
+//	}; // end save
+//	
+//	$scope.hitEnter = function(evt){
+//		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.nickname,null) || angular.equals($scope.user.nickname,'')))
+//			$scope.save();
+//	};
+//	
+//	$scope.clearErroMessages = function(){
+//		$scope.errorMessages = "";
+//		$scope.showMessages = false;
+//	}
+//	
+//	// Method checkIfNickAlreadyPresent: used to control if a nickname is already used in the player's table
+//	// (added lower case transformation to consider string with same chars but different formatting
+//	$scope.checkIfNickAlreadyPresent = function(nick){
+//		for(var i = 0; i < data.nickList.length; i++){
+//			//if(data.nickList[i].nikName.toLowerCase() == nick.trim().toLowerCase()){	// case insensitive
+//			if(data.nickList[i].nikName == nick.trim()){								// case sensitive
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//	
+//	$scope.checkAllUnselected = function(check_group){
+//		if(check_group){
+//			if(check_group.train != null){
+//				if(!check_group.train && !check_group.bus && !check_group.sauto && !check_group.sbike){
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			} else {
+//				if(!check_group.auto && !check_group.bike && !check_group.walk){
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			}
+//		} else {
+//			return false;
+//		}
+//	}
+//	
+//	$scope.clearVehicle = function(){
+//		$scope.user.vehicle = [false, false, false, false, false, false, false];
+//	};
+//	
+//	$scope.someSelectedTrans = function (object) {
+//		var somes = false;
+//		if(object){
+//			for(var i = 0; i < object.length; i++){
+//				if(object[i]){
+//					somes = true;
+//				}
+//			}
+//		}
+//		return somes;
+//	}
+//	
+//	$scope.someSelectedPrivat = function (object) {
+//		var somes = false;
+//		if(object){
+//			for(var i = 0; i < object.length; i++){
+//				if(object[i]){
+//					somes = true;
+//				}
+//			}
+//		}
+//		return somes;
+//	}
+//}); // end controller(customDialogCtrl)
+//cp.controller('mailDialogCtrl',function($scope,$modalInstance,data){
+//	//-- Variables --//
+//	$scope.submitNumber = 0;
+//	$scope.accepted = false;
+//	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+//	
+//	$scope.user = {
+//		mail : null,
+//	};
+//
+//	//-- Methods --//
+//	
+//	$scope.cancel = function(){
+//		$modalInstance.dismiss('Canceled');
+//	}; // end cancel
+//	
+//	$scope.save = function(form){
+//		if(form.$valid){
+//			$scope.errorMessages = "";
+//			// check if nick already present
+//			$modalInstance.close($scope.user);	// pass all the form data to the main controller
+//		}
+//	}; // end save
+//	
+//	$scope.hitEnter = function(evt){
+//		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
+//			$scope.save();
+//	};
+//}); // end controller(mailDialogCtrl)
+//cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
+//	//-- Variables --//
+//	$scope.submitNumber = 0;
+//	$scope.accepted = false;
+//	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+//	
+//	$scope.showSelect = true;
+//	
+//	var now = new Date();
+//	$scope.negative_exp = "negative";
+//	$scope.satisfying_exp = "satisfying";
+//	$scope.good_exp = "good";
+//	$scope.excellent_exp = "excellent";
+//	
+//	$scope.nothing_val = "nothing";
+//	$scope.little_val = "a little";
+//	$scope.enough_val = "enough";
+//	$scope.much_val = "much";
+//	
+//	$scope.no_val = "no";
+//	$scope.maybe_no_val = "maybe no";
+//	$scope.maybe_yes_val = "maybe yes";
+//	$scope.yes_val = "yes";
+//	
+//	$scope.walk_mode = "walk";
+//	$scope.bike_mode = "bike";
+//	$scope.public_transport_mode = "public transport";
+//	$scope.car_mode = "car";
+//	
+//	$scope.all_trips = "all trips";
+//	$scope.commuters_trips = "commuters trips";
+//	$scope.long_trips = "long trips";
+//	$scope.short_trips = "short trips";
+//	
+//	$scope.no_mode = "nothing";
+//	$scope.bike_sharing_mode = "bike sharing";
+//	$scope.park_and_ride_mode = "park and ride";
+//	$scope.bike_mode = "bike";
+//	$scope.transport_mode = "public transport";
+//
+//	$scope.user = {
+//		surveyData : {
+//			gamimg_experience: "",
+//			change_of_habits: "",
+//			new_habits_maintaining: "",
+//			job_transport_mode: "",
+//			free_time_transport_mode: "",
+//			trip_type: "",
+//			new_mode_type: "",
+//			point_interest_in_game: "",
+//			badges_interest_in_game: "",
+//			challenges_interest_in_game: "",
+//			prize_interest_in_game: "",
+//			game_improve_suggestion: "",
+//			app_improve_suggestion: "",
+//			timestamp: now.getTime()
+//		}
+//	};
+//
+//	//-- Methods --//
+//	
+//	$scope.cancel = function(){
+//		$modalInstance.dismiss('Canceled');
+//	}; // end cancel
+//	
+//	$scope.save = function(form){
+//		if(form.$valid){
+//			$scope.errorMessages = "";
+//			// check if nick already present
+//			$modalInstance.close($scope.user);	// pass all the form data to the main controller
+//		}
+//	}; // end save
+//	
+//	$scope.hitEnter = function(evt){
+//		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
+//			$scope.save();
+//	};
+//}); // end controller(surveyDialogCtrl)

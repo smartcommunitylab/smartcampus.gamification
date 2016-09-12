@@ -523,3 +523,28 @@ div.select select {
        -moz-appearance: none;
             appearance: none;
 }
+
+.challenge-box {
+	display: inline-block;
+	margin: 15px;
+	vertical-align: text-top;
+}
+
+.challenge-box .challenge-title {
+	text-decoration: underline;
+}
+
+.challenge-box .challenge-field {
+}
+
+.challenge-box .challenge-field-value {
+	font-weight: bold;
+}
+
+.challenge-box .challenge-date {
+	font-size: 85%;
+}
+
+.challenge-box .challenge-status .label{
+	margin-right: 2px;
+}

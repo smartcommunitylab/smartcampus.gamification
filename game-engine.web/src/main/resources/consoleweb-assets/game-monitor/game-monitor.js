@@ -25,6 +25,7 @@ angular.module('gamificationEngine.monitor', [])
 			data.forEach(function (p) {
 				var badges = p.state['BadgeCollectionConcept'] ? p.state['BadgeCollectionConcept'] : [];
 				var score = p.state['PointConcept'] ? p.state['PointConcept'] : [];
+				var challenges = p.state['ChallengeConcept'] ? p.state['ChallengeConcept'] : [];
 				p.totalBadges = 0;
 				p.totalScore = 0;
 				badges.forEach(function (b) {
@@ -34,13 +35,20 @@ angular.module('gamificationEngine.monitor', [])
 				score.forEach(function (s) {
 					p.totalScore += s.score;
 				});
+				
 				p.hasCustomData = Object.keys(p.customData).length > 0;
-
+				p.hasChallenges = challenges.length > 0;
+				var referenceTimestamp = new Date().getTime();
+				challenges.forEach(function(c) {
+					c.active = referenceTimestamp < c.end;
+					c.failed = referenceTimestamp > c.end && !c.completed;
+				});
+				
 				/* patch for an explicit request of peppo
 				if custom data key contains '_startTs' or '_endTs' format it as a date
 				THIS MUST TO BE RETHINK FOR A GENERIC PURPOSE
 				*/
-
+			   
 				Object.keys(p.customData).forEach(function (k) {
 					if (k.indexOf('_startChTs') != -1 || k.indexOf('_endChTs') != -1) {
 						p.customData[k] = moment(p.customData[k]).format('DD/MM/YYYY, HH:mm:ss');

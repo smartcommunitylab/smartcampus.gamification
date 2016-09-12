@@ -54,6 +54,7 @@ public class IncrementalClassificationTask extends ClassificationTask {
 
 	public IncrementalClassificationTask() {
 		super();
+		// logger.info("New Task incremental created");
 	}
 
 	public final void updatePointConceptData(PointConcept pc,
@@ -111,6 +112,14 @@ public class IncrementalClassificationTask extends ClassificationTask {
 
 		logger.debug("Execute of task {}", getClassificationName());
 
+		IncrementalClassificationTask execTask = (IncrementalClassificationTask) ctx
+				.getTask();
+		long periodLength = execTask.getPeriodLength();
+		long startupPeriodInstance = execTask.getStartupPeriodInstance();
+		int startupInstanceIndex = execTask.getStartupInstanceIndex();
+		String pointConceptName = execTask.getPointConceptName();
+		String periodName = execTask.getPeriodName();
+
 		// read all game players
 		List<String> players = ctx.readPlayers();
 		// load players status
@@ -151,13 +160,6 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		long start = startupPeriodInstance + periodLength * (executionTime - 1);
 		long end = start + periodLength;
 
-		ClassificationBuilder builder = ClassificationFactory
-				.createIncrementalClassification(states, pointConceptName,
-						periodName, new Date(start));
-
-		List<ClassificationPosition> classification = builder
-				.getClassificationBoard().getBoard();
-
 		logger.info(String
 				.format("run task %s: startupInstanceIndex (saved in game def or task data) %s",
 						ctx.getTask().getName(), startupInstanceIndex));
@@ -174,6 +176,13 @@ public class IncrementalClassificationTask extends ClassificationTask {
 				.getName(), periodName));
 		logger.info(String.format("run task %s: pointConceptName %s", ctx
 				.getTask().getName(), pointConceptName));
+
+		ClassificationBuilder builder = ClassificationFactory
+				.createIncrementalClassification(states, pointConceptName,
+						periodName, new Date(start));
+
+		List<ClassificationPosition> classification = builder
+				.getClassificationBoard().getBoard();
 
 		// debug logging
 		if (logger.isDebugEnabled()) {

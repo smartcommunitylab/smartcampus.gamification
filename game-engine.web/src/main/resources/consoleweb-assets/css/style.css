@@ -548,3 +548,23 @@ div.select select {
 .challenge-box .challenge-status .label{
 	margin-right: 2px;
 }
+
+
+.monitor-section-title {
+	width: 100%;
+}
+
+.monitor-section-title  span {
+	cursor: pointer;
+	float: left;
+	display: block;
+	color: rgb(55,159,244);
+	
+}
+
+.section-title {
+	display: block;
+	border: 1px;
+	border-color: color: rgb(55,159,244);
+	cursor: pointer;
+}

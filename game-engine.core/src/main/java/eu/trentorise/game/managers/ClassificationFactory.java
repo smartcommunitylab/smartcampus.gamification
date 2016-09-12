@@ -107,8 +107,8 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 	@Override
 	protected double retrieveScore(PlayerState state, long moment) {
 		for (GameConcept gc : state.getState()) {
-			if (gc.getName().equals(pointConceptName)
-					&& gc instanceof PointConcept) {
+			if (gc instanceof PointConcept
+					&& gc.getName().equals(pointConceptName)) {
 				PointConcept pc = (PointConcept) gc;
 				if (moment > 0) {
 					return pc.getPeriodScore(periodName, moment);

@@ -459,7 +459,7 @@ public class PortalController extends SCController{
 	
 	// Here I insert a task that invoke the WS notification
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	@Scheduled(cron="0 30 15 * * FRI") 		// Repeat every Friday at 3:30 PM
+	@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 17:00 PM
 	public synchronized void checkNotification() throws IOException {
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();

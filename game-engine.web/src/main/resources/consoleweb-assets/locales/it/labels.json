@@ -91,5 +91,10 @@
   "lbl_customData" : "Dati Personalizzati",
   "lbl_challenge_active" : "Attiva",
   "lbl_challenge_completed" : "Completata",
-  "lbl_challenge_failed" : "Fallita"
+  "lbl_challenge_failed" : "Fallita",
+  "lbl_add_rule" : "Crea nuova regola",
+  "title_add_rule" : "Crea nuova regola",
+  "title_add_task" : "Crea nuova classifica",
+  "btn_publish" : "Pubblica",
+  "lbl_task_periodName" : "Nome del periodo"
 }

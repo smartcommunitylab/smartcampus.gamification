@@ -20,6 +20,7 @@
   "msg_no_customdata": "Nessun custom data per il giocatore",
   "msg_invalid_time": "Inserire un'ora valida",
   "msg_empty_fields": "Tutti i campi devono essere compilati",
+  "msg_rule_edited" : "Regola modificata con successo",
   "msg_rank_edited": "Classifica modificata con successo",
   "msg_rank_deleted": "Classifica eliminata con successo",
   "msg_rule_deleted": "Regola eliminata con successo",

@@ -22,5 +22,11 @@
   "msg_empty_fields": "All fields must be compiled",
   "msg_rule_edited" : "Operation success",
   "msg_rank_edited" : "Operation success",
+  "msg_rank_deleted": "Operation success",
+  "msg_rule_deleted": "Operation success",
+  "msg_action_deleted": "Operation success",
+  "msg_point_deleted": "Operation success",
+  "msg_badge_deleted": "Operation success",
+  "msg_challenge_deleted": "Operation success", 
   "msg_no_challenges" : "No challenges"
 }

@@ -153,8 +153,11 @@ public class DroolsEngine implements GameEngine {
 			GameConcept gc = iter.next();
 			if (gc instanceof ChallengeConcept) {
 				ChallengeConcept challenge = (ChallengeConcept) gc;
-				if (challenge.isCompleted() || challenge.getStart().after(now)
-						|| challenge.getEnd().before(now)) {
+				if (challenge.isCompleted()
+						|| (challenge.getStart() != null && challenge
+								.getStart().after(now))
+						|| (challenge.getEnd() != null && challenge.getEnd()
+								.before(now))) {
 					iter.remove();
 					archivedChallenges.add(gc);
 				}

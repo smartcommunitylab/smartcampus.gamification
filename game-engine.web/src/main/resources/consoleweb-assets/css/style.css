@@ -541,7 +541,7 @@ div.select select {
 	font-weight: bold;
 }
 
-.challenge-box .challenge-date {
+.detail-small, .challenge-box .challenge-date {
 	font-size: 85%;
 }
 
@@ -568,3 +568,11 @@ div.select select {
 	border-color: color: rgb(55,159,244);
 	cursor: pointer;
 }
+
+ul.point-monitor, ul.point-monitor > li {
+	list-style-type: none;
+}
+
+li.point-monitor {
+	border-bottom: 1px solid rgb(55,159,244);
+} 

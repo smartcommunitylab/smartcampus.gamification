@@ -84,5 +84,12 @@
   "tool_pause_game": "Ferma il gioco",
   "tool_active_game": "Riprendi il gioco",
   "lbl_stop_confirm": "Conferma terminazione",
-  "lbl_challenges" : "Modelli di Challenge"
+  "lbl_challenges" : "Modelli di Challenge",
+  "tool_view" : "Dettagli",
+  "tool_view_instances" : "Ultime 3 istanze",
+  "lbl_challenges" : "Sfide",
+  "lbl_customData" : "Dati Personalizzati",
+  "lbl_challenge_active" : "Attiva",
+  "lbl_challenge_completed" : "Completata",
+  "lbl_challenge_failed" : "Fallita"
 }

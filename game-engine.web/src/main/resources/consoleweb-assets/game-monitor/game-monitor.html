@@ -84,17 +84,47 @@
 											ng-click="isPointSectorVisible = !isPointSectorVisible"
 											class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 										<div class="section-title">
-											<h5 ng-click="isPointSectorVisible = !isPointSectorVisible">Punti</h5>
+											<h5 ng-click="isPointSectorVisible = !isPointSectorVisible">{{'labels:lbl_points'
+												| i18next}}</h5>
 										</div>
 									</div>
 									<span class="total">{{'labels:lbl_total' | i18next}}: <b>{{player.totalScore}}</b></span>
 									<div uib-collapse="isPointSectorVisible">
-										<table class="point-box">
-											<tr ng-repeat="elem in player.state['PointConcept']">
-												<td><span>{{elem.name}}:</span> <span class="value">{{elem.score}}</span>
-												</td>
-											</tr>
-										</table>
+										<div ng-repeat="elem in player.state['PointConcept']">
+											<span>{{elem.name}}:</span> <span class="value">{{elem.score}}</span>
+											<button type="button" class="btn btn-xs btn-warning"
+												ng-show="elem.periodKeys.length > 0"
+												data-ng-click="hidePeriods = !hidePeriods"
+												uib-tooltip="{{'labels:tool_view' | i18next}}">
+												<span class="glyphicon"
+													ng-class="{'glyphicon-eye-open': hidePeriods, 'glyphicon-eye-close': !hidePeriods}"></span>
+											</button>
+											<div uib-collapse="hidePeriods">
+												<ul class="point-monitor">
+													<li ng-repeat="period in elem.periodKeys"><span>{{period}}</span>
+														<button type="button" class="btn btn-xs btn-warning"
+															data-ng-click="hideInstances = !hideInstances"
+															uib-tooltip="{{'labels:tool_view_instances' | i18next}}">
+															<span class="glyphicon"
+																ng-class="{'glyphicon-eye-open': hideInstances, 'glyphicon-eye-close': !hideInstances}"></span>
+														</button>
+														<ul class="point-monitor" uib-collapse="hideInstances">
+															<li class="point-monitor"
+																ng-repeat="instance in elem.periods[period].instances | limitTo : limitPeriodInstances">
+																<div>
+																	start: <span class="detail-small">{{instance.start
+																		| date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+																</div>
+																<div>
+																	end: <span class="detail-small">{{instance.end |
+																		date: 'dd/MM/yyyy HH:mm:ss'}}</span>
+																</div>
+																<div>score: {{instance.score}}</div>
+															</li>
+														</ul></li>
+												</ul>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div class="col-md-8">
@@ -106,7 +136,8 @@
 											ng-click="isBadgeSectorVisible = !isBadgeSectorVisible"
 											class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 										<div class="section-title">
-											<h5 ng-click="isBadgeSectorVisible = !isBadgeSectorVisible">Badges</h5>
+											<h5 ng-click="isBadgeSectorVisible = !isBadgeSectorVisible">{{'labels:lbl_badges_collections'
+												| i18next}}</h5>
 										</div>
 									</div>
 									<div uib-collapse="isBadgeSectorVisible">
@@ -131,7 +162,8 @@
 											class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 										<div class="section-title">
 											<h5
-												ng-click="isChallengeSectorVisible = !isChallengeSectorVisible">Challenges</h5>
+												ng-click="isChallengeSectorVisible = !isChallengeSectorVisible">{{'labels:lbl_challenges'
+												| i18next}}</h5>
 										</div>
 									</div>
 									<div uib-collapse="isChallengeSectorVisible">
@@ -144,9 +176,9 @@
 												<span class="challenge-title">{{challenge.modelName}}</span>
 												<div class="challenge-status">
 													<span ng-show="challenge.active"
-														class="label label-success">Active</span><span
-														ng-show="challenge.completed" class="label label-success">Completed</span><span
-														ng-show="challenge.failed" class="label label-danger">Failed</span>
+														class="label label-success">{{'labels:lbl_challenge_active'| i18next }}</span><span
+														ng-show="challenge.completed" class="label label-success">{{'labels:lbl_challenge_completed'| i18next }}</span><span
+														ng-show="challenge.failed" class="label label-danger">{{'labels:lbl_challenge_failed'| i18next }}</span>
 												</div>
 												<div class="challenge-date">{{challenge.start | date:
 													'dd/MM/yyyy HH:mm:ss'}} - {{challenge.end | date:
@@ -169,8 +201,8 @@
 											class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 										<div class="section-title">
 											<h5
-												ng-click="isCustomdataSectorVisible = !isCustomdataSectorVisible">Custom
-												data</h5>
+												ng-click="isCustomdataSectorVisible = !isCustomdataSectorVisible">{{'labels:lbl_customData'
+												| i18next}}</h5>
 										</div>
 									</div>
 									<div uib-collapse="isCustomdataSectorVisible">

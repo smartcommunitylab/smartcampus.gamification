@@ -88,5 +88,12 @@
   "title_add_rule" : "Crea nuova regola",
   "title_add_task" : "Create nuova classica",
   "btn_publish" : "Pubblica",
-  "lbl_challenges" : "Modelli di Challenge"
+  "lbl_challenges" : "Modelli di Challenge",
+  "tool_view" : "Dettagli",
+  "tool_view_instances" : "Ultime 3 istanze",
+  "lbl_challenges" : "Sfide",
+  "lbl_customData" : "Dati Personalizzati",
+  "lbl_challenge_active" : "Attiva",
+  "lbl_challenge_completed" : "Completata",
+  "lbl_challenge_failed" : "Fallita"
 }

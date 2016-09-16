@@ -33,6 +33,7 @@ angular.module('gamificationEngine.monitor', [])
 				});
 
 				score.forEach(function (s) {
+					s.periodKeys = Object.keys(s.periods)
 					p.totalScore += s.score;
 				});
 				
@@ -60,6 +61,10 @@ angular.module('gamificationEngine.monitor', [])
 		}
 
 		$scope.hideDetails = true;
+		$scope.hidePeriods = true;
+		$scope.hideInstances = true;
+		
+		$scope.limitPeriodInstances = 3;
 
 
 		gamesFactory.getPlayersState($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {

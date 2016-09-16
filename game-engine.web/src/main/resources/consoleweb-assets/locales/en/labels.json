@@ -81,5 +81,14 @@
   "btn_publish" : "Publish",
   "lbl_total" : "Total score",
   "lbl_challenges" : "Challenge Models",
-  "lbl_task_periodName" : "Period name"
+  "lbl_task_periodName" : "Period name",
+  "tool_view" : "Details",
+  "tool_view_instances" : "last 3 instances",
+  "lbl_players_list": "Players",
+  "lbl_game" : "Game",
+  "lbl_challenges" : "Challenges",
+  "lbl_customData" : "Custom Data",
+  "lbl_challenge_active" : "Active",
+  "lbl_challenge_completed" : "Completed",
+  "lbl_challenge_failed" : "Failed"
 }

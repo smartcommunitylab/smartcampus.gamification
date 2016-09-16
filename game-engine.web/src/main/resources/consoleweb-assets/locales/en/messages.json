@@ -21,5 +21,6 @@
   "msg_invalid_time": "Insert a valid date",
   "msg_empty_fields": "All fields must be compiled",
   "msg_rule_edited" : "Operation success",
-  "msg_rank_edited" : "Operation success"
+  "msg_rank_edited" : "Operation success",
+  "msg_no_challenges" : "No challenges"
 }

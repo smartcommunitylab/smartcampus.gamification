@@ -287,9 +287,9 @@ public class GameManager implements GameService {
 				g.setConcepts(new HashSet<GameConcept>());
 			}
 			g.getConcepts().add(gc);
+			saveGameDefinition(g);
 		}
 
-		saveGameDefinition(g);
 	}
 
 	@Override

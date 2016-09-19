@@ -185,7 +185,7 @@ public class WsProxyController {
 		data.put("playerId", recommenderId);
 		data.put("data", new HashMap<String, Object>());
 		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationUrl + "execute", HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
-		logger.info("Sent app recommendation to gamification engine "+tmp_res.getStatusCode());
+		logger.info("Sent app recommendation to gamification engine for user " + recommenderId + ": " +tmp_res.getStatusCode());
 	}
 	
 	// Method for mobile player registration (in mobile app)

@@ -164,6 +164,10 @@ public class DroolsEngine implements GameEngine {
 			}
 
 		}
+
+		// ATTENTION: Drools modifies objects inserted in working memory by
+		// reference
+
 		cmds.add(CommandFactory.newInsertElements(filteredByChallenge));
 		cmds.add(CommandFactory.newInsert(state.getCustomData()));
 		cmds.add(CommandFactory.newFireAllRules());

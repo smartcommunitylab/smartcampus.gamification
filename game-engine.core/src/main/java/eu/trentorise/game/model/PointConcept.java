@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.Interval;
 import org.kie.api.definition.type.PropertyReactive;
 
@@ -476,4 +477,22 @@ public class PointConcept extends GameConcept {
 		this.executionMoment = executionMoment;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PointConcept) {
+			PointConcept toCompare = (PointConcept) obj;
+			return toCompare == this || name.equals(toCompare.name);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(11, 15).append(name).hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return String.format("{name: %s, score: %s}", name, score);
+	}
 }

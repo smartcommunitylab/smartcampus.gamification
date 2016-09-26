@@ -19,6 +19,8 @@ package eu.trentorise.game.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import eu.trentorise.game.model.core.GameConcept;
 
 public class BadgeCollectionConcept extends GameConcept {
@@ -40,5 +42,24 @@ public class BadgeCollectionConcept extends GameConcept {
 
 	public void setBadgeEarned(List<String> badgeEarned) {
 		this.badgeEarned = badgeEarned;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BadgeCollectionConcept) {
+			BadgeCollectionConcept toCompare = (BadgeCollectionConcept) obj;
+			return toCompare == this || name.equals(toCompare.name);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(13, 23).append(name).hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return String.format("{name:%s, badges: %s}", name, badgeEarned);
 	}
 }

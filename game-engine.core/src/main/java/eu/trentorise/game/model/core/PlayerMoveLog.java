@@ -20,19 +20,6 @@ public class PlayerMoveLog {
 	private Map<String, Double> scores;
 	private Map<String, String[]> badges;
 
-	// public PlayerMoveLogRepo(@JsonProperty String gameId,
-	// @JsonProperty String playerId, @JsonProperty Date moment,
-	// @JsonProperty Map<String, Object> inputData,
-	// @JsonProperty Map<String, Double> scores,
-	// @JsonProperty Map<String, String[]> badges) {
-	// this.gameId = gameId;
-	// this.playerId = playerId;
-	// this.moment = moment;
-	// this.inputData = inputData;
-	// this.scores = scores;
-	// this.badges = badges;
-	// }
-
 	public PlayerMoveLog(String gameId, String playerId, Date moment,
 			Map<String, Object> inputData, Map<String, Double> scores,
 			Map<String, String[]> badges) {
@@ -72,4 +59,10 @@ public class PlayerMoveLog {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return String
+				.format("{id:%s, gameId:%s, playerId:%s, moment:%s, inputData:%s, scores:%s, badges:%s}",
+						id, gameId, playerId, moment, inputData, scores, badges);
+	}
 }

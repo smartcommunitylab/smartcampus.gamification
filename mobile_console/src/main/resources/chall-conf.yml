@@ -144,3 +144,18 @@ descriptions:
     mobilitymode: cable
     description: Per vincere la sfida vale il numero di itinerari che utilizzano la funivia Trento-Sardagna pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
     description_eng: To win this challenge, we take into account the total number of itineraries you have done by Trento-Sardagna cable with ViaggiaTrento Play&Go and which you have taken in between the beginning and end time for this challenge.
+  - id: 30
+    type: KMETERS
+    mobilitymode: bike
+    description: Per vincere la sfida vale la somma dei Km viaggiati in bici o bike sharing nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
+    description_eng: To win this challenge, we take into account the total number of Km. you have travelled by bike or bike sharing during all itineraries that you have planned with ViaggiaTrento Play&Go and which you have taken in between the beginning and end time for this challenge.
+  - id: 31
+    type: KMETERS
+    mobilitymode: bikesharing
+    description: Per vincere la sfida vale la somma dei Km viaggiati in bike sharing nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
+    description_eng: To win this challenge, we take into account the total number of Km. you have travelled by bike sharing during all itineraries that you have planned with ViaggiaTrento Play&Go and which you have taken in between the beginning and end time for this challenge. 
+  - id: 32
+    type: KMETERS
+    mobilitymode: walk
+    description: Per vincere la sfida vale la somma dei Km camminati (solo tratte superiori a 250 metri) nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
+    description_eng: To win this challenge, we take into account the total number of Km. you have walked (with distance greater than 250m) during all itineraries that you have planned with ViaggiaTrento Play&Go and which you have taken in between the beginning and end time for this challenge.    

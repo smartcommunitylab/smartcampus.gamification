@@ -16,6 +16,8 @@
 
 package eu.trentorise.game.model.core;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -29,6 +31,12 @@ public abstract class GameConcept {
 	}
 
 	public GameConcept() {
+	}
+
+	public GameConcept(Map<String, Object> jsonProps) {
+		Object idField = jsonProps.get("id");
+		id = (idField != null) ? String.valueOf(idField) : null;
+		name = (String) jsonProps.get("name");
 	}
 
 	public String getId() {

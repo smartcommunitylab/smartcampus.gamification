@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
@@ -41,6 +42,7 @@ import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
+import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
@@ -63,6 +65,9 @@ public class GameManager implements GameService {
 
 	@Autowired
 	private RuleRepo ruleRepo;
+
+	@Autowired
+	private ChallengeModelRepo challengeModelRepo;
 
 	@PostConstruct
 	@SuppressWarnings("unused")
@@ -282,9 +287,9 @@ public class GameManager implements GameService {
 				g.setConcepts(new HashSet<GameConcept>());
 			}
 			g.getConcepts().add(gc);
+			saveGameDefinition(g);
 		}
 
-		saveGameDefinition(g);
 	}
 
 	@Override
@@ -332,5 +337,27 @@ public class GameManager implements GameService {
 		}
 		return result;
 
+	}
+
+	@Override
+	public ChallengeModel saveChallengeModel(String gameId, ChallengeModel model) {
+		model.setGameId(gameId);
+		return challengeModelRepo.save(model);
+	}
+
+	@Override
+	public boolean deleteChallengeModel(String gameId, String modelId) {
+		challengeModelRepo.delete(modelId);
+		return true;
+	}
+
+	@Override
+	public Set<ChallengeModel> readChallengeModels(String gameId) {
+		return challengeModelRepo.findByGameId(gameId);
+	}
+
+	@Override
+	public ChallengeModel readChallengeModel(String gameId, String modelId) {
+		return challengeModelRepo.findByGameIdAndId(gameId, modelId);
 	}
 }

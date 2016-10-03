@@ -24,7 +24,7 @@ import java.util.List;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 
 public class GreenGameTest extends GameTest {
 
@@ -83,17 +83,17 @@ public class GreenGameTest extends GameTest {
 						+ "/weekClassificationBadges.drl", "rules/" + GAME
 						+ "/finalClassificationBadges.drl"));
 
-		addGameTask(GAME, new ClassificationTask(null, 3, "green leaves",
+		addGameTask(GAME, new GeneralClassificationTask(null, 3, "green leaves",
 				"final classification green"));
-		addGameTask(GAME, new ClassificationTask(null, 3, "health",
+		addGameTask(GAME, new GeneralClassificationTask(null, 3, "health",
 				"final classification health"));
-		addGameTask(GAME, new ClassificationTask(null, 3, "p+r",
+		addGameTask(GAME, new GeneralClassificationTask(null, 3, "p+r",
 				"final classification p+r"));
-		addGameTask(GAME, new ClassificationTask(null, 1, "green leaves",
+		addGameTask(GAME, new GeneralClassificationTask(null, 1, "green leaves",
 				"week classification green"));
-		addGameTask(GAME, new ClassificationTask(null, 1, "health",
+		addGameTask(GAME, new GeneralClassificationTask(null, 1, "health",
 				"week classification health"));
-		addGameTask(GAME, new ClassificationTask(null, 1, "p+r",
+		addGameTask(GAME, new GeneralClassificationTask(null, 1, "p+r",
 				"week classification p+r"));
 	}
 

@@ -1,0 +1,76 @@
+<!--
+
+       Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+
+<br />
+<div class="row">
+	<div class="col-md-12 text-center">
+		<uib-alert ng-if="alerts.loadGameError" type="danger">{{'messages:msg_load_games_error' | i18next}}</uib-alert>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12 text-center">
+		<uib-alert ng-if="alerts.error" type="danger">{{'messages:msg_generic_error' | i18next}}</uib-alert>
+	</div>
+</div>
+<div class="row vertical-spacing">
+	<div class="col-md-12">
+		<button type="button" class="btn btn-lg btn-success btn-add" ng-click="goto('#/game/')">{{'btn_add_game' | i18next}}</button>
+		<hr/>
+	</div>
+</div>
+<!--
+
+Text will be soon placed in the middle of the panel-body
+
+-->
+<div class="row vertical-spacing">
+	<div class="col-md-4" ng-repeat="game in games">
+		<div class="game" ng-class="{'stopped': game.stopped}">
+			<h3 class="game-title" ng-click="goto('#/game/' + game.id)">{{game.name}}</h3>
+			<p><strong>gameId</strong>: {{game.id}}</p>
+			<p>
+				<strong>{{'labels:lbl_points' | i18next}}:</strong> {{game.pointConcept.length}}
+				<br/>
+				<strong>{{'labels:lbl_badges_collections' | i18next}}:</strong> {{game.badgeCollectionConcept.length}}
+			</p>
+			<hr/>
+			<!--  TO INTEGRATE
+			<span ng-if="!game.stopped" class="stop" ng-click="stopGame(game)">{{'labels:lbl_stop_game' | i18next}}</span>
+			-->
+			<div class="actions">
+				<!-- TO INTEGRATE
+				<button type="button" style="background:rgb(0,102,180)" class="btn btn-circle" ng-disabled="game.stopped" ng-click="cloneGame(game)" uib-tooltip="{{'labels:tool_clone_game' | i18next}}">
+					<img src="../img/clone_icon.png"/>
+				</button>
+				<button ng-if="game.active" type="button" class="btn btn-warning btn-circle" ng-disabled="game.stopped" ng-click="updateStatus(game)" uib-tooltip="{{'labels:tool_pause_game' | i18next}}">
+					<span class="glyphicon glyphicon-pause"></span>
+				</button>
+				<button ng-if="!game.active" type="button" class="btn btn-success btn-circle" ng-disabled="game.stopped" ng-click="updateStatus(game)" uib-tooltip="{{'labels:tool_active_game' | i18next}}">
+					<span class="glyphicon glyphicon-play"></span>
+				</button>
+				-->
+				<button type="button" style="background:rgb(0,139,125)" class="btn btn-circle" ng-disabled="game.stopped" ng-click="goto('#/game-monitor/' + game.id)" uib-tooltip="{{'labels:lbl_monitor_menu' | i18next}}">
+					<img ng-src="img/chart_icon.png"/>
+				</button>
+				<button type="button" class="btn btn-danger btn-circle" ng-click="deleteGame(game)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
+					<span class="glyphicon glyphicon-trash"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

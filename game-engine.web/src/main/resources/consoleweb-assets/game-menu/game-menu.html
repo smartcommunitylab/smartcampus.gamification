@@ -1,0 +1,26 @@
+<!--
+
+       Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+
+<ul class="nav nav-pills nav-stacked">
+	<!--<li data-role="presentation"><a href="javascript:void(0)" data-ng-click="openEditModal()">{{'labels:lbl_edit_game_menu' | i18next}}</a></li>-->
+	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'settings'}"><a href="javascript:void(0)" data-ng-click="goto('settings')">{{'labels:lbl_edit_game_menu' | i18next}}</a></li>
+	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'concepts'}"><a href="javascript:void(0)" data-ng-click="goto('concepts')">{{'labels:lbl_concepts_menu' | i18next}}</a></li>
+	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'actions'}"><a href="javascript:void(0)" data-ng-click="goto('actions')">{{'labels:lbl_actions_menu' | i18next}}</a></li>
+	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'rules'}"><a href="javascript:void(0)" data-ng-click="goto('rules')">{{'labels:lbl_rules_menu' | i18next}}</a></li>
+	<li data-role="presentation" data-ng-class="{'active' : menuItem == 'tasks'}"><a href="javascript:void(0)" data-ng-click="goto('tasks')">{{'labels:lbl_tasks_menu' | i18next}}</a></li>
+</ul>

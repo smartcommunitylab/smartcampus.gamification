@@ -20,19 +20,19 @@
 <html ng-app="gamificationEngine">
 
 <head>
-<meta lang="en">
-<meta charset="utf-8">
+	<meta lang="en">
+	<meta charset="utf-8">
 
-<!-- Single Page Application (SPA) - WEB APP -->
-<title>Gamification engine</title>
+	<!-- Single Page Application (SPA) - WEB APP -->
+	<title>Gamification engine</title>
 
-<!-- Cascading style sheets  (CSS) -->
-<link href="css/bootstrap.min.css" rel="stylesheet" />
-<link href="css/tabs-vertical.css" rel="stylesheet" />
-<link href="css/angular-toggle-switch.css" rel="stylesheet" />
-<link href="css/angular-toggle-switch-bootstrap.css" rel="stylesheet" />
-<link href="css/datetimepicker.css" rel="stylesheet" />
-<link href="css/style.css" rel="stylesheet" />
+	<!-- Cascading style sheets  (CSS) -->
+	<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="bower_components/bootstrap-vertical-tabs/bootstrap.vertical-tabs.min.css" rel="stylesheet" />
+	<link href="bower_components/angular-toggle-switch/angular-toggle-switch.css" rel="stylesheet" />
+	<link href="bower_components/angular-toggle-switch/angular-toggle-switch-bootstrap.css" rel="stylesheet" />
+	<link href="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
 
 </head>
 
@@ -40,17 +40,14 @@
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="row">
-				<a class="navbar-brand navbar-brand-bigger" data-ng-click="goHome()"
-					href="#/home">Gamification engine</a>
+				<a class="navbar-brand navbar-brand-bigger" data-ng-click="goHome()" href="#/home">Gamification engine</a>
+			</div>
+			<!--<div class="row">
+				<h4 style="display: block" data-ng-show="page === 'game'">{{'lbl_game_menu' | i18next}}</h4>
 			</div>
 			<div class="row">
-				<h4 style="display: block" data-ng-show="page == 'monitor'">{{'lbl_monitor_menu'
-					| i18next}}</h4>
-			</div>
-			<!--  <div class="pull-right">
-        <ul class="nav navbar-nav">
-        </ul>
-      </div> -->
+				<h4 style="display: block" data-ng-show="page == 'monitor'">{{'lbl_monitor_menu' | i18next}}</h4>
+			</div>-->
 		</div>
 	</div>
 	<div class="container">
@@ -64,21 +61,35 @@
 		</div>
 	</div>
 
-	<script src="js/libs/moment.min.js"></script>
+	<script src="bower_components/moment/moment.js"></script>
 	<!-- AngularJS -->
-	<script src="js/libs/angular.min.js"></script>
-	<script src="js/libs/angular-ui-router.min.js"></script>
-	<script src="js/libs/ui-bootstrap-tpls-0.11.0.min.js"></script>
-	<script src="js/libs/angular-toggle-switch.min.js"></script>
-	<script src="js/libs/datetimepicker.js"></script>
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+	<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+	<!--<script src="bower_components/angular-toggle-switch/angular-toggle-switch.min.js"></script>-->
+	<script src="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js"></script>
+
 	<!-- i18next -->
-	<script src="js/libs/i18next-1.7.3.min.js"></script>
-	<script src="js/libs/ng-i18next.min.js"></script>
+	<script src="bower_components/i18next/i18next.min.js"></script>
+	<script src="bower_components/ng-i18next/dist/ng-i18next.min.js"></script>
+
 	<!-- Custom -->
-	<script src="js/app.js"></script>
-	<script src="js/controllers.js"></script>
-	<script src="js/modalControllers.js"></script>
-	<script src="js/services.js"></script>
+	<script src="app.js"></script>
+	<script src="modals/modals-controllers.js"></script>
+	<script src="main.js"></script>
+	<script src="actions/actions.js"></script>
+	<script src="game/game.js"></script>
+	<script src="concepts/concepts.js"></script>
+	<script src="concepts/challenge.js"></script>
+	<script src="game-monitor/game-monitor.js"></script>
+	<script src="home/home.js"></script>
+	<script src="login/login.js"></script>
+	<script src="rules/rules.js"></script>
+	<script src="tasks/tasks.js"></script>
+	<script src="settings/settings.js"></script>
+	<script src="services.js"></script>
+	<script src="i18next.js"></script>
 </body>
 
 </html>

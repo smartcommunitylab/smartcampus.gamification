@@ -47,7 +47,7 @@ public abstract class TaskDataManager implements TaskService {
 
 	public List<Object> readData(String gameId, String taskName) {
 		TaskData data = taskDataRepo.findOne(generateId(gameId, taskName));
-		if (data.getGameId().equals(gameId)
+		if (data != null && data.getGameId().equals(gameId)
 				&& data.getTaskName().equals(taskName)) {
 			return Arrays.asList(data.getData());
 		} else {
@@ -59,4 +59,8 @@ public abstract class TaskDataManager implements TaskService {
 		return gameId + ":" + taskName;
 	}
 
+	@Override
+	public void deleteData(String gameId, String taskName) {
+		taskDataRepo.delete(generateId(gameId, taskName));
+	}
 }

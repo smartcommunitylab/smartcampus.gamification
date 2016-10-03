@@ -16,6 +16,7 @@
 
 package eu.trentorise.game.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 
@@ -51,6 +53,10 @@ public interface PlayerService {
 
 	public List<String> readPlayers(String gameId);
 
+	/*
+	 * TEAM METHODS
+	 */
+
 	public TeamState saveTeam(TeamState team);
 
 	public List<TeamState> readTeams(String gameId);
@@ -61,6 +67,13 @@ public interface PlayerService {
 
 	public TeamState addToTeam(String gameId, String teamId, String playerId);
 
-	public TeamState removeFromTeam(String gameId, String teamId, String playerId);
+	public TeamState removeFromTeam(String gameId, String teamId,
+			String playerId);
 
+	/*
+	 * CHALLENGE METHODS
+	 */
+
+	public ChallengeConcept assignChallenge(String gameId, String playerId,
+			String modelName, String instanceName, Map<String, Object> data,Date start, Date end);
 }

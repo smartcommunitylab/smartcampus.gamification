@@ -32,9 +32,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
-import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
@@ -49,7 +49,7 @@ import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.utils.Converter;
 
 @RestController
@@ -235,8 +235,9 @@ public class ConsoleController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task")
-	public TaskDTO addClassificationTask(@PathVariable String gameId,
-			@RequestBody TaskDTO task) {
+	public GeneralClassificationDTO addClassificationTask(
+			@PathVariable String gameId,
+			@RequestBody GeneralClassificationDTO task) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -249,7 +250,8 @@ public class ConsoleController {
 			if (g.getTasks() == null) {
 				g.setTasks(new HashSet<GameTask>());
 			}
-			ClassificationTask t = converter.convertClassificationTask(task);
+			GeneralClassificationTask t = converter
+					.convertClassificationTask(task);
 			t.setName(task.getName());
 			if (g.getTasks().contains(t)) {
 				throw new IllegalArgumentException("task name already exist");
@@ -267,7 +269,7 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task/del")
 	public void deleteClassificationTask(@PathVariable String gameId,
-			@RequestBody TaskDTO task) {
+			@RequestBody GeneralClassificationDTO task) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -277,7 +279,7 @@ public class ConsoleController {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
 			if (g.getTasks() != null) {
-				ClassificationTask t = converter
+				GeneralClassificationTask t = converter
 						.convertClassificationTask(task);
 				t.setName(task.getName());
 				g.getTasks().remove(t);
@@ -291,7 +293,7 @@ public class ConsoleController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/task")
 	public void editClassificationTask(@PathVariable String gameId,
-			@RequestBody TaskDTO task) {
+			@RequestBody GeneralClassificationDTO task) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -302,11 +304,11 @@ public class ConsoleController {
 		if (g != null) {
 			if (g.getTasks() != null) {
 				for (GameTask gt : g.getTasks()) {
-					if (gt instanceof ClassificationTask
+					if (gt instanceof GeneralClassificationTask
 							&& gt.getName().equals(task.getName())) {
-						ClassificationTask t = converter
+						GeneralClassificationTask t = converter
 								.convertClassificationTask(task);
-						ClassificationTask ct = (ClassificationTask) gt;
+						GeneralClassificationTask ct = (GeneralClassificationTask) gt;
 						ct.setItemsToNotificate(t.getItemsToNotificate());
 						ct.setClassificationName(t.getClassificationName());
 						ct.setItemType(t.getItemType());

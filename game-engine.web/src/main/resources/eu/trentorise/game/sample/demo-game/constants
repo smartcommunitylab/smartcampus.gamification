@@ -11,6 +11,7 @@
 #
 # supported VALUE_TYPE
 # Integer (i.e. var=1)
+# Long (i.e. var=25l or var=25L)
 # Double  (i.e. var=2.3)
 # String  (i.e. var=park)
 # java.util.ArrayList (i.e var=park,street,bikestation)

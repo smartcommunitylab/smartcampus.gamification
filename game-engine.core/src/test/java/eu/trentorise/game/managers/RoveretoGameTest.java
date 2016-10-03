@@ -48,7 +48,7 @@ import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.PlayerService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
@@ -326,33 +326,33 @@ public class RoveretoGameTest {
 
 	private void launchTaskExecution() {
 
-		GameTask t = new ClassificationTask(null, 3, "green leaves",
+		GameTask t = new GeneralClassificationTask(null, 3, "green leaves",
 				"final classification green");
 		t.execute((GameContext) provider.getApplicationContext().getBean(
 				"gameCtx", GAME, t));
 
-		t = new ClassificationTask(null, 1, "green leaves",
+		t = new GeneralClassificationTask(null, 1, "green leaves",
 				"week classification green");
 		t.execute((GameContext) provider.getApplicationContext().getBean(
 				"gameCtx", GAME, t));
 
-		t = new ClassificationTask(null, 1, "health",
+		t = new GeneralClassificationTask(null, 1, "health",
 				"week classification health");
 		t.execute((GameContext) provider.getApplicationContext().getBean(
 				"gameCtx", GAME, t));
 
-		t = new ClassificationTask(null, 1, "p+r", "week classification p+r");
+		t = new GeneralClassificationTask(null, 1, "p+r", "week classification p+r");
 		t.execute((GameContext) provider.getApplicationContext().getBean(
 				"gameCtx", GAME, t));
 
 		// final classification
 
-		t = new ClassificationTask(null, 3, "health",
+		t = new GeneralClassificationTask(null, 3, "health",
 				"final classification health");
 		t.execute((GameContext) provider.getApplicationContext().getBean(
 				"gameCtx", GAME, t));
 
-		t = new ClassificationTask(null, 3, "p+r", "final classification p+r");
+		t = new GeneralClassificationTask(null, 3, "p+r", "final classification p+r");
 		t.execute((GameContext) provider.getApplicationContext().getBean(
 				"gameCtx", GAME, t));
 	}
@@ -529,37 +529,37 @@ public class RoveretoGameTest {
 		// final classifications
 		TaskSchedule schedule = new TaskSchedule();
 		schedule.setCronExpression("0 20 * * * *");
-		ClassificationTask task1 = new ClassificationTask(schedule, 3,
+		GeneralClassificationTask task1 = new GeneralClassificationTask(schedule, 3,
 				"green leaves", "final classification green");
 		game.getTasks().add(task1);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task2 = new ClassificationTask(schedule, 3,
+		GeneralClassificationTask task2 = new GeneralClassificationTask(schedule, 3,
 				"health", "final classification health");
 		game.getTasks().add(task2);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task3 = new ClassificationTask(schedule, 3, "p+r",
+		GeneralClassificationTask task3 = new GeneralClassificationTask(schedule, 3, "p+r",
 				"final classification p+r");
 		game.getTasks().add(task3);
 
 		// week classifications // schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task4 = new ClassificationTask(schedule, 1,
+		GeneralClassificationTask task4 = new GeneralClassificationTask(schedule, 1,
 				"green leaves", "week classification green");
 		game.getTasks().add(task4);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task5 = new ClassificationTask(schedule, 1,
+		GeneralClassificationTask task5 = new GeneralClassificationTask(schedule, 1,
 				"health", "week classification health");
 		game.getTasks().add(task5);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		ClassificationTask task6 = new ClassificationTask(schedule, 1, "p+r",
+		GeneralClassificationTask task6 = new GeneralClassificationTask(schedule, 1, "p+r",
 				"week classification p+r");
 		game.getTasks().add(task6);
 

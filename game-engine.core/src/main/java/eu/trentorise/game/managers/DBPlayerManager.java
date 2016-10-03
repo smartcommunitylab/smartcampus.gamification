@@ -17,6 +17,8 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +40,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
@@ -64,6 +69,9 @@ public class DBPlayerManager implements PlayerService {
 
 	@Autowired
 	private GameService gameSrv;
+
+	@Autowired
+	private ChallengeModelRepo challengeModelRepo;
 
 	public PlayerState loadState(String gameId, String playerId, boolean upsert) {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo
@@ -343,6 +351,56 @@ public class DBPlayerManager implements PlayerService {
 		// data
 		StatePersistence state = persistCustomData(gameId, playerId, data);
 		return new PlayerState(state);
+
+	}
+
+	@Override
+	public ChallengeConcept assignChallenge(String gameId, String playerId,
+			String modelName, String instanceName, Map<String, Object> data,
+			Date start, Date end) {
+
+		if (playerId == null) {
+			throw new IllegalArgumentException(
+					String.format("playerId cannot be null"));
+		}
+
+		if (modelName == null) {
+			throw new IllegalArgumentException(
+					String.format("modelName cannot be null"));
+		}
+		ChallengeModel model = challengeModelRepo.findByGameIdAndName(gameId,
+				modelName);
+		if (model == null) {
+			throw new IllegalArgumentException(String.format(
+					"model %s not exist in game %s", modelName, gameId));
+		}
+
+		if (data == null) {
+			data = new HashMap<String, Object>();
+		} else {
+			for (String var : data.keySet()) {
+				if (!model.getVariables().contains(var)) {
+					throw new IllegalArgumentException(String.format(
+							"field %s not present in model %s", var, modelName));
+				}
+			}
+		}
+
+		ChallengeConcept challenge = new ChallengeConcept();
+		challenge.setModelName(modelName);
+		challenge.setFields(data);
+		challenge.setStart(start);
+		challenge.setEnd(end);
+		challenge.setName(instanceName);
+
+		// save in playerState
+		PlayerState state = loadState(gameId, playerId, true);
+
+		state.getState().add(challenge);
+		persistConcepts(gameId, playerId,
+				new StatePersistence(state).getConcepts());
+
+		return challenge;
 
 	}
 }

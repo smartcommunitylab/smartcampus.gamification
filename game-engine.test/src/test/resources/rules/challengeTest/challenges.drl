@@ -1,0 +1,13 @@
+package eu.trentorise.game.model
+
+rule "challenge"
+when
+    $challenge : ChallengeConcept(modelName == "score", $target: fields["target"], $bonusScore: fields["bonusScore"], $bonusPointType : fields["bonusPointType"])
+    $pc : PointConcept(name == (String) $bonusPointType, score > (Integer) $target)
+then
+	log("Challenge winner");
+	$challenge.completed();
+	$pc.increment((Double) $bonusScore);
+    update($pc);
+end
+

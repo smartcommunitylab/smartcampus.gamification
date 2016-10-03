@@ -20,6 +20,9 @@ import eu.trentorise.game.model.core.Notification;
 
 public class BadgeNotification extends Notification {
 
+	private String badge;
+	private String collectionName;
+
 	public BadgeNotification() {
 		super();
 	}
@@ -29,7 +32,12 @@ public class BadgeNotification extends Notification {
 		this.badge = badge;
 	}
 
-	private String badge;
+	public BadgeNotification(String gameId, String playerId,
+			String collectionName, String badge) {
+		super(gameId, playerId);
+		this.badge = badge;
+		this.collectionName = collectionName;
+	}
 
 	public String getBadge() {
 		return badge;
@@ -41,8 +49,17 @@ public class BadgeNotification extends Notification {
 
 	@Override
 	public String toString() {
-		return String.format("[gameId=%s, playerId=%s, badge=%s]", getGameId(),
-				getPlayerId(), badge);
+		return String.format(
+				"[gameId=%s, playerId=%s, collectionName=%s, badge=%s]",
+				getGameId(), getPlayerId(), collectionName, badge);
+	}
+
+	public String getCollectionName() {
+		return collectionName;
+	}
+
+	public void setCollectionName(String collectionName) {
+		this.collectionName = collectionName;
 	}
 
 }

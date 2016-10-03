@@ -1,0 +1,27 @@
+package eu.trentorise.game.model
+
+rule "zero_impact_ch_trace"
+lock-on-active
+when 
+	/* Predicate to decide whether it is a 0-impact itinerary */
+	InputData (($walk : data["walkDistance"] != null || $bike : data["bikeDistance"] != null) &&
+		($bus : data["busDistance"] == null || ((Double)$bus)==0) && 
+		($train : data["trainDistance"] == null || ((Double)$train)==0) &&
+		($car : data["carDistance"]==null || ((Double)$car)==0))
+	$challenge : ChallengeConcept( modelName == "zeroImpact", $counter: fields["counter"])
+then
+	log('zero_impact_ch_trace');
+	$challenge.getFields().put("counter", (Integer) $counter + 1);
+	update($challenge); 
+end
+
+rule 'zero_impact_ch_check'
+when
+	$challenge : ChallengeConcept( modelName == "zeroImpact", (Integer) fields["counter"] == (Integer) fields["target"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"] )
+	$pc : PointConcept(name == (String) $bonusPointType)
+then
+	log('zero_impact COMPLETED');
+	$challenge.completed();
+	$pc.increment((Double) $bonusScore);
+	update($pc); 
+end

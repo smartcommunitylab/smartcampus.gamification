@@ -93,6 +93,8 @@ public class Game {
 	}
 
 	public boolean isTerminated() {
+		terminated = terminated || expiration > 0
+				&& expiration < System.currentTimeMillis();
 		return terminated;
 	}
 

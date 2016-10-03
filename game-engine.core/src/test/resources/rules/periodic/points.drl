@@ -1,0 +1,36 @@
+package eu.trentorise.game.model
+
+rule "listen increment"
+when
+    $pc : PointConcept(name == "green") @watch(score)
+then
+    
+    log("listen score: " + $pc.getPeriodCurrentScore(0));
+end
+
+rule "update green points"
+when
+    InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"],$train : data["trainDistance"])
+    $pc : PointConcept(name == "green")
+then
+	log("apply \'update green points\'");
+	Double bike = $bike != null ? (Double) $bike : 0;
+	Double walk = $walk != null ? (Double) $walk : 0;
+    Double bus = $bus != null ? (Double) $bus : 0;
+    Double train = $train != null ? (Double) $train : 0;
+
+	Long dist1 = Math.round(bike + walk);
+	//log("dist1 " + dist1);
+	Long dist2 = Math.round(bus + train);
+    //log("dist2 " + dist2);
+    if(dist1 >= 2) {
+    	modify($pc){ setScore($pc.getScore() + 2 * dist1) }
+    	//$pc.setScore($pc.getScore() + 2 * dist1);
+    	//update($pc);
+    }
+    log("Score: " + $pc.getScore());
+end
+
+
+
+

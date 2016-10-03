@@ -1,0 +1,23 @@
+package eu.trentorise.game.model
+
+
+rule "update green points"
+when
+    InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"],$train : data["trainDistance"])
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'update green points\'");
+	Double bike = $bike != null ? (Double) $bike : 0;
+	Double walk = $walk != null ? (Double) $walk : 0;
+    Double bus = $bus != null ? (Double) $bus : 0;
+    Double train = $train != null ? (Double) $train : 0;
+
+	Long dist1 = Math.round(bike + walk);
+	//log("dist1 " + dist1);
+	Long dist2 = Math.round(bus + train);
+    //log("dist2 " + dist2);
+    
+    $pc.increment(2d * dist1);
+    update($pc);
+end
+

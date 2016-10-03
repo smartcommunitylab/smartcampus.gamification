@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Rule;
@@ -55,4 +56,12 @@ public interface GameService {
 	public void addConceptInstance(String gameId, GameConcept gc);
 
 	public Set<GameConcept> readConceptInstances(String gameId);
+
+	public ChallengeModel saveChallengeModel(String gameId, ChallengeModel model);
+
+	public boolean deleteChallengeModel(String gameId, String modelId);
+
+	public Set<ChallengeModel> readChallengeModels(String gameId);
+
+	public ChallengeModel readChallengeModel(String gameId, String modelId);
 }

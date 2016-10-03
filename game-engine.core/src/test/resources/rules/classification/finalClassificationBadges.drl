@@ -1,0 +1,172 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.task.Classification;
+
+
+/* ***************************************************************************
+GREEN FINAL CLASSIFICATION
+  
+*************************************************************************** */
+rule "final classification gold badge green d1"
+	salience -1000
+when
+	$c : Classification( name == 'final classification green', position == 1, classificationRunNumber == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green-1')
+then
+	log("apply \'gold-medal-green badge-1\'");
+	$bc.getBadgeEarned().add('gold-medal-green-1');
+	insert( new BadgeNotification($gameId,$playerId,'gold-medal-green-1'));
+	update( $bc );
+end
+
+rule "final classification gold badge green d2"
+	salience -1000
+when
+	$c : Classification( name == 'final classification green', position == 1, classificationRunNumber == 2)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green-2')
+then
+	log("apply \'gold-medal-green-2 badge\'");
+	$bc.getBadgeEarned().add('gold-medal-green-2');
+	insert( new BadgeNotification($gameId,$playerId,'gold-medal-green-2'));
+	update( $bc );
+end
+
+
+rule "final classification gold badge green d3"
+	salience -1000
+when
+	$c : Classification( name == 'final classification green', position == 1, classificationRunNumber == 3)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green-3')
+then
+	log("apply \'gold-medal-green-3 badge\'");
+	$bc.getBadgeEarned().add('gold-medal-green-3');
+	insert( new BadgeNotification($gameId,$playerId,'gold-medal-green-3'));
+	update( $bc );
+end
+
+rule "final classification silver badge green"
+	salience -1000
+when
+	Classification( name == 'final classification green', position == 2)	
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'silver-medal-green')
+then
+	log("apply \'silver-medal-green badge\'");
+	$bc.getBadgeEarned().add('silver-medal-green');
+	insert( new BadgeNotification($gameId,$playerId,'silver-medal-green'));
+	update( $bc );
+end
+
+rule "final classification bronze badge green"
+	salience -1000
+when
+	Classification( name == 'final classification green', position == 3)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'bronze-medal-green')
+then
+	log("apply \'bronze-medal-green badge\'");
+	$bc.getBadgeEarned().add('bronze-medal-green');
+	insert( new BadgeNotification($gameId,$playerId,'bronze-medal-green'));
+	update( $bc );
+end
+
+/* ***************************************************************************
+HEALTH FINAL CLASSIFICATION
+  
+*************************************************************************** */
+rule "final classification gold badge health"
+	salience -1000
+when
+	Classification( name == 'final classification health', position == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'gold-medal-health')
+then
+	log("apply \'gold-medal-health badge\'");
+	$bc.getBadgeEarned().add('gold-medal-health');
+	insert( new BadgeNotification($gameId,$playerId,'gold-medal-health'));
+	update( $bc );
+end
+
+rule "final classification silver badge health"
+	salience -1000
+when
+    Classification( name == 'final classification health', position == 2)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'silver-medal-health')
+then
+	log("apply \'silver-medal-health badge\'");
+	$bc.getBadgeEarned().add('silver-medal-health');
+	insert( new BadgeNotification($gameId,$playerId,'silver-medal-health'));
+	update( $bc );
+end
+
+rule "final classification bronze badge health"
+	salience -1000
+when
+    Classification( name == 'final classification health', position == 3)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'bronze-medal-health')
+then
+	log("apply \'bronze-medal-health badge\'");
+	$bc.getBadgeEarned().add('bronze-medal-health');
+	insert( new BadgeNotification($gameId,$playerId,'bronze-medal-health'));
+	update( $bc );
+end
+
+/* ***************************************************************************
+P+R FINAL CLASSIFICATION
+  
+*************************************************************************** */
+rule "final classification gold badge p+r"
+	salience -1000
+when
+    Classification( name == 'final classification p+r', position == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'gold-medal-pr')
+then
+	log("apply \'gold-medal-pr badge\'");
+	$bc.getBadgeEarned().add('gold-medal-pr');
+	insert( new BadgeNotification($gameId,$playerId,'gold-medal-pr'));
+	update( $bc );
+end
+
+rule "final classification silver badge p+r"
+	salience -1000
+when
+    Classification( name == 'final classification p+r', position == 2)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'silver-medal-pr')
+then
+	log("apply \'silver-medal-pr badge\'");
+	$bc.getBadgeEarned().add('silver-medal-pr');
+	insert( new BadgeNotification($gameId,$playerId,'silver-medal-pr'));
+	update( $bc );
+end
+
+rule "final classification bronze badge p+r"
+	salience -1000
+when
+    Classification( name == 'final classification p+r', position == 3)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'bronze-medal-pr')
+then
+	log("apply \'bronze-medal-pr badge\'");
+	$bc.getBadgeEarned().add('bronze-medal-pr');
+	insert( new BadgeNotification($gameId,$playerId,'bronze-medal-pr'));
+	update( $bc );
+end

@@ -1,0 +1,74 @@
+<!--
+
+       Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+
+<div data-ng-controller="ActionsCtrl">
+	<form data-role="form">
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<uib-alert ng-if="!!alerts.genericError" type="danger">{{alerts.genericError | i18next}}</uib-alert>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<uib-alert ng-if="!!alerts.actionDeleted" type="success" close="$scope.alerts.actionDeleted = false">{{'messages:msg_action_deleted' | i18next}}</uib-alert>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<uib-alert ng-if="!!alerts.actionError" type="danger">{{alerts.actionError | i18next}}</uib-alert>
+				</div>
+			</div>
+			<div class="form-group" ng-class="{'has-error': alerts.actionError}">
+				<label for="action">{{'labels:lbl_name' | i18next}}</label>
+				<div class="clearfix"></div>
+				<input type="text" class="form-control text" id="action" data-ng-model="input.actionName" placeholder="{{'labels:lbl_enter_new_name' | i18next}}" required autofocus />
+				<button type="button" class="btn btn-success btn-circle" data-ng-click="addAction()" uib-tooltip="{{'labels:tool_add' | i18next}}" ng-disabled="disabled">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+			</div>
+		</div>
+		<!--<div class="modal-footer clearfix">
+			<button type="reset" class="btn btn-default" data-ng-click="cancel()" ng-disabled="disabled">{{'labels:btn_cancel' | i18next}}</button>
+			<button type="submit" class="btn btn-primary" data-ng-click="ok()" ng-disabled="disabled">{{'labels:btn_ok' | i18next}}</button>
+		</div>-->
+	</form>
+	<hr/>
+	<h5>{{'labels:lbl_actions_menu' | i18next}}</h5>
+	<!--<div class="row top-margined">
+		<button type="button" class="btn btn-success btn-circle pull-right" style="margin-right: 0.6em" data-ng-click="openAddActionModal()" uib-tooltip="{{'labels:tool_add' | i18next}}">
+			<span class="glyphicon glyphicon-plus"></span>
+		</button>
+	</div>-->
+	<div class="row vertical-spacing">
+		<div class="table-actions col-md-12">
+			<table class="table table-striped table-bordered">
+				<tbody>
+					<tr data-ng-repeat="action in game.actions track by $index">
+						<td>
+							{{action}}
+							<button type="button" class="btn btn-danger btn-circle pull-right" data-ng-click="deleteAction(action)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

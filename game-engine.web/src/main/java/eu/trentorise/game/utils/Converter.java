@@ -22,13 +22,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.bean.ClassificationDTO;
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.GeneralClassificationDTO;
+import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
-import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
@@ -40,14 +45,20 @@ import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.services.GameService;
-import eu.trentorise.game.task.ClassificationTask;
+import eu.trentorise.game.task.GeneralClassificationTask;
+import eu.trentorise.game.task.IncrementalClassificationTask;
 
 @Component
 public class Converter {
 
 	@Autowired
 	private GameService gameSrv;
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(Converter.class);
 
 	public GameDTO convertGame(Game game) {
 		GameDTO gDTO = null;
@@ -100,9 +111,15 @@ public class Converter {
 			}
 
 			if (game.getTasks() != null) {
-				gDTO.setClassificationTask(new HashSet<ClassificationTask>());
+				gDTO.setClassificationTask(new HashSet<ClassificationDTO>());
 				for (GameTask gt : game.getTasks()) {
-					gDTO.getClassificationTask().add((ClassificationTask) gt);
+					ClassificationDTO c = null;
+					if (gt instanceof GeneralClassificationTask) {
+						c = convertClassificationTask((GeneralClassificationTask) gt);
+					} else {
+						c = convertClassificationTask((IncrementalClassificationTask) gt);
+					}
+					gDTO.getClassificationTask().add(c);
 				}
 			}
 		}
@@ -139,16 +156,26 @@ public class Converter {
 
 		if (game.getClassificationTask() != null) {
 			g.setTasks(new HashSet<GameTask>());
-			g.getTasks().addAll(game.getClassificationTask());
+			for (ClassificationDTO c : game.getClassificationTask()) {
+				if (c instanceof GeneralClassificationDTO) {
+					g.getTasks()
+							.add(convertClassificationTask((GeneralClassificationDTO) c));
+				} else {
+					g.getTasks()
+							.add(convertClassificationTask((IncrementalClassificationDTO) c));
+
+				}
+			}
 		}
 
 		return g;
 	}
 
-	public TaskDTO convertClassificationTask(ClassificationTask t) {
-		TaskDTO task = null;
+	public GeneralClassificationDTO convertClassificationTask(
+			GeneralClassificationTask t) {
+		GeneralClassificationDTO task = null;
 		if (t != null) {
-			task = new TaskDTO();
+			task = new GeneralClassificationDTO();
 			task.setClassificationName(t.getClassificationName());
 			task.setCronExpression(t.getSchedule() != null ? t.getSchedule()
 					.getCronExpression() : null);
@@ -159,10 +186,11 @@ public class Converter {
 		return task;
 	}
 
-	public ClassificationTask convertClassificationTask(TaskDTO t) {
-		ClassificationTask task = null;
+	public GeneralClassificationTask convertClassificationTask(
+			GeneralClassificationDTO t) {
+		GeneralClassificationTask task = null;
 		if (t != null) {
-			task = new ClassificationTask();
+			task = new GeneralClassificationTask();
 			task.setClassificationName(t.getClassificationName());
 			if (t.getCronExpression() != null) {
 				TaskSchedule sched = new TaskSchedule();
@@ -174,6 +202,62 @@ public class Converter {
 			task.setName(t.getName());
 		}
 		return task;
+	}
+
+	public IncrementalClassificationTask convertClassificationTask(
+			IncrementalClassificationDTO t) {
+		IncrementalClassificationTask task = null;
+		if (t != null) {
+			Set<GameConcept> concepts = null;
+			if (t.getGameId() != null) {
+				concepts = gameSrv.readConceptInstances(t.getGameId());
+			} else {
+				logger.warn("Try to convert IncrementalClassificationDTO with null gameId field");
+				concepts = new HashSet<>();
+			}
+
+			PointConcept pc = null;
+			for (GameConcept gc : concepts) {
+				if (gc instanceof PointConcept
+						&& gc.getName().equals(t.getItemType())) {
+					pc = (PointConcept) gc;
+				}
+			}
+
+			if (StringUtils.isBlank(t.getDelayUnit())) {
+				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
+						t.getClassificationName());
+			} else {
+				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
+						t.getClassificationName(), new TimeInterval(
+								t.getDelayValue(), TimeUnit.valueOf(t
+										.getDelayUnit())));
+			}
+			task.setItemsToNotificate(t.getItemsToNotificate());
+			task.setName(t.getName());
+		}
+		return task;
+	}
+
+	public IncrementalClassificationDTO convertClassificationTask(
+			IncrementalClassificationTask classification) {
+		IncrementalClassificationDTO result = null;
+		if (classification != null) {
+			result = new IncrementalClassificationDTO();
+			result.setClassificationName(classification.getClassificationName());
+			result.setItemType(classification.getPointConceptName());
+			result.setPeriodName(classification.getPeriodName());
+			result.setItemsToNotificate(classification.getItemsToNotificate());
+			result.setName(classification.getName());
+			if (classification.getSchedule().getDelay() != null) {
+				result.setDelayValue(classification.getSchedule().getDelay()
+						.getValue());
+				result.setDelayUnit(classification.getSchedule().getDelay()
+						.getUnit().toString());
+			}
+		}
+
+		return result;
 	}
 
 	public PlayerState convertPlayerState(PlayerStateDTO ps) {

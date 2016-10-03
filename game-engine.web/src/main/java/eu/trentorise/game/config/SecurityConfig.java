@@ -62,6 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/console/**")
 				.access("hasRole('ROLE_ADMIN')").antMatchers("/gengine/**")
 				.access("hasRole('ROLE_ADMIN')").antMatchers("/consoleweb/**")
+				.access("hasRole('ROLE_ADMIN')").antMatchers("/model/**")
 				.access("hasRole('ROLE_ADMIN')").and().httpBasic();
 
 		// disable csrf permits POST http call to ConsoleController

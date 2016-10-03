@@ -7,6 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,6 +17,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,6 +53,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.trentorise.smartcampus.gamification_web.service.ChallengesUtils;
 import eu.trentorise.smartcampus.gamification_web.service.EmailService;
+import eu.trentorise.smartcampus.gamification_web.service.EncryptDecrypt;
 import eu.trentorise.smartcampus.gamification_web.service.StatusUtils;
 import eu.trentorise.smartcampus.aac.AACException;
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
@@ -460,7 +467,8 @@ public class PortalController extends SCController{
 	// Here I insert a task that invoke the WS notification
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
 	@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 17:00 PM
-	public synchronized void checkNotification() throws IOException {
+	public synchronized void checkNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
+		EncryptDecrypt cryptUtils = new EncryptDecrypt();
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
@@ -543,7 +551,19 @@ public class PortalController extends SCController{
 				}
 					
 				if(p.isSendMail()){
-					String unsubcribionLink = mainURL + "/out/rest/unsubscribeMail/" + p.getSocialId();
+					String encriptedId = "";
+					try {
+						encriptedId = cryptUtils.encrypt(p.getSocialId());
+					} catch (InvalidKeyException e1) {
+						logger.error("Errore in socialId encripting: " + e1.getMessage());
+					} catch (InvalidAlgorithmParameterException e2) {
+						logger.error("Errore in socialId encripting: " + e2.getMessage());
+					} catch (BadPaddingException e3) {
+						logger.error("Errore in socialId encripting: " + e3.getMessage());
+					} catch (IllegalBlockSizeException e4) {
+						logger.error("Errore in socialId encripting: " + e4.getMessage());
+					}
+					String unsubcribionLink = mainURL + "/out/rest/unsubscribeMail/?socialId=" + encriptedId;	//p.getSocialId();
 					//ArrayList<State> states = null;
 					List<PointConcept> states = null;
 					ArrayList<Notification> notifications = null;
@@ -673,7 +693,8 @@ public class PortalController extends SCController{
 	
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
 	//@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
-	public synchronized void checkWinnersNotification() throws IOException {
+	public synchronized void checkWinnersNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
+		EncryptDecrypt cryptUtils = new EncryptDecrypt();
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
@@ -750,7 +771,19 @@ public class PortalController extends SCController{
 			}
 			
 			if(p.isSendMail()){
-				String unsubcribionLink = mainURL + "/out/rest/unsubscribeMail/" + p.getSocialId();
+				String encriptedId = "";
+				try {
+					encriptedId = cryptUtils.encrypt(p.getSocialId());
+				} catch (InvalidKeyException e1) {
+					logger.error("Errore in socialId encripting: " + e1.getMessage());
+				} catch (InvalidAlgorithmParameterException e2) {
+					logger.error("Errore in socialId encripting: " + e2.getMessage());
+				} catch (BadPaddingException e3) {
+					logger.error("Errore in socialId encripting: " + e3.getMessage());
+				} catch (IllegalBlockSizeException e4) {
+					logger.error("Errore in socialId encripting: " + e4.getMessage());
+				}
+				String unsubcribionLink = mainURL + "/out/rest/unsubscribeMail/?socialId=" + encriptedId;	// + p.getSocialId();
 				//ArrayList<State> states = null;
 				List<PointConcept> states = null;
 				ArrayList<Notification> notifications = null;

@@ -18,6 +18,7 @@ package eu.trentorise.game.managers;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,6 @@ public class QuartzTaskManager extends TaskDataManager {
 
 	private final Logger logger = LoggerFactory
 			.getLogger(QuartzTaskManager.class);
-
-	private static final int DAY = 24 * 60 * 60 * 1000;
 
 	private void init() {
 		try {
@@ -164,10 +163,19 @@ public class QuartzTaskManager extends TaskDataManager {
 					CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
 					calTrigger.setName(task.getName());
 					calTrigger.setGroup(ctx.getGameRefId());
-					calTrigger.setStartTime(new DateTime(task.getSchedule()
-							.getStart()).plusMillis(
-							getDelayInMillis(task.getSchedule().getDelay()))
-							.toDate());
+					logger.info("Scheduled startTime of task {} group {}: {} ",
+							task.getName(), ctx.getGameRefId(), task
+									.getSchedule().getStart());
+					Date calculatedStart = calculateStartDate(task
+							.getSchedule().getStart(), task.getSchedule()
+							.getPeriod());
+					logger.info(
+							"Set start task {} group {} on next triggerDate: {}",
+							task.getName(), ctx.getGameRefId(), calculatedStart);
+					calTrigger.setStartTime(new DateTime(calculatedStart)
+							.plusMillis(
+									getDelayInMillis(task.getSchedule()
+											.getDelay())).toDate());
 					Repeat repeat = extractRepeat((int) task.getSchedule()
 							.getPeriod());
 					calTrigger.setRepeatInterval(repeat.getInterval());
@@ -188,14 +196,13 @@ public class QuartzTaskManager extends TaskDataManager {
 		}
 	}
 
-	private Repeat addDelay(Repeat scheduleTime, TimeInterval delay) {
-		if (delay != null) {
-			return new Repeat(scheduleTime.getInterval()
-					+ transformDuration(delay.getValue(), delay.getUnit(),
-							scheduleTime.getUnit()), scheduleTime.getUnit());
+	private Date calculateStartDate(Date initialStart, long period) {
+		DateTime start = new DateTime(initialStart);
+		while (start.isBeforeNow()) {
+			start = start.plusMillis((int) period);
 		}
 
-		return scheduleTime;
+		return start.toDate();
 	}
 
 	private int getDelayInMillis(TimeInterval delay) {

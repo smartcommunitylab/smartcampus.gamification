@@ -119,7 +119,11 @@ public abstract class GameTest {
 	public void savePlayerState(String gameId, String playerId,
 			List<GameConcept> concepts, Map<String, Object> customData) {
 		PlayerState player = new PlayerState(gameId, playerId);
-		player.setState(new HashSet<GameConcept>(concepts));
+		Set<GameConcept> state = new HashSet<>();
+		if (concepts != null) {
+			state.addAll(concepts);
+		}
+		player.setState(state);
 		if (customData != null) {
 			player.getCustomData().putAll(customData);
 		}
@@ -178,7 +182,7 @@ public abstract class GameTest {
 			gameManager.saveGameDefinition(g);
 		} else {
 			throw new IllegalArgumentException(String.format(
-					"please create game {} before call addGameTask", gameId));
+					"please create game %s before call addGameTask", gameId));
 		}
 		tasks.add(gt);
 	}

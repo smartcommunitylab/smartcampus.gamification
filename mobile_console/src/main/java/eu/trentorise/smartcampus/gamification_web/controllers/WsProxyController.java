@@ -76,6 +76,14 @@ public class WsProxyController {
 	private Long actualTimeStamp = null;
 
 	@Autowired
+	@Value("${smartcampus.gamification.secure.crypto.key1}")
+	private String SECRET_KEY_1;
+	
+	@Autowired
+	@Value("${smartcampus.gamification.secure.crypto.key2}")
+	private String SECRET_KEY_2;
+	
+	@Autowired
 	@Value("${smartcampus.urlws.gamification}")
 	private String gamificationUrl;
 	
@@ -130,6 +138,10 @@ public class WsProxyController {
 //	@Value("${smartcampus.cf.test}")
 //	private String codFiscale;
 	
+	private String correctNameForQuery(String nikName){
+		return "^"+nikName+"$";
+	};
+	
 	HttpHeaders createHeaders( ){
 		return new HttpHeaders(){
 			{
@@ -140,6 +152,18 @@ public class WsProxyController {
 				set( "Authorization", authHeader );
 			}
 		};
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "out/rest/ping")
+	public String testRecommendation(HttpServletRequest request, @RequestParam String nik) throws Exception{
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		String status = "KO";
+		Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(nik), type);
+		if (recommender != null) {
+			logger.info("Finded user with id " + recommender.getPid());
+			status = "OK";
+		}
+		return status;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/allGet")
@@ -253,9 +277,8 @@ public class WsProxyController {
 		String id = user.getUserId();
 		logger.debug("External registration: found user profile with id "+id);
 		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
-		Player withNick = playerRepositoryDao.findByNickAndType(nickname, type);
-		//String corrNick = "^" + data.getNick_recommandation() + "$";
-		//Player withNick = playerRepositoryDao.findByNickIgnoreCaseAndType(corrNick, type);
+		//Player withNick = playerRepositoryDao.findByNickAndType(nickname, type);
+		Player withNick = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(nickname), type);
 		if (withNick != null && !withNick.getSocialId().equals(id)) {
 			logger.debug("External registration: nickname conflict with user "+withNick.getPid());
 			res.setStatus(HttpStatus.CONFLICT.value());
@@ -282,8 +305,8 @@ public class WsProxyController {
 					null,
 					type);
 			if (StringUtils.hasText(data.getNick_recommandation())) {
-				Player recommender = playerRepositoryDao.findByNickAndType(data.getNick_recommandation(), type);
-				//PlayerProd recommender = playerProdRepositoryDao.findByNickIgnoreCase(corrNick);
+				//Player recommender = playerRepositoryDao.findByNickAndType(data.getNick_recommandation(), type);
+				Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(data.getNick_recommandation()), type);
 				if (recommender != null) {
 					sendRecommendationToGamification(recommender.getPid());
 				}
@@ -308,7 +331,7 @@ public class WsProxyController {
 		data.put("playerId", playerId);
 		String partialUrl = "game/" + gameName + "/player";
 		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationConsoleUrl + partialUrl, HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
-		logger.info("Sent player registration to gamification engine(mobile-access) "+tmp_res.getStatusCode());
+		logger.info("Sent player registration to gamification engine(mobile-access) " + tmp_res.getStatusCode());
 	}
 	
 	// Method to update the nickname data and personal data (initial survey)
@@ -355,9 +378,9 @@ public class WsProxyController {
 		p.setPersonalData(pdata);
 		playerRepositoryDao.save(p);
 		if (pdata.getNick_recommandation() != null) {
-			Player recommender = playerRepositoryDao.findByNickAndType(pdata.getNick_recommandation(), type);
+			//Player recommender = playerRepositoryDao.findByNickAndType(pdata.getNick_recommandation(), type);
+			Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(pdata.getNick_recommandation()), type);
 			//String corrNick = "^" + pdata.getNick_recommandation() + "$";
-			//Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(corrNick, type);
 			if (recommender != null) {
 				sendRecommendationToGamification(recommender.getPid());
 			}
@@ -422,7 +445,7 @@ public class WsProxyController {
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/unsubscribeMail")	///{socialId}
 	public 
 	ModelAndView unsubscribeMail(HttpServletRequest request, @RequestParam String socialId) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
-		EncryptDecrypt cryptUtils = new EncryptDecrypt();
+		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		Map<String, Object> model = new HashMap<String, Object>();
 		String user_language = "it";
 		Player p = null;
@@ -460,45 +483,45 @@ public class WsProxyController {
 	}
 	
 	// Method used to unsubscribe user to mailing list
-		@RequestMapping(method = RequestMethod.GET, value = "/out/rest/unsubscribeMail/{socialId}")	
-		public 
-		ModelAndView unsubscribeMailOld(HttpServletRequest request, @PathVariable String socialId) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
-			EncryptDecrypt cryptUtils = new EncryptDecrypt();
-			Map<String, Object> model = new HashMap<String, Object>();
-			String user_language = "it";
-			Player p = null;
-			if(socialId != null && socialId.compareTo("") != 0 && socialId.length() >= 16){
-				logger.debug("WS-GET. Method unsubscribeMail. Passed data : " + socialId);
-				String sId = "";
+	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/unsubscribeMail/{socialId}")	
+	public 
+	ModelAndView unsubscribeMailOld(HttpServletRequest request, @PathVariable String socialId) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
+		Map<String, Object> model = new HashMap<String, Object>();
+		String user_language = "it";
+		Player p = null;
+		if(socialId != null && socialId.compareTo("") != 0 && socialId.length() >= 16){
+			logger.debug("WS-GET. Method unsubscribeMail. Passed data : " + socialId);
+			String sId = "";
+			try {
+				sId = cryptUtils.decrypt(socialId);
+			} catch (InvalidKeyException e1) {
+				logger.error("Error in decrypting socialId: " + e1.getMessage());
+			} catch (InvalidAlgorithmParameterException e2) {
+				logger.error("Error in decrypting socialId: " + e2.getMessage());
+			} catch (BadPaddingException e3) {
+				logger.error("Error in decrypting socialId: " + e3.getMessage());
+			} catch (IllegalBlockSizeException e4) {
+				logger.error("Error in decrypting socialId: " + e4.getMessage());
+			}
+			if(sId != null && sId.compareTo("") != 0){	// case of incorrect encrypted string
+				logger.info("WS-GET. Method unsubscribeMail. Finded player : " + sId);
 				try {
-					sId = cryptUtils.decrypt(socialId);
-				} catch (InvalidKeyException e1) {
-					logger.error("Error in decrypting socialId: " + e1.getMessage());
-				} catch (InvalidAlgorithmParameterException e2) {
-					logger.error("Error in decrypting socialId: " + e2.getMessage());
-				} catch (BadPaddingException e3) {
-					logger.error("Error in decrypting socialId: " + e3.getMessage());
-				} catch (IllegalBlockSizeException e4) {
-					logger.error("Error in decrypting socialId: " + e4.getMessage());
-				}
-				if(sId != null && sId.compareTo("") != 0){	// case of incorrect encrypted string
-					logger.info("WS-GET. Method unsubscribeMail. Finded player : " + sId);
-					try {
-						String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
-						p = playerRepositoryDao.findBySocialIdAndType(sId, type);
-						p.setSendMail(false);
-						playerRepositoryDao.save(p);
-						user_language = (p.getLanguage() != null && p.getLanguage().compareTo("") != 0) ? p.getLanguage() : "it";
-					} catch (Exception ex){
-						logger.error("Error in mailing unsubscribtion " + ex.getMessage());
-					}
+					String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+					p = playerRepositoryDao.findBySocialIdAndType(sId, type);
+					p.setSendMail(false);
+					playerRepositoryDao.save(p);
+					user_language = (p.getLanguage() != null && p.getLanguage().compareTo("") != 0) ? p.getLanguage() : "it";
+				} catch (Exception ex){
+					logger.error("Error in mailing unsubscribtion " + ex.getMessage());
 				}
 			}
-			boolean res = (p != null) ? true : false;
-			model.put("wsresult", res);
-			model.put("language", user_language);
-			return new ModelAndView("unsubscribe", model);
 		}
+		boolean res = (p != null) ? true : false;
+		model.put("wsresult", res);
+		model.put("language", user_language);
+		return new ModelAndView("unsubscribe", model);
+	}
 	
 	// Method used to check if a user is registered or not to the system (by mobile app)
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/checkuser/{socialId}")
@@ -566,8 +589,8 @@ public class WsProxyController {
 	
 	
 	LoadingCache<String, String> chacheClass = CacheBuilder.newBuilder()
-		.maximumSize(1000)
-		.expireAfterAccess(20, TimeUnit.SECONDS)
+		.maximumSize(100)
+		.expireAfterAccess(10, TimeUnit.SECONDS)
 		.build(
 			new CacheLoader<String, String>() {
 				
@@ -576,19 +599,8 @@ public class WsProxyController {
 				}
 		});
 	
-	@SuppressWarnings("rawtypes")
-	LoadingCache<String, List> chacheNiks = CacheBuilder.newBuilder()
-		.maximumSize(1000)
-		.expireAfterAccess(20, TimeUnit.SECONDS)
-		.build(
-			new CacheLoader<String, List>() {
-				public List<Player> load(String actualWeekTs) throws Exception {
-					return getNiks();
-				}
-		});
-	
 	LoadingCache<String, String> chacheLastWeekClass = CacheBuilder.newBuilder()
-			.maximumSize(1000)
+			.maximumSize(100)
 			.expireAfterAccess(7, TimeUnit.DAYS)
 			.build(
 				new CacheLoader<String, String>() {
@@ -597,21 +609,32 @@ public class WsProxyController {
 					}
 			});
 	
-	//@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
+	@SuppressWarnings("rawtypes")
+	LoadingCache<String, List> chacheNiks = CacheBuilder.newBuilder()
+		.maximumSize(1000)
+		.expireAfterAccess(10, TimeUnit.SECONDS)
+		.build(
+			new CacheLoader<String, List>() {
+				public List<Player> load(String actualWeekTs) throws Exception {
+					return getNiks();
+				}
+		});
+	
+	@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
 	//@Scheduled(fixedRate = 5*60*1000) 		// For test
-	public synchronized void checkNotification() throws IOException {
-		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 4);
+	public synchronized void refreshOldWeekClassification() throws IOException {
+		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
 		logger.info("refreshing old week classification: new timestamp - " + oldWeekTimestamp);
 		chacheLastWeekClass.refresh("lastWeek");
 	}
 	
 	// Method used to get the user classification data (by mobyle app)
+	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/classification")
 	public @ResponseBody
 	PlayerClassification getPlayerClassification(final HttpServletRequest request, @RequestParam String token, @RequestParam(required=false) Long timestamp, @RequestParam(required=false) Integer start, @RequestParam(required=false) Integer end, HttpServletResponse res) throws JSONException{
-		final int maxClassificationSize = 1000;
-		//boolean actualWeek = true;
-		//long currTime = System.currentTimeMillis();
+		boolean actualWeek = true;
+		long currTime = System.currentTimeMillis();
 		logger.debug("WS-get classification user token " + token);
 		PlayerClassification playerClassificationData = new PlayerClassification();
 		BasicProfile user = null;
@@ -634,14 +657,14 @@ public class WsProxyController {
 		
 		String allData = "";
 		// MB: part for new incremental classification: uncomment when server support this call
-		if(timestamp != null){
+		/*if(timestamp != null){
 			String incClassUrl = "game/" + gameName + "/incclassification/"  + GREEN_CLASSIFICATION + "?timestamp=" + timestamp;
 			allData = this.getAllClassification(request, incClassUrl);
 		} else {
 			String classUrl = "state/" + gameName + "?page=1&size=" + maxClassificationSize;
 			allData = this.getAll(request, classUrl);		// call to get all user status (classification)
-		}
-		/*if(timestamp != null){
+		}*/
+		if(timestamp != null){
 			if((currTime - timestamp) > LASTWEEKDELTA){
 				// last week timestamp
 				actualWeek = false;
@@ -671,22 +694,22 @@ public class WsProxyController {
 			}
 		} catch (ExecutionException e) {
 			logger.error(e.getMessage());
-		}*/
+		}
 					
 		String statusUrl = "state/" + gameName + "/" + userId;
 		String statusData = this.getAll(request, statusUrl);	// call to get actual user status (user scores)
 		
 		List<Player> allNicks = null;
-		try {
+		/*try {
 			allNicks = this.getAllNiks(request, "");
 		} catch (Exception ex){
 			logger.error("Exception in all nick names reading " + ex.getMessage());
-		}
-		/*try {
+		}*/
+		try {
 			allNicks = (timestamp != null) ? chacheNiks.get("" + timestamp) : chacheNiks.get("complete");
 		} catch (ExecutionException e) {
 			logger.error(e.getMessage());
-		}*/
+		}
 		
 		StatusUtils statusUtils = new StatusUtils();
 		ClassificationData actualPlayerClass = statusUtils.correctPlayerClassificationData(statusData, userId, nickName, timestamp, type);
@@ -708,7 +731,7 @@ public class WsProxyController {
 	
 	private String callWSFromEngine(String sTimestamp){
 		final int maxClassificationSize = 1000;
-		logger.info("Retrieve all classification from DB");
+		logger.debug("Retrieve all classification from DB");
 		Long timestamp = null;
 		if(sTimestamp != null && sTimestamp.compareTo("complete") != 0){
 			timestamp = Long.parseLong(sTimestamp);
@@ -726,14 +749,14 @@ public class WsProxyController {
 	}
 	
 	
-	private String callWSState(String userId){
+	/*private String callWSState(String userId){
 		String statusUrl = "state/" + gameName + "/" + userId;
 		String statusData = this.getAll(null, statusUrl);	// call to get actual user status (user scores)
 		return statusData;
-	}
+	}*/
 	
 	private List<Player> getNiks(){
-		logger.info("Retrieve all nicks from DB");
+		logger.debug("Retrieve all nicks from DB");
 		List<Player> allNicks = null;
 		try {
 			allNicks = this.getAllNiksFromDB();

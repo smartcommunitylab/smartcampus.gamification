@@ -143,6 +143,12 @@ public class PortalController extends SCController{
     @Autowired
 	@Value("${smartcampus.shortClassificationSize}")
 	private String shortClassificationSize;
+    @Autowired
+	@Value("${smartcampus.gamification.secure.crypto.key1}")
+	private String SECRET_KEY_1;
+	@Autowired
+	@Value("${smartcampus.gamification.secure.crypto.key2}")
+	private String SECRET_KEY_2;
 	
 	//Mail Params
 	@Autowired
@@ -468,12 +474,11 @@ public class PortalController extends SCController{
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
 	@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 17:00 PM
 	public synchronized void checkNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
-		EncryptDecrypt cryptUtils = new EncryptDecrypt();
+		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of one week //long millis = 1415660400000L; //(for test)
 		String timestamp = "?timestamp=" + millis;
-		//String timestamp = "";
 		
 		ChallengesUtils challUtils = new ChallengesUtils();
 		challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
@@ -694,7 +699,7 @@ public class PortalController extends SCController{
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
 	//@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
 	public synchronized void checkWinnersNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
-		EncryptDecrypt cryptUtils = new EncryptDecrypt();
+		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days

@@ -13,17 +13,16 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 public class EncryptDecrypt {
-
-	private static final String SECRET_KEY_1 = "ssdkF$HUy2A#D%kb";
-    private static final String SECRET_KEY_2 = "weJiSEvR5yAC5feB";
  
     private IvParameterSpec ivParameterSpec;
     private SecretKeySpec secretKeySpec;
     private Cipher cipher;
  
-    public EncryptDecrypt() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+    public EncryptDecrypt(String SECRET_KEY_1, String SECRET_KEY_2) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
         ivParameterSpec = new IvParameterSpec(SECRET_KEY_1.getBytes("UTF-8"));
         secretKeySpec = new SecretKeySpec(SECRET_KEY_2.getBytes("UTF-8"), "AES");
         cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");

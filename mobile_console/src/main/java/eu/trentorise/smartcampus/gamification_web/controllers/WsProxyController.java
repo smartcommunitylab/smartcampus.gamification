@@ -70,10 +70,11 @@ public class WsProxyController {
 	
 	private static transient final Logger logger = Logger.getLogger(WsProxyController.class);
 	private static final String GREEN_CLASSIFICATION = "week classification";
-	private static long CACHETIME = 10000;						// 10 seconds
+	private static long CACHETIME = 15000;						// 10 seconds
 	private static long LASTWEEKDELTA = 1000 * 60 * 60 * 24;	// one day of delta
 	private Long oldWeekTimestamp;
 	private Long actualTimeStamp = null;
+	private String lastWeekClassification = "";
 
 	@Autowired
 	@Value("${smartcampus.gamification.secure.crypto.key1}")
@@ -590,29 +591,18 @@ public class WsProxyController {
 	
 	LoadingCache<String, String> chacheClass = CacheBuilder.newBuilder()
 		.maximumSize(100)
-		.expireAfterAccess(10, TimeUnit.SECONDS)
+		.expireAfterWrite(15, TimeUnit.SECONDS)
 		.build(
 			new CacheLoader<String, String>() {
-				
 				public String load(String actualWeekTs) throws Exception {
 					return callWSFromEngine(actualWeekTs);
 				}
 		});
 	
-	LoadingCache<String, String> chacheLastWeekClass = CacheBuilder.newBuilder()
-			.maximumSize(100)
-			.expireAfterAccess(7, TimeUnit.DAYS)
-			.build(
-				new CacheLoader<String, String>() {
-					public String load(String lastWeekTs) throws Exception {
-						return callWSFromEngine(oldWeekTimestamp + "");
-					}
-			});
-	
 	@SuppressWarnings("rawtypes")
 	LoadingCache<String, List> chacheNiks = CacheBuilder.newBuilder()
 		.maximumSize(1000)
-		.expireAfterAccess(10, TimeUnit.SECONDS)
+		.expireAfterWrite(15, TimeUnit.SECONDS)
 		.build(
 			new CacheLoader<String, List>() {
 				public List<Player> load(String actualWeekTs) throws Exception {
@@ -625,7 +615,7 @@ public class WsProxyController {
 	public synchronized void refreshOldWeekClassification() throws IOException {
 		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
 		logger.info("refreshing old week classification: new timestamp - " + oldWeekTimestamp);
-		chacheLastWeekClass.refresh("lastWeek");
+		lastWeekClassification = callWSFromEngine(oldWeekTimestamp + "");
 	}
 	
 	// Method used to get the user classification data (by mobyle app)
@@ -690,7 +680,10 @@ public class WsProxyController {
 				if(oldWeekTimestamp == null){	// the first time I need to initialize the oldWeekTimestamp Value
 					oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
 				}
-				allData = chacheLastWeekClass.get("lastWeek");
+				if(lastWeekClassification.compareTo("") == 0){
+					lastWeekClassification = callWSFromEngine(oldWeekTimestamp + "");
+				}
+				allData = lastWeekClassification;
 			}
 		} catch (ExecutionException e) {
 			logger.error(e.getMessage());
@@ -747,7 +740,6 @@ public class WsProxyController {
 		
 		return classData;
 	}
-	
 	
 	/*private String callWSState(String userId){
 		String statusUrl = "state/" + gameName + "/" + userId;

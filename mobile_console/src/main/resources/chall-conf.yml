@@ -77,22 +77,22 @@ descriptions:
   - id: 16
     type: NEXTBADGE
     mobilitymode: zeroimpact
-    description: I badge della collezione 'sustainable life' (o impatto zero) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 punti (i viaggi a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi).
+    description: I badge della collezione 'sustainable life' (o impatto zero) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 viaggi (i viaggi a impatto zero sono quelli che comprendono solo tratte in bici, bike sharing o a piedi).
     description_eng: badged of 'sustainable life' (or impact zero) collection are assigned when you have done 1, 5, 10, 25, 50, 100, 200 e 500 impact zero trips (impact zero trips are those done only by bike, bike sharing, or walking).
   - id: 17
     type: NEXTBADGE
     mobilitymode: bus
-    description: I badge della collezione public transport (viaggi in bus) vengono assegnati al raggiungimento di 5, 10, 25, 50, 100, 200 e 500 punti.
-    description_eng: Public transport badges are assigned when you have done 5, 10, 25, 50, 100, 200 e 500 PT trips.
+    description: I badge della collezione public transport (viaggi in bus e treno) vengono assegnati al raggiungimento di 5, 10, 25, 50, 100, 200 e 500 viaggi.
+    description_eng: Public transport badges are assigned when you have done 5, 10, 25, 50, 100, 200 and 500 trips.
   - id: 18
     type: NEXTBADGE
     mobilitymode: bike
-    description: I badge della collezione bici (viaggi in bici e bici condivisa) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 punti.
+    description: I badge della collezione bici (viaggi in bici e bici condivisa) vengono assegnati al raggiungimento di 1, 5, 10, 25, 50, 100, 200 e 500 viaggi.
     description_eng: Bike badges are assigned when you have done 1, 5, 10, 25, 50, 100, 200 e 500 trips by bike or bike-sharing.
   - id: 19
     type: NEXTBADGE
     mobilitymode: recommendation
-    description: I badge della collezione 'invita i tuoi amici' vengono assegnati al raggiungimento di 3, 5, 10, 25 punti.
+    description: I badge della collezione 'invita i tuoi amici' vengono assegnati al raggiungimento di 3, 5, 10, 25 inviti.
     description_eng: Badges of 'Invite your friends' collection are assigned when you invite 3, 5, 10, 25 friends.
   - id: 20
     type: BADGECOLLECTION

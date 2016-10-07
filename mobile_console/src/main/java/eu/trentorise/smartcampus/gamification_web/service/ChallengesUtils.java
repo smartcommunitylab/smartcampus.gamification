@@ -213,6 +213,8 @@ public class ChallengesUtils {
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(15).getDescription() : challDescList.get(15).getDescription_eng();
 			} else if(mobMode.compareTo("park and ride pioneer") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(12).getDescription() : challDescList.get(12).getDescription_eng();	// park and ride
+			} else if(mobMode.compareTo("public transport aficionado") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(16).getDescription() : challDescList.get(16).getDescription_eng();	// public transport
 			}	
 		} else if(type.compareTo(CHAL_TYPE_7) == 0){
 			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(19).getDescription() : challDescList.get(19).getDescription_eng();

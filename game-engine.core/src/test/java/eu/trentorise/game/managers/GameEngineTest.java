@@ -23,6 +23,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -228,7 +229,8 @@ public class GameEngineTest {
 		params.put("sustainable", true);
 		params.put("p+r", true);
 		params.put("park", "MANIFATTURA");
-		p = engine.execute(GAME, p, ACTION, params, null);
+		p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID()
+				.toString(), System.currentTimeMillis(), null);
 		Thread.sleep(WAIT_EXEC);
 		// expected 60 greenPoints and earned 10-point 50-point green badges
 		boolean found = false;
@@ -264,7 +266,8 @@ public class GameEngineTest {
 		params.put("sustainable", true);
 		params.put("p+r", true);
 		params.put("park", "MANIFATTURA");
-		p = engine.execute(GAME, p, ACTION, params, null);
+		p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID()
+				.toString(), System.currentTimeMillis(), null);
 		// expected 60 greenPoints and earned 10-point 50-point green badges
 		Thread.sleep(WAIT_EXEC);
 		boolean found = false;
@@ -384,8 +387,8 @@ public class GameEngineTest {
 
 		PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
 
-		p = engine
-				.execute(GAME, p, ACTION, new HashMap<String, Object>(), null);
+		p = engine.execute(GAME, p, ACTION, new HashMap<String, Object>(), UUID
+				.randomUUID().toString(), System.currentTimeMillis(), null);
 
 	}
 
@@ -447,38 +450,38 @@ public class GameEngineTest {
 		// final classifications
 		TaskSchedule schedule = new TaskSchedule();
 		schedule.setCronExpression("0 20 * * * *");
-		GeneralClassificationTask task1 = new GeneralClassificationTask(schedule, 3,
-				"green leaves", "final classification green");
+		GeneralClassificationTask task1 = new GeneralClassificationTask(
+				schedule, 3, "green leaves", "final classification green");
 		game.getTasks().add(task1);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		GeneralClassificationTask task2 = new GeneralClassificationTask(schedule, 3,
-				"health", "final classification health");
+		GeneralClassificationTask task2 = new GeneralClassificationTask(
+				schedule, 3, "health", "final classification health");
 		game.getTasks().add(task2);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		GeneralClassificationTask task3 = new GeneralClassificationTask(schedule, 3, "p+r",
-				"final classification p+r");
+		GeneralClassificationTask task3 = new GeneralClassificationTask(
+				schedule, 3, "p+r", "final classification p+r");
 		game.getTasks().add(task3);
 
 		// week classifications // schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		GeneralClassificationTask task4 = new GeneralClassificationTask(schedule, 1,
-				"green leaves", "week classification green");
+		GeneralClassificationTask task4 = new GeneralClassificationTask(
+				schedule, 1, "green leaves", "week classification green");
 		game.getTasks().add(task4);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		GeneralClassificationTask task5 = new GeneralClassificationTask(schedule, 1,
-				"health", "week classification health");
+		GeneralClassificationTask task5 = new GeneralClassificationTask(
+				schedule, 1, "health", "week classification health");
 		game.getTasks().add(task5);
 
 		// schedule = new TaskSchedule(); //
 		schedule.setCronExpression("0 * * * * *");
-		GeneralClassificationTask task6 = new GeneralClassificationTask(schedule, 1, "p+r",
-				"week classification p+r");
+		GeneralClassificationTask task6 = new GeneralClassificationTask(
+				schedule, 1, "p+r", "week classification p+r");
 		game.getTasks().add(task6);
 
 		return new GamePersistence(game);

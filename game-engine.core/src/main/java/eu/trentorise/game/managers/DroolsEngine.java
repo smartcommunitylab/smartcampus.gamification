@@ -102,7 +102,8 @@ public class DroolsEngine implements GameEngine {
 	private KieServices kieServices = KieServices.Factory.get();
 
 	public PlayerState execute(String gameId, PlayerState state, String action,
-			Map<String, Object> data, List<Object> factObjects) {
+			Map<String, Object> data, String executionId, long executionMoment,
+			List<Object> factObjects) {
 
 		StopWatch stopWatch = LogManager.getLogger(
 				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
@@ -123,7 +124,8 @@ public class DroolsEngine implements GameEngine {
 				.getRepository().getDefaultReleaseId());
 
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
-		kSession.addEventListener(new LoggingRuleListener(state.getPlayerId()));
+		kSession.addEventListener(new LoggingRuleListener(gameId, state
+				.getPlayerId(), executionId, executionMoment));
 
 		List<Command> cmds = new ArrayList<Command>();
 

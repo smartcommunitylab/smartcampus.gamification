@@ -16,11 +16,19 @@ import eu.trentorise.game.notification.BadgeNotification;
 public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 	private Logger logger = LoggerFactory.getLogger(LoggingRuleListener.class);
+	private Logger statsLogger = LoggerFactory.getLogger("stats");
 
+	private String gameId;
 	private String playerId;
+	private String executionId;
+	private long executionMoment;
 
-	public LoggingRuleListener(String playerId) {
+	public LoggingRuleListener(String gameId, String playerId,
+			String executionId, long executionMoment) {
+		this.gameId = gameId;
 		this.playerId = playerId;
+		this.executionId = executionId;
+		this.executionMoment = executionMoment;
 	}
 
 	public LoggingRuleListener() {
@@ -85,6 +93,10 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 					updateEvent.getRule() != null ? updateEvent.getRule()
 							.getName() : "-", pc.getName(), pc.getScore(),
 					playerId);
+
+			StatsLogger.logRule(gameId, playerId, executionId, executionMoment,
+					updateEvent.getRule().getName(), pc);
+
 		}
 
 		if (workingObj instanceof BadgeCollectionConcept) {
@@ -96,6 +108,8 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 					updateEvent.getRule() != null ? updateEvent.getRule()
 							.getName() : "-", bcc.getName(), bcc
 							.getBadgeEarned(), playerId);
+			StatsLogger.logRule(gameId, playerId, executionId, executionMoment,
+					updateEvent.getRule().getName(), bcc);
 		}
 
 		if (workingObj instanceof CustomData) {
@@ -107,5 +121,4 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 							.getName() : "-", playerId);
 		}
 	}
-
 }

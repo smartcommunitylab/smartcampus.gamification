@@ -19,12 +19,14 @@ package eu.trentorise.game.managers;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
@@ -58,8 +60,8 @@ public class GameWorkflow implements Workflow {
 	private Environment env;
 
 	protected void workflowExec(String gameId, String actionId, String userId,
-			Map<String, Object> data, List<Object> factObjects) {
-		long executionTime = System.currentTimeMillis();
+			String executionId, long executionMoment, Map<String, Object> data,
+			List<Object> factObjects) {
 		logger.info(
 				"gameId:{}, actionId: {}, playerId: {}, data: {}, factObjs: {}",
 				gameId, actionId, userId, data, factObjects);
@@ -76,13 +78,15 @@ public class GameWorkflow implements Workflow {
 		// Actually GameService.execute modifies playerState passed as parameter
 		PlayerState oldState = copyState(playerState);
 
+		StatsLogger.logAction(gameId, userId, executionId, executionMoment,
+				actionId, data, factObjects, playerState);
 		PlayerState newState = gameEngine.execute(gameId, playerState,
-				actionId, data, factObjects);
+				actionId, data, executionId, executionMoment, factObjects);
 
 		boolean result = playerSrv.saveState(newState) != null;
 
 		if (env.getProperty("trace.playerMove", Boolean.class, false)) {
-			traceSrv.tracePlayerMove(oldState, newState, data, executionTime);
+			traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
 			logger.info("Traced player {} move", userId);
 		}
 		logger.info("Process terminated: {}", result);
@@ -111,7 +115,10 @@ public class GameWorkflow implements Workflow {
 
 	public void apply(String gameId, String actionId, String userId,
 			Map<String, Object> data, List<Object> factObjects) {
-		workflowExec(gameId, actionId, userId, data, factObjects);
+		String executionId = UUID.randomUUID().toString();
+		long executionMoment = System.currentTimeMillis();
+		workflowExec(gameId, actionId, userId, executionId, executionMoment,
+				data, factObjects);
 
 	}
 }

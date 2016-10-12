@@ -14,7 +14,7 @@
 # Long (i.e. var=25l or var=25L)
 # Double  (i.e. var=2.3)
 # String  (i.e. var=park)
-# java.util.ArrayList (i.e var=park,street,bikestation)
+# java.util.ArrayList (i.e var=park,street,bikestation).If your value contains a ',' escape it with '\,'
 
 
 # GREEN BONUS

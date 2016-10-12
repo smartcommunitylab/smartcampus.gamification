@@ -332,9 +332,19 @@ public class DroolsEngine implements GameEngine {
 				Iterator<String> constantsIter = constants.getKeys();
 				while (constantsIter.hasNext()) {
 					String constant = constantsIter.next();
-					kSession.setGlobal(constant,
-							numberConversion(constants.getProperty(constant)));
-					logger.debug("constant {} loaded", constant);
+					Object value = numberConversion(constants
+							.getProperty(constant));
+					kSession.setGlobal(constant, value);
+					if (logger.isDebugEnabled()) {
+						List<Object> listValue = constants.getList(constant);
+						if (listValue.isEmpty()) {
+							logger.debug("constant {} loaded: {}", constant,
+									value);
+						} else {
+							logger.debug("constant {} loaded: {}, size: {}",
+									constant, listValue, listValue.size());
+						}
+					}
 				}
 			} catch (ConfigurationException e) {
 				logger.error("constants loading exception");

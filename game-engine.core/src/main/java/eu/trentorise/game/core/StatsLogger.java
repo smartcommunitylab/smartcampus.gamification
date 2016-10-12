@@ -28,8 +28,7 @@ public class StatsLogger {
 		String msg = commonFieldsOutput(gameId, playerId, executionId,
 				executionMoment, timestamp);
 		msg += " "
-				+ String.format(
-						"type=%s ruleName=\"%s\" name=\"%s\" score=\"%s\"",
+				+ String.format("type=%s ruleName=\"%s\" name=\"%s\" score=%s",
 						PointConcept.class.getSimpleName(), ruleName,
 						concept.getName(), concept.getScore());
 		logger.info(msg);

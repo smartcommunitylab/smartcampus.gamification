@@ -332,7 +332,7 @@ public class WsProxyController {
 	}
 	
 	// Scheduled method used to check user that has registered with a recommendation nick. If they have points a recommendation is send to gamification
-	@Scheduled(fixedRate = 20*60*1000)		// Repeat every 20 minutes
+	@Scheduled(fixedRate = 30*60*1000)		// Repeat every 30 minutes
 	public synchronized void checkRecommendation() {
 		logger.debug("Starting recommendation check...");
 		String allData = "";
@@ -363,7 +363,7 @@ public class WsProxyController {
 					try	{
 						minRecPoints = Integer.parseInt(RECOMMENDATION_POINTS);
 					} catch (Exception ex){
-						minRecPoints = 50;
+						minRecPoints = 1;
 					}
 					if(score >= minRecPoints){
 						Player recPlayer = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(recommender), type);

@@ -19,6 +19,8 @@ public interface PlayerRepositoryDao extends CrudRepository<Player, String>{
 	
 	Iterable<Player> findAllByType(String type);
 	
+	Iterable<Player> findAllByTypeAndCheckedRecommendation(String type, boolean recommendation);
+	
 	public Player findByPidAndType(String id, String type);
 	
 	public Player findBySocialIdAndType(String id, String type);

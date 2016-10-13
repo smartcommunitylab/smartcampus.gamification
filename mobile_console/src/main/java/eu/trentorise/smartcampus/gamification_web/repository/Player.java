@@ -22,13 +22,15 @@ public class Player {
 	private boolean sendMail;
 	private PersonalData personalData;
 	private SurveyData surveyData;
+	private boolean checkedRecommendation;
 	
 	public Player() {
 		super();
 	}
 
 	public Player(String pid, String socialId, String name, String surname, String nikName,
-			String mail, String language, boolean sendMail, PersonalData personalData, SurveyData surveyData, String type) {
+			//String mail, String language, boolean sendMail, PersonalData personalData, SurveyData surveyData, String type) {
+			String mail, String language, boolean sendMail, PersonalData personalData, SurveyData surveyData, boolean checkRecommendation, String type) {
 		super();
 		this.pid = pid;
 		this.socialId = socialId;
@@ -40,6 +42,7 @@ public class Player {
 		this.sendMail = sendMail;
 		this.personalData = personalData;
 		this.surveyData = surveyData;
+		this.checkedRecommendation = checkRecommendation;
 		this.type = type;
 	}
 
@@ -129,6 +132,14 @@ public class Player {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public boolean isCheckedRecommendation() {
+		return checkedRecommendation;
+	}
+
+	public void setCheckedRecommendation(boolean checkedRecommendation) {
+		this.checkedRecommendation = checkedRecommendation;
 	}
 
 	public String toJSONString() {

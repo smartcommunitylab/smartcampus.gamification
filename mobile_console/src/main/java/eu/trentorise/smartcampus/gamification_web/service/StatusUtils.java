@@ -1,8 +1,10 @@
 package eu.trentorise.smartcampus.gamification_web.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -132,13 +134,15 @@ public class StatusUtils {
     			}
     			// new Challenge management part
     			try {
-					List<List> challLists = challUtils.correctChallengeData(profile, challType, language, pointConcept, bcc_list);
-					if(challLists != null && challLists.size() == 2){
-						challenges = challLists.get(0);
-						oldChallenges = challLists.get(1);
-					}
-					cc.setActiveChallengeData(challenges);	// default is [] so I have to initialize the list anyway
-					cc.setOldChallengeData(oldChallenges);
+    				if(challUtils != null){
+    					List<List> challLists = challUtils.correctChallengeData(profile, challType, language, pointConcept, bcc_list);
+    					if(challLists != null && challLists.size() == 2){
+    						challenges = challLists.get(0);
+    						oldChallenges = challLists.get(1);
+    					}
+    					cc.setActiveChallengeData(challenges);	// default is [] so I have to initialize the list anyway
+    					cc.setOldChallengeData(oldChallenges);
+    				}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -308,6 +312,41 @@ public class StatusUtils {
     		
     	}
     	return playerClassList;
+    }
+	
+	// Method correctGlobalClassification: return a map 'playerId, score' of the global classification
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Map<String, Integer> correctGlobalClassification(String allStatus) throws JSONException{
+		Map classification = new HashMap<String, Integer>();
+    	if(allStatus != null && allStatus.compareTo("") != 0){
+    		int score = 0;
+    		JSONObject allPlayersData = new JSONObject(allStatus);
+    		JSONArray allPlayersDataList = (!allPlayersData.isNull("content")) ? allPlayersData.getJSONArray("content") : null;
+    		if(allPlayersDataList != null){
+    			for(int i = 0 ; i < allPlayersDataList.length(); i++){
+		    		JSONObject profileData = allPlayersDataList.getJSONObject(i);
+		    		String playerId = (!profileData.isNull(PLAYER_ID)) ? profileData.getString(PLAYER_ID) : "0";
+		    		score = 0;	// here I reset the score value to avoid classification problem
+		    		JSONObject stateData = (!profileData.isNull(STATE)) ? profileData.getJSONObject(STATE) : null;
+		    		JSONArray pointConceptData = null;
+		    		if(stateData != null){
+		    			pointConceptData = (!stateData.isNull(POINT_CONCEPT)) ? stateData.getJSONArray(POINT_CONCEPT) : null;
+		    			if(pointConceptData != null){
+			    			for(int j = 0; j < pointConceptData.length(); j++){
+			    				JSONObject point = pointConceptData.getJSONObject(j);
+			    				String pc_name = (!point.isNull(PC_NAME)) ? point.getString(PC_NAME) : null;
+			    				if(pc_name != null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
+			        				score = (!point.isNull(PC_SCORE)) ? point.getInt(PC_SCORE) : null;
+			        			}
+			    			}
+		    			}
+		    			classification.put(playerId, score);
+		    		}
+    			}
+    		}
+    		
+    	}
+    	return classification;
     }
 	
 	public List<ClassificationData> correctClassificationIncData(String allStatus, List<Player> allNicks, Long timestamp, String type) throws JSONException{

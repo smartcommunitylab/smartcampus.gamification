@@ -59,7 +59,7 @@
 	   <div class="panel-body">
 		<h4>{{ 'week_prize_title' | i18n }}</h4>
 		<div align="justify">
-			{{ 'week_prize_text_1' | i18n }} {{ p_WeekNum }}^{{ 'week_prize_text_2' | i18n }}<br/>
+			{{ 'week_prize_text_1' | i18n }} {{ p_WeekNum }}{{ 'week_prize_text_2' | i18n }}<br/>
 			<ul ng-repeat="p in corrPrizesList" ng-if="retrieveUsedLang() == 'ita'">
 				<li><strong>{{ p.prize }}</strong>: {{ p.classification }};</li>
 			</ul>

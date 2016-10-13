@@ -48,6 +48,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Iterables;
 
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
 import eu.trentorise.smartcampus.gamification_web.models.PlayerClassification;
@@ -129,6 +130,10 @@ public class WsProxyController {
 	@Autowired
 	@Value("${smartcampus.gamification.gamename}")
 	private String gameName;
+	
+	@Autowired
+	@Value("${smartcampus.gamification.recommendation.points.min}")
+	private String RECOMMENDATION_POINTS;
 
 	@PostConstruct
 	public void init() {
@@ -232,7 +237,6 @@ public class WsProxyController {
 		}
 		return list;
 	}
-
 	
 	private void sendRecommendationToGamification(String recommenderId){
 		RestTemplate restTemplate = new RestTemplate();
@@ -304,12 +308,16 @@ public class WsProxyController {
 					true,	// default sendMail attribute value is true
 					data,
 					null,
+					true,
 					type);
 			if (StringUtils.hasText(data.getNick_recommandation())) {
 				//Player recommender = playerRepositoryDao.findByNickAndType(data.getNick_recommandation(), type);
 				Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(data.getNick_recommandation()), type);
 				if (recommender != null) {
-					sendRecommendationToGamification(recommender.getPid());
+					p.setCheckedRecommendation(false);
+					//sendRecommendationToGamification(recommender.getPid());
+				} else {
+					p.setCheckedRecommendation(true);
 				}
 			}
 			try {
@@ -321,6 +329,57 @@ public class WsProxyController {
 		}
 		playerRepositoryDao.save(p);
 		return p;
+	}
+	
+	@Scheduled(fixedRate = 20*60*1000)		// Repeat every 20 minutes
+	public synchronized void checkRecommendation() {
+		logger.debug("Starting recommendation check...");
+		String allData = "";
+		try {
+			allData = chacheClass.get("complete");	// all classification data
+		} catch (ExecutionException e) {
+			logger.error("Exception in global classification reading: " + e.getMessage());
+		}	
+		StatusUtils statusUtils = new StatusUtils();
+		Map<String, Integer> completeClassification = new HashMap<String, Integer>();
+		try {
+			completeClassification = statusUtils.correctGlobalClassification(allData);
+		} catch (JSONException e) {
+			logger.error("Exception in global classification calculating: " + e.getMessage());
+		}
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		Iterable<Player> iter = playerRepositoryDao.findAllByTypeAndCheckedRecommendation(type, false);
+		if(iter != null && Iterables.size(iter) > 0){
+			for(Player p: iter){
+				PersonalData pData = p.getPersonalData();
+				String recommender = pData.getNick_recommandation();
+				String userId = p.getSocialId();
+				Integer points = completeClassification.get(userId);
+				if(points != null){
+					int score = points.intValue();
+					logger.debug("Green leaves point user " + userId + ": " + score);
+					int minRecPoints = 0;
+					try	{
+						minRecPoints = Integer.parseInt(RECOMMENDATION_POINTS);
+					} catch (Exception ex){
+						minRecPoints = 50;
+					}
+					if(score >= minRecPoints){
+						Player recPlayer = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(recommender), type);
+						if (recommender != null) {
+							sendRecommendationToGamification(recPlayer.getPid());
+							p.setCheckedRecommendation(true);
+							playerRepositoryDao.save(p);	//update player data in db
+						}
+					}
+				} else {
+					logger.debug("Green leaves point user " + userId + ": none");
+				}
+			}
+		} else {
+			logger.debug("No player with recommandation to check!");
+		}
+		logger.debug("Ending recommendation check...");
 	}
 	
 	// Method to force the player creation in gamification engine
@@ -381,7 +440,6 @@ public class WsProxyController {
 		if (pdata.getNick_recommandation() != null) {
 			//Player recommender = playerRepositoryDao.findByNickAndType(pdata.getNick_recommandation(), type);
 			Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(pdata.getNick_recommandation()), type);
-			//String corrNick = "^" + pdata.getNick_recommandation() + "$";
 			if (recommender != null) {
 				sendRecommendationToGamification(recommender.getPid());
 			}
@@ -610,11 +668,12 @@ public class WsProxyController {
 				}
 		});
 	
-	@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
-	//@Scheduled(fixedRate = 5*60*1000) 		// For test
+	//@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
+	@Scheduled(fixedRate = 60*60*1000) 		// Repeat every hour
 	public synchronized void refreshOldWeekClassification() throws IOException {
-		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
-		logger.info("refreshing old week classification: new timestamp - " + oldWeekTimestamp);
+		//oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
+		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
+		logger.debug("Refreshing old week classification: new timestamp - " + oldWeekTimestamp);
 		lastWeekClassification = callWSFromEngine(oldWeekTimestamp + "");
 	}
 	

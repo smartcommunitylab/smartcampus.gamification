@@ -262,7 +262,8 @@ public class PortalController extends SCController{
 							AuthPlayer auth_p = authPlayerRepositoryDao.findByMailAndType(attribute_mail, type);
 							if(auth_p != null){
 								logger.info(String.format("Add player: authorised %s.", auth_p.toJSONString()));
-								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), "it", true, null, null, type);
+								Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), "it", true, null, null, true, type);
+								//Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), auth_p.getNikName(), auth_p.getMail(), "it", true, null, null, type);
 								playerRepositoryDao.save(new_p);
 								// here I call an api from gengine console
 								createPlayerInGamification(user.getUserId());
@@ -273,7 +274,8 @@ public class PortalController extends SCController{
 						} else {
 							// case of no authentication table and user not in user table: I add the user
 							//nick = generateNick(user.getName(), user.getSurname(), user.getUserId());
-							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, "it", true, null, null, type);
+							Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, "it", true, null, null, true, type);
+							//Player new_p = new Player(user.getUserId(), user.getUserId(), user.getName(), user.getSurname(), nick, attribute_mail, "it", true, null, null, type);
 							playerRepositoryDao.save(new_p);
 							// here I call an api from gengine console
 							createPlayerInGamification(user.getUserId());

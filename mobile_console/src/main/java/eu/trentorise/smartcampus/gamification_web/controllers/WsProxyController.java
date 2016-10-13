@@ -331,6 +331,7 @@ public class WsProxyController {
 		return p;
 	}
 	
+	// Scheduled method used to check user that has registered with a recommendation nick. If they have points a recommendation is send to gamification
 	@Scheduled(fixedRate = 20*60*1000)		// Repeat every 20 minutes
 	public synchronized void checkRecommendation() {
 		logger.debug("Starting recommendation check...");
@@ -541,7 +542,7 @@ public class WsProxyController {
 		return new ModelAndView("unsubscribe", model);
 	}
 	
-	// Method used to unsubscribe user to mailing list
+	// Method used to unsubscribe user to mailing list (old version to maintain ws for old mails)
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/unsubscribeMail/{socialId}")	
 	public 
 	ModelAndView unsubscribeMailOld(HttpServletRequest request, @PathVariable String socialId) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
@@ -646,7 +647,7 @@ public class WsProxyController {
 		return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl, 1, language);
 	}
 	
-	
+	// Cache for actual week classification
 	LoadingCache<String, String> chacheClass = CacheBuilder.newBuilder()
 		.maximumSize(100)
 		.expireAfterWrite(15, TimeUnit.SECONDS)
@@ -657,6 +658,7 @@ public class WsProxyController {
 				}
 		});
 	
+	// Cache for get all nicknames method
 	@SuppressWarnings("rawtypes")
 	LoadingCache<String, List> chacheNiks = CacheBuilder.newBuilder()
 		.maximumSize(1000)
@@ -668,12 +670,13 @@ public class WsProxyController {
 				}
 		});
 	
-	//@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
-	@Scheduled(fixedRate = 60*60*1000) 		// Repeat every hour
+	// Scheduled method to cache the old week classification.
+	@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
+	//@Scheduled(fixedRate = 60*60*1000) 		// Repeat every hour
 	public synchronized void refreshOldWeekClassification() throws IOException {
-		//oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
-		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
-		logger.debug("Refreshing old week classification: new timestamp - " + oldWeekTimestamp);
+		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
+		//oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
+		logger.info("Refreshing old week classification: new timestamp - " + oldWeekTimestamp);
 		lastWeekClassification = callWSFromEngine(oldWeekTimestamp + "");
 	}
 	
@@ -780,7 +783,7 @@ public class WsProxyController {
 		return playerClassificationData;
 	}
 	
-	
+	// Method used to retrieve the classification data from web service call
 	private String callWSFromEngine(String sTimestamp){
 		final int maxClassificationSize = 1000;
 		logger.debug("Retrieve all classification from DB");
@@ -806,6 +809,7 @@ public class WsProxyController {
 		return statusData;
 	}*/
 	
+	// Method used to retrieve all nick names from the db
 	private List<Player> getNiks(){
 		logger.debug("Retrieve all nicks from DB");
 		List<Player> allNicks = null;

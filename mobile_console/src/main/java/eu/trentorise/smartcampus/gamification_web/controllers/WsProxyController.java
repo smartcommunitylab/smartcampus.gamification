@@ -671,12 +671,12 @@ public class WsProxyController {
 		});
 	
 	// Scheduled method to cache the old week classification.
-	@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
-	//@Scheduled(fixedRate = 60*60*1000) 		// Repeat every hour
+	//@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
+	@Scheduled(fixedRate = 31*60*1000) 		// Repeat every hour
 	public synchronized void refreshOldWeekClassification() throws IOException {
-		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
-		//oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
-		logger.info("Refreshing old week classification: new timestamp - " + oldWeekTimestamp);
+		//oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
+		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
+		logger.debug("Refreshing old week classification: new timestamp - " + oldWeekTimestamp);
 		lastWeekClassification = callWSFromEngine(oldWeekTimestamp + "");
 	}
 	

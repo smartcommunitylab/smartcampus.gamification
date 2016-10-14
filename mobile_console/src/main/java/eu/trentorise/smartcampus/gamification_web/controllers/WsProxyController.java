@@ -311,13 +311,15 @@ public class WsProxyController {
 					true,
 					type);
 			if (StringUtils.hasText(data.getNick_recommandation())) {
+				if(data.getNick_recommandation().compareTo("") != 0){
 				//Player recommender = playerRepositoryDao.findByNickAndType(data.getNick_recommandation(), type);
-				Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(data.getNick_recommandation()), type);
-				if (recommender != null) {
-					p.setCheckedRecommendation(false);
-					//sendRecommendationToGamification(recommender.getPid());
-				} else {
-					p.setCheckedRecommendation(true);
+					Player recommender = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(data.getNick_recommandation()), type);
+					if (recommender != null) {
+						p.setCheckedRecommendation(false);
+						//sendRecommendationToGamification(recommender.getPid());
+					} else {
+						p.setCheckedRecommendation(true);
+					}
 				}
 			}
 			try {

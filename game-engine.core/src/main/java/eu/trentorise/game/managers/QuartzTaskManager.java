@@ -172,10 +172,15 @@ public class QuartzTaskManager extends TaskDataManager {
 					logger.info(
 							"Set start task {} group {} on next triggerDate: {}",
 							task.getName(), ctx.getGameRefId(), calculatedStart);
+					int delayMillis = getDelayInMillis(task.getSchedule()
+							.getDelay());
 					calTrigger.setStartTime(new DateTime(calculatedStart)
-							.plusMillis(
-									getDelayInMillis(task.getSchedule()
-											.getDelay())).toDate());
+							.plusMillis(delayMillis).toDate());
+					if (delayMillis != 0) {
+						logger.info(
+								"Delay setted: {} millis, recalculated triggerDate: {}",
+								delayMillis, calTrigger.getStartTime());
+					}
 					Repeat repeat = extractRepeat((int) task.getSchedule()
 							.getPeriod());
 					calTrigger.setRepeatInterval(repeat.getInterval());

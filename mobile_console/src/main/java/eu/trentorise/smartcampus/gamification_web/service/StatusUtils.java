@@ -40,6 +40,8 @@ public class StatusUtils {
 	private static final String PC_IDENTIFIER = "identifier";
 	private static final String PC_INSTANCES = "instances";
 	private static final String PC_END = "end";
+	private static final String PARK_RIDE_PIONEER = "park and ride pioneer";
+	private static final String BIKE_SHARING_PIONEER = "bike sharing pioneer";
 	//private static final String PC_CLASSIFICATION_WEEK = "green leaves week ";
 	//private static final String PC_CLASSIFICATION_WEEK_TEST = "green leaves week test";
 	
@@ -77,10 +79,10 @@ public class StatusUtils {
 	    				for(int j = 0; j < bc_badgesEarned.length(); j++){
 	    					String b_name = bc_badgesEarned.getString(j);
 	    					String b_url = getUrlFromBadgeName(gamificationUrl, b_name);
-	    					if(!b_url.contains("/img/pr/p&rLeaves.svg")){ // not in default ParkAndRide badges
+	    					//if(!b_url.contains("/img/pr/p&rLeaves.svg")){ // not in default ParkAndRide badges
 	    						BadgeConcept badge = new BadgeConcept(b_name, b_url);
 	        					bc_badges.add(badge);
-	    					}
+	    					//}
 	    				}
 	    				BadgeCollectionConcept bcc = new BadgeCollectionConcept(bc_name, bc_badges);
 	    				bcc_list.add(bcc);
@@ -149,12 +151,39 @@ public class StatusUtils {
     		}
     		
     		ps.setPlayerData(playerData);
-    		ps.setBadgeCollectionConcept(bcc_list);
+    		ps.setBadgeCollectionConcept(cleanFromGenericBadges(bcc_list));
     		ps.setPointConcept(greenPointConcept);
     		ps.setChallengeConcept(cc);
     	}
     	return ps;
     }
+	
+	// Method cleanFromGenericBadges: useful method used to remove from the badges list the generic badge (used in P&R and bikeSharing)
+	private List<BadgeCollectionConcept> cleanFromGenericBadges(List<BadgeCollectionConcept> inputBadges){
+		List<BadgeCollectionConcept> correctedBadges = null;
+		if(inputBadges != null){
+			for(BadgeCollectionConcept bcc : inputBadges){
+				if(bcc.getName().compareTo(PARK_RIDE_PIONEER) == 0){
+					List<BadgeConcept> badgeList = bcc.getBadgeEarned();
+					for(int i = badgeList.size() - 1; i >= 0; i--){
+						if(badgeList.get(i).getUrl().contains("/img/pr/p&rLeaves.svg")){
+							badgeList.remove(i);
+						}
+					}
+				}
+				if(bcc.getName().compareTo(BIKE_SHARING_PIONEER) == 0){
+					List<BadgeConcept> badgeList = bcc.getBadgeEarned();
+					for(int i = badgeList.size() - 1; i >= 0; i--){
+						if(badgeList.get(i).getUrl().contains("/img/bike_sharing/bikeSharingPioneer.svg")){
+							badgeList.remove(i);
+						}
+					}
+				}
+			}
+			correctedBadges = inputBadges;
+		}
+		return correctedBadges;
+	};
 	
 	public ClassificationData correctPlayerClassificationData(String profile, String playerId, String nickName, Long timestamp, String type) throws JSONException{
     	ClassificationData playerClass = new ClassificationData();

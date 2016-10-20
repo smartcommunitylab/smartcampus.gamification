@@ -151,7 +151,8 @@ public class StatusUtils {
     		}
     		
     		ps.setPlayerData(playerData);
-    		ps.setBadgeCollectionConcept(cleanFromGenericBadges(bcc_list));
+    		//ps.setBadgeCollectionConcept(cleanFromGenericBadges(bcc_list));	// filter for generic badges not more used
+    		ps.setBadgeCollectionConcept(bcc_list);
     		ps.setPointConcept(greenPointConcept);
     		ps.setChallengeConcept(cc);
     	}

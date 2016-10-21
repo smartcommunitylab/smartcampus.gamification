@@ -117,7 +117,8 @@ public class Converter {
 					if (gt instanceof GeneralClassificationTask) {
 						c = convertClassificationTask((GeneralClassificationTask) gt);
 					} else {
-						c = convertClassificationTask((IncrementalClassificationTask) gt);
+						c = convertClassificationTask(game.getId(),
+								(IncrementalClassificationTask) gt);
 					}
 					gDTO.getClassificationTask().add(c);
 				}
@@ -240,7 +241,7 @@ public class Converter {
 	}
 
 	public IncrementalClassificationDTO convertClassificationTask(
-			IncrementalClassificationTask classification) {
+			String gameId, IncrementalClassificationTask classification) {
 		IncrementalClassificationDTO result = null;
 		if (classification != null) {
 			result = new IncrementalClassificationDTO();
@@ -249,6 +250,7 @@ public class Converter {
 			result.setPeriodName(classification.getPeriodName());
 			result.setItemsToNotificate(classification.getItemsToNotificate());
 			result.setName(classification.getName());
+			result.setGameId(gameId);
 			if (classification.getSchedule().getDelay() != null) {
 				result.setDelayValue(classification.getSchedule().getDelay()
 						.getValue());

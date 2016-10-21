@@ -324,8 +324,8 @@ public class ClassificationController {
 		if (g != null) {
 			for (GameTask gt : g.getTasks()) {
 				if (gt instanceof IncrementalClassificationTask) {
-					result.add(converter
-							.convertClassificationTask((IncrementalClassificationTask) gt));
+					result.add(converter.convertClassificationTask(gameId,
+							(IncrementalClassificationTask) gt));
 				}
 			}
 		}
@@ -347,8 +347,8 @@ public class ClassificationController {
 			for (GameTask gt : g.getTasks()) {
 				if (gt instanceof IncrementalClassificationTask
 						&& gt.getName().equals(classificationId)) {
-					result = converter
-							.convertClassificationTask((IncrementalClassificationTask) gt);
+					result = converter.convertClassificationTask(gameId,
+							(IncrementalClassificationTask) gt);
 				}
 			}
 		}

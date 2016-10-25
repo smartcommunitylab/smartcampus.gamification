@@ -54,7 +54,7 @@ public abstract class ClassificationTask extends GameTask {
 			return;
 		}
 
-		logger.debug("Execute of task {}", classificationName);
+		logger.info("run task {} of group {}", getName(), ctx.getGameRefId());
 
 		// read all game players
 		List<String> players = ctx.readPlayers();

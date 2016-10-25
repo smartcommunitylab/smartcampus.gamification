@@ -161,21 +161,24 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		long end = start + periodLength;
 
 		logger.info(String
-				.format("run task %s: startupInstanceIndex (saved in game def or task data) %s",
-						ctx.getTask().getName(), startupInstanceIndex));
+				.format("run task %s of group %s: startupInstanceIndex (saved in game def or task data) %s",
+						ctx.getTask().getName(), ctx.getGameRefId(),
+						startupInstanceIndex));
 		logger.info(String
-				.format("run task %s: startupPeriodInstance (saved in game def or task data) %s",
-						ctx.getTask().getName(),
-						new Date(startupPeriodInstance).toString()));
+				.format("run task %s of group %s: startupPeriodInstance (saved in game def or task data) %s",
+						ctx.getTask().getName(), ctx.getGameRefId(), new Date(
+								startupPeriodInstance).toString()));
 		logger.info(String.format(
-				"run task %s: period start task run reference %s", ctx
-						.getTask().getName(), new Date(start).toString()));
-		logger.info(String.format("run task %s: periodLength %s", ctx.getTask()
-				.getName(), periodLength));
-		logger.info(String.format("run task %s: periodName %s", ctx.getTask()
-				.getName(), periodName));
-		logger.info(String.format("run task %s: pointConceptName %s", ctx
-				.getTask().getName(), pointConceptName));
+				"run task %s of group %s: period start task run reference %s",
+				ctx.getTask().getName(), ctx.getGameRefId(),
+				new Date(start).toString()));
+		logger.info(String.format("run task %s of group %s: periodLength %s",
+				ctx.getTask().getName(), ctx.getGameRefId(), periodLength));
+		logger.info(String.format("run task %s of group %s: periodName %s", ctx
+				.getTask().getName(), ctx.getGameRefId(), periodName));
+		logger.info(String.format(
+				"run task %s of group %s: pointConceptName %s", ctx.getTask()
+						.getName(), ctx.getGameRefId(), pointConceptName));
 
 		ClassificationBuilder builder = ClassificationFactory
 				.createIncrementalClassification(states, pointConceptName,

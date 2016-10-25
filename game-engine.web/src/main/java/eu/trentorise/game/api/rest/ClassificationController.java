@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,8 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
@@ -258,7 +261,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/incclassification/{classificationId}")
-	public void update(@PathVariable String gameId,
+	public void updateIncrementalClassification(@PathVariable String gameId,
 			@PathVariable String classificationId,
 			@RequestBody IncrementalClassificationDTO classification) {
 		try {
@@ -280,6 +283,16 @@ public class ClassificationController {
 								.getItemsToNotificate());
 						ct.setClassificationName(classification
 								.getClassificationName());
+						if (StringUtils.isNotBlank(classification
+								.getDelayUnit())) {
+							ct.getSchedule().setDelay(
+									new TimeInterval(classification
+											.getDelayValue(), TimeUnit
+											.valueOf(classification
+													.getDelayUnit())));
+						} else {
+							ct.getSchedule().setDelay(null);
+						}
 						// if itemType or periodName changes update schedule
 						// data
 						if (!ct.getPeriodName().equals(
@@ -298,8 +311,8 @@ public class ClassificationController {
 									break;
 								}
 							}
-							taskSrv.updateTask(gt, gameId);
 						}
+						taskSrv.updateTask(gt, gameId);
 					}
 				}
 				gameSrv.saveGameDefinition(g);

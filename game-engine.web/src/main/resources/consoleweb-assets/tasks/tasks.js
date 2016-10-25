@@ -184,9 +184,7 @@ angular.module('gamificationEngine.tasks', [])
 							if (!game.classificationTask) {
 								game.classificationTask = [];
 							}
-							//game.classificationTask.push(data);
 							game.classificationTask.unshift(data);
-							//$uibModalInstance.close();
 							$scope.isCollapsed = true;
 							$scope.disabled = false;
 							$scope.alerts.rankEdited = true;
@@ -210,7 +208,6 @@ angular.module('gamificationEngine.tasks', [])
 						if (idx > -1) {
 							game.classificationTask.splice(idx, 1, t);
 						}
-						//$uibModalInstance.close();
 						$scope.isCollapsed = true;
 						$scope.disabled = false;
 						$scope.alerts.rankEdited = true;
@@ -220,10 +217,6 @@ angular.module('gamificationEngine.tasks', [])
 					});
 				}
 			}
-			/*else {
-				$scope.alerts.taskErr = 'messages:msg_empty_fields';
-				$scope.disabled = false;
-			}*/
 
 		};
 
@@ -276,37 +269,6 @@ angular.module('gamificationEngine.tasks', [])
 			
 			$window.scrollTo(0, 0);
 		};
-		/*$scope.openAddTaskModal = function () {
-			var modalInstance = $uibModal.open({
-				templateUrl: 'tasks/modal_task_edit.html',
-				controller: 'EditTaskModalInstanceCtrl',
-				backdrop: "static",
-				resolve: {
-					game: function () {
-						return $scope.game;
-					},
-					task: function () {
-						return;
-					}
-				}
-			});
-		};
-
-		$scope.editTask = function (task) {
-			var modalInstance = $uibModal.open({
-				templateUrl: 'tasks/modal_task_edit.html',
-				controller: 'EditTaskModalInstanceCtrl',
-				backdrop: "static",
-				resolve: {
-					game: function () {
-						return $scope.game;
-					},
-					task: function () {
-						return convertTask(task);
-					}
-				}
-			});
-		};*/
 
 		$scope.deleteTask = function (task) {
 			// Delete a game
@@ -342,93 +304,8 @@ angular.module('gamificationEngine.tasks', [])
 		});
 	});
 
-// Edit task instance modal
-modals
-/*.controller('EditTaskModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, task) {
-		$scope.alerts = {
-			'taskErr': '',
-		};
-
-		var t = {};
-		$scope.input = {};
-
-		// default value
-		$scope.input.itemToNotificate = 3;
-
-		$scope.game = game;
-
-		if (task) {
-			$scope.input.name = task.name;
-			$scope.input.itemType = task.itemType;
-			$scope.input.classificationName = task.classificationName;
-			$scope.input.schedule = task.schedule ? task.schedule.cronExpression : task.cronExpression;
-			$scope.input.itemToNotificate = task.itemsToNotificate;
-			$scope.input.edit = true;
-		}
-
-		$scope.ok = function () {
-			$scope.disabled = true;
-			$scope.alerts.taskErr = '';
-			var valid = $scope.input.name && $scope.input.itemType && $scope.input.classificationName && $scope.input.schedule && $scope.input.itemToNotificate;
-			if (valid) {
-				t.name = $scope.input.name;
-				t.itemType = $scope.input.itemType;
-				t.classificationName = $scope.input.classificationName;
-				t.cronExpression = $scope.input.schedule;
-				t.itemsToNotificate = $scope.input.itemToNotificate;
-
-				if (!task) {
-					var found = false;
-					for (var i = 0; i < game.classificationTask.length && !found; i++) {
-						if (game.classificationTask[i].name === t.name) {
-							found = true;
-						}
-					}
-					if (!found) {
-						gamesFactory.addTask(game, t).then(function (data) {
-							if (!game.classificationTask) {
-								game.classificationTask = [];
-							}
-							game.classificationTask.push(data);
-							$uibModalInstance.close();
-						}, function (msg) {
-							$scope.alerts.taskErr = 'messages:' + msg;
-							$scope.disabled = false;
-						});
-					} else {
-						$scope.alerts.taskErr = "messages:msg_error_exist";
-						$scope.disabled = false;
-					}
-				} else {
-					gamesFactory.editTask(game, t).then(function () {
-						var idx = -1;
-						for (var i = 0; i < game.classificationTask.length; i++) {
-							if (game.classificationTask[i].name === t.name) {
-								idx = i;
-								break;
-							}
-						}
-						if (idx > -1) {
-							game.classificationTask.splice(idx, 1, t);
-						}
-						$uibModalInstance.close();
-					}, function (msg) {
-						$scope.alerts.taskErr = 'messages:' + msg;
-						$scope.disabled = false;
-					});
-				}
-			} else {
-				$scope.alerts.taskErr = 'messages:msg_empty_fields';
-				$scope.disabled = false;
-			}
-
-		};
-
-		$scope.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-	})*/
 // Delete task modal
+modals
 	.controller('DeleteTaskModalInstanceCtrl', function ($scope, $uibModalInstance, task, game, gamesFactory) {
 	$scope.argument = task.name;
 

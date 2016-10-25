@@ -229,11 +229,6 @@ angular.module('gamificationEngine.services', [])
 		var editGame = function (game, fields) {
 			var deferred = $q.defer();
 
-			/*if (!fields.name) {
-				deferred.reject('msg_game_name_error');
-			} else if (!!getGameByName(fields.name) && game.name !== fields.name) {
-				deferred.reject('msg_game_name_exists_error');
-			} else {*/
 				if (!game.id) {
 					game = {};
 				}
@@ -250,7 +245,6 @@ angular.module('gamificationEngine.services', [])
 				error(function (data, status, headers, config) {
 					deferred.reject('msg_generic_error');
 				});
-			//}
 			return deferred.promise;
 		};
 
@@ -322,7 +316,6 @@ angular.module('gamificationEngine.services', [])
 			$http.post(url + '/console/game/' + game.id + "/rule/db", rule).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
-				//deferred.reject('msg_instance_name_error');
 				deferred.reject('msg_generic_error');
 			});
 			return deferred.promise;

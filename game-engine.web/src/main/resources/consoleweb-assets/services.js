@@ -257,90 +257,43 @@ angular.module('gamificationEngine.services', [])
 		// Add or edit instance
 		var editInstance = function (game, instanceType, instanceProperties) {
 			var deferred = $q.defer();
-			//var instance = {};
-			
-			/*if (!instanceProperties.name) {
-				deferred.reject('msg_instance_name_error');
-			} else */
-			//if (instance.id == null) {
-				// New instance
-				/*if (!!existsInstanceByName(game, instanceProperties.name, instanceType)) {
-					// Instance with same name alredy exists
-					deferred.reject('msg_instance_name_exists_error');
-				} else {*/
-					// Create new instance
-					var id = 1;
-					angular.forEach(game.concepts, function (i) {
-						if (i.id > id) {
-							id = i.id;
-						}
-						id++;
-					});
 
-					
-					var instance = {
-						'id': id,
-						'name': instanceProperties.name
-					};
-
-					var tmpGame = angular.copy(game);
-
-					// Choose instance object structure
-					if (instanceType == 'points') {
-						let periods = {};
-						let dayMillis = 24 * 3600 * 1000;
-						angular.forEach(instanceProperties.periods,function(value,key){
-							periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name};
-						});
-						instance.periods = periods;
-						tmpGame.pointConcept.unshift(instance);
-					} else if (instanceType == 'badges_collections') {
-						tmpGame.badgeCollectionConcept.unshift(instance);
-					}
-
-					$http.post(url + '/console/game', tmpGame).success(function (data, status, headers, config) {
-						/*if (instanceType == 'points') {
-							game.pointConcept.push(instance);
-						} else if (instanceType == 'badges_collections') {
-							game.badgeCollectionConcept.push(instance);
-						}*/
-						deferred.resolve(instance);
-					}).error(function (data, status, headers, config) {
-						deferred.reject('msg_generic_error');
-					});
-				//}
-			//} else if (!!existsInstanceByName(game, instanceProperties.name, instanceType) && instance.name != instanceProperties.name) {
-				// Instance with same name alredy exists
-				//deferred.reject('msg_instance_name_exists_error');
-			/*} else {
-				// Edit instance
-
-				// Choose other instance properties to be modified
-				if (instanceType == 'points') {
-					if (instance.name == instanceProperties.name && instance.typology == instanceProperties.typology) {
-						deferred.reject('msg_instance_unchanged_error');
-					}
-
-					instance.name = instanceProperties.name;
-					instance.typology = instanceProperties.typology;
-				} else if (instanceType == 'badges_cellections') {
-					if (instance.name == instanceProperties.name) {
-						deferred.reject('msg_instance_unchanged_error');
-					}
-
-					instance.name = instanceProperties.name;
-				} else {
-					if (instance.name == instanceProperties.name && instance.points_dependency == instanceProperties.points_dependency && instance.update_rate == instanceProperties.update_rate) {
-						deferred.reject('msg_instance_unchanged_error');
-					}
-
-					instance.name = instanceProperties.name;
-					instance.points_dependency = instanceProperties.points_dependency;
-					instance.update_rate = instanceProperties.update_rate;
+			// Create new instance
+			var id = 1;
+			angular.forEach(game.concepts, function (i) {
+				if (i.id > id) {
+					id = i.id;
 				}
+				id++;
+			});
 
-				deferred.resolve();
-			}*/
+
+			var instance = {
+					'id': id,
+					'name': instanceProperties.name
+			};
+
+			var tmpGame = angular.copy(game);
+
+			// Choose instance object structure
+			if (instanceType == 'points') {
+				let periods = {};
+				let dayMillis = 24 * 3600 * 1000;
+				angular.forEach(instanceProperties.periods,function(value,key){
+					periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name};
+				});
+				instance.periods = periods;
+				tmpGame.pointConcept.unshift(instance);
+			} else if (instanceType == 'badges_collections') {
+				tmpGame.badgeCollectionConcept.unshift(instance);
+			}
+
+			$http.post(url + '/console/game', tmpGame).success(function (data, status, headers, config) {
+
+				deferred.resolve(instance);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
 
 			return deferred.promise;
 		};

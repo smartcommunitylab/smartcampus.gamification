@@ -40,7 +40,7 @@
     "description": "Link home"
 }, {
     "key": "menu_bar-logout",
-    "value": "Esci",
+    "value": "Logout",
     "description": "Link esci"
 }, {
     "key": "text_btn_prec_comp",
@@ -144,8 +144,16 @@
 	"description": "Label codice giocatore in classifica"
 }, {
 	"key": "player_name",
-	"value": "Giocatore",
+	"value": "Player",
 	"description": "Label nome giocatore in classifica"
+}, {
+	"key": "player_info",
+	"value": "Details",
+	"description": "Label dettagli giocatore in lista"
+}, {
+	"key": "gamification_operation",
+	"value": "Operations",
+	"description": "Label operazioni su giocatore in lista"
 }, {
 	"key": "game_code",
 	"value": "Codice Gioco",
@@ -180,7 +188,7 @@
 	"description": "Label successivo"
 }, {
 	"key": "no_player_in_lists",
-	"value": "Nessun giocatore presente in classifica",
+	"value": "No player in list",
 	"description": "Messaggio classifica vuota"
 }, {
 	"key": "document_title",
@@ -742,5 +750,23 @@
 	"key": "prize_rules_page_text_6",
 	"value": "Play&Go regulation",
 	"description": "Testo per contentuto pagina rules"
+}, {
+	"key": "gamification_poi_choose",
+	"value": "Event"
+}, {
+	"key": "choose_event_placeholder",
+	"value": "Scegli evento"
+}, {
+	"key": "check_in",
+	"value": "Check-in"
+}, {
+	"key": "check_in_new_user",
+	"value": "new Check-in"
+}, {
+	"key": "filter_name_title",
+	"value": "Find player"
+}, {
+	"key": "filter_name_text",
+	"value": "Find by nickName"
 }
 ]

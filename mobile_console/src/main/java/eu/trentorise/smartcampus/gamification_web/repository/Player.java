@@ -1,5 +1,7 @@
 package eu.trentorise.smartcampus.gamification_web.repository;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,6 +25,7 @@ public class Player {
 	private PersonalData personalData;
 	private SurveyData surveyData;
 	private boolean checkedRecommendation;
+	private List<String> eventsCheckIn;
 	
 	public Player() {
 		super();
@@ -140,6 +143,14 @@ public class Player {
 
 	public void setCheckedRecommendation(boolean checkedRecommendation) {
 		this.checkedRecommendation = checkedRecommendation;
+	}
+
+	public List<String> getEventsCheckIn() {
+		return eventsCheckIn;
+	}
+
+	public void setEventsCheckIn(List<String> eventsCheckIn) {
+		this.eventsCheckIn = eventsCheckIn;
 	}
 
 	public String toJSONString() {

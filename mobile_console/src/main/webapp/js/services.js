@@ -331,9 +331,7 @@ cp.factory('invokeWSNiksServiceProxy', function($http, $q) {
 			$http({
 				method : method,
 				url : 'rest/' + funcName,
-				params : {
-					"urlWS" : urlWS,
-				},
+				params : params,
 				headers : headers,
 				data : data
 			}).success(function(data) {

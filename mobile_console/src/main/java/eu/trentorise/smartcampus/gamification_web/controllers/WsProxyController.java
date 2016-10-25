@@ -76,6 +76,8 @@ public class WsProxyController {
 	private Long oldWeekTimestamp;
 	private Long actualTimeStamp = null;
 	private String lastWeekClassification = "";
+	private static final String CHECK_IN = "checkin";
+	private static final String CHECK_IN_NU = "checkin_new_user_Trento_Fiera";
 
 	@Autowired
 	@Value("${smartcampus.gamification.secure.crypto.key1}")
@@ -583,6 +585,78 @@ public class WsProxyController {
 		model.put("wsresult", res);
 		model.put("language", user_language);
 		return new ModelAndView("unsubscribe", model);
+	}
+	
+	//Method used to send the survey call to gamification engine (if user complete the survey the engine need to be updated with this call)
+	private void sendCheckinToGamification(String playerId, String event){
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, String> event_data = new HashMap<String, String>();
+		if(event != null && event.compareTo("") != 0){
+			event_data.put("checkinName", event);
+		}
+		data.put("actionId", CHECK_IN);
+		data.put("gameId", gameName);
+		data.put("playerId", playerId);
+		data.put("data", event_data);
+		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationUrl + "execute", HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
+		logger.info("Sent checkIn data to gamification engine " + tmp_res.getStatusCode() + " for player " + playerId);
+	}
+	
+	//Method used to send the survey call to gamification engine (if user complete the survey the engine need to be updated with this call)
+	private void sendNewUserCheckinToGamification(String playerId){
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, String> event_data = new HashMap<String, String>();
+		data.put("actionId", CHECK_IN_NU);
+		data.put("gameId", gameName);
+		data.put("playerId", playerId);
+		data.put("data", event_data);
+		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationUrl + "execute", HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
+		logger.info("Sent new user checkIn data to gamification engine " + tmp_res.getStatusCode() + " for player " + playerId);
+	}
+		
+	//Method used to update the player ending-survey data
+	@RequestMapping(method = RequestMethod.POST, value = "/rest/console/sendUserCheckIn/{type}")
+	public @ResponseBody
+	String sendCheckin(HttpServletRequest request, @PathVariable String type, @RequestParam String playerId, @RequestParam(required=false) String event) throws Exception{
+		Player p = null;
+		if(playerId != null && playerId.compareTo("") != 0){
+			if(type != null && type.compareTo(CHECK_IN) == 0){
+				if(event != null && event.compareTo("") != 0){
+					sendCheckinToGamification(playerId, event);
+					String p_type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+					p = playerRepositoryDao.findBySocialIdAndType(playerId, p_type);
+					if(p.getEventsCheckIn() != null){
+						p.getEventsCheckIn().add(event);
+					} else {
+						List<String> events = new ArrayList<String>();
+						events.add(event);
+						p.setEventsCheckIn(events);
+					}
+					playerRepositoryDao.save(p);
+				} else {
+					throw new Exception("No event passed in request");
+				}
+			} else if(type != null && type.compareTo(CHECK_IN_NU) == 0) {
+				sendNewUserCheckinToGamification(playerId);
+				if(event != null && event.compareTo("") != 0){
+					String p_type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+					p = playerRepositoryDao.findBySocialIdAndType(playerId, p_type);
+					if(p.getEventsCheckIn() != null){
+						p.getEventsCheckIn().add(event);
+					} else {
+						List<String> events = new ArrayList<String>();
+						events.add(event);
+						p.setEventsCheckIn(events);
+					}
+					playerRepositoryDao.save(p);
+				}
+			}
+		} else {
+			 throw new Exception("No playerId passed in request");
+		}
+		return "OK";
 	}
 	
 	// Method used to check if a user is registered or not to the system (by mobile app)

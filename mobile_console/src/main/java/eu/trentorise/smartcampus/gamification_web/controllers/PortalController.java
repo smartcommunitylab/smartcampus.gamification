@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,6 +59,7 @@ import eu.trentorise.smartcampus.gamification_web.service.EncryptDecrypt;
 import eu.trentorise.smartcampus.gamification_web.service.StatusUtils;
 import eu.trentorise.smartcampus.aac.AACException;
 import eu.trentorise.smartcampus.gamification_web.models.BagesData;
+import eu.trentorise.smartcampus.gamification_web.models.ConsoleUserData;
 import eu.trentorise.smartcampus.gamification_web.models.MailImage;
 import eu.trentorise.smartcampus.gamification_web.models.Notification;
 import eu.trentorise.smartcampus.gamification_web.models.PlayerStatus;
@@ -73,6 +76,7 @@ import eu.trentorise.smartcampus.gamification_web.repository.ChallengeDescriptio
 import eu.trentorise.smartcampus.gamification_web.repository.Player;
 import eu.trentorise.smartcampus.gamification_web.repository.PlayerRepositoryDao;
 import eu.trentorise.smartcampus.gamification_web.repository.SponsorBannerDataSetup;
+import eu.trentorise.smartcampus.gamification_web.security.ConsoleUserDetailsService;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
 import eu.trentorise.smartcampus.profileservice.model.AccountProfile;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
@@ -102,6 +106,9 @@ public class PortalController extends SCController{
     
     @Autowired
     private SponsorBannerDataSetup sponsorBannerSetup;
+    
+    @Autowired
+    private ConsoleUserDetailsService consoleUserDetailsService;
     
     //Config params
     @Autowired
@@ -384,7 +391,7 @@ public class PortalController extends SCController{
 	}
 	
 
-	@RequestMapping(method = RequestMethod.GET, value = "/loginfb")
+	/*@RequestMapping(method = RequestMethod.GET, value = "/loginfb")
 	public ModelAndView secureFb(HttpServletRequest request) {
 		String redirectUri = mainURL + "/check";
 		String redirectAacService = aacService.generateAuthorizationURIForCodeFlow(redirectUri, "/facebook",
@@ -392,15 +399,75 @@ public class PortalController extends SCController{
 		return new ModelAndView(
 				"redirect:"
 						+ redirectAacService);
-	}
+	}*/
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/prelogin")
+	/*@RequestMapping(method = RequestMethod.GET, value = "/prelogin")
 	public ModelAndView preSecure(HttpServletRequest request) {
 		logger.debug(String.format("I am in pre login"));
 		ModelAndView model = new ModelAndView();
-		model.setViewName("landing");
+		//model.setViewName("landing");
+		model.setViewName("login_console");
 		return model;
+	}*/
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/console_check")
+	public ModelAndView securePageConsole(HttpServletRequest request, @RequestParam(required = false) String code)
+			throws SecurityException, AACException {
+		String redirectUri = mainURL + "/console_check";
+		logger.info(String.format("I am in get check console. RedirectUri = %s", redirectUri));
+		String userToken = aacService.exchngeCodeForToken(code, redirectUri).getAccess_token();
+		List<GrantedAuthority> list = Collections.<GrantedAuthority> singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+		Authentication auth = new PreAuthenticatedAuthenticationToken(userToken, "", list);
+		auth = authenticationManager.authenticate(auth);
+		SecurityContextHolder.getContext().setAuthentication(auth);
+		request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+				SecurityContextHolder.getContext());
+		// Only for tests and developing! Remove before distribution
+		//practiceController.initPractices(request, "1");
+		
+		return new ModelAndView("redirect:/console/");
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/console/")
+	public ModelAndView index_console(ModelMap model, Principal principal) {
+		String name = "scoAdmin"; //principal.getName();
+		ConsoleUserData user = consoleUserDetailsService.getUserDetails(name);
+		
+		model.addAttribute("user_name", user.getName());
+		model.put("isShortClassification", isShortClassification);
+		//model.addAttribute("mailMessage", "test messaggio successo");
+		return new ModelAndView("console", model);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/console/home")
+	public ModelAndView index_console_home(ModelMap model, Principal principal) {
+		String name = "scoAdmin"; //principal.getName();
+		ConsoleUserData user = consoleUserDetailsService.getUserDetails(name);
+		
+		model.addAttribute("user_name", user.getName());
+		//model.addAttribute("mailMessage", "test messaggio successo");
+		return new ModelAndView("console", model);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/console/console_login")
+	public ModelAndView secureConsole(ModelMap model) {
+		logger.error(String.format("I am in get login console"));
+		//To use the basic autentication I think is necessary to
+		// 1 - change the redirect Uri to a page with a login form
+		// 2 - in the login form invoke a new metho that check the user credential
+		// 3 - if success redirect to home_console else show the error
+		return new ModelAndView("login_console");
+	}
+	
+	/*@RequestMapping(method = RequestMethod.GET, value = "/console/logout")
+	public ModelAndView secureLogout(ModelMap model) {
+		logger.error(String.format("I am in logout console"));
+		//To use the basic autentication I think is necessary to
+		// 1 - change the redirect Uri to a page with a login form
+		// 2 - in the login form invoke a new metho that check the user credential
+		// 3 - if success redirect to home_console else show the error
+		return new ModelAndView("login_console");
+	}*/
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/cookie_info")
 	public ModelAndView preSecureCookie(HttpServletRequest request) {

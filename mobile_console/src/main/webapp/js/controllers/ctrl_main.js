@@ -620,6 +620,15 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
         userId = null;
     	window.location.href = "gamificationweb/logout";
     };
+    
+    $scope.console_logout = function() {
+    	// Clear some session variables
+        //sharedDataService.setBase64(null);
+        $scope.user_token = null;
+        token = null;
+        userId = null;
+    	window.location.href = "console/logout";
+    };
                   		    
     $scope.getToken = function() {
         return 'Bearer ' + $scope.user_token;

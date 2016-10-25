@@ -62,8 +62,18 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
+    	.when('/console/', {
+    		templateUrl: 'partials/console/home.html',
+    		controller: 'ConsoleCtrl',
+    		controllerAs: 'console'
+    	})
+    	.when('/console/home', {
+    		templateUrl: 'partials/console/home.html',
+    		controller: 'ConsoleCtrl',
+    		controllerAs: 'console'
+    	})
     	.otherwise({
-    		redirectTo:'/'
+    		redirectTo:'/console/'
     	});
   			
   	$locationProvider.html5Mode(true); //.hashPrefix('!')

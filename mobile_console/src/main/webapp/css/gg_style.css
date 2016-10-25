@@ -294,6 +294,10 @@
 	
 	.padding_btm {
 		padding-bottom: 10px;
+		text-align: center;
+	}
+	.padding_btm_only {
+		padding-bottom: 5px;
 	}
 	.banner-imgs {
 		/*margin-top: 15px;*/
@@ -671,7 +675,9 @@
 
 	#my-small-menu { display: block; }   /* hide it elsewhere */
   	#my-big-menu { display: none; }   /* show it elsewhere */
-  	#my-small-footer { display: block; }
+  	#my-small-menu { display: block; }   /* hide it elsewhere */
+  	#my-big-login { display: none; }   /* show it elsewhere */
+  	#my-small-login { display: block; }
   	#my-big-footer { display: none; }
   	/* Block for green score */
   	#green-small-score { display: block; }
@@ -773,6 +779,8 @@
 		.open > .dropdown-menu { width: 90% }
 		#my-small-menu { display: none; }   /* hide it elsewhere */
   		#my-big-menu { display: block; }   /* show it elsewhere */
+  		#my-small-login { display: none; }   /* hide it elsewhere */
+  		#my-big-login { display: block; }   /* show it elsewhere */
   		#my-small-footer { display: none; }
   		#my-big-footer { display: block; }
 /*   	#my-small-tabs { dispaly: none; } */

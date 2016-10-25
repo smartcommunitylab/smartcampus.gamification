@@ -95,9 +95,7 @@ angular.module('gamificationEngine.tasks', [])
 							if (!game.classificationTask) {
 								game.classificationTask = [];
 							}
-							//game.classificationTask.push(data);
 							game.classificationTask.unshift(data);
-							//$uibModalInstance.close();
 							$scope.isCollapsed = true;
 							$scope.disabled = false;
 							$scope.alerts.rankEdited = true;
@@ -121,7 +119,6 @@ angular.module('gamificationEngine.tasks', [])
 						if (idx > -1) {
 							game.classificationTask.splice(idx, 1, t);
 						}
-						//$uibModalInstance.close();
 						$scope.isCollapsed = true;
 						$scope.disabled = false;
 						$scope.alerts.rankEdited = true;
@@ -246,6 +243,7 @@ angular.module('gamificationEngine.tasks', [])
 			$scope.edit = false;
 			$scope.isCollapsed = false;
 			$scope.alerts.rankEdited = false;
+			$scope.delay = {showField: false};
 		};
 
 		$scope.editTask = function (editingTask) {
@@ -262,7 +260,6 @@ angular.module('gamificationEngine.tasks', [])
 			} else {
 				$scope.input.periodName = task.periodName;
 			}
-			$scope.delay.value = task.delayValue;
 			if(task.delayUnit) {
 				for(var i = 0; i < $scope.timeunit.length; i++) {
 					if($scope.timeunit[i].value === task.delayUnit){
@@ -270,8 +267,9 @@ angular.module('gamificationEngine.tasks', [])
 						break;
 					}
 				}
+				$scope.delay.value = task.delayValue;
 			}
-			$scope.delay.showField = task.delayValue !== undefined;
+			$scope.delay.showField = task.delayUnit ? true : false;
 			$scope.edit = true;
 			$scope.isCollapsed = false;
 			$scope.alerts.rankEdited = false;
@@ -328,7 +326,7 @@ angular.module('gamificationEngine.tasks', [])
 			
 			modalInstance.result.then(function () {
 				$scope.alerts.rankDeleted = true;
-				
+				$scope.isCollapsed = true;
 				$timeout(function () {
 					$scope.alerts.rankDeleted = false;
 				}, 4000);

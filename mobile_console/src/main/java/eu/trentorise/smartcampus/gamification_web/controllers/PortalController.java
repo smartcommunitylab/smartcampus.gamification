@@ -449,8 +449,6 @@ public class PortalController extends SCController{
 		return new ModelAndView("console", model);
 	}
 	
-	
-	
 	@RequestMapping(method = RequestMethod.GET, value = "/console/console_login")
 	public ModelAndView secureConsole(ModelMap model) {
 		logger.error(String.format("I am in get login console"));

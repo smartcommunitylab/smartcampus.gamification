@@ -57,6 +57,18 @@
 	<http xmlns="http://www.springframework.org/schema/security"
 		pattern="/out/rest/**" security="none" />
 	
+	<!-- Dashboard Rest WS security configuration -->
+	<sec:http pattern="/rest/console/**" use-expressions="false"
+	    authentication-manager-ref="consoleAuthenticationManager">
+    	<!-- <sec:http-basic /> -->
+    	<sec:intercept-url pattern="/console/console_login" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    	<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
+    	<sec:session-management invalid-session-url="/console/console_login" session-fixation-protection="newSession">
+		     <sec:concurrency-control expired-url="/console/console_login" />
+		</sec:session-management>
+		<sec:form-login login-page="/console/console_login" />
+	</sec:http>
+	
 	<sec:http pattern="/rest/**" entry-point-ref="forbEntryPoint"
 		use-expressions="true" create-session="stateless"> <!-- ifRequired -->
 		<sec:custom-filter position="PRE_AUTH_FILTER" ref="authTokenFilter" />

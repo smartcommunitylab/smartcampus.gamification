@@ -358,28 +358,30 @@ public class WsProxyController {
 		if(iter != null && Iterables.size(iter) > 0){
 			for(Player p: iter){
 				PersonalData pData = p.getPersonalData();
-				String recommender = pData.getNick_recommandation();
-				String userId = p.getSocialId();
-				Integer points = completeClassification.get(userId);
-				if(points != null){
-					int score = points.intValue();
-					logger.debug("Green leaves point user " + userId + ": " + score);
-					int minRecPoints = 0;
-					try	{
-						minRecPoints = Integer.parseInt(RECOMMENDATION_POINTS);
-					} catch (Exception ex){
-						minRecPoints = 1;
-					}
-					if(score >= minRecPoints){
-						Player recPlayer = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(recommender), type);
-						if (recommender != null) {
-							sendRecommendationToGamification(recPlayer.getPid());
-							p.setCheckedRecommendation(true);
-							playerRepositoryDao.save(p);	//update player data in db
+				if(pData != null){
+					String recommender = pData.getNick_recommandation();
+					String userId = p.getSocialId();
+					Integer points = completeClassification.get(userId);
+					if(points != null){
+						int score = points.intValue();
+						logger.debug("Green leaves point user " + userId + ": " + score);
+						int minRecPoints = 0;
+						try	{
+							minRecPoints = Integer.parseInt(RECOMMENDATION_POINTS);
+						} catch (Exception ex){
+							minRecPoints = 1;
 						}
+						if(score >= minRecPoints){
+							Player recPlayer = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(recommender), type);
+							if (recommender != null) {
+								sendRecommendationToGamification(recPlayer.getPid());
+								p.setCheckedRecommendation(true);
+								playerRepositoryDao.save(p);	//update player data in db
+							}
+						}
+					} else {
+						logger.debug("Green leaves point user " + userId + ": none");
 					}
-				} else {
-					logger.debug("Green leaves point user " + userId + ": none");
 				}
 			}
 		} else {

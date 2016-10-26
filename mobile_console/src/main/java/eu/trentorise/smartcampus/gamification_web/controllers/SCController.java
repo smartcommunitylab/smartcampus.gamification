@@ -33,7 +33,7 @@ import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
 @Controller
 public class SCController {
 	
-	/*@Autowired
+	@Autowired
 	@Value("${aacExtURL}")
 	private String aacExtURL;
 	
@@ -48,7 +48,7 @@ public class SCController {
 
 	@Autowired
 	@Value("${smartcampus.gamification.clientSecret}")
-	private String client_secret;*/
+	private String client_secret;
 
 //	private SCWebApiClient client = null;
 
@@ -56,11 +56,11 @@ public class SCController {
 	protected AACService aacService;
 	protected BasicProfileService profileService;
 
-	/*@PostConstruct
+	@PostConstruct
 	public void init() {
 		aacService = new AACService(aacExtURL, client_id, client_secret);
 		profileService = new BasicProfileService(aacURL);
-	}*/
+	}
 	
 	/**
 	 * Here we assume that the access token is placed in the current security
@@ -77,7 +77,7 @@ public class SCController {
 	/*
 	 * Getters and Setters
 	 */
-	/*protected BasicProfile getBasicProfile(HttpServletRequest request) throws SecurityException, ProfileServiceException {
+	protected BasicProfile getBasicProfile(HttpServletRequest request) throws SecurityException, ProfileServiceException {
 		BasicProfile bp = profileService.getBasicProfile(getToken(request));
 		return bp;
 	}
@@ -88,6 +88,6 @@ public class SCController {
 
 	protected AccountProfile getAccountProfile(HttpServletRequest request) throws SecurityException, ProfileServiceException {
 		return profileService.getAccountProfile(getToken(request));
-	}*/
+	}
 
 }

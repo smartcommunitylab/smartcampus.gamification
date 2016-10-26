@@ -48,7 +48,7 @@
 </script>
 <style type="text/css">
 	.panel {
-		background: url(img/paginaAccesso-56-56-56.svg) no-repeat center center fixed;
+		background: url(img/paginaAccesso-56-56-56.svg) no-repeat top center fixed;
 	}
 </style>
 
@@ -59,7 +59,7 @@
 	<body>
 		<div class="container">
 			<div class="row" style="margin-top: 20px">
-				<div id="my-big-login" ng-class="col-md-8">
+				<div id="my-big-login" ng-class="col-md-6">
 					<div class="panel panel-default" align="center" background="img/paginaAccesso-56-56-56.svg">
 		  				<div class="panel-body">
 		<!-- 				<div class="row" style="height: 800px"> -->
@@ -114,7 +114,9 @@
 					</div>	
 				</div>
 				<div id="my-small-login" ng-class="col-sm-10">
-							<div style="margin: 10px 10px 10px 10px">
+					<div class="panel panel-default" align="center" background="img/paginaAccesso-56-56-56.svg">
+		  				<div class="panel-body">	
+							<div style="margin: 10px 10px 10px 10px; height: 300px">
 								<!--[if lt IE 9]>
 								<div class="row" style="height: 20px" align="center" ng-init="hideLogin()">
 									<h4><font color="red">Alcune funzionalit&agrave; del portale non sono supportate in Internet Explorer 8 e versioni inferiori. Aggiorna Internet Explorer ad un versione successiva o utilizza un altro browser per accedere al portale.</font></h4>
@@ -122,45 +124,46 @@
 								<![endif]-->
 								<div class="row" style="font-size: 18px; color: red" align="center" id="cookies">
 								</div>
-								<div style="margin: 10px" align="center">
+								<div style="margin-top: 80px" align="center">
 								</div>
-								<div class="well" align="center">
-										<form name="f" action="console/login.do" method="POST" accept-charset="utf-8"><!-- j_spring_security_check -->
-											<table style="width: 45%;">
-												<tr>
-													<td colspan="2" id="err_login_cel">
-														<script>
-															if(get('error') == 'true'){
-																var err_div = document.createElement('div');
-															 	err_div.className = 'alert alert-danger';
-															 	err_div.id = 'err_log_text';
-															 	err_div.innerHTML = 'Errore Autenticazione: username o password non corretti';
-															 	$("#err_login_cel").append(err_div);
-															}
-														</script>							
-													</td>
-												</tr>
-												<tr>
-													<td width="30%"><label for="input_user">Username:</label></td>
-													<td width="70%"><input id="input_user" class="form-control" type='text' name='j_username' /></td>
-												</tr>
-												<tr>
-													<td><label for="input_pwd">Password:</label></td>
-													<td><input id="input_pwd" class="form-control" type='password' name='j_password' /></td>
-												</tr>
-												<tr>
-													<td colspan="2">&nbsp;</td>
-												</tr>
-												<tr>
-													<td colspan="2" align="center">
-														<input value="Login" name="submit" type="submit" class="btn btn-primary">&nbsp;
-														<input value="Cancella" name="reset" type="reset" class="btn btn-default">
-													</td>
-												</tr>
-											</table>
-										</form>
-								</div>
+								<!-- <div class="well" align="center"> -->
+								<form name="f" action="console/login.do" method="POST" accept-charset="utf-8"><!-- j_spring_security_check -->
+									<table style="width: 45%;">
+										<tr>
+											<td colspan="2" id="err_login_cel">
+												<script>
+													if(get('error') == 'true'){
+														var err_div = document.createElement('div');
+													 	err_div.className = 'alert alert-danger';
+													 	err_div.id = 'err_log_text';
+													 	err_div.innerHTML = 'Errore Autenticazione: username o password non corretti';
+													 	$("#err_login_cel").append(err_div);
+													}
+												</script>							
+											</td>
+										</tr>
+										<tr>
+											<td width="30%"><label for="input_user">Username:</label></td>
+											<td width="70%"><input id="input_user" class="form-control" type='text' name='j_username' /></td>
+										</tr>
+										<tr>
+											<td><label for="input_pwd">Password:</label></td>
+											<td><input id="input_pwd" class="form-control" type='password' name='j_password' /></td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td colspan="2" align="center">
+												<input value="Login" name="submit" type="submit" class="btn btn-primary">&nbsp;
+												<input value="Cancella" name="reset" type="reset" class="btn btn-default">
+											</td>
+										</tr>
+									</table>
+								</form>
 							</div>
+						</div>
+					</div>		
 				</div>
 			</div>
 			<div class="row">

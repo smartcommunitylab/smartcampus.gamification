@@ -1,78 +1,157 @@
 <div class="container-fluid" ng-init="initConsoleData()">
-		
-	<div id="big-loading" class="row" style="height: 200px" ng-show="isLoading">
-		<div style="text-align: center">
-			<img src="img/ajax-loader.gif" width="70" height="70" /><br>
-			<h3>{{ 'loading_text' | i18n }}...</h3>
+	
+	<div id="big-player-list">	
+		<div class="row" style="height: 200px" ng-show="isLoading">
+			<div style="text-align: center">
+				<img src="img/ajax-loader.gif" width="70" height="70" /><br>
+				<h3>{{ 'loading_text' | i18n }}...</h3>
+			</div>
 		</div>
-	</div>
-			
-	<div class="row padding_btm_only" ng-show="!isLoading">
-	    
-	    <div class= "col-md-4" align="left">
-	    	<button class="btn btn-success" ng-click="initConsoleData()">
-	    		<i class="glyphicon glyphicon-refresh"></i>
-	    	</button>
-	    </div>
-	    <div class= "col-md-4" align="center">
-	    	<form name="eventForm">
-	    		<table style="width: 100%">
-	    			<tr>
-	    				<td>
-	    					<label for="eventPoi">{{ 'gamification_poi_choose' | i18n }}: </label>
-	    				</td>
-	    				<td>
-	    					<select class="form-control" name="eventPoi" id="eventPoi" ng-options="e.name for e in events track by e.id" ng-model="game_event">
-	    						<option value="">{{ 'choose_event_placeholder' | i18n }}</option>
-	    					</select>
-	    				</td>
-	    			</tr>
-	    		</table>
-	    	</form>
-	    </div>
-	</div>
-	<div class="padding_btm">
-		<div >
-			<table class="table table-hover" style="width: 100%">
-				<tr ng-show="gamificationUsers.length != 0">
-					<th width="35%" align="center">
-						{{ 'player_name' | i18n }}&nbsp;
-						<a href ng-click="showPlayerNameFilter();currentPage=0" ng-show="!showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-search"></i></a>
-						<a href ng-click="nameFilter=null;hidePlayerNameFilter()" ng-show="showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-remove"></i></a>
-						<div ng-show="showPFilter">
-						    <input type="search" ng-model="nameFilter" placeholder="{{ 'filter_name_text' | i18n }}" ng-change="currentPage = 0" />
-						</div>
-					</th>
-					<th width="35%" align="left">{{ 'player_info' | i18n }}</th>
-					<th width="30%">{{ 'gamification_operation' | i18n }}</th>
-				</tr>
-				<tbody class="animate-repeat"
-					ng-repeat="p in gamificationUsers | filter:nameFilter | orderBy:'nikName' | startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
-					<tr>
-						<td align="left">{{ p.nikName }}</td>
-						<td align="left">{{ p.mail }}</td>
-						<td align="left">
-							<button class="btn btn-success" ng-click="userCheckIn(p)" ng-disabled="!game_event || eventAlreadyChecked(p)">
-	    						{{ 'check_in' | i18n }}&nbsp;<i class="glyphicon glyphicon-ok" ng-show="eventAlreadyChecked(p) == CHECK_IN"></i>
-	    					</button>
-	    					<button class="btn btn-info" ng-click="newUserCheckIn(p)" ng-disabled="!game_event || eventAlreadyChecked(p)">
-	    						{{ 'check_in_new_user' | i18n }}&nbsp;<i class="glyphicon glyphicon-ok" ng-show="eventAlreadyChecked(p) == CHECK_IN_NU"></i>
-	    					</button>
-						</td>
+				
+		<div class="row padding_btm_only" ng-show="!isLoading">
+		    
+		    <div class= "col-md-4" align="left">
+		    	<button class="btn btn-success" ng-click="initConsoleData()">
+		    		<i class="glyphicon glyphicon-refresh"></i>
+		    	</button>
+		    </div>
+		    <div class= "col-md-4" align="center">
+		    	<form name="eventForm">
+		    		<table style="width: 100%">
+		    			<tr>
+		    				<td>
+		    					<label for="eventPoi">{{ 'gamification_poi_choose' | i18n }}: </label>
+		    				</td>
+		    				<td>
+		    					<select class="form-control" name="eventPoi" id="eventPoi" ng-options="e.name for e in events track by e.id" ng-model="game_event">
+		    						<option value="">{{ 'choose_event_placeholder' | i18n }}</option>
+		    					</select>
+		    				</td>
+		    			</tr>
+		    		</table>
+		    	</form>
+		    </div>
+		</div>
+		<div class="padding_btm">
+			<div >
+				<table class="table table-hover" style="width: 100%">
+					<tr ng-show="gamificationUsers.length != 0">
+						<th width="35%" align="center">
+							{{ 'player_name' | i18n }}&nbsp;
+							<a href ng-click="showPlayerNameFilter();currentPage=0" ng-show="!showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-search"></i></a>
+							<a href ng-click="nameFilter=null;hidePlayerNameFilter()" ng-show="showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-remove"></i></a>
+							<div ng-show="showPFilter">
+							    <input type="search" ng-model="nameFilter" placeholder="{{ 'filter_name_text' | i18n }}" ng-change="currentPage = 0" />
+							</div>
+						</th>
+						<th width="35%" align="left">{{ 'player_info' | i18n }}</th>
+						<th width="30%">{{ 'gamification_operation' | i18n }}</th>
 					</tr>
-				</tbody>
-				<tr ng-show="gamificationUsers.length == 0">
-					<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
-				</tr>
-			</table>
+					<tbody class="animate-repeat"
+						ng-repeat="p in gamificationUsers | filter:nameFilter | orderBy:'nikName' | startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
+						<tr>
+							<td align="left">{{ p.nikName }}</td>
+							<td align="left">{{ p.mail }}</td>
+							<td align="left">
+								<button class="btn btn-success" ng-click="userCheckIn(p)" ng-disabled="!game_event || eventAlreadyChecked(p)">
+		    						{{ 'check_in' | i18n }}&nbsp;<i class="glyphicon glyphicon-ok" ng-show="eventAlreadyChecked(p) == CHECK_IN"></i>
+		    					</button>
+		    					<button class="btn btn-info" ng-click="newUserCheckIn(p)" ng-disabled="!game_event || eventAlreadyChecked(p)">
+		    						{{ 'check_in_new_user' | i18n }}&nbsp;<i class="glyphicon glyphicon-ok" ng-show="eventAlreadyChecked(p) == CHECK_IN_NU"></i>
+		    					</button>
+							</td>
+						</tr>
+					</tbody>
+					<tr ng-show="gamificationUsers.length == 0">
+						<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
+					</tr>
+				</table>
+			</div>
+			<button class="btn btn-success"
+				ng-disabled="currentPage == 0"
+				ng-click="currentPage=currentPage-1">{{ 'previous_label' | i18n }}</button>
+				{{currentPage+1}}/{{numberOfPages()}}
+			<button class="btn btn-success"
+				ng-disabled="currentPage >= gamificationUsers.length/maxPlayers - 1"
+				ng-click="currentPage=currentPage+1">{{ 'next_label' | i18n }}</button><!--  -->
 		</div>
-		<button class="btn btn-success"
-			ng-disabled="currentPage == 0"
-			ng-click="currentPage=currentPage-1">{{ 'previous_label' | i18n }}</button>
-			{{currentPage+1}}/{{numberOfPages()}}
-		<button class="btn btn-success"
-			ng-disabled="currentPage >= gamificationUsers.length/maxPlayers - 1"
-			ng-click="currentPage=currentPage+1">{{ 'next_label' | i18n }}</button><!--  -->
+	</div>
+	
+	<div id="small-player-list">	
+		<div class="row" style="height: 200px" ng-show="isLoading">
+			<div style="text-align: center">
+				<img src="img/ajax-loader.gif" width="70" height="70" /><br>
+				<h3>{{ 'loading_text' | i18n }}...</h3>
+			</div>
+		</div>
+				
+		<div class="row padding_btm_only" ng-show="!isLoading">
+		    
+		    <div class= "col-sm-3" align="left">
+		    	<button class="btn btn-success" ng-click="initConsoleData()">
+		    		<i class="glyphicon glyphicon-refresh"></i>
+		    	</button>
+		    </div>
+		    <div class= "col-sm-6" align="center">
+		    	<form name="eventForm">
+		    		<table style="width: 100%">
+		    			<tr>
+		    				<td>
+		    					<label for="eventPoi">{{ 'gamification_poi_choose' | i18n }}: </label>
+		    				</td>
+		    				<td>
+		    					<select class="form-control" name="eventPoi" id="eventPoi" ng-options="e.name for e in events track by e.id" ng-model="game_event">
+		    						<option value="">{{ 'choose_event_placeholder' | i18n }}</option>
+		    					</select>
+		    				</td>
+		    			</tr>
+		    		</table>
+		    	</form>
+		    </div>
+		</div>
+		<div class="padding_btm">
+			<div >
+				<table class="table table-hover" style="width: 100%">
+					<tr ng-show="gamificationUsers.length != 0">
+						<th width="30%" align="center">
+							{{ 'player_name' | i18n }}&nbsp;
+							<a href ng-click="showPlayerNameFilter();currentPage=0" ng-show="!showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-search"></i></a>
+							<a href ng-click="nameFilter=null;hidePlayerNameFilter()" ng-show="showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-remove"></i></a>
+							<div ng-show="showPFilter">
+							    <input type="search" ng-model="nameFilter" placeholder="{{ 'filter_name_text' | i18n }}" ng-change="currentPage = 0" />
+							</div>
+						</th>
+						<th width="30%" align="left">{{ 'player_info' | i18n }}</th>
+						<th width="40%">{{ 'gamification_operation' | i18n }}</th>
+					</tr>
+					<tbody class="animate-repeat"
+						ng-repeat="p in gamificationUsers | filter:nameFilter | orderBy:'nikName' | startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
+						<tr>
+							<td align="left">{{ p.nikName }}</td>
+							<td align="left">{{ p.mail }}</td>
+							<td align="left">
+								<button class="btn btn-success" ng-click="userCheckIn(p)" ng-disabled="!game_event || eventAlreadyChecked(p)">
+		    						{{ 'check_in' | i18n }}&nbsp;<i class="glyphicon glyphicon-ok" ng-show="eventAlreadyChecked(p) == CHECK_IN"></i>
+		    					</button>
+		    					<button class="btn btn-info" ng-click="newUserCheckIn(p)" ng-disabled="!game_event || eventAlreadyChecked(p)">
+		    						{{ 'check_in_new_user' | i18n }}&nbsp;<i class="glyphicon glyphicon-ok" ng-show="eventAlreadyChecked(p) == CHECK_IN_NU"></i>
+		    					</button>
+							</td>
+						</tr>
+					</tbody>
+					<tr ng-show="gamificationUsers.length == 0">
+						<td colspan="3"><strong>{{ 'no_player_in_lists' | i18n }}</strong></td>
+					</tr>
+				</table>
+			</div>
+			<button class="btn btn-success"
+				ng-disabled="currentPage == 0"
+				ng-click="currentPage=currentPage-1">{{ 'previous_label' | i18n }}</button>
+				{{currentPage+1}}/{{numberOfPages()}}
+			<button class="btn btn-success"
+				ng-disabled="currentPage >= gamificationUsers.length/maxPlayers - 1"
+				ng-click="currentPage=currentPage+1">{{ 'next_label' | i18n }}</button><!--  -->
+		</div>
 	</div>
 	    
 </div>

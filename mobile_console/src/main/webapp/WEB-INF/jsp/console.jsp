@@ -144,7 +144,7 @@ var conf_lang="<%=request.getAttribute("language")%>";
 								<li class="{{ isActiveItaLang() }}"><a href ng-click="setItalianLanguage()"><strong>IT</strong></a></li>
 								<li class="{{ isActiveEngLang() }}"><a href ng-click="setEnglishLanguage()"><strong>EN</strong></a></li>
 			          			<li class="divider"></li>
-			          			<li><a href="logout" ng-click="logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li>
+			          			<li><a href="console/logout" ng-click="console_logout()"><strong>{{ 'menu_bar-logout' | i18n }}</strong></a></li>
 			            	</ul>
 			            </li>
 			         </ul>
@@ -156,8 +156,20 @@ var conf_lang="<%=request.getAttribute("language")%>";
     
 	<div class="container">
 <!-- 		<div class="row" style="margin-top:70px;"> -->
-		<div class="row">
+		<div id="big-container" class="row">
 			<div class="col-md-10 col-md-offset-1 nopadding">
+				<div class="panel panel-default homepanel">
+			  		<div class="panel-body nopadding">
+			  			<div class="view_body_wrapper">
+							<ng-view class="row">{{ 'loading_text'| i18n }}...</ng-view>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="small-container" class="row">
+			<div class="col-sm-12 nopadding">
 				<div class="panel panel-default homepanel">
 			  		<div class="panel-body nopadding">
 			  			<div class="view_body_wrapper">

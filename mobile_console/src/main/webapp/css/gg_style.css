@@ -679,6 +679,10 @@
   	#my-big-login { display: none; }   /* show it elsewhere */
   	#my-small-login { display: block; }
   	#my-big-footer { display: none; }
+  	#small-container { display: block; }
+  	#big-container { display: none; }
+  	#small-player-list { display: block; }
+  	#big-player-list { display: none; }
   	/* Block for green score */
   	#green-small-score { display: block; }
 	#green-big-score { display: none; }
@@ -773,7 +777,7 @@
 		font-weight: bold;
 	}
 
-	@media (min-width:768px) {
+	@media (min-width:770px) {
 		.nav-tabs.nav-justified > li { float: none; }
 		/*.btn-default { width: 90% }*/
 		.open > .dropdown-menu { width: 90% }
@@ -783,6 +787,10 @@
   		#my-big-login { display: block; }   /* show it elsewhere */
   		#my-small-footer { display: none; }
   		#my-big-footer { display: block; }
+  		#small-container { display: none; }
+  		#big-container { display: block; }
+  		#small-player-list { display: none; }
+  		#big-player-list { display: block; }
 /*   	#my-small-tabs { dispaly: none; } */
 /*   	#my-big-tabs { dispaly: block; } */
 		/* Block for green score */

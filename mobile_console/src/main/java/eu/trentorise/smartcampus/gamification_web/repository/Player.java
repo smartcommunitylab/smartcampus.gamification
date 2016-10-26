@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import eu.trentorise.smartcampus.gamification_web.models.Event;
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
 import eu.trentorise.smartcampus.gamification_web.models.SurveyData;
 
@@ -25,7 +26,7 @@ public class Player {
 	private PersonalData personalData;
 	private SurveyData surveyData;
 	private boolean checkedRecommendation;
-	private List<String> eventsCheckIn;
+	private List<Event> eventsCheckIn;
 	
 	public Player() {
 		super();
@@ -145,11 +146,11 @@ public class Player {
 		this.checkedRecommendation = checkedRecommendation;
 	}
 
-	public List<String> getEventsCheckIn() {
+	public List<Event> getEventsCheckIn() {
 		return eventsCheckIn;
 	}
 
-	public void setEventsCheckIn(List<String> eventsCheckIn) {
+	public void setEventsCheckIn(List<Event> eventsCheckIn) {
 		this.eventsCheckIn = eventsCheckIn;
 	}
 

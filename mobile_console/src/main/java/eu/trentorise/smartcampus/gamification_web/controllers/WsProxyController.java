@@ -50,6 +50,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
 
+import eu.trentorise.smartcampus.gamification_web.models.Event;
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
 import eu.trentorise.smartcampus.gamification_web.models.PlayerClassification;
 import eu.trentorise.smartcampus.gamification_web.models.PlayerStatus;
@@ -620,6 +621,7 @@ public class WsProxyController {
 	@RequestMapping(method = RequestMethod.POST, value = "/rest/console/sendUserCheckIn/{type}")
 	public @ResponseBody
 	String sendCheckin(HttpServletRequest request, @PathVariable String type, @RequestParam String playerId, @RequestParam(required=false) String event) throws Exception{
+		
 		Player p = null;
 		if(playerId != null && playerId.compareTo("") != 0){
 			if(type != null && type.compareTo(CHECK_IN) == 0){
@@ -627,11 +629,12 @@ public class WsProxyController {
 					sendCheckinToGamification(playerId, event);
 					String p_type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 					p = playerRepositoryDao.findBySocialIdAndType(playerId, p_type);
+					Event ev = new Event(event, CHECK_IN, System.currentTimeMillis());
 					if(p.getEventsCheckIn() != null){
-						p.getEventsCheckIn().add(event);
+						p.getEventsCheckIn().add(ev);
 					} else {
-						List<String> events = new ArrayList<String>();
-						events.add(event);
+						List<Event> events = new ArrayList<Event>();
+						events.add(ev);
 						p.setEventsCheckIn(events);
 					}
 					playerRepositoryDao.save(p);
@@ -643,11 +646,12 @@ public class WsProxyController {
 				if(event != null && event.compareTo("") != 0){
 					String p_type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 					p = playerRepositoryDao.findBySocialIdAndType(playerId, p_type);
+					Event ev = new Event(event, CHECK_IN_NU, System.currentTimeMillis());
 					if(p.getEventsCheckIn() != null){
-						p.getEventsCheckIn().add(event);
+						p.getEventsCheckIn().add(ev);
 					} else {
-						List<String> events = new ArrayList<String>();
-						events.add(event);
+						List<Event> events = new ArrayList<Event>();
+						events.add(ev);
 						p.setEventsCheckIn(events);
 					}
 					playerRepositoryDao.save(p);

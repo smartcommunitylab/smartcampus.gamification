@@ -1,0 +1,8 @@
+users: 
+  - id: SmartcommunityAdmin
+    username: scoAdmin
+    password: sco123
+    appId: gamificationTN
+    name: Gamification
+    surname: TN Admin
+    mail: info@comune.trento.tn.it

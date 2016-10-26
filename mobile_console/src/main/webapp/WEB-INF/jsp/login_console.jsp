@@ -58,8 +58,8 @@
 </head>
 	<body>
 		<div class="container">
-			<div class="row" style="margin-top: 20px">
-				<div id="my-big-login" ng-class="col-md-6">
+			<div class="row" style="margin: 40px 100px 20px 100px">
+				<div id="my-big-login" ng-class="col-md-10">
 					<div class="panel panel-default" align="center" background="img/paginaAccesso-56-56-56.svg">
 		  				<div class="panel-body">
 		<!-- 				<div class="row" style="height: 800px"> -->
@@ -164,13 +164,6 @@
 							</div>
 						</div>
 					</div>		
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<hr>
-					<footer>
-					</footer>
 				</div>
 			</div>
 		</div>

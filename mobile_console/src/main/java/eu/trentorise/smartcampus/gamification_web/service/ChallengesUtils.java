@@ -46,7 +46,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_8 = "Compila il questionario di fine gioco e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
-	private final String CHAL_DESC_10 = "Visita la fiera 'Fai la cosa giusta' e guadagni BONUS punti POINT_TYPE";
+	private final String CHAL_DESC_10 = "Visita la fiera 'Fa' la cosa giusta' e guadagni BONUS punti POINT_TYPE";
 	// eng chall descriptions
 	private final String CHAL_DESC_1_ENG = "Do at least TARGET more km MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_1B_ENG = "Do at least TARGET km MODE and you will get a bonus of BONUS POINT_TYPE points";
@@ -57,7 +57,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_7_ENG = "Complete a Bange Collection and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_8_ENG = "Fill out the end-game survay and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_9_ENG = "Recommend the app at least TARGET users and you will gain a bonus of BONUS POINT_TYPE points";
-	private final String CHAL_DESC_10_ENG = "Visit the 'Fai la cosa giusta' fai and you will gain a bonus of BONUS POINT_TYPE points";
+	private final String CHAL_DESC_10_ENG = "Visit the 'Fa' la cosa giusta' fair and you will gain a bonus of BONUS POINT_TYPE points";
 	
 	private final String CHAL_TYPE_1 = "PERCENT";
 	private final String CHAL_TYPE_1B = "KMETERS";
@@ -521,6 +521,7 @@ public class ChallengesUtils {
 						challData.setPeriodName(periodName);
 						challData.setBonusPointType(bonusPointType);
 						challData.setCounterName(counterName);
+						if(target == 0) target = 1;
 						challData.setTarget(target);
 						challData.setInitialBadgeNum(initialBadgeNum);
 						challData.setBadgeCollectionName(badgeCollectionName);
@@ -643,7 +644,6 @@ public class ChallengesUtils {
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_POICHECKIN) == 0){
 		    				old_ch_type = CHAL_TYPE_10;
-		    				target = 1;
 		    				int checkins = 0;
 		    				row_status = round(checkins, 2);
 		    				if(ch_success){

@@ -59,13 +59,13 @@
 	.btn-default:active, 
 	.btn-default.active, 
 	.open .dropdown-toggle.btn-default {
-		width: 100%;
+		/*width: 100%;*/
 		color: #00984a;
-		background: #fff;
-		border: none;
+		/* background: #fff;
+		border: 1px;
 		box-shadow: none;
 		font-size: 15px;
-    	line-height: 2.2;
+    	line-height: 2.2; */
 	}
 	
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
@@ -775,7 +775,7 @@
 
 	@media (min-width:768px) {
 		.nav-tabs.nav-justified > li { float: none; }
-		.btn-default { width: 90% }
+		/*.btn-default { width: 90% }*/
 		.open > .dropdown-menu { width: 90% }
 		#my-small-menu { display: none; }   /* hide it elsewhere */
   		#my-big-menu { display: block; }   /* show it elsewhere */

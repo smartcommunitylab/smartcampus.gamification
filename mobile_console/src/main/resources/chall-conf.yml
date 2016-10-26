@@ -158,4 +158,9 @@ descriptions:
     type: KMETERS
     mobilitymode: walk
     description: Per vincere la sfida vale la somma dei Km camminati (solo tratte superiori a 250 metri) nel corso degli itinerari pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
-    description_eng: To win this challenge, we take into account the total number of Km. you have walked (with distance greater than 250m) during all itineraries that you have planned with ViaggiaTrento Play&Go and which you have taken in between the beginning and end time for this challenge.    
+    description_eng: To win this challenge, we take into account the total number of Km. you have walked (with distance greater than 250m) during all itineraries that you have planned with ViaggiaTrento Play&Go and which you have taken in between the beginning and end time for this challenge.
+  - id: 33
+    type: POICHECKIN
+    mobilitymode: none
+    description: Per vincere la sfida vieni alla fiera 'Fa' la cosa giusta' utilizzando i mezzi sostenibili e cerca lo stand di Fbk. Gli operatori presenti ti permetteranno di fare il check-in sull'evento e vincerai la sfida. Attenzione! Lo stand sara' attivo solo nei giorni 29 e 30 ottobre 2016 dalle 9.00 alle 19.00.
+    description_eng: To win this challenge, go to the fair 'Fa' la cosa giusta' in a sostainable mode and search the Fbk stand. The operators will allow you to check-in to the event and to win the challenge. Attention! The stand will be open only October 29th and 30th from 9.00 to 19.00.

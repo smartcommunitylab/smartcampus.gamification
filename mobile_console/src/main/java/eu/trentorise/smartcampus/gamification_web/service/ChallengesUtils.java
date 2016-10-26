@@ -46,6 +46,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_8 = "Compila il questionario di fine gioco e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
+	private final String CHAL_DESC_10 = "Visita la fiera 'Fai la cosa giusta' e guadagni BONUS punti POINT_TYPE";
 	// eng chall descriptions
 	private final String CHAL_DESC_1_ENG = "Do at least TARGET more km MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_1B_ENG = "Do at least TARGET km MODE and you will get a bonus of BONUS POINT_TYPE points";
@@ -56,6 +57,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_7_ENG = "Complete a Bange Collection and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_8_ENG = "Fill out the end-game survay and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_9_ENG = "Recommend the app at least TARGET users and you will gain a bonus of BONUS POINT_TYPE points";
+	private final String CHAL_DESC_10_ENG = "Visit the 'Fai la cosa giusta' fai and you will gain a bonus of BONUS POINT_TYPE points";
 	
 	private final String CHAL_TYPE_1 = "PERCENT";
 	private final String CHAL_TYPE_1B = "KMETERS";
@@ -67,6 +69,7 @@ public class ChallengesUtils {
 	private final String CHAL_TYPE_7 = "BADGECOLLECTION";
 	private final String CHAL_TYPE_8 = "SURVEYDATA";
 	private final String CHAL_TYPE_9 = "RECOMMENDATION";
+	private final String CHAL_TYPE_10 = "POICHECKIN";
 
 	private final String SERVER_CHAL_ALLOWED_MODE_W = "Walk_";
 	private final String SERVER_CHAL_ALLOWED_MODE_BK = "Bike_";
@@ -128,6 +131,7 @@ public class ChallengesUtils {
 	private static final String CHAL_MODEL_NEXT_BADGE = "nextBadge";
 	private static final String CHAL_MODEL_COMPLETE_BADGE_COLL = "completeBadgeCollection";
 	private static final String CHAL_MODEL_SURVEY = "survey";
+	private static final String CHAL_MODEL_POICHECKIN = "poiCheckin";
 	private static final String STATE = "state";
 	private static final String ITA_LANG = "it";
 	private static final String ENG_LANG = "en";
@@ -227,6 +231,8 @@ public class ChallengesUtils {
 			} else {
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(9).getDescription().replace("X", target) : challDescList.get(9).getDescription_eng().replace("X", target);
 			}
+		} else if (type.compareTo(CHAL_TYPE_10) == 0){
+			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(32).getDescription() : challDescList.get(32).getDescription_eng();
 		}
 		return correctDesc;
 	}
@@ -633,6 +639,19 @@ public class ChallengesUtils {
 								row_status = 1.00;
 							}
 		    				ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_7, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_7_ENG, target, ch_bonus, ch_point_type, "", null, language);
+		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
+		    			}
+		    			if(ch_type.compareTo(CHAL_MODEL_POICHECKIN) == 0){
+		    				old_ch_type = CHAL_TYPE_10;
+		    				target = 1;
+		    				int checkins = 0;
+		    				row_status = round(checkins, 2);
+		    				if(ch_success){
+	    						checkins = 1;
+	    					}
+		    				status = checkins * 100 / target;
+		    				if(status > 100)status = 100;
+		    				ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_10, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_10_ENG, target, ch_bonus, ch_point_type, "", null, language);
 		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_SURVEY) == 0){

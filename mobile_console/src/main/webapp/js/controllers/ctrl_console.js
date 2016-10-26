@@ -252,10 +252,8 @@ cp.controller('ConsoleCtrl',['$scope', '$http', '$route', '$routeParams', '$root
     	return list;
     };
     
-    
-    
     // Method used to invoke user checkIn method to an event
-    $scope.userCheckIn = function(userData) {
+    $scope.callWsCheckIn = function(userData){
     	var method = 'POST';
     	var params = {
     		playerId: userData.pid,
@@ -273,7 +271,7 @@ cp.controller('ConsoleCtrl',['$scope', '$http', '$route', '$routeParams', '$root
     };
     
     // Method used to invoke new user checkIn method
-    $scope.newUserCheckIn = function(userData) {
+    $scope.callWsNewUserCheckIn = function(userData) {
     	var method = 'POST';
     	var params = {
     		playerId: userData.pid,
@@ -290,6 +288,44 @@ cp.controller('ConsoleCtrl',['$scope', '$http', '$route', '$routeParams', '$root
     	return myDataPromise;
     };
     
+    
+    // Method used to ask confirmation to call the checkIn method for a user to an event
+    $scope.userCheckIn = function(userData) {
+    	if(userData){
+    		var confCheck = null;
+    		if(sharedDataService.getUsedLanguage() == 'ita'){
+    			confCheck = $dialogs.confirm("Attenzione", "Confermi l'operazione di CHECK-IN per l'utente <strong>" + userData.nikName + "</strong>?");
+    		} else {
+    			confCheck = $dialogs.confirm("Attention", "Do you confirm the CHECK-IN operation for the user <strong>" + userData.nikName + "</strong>?");
+    		}
+	    	confCheck.result.then(function(btn){
+				// yes case
+				$scope.callWsCheckIn(userData);
+			},function(btn){
+				// no case
+				// do nothing
+			});
+    	}
+    };
+    
+    // Method used to invoke new user checkIn method
+    $scope.newUserCheckIn = function(userData) {
+    	if(userData){
+    		var confCheck = null;
+    		if(sharedDataService.getUsedLanguage() == 'ita'){
+    			confCheck = $dialogs.confirm("Attenzione", "Confermi l'operazione di NEW USER CHECK-IN per l'utente <strong>" + userData.nikName + "</strong>?");
+    		} else {
+    			confCheck = $dialogs.confirm("Attention", "Do you confirm the NEW USER CHECK-IN operation for the user <strong>" + userData.nikName + "</strong>?");
+    		}
+	    	confCheck.result.then(function(btn){
+				// yes case
+				$scope.callWsNewUserCheckIn(userData);
+			},function(btn){
+				// no case
+				// do nothing
+			});
+    	}
+    };
     
     // Method used to load only the used data from the players list
     $scope.correctProfileData = function(profile){

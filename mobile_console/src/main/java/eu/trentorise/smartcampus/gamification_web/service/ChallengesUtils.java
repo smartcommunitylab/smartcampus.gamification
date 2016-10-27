@@ -46,7 +46,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_8 = "Compila il questionario di fine gioco e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
-	private final String CHAL_DESC_10 = "Visita la fiera FA' LA COSA GIUSTA e guadagni BONUS punti POINT_TYPE";
+	private final String CHAL_DESC_10 = "Sabato 29 o domenica 30 ottobre visita lo stand ViaggiaTrento Play&Go a \"Fa' la cosa giusta!\" ( TrentoFiere - Via di Briamasco, 2) usando una modalita' di trasporto sostenibile e vinci un bonus di BONUS punti POINT_TYPE.";
 	// eng chall descriptions
 	private final String CHAL_DESC_1_ENG = "Do at least TARGET more km MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_1B_ENG = "Do at least TARGET km MODE and you will get a bonus of BONUS POINT_TYPE points";
@@ -57,7 +57,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_7_ENG = "Complete a Bange Collection and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_8_ENG = "Fill out the end-game survay and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_9_ENG = "Recommend the app at least TARGET users and you will gain a bonus of BONUS POINT_TYPE points";
-	private final String CHAL_DESC_10_ENG = "Visit the FA' LA COSA GIUSTA fair and you will gain a bonus of BONUS POINT_TYPE points";
+	private final String CHAL_DESC_10_ENG = "On Saturday Oct. 29 or Sunday Oct. 30, visit the ViaggiaTrento Play&Go booth in the \"Fa' la cosa giusta!\" fair (TrentoFiere - Via di Briamasco, 2) using a sustainable transport mode, and you will win a bonus of BONUS POINT_TYPE points.";
 	
 	private final String CHAL_TYPE_1 = "PERCENT";
 	private final String CHAL_TYPE_1B = "KMETERS";

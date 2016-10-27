@@ -87,14 +87,14 @@
 				
 		<div class="row padding_btm_only" ng-show="!isLoading">
 		    
-		    <div class= "col-sm-3" align="left">
+		    <div class= "col-xs-3" align="left">
 		    	<button class="btn btn-success" ng-click="initConsoleData()">
 		    		<i class="glyphicon glyphicon-refresh"></i>
 		    	</button>
 		    </div>
-		    <div class= "col-sm-6" align="center">
+		    <div class= "col-xs-6" align="center">
 		    	<form name="eventForm">
-		    		<table style="width: 100%">
+		    		<table>
 		    			<tr>
 		    				<td>
 		    					<label for="eventPoi">{{ 'gamification_poi_choose' | i18n }}: </label>
@@ -113,7 +113,7 @@
 			<div >
 				<table class="table table-hover" style="width: 100%">
 					<tr ng-show="gamificationUsers.length != 0">
-						<th width="30%" align="center">
+						<th width="25%" align="center">
 							{{ 'player_name' | i18n }}&nbsp;
 							<a href ng-click="showPlayerNameFilter();currentPage=0" ng-show="!showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-search"></i></a>
 							<a href ng-click="nameFilter=null;hidePlayerNameFilter()" ng-show="showPFilter" alt="{{ 'filter_name_title' | i18n }}" title="{{ 'filter_name_title' | i18n }}"><i class="glyphicon glyphicon-remove"></i></a>
@@ -122,14 +122,14 @@
 							</div>
 						</th>
 						<th width="30%" align="left">{{ 'player_info' | i18n }}</th>
-						<th width="40%">{{ 'gamification_operation' | i18n }}</th>
+						<th width="45%" align="right">{{ 'gamification_operation' | i18n }}</th>
 					</tr>
 					<tbody class="animate-repeat"
 						ng-repeat="p in gamificationUsers | filter:nameFilter | orderBy:'nikName' | startFrom:currentPage*maxPlayers | limitTo:maxPlayers">
 						<tr>
 							<td align="left">{{ p.nikName }}</td>
 							<td align="left">{{ p.mail }}</td>
-							<td align="left">
+							<td align="right">
 								<button class="btn btn-success" ng-click="userCheckIn(p)" ng-disabled="!game_event || eventAlreadyChecked(p)">
 		    						{{ 'check_in' | i18n }}&nbsp;<i class="glyphicon glyphicon-ok" ng-show="eventAlreadyChecked(p) == CHECK_IN"></i>
 		    					</button>

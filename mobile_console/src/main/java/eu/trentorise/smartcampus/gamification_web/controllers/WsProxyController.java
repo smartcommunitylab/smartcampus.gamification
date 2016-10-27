@@ -373,7 +373,7 @@ public class WsProxyController {
 						}
 						if(score >= minRecPoints){
 							Player recPlayer = playerRepositoryDao.findByNickIgnoreCaseAndType(correctNameForQuery(recommender), type);
-							if (recommender != null) {
+							if (recommender != null && recPlayer != null) {
 								sendRecommendationToGamification(recPlayer.getPid());
 								p.setCheckedRecommendation(true);
 								playerRepositoryDao.save(p);	//update player data in db

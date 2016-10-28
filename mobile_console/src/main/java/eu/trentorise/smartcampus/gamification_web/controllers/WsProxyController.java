@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +50,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListenableFutureTask;
 
 import eu.trentorise.smartcampus.gamification_web.models.Event;
 import eu.trentorise.smartcampus.gamification_web.models.PersonalData;
@@ -72,7 +76,7 @@ public class WsProxyController {
 	
 	private static transient final Logger logger = Logger.getLogger(WsProxyController.class);
 	private static final String GREEN_CLASSIFICATION = "week classification";
-	private static long CACHETIME = 15000;						// 10 seconds
+	private static long CACHETIME = 30000;						// 30 seconds
 	private static long LASTWEEKDELTA = 1000 * 60 * 60 * 24;	// one day of delta
 	private Long oldWeekTimestamp;
 	private Long actualTimeStamp = null;
@@ -732,24 +736,39 @@ public class WsProxyController {
 	// Cache for actual week classification
 	LoadingCache<String, String> chacheClass = CacheBuilder.newBuilder()
 		.maximumSize(100)
-		.expireAfterWrite(15, TimeUnit.SECONDS)
+		.expireAfterWrite(30, TimeUnit.SECONDS)
 		.build(
 			new CacheLoader<String, String>() {
 				public String load(String actualWeekTs) throws Exception {
 					return callWSFromEngine(actualWeekTs);
 				}
+				
+				/*public ListenableFuture<String> reload(final String actualWeekTs, String prevData) {
+					if(neverNeedsRefresh(actualWeekTs)){
+						return Futures.immediateFuture(prevData);
+					} else {
+						// asynchronous!
+		                 ListenableFutureTask<String> task = ListenableFutureTask.create(new Callable<String>() {
+		                   public String call() {
+		                	   return callWSFromEngine(actualWeekTs);
+		                   }
+		                 });
+		                 executor.execute(task);
+		                 return task;
+					}
+				}*/
 		});
 	
 	// Cache for get all nicknames method
 	@SuppressWarnings("rawtypes")
 	LoadingCache<String, List> chacheNiks = CacheBuilder.newBuilder()
 		.maximumSize(1000)
-		.expireAfterWrite(15, TimeUnit.SECONDS)
+		.expireAfterWrite(30, TimeUnit.SECONDS)
 		.build(
 			new CacheLoader<String, List>() {
-				public List<Player> load(String actualWeekTs) throws Exception {
-					return getNiks();
-				}
+			public List<Player> load(String actualWeekTs) throws Exception {
+				return getNiks();
+			}
 		});
 	
 	// Scheduled method to cache the old week classification.

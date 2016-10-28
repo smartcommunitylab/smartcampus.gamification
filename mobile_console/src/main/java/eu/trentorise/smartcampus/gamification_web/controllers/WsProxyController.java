@@ -358,7 +358,7 @@ public class WsProxyController {
 	}
 	
 	// Scheduled method used to check user that has registered with a recommendation nick. If they have points a recommendation is send to gamification
-	@Scheduled(fixedRate = 30*60*1000)		// Repeat every 30 minutes
+	@Scheduled(fixedRate = 29*60*1000)		// Repeat every 30 minutes
 	public synchronized void checkRecommendation() {
 		logger.debug("Starting recommendation check...");
 		String allData = "";

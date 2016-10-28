@@ -802,13 +802,17 @@ public class WsProxyController {
 	@Scheduled(fixedRate = 10*60*1000) 		// Repeat every ten minute
 	public synchronized void refreshGlobalCompleteClassification() throws IOException {
 		logger.debug("Refreshing global week classification");
-		globalCompleteClassification = callWSFromEngine("complete");
+		try{
+			globalCompleteClassification = callWSFromEngine("complete");
+		} catch (Exception ex){
+			logger.error("Error in global classification refresh");
+		}
 		Long actualLong = playerRepositoryDao.count();
 		if(actualLong > playerNum){
 			try {
 				allNikNames = getAllNiksMapFromDB();
 			} catch (Exception e) {
-				logger.error("error in niknames refresh " + e.getMessage());
+				logger.error("Error in niknames refresh " + e.getMessage());
 			}
 			playerNum = actualLong;
 		}

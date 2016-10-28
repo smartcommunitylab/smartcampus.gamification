@@ -260,7 +260,7 @@ public class StatusUtils {
     	return playerClass;
     }
 	
-	public List<ClassificationData> correctClassificationData(String allStatus, List<Player> allNicks, Long timestamp, String type) throws JSONException{
+	public List<ClassificationData> correctClassificationData(String allStatus, Map<String, String> allNiks, /*List<Player> allNicks ,*/ Long timestamp, String type) throws JSONException{
 		List<ClassificationData> playerClassList = new ArrayList<ClassificationData>();
     	if(allStatus != null && allStatus.compareTo("") != 0){
     		
@@ -328,7 +328,7 @@ public class StatusUtils {
 			    				}
 			    			}
 		    			}
-		    			String nickName = getPlayerNameById(allNicks, playerId);
+		    			String nickName = getPlayerNikNameById(allNiks, playerId); //getPlayerNameById(allNicks, playerId);
 		    			ClassificationData playerClass = new ClassificationData();
 		    			playerClass.setNickName(nickName);
 		    			playerClass.setPlayerId(playerId);
@@ -379,7 +379,7 @@ public class StatusUtils {
     	return classification;
     }
 	
-	public List<ClassificationData> correctClassificationIncData(String allStatus, List<Player> allNicks, Long timestamp, String type) throws JSONException{
+	public List<ClassificationData> correctClassificationIncData(String allStatus, Map<String, String> allNiks, /*List<Player> allNicks,*/ Long timestamp, String type) throws JSONException{
 		List<ClassificationData> playerClassList = new ArrayList<ClassificationData>();
 		
 		/*allStatus = "{"
@@ -410,7 +410,7 @@ public class StatusUtils {
     		    		JSONObject profileData = allPlayersDataList.getJSONObject(i);
     		    		String playerId = (!profileData.isNull(PLAYER_ID)) ? profileData.getString(PLAYER_ID) : "0";
     		    		Integer playerScore = (!profileData.isNull(PC_SCORE)) ? profileData.getInt(PC_SCORE) : 0;
-    		    		String nickName = getPlayerNameById(allNicks, playerId);
+    		    		String nickName = getPlayerNikNameById(allNiks, playerId); //getPlayerNameById(allNicks, playerId);
 		    			ClassificationData playerClass = new ClassificationData();
 		    			playerClass.setNickName(nickName);
 		    			playerClass.setPlayerId(playerId);
@@ -512,6 +512,14 @@ public class StatusUtils {
     				}
     			}
     		}
+    	}
+    	return name;
+    }
+	
+	private String getPlayerNikNameById(Map<String, String> allNicks, String id){
+    	String name = "";
+    	if(allNicks != null && !allNicks.isEmpty()){
+    		name = allNicks.get(id);
     	}
     	return name;
     }

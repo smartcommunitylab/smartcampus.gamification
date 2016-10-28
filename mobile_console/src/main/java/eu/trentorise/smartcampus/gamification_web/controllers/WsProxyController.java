@@ -81,6 +81,9 @@ public class WsProxyController {
 	private Long oldWeekTimestamp;
 	private Long actualTimeStamp = null;
 	private String lastWeekClassification = "";
+	private String globalCompleteClassification = "";
+	private Map<String, String> allNikNames = null;
+	private Long playerNum = 0L;
 	private static final String CHECK_IN = "checkin";
 	private static final String CHECK_IN_NU = "checkin_new_user_Trento_Fiera";
 
@@ -245,6 +248,20 @@ public class WsProxyController {
 		return list;
 	}
 	
+	Map<String, String> getAllNiksMapFromDB() throws Exception {
+		logger.debug("DB - get All niks."); //Added for log ws calls info in preliminary phase of portal
+		Map<String, String> niks = new HashMap<String, String>();
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
+		for(Player p: iter){
+			if(p.getNikName() != null && p.getNikName().compareTo("") != 0){
+				logger.debug(String.format("Profile result %s", p.getNikName()));
+				niks.put(p.getPid(), p.getNikName());
+			}
+		}
+		return niks;
+	}
+	
 	private void sendRecommendationToGamification(String recommenderId){
 		RestTemplate restTemplate = new RestTemplate();
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -346,8 +363,9 @@ public class WsProxyController {
 		logger.debug("Starting recommendation check...");
 		String allData = "";
 		try {
-			allData = chacheClass.get("complete");	// all classification data
-		} catch (ExecutionException e) {
+			//allData = chacheClass.get("complete");	// all classification data
+			allData = globalCompleteClassification;
+		} catch (Exception e) {
 			logger.error("Exception in global classification reading: " + e.getMessage());
 		}	
 		StatusUtils statusUtils = new StatusUtils();
@@ -761,13 +779,13 @@ public class WsProxyController {
 	
 	// Cache for get all nicknames method
 	@SuppressWarnings("rawtypes")
-	LoadingCache<String, List> chacheNiks = CacheBuilder.newBuilder()
+	LoadingCache<String, Map> chacheNiks = CacheBuilder.newBuilder()
 		.maximumSize(1000)
-		.expireAfterWrite(30, TimeUnit.SECONDS)
+		.expireAfterWrite(5, TimeUnit.MINUTES)
 		.build(
-			new CacheLoader<String, List>() {
-			public List<Player> load(String actualWeekTs) throws Exception {
-				return getNiks();
+			new CacheLoader<String, Map>() {
+			public Map<String, String> load(String actualWeekTs) throws Exception {
+				return getAllNiksMapFromDB(); //getNiks();
 			}
 		});
 	
@@ -779,6 +797,21 @@ public class WsProxyController {
 		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
 		logger.debug("Refreshing old week classification: new timestamp - " + oldWeekTimestamp);
 		lastWeekClassification = callWSFromEngine(oldWeekTimestamp + "");
+	}
+	
+	@Scheduled(fixedRate = 10*60*1000) 		// Repeat every ten minute
+	public synchronized void refreshGlobalCompleteClassification() throws IOException {
+		logger.debug("Refreshing global week classification");
+		globalCompleteClassification = callWSFromEngine("complete");
+		Long actualLong = playerRepositoryDao.count();
+		if(actualLong > playerNum){
+			try {
+				allNikNames = getAllNiksMapFromDB();
+			} catch (Exception e) {
+				logger.error("error in niknames refresh " + e.getMessage());
+			}
+			playerNum = actualLong;
+		}
 	}
 	
 	// Method used to get the user classification data (by mobyle app)
@@ -838,7 +871,15 @@ public class WsProxyController {
 		}
 		try {
 			if(actualWeek){
-				allData = (timestamp != null) ? chacheClass.get("" + timestamp) : chacheClass.get("complete");
+				if(timestamp != null){
+					allData = chacheClass.get("" + timestamp);
+				} else {
+					if(globalCompleteClassification.compareTo("") == 0){
+						globalCompleteClassification = callWSFromEngine("complete");
+					}
+					allData = globalCompleteClassification;
+				}
+				//allData = (timestamp != null) ? chacheClass.get("" + timestamp) : chacheClass.get("complete");
 			} else {
 				if(oldWeekTimestamp == null){	// the first time I need to initialize the oldWeekTimestamp Value
 					oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
@@ -855,16 +896,16 @@ public class WsProxyController {
 		String statusUrl = "state/" + gameName + "/" + userId;
 		String statusData = this.getAll(request, statusUrl);	// call to get actual user status (user scores)
 		
-		List<Player> allNicks = null;
-		/*try {
-			allNicks = this.getAllNiks(request, "");
-		} catch (Exception ex){
-			logger.error("Exception in all nick names reading " + ex.getMessage());
-		}*/
-		try {
-			allNicks = (timestamp != null) ? chacheNiks.get("" + timestamp) : chacheNiks.get("complete");
-		} catch (ExecutionException e) {
-			logger.error(e.getMessage());
+		//List<Player> allNicks = null;
+		//Map<String, String> allNicks = null;
+		if(allNikNames == null){		
+			try {
+				allNikNames = getAllNiksMapFromDB();
+				playerNum = playerRepositoryDao.count();
+				//allNicks = (timestamp != null) ? chacheNiks.get("" + timestamp) : chacheNiks.get("complete");
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
 		}
 		
 		StatusUtils statusUtils = new StatusUtils();
@@ -872,9 +913,9 @@ public class WsProxyController {
 		List<ClassificationData> playersClass = new ArrayList<ClassificationData>();
 		// MB: part for new incremental classification: uncomment when server support this call
 		if(timestamp != null){
-			playersClass = statusUtils.correctClassificationIncData(allData, allNicks, timestamp, type);
+			playersClass = statusUtils.correctClassificationIncData(allData, allNikNames, timestamp, type);
 		} else {
-			playersClass = statusUtils.correctClassificationData(allData, allNicks, timestamp, type);
+			playersClass = statusUtils.correctClassificationData(allData, allNikNames, timestamp, type);
 		}	
 		
 		// Sorting

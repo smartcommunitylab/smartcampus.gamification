@@ -759,7 +759,8 @@ public class ChallengesUtils {
 					List<PointConceptPeriod> allPeriods = pt.getInstances();
 					for(PointConceptPeriod pcp : allPeriods){
 						if(chalStart != null && chalEnd != null){
-							if((pcp.getStart() - W_DELTA) <= chalStart && (pcp.getEnd() + W_DELTA) >= chalEnd){	// the week duration instance is major or equals the challenge duration 
+							//if((pcp.getStart() - W_DELTA) <= chalStart && (pcp.getEnd() + W_DELTA) >= chalEnd){	// the week duration instance is major or equals the challenge duration 
+							if(chalStart >= pcp.getStart() && chalStart < pcp.getEnd()){	// Now I check only using starting time
 								actualStatus = pcp.getScore();
 								break;
 							}

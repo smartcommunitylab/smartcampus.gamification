@@ -791,7 +791,7 @@ public class WsProxyController {
 	
 	// Scheduled method to cache the old week classification.
 	//@Scheduled(cron="55 59 23 * * FRI") 		// Repeat every Friday at 23:59:55 PM
-	@Scheduled(fixedRate = 31*60*1000) 		// Repeat every hour
+	@Scheduled(fixedRate = 31*60*1000) 		// Repeat every 31 minutes
 	public synchronized void refreshOldWeekClassification() throws IOException {
 		//oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 3);
 		oldWeekTimestamp = System.currentTimeMillis() - (LASTWEEKDELTA * 7);
@@ -800,13 +800,7 @@ public class WsProxyController {
 	}
 	
 	@Scheduled(fixedRate = 10*60*1000) 		// Repeat every ten minute
-	public synchronized void refreshGlobalCompleteClassification() throws IOException {
-		logger.debug("Refreshing global week classification");
-		try{
-			globalCompleteClassification = callWSFromEngine("complete");
-		} catch (Exception ex){
-			logger.error("Error in global classification refresh");
-		}
+	public synchronized void refreshGlobalCompleteNiks() throws IOException {
 		Long actualLong = playerRepositoryDao.count();
 		if(actualLong > playerNum){
 			try {
@@ -818,8 +812,17 @@ public class WsProxyController {
 		}
 	}
 	
+	@Scheduled(fixedRate = 20*60*1000) 		// Repeat every twenty minute
+	public synchronized void refreshGlobalCompleteClassification() throws IOException {
+		logger.debug("Refreshing global week classification");
+		try{
+			globalCompleteClassification = callWSFromEngine("complete");
+		} catch (Exception ex){
+			logger.error("Error in global classification refresh");
+		}
+	}
+	
 	// Method used to get the user classification data (by mobyle app)
-	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.GET, value = "/out/rest/classification")
 	public @ResponseBody
 	PlayerClassification getPlayerClassification(final HttpServletRequest request, @RequestParam String token, @RequestParam(required=false) Long timestamp, @RequestParam(required=false) Integer start, @RequestParam(required=false) Integer end, HttpServletResponse res) throws JSONException{

@@ -47,6 +47,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_8 = "Compila il questionario di fine gioco e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_9 = "Raccomanda la App ad almeno TARGET utenti e guadagni BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_10 = "Sabato 29 o domenica 30 ottobre visita lo stand ViaggiaTrento Play&Go a \"Fa' la cosa giusta!\" ( TrentoFiere - Via di Briamasco, 2) usando una modalita' di trasporto sostenibile e vinci un bonus di BONUS punti POINT_TYPE.";
+	private final String CHAL_DESC_11 = "Raggiungi una posizione compresa tra il TARGET1° e il TARGET2° posto nella classifica finale di questa settimana e vinci un bonus di BONUS punti POINT_TYPE.";
 	// eng chall descriptions
 	private final String CHAL_DESC_1_ENG = "Do at least TARGET more km MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_1B_ENG = "Do at least TARGET km MODE and you will get a bonus of BONUS POINT_TYPE points";
@@ -58,6 +59,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_8_ENG = "Fill out the end-game survay and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_9_ENG = "Recommend the app at least TARGET users and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_10_ENG = "On Saturday Oct. 29 or Sunday Oct. 30, visit the ViaggiaTrento Play&Go booth in the \"Fa' la cosa giusta!\" fair (TrentoFiere - Via di Briamasco, 2) using a sustainable transport mode, and you will win a bonus of BONUS POINT_TYPE points.";
+	private final String CHAL_DESC_11_ENG = "Rank in between the place TARGET1 and the place TARGET2 in the final leaderboard of the current week and you will win a bonus of BONUS POINT_TYPE points.";
 	
 	private final String CHAL_TYPE_1 = "PERCENT";
 	private final String CHAL_TYPE_1B = "KMETERS";
@@ -70,7 +72,8 @@ public class ChallengesUtils {
 	private final String CHAL_TYPE_8 = "SURVEYDATA";
 	private final String CHAL_TYPE_9 = "RECOMMENDATION";
 	private final String CHAL_TYPE_10 = "POICHECKIN";
-
+	private final String CHAL_TYPE_11 = "WEEKCLASSPOSITION";
+	
 	private final String SERVER_CHAL_ALLOWED_MODE_W = "Walk_";
 	private final String SERVER_CHAL_ALLOWED_MODE_BK = "Bike_";
 	private final String SERVER_CHAL_ALLOWED_MODE_BKS = "BikeSharing_";
@@ -125,6 +128,8 @@ public class ChallengesUtils {
 	private static final String CHAL_FIELDS_BASELINE = "baseline";
 	private static final String CHAL_FIELDS_TARGET = "target";
 	private static final String CHAL_FIELDS_INITIAL_BADGE_NUM = "initialBadgeNum";
+	private static final String CHAL_FIELDS_POS_MIN = "posMin";
+	private static final String CHAL_FIELDS_POS_MAX = "posMax";
 	// new challenge types
 	private static final String CHAL_MODEL_PERCENTAGE_INC = "percentageIncrement";
 	private static final String CHAL_MODEL_ABSOLUTE_INC = "absoluteIncrement";
@@ -132,6 +137,7 @@ public class ChallengesUtils {
 	private static final String CHAL_MODEL_COMPLETE_BADGE_COLL = "completeBadgeCollection";
 	private static final String CHAL_MODEL_SURVEY = "survey";
 	private static final String CHAL_MODEL_POICHECKIN = "poiCheckin";
+	private static final String CHAL_MODEL_CLASSPOSITION = "leaderboardPosition";
 	private static final String STATE = "state";
 	private static final String ITA_LANG = "it";
 	private static final String ENG_LANG = "en";
@@ -219,6 +225,8 @@ public class ChallengesUtils {
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(12).getDescription() : challDescList.get(12).getDescription_eng();	// park and ride
 			} else if(mobMode.compareTo("public transport aficionado") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(16).getDescription() : challDescList.get(16).getDescription_eng();	// public transport
+			} else if(mobMode.compareTo("bike aficionado") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(17).getDescription() : challDescList.get(17).getDescription_eng();	// bike
 			}	
 		} else if(type.compareTo(CHAL_TYPE_7) == 0){
 			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(19).getDescription() : challDescList.get(19).getDescription_eng();
@@ -233,6 +241,11 @@ public class ChallengesUtils {
 			}
 		} else if (type.compareTo(CHAL_TYPE_10) == 0){
 			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(32).getDescription() : challDescList.get(32).getDescription_eng();
+		} else if (type.compareTo(CHAL_TYPE_11) == 0){
+			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(33).getDescription().replace("X", target).replace("Y", mobMode) : challDescList.get(33).getDescription_eng().replace("X", target).replace("Y", mobMode);
+			//if(language.compareTo(ENG_LANG) == 0 && target.compareTo("1") != 0){
+			//	correctDesc = correctDesc.replace("st","th");
+			//}
 		}
 		return correctDesc;
 	}
@@ -482,6 +495,8 @@ public class ChallengesUtils {
 						String counterName = "";
 						String targetRow = "0";
 						int target = 0;
+						int targetPosMin = 0;
+						int targetPosMax = 0;
 						String badgeCollectionName = "";
 						int baseline = 0;
 						int initialBadgeNum = 0;
@@ -491,11 +506,44 @@ public class ChallengesUtils {
 							periodName = (!chalFields.isNull(CHAL_FIELDS_PERIOD_NAME)) ? chalFields.getString(CHAL_FIELDS_PERIOD_NAME) : "";
 							bonusPointType = (!chalFields.isNull(CHAL_FIELDS_BONUS_POINT_TYPE)) ? chalFields.getString(CHAL_FIELDS_BONUS_POINT_TYPE) : "";
 							counterName = (!chalFields.isNull(CHAL_FIELDS_COUNTER_NAME)) ? chalFields.getString(CHAL_FIELDS_COUNTER_NAME) : "";
+							targetPosMin = (!chalFields.isNull(CHAL_FIELDS_POS_MIN)) ? chalFields.getInt(CHAL_FIELDS_POS_MIN) : 0;
+							targetPosMax = (!chalFields.isNull(CHAL_FIELDS_POS_MAX)) ? chalFields.getInt(CHAL_FIELDS_POS_MAX) : 0;
 							targetRow = (!chalFields.isNull(CHAL_FIELDS_TARGET)) ? chalFields.getString(CHAL_FIELDS_TARGET) : "0";
-			    			if(targetRow.contains(".")){
+			    			if(targetRow.contains("<")){
+			    				// new challenge for position in classification case
+			    				/*String[] values = targetRow.split("<");
+			    				if(values[0].contains(".")){
+				    				try {
+				    					Float f_target = Float.parseFloat(values[0]);
+				    					target1 = f_target.intValue();
+				    				} catch (Exception ex){
+				    					logger.error("String target value error from float");
+				    				}
+				    			} else {
+					    			try {
+					    				target1 = Integer.parseInt(values[0]);
+					    			} catch (Exception ex){
+					    				logger.error("String target value error from int"); 
+					    			}
+				    			}
+			    				if(values[1].contains(".")){
+				    				try {
+				    					Float f_target = Float.parseFloat(values[1]);
+				    					target2 = f_target.intValue();
+				    				} catch (Exception ex){
+				    					logger.error("String target value error from float");
+				    				}
+				    			} else {
+					    			try {
+					    				target2 = Integer.parseInt(values[1]);
+					    			} catch (Exception ex){
+					    				logger.error("String target value error from int"); 
+					    			}
+				    			}*/
+			    			} else if(targetRow.contains(".")){
 			    				try {
-			    				Float f_target = Float.parseFloat(targetRow);
-			    				target = f_target.intValue();
+			    					Float f_target = Float.parseFloat(targetRow);
+			    					target = f_target.intValue();
 			    				} catch (Exception ex){
 			    					logger.error("String target value error from float");
 			    				}
@@ -654,6 +702,18 @@ public class ChallengesUtils {
 		    				ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_10, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_10_ENG, target, ch_bonus, ch_point_type, "", null, language);
 		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
 		    			}
+		    			if(ch_type.compareTo(CHAL_MODEL_CLASSPOSITION) == 0){
+		    				old_ch_type = CHAL_TYPE_11;
+		    				int positions = 0;
+		    				row_status = round(positions, 2);
+		    				if(ch_success){
+	    						positions = 1;
+	    					}
+		    				status = positions * 100 / target;
+		    				if(status > 100)status = 100;
+		    				ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_11, targetPosMin, ch_bonus, ch_point_type, targetPosMax + "", null, language) : correctDesc(CHAL_DESC_11_ENG, targetPosMin, ch_bonus, ch_point_type, targetPosMax + "", null, language);
+		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, targetPosMax + "", targetPosMin + "", ch_point_type, language));
+		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_SURVEY) == 0){
 		    				old_ch_type = CHAL_TYPE_8;
 		    				int survey = 0;
@@ -811,8 +871,35 @@ public class ChallengesUtils {
 	}
 	
     private String correctDesc(String desc, int target, int bonus, String p_type, String mode, String coll_name, String language){
-    	if(desc.contains("TARGET")){
-    		desc = desc.replace("TARGET", Integer.toString(target));
+    	if(desc.contains("TARGET1")){
+    		desc = desc.replace("TARGET1", Integer.toString(target));
+    		/*if(desc.contains("st ")){
+    			if(target < 20){
+	    			switch(target){
+	    				case 1: break;
+	    				case 2: desc = desc.replace("st", "nd"); break;
+	    				case 3: desc = desc.replace("st", "rd"); break;
+	    				default: desc = desc.replace("st", "th"); break;
+	    			}
+    			} else {
+    				String targetS = target + "";
+    				char targetLast = targetS.charAt(targetS.length() - 1);
+    				if(targetLast == '1'){
+    				} else if(targetLast == '2'){
+    					desc = desc.replace("st", "nd");
+    				} else if(targetLast == '3'){
+    					desc = desc.replace("st", "rd");
+    				} else {
+    					desc = desc.replace("st", "th");
+    				}
+    			}
+    		}*/
+    	}
+    	if(desc.contains("TARGET2")){
+    		desc = desc.replace("TARGET2", mode);
+    	}
+    	if(desc.contains("TARGET ")){
+    		desc = desc.replace("TARGET ", Integer.toString(target) + " ");
     	}
     	if(language.compareTo(ITA_LANG) == 0){
 	    	if(target > 1 && desc.contains("viaggio")){

@@ -612,6 +612,24 @@ public class WsProxyController {
 		return new ModelAndView("unsubscribe", model);
 	}
 	
+	//Method used to update the player ending-survey data
+	@RequestMapping(method = RequestMethod.POST, value = "/rest/console/sendUserMobileCheckIn")
+	public @ResponseBody
+	void sendCheckinMobileToGamification(HttpServletRequest request, @RequestParam String playerId, @RequestParam String poi){
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, String> event_data = new HashMap<String, String>();
+		if(poi != null && poi.compareTo("") != 0){
+			event_data.put("poiName", poi);
+		}
+		data.put("actionId", "poi_reached");
+		data.put("gameId", gameName);
+		data.put("playerId", playerId);
+		data.put("data", event_data);
+		ResponseEntity<String> tmp_res = restTemplate.exchange(gamificationUrl + "execute", HttpMethod.POST, new HttpEntity<Object>(data,createHeaders()),String.class);
+		logger.info("Sent mobile checkIn data to gamification engine " + tmp_res.getStatusCode() + " for player " + playerId);
+	}
+	
 	//Method used to send the survey call to gamification engine (if user complete the survey the engine need to be updated with this call)
 	private void sendCheckinToGamification(String playerId, String event){
 		RestTemplate restTemplate = new RestTemplate();
@@ -750,6 +768,31 @@ public class WsProxyController {
 		StatusUtils statusUtils = new StatusUtils();
 		return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl, 1, language);
 	}
+	
+	// Method used to get the user status data (by mobyle app)
+		@RequestMapping(method = RequestMethod.GET, value = "/out/rest/statustest")
+		public @ResponseBody
+		PlayerStatus getPlayerStatusTest(HttpServletRequest request, @RequestParam String userId, HttpServletResponse res) throws JSONException{
+			Player p = null;
+			String nickName = "";
+			String language = "it";
+			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+			p = playerRepositoryDao.findBySocialIdAndType(userId, type);
+			if(p != null){
+				nickName = p.getNikName();
+				language = ((p.getLanguage() != null) && (p.getLanguage().compareTo("") != 0)) ? p.getLanguage() : "it";
+			}
+			String statusUrl = "state/" + gameName + "/" + userId;
+			String allData = this.getAll(request, statusUrl);
+			
+			ChallengesUtils challUtils = new ChallengesUtils();
+			if(challUtils.getChallLongDescriptionList() == null || challUtils.getChallLongDescriptionList().isEmpty()){
+				challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
+			}
+			
+			StatusUtils statusUtils = new StatusUtils();
+			return statusUtils.correctPlayerData(allData, userId, gameName, nickName, challUtils, gamificationWebUrl, 1, language);
+		}
 	
 	// Cache for actual week classification
 	LoadingCache<String, String> chacheClass = CacheBuilder.newBuilder()

@@ -59,7 +59,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_8_ENG = "Fill out the end-game survay and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_9_ENG = "Recommend the app at least TARGET users and you will gain a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_10_ENG = "On Saturday Oct. 29 or Sunday Oct. 30, visit the ViaggiaTrento Play&Go booth in the \"Fa' la cosa giusta!\" fair (TrentoFiere - Via di Briamasco, 2) using a sustainable transport mode, and you will win a bonus of BONUS POINT_TYPE points.";
-	private final String CHAL_DESC_11_ENG = "Rank in between the place TARGET1 and the place TARGET2 in the final leaderboard of the current week and you will win a bonus of BONUS POINT_TYPE points.";
+	private final String CHAL_DESC_11_ENG = "Rank in between place TARGET1 and place TARGET2 in the final leaderboard of the current week and you will win a bonus of BONUS POINT_TYPE points.";
 	
 	private final String CHAL_TYPE_1 = "PERCENT";
 	private final String CHAL_TYPE_1B = "KMETERS";

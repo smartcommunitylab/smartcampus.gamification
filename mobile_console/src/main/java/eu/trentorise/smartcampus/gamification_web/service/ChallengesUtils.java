@@ -38,6 +38,7 @@ public class ChallengesUtils {
 	private final String CHAL_K_BADGE_COLL_NAME = "_badge_collection";
 	// ita chall descriptions
 	private final String CHAL_DESC_1 = "Fai almeno altri TARGET km MODE e avrai un bonus di BONUS punti POINT_TYPE";
+	private final String CHAL_DESC_1A = "Fai almeno altri TARGET viaggi MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_1B = "Fai almeno TARGET km MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_2 = "Fai almeno TARGET viaggio senza usare MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai un bonus di BONUS punti POINT_TYPE";
@@ -50,6 +51,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_11 = "Raggiungi una posizione compresa tra il TARGET1° e il TARGET2° posto nella classifica finale di questa settimana e vinci un bonus di BONUS punti POINT_TYPE.";
 	// eng chall descriptions
 	private final String CHAL_DESC_1_ENG = "Do at least TARGET more km MODE and you will get a bonus of BONUS POINT_TYPE points";
+	private final String CHAL_DESC_1A_ENG = "Do at least TARGET more MODE trip and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_1B_ENG = "Do at least TARGET km MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_2_ENG = "Do at least TARGET trip without MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_3_ENG = "Do at least TARGET trip MODE and you will get a bonus of BONUS POINT_TYPE points";
@@ -62,6 +64,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_11_ENG = "Rank in between place TARGET1 and place TARGET2 in the final leaderboard of the current week and you will win a bonus of BONUS POINT_TYPE points.";
 	
 	private final String CHAL_TYPE_1 = "PERCENT";
+	private final String CHAL_TYPE_1A = "PERCENTTRIPS";
 	private final String CHAL_TYPE_1B = "KMETERS";
 	private final String CHAL_TYPE_2 = "NEGATEDMODE";
 	private final String CHAL_TYPE_3 = "TRIPNUMBER";
@@ -169,6 +172,24 @@ public class ChallengesUtils {
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(1).getDescription() : challDescList.get(1).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(2).getDescription() : challDescList.get(2).getDescription_eng();
+			}
+		}else if(type.compareTo(CHAL_TYPE_1A) == 0){
+			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(4).getDescription() : challDescList.get(4).getDescription();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(8).getDescription().replace("[bici, bike sharing, bus, treno]","la bici") : challDescList.get(8).getDescription_eng().replace("[bike, bike sharing, bus, train]","the bike");
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(3).getDescription() : challDescList.get(3).getDescription_eng();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_T) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_T + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(5).getDescription() : challDescList.get(5).getDescription_eng();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_P) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_P + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(7).getDescription() : challDescList.get(7).getDescription_eng();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_W) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_W + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(26).getDescription() : challDescList.get(26).getDescription_eng();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_CAB) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_CAB + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(28).getDescription() : challDescList.get(28).getDescription_eng();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_Z) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_Z + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(6).getDescription() : challDescList.get(6).getDescription_eng();
 			}
 		} else if(type.compareTo(CHAL_TYPE_1B) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
@@ -595,14 +616,27 @@ public class ChallengesUtils {
 		    			
 		    			if(target == 0)target = 1; // to solve division by zero problem
 		    			if(ch_type.compareTo(CHAL_MODEL_PERCENTAGE_INC) == 0){
-		    				old_ch_type = CHAL_TYPE_1;
-		    				String mobility_mode = retrieveMobilityModeFromCounterName(counterName);
-		    				int walked_km = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
-		    				row_status = round(walked_km, 2);
-		    				status = (walked_km * 100) / target;
-		    				if(status > 100)status = 100;
-		    				ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-		    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
+		    				if(counterName.contains(SERVER_CHAL_ALLOWED_MODE_KM)){
+		    					// kmnum
+		    					old_ch_type = CHAL_TYPE_1;
+		    					String mobility_mode = retrieveMobilityModeFromCounterName(counterName);
+		    					int walked_km = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
+		    					row_status = round(walked_km, 2);
+		    					status = (walked_km * 100) / target;
+		    					if(status > 100)status = 100;
+		    					ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+		    					tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
+		    				} else {
+		    					// tripnum
+		    					old_ch_type = CHAL_TYPE_1A;
+		    					String mobility_mode = retrieveMobilityModeFromCounterName(counterName);
+		    					int walked_km = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
+		    					row_status = round(walked_km, 2);
+		    					status = (walked_km * 100) / target;
+		    					if(status > 100)status = 100;
+		    					ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+		    					tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
+		    				}
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_ABSOLUTE_INC) == 0){
 		    				// check how to merge old challenge type in this type
@@ -873,27 +907,6 @@ public class ChallengesUtils {
     private String correctDesc(String desc, int target, int bonus, String p_type, String mode, String coll_name, String language){
     	if(desc.contains("TARGET1")){
     		desc = desc.replace("TARGET1", Integer.toString(target));
-    		/*if(desc.contains("st ")){
-    			if(target < 20){
-	    			switch(target){
-	    				case 1: break;
-	    				case 2: desc = desc.replace("st", "nd"); break;
-	    				case 3: desc = desc.replace("st", "rd"); break;
-	    				default: desc = desc.replace("st", "th"); break;
-	    			}
-    			} else {
-    				String targetS = target + "";
-    				char targetLast = targetS.charAt(targetS.length() - 1);
-    				if(targetLast == '1'){
-    				} else if(targetLast == '2'){
-    					desc = desc.replace("st", "nd");
-    				} else if(targetLast == '3'){
-    					desc = desc.replace("st", "rd");
-    				} else {
-    					desc = desc.replace("st", "th");
-    				}
-    			}
-    		}*/
     	}
     	if(desc.contains("TARGET2")){
     		desc = desc.replace("TARGET2", mode);
@@ -904,6 +917,12 @@ public class ChallengesUtils {
     	if(language.compareTo(ITA_LANG) == 0){
 	    	if(target > 1 && desc.contains("viaggio")){
 	    		desc = desc.replace("viaggio", "viaggi");
+	    	}
+	    	if(target == 1 && desc.contains("viaggi ")){
+	    		desc = desc.replace("viaggi ", "viaggio ");
+	    		if(desc.contains("altri 1")){
+	    			desc = desc.replace("altri 1", "1 altro");
+	    		}
 	    	}
 	    	if(target == 1 && desc.contains("utenti")){
 	    		desc = desc.replace("utenti", "utente");

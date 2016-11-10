@@ -52,6 +52,7 @@ public class ChallengesUtils {
 	// eng chall descriptions
 	private final String CHAL_DESC_1_ENG = "Do at least TARGET more km MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_1A_ENG = "Do at least TARGET more MODE trip and you will get a bonus of BONUS POINT_TYPE points";
+	private final String CHAL_DESC_1A2_ENG = "Do at least TARGET more trip MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_1B_ENG = "Do at least TARGET km MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_2_ENG = "Do at least TARGET trip without MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_3_ENG = "Do at least TARGET trip MODE and you will get a bonus of BONUS POINT_TYPE points";
@@ -175,7 +176,7 @@ public class ChallengesUtils {
 			}
 		}else if(type.compareTo(CHAL_TYPE_1A) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
-				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(4).getDescription() : challDescList.get(4).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(4).getDescription() : challDescList.get(4).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(8).getDescription().replace("[bici, bike sharing, bus, treno]","la bici") : challDescList.get(8).getDescription_eng().replace("[bike, bike sharing, bus, train]","the bike");
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
@@ -215,7 +216,7 @@ public class ChallengesUtils {
 			} 
 		} else if(type.compareTo(CHAL_TYPE_3) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_B) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_B + "Distance") == 0){
-				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(4).getDescription() : challDescList.get(4).getDescription();
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(4).getDescription() : challDescList.get(4).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(8).getDescription().replace("[bici, bike sharing, bus, treno]","la bici") : challDescList.get(8).getDescription_eng().replace("[bike, bike sharing, bus, train]","the bike");
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_BKS) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BKS + "Distance") == 0){
@@ -634,7 +635,11 @@ public class ChallengesUtils {
 		    					row_status = round(walked_km, 2);
 		    					status = (walked_km * 100) / target;
 		    					if(status > 100)status = 100;
-		    					ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+		    					if(mobility_mode.compareTo(CHAL_ALLOWED_MODE_Z) == 0){
+		    						ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+		    					} else {
+		    						ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A2_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+		    					}
 		    					tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
 		    				}
 		    			}

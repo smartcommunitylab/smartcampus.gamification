@@ -21,9 +21,6 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.managers.GameWorkflow;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.repo.GamePersistence;
-import eu.trentorise.game.repo.NotificationPersistence;
-import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
@@ -43,20 +40,21 @@ public class PointConceptTest {
 	@Autowired
 	private GameWorkflow workflow;
 
+	private static final long HOUR_MILLISEC = 3600000;
+	private static final long DAY_MILLISEC = HOUR_MILLISEC * 24;
+	private static final long WEEK_MILLISEC = DAY_MILLISEC * 7;
+
 	@Before
 	public void cleanDB() {
 		// clean mongo
-		mongo.dropCollection(StatePersistence.class);
-		mongo.dropCollection(GamePersistence.class);
-		mongo.dropCollection(NotificationPersistence.class);
+		mongo.getDb().dropDatabase();
 	}
 
 	@Test
 	public void addAPeriod() {
 		PointConcept pc = new PointConcept("testPoint");
-		LocalDate start1 = new LocalDate(2016, 7, 10);
-		long period1 = 7 * 24 * 3600 * 1000; // one week millisec
-		pc.addPeriod("period1", start1.toDate(), period1);
+		LocalDate start1 = new LocalDate();
+		pc.addPeriod("period1", start1.toDate(), DAY_MILLISEC);
 		pc.setScore(15d);
 		pc.setScore(25d);
 
@@ -69,9 +67,8 @@ public class PointConceptTest {
 		final String PLAYER_ID = "1000";
 
 		PointConcept pc = new PointConcept("testPoint");
-		LocalDate start1 = new LocalDate(2016, 7, 10);
-		long period1 = 7 * 24 * 3600 * 1000; // one week millisec
-		pc.addPeriod("period1", start1.toDate(), period1);
+		LocalDate start1 = new LocalDate();
+		pc.addPeriod("period1", start1.toDate(), DAY_MILLISEC);
 		pc.setScore(15d);
 		pc.setScore(35d);
 
@@ -92,13 +89,11 @@ public class PointConceptTest {
 		final String PLAYER_ID = "1000";
 
 		PointConcept pc = new PointConcept("testPoint");
-		LocalDate start = new LocalDate(2016, 7, 10);
-		long period = 7 * 24 * 3600 * 1000; // one week millisec
-		pc.addPeriod("period1", start.toDate(), period);
+		LocalDate start = new LocalDate();
+		pc.addPeriod("period1", start.toDate(), WEEK_MILLISEC);
 
-		start = new LocalDate(2016, 7, 25);
-		period = 24 * 3600 * 1000;
-		pc.addPeriod("period2", start.toDate(), period);
+		start = new LocalDate();
+		pc.addPeriod("period2", start.toDate(), DAY_MILLISEC);
 
 		pc.setScore(21d);
 
@@ -122,12 +117,10 @@ public class PointConceptTest {
 
 		PointConcept pc = new PointConcept("testPoint");
 		LocalDate start = new LocalDate().minusDays(1);
-		long period = 24 * 3600 * 1000; // one day millisec
-		pc.addPeriod("period1", start.toDate(), period);
+		pc.addPeriod("period1", start.toDate(), DAY_MILLISEC);
 
 		start = new LocalDate();
-		period = 3600 * 1000; // one hour millisec ?
-		pc.addPeriod("period2", start.toDate(), period);
+		pc.addPeriod("period2", start.toDate(), HOUR_MILLISEC);
 
 		DateTime executionTime = new DateTime();
 
@@ -179,19 +172,21 @@ public class PointConceptTest {
 
 		Assert.assertEquals(Double.valueOf(14),
 				p.getPeriodCurrentInstance("period2").getScore());
+
 		DateTime testTime = DateTime.now().withMinuteOfHour(0)
 				.withSecondOfMinute(0).withMillisOfSecond(0);
+
 		Assert.assertEquals(testTime.plusHours(2).getMillis(), p
 				.getPeriodCurrentInstance("period2").getStart());
-		Assert.assertEquals(testTime.plusHours(2).getMillis() + period, p
-				.getPeriodCurrentInstance("period2").getEnd());
+		Assert.assertEquals(testTime.plusHours(2).getMillis() + HOUR_MILLISEC,
+				p.getPeriodCurrentInstance("period2").getEnd());
 
 		Assert.assertEquals(Double.valueOf(14),
 				p.getPeriodInstance("period2", 0).getScore());
 		Assert.assertEquals(testTime.plusHours(2).getMillis(), p
 				.getPeriodInstance("period2", 0).getStart());
-		Assert.assertEquals(testTime.plusHours(2).getMillis() + period, p
-				.getPeriodInstance("period2", 0).getEnd());
+		Assert.assertEquals(testTime.plusHours(2).getMillis() + HOUR_MILLISEC,
+				p.getPeriodInstance("period2", 0).getEnd());
 
 		Assert.assertNull(p.getPeriodInstance("period2", 20));
 
@@ -199,8 +194,8 @@ public class PointConceptTest {
 				.getScore());
 		Assert.assertEquals(testTime.getMillis(),
 				p.getPeriodInstance("period2", 2).getStart());
-		Assert.assertEquals(testTime.getMillis() + period,
-				p.getPeriodInstance("period2", 2).getEnd());
+		Assert.assertEquals(testTime.getMillis() + HOUR_MILLISEC, p
+				.getPeriodInstance("period2", 2).getEnd());
 	}
 
 	@Test
@@ -219,8 +214,7 @@ public class PointConceptTest {
 		game.getActions().add(ACTION);
 
 		PointConcept pc = new PointConcept("green");
-		final long ONE_DAY = 24 * 3600 * 1000;
-		pc.addPeriod("period1", new LocalDate().toDate(), ONE_DAY);
+		pc.addPeriod("period1", new LocalDate().toDate(), DAY_MILLISEC);
 		game.setConcepts(new HashSet<GameConcept>());
 		game.getConcepts().add(pc);
 
@@ -233,7 +227,9 @@ public class PointConceptTest {
 		workflow.apply(GAME, ACTION, "my player", data, null);
 		Thread.sleep(30000);
 
-		// playerSrv.loadState(GAME, "my player", false);
+		Assert.assertEquals(new Double(4),
+				((PointConcept) playerSrv.loadState(GAME, "my player", false)
+						.getState().iterator().next()).getScore());
 
 	}
 }

@@ -124,18 +124,21 @@ public class PointConceptTest {
 
 		DateTime executionTime = new DateTime();
 
-		pc.executionMoment = executionTime.getMillis();
+		pc.executionMoment = executionTime.minusDays(1).getMillis();
 		pc.setScore(10d);
 
+		pc.executionMoment = executionTime.getMillis();
+		pc.setScore(20d); // +10
+
 		pc.executionMoment = executionTime.minusHours(1).getMillis();
-		pc.setScore(11d);
-		pc.setScore(14d);
+		pc.setScore(21d); // +1
+		pc.setScore(24d); // +3
 
 		pc.executionMoment = executionTime.plusHours(1).getMillis();
-		pc.setScore(15d);
+		pc.setScore(25d);// +1
 
 		pc.executionMoment = executionTime.plusHours(2).getMillis();
-		pc.setScore(29d);
+		pc.setScore(39d); // +14
 
 		PlayerState ps = new PlayerState(GAME_ID, PLAYER_ID);
 		ps.getState().add(pc);
@@ -147,13 +150,14 @@ public class PointConceptTest {
 		p.executionMoment = pc.executionMoment;
 
 		/*
-		 * period1 : now 29
+		 * period1 : day-1 10, now 29
 		 * 
-		 * period2 : hour-1 4, now 10, hour+1 1, hour+2, 14
+		 * period2 : hour-1 4, now 10, hour+1 1, hour+2 14
 		 */
 
 		Assert.assertEquals(new Double(29), p.getPeriodCurrentScore("period1"));
 		Assert.assertEquals(new Double(14), p.getPeriodCurrentScore("period2"));
+		Assert.assertEquals(new Double(10), p.getPeriodPreviousScore("period1"));
 		Assert.assertEquals(new Double(1), p.getPeriodPreviousScore("period2"));
 		Assert.assertEquals(new Double(0), p.getPeriodPreviousScore("period45"));
 		Assert.assertEquals(new Double(29), p.getPeriodScore("period1", 0));
@@ -174,7 +178,7 @@ public class PointConceptTest {
 				p.getPeriodCurrentInstance("period2").getScore());
 
 		DateTime testTime = DateTime.now().withMinuteOfHour(0)
-				.withSecondOfMinute(0).withMillisOfSecond(0);
+				.withSecondOfMinute(0).withMillisOfSecond(0); // current Hour
 
 		Assert.assertEquals(testTime.plusHours(2).getMillis(), p
 				.getPeriodCurrentInstance("period2").getStart());
@@ -196,6 +200,12 @@ public class PointConceptTest {
 				p.getPeriodInstance("period2", 2).getStart());
 		Assert.assertEquals(testTime.getMillis() + HOUR_MILLISEC, p
 				.getPeriodInstance("period2", 2).getEnd());
+
+		p.executionMoment = executionTime.plusDays(2).getMillis();
+		Assert.assertEquals(new Double(0), p.getPeriodPreviousScore("period1"));
+		Assert.assertEquals(new Double(0),
+				p.getPeriodPreviousInstance("period1").getScore());
+
 	}
 
 	@Test

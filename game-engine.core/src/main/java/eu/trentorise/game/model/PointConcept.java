@@ -176,9 +176,8 @@ public class PointConcept extends GameConcept {
 		Double result = 0d;
 		PeriodInternal p = periods.get(periodIdentifier);
 		if (p != null) {
-			LinkedList<PeriodInstanceImpl> instances = p.getInstances();
 			try {
-				result = instances.get(instances.size() - 1 - instanceIndex)
+				result = getPeriodInstance(periodIdentifier, instanceIndex)
 						.getScore();
 			} catch (IndexOutOfBoundsException e) {
 			}

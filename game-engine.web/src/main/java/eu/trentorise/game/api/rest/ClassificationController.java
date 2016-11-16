@@ -230,7 +230,7 @@ public class ClassificationController {
 	 * INCREMENTAL CLASSIFICATIONS
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/incclassification")
-	public IncrementalClassificationDTO create(@PathVariable String gameId,
+	public IncrementalClassificationDTO createIncremental(@PathVariable String gameId,
 			@RequestBody IncrementalClassificationDTO classification) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -324,7 +324,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/incclassification")
-	public List<IncrementalClassificationDTO> readAll(
+	public List<IncrementalClassificationDTO> readAllIncremental(
 			@PathVariable String gameId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -347,7 +347,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/incclassification/{classificationId}")
-	public IncrementalClassificationDTO read(@PathVariable String gameId,
+	public IncrementalClassificationDTO readIncremental(@PathVariable String gameId,
 			@PathVariable String classificationId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -369,7 +369,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/incclassification/{classificationId}")
-	public void delete(@PathVariable String gameId,
+	public void deleteIncremental(@PathVariable String gameId,
 			@PathVariable String classificationId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");

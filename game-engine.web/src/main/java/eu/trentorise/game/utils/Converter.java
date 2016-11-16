@@ -212,30 +212,29 @@ public class Converter {
 			Set<GameConcept> concepts = null;
 			if (t.getGameId() != null) {
 				concepts = gameSrv.readConceptInstances(t.getGameId());
+				PointConcept pc = null;
+				for (GameConcept gc : concepts) {
+					if (gc instanceof PointConcept
+							&& gc.getName().equals(t.getItemType())) {
+						pc = (PointConcept) gc;
+					}
+				}
+
+				if (StringUtils.isBlank(t.getDelayUnit())) {
+					task = new IncrementalClassificationTask(pc,
+							t.getPeriodName(), t.getClassificationName());
+				} else {
+					task = new IncrementalClassificationTask(pc,
+							t.getPeriodName(), t.getClassificationName(),
+							new TimeInterval(t.getDelayValue(),
+									TimeUnit.valueOf(t.getDelayUnit())));
+				}
+				task.setItemsToNotificate(t.getItemsToNotificate());
+				task.setName(t.getName());
 			} else {
 				logger.warn("Try to convert IncrementalClassificationDTO with null gameId field");
-				concepts = new HashSet<>();
+				throw new IllegalArgumentException("gameId is a required field");
 			}
-
-			PointConcept pc = null;
-			for (GameConcept gc : concepts) {
-				if (gc instanceof PointConcept
-						&& gc.getName().equals(t.getItemType())) {
-					pc = (PointConcept) gc;
-				}
-			}
-
-			if (StringUtils.isBlank(t.getDelayUnit())) {
-				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
-						t.getClassificationName());
-			} else {
-				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
-						t.getClassificationName(), new TimeInterval(
-								t.getDelayValue(), TimeUnit.valueOf(t
-										.getDelayUnit())));
-			}
-			task.setItemsToNotificate(t.getItemsToNotificate());
-			task.setName(t.getName());
 		}
 		return task;
 	}
@@ -251,7 +250,8 @@ public class Converter {
 			result.setItemsToNotificate(classification.getItemsToNotificate());
 			result.setName(classification.getName());
 			result.setGameId(gameId);
-			if (classification.getSchedule().getDelay() != null) {
+			if (classification.getSchedule() != null
+					&& classification.getSchedule().getDelay() != null) {
 				result.setDelayValue(classification.getSchedule().getDelay()
 						.getValue());
 				result.setDelayUnit(classification.getSchedule().getDelay()

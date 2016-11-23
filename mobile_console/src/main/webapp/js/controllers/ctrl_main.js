@@ -1290,15 +1290,20 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     //};
     
     // Method used to retrieve the player surveyData by opening a modal form that user has to compile
-    //$scope.retrieveSurveyDataForPlayer = function(){
-    //	var data = null;
-    //	var dlg = $dialogs.create('/dialogs/surveyinput.html','surveyDialogCtrl',data,'lg');
-	//	dlg.result.then(function(user){
-	//		console.log("Data retrieved from initial dialog " + JSON.stringify(user));
-	//		$scope.surveyData = user.surveyData;
-	//		$scope.updateSurvey(user);
-	//	});
-    //};
+    $scope.retrieveSurveyDataForPlayer = function(){
+    	var data = null;
+    	var dlg = $dialogs.create('/dialogs/surveyinput.html','surveyDialogCtrl',data,'lg');
+		dlg.result.then(function(user){
+			console.log("Data retrieved from initial dialog " + JSON.stringify(user));
+			if(user.surveyData != null){
+				$scope.surveyComplete = true;
+			} else {
+				$scope.surveyComplete = false;
+			}
+			$scope.surveyData = user.surveyData;
+			$scope.updateSurvey(user);
+		});
+    };
     
     // Method used to load only the used data from the players list
     $scope.correctProfileData = function(profile){
@@ -3341,81 +3346,81 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
 //			$scope.save();
 //	};
 //}); // end controller(mailDialogCtrl)
-//cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
-//	//-- Variables --//
-//	$scope.submitNumber = 0;
-//	$scope.accepted = false;
-//	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-//	
-//	$scope.showSelect = true;
-//	
-//	var now = new Date();
-//	$scope.negative_exp = "negative";
-//	$scope.satisfying_exp = "satisfying";
-//	$scope.good_exp = "good";
-//	$scope.excellent_exp = "excellent";
-//	
-//	$scope.nothing_val = "nothing";
-//	$scope.little_val = "a little";
-//	$scope.enough_val = "enough";
-//	$scope.much_val = "much";
-//	
-//	$scope.no_val = "no";
-//	$scope.maybe_no_val = "maybe no";
-//	$scope.maybe_yes_val = "maybe yes";
-//	$scope.yes_val = "yes";
-//	
-//	$scope.walk_mode = "walk";
-//	$scope.bike_mode = "bike";
-//	$scope.public_transport_mode = "public transport";
-//	$scope.car_mode = "car";
-//	
-//	$scope.all_trips = "all trips";
-//	$scope.commuters_trips = "commuters trips";
-//	$scope.long_trips = "long trips";
-//	$scope.short_trips = "short trips";
-//	
-//	$scope.no_mode = "nothing";
-//	$scope.bike_sharing_mode = "bike sharing";
-//	$scope.park_and_ride_mode = "park and ride";
-//	$scope.bike_mode = "bike";
-//	$scope.transport_mode = "public transport";
-//
-//	$scope.user = {
-//		surveyData : {
-//			gamimg_experience: "",
-//			change_of_habits: "",
-//			new_habits_maintaining: "",
-//			job_transport_mode: "",
-//			free_time_transport_mode: "",
-//			trip_type: "",
-//			new_mode_type: "",
-//			point_interest_in_game: "",
-//			badges_interest_in_game: "",
-//			challenges_interest_in_game: "",
-//			prize_interest_in_game: "",
-//			game_improve_suggestion: "",
-//			app_improve_suggestion: "",
-//			timestamp: now.getTime()
-//		}
-//	};
-//
-//	//-- Methods --//
-//	
-//	$scope.cancel = function(){
-//		$modalInstance.dismiss('Canceled');
-//	}; // end cancel
-//	
-//	$scope.save = function(form){
-//		if(form.$valid){
-//			$scope.errorMessages = "";
-//			// check if nick already present
-//			$modalInstance.close($scope.user);	// pass all the form data to the main controller
-//		}
-//	}; // end save
-//	
-//	$scope.hitEnter = function(evt){
-//		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
-//			$scope.save();
-//	};
-//}); // end controller(surveyDialogCtrl)
+cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
+	//-- Variables --//
+	$scope.submitNumber = 0;
+	$scope.accepted = false;
+	$scope.mailPattern=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	
+	$scope.showSelect = false;
+	
+	var now = new Date();
+	$scope.negative_exp = "negative";
+	$scope.satisfying_exp = "satisfying";
+	$scope.good_exp = "good";
+	$scope.excellent_exp = "excellent";
+	
+	$scope.nothing_val = "nothing";
+	$scope.little_val = "a little";
+	$scope.enough_val = "enough";
+	$scope.much_val = "much";
+	
+	$scope.no_val = "no";
+	$scope.maybe_no_val = "maybe no";
+	$scope.maybe_yes_val = "maybe yes";
+	$scope.yes_val = "yes";
+	
+	$scope.walk_mode = "walk";
+	$scope.bike_mode = "bike";
+	$scope.public_transport_mode = "public transport";
+	$scope.car_mode = "car";
+	
+	$scope.all_trips = "all trips";
+	$scope.commuters_trips = "commuters trips";
+	$scope.long_trips = "long trips";
+	$scope.short_trips = "short trips";
+	
+	$scope.no_mode = "nothing";
+	$scope.bike_sharing_mode = "bike sharing";
+	$scope.park_and_ride_mode = "park and ride";
+	$scope.bike_mode = "bike";
+	$scope.transport_mode = "public transport";
+
+	$scope.user = {
+		surveyData : {
+			gamimg_experience: "",
+			change_of_habits: "",
+			new_habits_maintaining: "",
+			job_transport_mode: "",
+			free_time_transport_mode: "",
+			trip_type: "",
+			new_mode_type: "",
+			point_interest_in_game: "",
+			badges_interest_in_game: "",
+			challenges_interest_in_game: "",
+			prize_interest_in_game: "",
+			game_improve_suggestion: "",
+			app_improve_suggestion: "",
+			timestamp: now.getTime()
+		}
+	};
+
+	//-- Methods --//
+	
+	$scope.cancel = function(){
+		$modalInstance.dismiss('Canceled');
+	}; // end cancel
+	
+	$scope.save = function(form){
+		if(form.$valid){
+			$scope.errorMessages = "";
+			// check if nick already present
+			$modalInstance.close($scope.user);	// pass all the form data to the main controller
+		}
+	}; // end save
+	
+	$scope.hitEnter = function(evt){
+		if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.user.mail,null) || angular.equals($scope.user.mail,'')))
+			$scope.save();
+	};
+}); // end controller(surveyDialogCtrl)

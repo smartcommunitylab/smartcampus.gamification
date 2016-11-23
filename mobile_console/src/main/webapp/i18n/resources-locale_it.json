@@ -768,5 +768,11 @@
 }, {
 	"key": "filter_name_text",
 	"value": "Cerca nickName"
+}, {
+	"key": "text_survey_ok",
+	"value": "Grazie per aver compilato il questionario, i tuoi dai sono molto preziosi per poterci migliorare ed offrire ogni volta un servizio migliore."
+}, {
+	"key": "text_survey_ko",
+	"value": "I tuoi dati sono molto importanti per capire dove dobbiamo migliorarci. Appena puoi compila il questionario, ci vogliono solo pochi minuti. Grazie!"
 }
 ]

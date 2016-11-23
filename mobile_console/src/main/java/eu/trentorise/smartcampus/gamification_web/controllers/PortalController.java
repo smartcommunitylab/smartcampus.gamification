@@ -47,6 +47,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -185,6 +186,9 @@ public class PortalController extends SCController{
     @Autowired
     @Value("${gamification.mailredirect.url}")
     private String mailRedirectUrl;
+    @Autowired
+    @Value("${gamification.survey.url}")
+    private String mailSurveyUrl;
     @Autowired
     @Value("${gamification.mail.startgame}")
     private String mailStartGame;
@@ -519,6 +523,14 @@ public class PortalController extends SCController{
 		return model;
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/compile_survey/{pId}")
+	public ModelAndView compileSurveyPage(HttpServletRequest request, @PathVariable String pId) {
+		logger.info(String.format("Passed player id: " + pId));
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("user_id", pId);
+		return new ModelAndView("survey", model);
+	}
+	
 	private void createPlayerInGamification(String playerId) throws Exception{
 		RestTemplate restTemplate = new RestTemplate();
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -625,6 +637,7 @@ public class PortalController extends SCController{
 				}
 					
 				if(p.isSendMail()){
+					String compileSurveyUrl = mailSurveyUrl + "/" + p.getSocialId();
 					String encriptedId = "";
 					try {
 						encriptedId = cryptUtils.encrypt(p.getSocialId());
@@ -704,21 +717,21 @@ public class PortalController extends SCController{
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 								} else {
 									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 								}
 							} else {
 								if(states != null  && states.size() > 0){
 									this.emailService.sendMailGamification(mailStartGame, playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 								} else {
 									this.emailService.sendMailGamification(mailStartGame, playerName, "0", "0", "0", null, null, 
 											actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+											challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 								}
 							}
 						} catch (MessagingException e) {

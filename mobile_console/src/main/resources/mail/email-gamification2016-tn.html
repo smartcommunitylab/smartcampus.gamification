@@ -71,6 +71,9 @@
 					    <h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
 				            Queste sfide partono alle ore <span th:text="${chs_start_time}">00:00</span> del giorno <span th:text="${chs_start_date}">XXX</span> e hai tempo fino alle ore <span th:text="${chs_end_time}">23:59</span> del giorno <span th:text="${chs_end_date}">YYY</span> per superarle!
 				        </h3>
+				        <h3>
+			        		Clicca <u><b><a href="https://tn.smartcommunitylab.it/gamificationweb" th:href="${surveyLink}" target="_blank">QUI</a></b></u> per compilare il QUESTIONARIO di fine gioco e superare la sfida specifica. Ricorda però che la sfida è attiva dalle ore 00:00 del giorno 26/11/2016.
+			        	</h3>
 			        </div>
 			        <div th:if="${n_prizes ne null and are_prizes}">
 				        <h3>

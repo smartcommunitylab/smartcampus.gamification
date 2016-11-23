@@ -330,7 +330,7 @@ cp.factory('invokeWSNiksServiceProxy', function($http, $q) {
 		} else {
 			$http({
 				method : method,
-				url : 'rest/' + funcName,
+				url : 'out/rest/' + funcName,
 				params : params,
 				headers : headers,
 				data : data

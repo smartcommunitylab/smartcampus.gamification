@@ -490,13 +490,11 @@ public class WsProxyController {
 	}
 	
 	//Method used to update the player ending-survey data
-	@RequestMapping(method = RequestMethod.POST, value = "/rest/updateSurvey")
+	@RequestMapping(method = RequestMethod.POST, value = "/out/rest/updateSurvey")
 	public @ResponseBody
-	Player updateSurvey(HttpServletRequest request, @RequestParam String urlWS,  @RequestBody SurveyData data) throws Exception{
-		logger.debug("WS-POST. Method " + urlWS + ". Passed data : " + data.toString());
+	Player updateSurvey(HttpServletRequest request, @RequestParam String playerId,  @RequestBody SurveyData data) throws Exception{
 		Player p = null;
-		if(urlWS.contains("=")){
-			String playerId = urlWS.split("=")[1];
+		if(playerId != null && playerId.compareTo("") != 0){
 			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 			p = playerRepositoryDao.findBySocialIdAndType(playerId, type);
 			p.setSurveyData(data);

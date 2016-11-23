@@ -51,6 +51,8 @@
 	<http xmlns="http://www.springframework.org/schema/security"
 		pattern="/prelogin" security="none" />
 	<http xmlns="http://www.springframework.org/schema/security"
+		pattern="/compile_survey/**" security="none" />	
+	<http xmlns="http://www.springframework.org/schema/security"
 		pattern="/pdf/**" security="none" />
 <!-- 	<http xmlns="http://www.springframework.org/schema/security"
 		pattern="/console/**" security="none" /> -->

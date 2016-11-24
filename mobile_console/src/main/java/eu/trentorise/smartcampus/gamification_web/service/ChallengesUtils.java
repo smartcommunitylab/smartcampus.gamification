@@ -43,6 +43,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_2 = "Fai almeno TARGET viaggio senza usare MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_3 = "Fai almeno TARGET viaggio MODE e avrai un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_5 = "Ottieni almeno TARGET punti POINT_TYPE e avrai ulteriori BONUS punti POINT_TYPE in bonus";
+	private final String CHAL_DESC_5A = "Ottieni almeno altri TARGET punti POINT_TYPE e avrai ulteriori BONUS punti POINT_TYPE in bonus";
 	private final String CHAL_DESC_6 = "Ottieni almeno TARGET badge nella Badge Collection BADGE_COLL_NAME e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_7 = "Completa una Badge Collection e vinci un bonus di BONUS punti POINT_TYPE";
 	private final String CHAL_DESC_8 = "Compila il questionario di fine gioco e guadagni BONUS punti POINT_TYPE";
@@ -57,6 +58,7 @@ public class ChallengesUtils {
 	private final String CHAL_DESC_2_ENG = "Do at least TARGET trip without MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_3_ENG = "Do at least TARGET trip MODE and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_5_ENG = "Get at least TARGET POINT_TYPE points and you will have BONUS additinal POINT_TYPE bonus points";
+	private final String CHAL_DESC_5A_ENG = "Get at least TARGET more POINT_TYPE points and you will have BONUS additinal POINT_TYPE bonus points";
 	private final String CHAL_DESC_6_ENG = "Get at least TARGET badge in BADGE_COLL_NAME Badge Collection and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_7_ENG = "Complete a Bange Collection and you will get a bonus of BONUS POINT_TYPE points";
 	private final String CHAL_DESC_8_ENG = "Fill out the end-game survay and you will gain a bonus of BONUS POINT_TYPE points";
@@ -87,6 +89,7 @@ public class ChallengesUtils {
 	private final String SERVER_CHAL_ALLOWED_MODE_C = "Car";
 	private final String SERVER_CHAL_ALLOWED_MODE_Z = "ZeroImpact";
 	private final String SERVER_CHAL_ALLOWED_MODE_P = "Promoted";
+	private final String SERVER_CHAL_ALLOWED_MODE_PANDR = "PandR";
 	private final String SERVER_CHAL_ALLOWED_MODE_R = "Recommendations";
 	private final String SERVER_CHAL_ALLOWED_MODE_PE = "green leaves";
 	private final String SERVER_CHAL_ALLOWED_MODE_CAB = "Cable";
@@ -100,6 +103,7 @@ public class ChallengesUtils {
 	private final String CHAL_ALLOWED_MODE_C_NEG = "no car";
 	private final String CHAL_ALLOWED_MODE_Z = "zeroimpact";
 	private final String CHAL_ALLOWED_MODE_P = "promoted";
+	private final String CHAL_ALLOWED_MODE_PANDR = "pandr";
 	private final String CHAL_ALLOWED_MODE_CAB = "cable";
 	private final String CHAL_ALLOWED_MODE_W_DIS = "walkDistance";
 	private final String CHAL_ALLOWED_MODE_BK_DIS = "bikeDistance";
@@ -109,6 +113,7 @@ public class ChallengesUtils {
 	private final String CHAL_ALLOWED_MODE_C_DIS = "carDistance";
 	private final String CHAL_ALLOWED_MODE_Z_DIS = "zeroimpactDistance";
 	private final String CHAL_ALLOWED_MODE_P_DIS = "promotedDistance";
+	private final String CHAL_ALLOWED_MODE_PANDR_DIS = "pandrDistance";
 	private final String CHAL_ALLOWED_PT_GREEN = "green leaves";
 	private final String CHAL_ALLOWED_PT_HEALTH = "health";
 	private final String CHAL_ALLOWED_PT_PR = "pr";
@@ -191,6 +196,8 @@ public class ChallengesUtils {
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(28).getDescription() : challDescList.get(28).getDescription_eng();
 			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_Z) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_Z + "Distance") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(6).getDescription() : challDescList.get(6).getDescription_eng();
+			} else if(mobMode.compareTo(CHAL_ALLOWED_MODE_PANDR) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_PANDR + "Distance") == 0){
+				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(34).getDescription() : challDescList.get(34).getDescription_eng();
 			}
 		} else if(type.compareTo(CHAL_TYPE_1B) == 0){
 			if(mobMode.compareTo(CHAL_ALLOWED_MODE_BK) == 0 || mobMode.compareTo(CHAL_ALLOWED_MODE_BK + "Distance") == 0){
@@ -235,7 +242,7 @@ public class ChallengesUtils {
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(6).getDescription() : challDescList.get(6).getDescription_eng();
 			}
 		} else if(type.compareTo(CHAL_TYPE_5) == 0){
-			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(10).getDescription().replace("X", target).replace("punti [green leaves, bici, salute, impatto 0]", pointType) : challDescList.get(10).getDescription_eng().replace("X", target).replace("[green leaves, bike, health, 0 impact] points", pointType);
+			correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(10).getDescription().replace("X", target).replace("[green leaves, bici, salute, impatto 0]", pointType) : challDescList.get(10).getDescription_eng().replace("X", target).replace("[green leaves, bike, health, 0 impact]", pointType);
 		} else if(type.compareTo(CHAL_TYPE_6) == 0){
 			if(mobMode.compareTo("green leaves") == 0){
 				correctDesc = (language.compareTo(ITA_LANG) == 0) ? challDescList.get(14).getDescription() : challDescList.get(14).getDescription_eng();
@@ -617,30 +624,41 @@ public class ChallengesUtils {
 		    			
 		    			if(target == 0)target = 1; // to solve division by zero problem
 		    			if(ch_type.compareTo(CHAL_MODEL_PERCENTAGE_INC) == 0){
-		    				if(counterName.contains(SERVER_CHAL_ALLOWED_MODE_KM)){
-		    					// kmnum
-		    					old_ch_type = CHAL_TYPE_1;
-		    					String mobility_mode = retrieveMobilityModeFromCounterName(counterName);
-		    					int walked_km = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
-		    					row_status = round(walked_km, 2);
-		    					status = (walked_km * 100) / target;
-		    					if(status > 100)status = 100;
-		    					ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-		    					tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
+		    				if(counterName.contains(SERVER_CHAL_ALLOWED_MODE_PE)){
+		    					// point earned
+		    					old_ch_type = CHAL_TYPE_5;
+		    					int earned_points = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
+			    				row_status = round(earned_points, 2);
+			    				status = earned_points * 100 / target;
+			    				if(status > 100)status = 100;
+			    				ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_5A, target, ch_bonus, ch_point_type, "", null, language) : correctDesc(CHAL_DESC_5A_ENG, target, ch_bonus, ch_point_type, "", null, language);
+			    				tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, "", target + "", ch_point_type, language));
 		    				} else {
-		    					// tripnum
-		    					old_ch_type = CHAL_TYPE_1A;
-		    					String mobility_mode = retrieveMobilityModeFromCounterName(counterName);
-		    					int walked_km = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
-		    					row_status = round(walked_km, 2);
-		    					status = (walked_km * 100) / target;
-		    					if(status > 100)status = 100;
-		    					if(mobility_mode.compareTo(CHAL_ALLOWED_MODE_Z) == 0){
-		    						ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-		    					} else {
-		    						ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A2_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
-		    					}
-		    					tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
+			    				if(counterName.contains(SERVER_CHAL_ALLOWED_MODE_KM)){
+			    					// kmnum
+			    					old_ch_type = CHAL_TYPE_1;
+			    					String mobility_mode = retrieveMobilityModeFromCounterName(counterName);
+			    					int walked_km = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
+			    					row_status = round(walked_km, 2);
+			    					status = (walked_km * 100) / target;
+			    					if(status > 100)status = 100;
+			    					ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+			    					tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
+			    				} else {
+			    					// tripnum
+			    					old_ch_type = CHAL_TYPE_1A;
+			    					String mobility_mode = retrieveMobilityModeFromCounterName(counterName);
+			    					int walked_km = retrieveCorrectStatusFromCounterName(counterName, pointConcept, ch_startTime, ch_endTime, null);
+			    					row_status = round(walked_km, 2);
+			    					status = (walked_km * 100) / target;
+			    					if(status > 100)status = 100;
+			    					if(mobility_mode.compareTo(CHAL_ALLOWED_MODE_Z) == 0){
+			    						ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+			    					} else {
+			    						ch_desc = (language.compareTo(ITA_LANG) == 0) ? correctDesc(CHAL_DESC_1A, target, ch_bonus, ch_point_type, mobility_mode, null, language) : correctDesc(CHAL_DESC_1A2_ENG, target, ch_bonus, ch_point_type, mobility_mode, null, language);
+			    					}
+			    					tmp_chall.setChallCompleteDesc(getLongDescriptionByChall(old_ch_type, mobility_mode, target + "", ch_point_type, language));
+			    				}
 		    				}
 		    			}
 		    			if(ch_type.compareTo(CHAL_MODEL_ABSOLUTE_INC) == 0){
@@ -842,6 +860,9 @@ public class ChallengesUtils {
 		if(cName.contains(SERVER_CHAL_ALLOWED_MODE_P)){
 			corrMobility = CHAL_ALLOWED_MODE_P;
 		}
+		if(cName.contains(SERVER_CHAL_ALLOWED_MODE_PANDR)){
+			corrMobility = CHAL_ALLOWED_MODE_PANDR;
+		}
 		// NB: new part for cable
 		if(cName.contains(SERVER_CHAL_ALLOWED_MODE_CAB)){
 			corrMobility = CHAL_ALLOWED_MODE_CAB;
@@ -1036,6 +1057,13 @@ public class ChallengesUtils {
     			corr_mode = (type == 0) ? "promoted" : "promoted trips";
     		}
     	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_PANDR) == 0){
+    		if(language.compareTo(ITA_LANG) == 0){
+    			corr_mode = (type == 0) ? "utilizzando il park and ride" : "il park and ride";
+    		} else {
+    			corr_mode = (type == 0) ? "in park and ride mode" : "park and ride mode";
+    		}
+    	}
     	if(mode.compareTo(CHAL_ALLOWED_MODE_CAB) == 0){
     		if(language.compareTo(ITA_LANG) == 0){
     			corr_mode = (type == 0) ? "in funivia" : "la funivia";	// New part for cable
@@ -1097,6 +1125,13 @@ public class ChallengesUtils {
     			corr_mode = (type == 0) ? "promoted" : "spostamenti promoted";
     		} else {
     			corr_mode = (type == 0) ? "promoted" : "promoted trips";
+    		}
+    	}
+    	if(mode.compareTo(CHAL_ALLOWED_MODE_PANDR_DIS) == 0){
+    		if(language.compareTo(ITA_LANG) == 0){
+    			corr_mode = (type == 0) ? "utilizzando il park and ride" : "il park and ride";
+    		} else {
+    			corr_mode = (type == 0) ? "in park and ride mode" : "park and ride mode";
     		}
     	}
     	return corr_mode;

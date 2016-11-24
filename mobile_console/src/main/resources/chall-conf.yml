@@ -53,7 +53,7 @@ descriptions:
     type: POINTSEARNED
     mobilitymode: all
     description: Per vincere la sfida accumula almeno X punti [green leaves, bici, salute, impatto 0] nel corso del periodo di validita' della sfida.
-    description_eng: To win this challenge you need to earn at least X green leaves, bike, health, 0 impact] points in between the beginning and end time of the challenge.
+    description_eng: To win this challenge you need to earn at least X [green leaves, bike, health, 0 impact] points in between the beginning and end time of the challenge.
   - id: 12
     type: TOPPOSITION
     mobilitymode: all
@@ -167,5 +167,10 @@ descriptions:
   - id: 34
     type: CLASSPOSITION
     mobilitymode: none
-    description: "Per vincere la sfida la tua posizione nella classifica settimanale dovra' essere compresa tra il X° e il Y° posto alla fine di questa settimana di gioco (cioe' la notte di venerdi' 11 novembre)."
-    description_eng: "To succeed in this challenge, your position in the weekly leaderboard must be in between place X and place Y at the end of the week (i.e. on the night of Friday the 11th of November)."
+    description: "Per vincere la sfida la tua posizione nella classifica settimanale dovra' essere compresa tra il X° e il Y° posto alla fine di questa settimana di gioco (cioe' la notte di venerdi' 2 dicembre)."
+    description_eng: "To succeed in this challenge, your position in the weekly leaderboard must be in between place X and place Y at the end of the week (i.e. on the night of Friday the 2nd of December)."
+  - id: 35
+    type: TRIPNUMBER
+    mobilitymode: parkAndRide
+    description: Per vincere la sfida vale il numero di itinerari che utilizzano il park and ride pianificati con ViaggiaTrento Play&Go e compiuti durante la validita' della sfida.
+    description_eng: To win this challenge, we take into account the total number of itineraries you have done using park and ride with ViaggiaTrento Play&Go and which you have taken in between the beginning and end time for this challenge.    

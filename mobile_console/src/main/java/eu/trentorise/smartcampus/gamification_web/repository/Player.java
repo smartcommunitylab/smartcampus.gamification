@@ -161,7 +161,8 @@ public class Player {
 		}
 		String sdata = null;
 		if(surveyData!=null){
-			sdata = surveyData.toJSONString();
+			//sdata = surveyData.toJSONString();
+			sdata = surveyData.toString();
 		}
 		return "{\"pid\":\"" + pid + "\", \"socialId\":\"" + socialId + "\", \"type\":\"" + type + "\", \"name\":\""
 				+ name + "\", \"surname\":\"" + surname + "\", \"nikName\":\"" + nikName

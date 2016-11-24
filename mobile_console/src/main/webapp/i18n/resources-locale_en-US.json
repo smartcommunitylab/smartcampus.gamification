@@ -770,9 +770,129 @@
 	"value": "Find by nickName"
 }, {
 	"key": "text_survey_ok",
-	"value": "Grazie per aver compilato il questionario, i tuoi dai sono molto preziosi per poterci migliorare ed offrire ogni volta un servizio migliore."
+	"value": "Thank you for completing the survey, your data are very important for us to create and offer useful services and apps."
 }, {
 	"key": "text_survey_ko",
-	"value": "I tuoi dati sono molto importanti per capire dove dobbiamo migliorarci. Appena puoi compila il questionario, ci vogliono solo pochi minuti. Grazie!"
+	"value": "Your data are very important for us to improve our services. As soon as you can compile the survey, you need only a few minutes. Thank you!"
+}, {
+	"key": "text_subtitle_survey_page",
+	"value": "with ViaggiaTrento"
+}, {
+	"key": "text_staff_survey_page",
+	"value": "Play&Go Staff"
+}, {
+	"key": "final_survey_title",
+	"value": "Final game survey"
+}, {
+	"key": "final_survey_subtitle",
+	"value": "Please answer these simple and quick questions, to tell us your opinion on the 'Play&Go' game."
+}, {
+	"key": "final_survey_question1",
+	"value": "Is the municipality of Trento your residence?"
+}, {
+	"key": "final_survey_question2",
+	"value": "Do you work or study in the municipality of Trento?"
+}, {
+	"key": "final_survey_question3",
+	"value": "How do you rate your playing experience throughout the game weeks?"
+}, {
+	"key": "final_survey_question4",
+	"value": "How much did the game incentivize you to change your mobility habits?"
+}, {
+	"key": "final_survey_question5",
+	"value": "If you did change your mobility habits, would you consider to keep these new habits even after the conclusion of the game?"
+}, {
+	"key": "final_survey_question6",
+	"value": "Which transport modes did you try for the first time thanks to the game?"
+}, {
+	"key": "final_survey_question7",
+	"value": "How important were the following elements to motivate you to remain active in the game and to continue moving in sustainable ways?"
+}, {
+	"key": "final_survey_question7_sub1",
+	"value": "Points and leaderboards"
+}, {
+	"key": "final_survey_question7_sub2",
+	"value": "Badges"
+}, {
+	"key": "final_survey_question7_sub3",
+	"value": "Challenges"
+}, {
+	"key": "final_survey_question7_sub4",
+	"value": "Prizes"
+}, {
+	"key": "final_survey_question8",
+	"value": "What did you like the most in ViaggiaTrento Play&Go?"
+}, {
+	"key": "final_survey_question9",
+	"value": "Is there anything that you did not like in ViaggiaTrento Play&Go?"
+}, {
+	"key": "final_survey_question10",
+	"value": "DO you have some suggestion or idea to improve the ViaggiaTrento Play&Go App or the game?"
+}, {
+	"key": "final_survey_required_field",
+	"value": "The * symbol indicates a required field"
+}, {
+	"key": "final_survey_thanks_description",
+	"value": "Thank you for filling out the survey and had participated actively in the improvement of the proposed solutions!"
+}, {
+	"key": "final_survey_staff",
+	"value": "The organizers."
+}, {
+	"key": "final_survey_not_now_button",
+	"value": "Not now"
+}, {
+	"key": "fs_yes_value",
+	"value": "Yes"
+}, {
+	"key": "fs_no_value",
+	"value": "No"
+}, {
+	"key": "fs_negative_value",
+	"value": "Negative"
+}, {
+	"key": "fs_enough_value",
+	"value": "Fair"
+}, {
+	"key": "fs_good_value",
+	"value": "Good"
+}, {
+	"key": "fs_excellent_value",
+	"value": "Excellent"
+}, {
+	"key": "fs_nothing_value",
+	"value": "Not at all"
+}, {
+	"key": "fs_little_value",
+	"value": "A little"
+}, {
+	"key": "fs_quite_value",
+	"value": "Significantly"
+}, {
+	"key": "fs_very_value",
+	"value": "A lot"
+}, {
+	"key": "fs_absolutely_no_value",
+	"value": "Not at all"
+}, {
+	"key": "fs_think_not_value",
+	"value": "Probably not"
+}, {
+	"key": "fs_probably_yes_value",
+	"value": "Probably yes"
+}, {
+	"key": "fs_certain_yes_value",
+	"value": "Yes for sure"
+}, {
+	"key": "fs_bike_value",
+	"value": "Bicycle"
+}, {
+	"key": "fs_public_transport_value",
+	"value": "Public Transport"
+}, {
+	"key": "fs_cable_value",
+	"value": "Cable Car"
+}, {
+	"key": "fs_text_placeholder_value",
+	"value": "Tell us your feedback"
 }
 ]

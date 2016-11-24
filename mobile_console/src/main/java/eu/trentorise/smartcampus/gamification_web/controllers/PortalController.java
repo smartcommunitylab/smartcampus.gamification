@@ -524,10 +524,17 @@ public class PortalController extends SCController{
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/compile_survey/{pId}")
-	public ModelAndView compileSurveyPage(HttpServletRequest request, @PathVariable String pId) {
+	public ModelAndView compileSurveyPage(HttpServletRequest request, @PathVariable String pId, @RequestParam String language) {
 		logger.info(String.format("Passed player id: " + pId));
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("user_id", pId);
+		String used_lang = "it";
+		if(language != null){
+			if(language.compareTo("en") == 0){
+				used_lang = "en";
+			}
+		}
+		model.put("language", used_lang);
 		return new ModelAndView("survey", model);
 	}
 	
@@ -637,7 +644,7 @@ public class PortalController extends SCController{
 				}
 					
 				if(p.isSendMail()){
-					String compileSurveyUrl = mailSurveyUrl + "/" + p.getSocialId();
+					String compileSurveyUrl = mailSurveyUrl + "/" + p.getSocialId() + "?language=" + ((p.getLanguage() != null) ? p.getLanguage() : "it");
 					String encriptedId = "";
 					try {
 						encriptedId = cryptUtils.encrypt(p.getSocialId());

@@ -774,5 +774,119 @@
 }, {
 	"key": "text_survey_ko",
 	"value": "I tuoi dati sono molto importanti per capire dove dobbiamo migliorarci. Appena puoi compila il questionario, ci vogliono solo pochi minuti. Grazie!"
+}, {
+	"key": "text_subtitle_survey_page",
+	"value": "con ViaggiaTrento"
+}, {
+	"key": "text_staff_survey_page",
+	"value": "Lo staff di Play&Go"
+}, {
+	"key": "final_survey_title",
+	"value": "Questionario di fine gioco"
+}, {
+	"key": "final_survey_subtitle",
+	"value": "Rispondi a queste veloci e semplici domande per offrire un tuo parere sul gioco 'Play&Go'."
+}, {
+	"key": "final_survey_question3",
+	"value": "Come valuteresti la tua esperienza di gioco in queste settimane?"
+}, {
+	"key": "final_survey_question4",
+	"value": "In quale misura il gioco ti ha indotto a cambiare le tue abitudini di mobilita'?"
+}, {
+	"key": "final_survey_question5",
+	"value": "Se hai cambiato le tue abitudini, continueresti a muoverti come suggerito dalla App anche dopo il gioco?"
+}, {
+	"key": "final_survey_question6",
+	"value": "Quali modi di trasporto hai provato per la prima volta grazie al gioco?"
+}, {
+	"key": "final_survey_question7",
+	"value": "Quanto sono stati importanti questi elementi per rimanere attivo nel gioco e continuare a muoverti in modo sostenibile?"
+}, {
+	"key": "final_survey_question7_sub1",
+	"value": "Punti e classifiche"
+}, {
+	"key": "final_survey_question7_sub2",
+	"value": "Badges"
+}, {
+	"key": "final_survey_question7_sub3",
+	"value": "Sfide"
+}, {
+	"key": "final_survey_question7_sub4",
+	"value": "Premi"
+}, {
+	"key": "final_survey_question8",
+	"value": "Che cosa ti è piaciuto di più in ViaggiaTrento Play&Go?"
+}, {
+	"key": "final_survey_question9",
+	"value": "C'è qualcosa che non ti è piaciuto in ViaggiaTrento Play&Go?"
+}, {
+	"key": "final_survey_question10",
+	"value": "Hai qualche suggerimento o idea per migliorare la App o il gioco ViaggiaTrento Play&Go?"
+}, {
+	"key": "final_survey_required_field",
+	"value": "Il simbolo * indica un campo obbligatorio"
+}, {
+	"key": "final_survey_thanks_description",
+	"value": "Ti ringraziamo per aver compilato il questionario e di aver partecipato in modo attivo al miglioramento delle soluzioni proposte!"
+}, {
+	"key": "final_survey_staff",
+	"value": "Gli organizzatori."
+}, {
+	"key": "final_survey_not_now_button",
+	"value": "Non ora"
+}, {
+	"key": "fs_yes_value",
+	"value": "Sì"
+}, {
+	"key": "fs_no_value",
+	"value": "No"
+}, {
+	"key": "fs_negative_value",
+	"value": "Negativa"
+}, {
+	"key": "fs_enough_value",
+	"value": "Sufficiente"
+}, {
+	"key": "fs_good_value",
+	"value": "Buona"
+}, {
+	"key": "fs_excellent_value",
+	"value": "Ottima"
+}, {
+	"key": "fs_nothing_value",
+	"value": "Per niente"
+}, {
+	"key": "fs_little_value",
+	"value": "Poco"
+}, {
+	"key": "fs_quite_value",
+	"value": "Abbastanza"
+}, {
+	"key": "fs_very_value",
+	"value": "Molto"
+}, {
+	"key": "fs_absolutely_no_value",
+	"value": "Assolutamente No"
+}, {
+	"key": "fs_think_not_value",
+	"value": "Non credo"
+}, {
+	"key": "fs_probably_yes_value",
+	"value": "Probabilmente Sì"
+}, {
+	"key": "fs_certain_yes_value",
+	"value": "Sicuramente Sì"
+}, {
+	"key": "fs_bike_value",
+	"value": "Bicicletta"
+}, {
+	"key": "fs_public_transport_value",
+	"value": "Mezzi Pubblici"
+}, {
+	"key": "fs_cable_value",
+	"value": "Funivia"
+}, {
+	"key": "fs_text_placeholder_value",
+	"value": "Inserisci i tuoi commenti"
 }
 ]

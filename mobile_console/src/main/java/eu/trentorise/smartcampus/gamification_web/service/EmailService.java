@@ -200,8 +200,8 @@ public class EmailService {
     	}
     	
     	boolean isLastWeek = false;
-    	//if(week_theme.compareTo("Last") == 0){
-    	if(week_theme.compareTo("Park & Ride") == 0){
+    	if(week_theme.compareTo("Last") == 0){
+    	//if(week_theme.compareTo("Batti i tuoi record") == 0){
     		isLastWeek = true;
     	}
     	

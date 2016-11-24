@@ -859,6 +859,12 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return $scope.profTabs[index].activeClass;
     };
     
+    if($scope.itaLang){
+    	$scope.setItalianLanguage();
+    } else {
+    	$scope.setEnglishLanguage();
+    }
+    
     if($scope.retrieveUsedLang() == "ita"){
     	$scope.setItalianLanguage();
     } else {
@@ -1177,7 +1183,8 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var params = {
     		playerId: $scope.userId,
     	};
-    	var data = userData.surveyData;
+    	var data = $scope.correctSurveyForService(userData.surveyData);
+    	console.log("surveyData:" + data);
     	var wsRestUrl = "updateSurvey";
     	var myDataPromise = invokeWSNiksServiceProxy.getProxy(method, wsRestUrl, params, $scope.authHeaders, data);
     	myDataPromise.then(function(result){
@@ -1186,6 +1193,50 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     		}
     	});
     	return myDataPromise;
+    };
+    
+    $scope.correctSurveyForService = function(data){
+    	var merge_new_mode = "";
+    	if(data.new_mode_type != null){
+    		if(data.new_mode_type.bike_sharing_mode){
+    			merge_new_mode += "bike sharing, ";
+    		}
+    		if(data.new_mode_type.park_and_ride_mode){
+    			merge_new_mode += "park and ride, ";
+    		}
+    		if(data.new_mode_type.bike_mode){
+    			merge_new_mode += "bike, ";
+    		}
+    		if(data.new_mode_type.transport_mode){
+    			merge_new_mode += "public transport, ";
+    		}
+    		if(data.new_mode_type.cable_mode){
+    			merge_new_mode += "cable car, ";
+    		}
+    		if(merge_new_mode == ""){
+    			merge_new_mode = "nothing";
+    		} else {
+    			merge_new_mode = merge_new_mode.substring(0, merge_new_mode.length - 2);
+    		}
+    	}
+    	var corr_data = {
+    		user_residence_tn: data.user_residence_tn,
+    		user_commute_tn: data.user_commute_tn,
+    		gamimg_experience: data.gamimg_experience,
+    		change_of_habits: data.change_of_habits,
+    		new_habits_maintaining: data.new_habits_maintaining,
+    		new_mode_type: merge_new_mode,
+    		point_interest_in_game: data.point_interest_in_game,
+    		badges_interest_in_game: data.badges_interest_in_game,
+    		challenges_interest_in_game: data.challenges_interest_in_game,
+    		prize_interest_in_game: data.prize_interest_in_game,
+    		game_liked_features: data.game_liked_features,
+    		game_not_liked_features: data.game_not_liked_features,
+    		improve_suggestion: data.improve_suggestion,
+    		timestamp: data.timestamp	
+    	};
+    	return corr_data;
+    	
     };
     
     // Method correctPersonalDataBeforeSave: used to correct personal data object before post ws call
@@ -3388,19 +3439,25 @@ cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
 
 	$scope.user = {
 		surveyData : {
+			user_residence_tn: "",
+			user_commute_tn: "",
 			gamimg_experience: "",
 			change_of_habits: "",
 			new_habits_maintaining: "",
-			job_transport_mode: "",
-			free_time_transport_mode: "",
-			trip_type: "",
-			new_mode_type: "",
+			new_mode_type: {
+				bike_sharing_mode: false,
+				park_and_ride_mode: false,
+				bike_mode: false,
+				transport_mode: false,
+				cable_mode: false
+			},
 			point_interest_in_game: "",
 			badges_interest_in_game: "",
 			challenges_interest_in_game: "",
 			prize_interest_in_game: "",
-			game_improve_suggestion: "",
-			app_improve_suggestion: "",
+			game_liked_features: "",
+			game_not_liked_features: "",
+			improve_suggestion: "",
 			timestamp: now.getTime()
 		}
 	};

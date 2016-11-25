@@ -793,6 +793,9 @@
 	"key": "final_survey_question2",
 	"value": "Lavori o studi nel Comune di Trento?"
 }, {
+	"key": "final_survey_question2a",
+	"value": "Come sei venuto a conoscenza di questo gioco?"
+}, {
 	"key": "final_survey_question3",
 	"value": "Come valuteresti la tua esperienza di gioco in queste settimane?"
 }, {
@@ -898,10 +901,34 @@
 	"key": "fs_text_placeholder_value",
 	"value": "Inserisci i tuoi commenti"
 }, {
+	"key": "fs_text_placeholder_discover_value",
+	"value": "Altro"
+}, {
 	"key": "fs_text_required_field_value",
 	"value": "Campo obbligatorio. Scegliere un valore"
 }, {
 	"key": "fs_select_defalut_value",
 	"value": "Seleziona un valore"
+}, {
+	"key": "fs_newspaper_value",
+	"value": "Giornali"
+}, {
+	"key": "fs_radio_value",
+	"value": "Radio"
+}, {
+	"key": "fs_bus_leaflet_value",
+	"value": "Volantini in autobus"
+}, {
+	"key": "fs_poster_value",
+	"value": "Cartolina o poster"
+}, {
+	"key": "fs_info_event_value",
+	"value": "Eventi informativi"
+}, {
+	"key": "fs_friend_value",
+	"value": "Da un amico"
+}, {
+	"key": "fs_other_value",
+	"value": "Altro"
 }
 ]

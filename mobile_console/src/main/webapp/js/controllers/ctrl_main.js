@@ -1226,6 +1226,7 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	var corr_data = {
     		user_residence_tn: data.user_residence_tn,
     		user_commute_tn: data.user_commute_tn,
+    		game_discover_from_user: (data.game_discover_from_user == "other") ? data.game_discover_other_value : data.game_discover_from_user,
     		gamimg_experience: data.gamimg_experience,
     		change_of_habits: data.change_of_habits,
     		new_habits_maintaining: data.new_habits_maintaining,
@@ -3440,11 +3441,23 @@ cp.controller('surveyDialogCtrl',function($scope,$modalInstance,data){
 	$scope.park_and_ride_mode = "park and ride";
 	$scope.bike_mode = "bike";
 	$scope.transport_mode = "public transport";
+	
+	//Giornali / Radio / Volantini in autobus / Cartolina o Poster / Facebook / Eventi informativi / Altro
+	$scope.from_newspaper = "newspaper";
+	$scope.from_radio = "radio";
+	$scope.from_bus_leaflet = "bus leaflet";
+	$scope.from_poster = "postcard or poster";
+	$scope.from_facebook = "facebook";
+	$scope.from_information_event = "information event";
+	$scope.from_a_friend = "friend";
+	$scope.from_other = "other";
 
 	$scope.user = {
 		surveyData : {
 			user_residence_tn: "",
 			user_commute_tn: "",
+			game_discover_from_user: "",
+			game_discover_other_value: "",
 			gamimg_experience: "",
 			change_of_habits: "",
 			new_habits_maintaining: "",

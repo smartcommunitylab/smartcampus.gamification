@@ -218,8 +218,50 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						</table>
 						<div ng-show="form.commute_tn.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
+					<div class="form-group required" ng-class="{true: 'has-error'}[form.game_discover.$dirty && form.game_discover.$invalid]">
+						<label class="control-label">3) {{ 'final_survey_question2a' | i18n }}</label>
+						<select ng-if="showSelect" type="text" name="game_discover" class="form-control" ng-model="user.surveyData.game_discover_from_user" required>
+							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+							<option ng-value="from_newspaper">{{ 'fs_newspaper_value' | i18n }}</option>
+							<option ng-value="from_radio">{{ 'fs_radio_value' | i18n }}</option>
+							<option ng-value="from_bus_leaflet">{{ 'fs_bus_leaflet_value' | i18n }}</option>
+							<option ng-value="from_poster">{{ 'fs_poster_value' | i18n }}</option>
+							<option ng-value="from_facebook">facebook</option>
+							<option ng-value="from_information_event">{{ 'fs_info_event_value' | i18n }}</option>
+							<option ng-value="from_a_friend">{{ 'fs_friend_value' | i18n }}</option>
+							<option ng-value="from_other">{{ 'fs_other_value' | i18n }}</option>
+						</select>
+						<table width="100%" ng-if="!showSelect">
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_newspaper" required> {{ 'fs_newspaper_value' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_radio" required> {{ 'fs_radio_value' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_bus_leaflet" required> {{ 'fs_bus_leaflet_value' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_poster" required> {{ 'fs_poster_value' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_facebook" required> facebook</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_information_event" required> {{ 'fs_info_event_value' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_a_friend" required> {{ 'fs_friend_value' | i18n }}</label></td>
+							</tr>
+							<tr>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_other" required> {{ 'fs_other_value' | i18n }}</label></td>
+							</tr>
+						</table>
+						<textarea ng-show="user.surveyData.game_discover_from_user == from_other" class="form-control" name="game_discover_other" id="game_discover_other" placeholder="{{ 'fs_text_placeholder_discover_value' | i18n }}" ng-model="user.surveyData.game_discover_other_value"></textarea>
+						<div ng-show="form.game_discover.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
+					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.gaming_exp.$dirty && form.gaming_exp.$invalid]">
-						<label class="control-label">3) {{ 'final_survey_question3' | i18n }}</label>
+						<label class="control-label">4) {{ 'final_survey_question3' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="gaming_exp" class="form-control" ng-model="user.surveyData.gamimg_experience" required>
 							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
 							<option ng-value="negative_exp">{{ 'fs_negative_value' | i18n }}</option>
@@ -244,7 +286,7 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						<div ng-show="form.gaming_exp.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.change_of_habits.$dirty && form.change_of_habits.$invalid]">
-						<label class="control-label">4) {{ 'final_survey_question4' | i18n }}</label>
+						<label class="control-label">5) {{ 'final_survey_question4' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="change_of_habits" class="form-control" ng-model="user.surveyData.change_of_habits" required>
 							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
 							<option ng-value="nothing_val">{{ 'fs_nothing_value' | i18n }}</option>
@@ -269,7 +311,7 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						<div ng-show="form.change_of_habits.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_habits_maintaining.$dirty && form.new_habits_maintaining.$invalid]">
-						<label class="control-label">5) {{ 'final_survey_question5' | i18n }}</label>
+						<label class="control-label">6) {{ 'final_survey_question5' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="new_habits_maintaining" class="form-control" ng-model="user.surveyData.new_habits_maintaining" ng-required="user.surveyData.change_of_habits!=nothing_val">
 							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
 							<option ng-value="no_val">{{ 'fs_absolutely_no_value' | i18n }}</option>
@@ -294,7 +336,7 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						<div ng-show="form.new_habits_maintaining.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.new_mode_type.$dirty && form.new_mode_type.$invalid]">
-						<label class="control-label">6) {{ 'final_survey_question6' | i18n }}</label>
+						<label class="control-label">7) {{ 'final_survey_question6' | i18n }}</label>
 						<!-- <select ng-if="showSelect" type="text" name="new_mode_type" class="form-control" ng-model="user.surveyData.new_mode_type">
 							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
 							<option ng-value="no_mode">Nessuno</option>
@@ -326,7 +368,7 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						</table>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_mode_type.$dirty && form.new_mode_type.$invalid]">
-						<label class="control-label">7) {{ 'final_survey_question7' | i18n }}</label>
+						<label class="control-label">8) {{ 'final_survey_question7' | i18n }}</label>
 						<ul>
 							<li>
 								<label>{{ 'final_survey_question7_sub1' | i18n }}</label>
@@ -431,16 +473,16 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						</ul>
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.game_liked_features.$dirty && form.game_liked_features.$invalid]">
-						<label class="control-label" for="game_liked_features">8) {{ 'final_survey_question8' | i18n }}</label>
-						<textarea class="form-control" name="game_liked_features" id="game_liked_features" placeholder="Inserisci i tuoi commenti" ng-model="user.surveyData.game_liked_features"></textarea>
+						<label class="control-label" for="game_liked_features">9) {{ 'final_survey_question8' | i18n }}</label>
+						<textarea class="form-control" name="game_liked_features" id="game_liked_features" placeholder="{{ 'fs_text_placeholder_value' | i18n }}" ng-model="user.surveyData.game_liked_features"></textarea>
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.game_not_liked_features.$dirty && form.game_not_liked_features.$invalid]">
-						<label class="control-label" for="game_not_liked_features">9) {{ 'final_survey_question9' | i18n }}</label>
-						<textarea class="form-control" name="game_not_liked_features" id="game_suggestion" placeholder="Inserisci i tuoi commenti" ng-model="user.surveyData.game_not_liked_features"></textarea>
+						<label class="control-label" for="game_not_liked_features">10) {{ 'final_survey_question9' | i18n }}</label>
+						<textarea class="form-control" name="game_not_liked_features" id="game_suggestion" placeholder="{{ 'fs_text_placeholder_value' | i18n }}" ng-model="user.surveyData.game_not_liked_features"></textarea>
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.improve_suggestion.$dirty && form.app_improve_suggestion.$invalid]">
-						<label class="control-label" for="app_suggestion">10) {{ 'final_survey_question10' | i18n }}</label>
-						<textarea class="form-control" name="improve_suggestion" id="app_suggestion" placeholder="Inserisci i tuoi suggerimenti" ng-model="user.surveyData.improve_suggestion"></textarea>
+						<label class="control-label" for="app_suggestion">11) {{ 'final_survey_question10' | i18n }}</label>
+						<textarea class="form-control" name="improve_suggestion" id="app_suggestion" placeholder="{{ 'fs_text_placeholder_value' | i18n }}" ng-model="user.surveyData.improve_suggestion"></textarea>
 					</div>
 					<div class="required_desc"><p>{{ 'final_survey_required_field' | i18n }}</p></div>
 					<div align="justify">

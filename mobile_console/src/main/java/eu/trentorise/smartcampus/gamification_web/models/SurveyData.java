@@ -5,6 +5,7 @@ public class SurveyData {
 	private String user_residence_tn;
 	private String user_commute_tn;
 	private String gamimg_experience;
+	private String game_discover_from_user;
 	private String change_of_habits;
 	private String new_habits_maintaining;
 	private String new_mode_type;
@@ -22,13 +23,15 @@ public class SurveyData {
 	}
 
 	public SurveyData(String user_residence_tn, String user_commute_tn, String gamimg_experience,
-			String change_of_habits, String new_habits_maintaining, String new_mode_type, String point_interest_in_game,
-			String badges_interest_in_game, String challenges_interest_in_game, String prize_interest_in_game,
-			String game_liked_features, String game_not_liked_features, String improve_suggestion, Long timestamp) {
+			String game_discover_from_user, String change_of_habits, String new_habits_maintaining,
+			String new_mode_type, String point_interest_in_game, String badges_interest_in_game,
+			String challenges_interest_in_game, String prize_interest_in_game, String game_liked_features,
+			String game_not_liked_features, String improve_suggestion, Long timestamp) {
 		super();
 		this.user_residence_tn = user_residence_tn;
 		this.user_commute_tn = user_commute_tn;
 		this.gamimg_experience = gamimg_experience;
+		this.game_discover_from_user = game_discover_from_user;
 		this.change_of_habits = change_of_habits;
 		this.new_habits_maintaining = new_habits_maintaining;
 		this.new_mode_type = new_mode_type;
@@ -41,8 +44,6 @@ public class SurveyData {
 		this.improve_suggestion = improve_suggestion;
 		this.timestamp = timestamp;
 	}
-
-
 
 	public String getGamimg_experience() {
 		return gamimg_experience;
@@ -154,6 +155,14 @@ public class SurveyData {
 
 	public void setImprove_suggestion(String improve_suggestion) {
 		this.improve_suggestion = improve_suggestion;
+	}
+
+	public String getGame_discover_from_user() {
+		return game_discover_from_user;
+	}
+
+	public void setGame_discover_from_user(String game_discover_from_user) {
+		this.game_discover_from_user = game_discover_from_user;
 	}
 
 	/*@Override

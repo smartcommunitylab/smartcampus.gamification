@@ -793,6 +793,9 @@
 	"key": "final_survey_question2",
 	"value": "Do you work or study in the municipality of Trento?"
 }, {
+	"key": "final_survey_question2a",
+	"value": "How did you hear about this game?"
+}, {
 	"key": "final_survey_question3",
 	"value": "How do you rate your playing experience throughout the game weeks?"
 }, {
@@ -827,7 +830,7 @@
 	"value": "Is there anything that you did not like in ViaggiaTrento Play&Go?"
 }, {
 	"key": "final_survey_question10",
-	"value": "DO you have some suggestion or idea to improve the ViaggiaTrento Play&Go App or the game?"
+	"value": "Do you have some suggestion or idea to improve the ViaggiaTrento Play&Go App or the game?"
 }, {
 	"key": "final_survey_required_field",
 	"value": "The * symbol indicates a required field"
@@ -898,7 +901,31 @@
 	"key": "fs_text_required_field_value",
 	"value": "Required field. Select a value"
 }, {
+	"key": "fs_text_placeholder_discover_value",
+	"value": "Other"
+}, {
 	"key": "fs_select_defalut_value",
 	"value": "Select a value"
+}, {
+	"key": "fs_newspaper_value",
+	"value": "Newspaper"
+}, {
+	"key": "fs_radio_value",
+	"value": "Radio"
+}, {
+	"key": "fs_bus_leaflet_value",
+	"value": "Bus leaflet"
+}, {
+	"key": "fs_poster_value",
+	"value": "Postcard or poster"
+}, {
+	"key": "fs_info_event_value",
+	"value": "Information events"
+}, {
+	"key": "fs_friend_value",
+	"value": "From a friend"
+}, {
+	"key": "fs_other_value",
+	"value": "Other"
 }
 ]

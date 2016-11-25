@@ -524,7 +524,7 @@ public class PortalController extends SCController{
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/compile_survey/{pId}")
-	public ModelAndView compileSurveyPage(HttpServletRequest request, @PathVariable String pId, @RequestParam String language) {
+	public ModelAndView compileSurveyPage(HttpServletRequest request, @PathVariable String pId, @RequestParam(required=false) String language) {
 		logger.info(String.format("Passed player id: " + pId));
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("user_id", pId);
@@ -644,7 +644,8 @@ public class PortalController extends SCController{
 				}
 					
 				if(p.isSendMail()){
-					String compileSurveyUrl = mailSurveyUrl + "/" + p.getSocialId() + "?language=" + ((p.getLanguage() != null) ? p.getLanguage() : "it");
+					String surveyLanguage = "?language=" + ((p.getLanguage() != null) ? p.getLanguage() : "it");
+					String compileSurveyUrl = mailSurveyUrl + "/" + p.getSocialId() + surveyLanguage;
 					String encriptedId = "";
 					try {
 						encriptedId = cryptUtils.encrypt(p.getSocialId());

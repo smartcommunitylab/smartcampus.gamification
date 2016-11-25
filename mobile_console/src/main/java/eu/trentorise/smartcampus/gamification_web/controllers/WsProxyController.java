@@ -497,11 +497,15 @@ public class WsProxyController {
 		if(playerId != null && playerId.compareTo("") != 0){
 			String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 			p = playerRepositoryDao.findBySocialIdAndType(playerId, type);
-			p.setSurveyData(data);
-			playerRepositoryDao.save(p);
-			if (data != null) {
-				sendSurveyToGamification(playerId);
-				logger.debug("Call survey method for user " + playerId);
+			if(p != null){
+				if(p.getSurveyData() == null){	// Insert survey data only the first time
+					p.setSurveyData(data);
+				}
+				playerRepositoryDao.save(p);
+				if (data != null) {
+					sendSurveyToGamification(playerId);
+					logger.debug("Call survey method for user " + playerId);
+				}
 			}
 		} else {
 			 throw new Exception("No playerId passed in request");

@@ -794,7 +794,7 @@
 	"value": "Do you work or study in the municipality of Trento?"
 }, {
 	"key": "final_survey_question2a",
-	"value": "How did you hear about this game?"
+	"value": "How did you come to know about the game?"
 }, {
 	"key": "final_survey_question3",
 	"value": "How do you rate your playing experience throughout the game weeks?"
@@ -908,22 +908,22 @@
 	"value": "Select a value"
 }, {
 	"key": "fs_newspaper_value",
-	"value": "Newspaper"
+	"value": "Newspapers"
 }, {
 	"key": "fs_radio_value",
 	"value": "Radio"
 }, {
 	"key": "fs_bus_leaflet_value",
-	"value": "Bus leaflet"
+	"value": "Flyers in buses"
 }, {
 	"key": "fs_poster_value",
 	"value": "Postcard or poster"
 }, {
 	"key": "fs_info_event_value",
-	"value": "Information events"
+	"value": "Public events"
 }, {
 	"key": "fs_friend_value",
-	"value": "From a friend"
+	"value": "Friends"
 }, {
 	"key": "fs_other_value",
 	"value": "Other"

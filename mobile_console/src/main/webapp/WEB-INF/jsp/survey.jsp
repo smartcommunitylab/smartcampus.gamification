@@ -245,7 +245,7 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_poster" required> {{ 'fs_poster_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_facebook" required> facebook</label></td>
+								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_facebook" required> Facebook</label></td>
 							</tr>
 							<tr>
 								<td><label><input type="radio" name="game_discover" ng-model="user.surveyData.game_discover_from_user" ng-value="from_information_event" required> {{ 'fs_info_event_value' | i18n }}</label></td>

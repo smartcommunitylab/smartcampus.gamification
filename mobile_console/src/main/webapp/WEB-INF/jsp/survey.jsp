@@ -82,10 +82,10 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 									</h2>
 									<h2>&nbsp;</h2>
 									<p class="big-text" align="left" ng-show="surveyComplete">{{ 'text_survey_ok' | i18n }}<br /><br />
-									&emsp;<em>Lo staff di Play&amp;Go</em>
+									&emsp;<em>{{ 'text_staff_survey_page' | i18n }}</em>
 									</p>
 									<p class="big-text" align="left" ng-show="!surveyComplete">{{ 'text_survey_ko' | i18n }}<br /><br />
-									&emsp;<em>Lo staff di Play&amp;Go</em>
+									&emsp;<em>{{ 'text_staff_survey_page' | i18n }}</em>
 									</p>
 								</div>
 								<!-- <div class="row" style="height: 150px; margin-top: 80px" align="center">
@@ -135,10 +135,10 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 									</h2>
 									<h2>&nbsp;</h2>
 									<p class="big-text" align="left" ng-show="surveyComplete">{{ 'text_survey_ok' | i18n }}<br /><br />
-									&emsp;<em>Lo staff di Play&amp;Go</em>
+									&emsp;<em>{{ 'text_staff_survey_page' | i18n }}</em>
 									</p>
 									<p class="big-text" align="left" ng-show="!surveyComplete">{{ 'text_survey_ko' | i18n }}<br /><br />
-									&emsp;<em>Lo staff di Play&amp;Go</em>
+									&emsp;<em>{{ 'text_staff_survey_page' | i18n }}</em>
 									</p>
 								</div>
 								<!-- <div class="row" style="height: 150px; margin-top: 80px" align="center">
@@ -185,123 +185,124 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 						{{ 'final_survey_subtitle' | i18n }}<br/><br/>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.residence_tn.$dirty && form.residence_tn.$invalid]">
-						<label class="control-label">1) Risiedi nel Comune di Trento?</label>
+						<label class="control-label">1) {{ 'final_survey_question1' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="residence_tn" class="form-control" ng-model="user.surveyData.user_residence_tn" required>
-							<option value="">Seleziona un valore</option>
-							<option ng-value="yes_val">Sì</option>
-							<option ng-value="no_val">No</option>
+							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+							<option ng-value="yes_val">{{ 'fs_yes_value' | i18n }}</option>
+							<option ng-value="no_val">{{ 'fs_no_value' | i18n }}</option>
 						</select>
 						<table width="100%" ng-if="!showSelect">
 							<tr>
-								<td><label><input type="radio" name="residence_tn" ng-model="user.surveyData.user_residence_tn" ng-value="yes_val" required> Sì</label></td>
+								<td><label><input type="radio" name="residence_tn" ng-model="user.surveyData.user_residence_tn" ng-value="yes_val" required> {{ 'fs_yes_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="residence_tn" ng-model="user.surveyData.user_residence_tn" ng-value="no_val" required> No</label></td>
+								<td><label><input type="radio" name="residence_tn" ng-model="user.surveyData.user_residence_tn" ng-value="no_val" required> {{ 'fs_no_value' | i18n }}</label></td>
 							</tr>
 						</table>
-						<div ng-show="form.residence_tn.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+						<div ng-show="form.residence_tn.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.commute_tn.$dirty && form.commute_tn.$invalid]">
-						<label class="control-label">2) Lavori o studi nel Comune di Trento?</label>
+						<label class="control-label">2) {{ 'final_survey_question2' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="commute_tn" class="form-control" ng-model="user.surveyData.user_commute_tn" required>
-							<option value="">Seleziona un valore</option>
-							<option ng-value="yes_val">Sì</option>
-							<option ng-value="no_val">No</option>
+							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+							<option ng-value="yes_val">{{ 'fs_yes_value' | i18n }}</option>
+							<option ng-value="no_val">{{ 'fs_no_value' | i18n }}</option>
 						</select>
 						<table width="100%" ng-if="!showSelect">
 							<tr>
-								<td><label><input type="radio" name="commute_tn" ng-model="user.surveyData.user_commute_tn" ng-value="yes_val" required> Sì</label></td>
+								<td><label><input type="radio" name="commute_tn" ng-model="user.surveyData.user_commute_tn" ng-value="yes_val" required> {{ 'fs_yes_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="commute_tn" ng-model="user.surveyData.user_commute_tn" ng-value="no_val" required> No</label></td>
+								<td><label><input type="radio" name="commute_tn" ng-model="user.surveyData.user_commute_tn" ng-value="no_val" required> {{ 'fs_no_value' | i18n }}</label></td>
 							</tr>
 						</table>
-						<div ng-show="form.commute_tn.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+						<div ng-show="form.commute_tn.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.gaming_exp.$dirty && form.gaming_exp.$invalid]">
 						<label class="control-label">3) {{ 'final_survey_question3' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="gaming_exp" class="form-control" ng-model="user.surveyData.gamimg_experience" required>
-							<option value="">Seleziona un valore</option>
-							<option ng-value="negative_exp">Negativa</option>
-							<option ng-value="satisfying_exp">Soddisfacente</option>
-							<option ng-value="good_exp">Buona</option>
-							<option ng-value="excellent_exp">Ottima</option>
+							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+							<option ng-value="negative_exp">{{ 'fs_negative_value' | i18n }}</option>
+							<option ng-value="satisfying_exp">{{ 'fs_enough_value' | i18n }}</option>
+							<option ng-value="good_exp">{{ 'fs_good_value' | i18n }}</option>
+							<option ng-value="excellent_exp">{{ 'fs_excellent_value' | i18n }}</option>
 						</select>
 						<table width="100%" ng-if="!showSelect">
 							<tr>
-								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="negative_exp" required> Negativa</label></td>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="negative_exp" required> {{ 'fs_negative_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="satisfying_exp" required> Soddisfacente</label></td>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="satisfying_exp" required> {{ 'fs_enough_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="good_exp" required> Buona</label></td>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="good_exp" required> {{ 'fs_good_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="excellent_exp" required> Ottima</label></td>
+								<td><label><input type="radio" name="gaming_exp" ng-model="user.surveyData.gamimg_experience" ng-value="excellent_exp" required> {{ 'fs_excellent_value' | i18n }}</label></td>
 							</tr>
 						</table>
-						<div ng-show="form.gaming_exp.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+						<div ng-show="form.gaming_exp.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.change_of_habits.$dirty && form.change_of_habits.$invalid]">
 						<label class="control-label">4) {{ 'final_survey_question4' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="change_of_habits" class="form-control" ng-model="user.surveyData.change_of_habits" required>
-							<option value="">Seleziona un valore</option>
-							<option ng-value="nothing_val">Per niente</option>
-							<option ng-value="little_val">Poco</option>
-							<option ng-value="enough_val">Abbastanza</option>
-							<option ng-value="much_val">Molto</option>
+							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+							<option ng-value="nothing_val">{{ 'fs_nothing_value' | i18n }}</option>
+							<option ng-value="little_val">{{ 'fs_little_value' | i18n }}</option>
+							<option ng-value="enough_val">{{ 'fs_quite_value' | i18n }}</option>
+							<option ng-value="much_val">{{ 'fs_very_value' | i18n }}</option>
 						</select>
 						<table width="100%" ng-if="!showSelect">
 							<tr>
-								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="nothing_val" required> Per niente</label></td>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="nothing_val" required> {{ 'fs_nothing_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="little_val" required> Poco</label></td>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="little_val" required> {{ 'fs_little_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="enough_val" required> Abbastanza</label></td>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="enough_val" required> {{ 'fs_quite_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="much_val" required> Molto</label></td>
+								<td><label><input type="radio" name="change_of_habits" ng-model="user.surveyData.change_of_habits" ng-value="much_val" required> {{ 'fs_very_value' | i18n }}</label></td>
 							</tr>
 						</table>
-						<div ng-show="form.change_of_habits.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+						<div ng-show="form.change_of_habits.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group required" ng-class="{true: 'has-error'}[form.new_habits_maintaining.$dirty && form.new_habits_maintaining.$invalid]">
 						<label class="control-label">5) {{ 'final_survey_question5' | i18n }}</label>
 						<select ng-if="showSelect" type="text" name="new_habits_maintaining" class="form-control" ng-model="user.surveyData.new_habits_maintaining" ng-required="user.surveyData.change_of_habits!=nothing_val">
-							<option value="">Seleziona un valore</option>
-							<option ng-value="no_val">Assolutamente No</option>
-							<option ng-value="maybe_no_val">Non credo</option>
-							<option ng-value="maybe_yes_val">Probabilmente Sì</option>
-							<option ng-value="yes_val">Sicuramente Sì</option>
+							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+							<option ng-value="no_val">{{ 'fs_absolutely_no_value' | i18n }}</option>
+							<option ng-value="maybe_no_val">{{ 'fs_think_not_value' | i18n }}</option>
+							<option ng-value="maybe_yes_val">{{ 'fs_probably_yes_value' | i18n }}</option>
+							<option ng-value="yes_val">{{ 'fs_certain_yes_value' | i18n }}</option>
 						</select>
 						<table width="100%" ng-if="!showSelect">
 							<tr>
-								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Assolutamente No</label></td>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> {{ 'fs_absolutely_no_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Non credo</label></td>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_no_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> {{ 'fs_think_not_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Probabilmente Sì</label></td>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="maybe_yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> {{ 'fs_probably_yes_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> Sicuramente Sì</label></td>
+								<td><label><input type="radio" name="new_habits_maintaining" ng-model="user.surveyData.new_habits_maintaining" ng-value="yes_val" ng-required="user.surveyData.change_of_habits!=nothing_val"> {{ 'fs_certain_yes_value' | i18n }}</label></td>
 							</tr>
 						</table>
-						<div ng-show="form.new_habits_maintaining.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+						<div ng-show="form.new_habits_maintaining.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 					</div>
 					<div class="form-group" ng-class="{true: 'has-error'}[form.new_mode_type.$dirty && form.new_mode_type.$invalid]">
 						<label class="control-label">6) {{ 'final_survey_question6' | i18n }}</label>
 						<!-- <select ng-if="showSelect" type="text" name="new_mode_type" class="form-control" ng-model="user.surveyData.new_mode_type">
-							<option value="">Seleziona uno o più valori</option>
+							<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
 							<option ng-value="no_mode">Nessuno</option>
 							<option ng-value="bike_sharing_mode">Bike Sharing</option>
 							<option ng-value="park_and_ride_mode">Park and Ride</option>
-							<option ng-value="bike_mode">Bici</option>
-							<option ng-value="transport_mode">Mezzi Pubblici</option>
+							<option ng-value="bike_mode">{{ 'fs_bike_value' | i18n }}</option>
+							<option ng-value="transport_mode">{{ 'fs_public_transport_value' | i18n }}</option>
+							<option ng-value="cable_mode">{{ 'fs_cable_value' | i18n }}</option>
 						</select> -->
 						<table width="100%" ng-if="!showSelect">
 							<!-- <tr>
@@ -314,13 +315,13 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 								<td><label><input type="checkbox" name="new_mode_type_pr" ng-model="user.surveyData.new_mode_type.park_and_ride_mode"> Park and Ride</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="checkbox" name="new_mode_type_b" ng-model="user.surveyData.new_mode_type.bike_mode"> Bicicletta</label></td>
+								<td><label><input type="checkbox" name="new_mode_type_b" ng-model="user.surveyData.new_mode_type.bike_mode"> {{ 'fs_bike_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="checkbox" name="new_mode_type_t" ng-model="user.surveyData.new_mode_type.transport_mode"> Mezzi Pubblici</label></td>
+								<td><label><input type="checkbox" name="new_mode_type_t" ng-model="user.surveyData.new_mode_type.transport_mode"> {{ 'fs_public_transport_value' | i18n }}</label></td>
 							</tr>
 							<tr>
-								<td><label><input type="checkbox" name="new_mode_type_f" ng-model="user.surveyData.new_mode_type.cable_mode"> Funivia</label></td>
+								<td><label><input type="checkbox" name="new_mode_type_f" ng-model="user.surveyData.new_mode_type.cable_mode"> {{ 'fs_cable_value' | i18n }}</label></td>
 							</tr>
 						</table>
 					</div>
@@ -330,102 +331,102 @@ var conf_prizes_eng="<%=request.getAttribute("prizes_eng")%>";
 							<li>
 								<label>{{ 'final_survey_question7_sub1' | i18n }}</label>
 								<select ng-if="showSelect" type="text" name="point_interest_in_game" class="form-control" ng-model="user.surveyData.point_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
+									<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+									<option ng-value="nothing_val">{{ 'fs_nothing_value' | i18n }}</option>
+									<option ng-value="little_val">{{ 'fs_little_value' | i18n }}</option>
+									<option ng-value="enough_val">{{ 'fs_quite_value' | i18n }}</option>
+									<option ng-value="much_val">{{ 'fs_very_value' | i18n }}</option>
 								</select>	
 								<table width="100%" ng-if="!showSelect">
 									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="nothing_val" required> {{ 'fs_nothing_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="little_val" required> Poco</label></td>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="little_val" required> {{ 'fs_little_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="enough_val" required> {{ 'fs_quite_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="much_val" required> Molto</label></td>
+										<td><label><input type="radio" name="point_interest_in_game" ng-model="user.surveyData.point_interest_in_game" ng-value="much_val" required> {{ 'fs_very_value' | i18n }}</label></td>
 									</tr>
 								</table>
-								<div ng-show="form.point_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+								<div ng-show="form.point_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 							</li>
 							<li>
 								<label>{{ 'final_survey_question7_sub2' | i18n }}</label>
 								<select ng-if="showSelect" type="text" name="badges_interest_in_game" class="form-control" ng-model="user.surveyData.badges_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
+									<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+									<option ng-value="nothing_val">{{ 'fs_nothing_value' | i18n }}</option>
+									<option ng-value="little_val">{{ 'fs_little_value' | i18n }}</option>
+									<option ng-value="enough_val">{{ 'fs_quite_value' | i18n }}</option>
+									<option ng-value="much_val">{{ 'fs_very_value' | i18n }}</option>
 								</select>
 								<table width="100%" ng-if="!showSelect">
 									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="nothing_val" required> {{ 'fs_nothing_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="little_val" required> Poco</label></td>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="little_val" required> {{ 'fs_little_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="enough_val" required> {{ 'fs_quite_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="much_val" required> Molto</label></td>
+										<td><label><input type="radio" name="badges_interest_in_game" ng-model="user.surveyData.badges_interest_in_game" ng-value="much_val" required> {{ 'fs_very_value' | i18n }}</label></td>
 									</tr>
 								</table>
-								<div ng-show="form.badges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+								<div ng-show="form.badges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 							</li>
 							<li>
 								<label>{{ 'final_survey_question7_sub3' | i18n }}</label>
 								<select ng-if="showSelect" type="text" name="challenges_interest_in_game" class="form-control" ng-model="user.surveyData.challenges_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
+									<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+									<option ng-value="nothing_val">{{ 'fs_nothing_value' | i18n }}</option>
+									<option ng-value="little_val">{{ 'fs_little_value' | i18n }}</option>
+									<option ng-value="enough_val">{{ 'fs_quite_value' | i18n }}</option>
+									<option ng-value="much_val">{{ 'fs_very_value' | i18n }}</option>
 								</select>
 								<table width="100%" ng-if="!showSelect">
 									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="nothing_val" required> {{ 'fs_nothing_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="little_val" required> Poco</label></td>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="little_val" required> {{ 'fs_little_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="enough_val" required> {{ 'fs_quite_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="much_val" required> Molto</label></td>
+										<td><label><input type="radio" name="challenges_interest_in_game" ng-model="user.surveyData.challenges_interest_in_game" ng-value="much_val" required> {{ 'fs_very_value' | i18n }}</label></td>
 									</tr>
 								</table>
-								<div ng-show="form.challenges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+								<div ng-show="form.challenges_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 							</li>
 							<li>
 								<label>{{ 'final_survey_question7_sub4' | i18n }}</label>
 								<select ng-if="showSelect" type="text" name="prize_interest_in_game" class="form-control" ng-model="user.surveyData.prize_interest_in_game" required>
-									<option value="">Seleziona un valore</option>
-									<option ng-value="nothing_val">Per niente</option>
-									<option ng-value="little_val">Poco</option>
-									<option ng-value="enough_val">Abbastanza</option>
-									<option ng-value="much_val">Molto</option>
+									<option value="">{{ 'fs_select_defalut_value' | i18n }}</option>
+									<option ng-value="nothing_val">{{ 'fs_nothing_value' | i18n }}</option>
+									<option ng-value="little_val">{{ 'fs_little_value' | i18n }}</option>
+									<option ng-value="enough_val">{{ 'fs_quite_value' | i18n }}</option>
+									<option ng-value="much_val">{{ 'fs_very_value' | i18n }}</option>
 								</select>
 								<table width="100%" ng-if="!showSelect">
 									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="nothing_val" required> Per niente</label></td>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="nothing_val" required> {{ 'fs_nothing_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="little_val" required> Poco</label></td>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="little_val" required> {{ 'fs_little_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="enough_val" required> Abbastanza</label></td>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="enough_val" required> {{ 'fs_quite_value' | i18n }}</label></td>
 									</tr>
 									<tr>
-										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="much_val" required> Molto</label></td>
+										<td><label><input type="radio" name="prize_interest_in_game" ng-model="user.surveyData.prize_interest_in_game" ng-value="much_val" required> {{ 'fs_very_value' | i18n }}</label></td>
 									</tr>
 								</table>
-								<div ng-show="form.prize_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">Campo obbligatorio. Scegliere un valore</div>
+								<div ng-show="form.prize_interest_in_game.$error.required && submitNumber" class="alert alert-danger" role="alert">{{ 'fs_text_required_field_value' | i18n }}</div>
 							</li>
 						</ul>
 					</div>

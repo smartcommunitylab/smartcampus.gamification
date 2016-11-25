@@ -853,7 +853,7 @@ public class WsProxyController {
 		}
 	}
 	
-	@Scheduled(fixedRate = 20*60*1000) 		// Repeat every twenty minute
+	@Scheduled(fixedRate = 30*60*1000) 		// Repeat every thirty minute
 	public synchronized void refreshGlobalCompleteClassification() throws IOException {
 		logger.debug("Refreshing global week classification");
 		try{

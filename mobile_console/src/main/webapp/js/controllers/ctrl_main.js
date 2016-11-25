@@ -859,10 +859,14 @@ cp.controller('MainCtrl',['$scope', '$http', '$route', '$routeParams', '$rootSco
     	return $scope.profTabs[index].activeClass;
     };
     
-    if($scope.itaLang){
+    if(conf_lang != "it" && conf_lang != "en"){
     	$scope.setItalianLanguage();
     } else {
-    	$scope.setEnglishLanguage();
+    	if($scope.itaLang){
+        	$scope.setItalianLanguage();
+        } else {
+        	$scope.setEnglishLanguage();
+        }
     }
     
     if($scope.retrieveUsedLang() == "ita"){

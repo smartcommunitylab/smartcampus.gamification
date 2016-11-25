@@ -787,6 +787,12 @@
 	"key": "final_survey_subtitle",
 	"value": "Rispondi a queste veloci e semplici domande per offrire un tuo parere sul gioco 'Play&Go'."
 }, {
+	"key": "final_survey_question1",
+	"value": "Risiedi nel Comune di Trento?"
+}, {
+	"key": "final_survey_question2",
+	"value": "Lavori o studi nel Comune di Trento?"
+}, {
 	"key": "final_survey_question3",
 	"value": "Come valuteresti la tua esperienza di gioco in queste settimane?"
 }, {
@@ -848,7 +854,7 @@
 	"value": "Negativa"
 }, {
 	"key": "fs_enough_value",
-	"value": "Sufficiente"
+	"value": "Soddisfacente"
 }, {
 	"key": "fs_good_value",
 	"value": "Buona"
@@ -891,5 +897,11 @@
 }, {
 	"key": "fs_text_placeholder_value",
 	"value": "Inserisci i tuoi commenti"
+}, {
+	"key": "fs_text_required_field_value",
+	"value": "Campo obbligatorio. Scegliere un valore"
+}, {
+	"key": "fs_select_defalut_value",
+	"value": "Seleziona un valore"
 }
 ]

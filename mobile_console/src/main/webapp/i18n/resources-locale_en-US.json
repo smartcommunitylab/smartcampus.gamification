@@ -894,5 +894,11 @@
 }, {
 	"key": "fs_text_placeholder_value",
 	"value": "Tell us your feedback"
+}, {
+	"key": "fs_text_required_field_value",
+	"value": "Required field. Select a value"
+}, {
+	"key": "fs_select_defalut_value",
+	"value": "Select a value"
 }
 ]

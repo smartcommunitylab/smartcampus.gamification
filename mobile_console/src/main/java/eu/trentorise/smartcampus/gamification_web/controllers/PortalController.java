@@ -786,7 +786,7 @@ public class PortalController extends SCController{
 		//}
 	}
 	
-	//@Scheduled(fixedRate = 5*60*1000) // Repeat once a minute
+	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
 	//@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
 	public synchronized void checkWinnersNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
 		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
@@ -866,6 +866,8 @@ public class PortalController extends SCController{
 			}
 			
 			if(p.isSendMail()){
+				String surveyLanguage = "?language=" + ((p.getLanguage() != null) ? p.getLanguage() : "it");
+				String compileSurveyUrl = mailSurveyUrl + "/" + p.getSocialId() + surveyLanguage;
 				String encriptedId = "";
 				try {
 					encriptedId = cryptUtils.encrypt(p.getSocialId());
@@ -945,21 +947,21 @@ public class PortalController extends SCController{
 							if(states != null  && states.size() > 0){
 								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 							} else {
 								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, someBadge,
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 							}
 						} else {
 							if(states != null  && states.size() > 0){
 								this.emailService.sendMailGamificationForWinners(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 							} else {
 								this.emailService.sendMailGamificationForWinners(playerName, "0", "0", "0", null, null, 
 										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
-										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, unsubcribionLink, mailLoc);
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 							}
 						}
 					} catch (MessagingException e) {

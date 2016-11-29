@@ -299,7 +299,7 @@ public class EmailService {
             final List<WeekPrizeData> prizes,
             final List<WeekWinnersData> winners,
             final List<MailImage> standardImages,
-            final String recipientEmail, final String greengame_url, String unsubscribtionLink, final Locale locale)
+            final String recipientEmail, final String greengame_url, String surveyLink, String unsubscribtionLink, final Locale locale)
             throws MessagingException {
         
     	logger.debug(String.format("Gamification Mail Prepare for %s - OK", recipientName));
@@ -366,6 +366,7 @@ public class EmailService {
         ctx.setVariable("n_winners", last_week_winners);
         ctx.setVariable("u_position", position);
         ctx.setVariable("greengame_url", greengame_url);
+        ctx.setVariable("surveyLink", surveyLink);
         ctx.setVariable("unsubscribtionLink", unsubscribtionLink);
         ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNFoglie04", standardImages.get(1).getImageName()); // so that we can reference it from HTML
@@ -378,7 +379,7 @@ public class EmailService {
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper message = 
                 new MimeMessageHelper(mimeMessage, true /* multipart */, "UTF-8");
-        message.setSubject("Play&Go - Notifica"); //Vincitori
+        message.setSubject("Play&Go - Premiazione"); //Vincitori
         message.setFrom(mailFrom);
         message.setTo(recipientEmail);
 
@@ -405,11 +406,11 @@ public class EmailService {
         message.addInline(standardImages.get(5).getImageName(), imageSourceFooter, standardImages.get(5).getImageType());
         
         if(badges != null){
-        	// Add the inline images for badges
-	        for(int i = 0; i < badges.size(); i++){
-	        	final InputStreamSource tmp = new ByteArrayResource(badges.get(i).getImageByte());
-	            message.addInline(badges.get(i).getImageName(), tmp, badges.get(i).getImageType());
-	        }
+        	// Add the inline images for badges	-- commented to avoid attachment images in mail
+	        //for(int i = 0; i < badges.size(); i++){
+	        //	final InputStreamSource tmp = new ByteArrayResource(badges.get(i).getImageByte());
+	        //   message.addInline(badges.get(i).getImageName(), tmp, badges.get(i).getImageType());
+	        //}
         }
         
         // Send mail

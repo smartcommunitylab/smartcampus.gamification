@@ -3,7 +3,7 @@
     <head>
 <!--     	<link href="../../webapp/css/bootstrap.css" rel="stylesheet" /> -->
 <!-- 		<link href="../../webapp/css/bootstrap-theme.min.css" rel="stylesheet" /> -->
-        <title th:remove="all">Play&amp;Go Aggiornamento</title>
+        <title th:remove="all">Play&amp;Go Premiazione</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -104,90 +104,35 @@
 <!-- 			        	IL TUO STATO DI GIOCO -->
 <!-- 			        </h3> -->
 			        <h3 th:text="#{greeting(${name})}">
-			            Ciao Utente,
+			            Gentile Utente,
 			        </h3>
-			        <h3>grazie per la tua partecipazione a Play&amp;Go.</h3>
-			        <h3>
-			        	In data 21/06 abbiamo premiato, presso il palazzo Geremia di Trento, i vincitori delle classifiche settimanali e generale.
-			        </h3>
-			        <h3>
-			        	<b>MA PLAY&amp;GO NON SI FERMA!</b> <br />
-						Continua a metterti in gioco e a muoverti in modo sano e sostenibile utilizzando Viaggia Trento Play&amp;Go e accumulando foglie verdi in queste settimane estive.
-			        </h3>
-<!-- 			        <h3> -->
-<!-- 			        	di seguito riepiloghiamo i tuoi risultati di gioco: -->
-<!-- 			        </h3> -->
-<!-- 			        <div style="margin: 50px 5px 5px 150px"> -->
-<!-- 				        <table> -->
-<!-- 					        <tr> -->
-<!-- 						       	<td> -->
-<!-- 						       		<img src="img/green/greenLeavesbase.png" th:src="'cid:' + ${imageRNGreenScore}" width="90px" alt="" title="" /> -->
-<!-- 								</td> -->
-<!-- 							   	<td><font size="3" ><strong th:text="#{green_points(${g_point})}">Punti Green Leaves</strong></font></td> -->
-<!-- 							</tr> -->
-<!-- 						</table> -->
-<!-- 					</div> -->
-			        
-<!-- 			        th:if="${name.length() gt 10}" -->
-<!-- 			        <div th:if="${n_lw_win_challenges ne null and not #lists.isEmpty(n_lw_win_challenges)}"> -->
-<!-- 				        <h3> -->
-<!-- 				            Hai gi&agrave; superato le challenge: -->
-<!-- 				        </h3> -->
-<!-- 				        <table th:if="${n_lw_win_challenges ne null}"> -->
-<!-- 						    <tr th:each="ch : ${n_lw_win_challenges}" th:if="${ch.success} == true" > -->
-<!-- 						        <td><font size="2" ><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
-<!-- 						       	<td><font size="2" ><strong> - <span th:text="${ch.challDesc}">Descrizione challenge</span></strong></font></td> -->
-<!-- 						    </tr> -->
-<!-- 					    </table> -->
-<!-- 			        </div> -->
-			        
-<!-- 			        <h3 th:if="${n_badge ne null or not #lists.isEmpty(n_badges)}" th:text="#{new_badges}"> -->
-<!-- 			            Inoltre, dall'inizio della settimana hai guadagnato: -->
-<!-- 			        </h3> -->
-<!-- 			        <div style="margin: 50px 5px 5px 150px" > -->
-<!-- 				        <table th:if="${n_badges ne null}"> -->
-<!-- 					        <tr th:each="b : ${n_badges}"> -->
-<!-- 					        	<td><img src="img/green/greenLeavesbase.png" width="90px"  th:src="'cid:' + ${b.imageName}" alt="" title="" /></td> -->
-<!-- 						       	<td><font size="3" >Badge : <strong th:text="${b.showedText}">Badge Name</strong></font></td> -->
-<!-- 						    </tr> -->
-<!-- 				        </table> -->
-<!-- 			        </div> -->
-			        
-<!-- 			        <h3 th:if="${n_badge eq null and #lists.isEmpty(n_badges)}"> -->
-<!-- 			            In questa settimana non hai ancora guadagnato nuovi badge! Gioca ancora per accumulare altri punti e ottenere nuovi badge! -->
-<!-- 			        </h3> -->
-			
-			        <h3>
-			        	E NON DIMENTICARE di andare nel tuo sito personalizzato cliccando <u><b><a href="https://tn.smartcommunitylab.it/gamificationweb" th:href="${greengame_url}" target="_blank">QUI</a></b></u> per fornirci i tuoi commenti e impressioni sul gioco e metterti alla prova con le sfide che abbiamo preparato apposta per te!
-			        </h3>
-					<h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
-				        Ecco le tue SFIDE attive, mettiti in gioco per superarle:
-				    </h3>
-				    <table th:if="${n_challenges ne null}">
-					    <tr th:each="ch : ${n_challenges}" valign="top">
-					        <!-- <td><font size="2"><strong>CH<span th:text="${ch.challId}">id</span></strong></font></td> -->
-					       	<td><strong> - </strong></td>
-					    	<td>
-					    		<div>
-					    			<font size="2"><strong><span th:text="${ch.challDesc}">Descrizione challenge</span></strong><br/>
-					       				<span th:text="${ch.challCompleteDesc}">Descrizione lunga challenge</span>
-					       			</font>
-					    		</div>
-					       	</td>
-					    </tr>
-					</table>
-					<h3 th:if="${n_challenges ne null and not #lists.isEmpty(n_challenges) and are_challenges}">
-				        Ricordati che le sfide sono valide fino alle ore <span th:text="${chs_end_time}">23:59</span> del giorno <span th:text="${chs_end_date}">YYY</span>!
-				    </h3>
-
-					<h3>Ti ringraziamo per aver partecipato a questa iniziativa e aver contribuito a rendere la tua citt&agrave; pi&ugrave; smart.</h3>
-			        <h4>
-			        	Se non desideri ricevere la seguente mail di notifica disattiva il servizio cliccando <b><a href="http://localhost:8080/gamificationweb/out/rest/unsubscribeMail/3" th:href="${unsubscribtionLink}" target="_blank">QUI</a></b>.
-			        </h4>
-			        <h3>
-			            Buon inverno, <br />
+			        <p style="font-size: 1.17em">
+			        	le sfide stanno ormai per concludersi, ti rimane ancora qualche giorno per raccogliere punti nel nostro gioco!
+			        </p>
+			        <p style="font-size: 1.17em">
+			        	Se non lo hai gia' fatto contribuisci a migliorare Play&amp;Go compilando il <b>QUESTIONARIO</b><br/>
+			        	che trovi cliccando  <u><b><a href="https://tn.smartcommunitylab.it/gamificationweb" th:href="${surveyLink}" target="_blank">QUI</a></b></u>.<br/>
+			        	Per ringraziarti del tuo feedback ti verranno assegnati <span th:style="'color: green'">350 PUNTI GREEN LEAVES</span>.
+			        </p>
+			        <p style="font-size: 1.17em">
+			        	Ti invitiamo inoltre a mettere in agenda l'appuntamento finale del gioco:<br/>
+						<b>marted&igrave; 6 dicembre 2016 - ore 17.00 presso la sala stampa comunale, al piano terra di Palazzo Geremia in via Belenzani 20</b> si terr&agrave; la PREMIAZIONE CONCLUSIVA del Gioco durante la quale saranno consegnati i premi della classifica globale e dell'ultima settimana di gioco.
+			        </p>
+			        <p style="font-size: 1.17em">
+			        	Inoltre, fra tutti i giocatori che arriveranno all'appuntamento con un mezzo sostenibile e utilizzando l'App Viaggia Trento Play&amp;Go verranno <b>estratti ulteriori premi</b> messi a disposizione dagli sponsor.
+			        </p>
+			        <p style="font-size: 1.17em">
+			        	ATTENZIONE!<br/>
+			        	<b>Questa &egrave; l'ultima occasione per il ritiro dei premi!</b><br/>
+						E' consentito delegare al ritiro del premio su presentazione di apposita delega sottoscritta dal vincitore e corredata di fotocopia del documento di identit&agrave;.
+			        </p>
+			        <p style="font-size: 1.17em">
+			        	L'evento si concluder&agrave; alle ore 18.00 circa con un momento conviviale e un piccolo rinfresco.
+			        </p>
+			        <p style="font-size: 1.17em">
+			            <b>TI ASPETTIAMO!!!</b><br/><br/>
 						&emsp;<em>Lo staff di Play&amp;Go</em>
-			        </h3>
+			        </p>
 		        </div>
 	        </div>
         </div>

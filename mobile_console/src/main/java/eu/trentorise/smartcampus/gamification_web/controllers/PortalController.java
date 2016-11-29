@@ -560,7 +560,7 @@ public class PortalController extends SCController{
 	
 	// Here I insert a task that invoke the WS notification
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 17:00 PM
+	//@Scheduled(cron="0 0 17 * * FRI") 		// Repeat every Friday at 17:00 PM
 	public synchronized void checkNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
 		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();
@@ -787,7 +787,7 @@ public class PortalController extends SCController{
 	}
 	
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	//@Scheduled(cron="0 30 10 * * THU") 		// Repeat every Saturday at 7:30 AM
+	@Scheduled(cron="0 30 11 * * WED") 		// Repeat every Wednesday at 11:30 AM
 	public synchronized void checkWinnersNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
 		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();

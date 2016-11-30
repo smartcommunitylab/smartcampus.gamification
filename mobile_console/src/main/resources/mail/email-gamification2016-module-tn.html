@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+<!--     	<link href="../../webapp/css/bootstrap.css" rel="stylesheet" /> -->
+<!-- 		<link href="../../webapp/css/bootstrap-theme.min.css" rel="stylesheet" /> -->
+        <title th:remove="all">Play&amp;Go Modulo</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+    	<div class="container-fluid">
+    		<div class="row" style="width:700px">
+    			<div class="col-md-6" >
+				    <div style="margin: 50px 5px 5px 5px" align="center">
+				    	<table style="padding: 20px;">
+				    		<tr>
+				    			<td valign="middle" align="center">
+				    				<img src="img/foglie03.png" th:src="'cid:' + ${imageRNFoglie03}" width="60px" alt="" title="" />
+				    			</td>
+				    			<td rowspan="2" valign="middle" align="center">
+									<h1>
+										<font face="Raleway-bold" size="48" color="gray"><strong>Play&amp;Go</strong></font>
+									</h1>
+									<h2>
+										<font face="Raleway">con ViaggiaTrento</font>
+									</h2>
+								</td>
+				    			<td></td>
+				    		</tr>
+				    		<tr>
+				    			<td></td>		
+								<td valign="middle" align="center">
+									<img src="img/foglie04.png" th:src="'cid:' + ${imageRNFoglie04}" width="60px" alt="" title="" />
+				    			</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+	    	</div>
+	    	<div class="row" style="width:700px">
+	    		<div class="col-md-6 col-md-offset-1">
+			        <h3 th:text="#{greeting(${name})}">
+			            Gentile Utente,
+			        </h3>
+			        <p style="font-size: 1.17em" th:if="${show_survey_ok} == true">
+			        	il gioco si &egrave; ormai concluso, grazie davvero per la partecipazione e per i tuoi preziosi feedback che ci hai dato compilando il QUESTIONARIO finale!
+			        </p>
+			        <p style="font-size: 1.17em" th:if="${show_survey_ok} == false">
+			        	il gioco si &egrave; ormai concluso, grazie davvero per la partecipazione!<br/>
+			        	Sei ancora in tempo per darci i tuoi feedback accedendo al questionario disponibile al seguente indirizzo:  <u><b><a href="https://tn.smartcommunitylab.it/gamificationweb" th:href="${surveyLink}" target="_blank"><span th:text="${surveyLinkShort}">https://tn.smarcommunitylab.it/gamificationweb/compile_survey</span></a></b></u>.
+			        	I tuoi dati sono importanti per fornirci opinioni e nuove idee sul gioco.
+			        </p>
+			        <p style="font-size: 1.17em">
+			        	In allegato puoi trovare <b>l'attestato di partecipazione</b> al gioco! Abbiamo pensato di mandartelo via mail per non sprecare risorse ed essere ancora pi&ugrave; green!
+			        </p>
+			        <p style="font-size: 1.17em">
+			        	Continua a muoverti in modo sano e sostenibile, contribuirai a rendere la tua citt&agrave; pi&ugrave; smart.
+			        </p>
+			        <p style="font-size: 1.17em">
+			            Buona continuazione!<br/>
+						&emsp;<em>Lo staff di Play&amp;Go</em>
+			        </p>
+		        </div>
+	        </div>
+        </div>
+        <footer>
+        	<br />
+        	<br />
+        	<br />
+        	<div class="row">
+	    		<div class="col-md-6 col-md-offset-1">
+					<img src="img/footer.png" width="650px" th:src="'cid:' + ${imageResourceName}" alt="" title="" />
+				</div>
+			</div>
+		</footer>
+    </body>
+</html>

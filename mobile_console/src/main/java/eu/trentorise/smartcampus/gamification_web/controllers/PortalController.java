@@ -787,7 +787,7 @@ public class PortalController extends SCController{
 	}
 	
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	@Scheduled(cron="0 30 11 * * WED") 		// Repeat every Wednesday at 11:30 AM
+	@Scheduled(cron="0 30 14 * * WED") 		// Repeat every Wednesday at 14:30 AM
 	public synchronized void checkWinnersNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
 		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();
@@ -964,6 +964,219 @@ public class PortalController extends SCController{
 										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
 							}
 						}
+					} catch (MessagingException e) {
+						logger.error(String.format("Errore invio mail : %s", e.getMessage()));
+					}
+				} else {
+					if(notifications != null){
+						if(states != null && states.size() > 0){
+							logger.debug(String.format("Invio mail a %s con notifica : %s e stato: %s", playerName ,notifications.toString(), states.toString()));
+						} else {
+							logger.debug(String.format("Invio mail a %s con notifica : %s", playerName ,notifications.toString()));
+						}
+					} else {
+						if(states != null && states.size() > 0){
+							logger.debug(String.format("Invio mail a %s con stato: %s", playerName , states.toString()));
+						} else {
+							logger.debug(String.format("Invio mail a %s", playerName));
+						}
+					}
+					if(challenges != null && !challenges.isEmpty()){
+						logger.debug(String.format("Invio mail a %s con challenges: %s", playerName , challenges.toString()));
+					}
+					if(lastWeekChallenges != null && !lastWeekChallenges.isEmpty()){
+						logger.debug(String.format("Invio mail a %s con challenges scorsa settimana: %s", playerName , lastWeekChallenges.toString()));
+					}
+				}
+				summaryMail.add(new Summary(p.getName() + " " + p.getSurname() + ": " + p.getNikName(), (states != null) ? states.toString() : "", (notifications != null) ? notifications.toString() : ""));
+			} else {
+				logger.info("Mail non inviata a " + p.getNikName()+ ". L'utente ha richiesto la disattivazione delle notifiche.");	
+			}
+		}
+		// Send summary mail
+		if(mailSend.compareTo("true") == 0){
+			// Here I send the summary mail (only if the sendMail parameter is true)
+			try {
+				this.emailService.sendMailSummary("Mattia", "0", "0", "0", summaryMail, standardImages, mailTo, Locale.ITALIAN);
+			} catch (MessagingException e) {
+				logger.error(String.format("Errore invio mail notifica : %s", e.getMessage()));
+			}
+		}
+	}
+	
+	//@Scheduled(cron="0 30 11 * * WED") 		// Repeat every Wednesday at 11:30 AM
+	public synchronized void sendReportMail() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
+		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
+		StatusUtils statusUtils = new StatusUtils();
+		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
+		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
+		String timestamp = "?timestamp=" + millis;
+		//String timestamp = "";
+		
+		ChallengesUtils challUtils = new ChallengesUtils();
+		challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
+		
+		URL resource = getClass().getResource("/");
+		String path = resource.getPath();
+		logger.debug(String.format("class path : %s", path));
+		
+		ArrayList<MailImage> standardImages = new ArrayList<MailImage>();
+		
+		File greenScore = new File(path + "mail/img/green/greenLeavesbase.png");
+		File healthScore = new File(path + "mail/img/health/healthLeavesBase.png");
+		File prScore = new File(path + "mail/img/pr/prLeaves.png");
+		File footer = new File(path + "mail/img/templateMail.png");
+		File foglie03 = new File(path + "mail/img/foglie03.png");
+		File foglie04 = new File(path + "mail/img/foglie04.png");
+		standardImages.add(new MailImage(foglie03.getName(), FileUtils.readFileToByteArray(foglie03), "image/png"));
+		standardImages.add(new MailImage(foglie04.getName(), FileUtils.readFileToByteArray(foglie04), "image/png"));
+		standardImages.add(new MailImage(greenScore.getName(), FileUtils.readFileToByteArray(greenScore), "image/png"));
+		standardImages.add(new MailImage(healthScore.getName(), FileUtils.readFileToByteArray(healthScore), "image/png"));
+		standardImages.add(new MailImage(prScore.getName(), FileUtils.readFileToByteArray(prScore), "image/png"));
+		standardImages.add(new MailImage(footer.getName(), FileUtils.readFileToByteArray(footer), "image/png"));
+		
+		logger.debug(String.format("Image data: path - %s length: %d", greenScore.getAbsolutePath(), greenScore.length()));
+		
+		// New method
+		logger.debug(String.format("Check Notification task. Cycle - %d", i++));
+		// Here I have to read the mail conf file data
+		List<WeekConfData> mailConfigurationFileData = readWeekConfFile(path + "mail/conf_file/game_week_configuration.csv");
+		List<WeekPrizeData> mailPrizeFileData = readWeekPrizesFile(path + "mail/conf_file/game_week_prize.csv");
+		List<WeekPrizeData> mailPrizeFileDataEng = readWeekPrizesFile(path + "mail/conf_file/game_week_prize_en.csv");
+		List<WeekWinnersData> mailWinnersFileData = readWeekWinnersFile(path + "mail/conf_file/game_week_winners.csv");
+		List<WeekPrizeData> mailPrizeActualData = new ArrayList<WeekPrizeData>();
+		// here I have to add the new mail parameters readed from csv files
+		String actual_week = "";
+		String actual_week_theme = "";
+		String actual_week_theme_it = "";
+		String actual_week_theme_eng = "";
+		String last_week = "";
+		Boolean are_chall = false;
+		Boolean are_prizes = false;
+		Boolean are_prizes_last_week = false;
+		for(int i = 0; i < mailConfigurationFileData.size(); i++){
+			WeekConfData tmpWConf = mailConfigurationFileData.get(i);
+			if(tmpWConf.isActual()){
+				actual_week = tmpWConf.getWeekNum();
+				actual_week_theme_it = tmpWConf.getWeekTheme();
+				actual_week_theme_eng = tmpWConf.getWeekThemeEng();
+				last_week = Integer.toString(Integer.parseInt(actual_week) - 1);
+				are_chall = tmpWConf.isChallenges();
+				are_prizes = tmpWConf.isPrizes();
+				are_prizes_last_week = tmpWConf.isPrizesLast();
+				mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
+			}
+		}
+		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
+		Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
+			
+		for(Player p: iter){
+			logger.debug(String.format("Profile finded  %s", p.getNikName()));
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e1) {
+				logger.error(String.format("Errore in attesa thread: %s", e1.getMessage()));
+			}
+			
+			if(p.isSendMail()){
+				String surveyLanguage = "?language=" + ((p.getLanguage() != null) ? p.getLanguage() : "it");
+				String compileSurveyUrl = mailSurveyUrl + "/" + p.getSocialId() + surveyLanguage;
+				String encriptedId = "";
+				try {
+					encriptedId = cryptUtils.encrypt(p.getSocialId());
+				} catch (InvalidKeyException e1) {
+					logger.error("Errore in socialId encripting: " + e1.getMessage());
+				} catch (InvalidAlgorithmParameterException e2) {
+					logger.error("Errore in socialId encripting: " + e2.getMessage());
+				} catch (BadPaddingException e3) {
+					logger.error("Errore in socialId encripting: " + e3.getMessage());
+				} catch (IllegalBlockSizeException e4) {
+					logger.error("Errore in socialId encripting: " + e4.getMessage());
+				}
+				String unsubcribionLink = mainURL + "/out/rest/unsubscribeMail/?socialId=" + encriptedId;	// + p.getSocialId();
+				//ArrayList<State> states = null;
+				List<PointConcept> states = null;
+				ArrayList<Notification> notifications = null;
+				ArrayList<BagesData> someBadge = null;
+				List<ChallengesData> challenges = null;
+				List<ChallengesData> lastWeekChallenges = null;
+				Locale mailLoc = Locale.ITALIAN;
+			
+				try {
+					// WS State Invocation
+					String urlWSState = "state/" + gameName + "/" + p.getSocialId();
+					//states = getState(urlWSState);
+					// Challenges correction
+					String completeState = getAllChallenges(urlWSState);
+					String language = p.getLanguage();
+					if(language == null || language.compareTo("") == 0){
+						language = ITA_LANG;
+					}
+					if(language.compareTo(ENG_LANG) == 0){
+						actual_week_theme = actual_week_theme_eng;
+						mailLoc = Locale.ENGLISH;
+						mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileDataEng);
+					} else {
+						actual_week_theme = actual_week_theme_it;
+						mailLoc = Locale.ITALIAN;
+						mailPrizeActualData = readWeekPrizesFileData(actual_week, mailPrizeFileData);
+					}
+					try {
+						PlayerStatus completePlayerStatus = statusUtils.correctPlayerData(completeState, p.getSocialId(), gameName, p.getNikName(), challUtils, gamificationWebUrl, 0, language);
+						states = completePlayerStatus.getPointConcept();
+						ChallengeConcept challLists = completePlayerStatus.getChallengeConcept();
+						//@SuppressWarnings("rawtypes")
+						//List<List> challLists = challUtils.correctCustomData(completeState, 0);
+						if(challLists != null){
+							challenges = challLists.getActiveChallengeData();
+							lastWeekChallenges = challLists.getOldChallengeData();
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+					// WS Notification Invocation
+					String urlWSNot = "notification/" + gameName + "/" + p.getSocialId();	
+					notifications = getNotifications(urlWSNot, timestamp);
+				} catch (InterruptedException ie){
+					logger.error(String.format("Ws invoke sleep exception  %s", ie.getMessage()));
+				}
+				
+				if(notifications != null && notifications.size() > 0){
+					ArrayList<BagesData> allBadge = getAllBadges(path);
+					someBadge = checkCorrectBadges(allBadge, notifications);	
+				}
+				
+				String mailto = null;
+				mailto = p.getMail();
+				String playerName = p.getNikName();
+				if(mailto == null || mailto.compareTo("") == 0){
+					mailto = mailTo;
+				}
+				
+				if(mailSend.compareTo("true") == 0 && playerName!= null && playerName.compareTo("")!=0){ //&& !noMailingPlayers.contains(p.getSocialId())
+					try {
+						//if(notifications != null){
+							if(states != null  && states.size() > 0){
+								this.emailService.sendMailGamificationWithReport(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
+							} else {
+								this.emailService.sendMailGamificationWithReport(playerName, "0", "0", "0", null, null, 
+										actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null,
+										challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
+							}
+						//} else {
+						//	if(states != null  && states.size() > 0){
+						//		this.emailService.sendMailGamificationWithReport(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
+						//				actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+						//				challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
+						//	} else {
+						//		this.emailService.sendMailGamificationWithReport(playerName, "0", "0", "0", null, null, 
+						//				actual_week, actual_week_theme, last_week, are_chall, are_prizes, are_prizes_last_week, null, 
+						//				challenges, lastWeekChallenges, mailPrizeActualData, mailWinnersFileData, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, unsubcribionLink, mailLoc);
+						//	}
+						//}
 					} catch (MessagingException e) {
 						logger.error(String.format("Errore invio mail : %s", e.getMessage()));
 					}

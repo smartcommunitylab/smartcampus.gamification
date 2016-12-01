@@ -62,6 +62,10 @@ cp.config(['$routeProvider', '$locationProvider',
     		controller: 'MainCtrl',
     		controllerAs: 'main'
     	})
+    	.when('/compile_survey/:uid', {
+    		controller: 'MainCtrl',
+    		controllerAs: 'main'
+    	})
     	.when('/console/', {
     		templateUrl: 'partials/console/home.html',
     		controller: 'ConsoleCtrl',

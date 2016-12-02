@@ -1005,13 +1005,15 @@ public class PortalController extends SCController{
 	}
 	
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	//@Scheduled(cron="0 30 11 * * WED") 		// Repeat every Wednesday at 11:30 AM
+	//@Scheduled(cron="0 0 17 * * MON") 		// Repeat every MON at 17:00 AM
 	public synchronized void sendReportMail() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
 		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
 		String timestamp = "?timestamp=" + millis;
+		long millisNoEvent = 1481022000000L;	// Tue Dec 06 2016 12:00:00 GMT+0100
+		boolean showFinalEvent = (System.currentTimeMillis() <= millisNoEvent) ? true : false;
 		
 		ChallengesUtils challUtils = new ChallengesUtils();
 		challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
@@ -1050,7 +1052,7 @@ public class PortalController extends SCController{
 			}
 			
 			if(p.isSendMail()){
-				String moduleName = "mail/pdf/finalModule_" + p.getSocialId() + ".pdf";
+				String moduleName = "mail/certificates-pdf/Certificato_TrentoPlayAndGo_" + p.getSocialId() + ".pdf";
 				try {
 					File finalModule = new File(path + moduleName);
 					String surveyLanguage = "?language=" + ((p.getLanguage() != null) ? p.getLanguage() : "it");
@@ -1122,11 +1124,11 @@ public class PortalController extends SCController{
 							if(states != null  && states.size() > 0){
 								this.emailService.sendMailGamificationWithReport(playerName, states.get(0).getScore() + "", null, null, null, null, // health and pr point are null
 										null, null, null, null, null, null, surveyCompiled, finalModule, 
-										challenges, lastWeekChallenges, null, null, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, compileSurveyUrlShort, unsubcribionLink, mailLoc);
+										challenges, lastWeekChallenges, null, null, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, compileSurveyUrlShort, showFinalEvent, unsubcribionLink, mailLoc);
 							} else {
 								this.emailService.sendMailGamificationWithReport(playerName, "0", "0", "0", null, null, 
 										null, null, null, null, null, null, surveyCompiled, finalModule,
-										challenges, lastWeekChallenges, null, null, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, compileSurveyUrlShort, unsubcribionLink, mailLoc);
+										challenges, lastWeekChallenges, null, null, standardImages, mailto, mailRedirectUrl, compileSurveyUrl, compileSurveyUrlShort, showFinalEvent, unsubcribionLink, mailLoc);
 							}
 						} catch (MessagingException e) {
 							logger.error(String.format("Errore invio mail : %s", e.getMessage()));

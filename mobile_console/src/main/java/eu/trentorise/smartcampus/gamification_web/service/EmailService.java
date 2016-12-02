@@ -429,7 +429,7 @@ public class EmailService {
             final List<WeekPrizeData> prizes,
             final List<WeekWinnersData> winners,
             final List<MailImage> standardImages,
-            final String recipientEmail, final String greengame_url, String surveyLink, String surveyLinkShort, String unsubscribtionLink, final Locale locale)
+            final String recipientEmail, final String greengame_url, String surveyLink, String surveyLinkShort, final Boolean show_final_event, String unsubscribtionLink, final Locale locale)
             throws MessagingException {
         
     	logger.debug(String.format("Gamification Mail Prepare for %s - OK", recipientName));
@@ -481,6 +481,7 @@ public class EmailService {
         ctx.setVariable("surveyLink", surveyLink);
         ctx.setVariable("surveyLinkShort", surveyLinkShort);
         ctx.setVariable("show_survey_ok", surveyCompiled);
+        ctx.setVariable("show_final_event", show_final_event);
         ctx.setVariable("unsubscribtionLink", unsubscribtionLink);
         ctx.setVariable("imageRNFoglie03", standardImages.get(0).getImageName()); // so that we can reference it from HTML
         ctx.setVariable("imageRNFoglie04", standardImages.get(1).getImageName()); // so that we can reference it from HTML
@@ -493,7 +494,7 @@ public class EmailService {
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         final MimeMessageHelper message = 
                 new MimeMessageHelper(mimeMessage, true /* multipart */, "UTF-8");
-        message.setSubject("Play&Go - Modulo"); //Vincitori
+        message.setSubject("Play&Go - Attestato"); //Vincitori
         message.setFrom(mailFrom);
         message.setTo(recipientEmail);
 

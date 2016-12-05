@@ -787,14 +787,13 @@ public class PortalController extends SCController{
 	}
 	
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	//@Scheduled(cron="0 30 14 * * WED") 		// Repeat every Wednesday at 14:30 AM
+	//@Scheduled(cron="0 30 14 * * MON") 		// Repeat every Monday at 14:30 AM
 	public synchronized void checkWinnersNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
 		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
 		String timestamp = "?timestamp=" + millis;
-		//String timestamp = "";
 		
 		ChallengesUtils challUtils = new ChallengesUtils();
 		challUtils.setChallLongDescriptionList(challDescriptionSetup.getDescriptions());
@@ -852,10 +851,6 @@ public class PortalController extends SCController{
 		}
 		String type = (isTest.compareTo("true") == 0) ? "test" : "prod";
 		Iterable<Player> iter = playerRepositoryDao.findAllByType(type);
-			// Add user to exclude from the mailing list
-			//List<String> noMailingPlayers = new ArrayList<String>();
-			//noMailingPlayers.add("10730");	//"FILIPPO"	
-			//noMailingPlayers.add("23755");	//"Fede"
 			
 		for(Player p: iter){
 			logger.debug(String.format("Profile finded  %s", p.getNikName()));
@@ -1012,7 +1007,7 @@ public class PortalController extends SCController{
 		ArrayList<Summary> summaryMail = new ArrayList<Summary>();
 		long millis = System.currentTimeMillis() - (7*24*60*60*1000);	// Delta in millis of N days: now 7 days
 		String timestamp = "?timestamp=" + millis;
-		long millisNoEvent = 1481022000000L;	// Tue Dec 06 2016 12:00:00 GMT+0100
+		long millisNoEvent = 1480978800000L;	// Tue Dec 06 2016 00:00:00 GMT+0100
 		boolean showFinalEvent = (System.currentTimeMillis() <= millisNoEvent) ? true : false;
 		
 		ChallengesUtils challUtils = new ChallengesUtils();

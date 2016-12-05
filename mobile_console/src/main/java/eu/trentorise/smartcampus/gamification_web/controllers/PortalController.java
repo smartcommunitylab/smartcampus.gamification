@@ -787,7 +787,7 @@ public class PortalController extends SCController{
 	}
 	
 	//@Scheduled(fixedRate = 5*60*1000) // Repeat every 5 minutes
-	//@Scheduled(cron="0 30 14 * * MON") 		// Repeat every Monday at 14:30 AM
+	@Scheduled(cron="0 15 15 * * MON") 		// Repeat every Monday at 15:15
 	public synchronized void checkWinnersNotification() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
 		EncryptDecrypt cryptUtils = new EncryptDecrypt(SECRET_KEY_1, SECRET_KEY_2);
 		StatusUtils statusUtils = new StatusUtils();

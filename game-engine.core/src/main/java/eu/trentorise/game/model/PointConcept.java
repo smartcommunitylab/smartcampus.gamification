@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 import org.kie.api.definition.type.PropertyReactive;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -286,36 +287,42 @@ public class PointConcept extends GameConcept {
 		}
 
 		private PeriodInstanceImpl retrieveInstance(long moment) {
-			if (moment < start.getTime()) {
+			LocalDateTime momentDate = new LocalDateTime(moment);
+			if (start.after(momentDate.toDate())) {
 				throw new IllegalArgumentException(
 						"moment is previous than startDate of period");
 			}
+
 			PeriodInstanceImpl instance = null;
-			long startInstance = -1;
-			long endInstance = -1;
+
 			if (instances.isEmpty() || instances.getLast().getEnd() < moment) {
-				startInstance = instances.isEmpty() ? start.getTime()
-						: instances.getLast().getEnd();
-				endInstance = instances.isEmpty() ? startInstance + period
-						: instances.getLast().getEnd() + period;
-				instance = new PeriodInstanceImpl(startInstance, endInstance);
+				LocalDateTime startInstance = instances.isEmpty() ? new LocalDateTime(
+						start.getTime()) : new LocalDateTime(instances
+						.getLast().getEnd());
+				LocalDateTime endInstance = startInstance.withPeriodAdded(
+						new org.joda.time.Period(period), 1);
+
+				instance = new PeriodInstanceImpl(startInstance.toDateTime()
+						.getMillis(), endInstance.toDateTime().getMillis());
 				instances.add(instance);
 				instance.setIndex(instances.size() - 1);
-				while (endInstance < moment) {
+
+				while (endInstance.isBefore(momentDate)) {
 					startInstance = endInstance;
-					endInstance = endInstance + period;
-					instance = new PeriodInstanceImpl(startInstance,
-							endInstance);
+					endInstance = endInstance.withPeriodAdded(
+							new org.joda.time.Period(period), 1);
+					instance = new PeriodInstanceImpl(startInstance
+							.toDateTime().getMillis(), endInstance.toDateTime()
+							.getMillis());
 					instances.add(instance);
 					instance.setIndex(instances.size() - 1);
 				}
 			} else {
-				Interval periodInterval = null;
 				for (Iterator<PeriodInstanceImpl> iter = instances
 						.descendingIterator(); iter.hasNext();) {
 					PeriodInstanceImpl instanceTemp = iter.next();
-					periodInterval = new Interval(instanceTemp.getStart(),
-							instanceTemp.getEnd());
+					Interval periodInterval = new Interval(
+							instanceTemp.getStart(), instanceTemp.getEnd());
 					if (periodInterval.contains(moment)) {
 						instance = instanceTemp;
 						break;

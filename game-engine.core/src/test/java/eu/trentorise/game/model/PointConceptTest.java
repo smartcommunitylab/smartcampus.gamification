@@ -19,6 +19,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.managers.GameWorkflow;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.GameService;
@@ -206,6 +207,73 @@ public class PointConceptTest {
 		Assert.assertEquals(new Double(0),
 				p.getPeriodPreviousInstance("period1").getScore());
 
+	}
+
+	/*
+	 * Test issue of daylight saving time
+	 */
+	@Test
+	public void dstPeriodStartInExecMomentOut() {
+		final LocalDate IN_DST_DATE = new LocalDate(2016, 10, 22);
+
+		final long WEEKLY_PERIOD_TS = 604800000;
+
+		PointConcept p = new PointConcept("green", new DateTime(2016, 12, 1,
+				10, 1).getMillis());
+
+		p.addPeriod("dstPeriod", IN_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
+
+		PeriodInstance instance = p.getPeriodCurrentInstance("dstPeriod");
+		Assert.assertEquals(new DateTime(2016, 11, 26, 0, 0), new DateTime(
+				instance.getStart()));
+	}
+
+	@Test
+	public void dstPeriodStartOutExecMomentOut() {
+		final LocalDate OUT_DST_DATE = new LocalDate(2016, 11, 5);
+
+		final long WEEKLY_PERIOD_TS = 604800000;
+
+		PointConcept p = new PointConcept("green", new DateTime(2016, 12, 1,
+				10, 1).getMillis());
+
+		p.addPeriod("noDSTPeriod", OUT_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
+
+		PeriodInstance instance = p.getPeriodCurrentInstance("noDSTPeriod");
+		Assert.assertEquals(new DateTime(2016, 11, 26, 0, 0), new DateTime(
+				instance.getStart()));
+	}
+
+	@Test
+	public void dstPeriodStartOutExecMomentIn() {
+		final LocalDate OUT_DST_DATE = new LocalDate(2016, 11, 5);
+
+		final long WEEKLY_PERIOD_TS = 604800000;
+
+		PointConcept p = new PointConcept("green", new DateTime(2017, 4, 25,
+				10, 1).getMillis());
+
+		p.addPeriod("noDSTPeriod", OUT_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
+
+		PeriodInstance instance = p.getPeriodCurrentInstance("noDSTPeriod");
+		Assert.assertEquals(new DateTime(2017, 4, 22, 0, 0), new DateTime(
+				instance.getStart()));
+	}
+
+	@Test
+	public void dstPeriodStartInExecMomentIn() {
+		final LocalDate OUT_DST_DATE = new LocalDate(2016, 10, 22);
+
+		final long WEEKLY_PERIOD_TS = 604800000;
+
+		PointConcept p = new PointConcept("green", new DateTime(2017, 4, 25,
+				10, 1).getMillis());
+
+		p.addPeriod("noDSTPeriod", OUT_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
+
+		PeriodInstance instance = p.getPeriodCurrentInstance("noDSTPeriod");
+		Assert.assertEquals(new DateTime(2017, 4, 22, 0, 0), new DateTime(
+				instance.getStart()));
 	}
 
 	@Test

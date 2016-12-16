@@ -28,32 +28,34 @@ public class ClassificationFactoryTest {
 
 	private static final String GAME = "classificationFactoryGame";
 
-	private static final long ONE_DAY_MILLIS = 24 * 60 * 60000;
-	private static final long TWO_DAYS_MILLIS = 2 * ONE_DAY_MILLIS;
+	private static final long RED_PERIOD1_DURATION = 24 * 60 * 60000; // one day
+
+	private static final long YELLOW_PERIOD1_DURATION = 2 * RED_PERIOD1_DURATION; // two
+																					// days
 
 	private LocalDate today = new LocalDate();
-	private LocalDate startPeriod = today.minusDays(3);
+	private LocalDate startPeriod = today.minusDays(1);
 
 	private PointConcept createPointRed() {
 		PointConcept p1 = new PointConcept("red");
-		p1.addPeriod("period1", startPeriod.toDate(), ONE_DAY_MILLIS);
+		p1.addPeriod("period1", startPeriod.toDate(), RED_PERIOD1_DURATION);
 		return p1;
 	}
 
 	private PointConcept createPointYellow() {
 		PointConcept p1 = new PointConcept("yellow");
-		p1.addPeriod("period1", startPeriod.toDate(), TWO_DAYS_MILLIS);
+		p1.addPeriod("period1", startPeriod.toDate(), YELLOW_PERIOD1_DURATION);
 		return p1;
 	}
 
 	/*
-	 * Eddie Brock - red : today 20 today-1 10 - yellow: today 50
+	 * Eddie Brock - red : today-1 10 today 20 - yellow: today 50
 	 * 
-	 * Cletus Casady - red: today 12 today-1 5 - yellow: today 75
+	 * Cletus Casady - red: today-1 5 today 12 - yellow: today 75
 	 * 
-	 * Tanis Nieves - red: today 7 today-1 12 - yellow: today 34
+	 * Tanis Nieves - red: today-1 12 today 7 - yellow: today 34
 	 * 
-	 * Patrick Mulligan - red: today 51 today-1 4 - yellow: today 16
+	 * Patrick Mulligan - red: today-1 4 today 51 - yellow: today 16
 	 */
 	private List<PlayerState> getStates1() {
 		List<PlayerState> players = new ArrayList<>();
@@ -124,34 +126,89 @@ public class ClassificationFactoryTest {
 	}
 
 	@Test
-	public void incremental() {
+	public void incrementalUsingInstanceIdx() {
 
+		// incremental for today-1 -> index 0
+		List<ClassificationPosition> c1 = ClassificationFactory
+				.createIncrementalClassification(getStates1(), "red",
+						"period1", 0).getClassificationBoard().getBoard();
+
+		Assert.assertEquals("Tanis Nieves", c1.get(0).getPlayerId());
+		Assert.assertEquals(12d, c1.get(0).getScore(), 0d);
+		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
+		Assert.assertEquals(10d, c1.get(1).getScore(), 0d);
+		Assert.assertEquals("Cletus Casady", c1.get(2).getPlayerId());
+		Assert.assertEquals(5d, c1.get(2).getScore(), 0d);
+		Assert.assertEquals("Patrick Mulligan", c1.get(3).getPlayerId());
+		Assert.assertEquals(4d, c1.get(3).getScore(), 0d);
+
+		// incremental yellow
+		c1 = ClassificationFactory
+				.createIncrementalClassification(getStates1(), "yellow",
+						"period1", 0).getClassificationBoard().getBoard();
+
+		Assert.assertEquals("Cletus Casady", c1.get(0).getPlayerId());
+		Assert.assertEquals(75d, c1.get(0).getScore(), 0d);
+		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
+		Assert.assertEquals(50d, c1.get(1).getScore(), 0d);
+		Assert.assertEquals("Tanis Nieves", c1.get(2).getPlayerId());
+		Assert.assertEquals(34d, c1.get(2).getScore(), 0d);
+		Assert.assertEquals("Patrick Mulligan", c1.get(3).getPlayerId());
+		Assert.assertEquals(16d, c1.get(3).getScore(), 0d);
+
+	}
+
+	@Test
+	public void incrementalByIndexInTheFuture() {
+		List<ClassificationPosition> c1 = ClassificationFactory
+				.createIncrementalClassification(getStates1(), "red",
+						"period1", 20).getClassificationBoard().getBoard();
+
+		Assert.assertEquals(0d, c1.get(0).getScore(), 0d);
+		Assert.assertEquals(0d, c1.get(1).getScore(), 0d);
+		Assert.assertEquals(0d, c1.get(2).getScore(), 0d);
+		Assert.assertEquals(0d, c1.get(3).getScore(), 0d);
+	}
+
+	@Test
+	public void incrementalWithoutParams() {
 		// incremental current period
 		List<ClassificationPosition> c1 = ClassificationFactory
 				.createIncrementalClassification(getStates1(), "red", "period1")
 				.getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Patrick Mulligan", c1.get(0).getPlayerId());
+		Assert.assertEquals(51d, c1.get(0).getScore(), 0d);
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
+		Assert.assertEquals(20d, c1.get(1).getScore(), 0d);
 		Assert.assertEquals("Cletus Casady", c1.get(2).getPlayerId());
+		Assert.assertEquals(12d, c1.get(2).getScore(), 0d);
 		Assert.assertEquals("Tanis Nieves", c1.get(3).getPlayerId());
+		Assert.assertEquals(7d, c1.get(3).getScore(), 0d);
 
 		c1 = ClassificationFactory
 				.createIncrementalClassification(getStates1(), "yellow",
 						"period1").getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Cletus Casady", c1.get(0).getPlayerId());
+		Assert.assertEquals(75d, c1.get(0).getScore(), 0d);
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
+		Assert.assertEquals(50d, c1.get(1).getScore(), 0d);
 		Assert.assertEquals("Tanis Nieves", c1.get(2).getPlayerId());
+		Assert.assertEquals(34d, c1.get(2).getScore(), 0d);
 		Assert.assertEquals("Patrick Mulligan", c1.get(3).getPlayerId());
+		Assert.assertEquals(16d, c1.get(3).getScore(), 0d);
+	}
 
+	@Test
+	public void incrementalByDate() {
 		// incremental given a date (today-1)
-		c1 = ClassificationFactory
+		List<ClassificationPosition> c1 = ClassificationFactory
 				.createIncrementalClassification(
 						getStates1(),
 						"red",
 						"period1",
-						new DateTime().withTimeAtStartOfDay().minusDays(1)
+						new DateTime().withDate(startPeriod).plusMinutes(1)
 								.toDate()).getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Tanis Nieves", c1.get(0).getPlayerId());
@@ -161,22 +218,28 @@ public class ClassificationFactoryTest {
 
 		// incremental yellow given end instance date
 		c1 = ClassificationFactory
-				.createIncrementalClassification(getStates1(), "yellow",
-						"period1", startPeriod.plusDays(2).toDate())
-				.getClassificationBoard().getBoard();
+				.createIncrementalClassification(
+						getStates1(),
+						"yellow",
+						"period1",
+						new DateTime().withDate(startPeriod).plusMinutes(1)
+								.toDate()).getClassificationBoard().getBoard();
 
 		Assert.assertEquals("Cletus Casady", c1.get(0).getPlayerId());
 		Assert.assertEquals("Eddie Brock", c1.get(1).getPlayerId());
 		Assert.assertEquals("Tanis Nieves", c1.get(2).getPlayerId());
 		Assert.assertEquals("Patrick Mulligan", c1.get(3).getPlayerId());
+	}
 
-		c1 = ClassificationFactory
+	@Test
+	public void incrementalByEndLastInstanceDate() {
+		List<ClassificationPosition> c1 = ClassificationFactory
 				.createIncrementalClassification(
 						getStates1(),
 						"yellow",
 						"period1",
-						new DateTime().withDate(startPeriod.plusDays(2))
-								.withTimeAtStartOfDay().minusMinutes(1)
+						new DateTime().withDate(startPeriod)
+								.withDurationAdded(YELLOW_PERIOD1_DURATION, 1)
 								.toDate()).getClassificationBoard().getBoard();
 
 		Assert.assertEquals(Double.valueOf(0),
@@ -188,6 +251,27 @@ public class ClassificationFactoryTest {
 		Assert.assertEquals(Double.valueOf(0),
 				Double.valueOf(c1.get(3).getScore()));
 
+	}
+
+	@Test
+	public void incrementalByFutureDate() {
+		List<ClassificationPosition> c1 = ClassificationFactory
+				.createIncrementalClassification(
+						getStates1(),
+						"yellow",
+						"period1",
+						new DateTime().withDate(startPeriod.plusDays(3))
+								.withTimeAtStartOfDay().minusMinutes(1)
+								.toDate()).getClassificationBoard().getBoard();
+
+		Assert.assertEquals(Double.valueOf(0),
+				Double.valueOf(c1.get(0).getScore()));
+		Assert.assertEquals(Double.valueOf(0),
+				Double.valueOf(c1.get(1).getScore()));
+		Assert.assertEquals(Double.valueOf(0),
+				Double.valueOf(c1.get(2).getScore()));
+		Assert.assertEquals(Double.valueOf(0),
+				Double.valueOf(c1.get(3).getScore()));
 	}
 
 	@Test

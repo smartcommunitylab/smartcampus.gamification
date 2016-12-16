@@ -156,11 +156,14 @@ public class PointConcept extends GameConcept {
 	}
 
 	public Double getPeriodPreviousScore(String periodIdentifier) {
-		return getPeriodScore(periodIdentifier, 1);
+		PeriodInstance previous = getPeriodPreviousInstance(periodIdentifier);
+		return previous != null ? previous.getScore() : 0d;
 	}
 
 	public PeriodInstance getPeriodPreviousInstance(String periodIdentifier) {
-		return getPeriodInstance(periodIdentifier, 1);
+		int currentIndex = getCurrentInstanceIndex(periodIdentifier);
+		return currentIndex != -1 ? getPeriodInstance(periodIdentifier,
+				currentIndex - 1) : null;
 	}
 
 	public Double getPeriodScore(String periodIdentifier, long moment) {
@@ -173,20 +176,34 @@ public class PointConcept extends GameConcept {
 				periodIdentifier).retrieveInstance(moment) : null;
 	}
 
+	private int getCurrentInstanceIndex(String periodIdentifier) {
+		PeriodInstance current = getPeriodCurrentInstance(periodIdentifier);
+		return current != null ? current.getIndex() : -1;
+
+	}
+
 	public Double getPeriodScore(String periodIdentifier, int instanceIndex) {
 		Double result = 0d;
 		PeriodInternal p = periods.get(periodIdentifier);
 		if (p != null) {
-			try {
-				result = getPeriodInstance(periodIdentifier, instanceIndex)
-						.getScore();
-			} catch (IndexOutOfBoundsException e) {
-			}
+			PeriodInstance instance = getPeriodInstance(periodIdentifier,
+					instanceIndex);
+			result = instance != null ? instance.getScore() : 0d;
 		}
 
 		return result;
 	}
 
+	/**
+	 * The method returns the PeriodInstance relative to the index.
+	 * 
+	 * @param periodIdentifier
+	 *            identifier of period
+	 * @param instanceIndex
+	 *            index of instance
+	 * @return PeriodInstance bound to the index or null if there is not
+	 *         PeriodInstance at that index
+	 */
 	public PeriodInstance getPeriodInstance(String periodIdentifier,
 			int instanceIndex) {
 		PeriodInstance result = null;
@@ -194,10 +211,9 @@ public class PointConcept extends GameConcept {
 		if (p != null) {
 			LinkedList<PeriodInstanceImpl> instances = p.getInstances();
 			try {
-				PeriodInstance current = getPeriodCurrentInstance(periodIdentifier);
-				result = instances.get((current != null ? current.getIndex()
-						: 0) - instanceIndex);
+				result = instances.get(instanceIndex);
 			} catch (IndexOutOfBoundsException e) {
+				// silent exception
 			}
 		}
 
@@ -295,7 +311,7 @@ public class PointConcept extends GameConcept {
 
 			PeriodInstanceImpl instance = null;
 
-			if (instances.isEmpty() || instances.getLast().getEnd() < moment) {
+			if (instances.isEmpty() || instances.getLast().getEnd() <= moment) {
 				LocalDateTime startInstance = instances.isEmpty() ? new LocalDateTime(
 						start.getTime()) : new LocalDateTime(instances
 						.getLast().getEnd());

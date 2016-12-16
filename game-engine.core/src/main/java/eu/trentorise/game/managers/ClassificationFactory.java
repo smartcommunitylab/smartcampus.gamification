@@ -83,7 +83,7 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 	private static final Logger logger = LoggerFactory
 			.getLogger(IncrementalClassificationBuilder.class);
 	private String periodName;
-	private int periodInstanceIndex;
+	private int periodInstanceIndex = -1;
 
 	public IncrementalClassificationBuilder(List<PlayerState> states,
 			String pointConceptName, String periodName) {

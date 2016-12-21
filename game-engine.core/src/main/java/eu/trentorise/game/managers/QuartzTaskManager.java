@@ -27,6 +27,7 @@ import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -204,8 +205,8 @@ public class QuartzTaskManager extends TaskDataManager {
 	}
 
 	private Date calculateStartDate(Date initialStart, long period) {
-		DateTime start = new DateTime(initialStart);
-		while (start.isBeforeNow()) {
+		LocalDateTime start = new LocalDateTime(initialStart);
+		while (start.toDateTime().isBeforeNow()) {
 			start = start.plusMillis((int) period);
 		}
 

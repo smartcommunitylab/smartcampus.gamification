@@ -17,7 +17,10 @@
 package eu.trentorise.game.managers;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -82,6 +85,32 @@ public class TaskDataTest {
 		Assert.assertEquals(4, ((SampleClass1) d).getList().size());
 	}
 
+	@Test
+	public void saveDateField() {
+
+		GameTask task = new GameTask("taskSample", null) {
+
+			public void execute(GameContext ctx) {
+			}
+
+			@Override
+			public List<String> getExecutionActions() {
+				return null;
+			}
+		};
+
+		GameContext ctx = (GameContext) provider.getApplicationContext()
+				.getBean("gameCtx", GAME, task);
+
+		Map<String, Object> data = new HashMap<String, Object>();
+		Date now = new Date();
+		data.put("now", now);
+		ctx.writeTaskData(data);
+		Map<String, Object> dataReaded = (Map<String, Object>) ctx
+				.readTaskData();
+		Assert.assertEquals(now, (Date) dataReaded.get("now"));
+
+	}
 }
 
 class SampleClass1 {

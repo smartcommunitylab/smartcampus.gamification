@@ -27,7 +27,6 @@ angular.module('gamificationEngine.tasks', [])
 
 		$scope.timeunit= [{label: 'Day', value: 'DAY'}, {label: 'Hour', value: 'HOUR'}, {label: 'Minute', value: 'MINUTE'}];
 		
-		//var t = {};
 		$scope.input = {};
 		$scope.delay = {showField: false};
 		
@@ -35,7 +34,6 @@ angular.module('gamificationEngine.tasks', [])
 		$scope.input.itemToNotificate = 3;
 		var game = $scope.game;
 		var task;
-		//$scope.game = game;
 
 		$scope.resetDelayField = function() {
 			if(!$scope.delay.showField) {
@@ -122,6 +120,7 @@ angular.module('gamificationEngine.tasks', [])
 						$scope.isCollapsed = true;
 						$scope.disabled = false;
 						$scope.alerts.rankEdited = true;
+						task = null;
 					}, function (msg) {
 						$scope.alerts.taskErr = 'messages:' + msg;
 						$scope.disabled = false;
@@ -131,7 +130,7 @@ angular.module('gamificationEngine.tasks', [])
 		}
 		
 		
-		$scope.save = function () {
+		$scope.saveGeneral = function () {
 			$scope.alerts.nameError = false;
 			$scope.alerts.pointsError = false;
 			$scope.alerts.classError = false;
@@ -139,7 +138,6 @@ angular.module('gamificationEngine.tasks', [])
 			$scope.alerts.itemsError = false;
 			$scope.alerts.taskErr = false;
 
-			//var valid = $scope.input.name && $scope.input.itemType && $scope.input.classificationName && $scope.input.schedule && $scope.input.itemToNotificate;
 			var valid = true;
 			if (!$scope.input.name) {
 				$scope.alerts.nameError = true;
@@ -188,6 +186,7 @@ angular.module('gamificationEngine.tasks', [])
 							$scope.isCollapsed = true;
 							$scope.disabled = false;
 							$scope.alerts.rankEdited = true;
+							task = null;
 						}, function (msg) {
 							$scope.alerts.taskErr = 'messages:' + msg;
 							$scope.disabled = false;
@@ -211,6 +210,7 @@ angular.module('gamificationEngine.tasks', [])
 						$scope.isCollapsed = true;
 						$scope.disabled = false;
 						$scope.alerts.rankEdited = true;
+						task = null;
 					}, function (msg) {
 						$scope.alerts.taskErr = 'messages:' + msg;
 						$scope.disabled = false;
@@ -228,6 +228,7 @@ angular.module('gamificationEngine.tasks', [])
 			$scope.alerts.itemsError = false;
 			$scope.alerts.taskErr = false;
 			$scope.isCollapsed = true;
+			task = null;
 		};
 
 		$scope.addTask = function () {

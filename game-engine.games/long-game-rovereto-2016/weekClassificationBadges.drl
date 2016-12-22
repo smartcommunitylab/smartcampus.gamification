@@ -1,0 +1,76 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.task.Classification;
+
+/* ***************************************************************************
+GREEN WEEK CLASSIFICATION
+  
+*************************************************************************** */
+rule "1st of the week"
+no-loop
+	salience -1000
+when
+    Classification( name == 'week classification green', position == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "leaderboard top 3")
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'1st_of_the_week\'");
+	if (! $bc.getBadgeEarned().contains("1st_of_the_week")) {
+		$bc.getBadgeEarned().add('1st_of_the_week');
+		update( $bc );
+	}
+	insert( new BadgeNotification($gameId,$playerId,'1st_of_the_week'));
+	insert( new BadgeUpdate("1st_of_the_week", "leaderboard top 3"));	
+	$pc.setScore($pc.getScore() + 100);
+    update($pc);
+    insert(new PointDelta(100,"green leaves")); 
+end
+
+rule "2nd of the week"
+no-loop
+	salience -1000
+when
+    Classification( name == 'week classification green', position == 2)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "leaderboard top 3")
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'2nd_of_the_week\'");
+	if (! $bc.getBadgeEarned().contains("2nd_of_the_week")) {
+		$bc.getBadgeEarned().add('2nd_of_the_week');
+		update( $bc );
+	}
+	insert( new BadgeNotification($gameId,$playerId,'2nd_of_the_week'));
+	insert( new BadgeUpdate("2nd_of_the_week", "leaderboard top 3"));	
+	$pc.setScore($pc.getScore() + 80);
+    update($pc);
+    insert(new PointDelta(80,"green leaves")); 
+end
+
+rule "3rd of the week"
+no-loop
+	salience -1000
+when
+    Classification( name == 'week classification green', position == 3)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "leaderboard top 3")
+    $pc : PointConcept(name == "green leaves")
+then
+	log("apply \'3rd_of_the_week\'");
+	if (! $bc.getBadgeEarned().contains("3rd_of_the_week")) {
+		$bc.getBadgeEarned().add('3rd_of_the_week');
+		update( $bc );
+	}
+	insert( new BadgeNotification($gameId,$playerId,'3rd_of_the_week'));
+	insert( new BadgeUpdate("3rd_of_the_week", "leaderboard top 3"));	
+	$pc.setScore($pc.getScore() + 60);
+    update($pc);
+    insert(new PointDelta(60,"green leaves")); 
+end
+    
+    

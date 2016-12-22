@@ -1,0 +1,1 @@
+Rovereto Play&Go (rovereto-long-game) base rules and challenges templates

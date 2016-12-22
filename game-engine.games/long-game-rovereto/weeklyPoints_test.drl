@@ -1,0 +1,32 @@
+package eu.trentorise.game.model
+
+// start week_test1: 1461103260000 -> 20/04 00:01
+// start week_test2: 1461189660000 -> 21/04 00:01
+//   end week_test2: 1461276060000 -> 22/04 00:01
+
+
+rule "GreenLeavesWeek_test1"
+when
+	
+	InputData($now : System.currentTimeMillis(), $now >= 1461103260000 , $now < 1461189660000)
+	$pc : PointConcept(name == "green leaves week test1")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week test1 =  1461103260000 to 1461189660000");		
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek_test2"
+when
+	
+	InputData($now : System.currentTimeMillis(), $now >= 1461103260000 , $now < 1461189660000)
+	$pc : PointConcept(name == "green leaves week test2")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week test2 =  1461189660000 to 1461276060000");		
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end

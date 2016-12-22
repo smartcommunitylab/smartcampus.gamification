@@ -1,0 +1,47 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.model.core.GameConcept
+import eu.trentorise.game.model.core.Notification
+
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import eu.trentorise.game.managers.DroolsEngine;
+
+// ***************************************** queries 
+
+query "getGameConcepts"
+	$result: GameConcept()
+end
+
+query "getNotifications"
+	$notifications: Notification()
+end
+
+query "getCustomData"
+	$data: CustomData()
+end
+
+query "getUpdateTeams"
+	$data: UpdateTeams()
+end
+
+query "getUpdateMembers"
+	$data: UpdateMembers()
+end
+
+query "getLevel"
+	Propagation($data: level)
+end
+
+query "getMember"
+	$data: Member()
+end
+
+// ****************************************** global functions 	
+
+function void log(String msg) {
+	Logger logger = LoggerFactory.getLogger(DroolsEngine.class);
+	logger.info(msg);
+}

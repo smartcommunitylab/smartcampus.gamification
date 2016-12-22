@@ -1,0 +1,54 @@
+template header
+
+ch_ID
+ch_player
+ch_point_type
+ch_point_type_baseline
+
+package eu.trentorise.game.model
+
+
+// ottieni almeno <X> di tipo <Y> durante la challenge e guadagna un ulteriore Bonus di <Z> punti di tipo <Y>
+
+/* Parameters for the template
+ch_ID = unique Challenge ID (ALWAYS!): obtained via UUID
+ch_player = unique Player ID - for now simply Object.toString()
+ch_point_type
+ch_point_type_baseline - the points that are checked to see if challenge is fulfilled
+*/
+
+/*
+ CustomData to have   []=used by
+    ID is a unique string that identifies the challenge instance
+  
+  - ch_ID_startChTs [rule] [presentation]
+  - ch_ID_endChTs [rule] [presentation]
+  - ch_ID_point_type_baseline [rule] [presentation] the points that are checked to see if challenge is fulfilled
+  - ch_ID_target [rule] [presentation]
+  - ch_ID_bonus [presentation]
+  - ch_ID_type [presentation]
+  - ch_ID_success [rule] [presentation]
+  - ch_ID_point_type [presentation] type of bonus point -> it must contain the name of PointConcept ("green leaves" for example)
+*/
+
+template PointsEarnedTemplate
+
+
+rule 'ch_@{ch_ID}_check'
+when
+	Player(id == '@{ch_player}')
+	$pc : PointConcept(name == '@{ch_point_type}')
+	$pcb : PointConcept(name == '@{ch_point_type_baseline}', $score : score)
+	$c : CustomData($now : System.currentTimeMillis(), this['ch_@{ch_ID}_startChTs'] <= $now, this['ch_@{ch_ID}_endChTs'] > $now, $score >= this['ch_@{ch_ID}_target'], 
+		this['ch_@{ch_ID}_success'] != true)
+	
+then
+	$pc.setScore($pc.getScore() + (Integer)$c.get("ch_@{ch_ID}_bonus"));
+	log('ch_@{ch_ID} success');
+	$c.put("ch_@{ch_ID}_success",true);
+	insert(new PointDelta((Integer)$c.get("ch_@{ch_ID}_bonus"),"@{ch_point_type}"));
+	update($c);
+	update($pc); 
+end
+
+end template

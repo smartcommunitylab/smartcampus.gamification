@@ -1,0 +1,21 @@
+/**
+ Globals definitions for rovereto long game
+
+ Queste costanti sono definite globali per ogni giocatore e valorizzate in constants, 
+ per permettere la gestione di un valore minimo di soglia per i viaggi per le regole 
+ generate 
+ 
+ Es. Utente Spiderman ha nella sua regola generata un when che gli dice prova il 
+ bus, ma fai almeno un numero minimo di kilometri affinche' la regola scatti
+
+
+ Necessario perche' i template compilati non permettono la dichiarazione di queste 
+ variabili che sono generate tramite macro
+**/
+global Double busDistance_try_min;
+global Double bikeDistance_try_min;
+global Double trainDistance_try_min;
+global Double walkDistance_try_min;
+
+global Integer bike_sharing_pioneer_size;
+global Integer park_and_ride_pioneer_size;

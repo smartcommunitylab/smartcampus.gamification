@@ -1,0 +1,59 @@
+package eu.trentorise.game.model
+
+//list any import classes here.
+
+rule "Reset Player"
+salience -2000
+lock-on-active
+    when
+    	Action ($id : id == "reset_game")
+        InputData($reset : data["player_reset"], $reset == true)
+		$p : Player($playerId : id)
+		$pc : PointConcept()
+		$bc: BadgeCollectionConcept()
+		$c: CustomData()
+		
+    then
+    	log("resetting player: " + (String)$playerId);
+    	if ($pc.getScore() > 0d) {
+    		$pc.setScore(0d);
+    		log("reset points " + $pc.getName() + " of player: " + (String)$playerId + " to: " + $pc.getScore());
+    	}
+    	if (! $bc.getBadgeEarned().isEmpty()) {
+	    	$bc.getBadgeEarned().clear();
+	    	log("reset badges in " + $bc.getName() + " of player: " + (String)$playerId);
+	    }
+		if (! $c.isEmpty()) {
+	    	$c.clear();
+	    	log("reset Custom Data of player: " + (String)$playerId);
+	    }
+end
+
+rule "reset past counters"
+lock-on-active
+when
+	Action ($id : id == "reset_game")
+	InputData($reset : data["counters_reset"] != null, $reset == true)
+	$p : Player($playerId : id)
+	$c : CustomData()
+then
+	log("resetting all past (i.e. periodic) counters to 0 for player" + (String)$playerId);
+	
+	$c.remove("walk_km_past");
+	$c.remove("bike_km_past");
+	$c.remove("bikesharing_km_past");
+	$c.remove("bus_km_past");
+	$c.remove("train_km_past");
+	$c.remove("car_km_past");
+	
+	$c.remove("walk_trips_past");
+	$c.remove("bike_trips_past");
+	$c.remove("bikesharing_trips_past");
+	$c.remove("bus_trips_past");
+	$c.remove("train_trips_past");
+	$c.remove("car_trips_past");
+	$c.remove("zero_impact_trips_past");
+	$c.remove("gp_current");
+	
+	update($c);
+end

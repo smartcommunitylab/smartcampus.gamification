@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -109,7 +110,7 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	private StatePersistence persistConcepts(String gameId, String playerId,
-			List<GenericObjectPersistence> concepts) {
+			Map<String, Map<String, GenericObjectPersistence>> concepts) {
 		return persist(gameId, playerId, concepts, null, null);
 	}
 
@@ -131,8 +132,8 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	private StatePersistence persist(String gameId, String playerId,
-			List<GenericObjectPersistence> concepts, CustomData customData,
-			Map<String, Object> metadata) {
+			Map<String, Map<String, GenericObjectPersistence>> concepts,
+			CustomData customData, Map<String, Object> metadata) {
 		if (StringUtils.isBlank(gameId) || StringUtils.isBlank(playerId)) {
 			throw new IllegalArgumentException(
 					"field gameId and playerId of PlayerState MUST be set");
@@ -391,7 +392,10 @@ public class DBPlayerManager implements PlayerService {
 		challenge.setFields(data);
 		challenge.setStart(start);
 		challenge.setEnd(end);
-		challenge.setName(instanceName);
+		// needed since v2.2.0, gameConcept name is mandatory because it is used
+		// as key in persistence structure
+		challenge.setName(instanceName != null ? instanceName : UUID
+				.randomUUID().toString());
 
 		// save in playerState
 		PlayerState state = loadState(gameId, playerId, true);

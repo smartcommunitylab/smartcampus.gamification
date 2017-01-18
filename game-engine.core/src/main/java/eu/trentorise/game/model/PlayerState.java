@@ -17,6 +17,7 @@
 package eu.trentorise.game.model;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -51,14 +52,19 @@ public class PlayerState {
 			playerId = statePersistence.getPlayerId();
 			customData = statePersistence.getCustomData();
 			state = new HashSet<GameConcept>();
-			for (GenericObjectPersistence obj : statePersistence.getConcepts()) {
-				try {
-					state.add(mapper.convertValue(obj.getObj(),
-							(Class<? extends GameConcept>) Thread
-									.currentThread().getContextClassLoader()
-									.loadClass(obj.getType())));
-				} catch (Exception e) {
-					logger.error("Problem to load class {}", obj.getType());
+			for (Map<String, GenericObjectPersistence> map : statePersistence
+					.getConcepts().values()) {
+				for (GenericObjectPersistence obj : map.values()) {
+					try {
+						state.add(mapper.convertValue(
+								obj.getObj(),
+								(Class<? extends GameConcept>) Thread
+										.currentThread()
+										.getContextClassLoader()
+										.loadClass(obj.getType())));
+					} catch (Exception e) {
+						logger.error("Problem to load class {}", obj.getType());
+					}
 				}
 			}
 		}

@@ -1,3 +1,4 @@
+/** STEP 1 - MIGRATION SCRIPT **/
 conn = new Mongo();
 db = conn.getDB('gamification-climb');
 

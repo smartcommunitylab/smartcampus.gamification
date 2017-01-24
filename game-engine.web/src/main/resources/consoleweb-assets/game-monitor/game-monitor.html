@@ -109,17 +109,19 @@
 																ng-class="{'glyphicon-eye-open': hideInstances, 'glyphicon-eye-close': !hideInstances}"></span>
 														</button>
 														<ul class="point-monitor" uib-collapse="hideInstances">
-															<li class="point-monitor"
-																ng-repeat="instance in elem.periods[period].instances | orderBy:'':true | limitTo : limitPeriodInstances">
+															<!-- <li class="point-monitor"
+																ng-repeat="instance in elem.periods[period].instances | orderBy:'':true | limitTo : limitPeriodInstances"-->
+																<li class="point-monitor" ng-repeat="(key, value) in elem.periods[period].instances | orderObjectBy:orderByAttribute">
+																
 																<div>
-																	start: <span class="detail-small">{{instance.start
+																	start: <span class="detail-small">{{value.start
 																		| date: 'dd/MM/yyyy HH:mm:ss' }}</span>
 																</div>
 																<div>
-																	end: <span class="detail-small">{{instance.end |
+																	end: <span class="detail-small">{{value.end |
 																		date: 'dd/MM/yyyy HH:mm:ss'}}</span>
 																</div>
-																<div>score: {{instance.score}}</div>
+																<div>score: {{value.score}}</div>
 															</li>
 														</ul></li>
 												</ul>

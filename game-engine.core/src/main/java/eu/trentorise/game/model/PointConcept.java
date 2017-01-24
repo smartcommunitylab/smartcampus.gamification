@@ -19,7 +19,6 @@ package eu.trentorise.game.model;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,8 +36,12 @@ import org.kie.api.definition.type.PropertyReactive;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.repo.LocalDateTimeDeserializer;
+import eu.trentorise.game.repo.LocalDateTimeSerializer;
 
 @PropertyReactive
 public class PointConcept extends GameConcept {
@@ -47,7 +50,8 @@ public class PointConcept extends GameConcept {
 
 	private Map<String, PeriodInternal> periods = new LinkedHashMap<String, PeriodInternal>();
 
-	private final DateTimeFormatter PERIOD_KEY_FORMAT = DateTimeFormat
+	@JsonIgnore
+	public static final DateTimeFormatter PERIOD_KEY_FORMAT = DateTimeFormat
 			.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
 	@JsonIgnore
@@ -247,15 +251,19 @@ public class PointConcept extends GameConcept {
 		private long period;
 		private String identifier;
 
-		private TreeMap<String, PeriodInstanceImpl> instances = new TreeMap<>(
-				new Comparator<String>() {
-
-					@Override
-					public int compare(String o1, String o2) {
-						return new LocalDateTime(o1)
-								.compareTo(new LocalDateTime(o2));
-					}
-				});
+		/*
+		 * JsonDeserialize is used by convertValue method of ObjectMapper field
+		 * of PlayerState. In constructor of playerState the StatePersistence
+		 * object is deserialized.
+		 * 
+		 * convertValue method invoked PointConcept constructor annotated with
+		 * JsonCreator.
+		 * 
+		 * Improve this flow. Use PointConceptTest.persistPeriod() as example
+		 */
+		@JsonDeserialize(keyUsing = LocalDateTimeDeserializer.class)
+		@JsonSerialize(keyUsing = LocalDateTimeSerializer.class)
+		private TreeMap<LocalDateTime, PeriodInstanceImpl> instances = new TreeMap<>();
 
 		public PeriodInternal(String identifier, Date start, long period) {
 			this.start = start;
@@ -281,9 +289,9 @@ public class PointConcept extends GameConcept {
 				Set<Entry<String, Map<String, Object>>> entries = tempInstances
 						.entrySet();
 				for (Entry<String, Map<String, Object>> entry : entries) {
-					instances.put(entry.getKey(),
+					instances.put(PERIOD_KEY_FORMAT.parseLocalDateTime(entry
+							.getKey()),
 							new PeriodInstanceImpl(entry.getValue()));
-
 				}
 			}
 
@@ -327,32 +335,28 @@ public class PointConcept extends GameConcept {
 			}
 
 			PeriodInstanceImpl instance = null;
-			String key = null;
-			String lowerBoundDate = instances.floorKey(momentDate
-					.toString(PERIOD_KEY_FORMAT));
+			LocalDateTime key = null;
+			LocalDateTime lowerBoundDate = instances.floorKey(momentDate);
 			if (lowerBoundDate == null) {
-				lowerBoundDate = new LocalDateTime(start.getTime())
-						.toString(PERIOD_KEY_FORMAT);
+				lowerBoundDate = new LocalDateTime(start.getTime());
 			}
 			org.joda.time.Period jodaPeriod = new org.joda.time.Period(period);
 			Interval interval = null;
 			do {
-				interval = new Interval(PERIOD_KEY_FORMAT.parseLocalDateTime(
-						lowerBoundDate).toDateTime(), PERIOD_KEY_FORMAT
-						.parseLocalDateTime(lowerBoundDate)
-						.withPeriodAdded(jodaPeriod, 1).toDateTime());
-				lowerBoundDate = interval.getEnd().toString(PERIOD_KEY_FORMAT);
+				interval = new Interval(lowerBoundDate.toDateTime(),
+						lowerBoundDate.withPeriodAdded(jodaPeriod, 1)
+								.toDateTime());
+				lowerBoundDate = interval.getEnd().toLocalDateTime();
 			} while (!interval.contains(moment));
 
-			instance = instances.get(interval.getStart().toString(
-					PERIOD_KEY_FORMAT));
+			instance = instances.get(interval.getStart().toLocalDateTime());
 			if (instance == null) {
 				instance = new PeriodInstanceImpl(interval.getStartMillis(),
 						interval.getEndMillis());
 				instance.setIndex(getInstanceIndex(
 						new LocalDateTime(start.getTime()), jodaPeriod,
 						momentDate));
-				key = interval.getStart().toString(PERIOD_KEY_FORMAT);
+				key = interval.getStart().toLocalDateTime();
 				instances.put(key, instance);
 			}
 
@@ -391,11 +395,12 @@ public class PointConcept extends GameConcept {
 			this.period = period;
 		}
 
-		public TreeMap<String, PeriodInstanceImpl> getInstances() {
+		public TreeMap<LocalDateTime, PeriodInstanceImpl> getInstances() {
 			return instances;
 		}
 
-		public void setInstances(TreeMap<String, PeriodInstanceImpl> instances) {
+		public void setInstances(
+				TreeMap<LocalDateTime, PeriodInstanceImpl> instances) {
 			this.instances = instances;
 		}
 
@@ -406,6 +411,7 @@ public class PointConcept extends GameConcept {
 		public String getIdentifier() {
 			return identifier;
 		}
+
 	}
 
 	private class PeriodInstanceImpl implements PeriodInstance {

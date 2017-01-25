@@ -27,7 +27,8 @@ import eu.trentorise.game.model.PlayerState;
 public interface GameEngine {
 
 	public PlayerState execute(String gameId, PlayerState state, String action,
-			Map<String, Object> data, List<Object> factObjects);
+			Map<String, Object> data, String executionId, long executionMoment,
+			List<Object> factObjects);
 
 	/**
 	 * Rule syntax validation

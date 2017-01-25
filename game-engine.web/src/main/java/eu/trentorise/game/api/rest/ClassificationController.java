@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,8 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
@@ -227,7 +230,7 @@ public class ClassificationController {
 	 * INCREMENTAL CLASSIFICATIONS
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/incclassification")
-	public IncrementalClassificationDTO create(@PathVariable String gameId,
+	public IncrementalClassificationDTO createIncremental(@PathVariable String gameId,
 			@RequestBody IncrementalClassificationDTO classification) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -258,7 +261,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/incclassification/{classificationId}")
-	public void update(@PathVariable String gameId,
+	public void updateIncrementalClassification(@PathVariable String gameId,
 			@PathVariable String classificationId,
 			@RequestBody IncrementalClassificationDTO classification) {
 		try {
@@ -280,6 +283,16 @@ public class ClassificationController {
 								.getItemsToNotificate());
 						ct.setClassificationName(classification
 								.getClassificationName());
+						if (StringUtils.isNotBlank(classification
+								.getDelayUnit())) {
+							ct.getSchedule().setDelay(
+									new TimeInterval(classification
+											.getDelayValue(), TimeUnit
+											.valueOf(classification
+													.getDelayUnit())));
+						} else {
+							ct.getSchedule().setDelay(null);
+						}
 						// if itemType or periodName changes update schedule
 						// data
 						if (!ct.getPeriodName().equals(
@@ -298,8 +311,8 @@ public class ClassificationController {
 									break;
 								}
 							}
-							taskSrv.updateTask(gt, gameId);
 						}
+						taskSrv.updateTask(gt, gameId);
 					}
 				}
 				gameSrv.saveGameDefinition(g);
@@ -311,7 +324,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/incclassification")
-	public List<IncrementalClassificationDTO> readAll(
+	public List<IncrementalClassificationDTO> readAllIncremental(
 			@PathVariable String gameId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -324,8 +337,8 @@ public class ClassificationController {
 		if (g != null) {
 			for (GameTask gt : g.getTasks()) {
 				if (gt instanceof IncrementalClassificationTask) {
-					result.add(converter
-							.convertClassificationTask((IncrementalClassificationTask) gt));
+					result.add(converter.convertClassificationTask(gameId,
+							(IncrementalClassificationTask) gt));
 				}
 			}
 		}
@@ -334,7 +347,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/incclassification/{classificationId}")
-	public IncrementalClassificationDTO read(@PathVariable String gameId,
+	public IncrementalClassificationDTO readIncremental(@PathVariable String gameId,
 			@PathVariable String classificationId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -347,8 +360,8 @@ public class ClassificationController {
 			for (GameTask gt : g.getTasks()) {
 				if (gt instanceof IncrementalClassificationTask
 						&& gt.getName().equals(classificationId)) {
-					result = converter
-							.convertClassificationTask((IncrementalClassificationTask) gt);
+					result = converter.convertClassificationTask(gameId,
+							(IncrementalClassificationTask) gt);
 				}
 			}
 		}
@@ -356,7 +369,7 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/incclassification/{classificationId}")
-	public void delete(@PathVariable String gameId,
+	public void deleteIncremental(@PathVariable String gameId,
 			@PathVariable String classificationId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");

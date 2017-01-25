@@ -1,4 +1,4 @@
-package eu.trentorise;
+package eu.trentorise.game.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;

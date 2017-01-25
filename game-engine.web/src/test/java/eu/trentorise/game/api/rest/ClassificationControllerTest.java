@@ -26,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.WebConfig;
@@ -69,6 +70,9 @@ public class ClassificationControllerTest {
 	private static final String GEN_CLASSIFICATION_NAME = "nuova classifica settimanale";
 	private static final String INC_CLASSIFICATION_NAME = "nuova classifica settimanale incremEntalE";
 
+	private static final String POINT_CONCEPT = "green leaves";
+	private static final String PERIOD_NAME = "period1";
+
 	@PostConstruct
 	public void init() {
 		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
@@ -95,22 +99,22 @@ public class ClassificationControllerTest {
 
 		game.setConcepts(new HashSet<GameConcept>());
 
-		PointConcept green = new PointConcept("green leaves");
-		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+		PointConcept green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, new LocalDate().minusDays(1).toDate(),
 				24 * 60 * 60000);
 
 		game.setTasks(new HashSet<GameTask>());
 
 		GeneralClassificationTask genClass = new GeneralClassificationTask();
 		genClass.setName(GEN_CLASSIFICATION_NAME);
-		genClass.setItemType("green leaves");
+		genClass.setItemType(POINT_CONCEPT);
 		genClass.setItemsToNotificate(3);
 		game.getTasks().add(genClass);
 
 		IncrementalClassificationTask incClass = new IncrementalClassificationTask();
 		incClass.setName(INC_CLASSIFICATION_NAME);
-		incClass.setPointConceptName("green leaves");
-		incClass.setPeriodName("period1");
+		incClass.setPointConceptName(POINT_CONCEPT);
+		incClass.setPeriodName(PERIOD_NAME);
 		incClass.setItemsToNotificate(3);
 		game.getTasks().add(incClass);
 
@@ -123,24 +127,24 @@ public class ClassificationControllerTest {
 		gameSrv.saveGameDefinition(game);
 
 		PlayerState state = new PlayerState(GAME, "player1");
-		PointConcept green = new PointConcept("green leaves");
-		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+		PointConcept green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, new LocalDate().minusDays(1).toDate(),
 				24 * 60 * 60000);
 		green.setScore(10d);
 		state.getState().add(green);
 		playerSrv.saveState(state);
 
 		state = new PlayerState(GAME, "player2");
-		green = new PointConcept("green leaves");
-		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+		green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, new LocalDate().minusDays(1).toDate(),
 				24 * 60 * 60000);
 		green.setScore(12d);
 		state.getState().add(green);
 		playerSrv.saveState(state);
 
 		state = new PlayerState(GAME, "player3");
-		green = new PointConcept("green leaves");
-		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(),
+		green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, new LocalDate().minusDays(1).toDate(),
 				24 * 60 * 60000);
 		green.setScore(4d);
 		state.getState().add(green);
@@ -148,6 +152,55 @@ public class ClassificationControllerTest {
 		try {
 			RequestBuilder builder = MockMvcRequestBuilders.get("/data/game/"
 					+ GAME + "/incclassification/" + INC_CLASSIFICATION_NAME);
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void defineIncrementalOK() {
+		try {
+			Game game = defineGame();
+			gameSrv.saveGameDefinition(game);
+			IncrementalClassificationDTO incrClassDTO = new IncrementalClassificationDTO();
+			incrClassDTO.setClassificationName("test");
+			incrClassDTO.setItemsToNotificate(2);
+			incrClassDTO.setItemType(POINT_CONCEPT);
+			incrClassDTO.setPeriodName(PERIOD_NAME);
+			incrClassDTO.setGameId(GAME);
+
+			RequestBuilder builder = MockMvcRequestBuilders
+					.post("/model/game/" + GAME + "/incclassification")
+					.header("Content-Type", "application/json")
+					.content(mapper.writeValueAsString(incrClassDTO));
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void defineIncrementalNoGameId() {
+		try {
+			Game game = defineGame();
+			gameSrv.saveGameDefinition(game);
+			IncrementalClassificationDTO incrClassDTO = new IncrementalClassificationDTO();
+			incrClassDTO.setClassificationName("test");
+			incrClassDTO.setItemsToNotificate(2);
+			incrClassDTO.setItemType(POINT_CONCEPT);
+			incrClassDTO.setPeriodName(PERIOD_NAME);
+
+			RequestBuilder builder = MockMvcRequestBuilders
+					.post("/model/game/" + GAME + "/incclassification")
+					.header("Content-Type", "application/json")
+					.content(mapper.writeValueAsString(incrClassDTO));
 
 			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
 					.andExpect(MockMvcResultMatchers.status().is(200));

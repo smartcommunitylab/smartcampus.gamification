@@ -18,6 +18,7 @@ package eu.trentorise.game.managers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,8 +45,10 @@ public class QueueGameWorkflow extends GameWorkflow {
 	public void apply(String gameId, String actionId, String userId,
 			Map<String, Object> data, List<Object> factObjects) {
 		try {
-			executor.execute(new Execution(gameId, actionId, userId, data,
-					factObjects));
+			String executionId = UUID.randomUUID().toString();
+			long executionMoment = System.currentTimeMillis();
+			executor.execute(new Execution(gameId, actionId, userId,
+					executionId, executionMoment, data, factObjects));
 		} catch (Exception e) {
 			logger.error("Exception in game queue execution", e);
 		}
@@ -57,20 +60,27 @@ public class QueueGameWorkflow extends GameWorkflow {
 		private String gameId;
 		private String actionId;
 		private String userId;
+		private String executionId;
+		private long executionMoment;
 		private Map<String, Object> data;
 		private List<Object> factObjects;
 
 		public Execution(String gameId, String actionId, String userId,
+				String executionId, long executionMoment,
 				Map<String, Object> data, List<Object> factObjects) {
 			this.gameId = gameId;
 			this.actionId = actionId;
 			this.userId = userId;
+			this.executionId = executionId;
+			this.executionMoment = executionMoment;
 			this.data = data;
 			this.factObjects = factObjects;
+
 		}
 
 		public void run() {
-			workflowExec(gameId, actionId, userId, data, factObjects);
+			workflowExec(gameId, actionId, userId, executionId,
+					executionMoment, data, factObjects);
 		}
 
 	}

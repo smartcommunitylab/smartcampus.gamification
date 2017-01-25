@@ -3,6 +3,7 @@ package eu.trentorise.game.managers;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.junit.Assert;
@@ -83,7 +84,8 @@ public class ChallengeTest {
 		PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
 		// execution
-		p = engine.execute(GAME, p, ACTION, null, null);
+		p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+				System.currentTimeMillis(), null);
 
 		Assert.assertEquals(2, p.getState().size());
 		ChallengeConcept ch = null;
@@ -123,7 +125,8 @@ public class ChallengeTest {
 		PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
 		// execution
-		p = engine.execute(GAME, p, ACTION, null, null);
+		p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+				System.currentTimeMillis(), null);
 
 		Assert.assertEquals(3, p.getState().size());
 		ChallengeConcept ch = null;

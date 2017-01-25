@@ -21,3 +21,5 @@ i_m_a_long=12l
 i_m_a_long1=12L
 i_m_a_int=123333
 i_m_a_double=12.45
+
+array_const=value \, 12,parking,parkingValue3

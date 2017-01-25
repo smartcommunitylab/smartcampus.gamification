@@ -102,7 +102,8 @@ public class DroolsEngine implements GameEngine {
 	private KieServices kieServices = KieServices.Factory.get();
 
 	public PlayerState execute(String gameId, PlayerState state, String action,
-			Map<String, Object> data, List<Object> factObjects) {
+			Map<String, Object> data, String executionId, long executionMoment,
+			List<Object> factObjects) {
 
 		StopWatch stopWatch = LogManager.getLogger(
 				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
@@ -123,7 +124,8 @@ public class DroolsEngine implements GameEngine {
 				.getRepository().getDefaultReleaseId());
 
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
-		kSession.addEventListener(new LoggingRuleListener(state.getPlayerId()));
+		kSession.addEventListener(new LoggingRuleListener(gameId, state
+				.getPlayerId(), executionId, executionMoment));
 
 		List<Command> cmds = new ArrayList<Command>();
 
@@ -332,9 +334,19 @@ public class DroolsEngine implements GameEngine {
 				Iterator<String> constantsIter = constants.getKeys();
 				while (constantsIter.hasNext()) {
 					String constant = constantsIter.next();
-					kSession.setGlobal(constant,
-							numberConversion(constants.getProperty(constant)));
-					logger.debug("constant {} loaded", constant);
+					Object value = numberConversion(constants
+							.getProperty(constant));
+					kSession.setGlobal(constant, value);
+					if (logger.isDebugEnabled()) {
+						List<Object> listValue = constants.getList(constant);
+						if (listValue.isEmpty()) {
+							logger.debug("constant {} loaded: {}", constant,
+									value);
+						} else {
+							logger.debug("constant {} loaded: {}, size: {}",
+									constant, listValue, listValue.size());
+						}
+					}
 				}
 			} catch (ConfigurationException e) {
 				logger.error("constants loading exception");

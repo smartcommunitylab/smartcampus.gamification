@@ -3,6 +3,7 @@ package eu.trentorise.game.managers;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -84,7 +85,7 @@ public class ClassificationTaskTest {
 
 		g.setTasks(new HashSet<GameTask>());
 		IncrementalClassificationTask incClass = new IncrementalClassificationTask(
-				p, "period1", "newClassification");
+				p, "period1", "final classification green");
 		g.getTasks().add(incClass);
 		g = gameSrv.saveGameDefinition(g);
 		// temp and not complete fix. When GameSrv is initialized startupTask
@@ -108,7 +109,7 @@ public class ClassificationTaskTest {
 
 		g.setTasks(new HashSet<GameTask>());
 		IncrementalClassificationTask incClass = new IncrementalClassificationTask(
-				p, "period1", "newClassification", new TimeInterval(2,
+				p, "period1", "final classification green", new TimeInterval(2,
 						TimeUnit.MINUTE));
 		g.getTasks().add(incClass);
 		g = gameSrv.saveGameDefinition(g);
@@ -175,7 +176,8 @@ public class ClassificationTaskTest {
 		params.put("sustainable", true);
 		params.put("p+r", true);
 		params.put("park", "MANIFATTURA");
-		p = engine.execute(GAME, p, ACTION, params, null);
+		p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID()
+				.toString(), System.currentTimeMillis(), null);
 		Thread.sleep(WAIT_EXEC);
 		// expected 60 greenPoints and earned 10-point 50-point green badges
 		boolean found = false;

@@ -30,9 +30,8 @@ public class PermissionManager {
 	public boolean checkGamePermission(String user, String gameId) {
 		if (gameId != null) {
 			Game game = gameManager.loadGameDefinitionById(gameId);
-			boolean ownerCond = game.getOwner() == null
+			boolean gameCond = game == null || game.getOwner() == null
 					|| game.getOwner().equals(user);
-			boolean gameCond = game == null || ownerCond;
 			return user != null && gameCond;
 		}
 

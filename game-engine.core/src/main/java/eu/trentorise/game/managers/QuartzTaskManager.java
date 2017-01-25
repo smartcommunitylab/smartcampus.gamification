@@ -27,6 +27,7 @@ import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -146,43 +147,7 @@ public class QuartzTaskManager extends TaskDataManager {
 				jobFactory.afterPropertiesSet();
 				JobDetail job = jobFactory.getObject();
 
-				Trigger trigger = null;
-				if (task.getSchedule().getCronExpression() != null) {
-					CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
-					String cronExpression = task.getSchedule()
-							.getCronExpression();
-					// fix for version 2.2.1 of CronTrigger
-					triggerFactory
-							.setCronExpression(fixCronExpression(cronExpression));
-					triggerFactory.setName(task.getName());
-					triggerFactory.setGroup(ctx.getGameRefId());
-					triggerFactory.setJobDetail(job);
-					triggerFactory.afterPropertiesSet();
-					trigger = triggerFactory.getObject();
-				} else {
-					CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
-					calTrigger.setName(task.getName());
-					calTrigger.setGroup(ctx.getGameRefId());
-					logger.info("Scheduled startTime of task {} group {}: {} ",
-							task.getName(), ctx.getGameRefId(), task
-									.getSchedule().getStart());
-					Date calculatedStart = calculateStartDate(task
-							.getSchedule().getStart(), task.getSchedule()
-							.getPeriod());
-					logger.info(
-							"Set start task {} group {} on next triggerDate: {}",
-							task.getName(), ctx.getGameRefId(), calculatedStart);
-					calTrigger.setStartTime(new DateTime(calculatedStart)
-							.plusMillis(
-									getDelayInMillis(task.getSchedule()
-											.getDelay())).toDate());
-					Repeat repeat = extractRepeat((int) task.getSchedule()
-							.getPeriod());
-					calTrigger.setRepeatInterval(repeat.getInterval());
-					calTrigger.setRepeatIntervalUnit(repeat.getUnit());
-					trigger = calTrigger;
-
-				}
+				Trigger trigger = createTrigger(task, gameId, job);
 				scheduler.scheduleJob(job, trigger);
 				logger.info("Created and started job task {} in group {}",
 						task.getName(), ctx.getGameRefId());
@@ -196,9 +161,52 @@ public class QuartzTaskManager extends TaskDataManager {
 		}
 	}
 
+	private Trigger createTrigger(GameTask task, String gameId, JobDetail job) {
+		if (task.getSchedule().getCronExpression() != null) {
+			CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
+			String cronExpression = task.getSchedule().getCronExpression();
+			// fix for version 2.2.1 of CronTrigger
+			triggerFactory.setCronExpression(fixCronExpression(cronExpression));
+			triggerFactory.setName(task.getName());
+			triggerFactory.setGroup(gameId);
+			triggerFactory.setJobDetail(job);
+			try {
+				triggerFactory.afterPropertiesSet();
+			} catch (ParseException e) {
+				logger.error("Error creating task trigger", e);
+				return null;
+			}
+			return triggerFactory.getObject();
+		} else {
+			CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
+			calTrigger.setName(task.getName());
+			calTrigger.setGroup(gameId);
+			logger.info("Scheduled startTime of task {} group {}: {} ",
+					task.getName(), gameId, task.getSchedule().getStart());
+			Date calculatedStart = calculateStartDate(task.getSchedule()
+					.getStart(), task.getSchedule().getPeriod());
+			logger.info("Set start task {} group {} on next triggerDate: {}",
+					task.getName(), gameId, calculatedStart);
+			int delayMillis = getDelayInMillis(task.getSchedule().getDelay());
+			calTrigger.setStartTime(new DateTime(calculatedStart).plusMillis(
+					delayMillis).toDate());
+			if (delayMillis != 0) {
+				logger.info(
+						"Delay setted: {} millis, recalculated triggerDate: {}",
+						delayMillis, calTrigger.getStartTime());
+			}
+			Repeat repeat = extractRepeat((int) task.getSchedule().getPeriod());
+			calTrigger.setRepeatInterval(repeat.getInterval());
+			calTrigger.setRepeatIntervalUnit(repeat.getUnit());
+			return calTrigger;
+
+		}
+
+	}
+
 	private Date calculateStartDate(Date initialStart, long period) {
-		DateTime start = new DateTime(initialStart);
-		while (start.isBeforeNow()) {
+		LocalDateTime start = new LocalDateTime(initialStart);
+		while (start.toDateTime().isBeforeNow()) {
 			start = start.plusMillis((int) period);
 		}
 
@@ -414,7 +422,7 @@ public class QuartzTaskManager extends TaskDataManager {
 				return operationResult;
 			}
 		} catch (SchedulerException e) {
-			logger.error("Scheduler exception removing task");
+			logger.error("Scheduler exception removing task {}", task.getName());
 		}
 		return operationResult;
 	}
@@ -425,30 +433,7 @@ public class QuartzTaskManager extends TaskDataManager {
 		try {
 			job = scheduler.getJobDetail(new JobKey(task.getName(), gameId));
 			if (job != null) {
-				Trigger trigger = null;
-				if (task.getSchedule().getCronExpression() != null) {
-					CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
-					String cronExpression = task.getSchedule()
-							.getCronExpression();
-					// fix for version 2.2.1 of CronTrigger
-					triggerFactory
-							.setCronExpression(fixCronExpression(cronExpression));
-					triggerFactory.setName(task.getName());
-					triggerFactory.setGroup(gameId);
-					triggerFactory.setJobDetail(job);
-					triggerFactory.afterPropertiesSet();
-					trigger = triggerFactory.getObject();
-				} else {
-					CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
-					calTrigger.setName(task.getName());
-					calTrigger.setGroup(gameId);
-					calTrigger.setStartTime(task.getSchedule().getStart());
-					Repeat repeat = extractRepeat((int) task.getSchedule()
-							.getPeriod());
-					calTrigger.setRepeatInterval(repeat.getInterval());
-					calTrigger.setRepeatIntervalUnit(repeat.getUnit());
-					trigger = calTrigger;
-				}
+				Trigger trigger = createTrigger(task, gameId, job);
 				scheduler.rescheduleJob(new TriggerKey(task.getName(), gameId),
 						trigger);
 				logger.info("task {} updated", task.getName());
@@ -459,8 +444,6 @@ public class QuartzTaskManager extends TaskDataManager {
 		} catch (SchedulerException e) {
 			logger.error("SchedulerException: task {} not updated",
 					task.getName());
-		} catch (ParseException e) {
-			logger.error("ParseException: task {} not updated", task.getName());
 		}
 	}
 }

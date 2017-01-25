@@ -117,7 +117,8 @@ public class Converter {
 					if (gt instanceof GeneralClassificationTask) {
 						c = convertClassificationTask((GeneralClassificationTask) gt);
 					} else {
-						c = convertClassificationTask((IncrementalClassificationTask) gt);
+						c = convertClassificationTask(game.getId(),
+								(IncrementalClassificationTask) gt);
 					}
 					gDTO.getClassificationTask().add(c);
 				}
@@ -211,36 +212,35 @@ public class Converter {
 			Set<GameConcept> concepts = null;
 			if (t.getGameId() != null) {
 				concepts = gameSrv.readConceptInstances(t.getGameId());
+				PointConcept pc = null;
+				for (GameConcept gc : concepts) {
+					if (gc instanceof PointConcept
+							&& gc.getName().equals(t.getItemType())) {
+						pc = (PointConcept) gc;
+					}
+				}
+
+				if (StringUtils.isBlank(t.getDelayUnit())) {
+					task = new IncrementalClassificationTask(pc,
+							t.getPeriodName(), t.getClassificationName());
+				} else {
+					task = new IncrementalClassificationTask(pc,
+							t.getPeriodName(), t.getClassificationName(),
+							new TimeInterval(t.getDelayValue(),
+									TimeUnit.valueOf(t.getDelayUnit())));
+				}
+				task.setItemsToNotificate(t.getItemsToNotificate());
+				task.setName(t.getName());
 			} else {
 				logger.warn("Try to convert IncrementalClassificationDTO with null gameId field");
-				concepts = new HashSet<>();
+				throw new IllegalArgumentException("gameId is a required field");
 			}
-
-			PointConcept pc = null;
-			for (GameConcept gc : concepts) {
-				if (gc instanceof PointConcept
-						&& gc.getName().equals(t.getItemType())) {
-					pc = (PointConcept) gc;
-				}
-			}
-
-			if (StringUtils.isBlank(t.getDelayUnit())) {
-				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
-						t.getClassificationName());
-			} else {
-				task = new IncrementalClassificationTask(pc, t.getPeriodName(),
-						t.getClassificationName(), new TimeInterval(
-								t.getDelayValue(), TimeUnit.valueOf(t
-										.getDelayUnit())));
-			}
-			task.setItemsToNotificate(t.getItemsToNotificate());
-			task.setName(t.getName());
 		}
 		return task;
 	}
 
 	public IncrementalClassificationDTO convertClassificationTask(
-			IncrementalClassificationTask classification) {
+			String gameId, IncrementalClassificationTask classification) {
 		IncrementalClassificationDTO result = null;
 		if (classification != null) {
 			result = new IncrementalClassificationDTO();
@@ -249,7 +249,9 @@ public class Converter {
 			result.setPeriodName(classification.getPeriodName());
 			result.setItemsToNotificate(classification.getItemsToNotificate());
 			result.setName(classification.getName());
-			if (classification.getSchedule().getDelay() != null) {
+			result.setGameId(gameId);
+			if (classification.getSchedule() != null
+					&& classification.getSchedule().getDelay() != null) {
 				result.setDelayValue(classification.getSchedule().getDelay()
 						.getValue());
 				result.setDelayUnit(classification.getSchedule().getDelay()

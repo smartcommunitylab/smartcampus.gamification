@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,9 +51,6 @@ public class DemoGameFactory {
 	private static final String DEMO_GAME = "demo-game";
 	private static final String GAME_NAME = "demo-game";
 	private static final String GAME_OWNER = "sco_master";
-
-	private static final String WEEK_CLASS_CRONEXP = "0 0/15 * * * *";
-	private static final String FINAL_CLASS_CRONEXP = "0 5/15 * * * *";
 
 	public Game createGame(String gameId, String gameName, String gameOwner) {
 		if (gameName == null) {
@@ -93,12 +91,14 @@ public class DemoGameFactory {
 			// add tasks
 			game.setTasks(new HashSet<GameTask>());
 
+			String cronExpression = generateCronExp();
+
 			// final classifications
 			TaskSchedule weekClassSchedule = new TaskSchedule();
-			weekClassSchedule.setCronExpression(WEEK_CLASS_CRONEXP);
+			weekClassSchedule.setCronExpression(cronExpression);
 
 			TaskSchedule finalClassSchedule = new TaskSchedule();
-			finalClassSchedule.setCronExpression(FINAL_CLASS_CRONEXP);
+			finalClassSchedule.setCronExpression(cronExpression);
 
 			GeneralClassificationTask task1 = new GeneralClassificationTask(
 					finalClassSchedule, 3, "green leaves",
@@ -241,5 +241,13 @@ public class DemoGameFactory {
 				return null;
 			}
 		}
+	}
+
+	private String generateCronExp() {
+		// sample 0 2 0 4 JUN ? *
+		LocalDate now = LocalDate.now();
+
+		return String.format("0 0 0 %s %s ? %s", now.getDayOfMonth() - 1,
+				now.getMonthOfYear(), now.getYear());
 	}
 }

@@ -35,10 +35,10 @@ db.game
 																.getFullYear("YYYY")
 																+ "-"
 																+ addZeroBefore(d
-																		.getMonth())
+																		.getMonth() + 1)
 																+ "-"
 																+ addZeroBefore(d
-																		.getDay())
+																		.getDate())
 																+ "T"
 																+ addZeroBefore(d
 																		.getHours())

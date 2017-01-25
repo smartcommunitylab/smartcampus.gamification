@@ -33,9 +33,9 @@ db.playerState
 											var newKey = d.getFullYear("YYYY")
 													+ "-"
 													+ addZeroBefore(d
-															.getMonth())
+															.getMonth() + 1)
 													+ "-"
-													+ addZeroBefore(d.getDay())
+													+ addZeroBefore(d.getDate())
 													+ "T"
 													+ addZeroBefore(d
 															.getHours())

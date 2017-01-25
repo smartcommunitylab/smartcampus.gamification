@@ -1,4 +1,4 @@
-/** STEP 1 - MIGRATION SCRIPT **/
+/** STEP 1 - MIGRATION SCRIPT * */
 conn = new Mongo();
 db = conn.getDB('gamification-climb');
 
@@ -6,7 +6,8 @@ var modifiedConceptObjs = [];
 var conceptTypes = [];
 var transformedObject = {};
 
-print("editing " + db.playerState.find().count()+ " records inside playerState collection");
+print("editing " + db.playerState.find().count()
+		+ " records inside playerState collection");
 
 db.playerState
 		.find()
@@ -55,7 +56,8 @@ db.playerState
 
 				});
 
-print("transformed " + modifiedConceptObjs.length + " records are being saved in playerState collection");
+print("transformed " + modifiedConceptObjs.length
+		+ " records are being saved in playerState collection");
 
 /** update collection. * */
 modifiedConceptObjs.forEach(function(modifyConcept) {

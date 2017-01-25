@@ -1,6 +1,8 @@
 /** STEP 1 - MIGRATION SCRIPT * */
-conn = new Mongo();
-db = conn.getDB('gamification-climb');
+/**
+ * run as mongo NOME_DB step1-migration_2.js
+ * 
+ * */
 
 var modifiedConceptObjs = [];
 var conceptTypes = [];

@@ -1,6 +1,9 @@
 /** STEP 2 - MIGRATION SCRIPT INSTANCES* */
-conn = new Mongo();
-db = conn.getDB('gamification-climb');
+
+/**
+ * run as mongo NOME_DB step2-migration_2.js
+ * 
+ * */
 
 var possiblePeriods = [];
 var modifiedConceptObjs = [];

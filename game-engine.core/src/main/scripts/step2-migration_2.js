@@ -53,7 +53,7 @@ db.playerState
 											}
 
 											if (oldInstance.index != undefined) {
-												modifiedInstances[newKey]["index"] = oldInstance.index;
+												modifiedInstances[newKey]["index"] = new NumberInt(oldInstance.index);
 											}
 
 											if (oldInstance.end != undefined) {

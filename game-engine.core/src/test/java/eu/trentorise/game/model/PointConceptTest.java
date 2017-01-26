@@ -238,7 +238,8 @@ public class PointConceptTest {
 	@Test
 	public void instanceByNonExistingIndex() {
 		PointConcept p = setupPointConceptWithPeriods();
-		Assert.assertNull(p.getPeriodInstance("period2", 20));
+		Assert.assertEquals(new Double(0), p.getPeriodInstance("period2", 20)
+				.getScore());
 	}
 
 	@Test

@@ -22,9 +22,9 @@ db.playerState
 						for ( var i in pointConceptMap) {
 							var periods = pointConceptMap[i].obj.periods;
 
-							if (periods != undefined
-									&& periods["weekly"] != undefined) {
-								var instances = periods["weekly"].instances;
+							if (periods != undefined) {
+                Object.keys(periods).forEach(function(periodName) {
+								var instances = periods[periodName].instances;
 								var modifiedInstances = {};
 
 								/** make transformation * */
@@ -68,8 +68,9 @@ db.playerState
 										});
 
 								/** update transformation. * */
-								periods["weekly"].instances = modifiedInstances;
-							}
+								periods[periodName].instances = modifiedInstances;
+							});
+              }
 
 						}
 
@@ -89,7 +90,7 @@ modifiedConceptObjs.forEach(function(modifyConcept) {
 
 	var objectId = modifyConcept["id"];
 
-	db.playerState.update({
+  db.playerState.update({
 		_id : objectId
 	}, {
 		$set : {

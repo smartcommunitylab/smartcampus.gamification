@@ -22,9 +22,9 @@ db.game
 									if (c.type == "eu.trentorise.game.model.PointConcept") {
 										var periods = c.obj.periods;
 
-										if (periods != undefined
-												&& periods["weekly"] != undefined) {
-											var instances = periods["weekly"].instances;
+										if (periods != undefined) {
+                      Object.keys(periods).forEach(function(periodName) {
+											var instances = periods[periodName].instances;
 											var modifiedInstances = {};
 
 											instances
@@ -70,7 +70,8 @@ db.game
 
 													});
 
-											periods["weekly"].instances = modifiedInstances;
+											periods[periodName].instances = modifiedInstances;
+                      });
 										}
 									}
 

@@ -30,16 +30,25 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ClassificationBoard;
+import eu.trentorise.game.model.core.ClassificationPosition;
+import eu.trentorise.game.model.core.ClassificationType;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
@@ -59,6 +68,9 @@ public class PlayerManager implements PlayerService {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	private Map<String, StatePersistence> data;
+	
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
 	@PostConstruct
 	@SuppressWarnings("unused")
@@ -223,6 +235,106 @@ public class PlayerManager implements PlayerService {
 			String modelName, String instanceName, Map<String, Object> data, Date start, Date end) {
 		throw new UnsupportedOperationException("method not implemented");
 	}
+
+	@Override
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
+			String key, String gameId) {
+
+		ClassificationBoard classificationBoard = new ClassificationBoard();
+
+		/**
+		 * db.playerState.find( { "gameId":"57ac710fd4c6ac7872b0e7a1",
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00"
+		 * : { $exists: true } } ).sort( {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score"
+		 * : -1 } );
+		 */
+
+		Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
+		Criteria criteriaInstance = Criteria
+				.where("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName + ".instances." + key)
+				.exists(true);
+
+		Query query = new Query();
+		query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
+				+ ".instances." + key + ".score");
+		query.fields().include("playerId");
+
+		query.addCriteria(criteriaGameId);
+		query.addCriteria(criteriaInstance);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
+				+ periodName + ".instances." + key + ".score"));
+
+		/**
+		 * Query: { "gameId": "57ac710fd4c6ac7872b0e7a1",
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00"
+		 * : { "$exists": true } }, Fields: {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
+		 * : 1, "playerId": 1 }, Sort: {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
+		 * : -1 }
+		 */
+
+		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
+				eu.trentorise.game.model.mongo.PlayerState.class);
+
+		/** query for users not containing this concept **/
+		Criteria criteriaUserNotHavingConcept = Criteria
+				.where("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName + ".instances." + key)
+				.exists(false).and("playerId").exists(true).and("customData").exists(true).and("metadata").exists(true);
+		Query query2 = new Query();
+		query2.addCriteria(criteriaGameId);
+		query2.addCriteria(criteriaUserNotHavingConcept);
+
+		// List<eu.trentorise.game.model.mongo.PlayerState> pStates =
+		// mongoTemplate.find(query2,eu.trentorise.game.model.mongo.PlayerState.class);
+
+		pStates.addAll(mongoTemplate.find(query2, eu.trentorise.game.model.mongo.PlayerState.class));
+
+		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
+		for (eu.trentorise.game.model.mongo.PlayerState state : pStates) {
+			classification.add(new ClassificationPosition(state.getIncrementalScore(pointConceptName, periodName, key),
+					state.getPlayerId()));
+		}
+		classificationBoard.setBoard(classification);
+		classificationBoard.setType(ClassificationType.INCREMENTAL);
+		classificationBoard.setPointConceptName(pointConceptName);
+
+		return classificationBoard;
+	}
+
+	@Override
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType) {
+
+		ClassificationBoard classificationBoard = new ClassificationBoard();
+		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
+
+		/**
+		 * db.playerState.find({"gameId":"57ac710fd4c6ac7872b0e7a1"}).sort( {
+		 * "concepts.PointConcept.green leaves.obj.score": -1 } );
+		 */
+
+		Criteria general = Criteria.where("gameId").is(g.getId()).and("playerId").exists(true).and("customData")
+				.exists(true).and("metadata").exists(true);
+		Query query = new Query();
+		query.addCriteria(general);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept.green leaves.obj.score"));
+		query.fields().include("concepts.PointConcept.green leaves.obj.score");
+		query.fields().include("playerId");
+
+		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
+				eu.trentorise.game.model.mongo.PlayerState.class);
+
+		for (eu.trentorise.game.model.mongo.PlayerState state : pStates) {
+			classification.add(new ClassificationPosition(state.getGeneralItemScore(itemType), state.getPlayerId()));
+		}
+
+		classificationBoard.setBoard(classification);
+		classificationBoard.setType(ClassificationType.GENERAL);
+
+		return classificationBoard;
+	}
+
 }
 
 class ConceptPersistence {

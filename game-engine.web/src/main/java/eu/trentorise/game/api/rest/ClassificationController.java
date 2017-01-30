@@ -22,6 +22,7 @@ import eu.trentorise.game.core.ResourceNotFoundException;
 import eu.trentorise.game.managers.ClassificationFactory;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -32,6 +33,7 @@ import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
+import eu.trentorise.game.utils.ClassificationUtils;
 import eu.trentorise.game.utils.Converter;
 
 @RestController
@@ -473,6 +475,77 @@ public class ClassificationController {
 			return result;
 		}
 	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/incclassification/enhanced/{classificationId}")
+	public ClassificationBoard getIncrementalClassificationEnhanced(@PathVariable String gameId,
+			@PathVariable String classificationId, @RequestParam(defaultValue = "-1") long timestamp,
+			@RequestParam(defaultValue = "-1") int periodInstanceIndex) {
+
+		PeriodInstance instance = null;
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			classificationId = URLDecoder.decode(classificationId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
+		}
+
+		if (timestamp != -1 && periodInstanceIndex != -1) {
+			throw new IllegalArgumentException("Not use both timestamp and periodIndex parameters in the same request");
+		}
+
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		ClassificationBoard result = null;
+		if (g != null) {
+			if (g.getTasks() != null) {
+				for (GameTask gt : g.getTasks()) {
+					if (gt instanceof IncrementalClassificationTask && gt.getName().equals(classificationId)) {
+						IncrementalClassificationTask classificDef = (IncrementalClassificationTask) gt;
+						if (timestamp > -1) {
+							/** identify window instance. **/
+							instance = ClassificationUtils.retreiveWindow(g, classificDef.getPeriodName(),
+									classificDef.getPointConceptName(), timestamp, -1);
+
+						} else if (periodInstanceIndex > -1) {
+							/** identify window instance using period. **/
+							instance = ClassificationUtils.retreiveWindow(g, classificDef.getPeriodName(),
+									classificDef.getPointConceptName(), -1, periodInstanceIndex);
+
+						}
+
+						/** generate key. **/
+						if (instance != null) {
+
+							String key = ClassificationUtils.generateKey(instance);
+
+							/**
+							 * search in player state for all the that matches
+							 * classification + key.
+							 **/
+							result = playerSrv.classifyPlayerStatesWithKey(timestamp,
+									classificDef.getPointConceptName(), classificDef.getPeriodName(), key, g.getId());
+
+						}
+
+					}
+				}
+			}
+		} else {
+			throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+		}
+
+		if (result == null) {
+			throw new IllegalArgumentException(
+					String.format("classification %s not exist in game %s", classificationId, gameId));
+		} else {
+			return result;
+		}
+	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/classification/{classificationId}")
 	public ClassificationBoard getGeneralClassification(
@@ -504,6 +577,55 @@ public class ClassificationController {
 										playerSrv.loadStates(gameId),
 										classificationDefinition.getItemType())
 								.getClassificationBoard();
+
+					}
+				}
+			}
+		} else {
+			throw new IllegalArgumentException(String.format(
+					"game %s not exist", gameId));
+		}
+
+		if (result == null) {
+			throw new IllegalArgumentException(String.format(
+					"classification %s not exist in game %s", classificationId,
+					gameId));
+		} else {
+			return result;
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/classification/enhanced/{classificationId}")
+	public ClassificationBoard getGeneralClassificationEnhanced(
+			@PathVariable String gameId, @PathVariable String classificationId) {
+		try {
+			gameId = URLDecoder.decode(gameId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+		}
+
+		try {
+			classificationId = URLDecoder.decode(classificationId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(
+					"classificationId is not UTF-8 encoded");
+		}
+
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		ClassificationBoard result = null;
+		if (g != null) {
+			if (g.getTasks() != null) {
+				for (GameTask gt : g.getTasks()) {
+					if (gt instanceof GeneralClassificationTask
+							&& gt.getName().equals(classificationId)) {
+						GeneralClassificationTask classificationDefinition = (GeneralClassificationTask) gt;
+
+						result = playerSrv.classifyAllPlayerStates(g, classificationDefinition.getItemType());
+//								ClassificationFactory
+//								.createGeneralClassification(
+//										playerSrv.loadStates(gameId),
+//										classificationDefinition.getItemType())
+//								.getClassificationBoard();
 
 					}
 				}

@@ -497,7 +497,7 @@ public class ClassificationController {
 		}
 
 		if (timestamp != -1 && periodInstanceIndex != -1) {
-			throw new IllegalArgumentException("Not use both timestamp and periodIndex parameters in the same request");
+			throw new IllegalArgumentException("Cannot use both timestamp and periodIndex parameters in the same request");
 		}
 
 		Game g = gameSrv.loadGameDefinitionById(gameId);
@@ -538,12 +538,12 @@ public class ClassificationController {
 				}
 			}
 		} else {
-			throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+			throw new IllegalArgumentException(String.format("game %s does not exist", gameId));
 		}
 
 		if (result == null) {
 			throw new IllegalArgumentException(
-					String.format("classification %s not exist in game %s", classificationId, gameId));
+					String.format("classification %s does not exist in game %s", classificationId, gameId));
 		} else {
 			return result;
 		}
@@ -628,12 +628,12 @@ public class ClassificationController {
 				}
 			}
 		} else {
-			throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+			throw new IllegalArgumentException(String.format("game %s does not exist", gameId));
 		}
 
 		if (result == null) {
 			throw new IllegalArgumentException(
-					String.format("classification %s not exist in game %s", classificationId, gameId));
+					String.format("classification %s does not exist in game %s", classificationId, gameId));
 		} else {
 			return result;
 		}

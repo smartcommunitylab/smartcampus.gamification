@@ -44,9 +44,9 @@ public interface PlayerService {
 
 	public List<PlayerState> loadStates(String gameId, String playerId);
 
-	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType);
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, int pageNum, int pageSize);
 	
-	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId);
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, int pageNum, int pageSize);
 
 	public PlayerState saveState(PlayerState state);
 

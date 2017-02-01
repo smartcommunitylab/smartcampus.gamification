@@ -480,7 +480,8 @@ public class ClassificationController {
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/incclassification/enhanced/{classificationId}")
 	public ClassificationBoard getIncrementalClassificationEnhanced(@PathVariable String gameId,
 			@PathVariable String classificationId, @RequestParam(defaultValue = "-1") long timestamp,
-			@RequestParam(defaultValue = "-1") int periodInstanceIndex) {
+			@RequestParam(defaultValue = "-1") int periodInstanceIndex, @RequestParam(required = false) Integer start,
+			@RequestParam(required = false) Integer count) {
 
 		PeriodInstance instance = null;
 		try {
@@ -528,7 +529,8 @@ public class ClassificationController {
 							 * classification + key.
 							 **/
 							result = playerSrv.classifyPlayerStatesWithKey(timestamp,
-									classificDef.getPointConceptName(), classificDef.getPeriodName(), key, g.getId());
+									classificDef.getPointConceptName(), classificDef.getPeriodName(), key, g.getId(),
+									(start == null ? 0 : start), (count == null ? 20 : count));
 
 						}
 
@@ -596,8 +598,9 @@ public class ClassificationController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/classification/enhanced/{classificationId}")
-	public ClassificationBoard getGeneralClassificationEnhanced(
-			@PathVariable String gameId, @PathVariable String classificationId) {
+	public ClassificationBoard getGeneralClassificationEnhanced(@PathVariable String gameId,
+			@PathVariable String classificationId, @RequestParam(required = false) Integer start,
+			@RequestParam(required = false) Integer count) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -607,8 +610,7 @@ public class ClassificationController {
 		try {
 			classificationId = URLDecoder.decode(classificationId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException(
-					"classificationId is not UTF-8 encoded");
+			throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
 		}
 
 		Game g = gameSrv.loadGameDefinitionById(gameId);
@@ -616,29 +618,22 @@ public class ClassificationController {
 		if (g != null) {
 			if (g.getTasks() != null) {
 				for (GameTask gt : g.getTasks()) {
-					if (gt instanceof GeneralClassificationTask
-							&& gt.getName().equals(classificationId)) {
+					if (gt instanceof GeneralClassificationTask && gt.getName().equals(classificationId)) {
 						GeneralClassificationTask classificationDefinition = (GeneralClassificationTask) gt;
 
-						result = playerSrv.classifyAllPlayerStates(g, classificationDefinition.getItemType());
-//								ClassificationFactory
-//								.createGeneralClassification(
-//										playerSrv.loadStates(gameId),
-//										classificationDefinition.getItemType())
-//								.getClassificationBoard();
-
+						result = playerSrv.classifyAllPlayerStates(g, classificationDefinition.getItemType(),
+								(start == null ? 0 : start), (count == null ? 20 : count));
+		
 					}
 				}
 			}
 		} else {
-			throw new IllegalArgumentException(String.format(
-					"game %s not exist", gameId));
+			throw new IllegalArgumentException(String.format("game %s not exist", gameId));
 		}
 
 		if (result == null) {
-			throw new IllegalArgumentException(String.format(
-					"classification %s not exist in game %s", classificationId,
-					gameId));
+			throw new IllegalArgumentException(
+					String.format("classification %s not exist in game %s", classificationId, gameId));
 		} else {
 			return result;
 		}

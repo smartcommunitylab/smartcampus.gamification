@@ -238,7 +238,7 @@ public class PlayerManager implements PlayerService {
 
 	@Override
 	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
-			String key, String gameId) {
+			String key, String gameId, int pageNum, int pageSize) {
 
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 
@@ -304,7 +304,7 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType) {
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, int pageNum, int pageSize) {
 
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
@@ -316,11 +316,15 @@ public class PlayerManager implements PlayerService {
 
 		Criteria general = Criteria.where("gameId").is(g.getId()).and("playerId").exists(true).and("customData")
 				.exists(true).and("metadata").exists(true);
+		
 		Query query = new Query();
 		query.addCriteria(general);
 		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept.green leaves.obj.score"));
 		query.fields().include("concepts.PointConcept.green leaves.obj.score");
 		query.fields().include("playerId");
+		// pagination.
+		query.skip(pageNum * pageSize);
+		query.limit(pageSize);
 
 		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
 				eu.trentorise.game.model.mongo.PlayerState.class);

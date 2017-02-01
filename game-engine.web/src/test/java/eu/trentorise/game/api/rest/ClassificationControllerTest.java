@@ -219,6 +219,10 @@ public class ClassificationControllerTest {
 			JSONObject classificaitonBoard = (JSONObject) parser.parse(response.getResponse().getContentAsString());
 			JSONArray board = (JSONArray) classificaitonBoard.get("board");
 			Assert.assertEquals(board.size(), 1);
+			
+			/** test sorting result. **/
+			JSONObject score = (JSONObject) board.get(0);
+			Assert.assertEquals(score.get("score"), 12d);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -365,6 +369,10 @@ public class ClassificationControllerTest {
 			JSONObject classificaitonBoard = (JSONObject) parser.parse(response.getResponse().getContentAsString());
 			JSONArray board = (JSONArray) classificaitonBoard.get("board");
 			Assert.assertEquals(board.size(), 2);
+			
+			/** test sorting result. **/
+			JSONObject score = (JSONObject) board.get(0);
+			Assert.assertEquals(score.get("score"), 12d);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

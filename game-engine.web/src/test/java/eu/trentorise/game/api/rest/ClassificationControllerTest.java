@@ -34,7 +34,6 @@ import eu.trentorise.game.config.WebConfig;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.repo.GamePersistence;
@@ -163,6 +162,67 @@ public class ClassificationControllerTest {
 
 		} catch (Exception e) {
 			Assert.fail("exception " + e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testEnhancedIncrementalClassification() {
+		Game game = defineGame();
+
+		PlayerState state = new PlayerState(GAME, "player1");
+		PointConcept green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, new LocalDate().minusDays(1).toDate(), 24 * 60 * 60000);
+		green.setScore(10d);
+		game.getConcepts().add(green);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player2");
+		green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, new LocalDate().minusDays(1).toDate(), 24 * 60 * 60000);
+		green.setScore(12d);
+		game.getConcepts().add(green);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player3");
+		green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, new LocalDate().minusDays(1).toDate(), 24 * 60 * 60000);
+		green.setScore(4d);
+		game.getConcepts().add(green);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		gameSrv.saveGameDefinition(game);
+		try {
+			/** using period index. **/
+			RequestBuilder builder = MockMvcRequestBuilders
+					.get("/data/game/" + GAME + "/incclassification/enhanced/" + INC_CLASSIFICATION_NAME)
+					.param("periodInstanceIndex", "1");
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+
+		/** test pagination using time stamp. **/
+		try {
+			RequestBuilder builderP = MockMvcRequestBuilders
+					.get("/data/game/" + GAME + "/incclassification/enhanced/" + INC_CLASSIFICATION_NAME)
+					.param("timestamp", String.valueOf(System.currentTimeMillis())).param("start", "0")
+					.param("count", "1");
+
+			MvcResult response = mocker.perform(builderP).andReturn();
+			JSONParser parser = new JSONParser(-1);
+			JSONObject classificaitonBoard = (JSONObject) parser.parse(response.getResponse().getContentAsString());
+			JSONArray board = (JSONArray) classificaitonBoard.get("board");
+			Assert.assertEquals(board.size(), 1);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

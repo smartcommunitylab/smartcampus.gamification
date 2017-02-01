@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -33,6 +34,7 @@ import eu.trentorise.game.config.WebConfig;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.repo.GamePersistence;
@@ -42,6 +44,9 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
@@ -249,7 +254,66 @@ public class ClassificationControllerTest {
 			Assert.fail("exception " + e.getMessage());
 		}
 	}
+
+
+
+
+	@Test
+	public void testEnhancedGeneralClassification() {
+		Game game = defineGame();
+		gameSrv.saveGameDefinition(game);
+
+		PlayerState state = new PlayerState(GAME, "player1");
+		PointConcept green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(), 24 * 60 * 60000);
+		green.setScore(10d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player2");
+		green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(), 24 * 60 * 60000);
+		green.setScore(12d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+
+		state = new PlayerState(GAME, "player3");
+		green = new PointConcept("green leaves");
+		green.addPeriod("period1", new LocalDate().minusDays(1).toDate(), 24 * 60 * 60000);
+		green.setScore(4d);
+		state.getState().add(green);
+		playerSrv.saveState(state);
+		try {
+			RequestBuilder builder = MockMvcRequestBuilders
+					.get("/data/game/" + GAME + "/classification/enhanced/" + GEN_CLASSIFICATION_NAME);
+
+			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+					.andExpect(MockMvcResultMatchers.status().is(200));
+
+		} catch (Exception e) {
+			Assert.fail("exception " + e.getMessage());
+		}
+
+		/** test pagination. **/
+		try {
+			RequestBuilder builderP = MockMvcRequestBuilders
+					.get("/data/game/" + GAME + "/classification/enhanced/" + GEN_CLASSIFICATION_NAME)
+					.param("start", "0").param("count", "2");
+
+			MvcResult response = mocker.perform(builderP).andReturn();
+			JSONParser parser = new JSONParser(-1);
+			JSONObject classificaitonBoard = (JSONObject) parser.parse(response.getResponse().getContentAsString());
+			JSONArray board = (JSONArray) classificaitonBoard.get("board");
+			Assert.assertEquals(board.size(), 2);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }
+
 
 /**
  * Without @EnablaWebMvc MockMvc not work correctly to simulate controller

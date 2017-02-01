@@ -327,14 +327,16 @@ public class StatusUtils {
 										JSONObject pc_weekly = pc_period
 												.getJSONObject(key);
 										if (pc_weekly != null) {
-											JSONArray pc_instances = pc_weekly
-													.getJSONArray(PC_INSTANCES);
+											JSONObject pc_instances = pc_weekly
+													.getJSONObject(PC_INSTANCES);
+
 											if (pc_instances != null) {
-												boolean found = false;
-												for (int j = 0; (j < pc_instances
-														.length()) && !found; j++) {
+												Iterator<String> instancesKeys = pc_instances
+														.keys();
+												while (instancesKeys.hasNext()) {
 													JSONObject pc_instance = pc_instances
-															.getJSONObject(j);
+															.getJSONObject(instancesKeys
+																	.next());
 													int instance_score = (!pc_instance
 															.isNull(PC_SCORE)) ? pc_instance
 															.getInt(PC_SCORE)
@@ -350,7 +352,7 @@ public class StatusUtils {
 													if (timestamp >= instance_start
 															&& timestamp <= instance_end) {
 														score = instance_score;
-														found = true;
+														break;
 													}
 												}
 											}
@@ -358,16 +360,6 @@ public class StatusUtils {
 									}
 								}
 							}
-							/*
-							 * if(type.compareTo("test") == 0){ if(pc_name !=
-							 * null && pc_name.compareTo(PC_GREEN_LEAVES) == 0){
-							 * score = (!point.isNull(PC_SCORE)) ?
-							 * point.getInt(PC_SCORE) : null; } } else {
-							 * if(pc_name != null &&
-							 * pc_name.compareTo(PC_GREEN_LEAVES) == 0){ score =
-							 * (!point.isNull(PC_SCORE)) ?
-							 * point.getInt(PC_SCORE) : null; } }
-							 */
 						}
 					}
 				}
@@ -385,8 +377,8 @@ public class StatusUtils {
 	}
 
 	public List<ClassificationData> correctClassificationData(String allStatus,
-			Map<String, String> allNiks, /* List<Player> allNicks , */
-			Long timestamp, String type) throws JSONException {
+			Map<String, String> allNiks, Long timestamp, String type)
+			throws JSONException {
 		List<ClassificationData> playerClassList = new ArrayList<ClassificationData>();
 		if (allStatus != null && allStatus.compareTo("") != 0) {
 
@@ -445,15 +437,16 @@ public class StatusUtils {
 												JSONObject pc_weekly = pc_period
 														.getJSONObject(key);
 												if (pc_weekly != null) {
-													JSONArray pc_instances = pc_weekly
-															.getJSONArray(PC_INSTANCES);
+													JSONObject pc_instances = pc_weekly
+															.getJSONObject(PC_INSTANCES);
 													if (pc_instances != null) {
-														boolean found = false;
-														for (int z = 0; (z < pc_instances
-																.length())
-																&& !found; z++) {
+														Iterator<String> instancesKeys = pc_instances
+																.keys();
+														while (instancesKeys
+																.hasNext()) {
 															JSONObject pc_instance = pc_instances
-																	.getJSONObject(z);
+																	.getJSONObject(instancesKeys
+																			.next());
 															int instance_score = (!pc_instance
 																	.isNull(PC_SCORE)) ? pc_instance
 																	.getInt(PC_SCORE)
@@ -469,7 +462,7 @@ public class StatusUtils {
 															if (timestamp >= instance_start
 																	&& timestamp <= instance_end) {
 																score = instance_score;
-																found = true;
+																break;
 															}
 														}
 													}
@@ -477,19 +470,6 @@ public class StatusUtils {
 											}
 										}
 									}
-									/*
-									 * if(type.compareTo("test") == 0){
-									 * if(pc_name != null &&
-									 * pc_name.compareTo(PC_CLASSIFICATION_WEEK_TEST
-									 * + weekNum) == 0){ score =
-									 * (!point.isNull(PC_SCORE)) ?
-									 * point.getInt(PC_SCORE) : null; } } else {
-									 * if(pc_name != null &&
-									 * pc_name.compareTo(PC_CLASSIFICATION_WEEK
-									 * + weekNum) == 0){ score =
-									 * (!point.isNull(PC_SCORE)) ?
-									 * point.getInt(PC_SCORE) : null; } }
-									 */
 								}
 							}
 						}

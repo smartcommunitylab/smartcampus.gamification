@@ -304,8 +304,8 @@ public class PlayerManager implements PlayerService {
 		 * );
 		 */
 
-		Criteria general = Criteria.where("gameId").is(g.getId()).and("playerId").exists(true).and("customData")
-				.exists(true).and("metadata").exists(true);
+		Criteria general = Criteria.where("gameId").is(g.getId());
+		
 		Query query = new Query();
 		query.addCriteria(general);
 		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept.green leaves.obj.score"));

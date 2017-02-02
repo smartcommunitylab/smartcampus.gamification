@@ -243,53 +243,40 @@ public class PlayerManager implements PlayerService {
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 
 		/**
-		 * db.playerState.find( { "gameId":"57ac710fd4c6ac7872b0e7a1",
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00"
-		 * : { $exists: true } } ).sort( {
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score"
-		 * : -1 } );
+		 * db.playerState.find( { 
+		 * "gameId":"57ac710fd4c6ac7872b0e7a1"
+		 * }).
+		 * sort( {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score": -1 } );
 		 */
 
 		Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
-		Criteria criteriaInstance = Criteria
-				.where("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName + ".instances." + key)
-				.exists(true);
-
+	
 		Query query = new Query();
+		// criteria.
+		query.addCriteria(criteriaGameId);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
+				+ periodName + ".instances." + key + ".score"));
+		// fields in response.
 		query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
 				+ ".instances." + key + ".score");
 		query.fields().include("playerId");
-
-		query.addCriteria(criteriaGameId);
-		query.addCriteria(criteriaInstance);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
-				+ periodName + ".instances." + key + ".score"));
+		// pagination.
+		query.skip(pageNum * pageSize);
+		query.limit(pageSize);
 
 		/**
-		 * Query: { "gameId": "57ac710fd4c6ac7872b0e7a1",
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00"
-		 * : { "$exists": true } }, Fields: {
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
-		 * : 1, "playerId": 1 }, Sort: {
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
-		 * : -1 }
+		 * Query: {
+		 * "gameId": "57ac710fd4c6ac7872b0e7a1",
+		 * Fields: { // removed the concept check.
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score" : 1,
+		 * "playerId": 1 },
+		 * Sort: {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score" : -1 }
 		 */
 
 		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
 				eu.trentorise.game.model.mongo.PlayerState.class);
-
-		/** query for users not containing this concept **/
-		Criteria criteriaUserNotHavingConcept = Criteria
-				.where("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName + ".instances." + key)
-				.exists(false).and("playerId").exists(true).and("customData").exists(true).and("metadata").exists(true);
-		Query query2 = new Query();
-		query2.addCriteria(criteriaGameId);
-		query2.addCriteria(criteriaUserNotHavingConcept);
-
-		// List<eu.trentorise.game.model.mongo.PlayerState> pStates =
-		// mongoTemplate.find(query2,eu.trentorise.game.model.mongo.PlayerState.class);
-
-		pStates.addAll(mongoTemplate.find(query2, eu.trentorise.game.model.mongo.PlayerState.class));
 
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
 		for (eu.trentorise.game.model.mongo.PlayerState state : pStates) {
@@ -310,13 +297,15 @@ public class PlayerManager implements PlayerService {
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
 
 		/**
-		 * db.playerState.find({"gameId":"57ac710fd4c6ac7872b0e7a1"}).sort( {
-		 * "concepts.PointConcept.green leaves.obj.score": -1 } );
+		 * db.playerState.find(
+		 * {"gameId":"57ac710fd4c6ac7872b0e7a1"}).sort( 
+		 * {
+		 * "concepts.PointConcept.green leaves.obj.score": -1 }
+		 * );
 		 */
 
 		Criteria general = Criteria.where("gameId").is(g.getId()).and("playerId").exists(true).and("customData")
 				.exists(true).and("metadata").exists(true);
-		
 		Query query = new Query();
 		query.addCriteria(general);
 		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept.green leaves.obj.score"));
@@ -325,7 +314,7 @@ public class PlayerManager implements PlayerService {
 		// pagination.
 		query.skip(pageNum * pageSize);
 		query.limit(pageSize);
-
+		
 		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
 				eu.trentorise.game.model.mongo.PlayerState.class);
 

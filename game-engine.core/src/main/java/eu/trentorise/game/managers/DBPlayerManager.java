@@ -429,6 +429,11 @@ public class DBPlayerManager implements PlayerService {
 		Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
 	
 		Query query = new Query();
+		// criteria.
+		query.addCriteria(criteriaGameId);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
+				+ periodName + ".instances." + key + ".score"));
+		// fields in response.
 		query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
 				+ ".instances." + key + ".score");
 		query.fields().include("playerId");
@@ -436,10 +441,7 @@ public class DBPlayerManager implements PlayerService {
 		query.skip(pageNum * pageSize);
 		query.limit(pageSize);
 
-		query.addCriteria(criteriaGameId);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
-				+ periodName + ".instances." + key + ".score"));
-
+		
 		/**
 		 * Query: {
 		 * "gameId": "57ac710fd4c6ac7872b0e7a1",

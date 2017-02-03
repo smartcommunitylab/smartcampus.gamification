@@ -499,7 +499,7 @@ public class DBPlayerManager implements PlayerService {
 		for (StatePersistence state : pStates) {
 			classification.add(new ClassificationPosition(state.getGeneralItemScore(itemType), state.getPlayerId()));
 		}
-
+		classificationBoard.setPointConceptName(itemType);
 		classificationBoard.setBoard(classification);
 		classificationBoard.setType(ClassificationType.GENERAL);
 

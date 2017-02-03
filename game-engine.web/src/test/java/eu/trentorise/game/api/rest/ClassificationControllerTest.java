@@ -211,8 +211,8 @@ public class ClassificationControllerTest {
 		try {
 			RequestBuilder builderP = MockMvcRequestBuilders
 					.get("/data/game/" + GAME + "/incclassification/enhanced/" + INC_CLASSIFICATION_NAME)
-					.param("timestamp", String.valueOf(System.currentTimeMillis())).param("start", "0")
-					.param("count", "1");
+					.param("timestamp", String.valueOf(System.currentTimeMillis())).param("page", "1")
+					.param("size", "1");
 
 			MvcResult response = mocker.perform(builderP).andReturn();
 			JSONParser parser = new JSONParser(-1);
@@ -362,7 +362,7 @@ public class ClassificationControllerTest {
 		try {
 			RequestBuilder builderP = MockMvcRequestBuilders
 					.get("/data/game/" + GAME + "/classification/enhanced/" + GEN_CLASSIFICATION_NAME)
-					.param("start", "0").param("count", "2");
+					.param("page", "1").param("size", "2");
 
 			MvcResult response = mocker.perform(builderP).andReturn();
 			JSONParser parser = new JSONParser(-1);

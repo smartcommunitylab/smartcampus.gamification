@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-public class PlayerRepoCustomImpl implements PlayerRepoCustom {
+public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 	@Autowired
 	private MongoTemplate mongo;
 
 	@Override
-	public void customMethod(List<String> projectionFields) {
+	public List<StatePersistence> search(List<String> projectionFields) {
 		projectionFields = ListUtils.emptyIfNull(projectionFields);
 		Query query = new Query();
 		if (!projectionFields.isEmpty()) {
@@ -22,6 +22,6 @@ public class PlayerRepoCustomImpl implements PlayerRepoCustom {
 			}
 		}
 
-		mongo.find(query, StatePersistence.class);
+		return mongo.find(query, StatePersistence.class);
 	}
 }

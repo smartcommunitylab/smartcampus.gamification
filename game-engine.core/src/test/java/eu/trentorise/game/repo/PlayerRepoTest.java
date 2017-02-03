@@ -1,7 +1,9 @@
 package eu.trentorise.game.repo;
 
 import java.util.Arrays;
+import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +15,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.model.CustomData;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
@@ -36,11 +39,19 @@ public class PlayerRepoTest {
 	@Test
 	public void searchProjection() {
 		StatePersistence state = new StatePersistence(GAME, PLAYER);
+		state.setCustomData(new CustomData());
 		state.getCustomData().put("field", "value");
 		state.getCustomData().put("indicator", "indicator-value");
 		playerRepo.save(state);
 
-		playerRepo.customMethod(Arrays.asList("playerId", "field"));
+		List<StatePersistence> results = playerRepo.search(Arrays.asList(
+				"playerId", "customData.field"));
+		Assert.assertEquals(1, results.size());
+		Assert.assertNull(results.get(0).getGameId());
+		Assert.assertNotNull(results.get(0).getPlayerId());
+		Assert.assertNotNull(results.get(0).getId());
+		Assert.assertNotNull(results.get(0).getCustomData().get("field"));
+		Assert.assertNull(results.get(0).getCustomData().get("indicator"));
 
 	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -480,8 +481,7 @@ public class ClassificationController {
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/incclassification/enhanced/{classificationId}")
 	public ClassificationBoard getIncrementalClassificationEnhanced(@PathVariable String gameId,
 			@PathVariable String classificationId, @RequestParam(defaultValue = "-1") long timestamp,
-			@RequestParam(defaultValue = "-1") int periodInstanceIndex, @RequestParam(required = false) Integer start,
-			@RequestParam(required = false) Integer count) {
+			@RequestParam(defaultValue = "-1") int periodInstanceIndex, Pageable pageable) {
 
 		PeriodInstance instance = null;
 		try {
@@ -530,7 +530,7 @@ public class ClassificationController {
 							 **/
 							result = playerSrv.classifyPlayerStatesWithKey(timestamp,
 									classificDef.getPointConceptName(), classificDef.getPeriodName(), key, g.getId(),
-									(start == null ? 0 : start), (count == null ? 20 : count));
+									pageable);
 
 						}
 
@@ -599,8 +599,7 @@ public class ClassificationController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/classification/enhanced/{classificationId}")
 	public ClassificationBoard getGeneralClassificationEnhanced(@PathVariable String gameId,
-			@PathVariable String classificationId, @RequestParam(required = false) Integer start,
-			@RequestParam(required = false) Integer count) {
+			@PathVariable String classificationId, Pageable pageable) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -621,8 +620,7 @@ public class ClassificationController {
 					if (gt instanceof GeneralClassificationTask && gt.getName().equals(classificationId)) {
 						GeneralClassificationTask classificationDefinition = (GeneralClassificationTask) gt;
 
-						result = playerSrv.classifyAllPlayerStates(g, classificationDefinition.getItemType(),
-								(start == null ? 0 : start), (count == null ? 20 : count));
+						result = playerSrv.classifyAllPlayerStates(g, classificationDefinition.getItemType(), pageable);
 		
 					}
 				}

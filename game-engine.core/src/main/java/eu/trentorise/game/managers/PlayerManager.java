@@ -68,7 +68,7 @@ public class PlayerManager implements PlayerService {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	private Map<String, StatePersistence> data;
-	
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -92,17 +92,14 @@ public class PlayerManager implements PlayerService {
 
 	public PlayerState loadState(String gameId, String playerId, boolean upsert) {
 		String key = playerId + "-" + gameId;
-		return data.get(key) != null ? convert(mapper.convertValue(
-				data.get(key), StatePersistence.class)) : new PlayerState(
-				gameId, playerId);
+		return data.get(key) != null ? convert(mapper.convertValue(data.get(key), StatePersistence.class))
+				: new PlayerState(gameId, playerId);
 	}
 
 	public PlayerState saveState(PlayerState state) {
 
-		if (StringUtils.isBlank(state.getGameId())
-				|| StringUtils.isBlank(state.getPlayerId())) {
-			throw new IllegalArgumentException(
-					"field gameId and playerId of PlayerState MUST be set");
+		if (StringUtils.isBlank(state.getGameId()) || StringUtils.isBlank(state.getPlayerId())) {
+			throw new IllegalArgumentException("field gameId and playerId of PlayerState MUST be set");
 		}
 
 		String key = state.getPlayerId() + "-" + state.getGameId();
@@ -112,8 +109,7 @@ public class PlayerManager implements PlayerService {
 			mapper.writeValue(new FileOutputStream("playerstorage"), data);
 			return state;
 		} catch (Exception e) {
-			logger.error("Error persisting playerstorage {}: {}", e.getClass()
-					.getName(), e.getMessage());
+			logger.error("Error persisting playerstorage {}: {}", e.getClass().getName(), e.getMessage());
 			return null;
 		}
 	}
@@ -121,9 +117,8 @@ public class PlayerManager implements PlayerService {
 	private StatePersistence convert(PlayerState ps) {
 		StatePersistence sp = new StatePersistence();
 		for (GameConcept gc : ps.getState()) {
-			sp.getConcepts().add(
-					new ConceptPersistence(mapper.convertValue(gc, Map.class),
-							gc.getClass().getCanonicalName()));
+			sp.getConcepts()
+					.add(new ConceptPersistence(mapper.convertValue(gc, Map.class), gc.getClass().getCanonicalName()));
 		}
 
 		return sp;
@@ -134,10 +129,8 @@ public class PlayerManager implements PlayerService {
 		for (ConceptPersistence cp : sp.getConcepts()) {
 			GameConcept gc;
 			try {
-				gc = mapper.convertValue(cp.getConcept(),
-						(Class<? extends GameConcept>) Thread.currentThread()
-								.getContextClassLoader()
-								.loadClass(cp.getType()));
+				gc = mapper.convertValue(cp.getConcept(), (Class<? extends GameConcept>) Thread.currentThread()
+						.getContextClassLoader().loadClass(cp.getType()));
 				ps.getState().add(gc);
 			} catch (Exception e) {
 				logger.error("Problem to load class {}", cp.getType());
@@ -169,8 +162,7 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Page<PlayerState> loadStates(String gameId, String playerId,
-			Pageable pageable) {
+	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -212,8 +204,7 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public TeamState removeFromTeam(String gameId, String teamId,
-			String playerId) {
+	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -225,108 +216,30 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public PlayerState updateCustomData(String gameId, String playerId,
-			Map<String, Object> data) {
+	public PlayerState updateCustomData(String gameId, String playerId, Map<String, Object> data) {
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public ChallengeConcept assignChallenge(String gameId, String playerId,
-			String modelName, String instanceName, Map<String, Object> data, Date start, Date end) {
+	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName,
+			Map<String, Object> data, Date start, Date end) {
 		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
-			String key, String gameId, int pageNum, int pageSize) {
-
-		ClassificationBoard classificationBoard = new ClassificationBoard();
-
-		/**
-		 * db.playerState.find( { 
-		 * "gameId":"57ac710fd4c6ac7872b0e7a1"
-		 * }).
-		 * sort( {
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score": -1 } );
-		 */
-
-		Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
-	
-		Query query = new Query();
-		// criteria.
-		query.addCriteria(criteriaGameId);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
-				+ periodName + ".instances." + key + ".score"));
-		// fields in response.
-		query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
-				+ ".instances." + key + ".score");
-		query.fields().include("playerId");
-		// pagination.
-		query.skip(pageNum * pageSize);
-		query.limit(pageSize);
-
-		/**
-		 * Query: {
-		 * "gameId": "57ac710fd4c6ac7872b0e7a1",
-		 * Fields: { // removed the concept check.
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score" : 1,
-		 * "playerId": 1 },
-		 * Sort: {
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score" : -1 }
-		 */
-
-		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
-				eu.trentorise.game.model.mongo.PlayerState.class);
-
-		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
-		for (eu.trentorise.game.model.mongo.PlayerState state : pStates) {
-			classification.add(new ClassificationPosition(state.getIncrementalScore(pointConceptName, periodName, key),
-					state.getPlayerId()));
-		}
-		classificationBoard.setBoard(classification);
-		classificationBoard.setType(ClassificationType.INCREMENTAL);
-		classificationBoard.setPointConceptName(pointConceptName);
-
-		return classificationBoard;
+			String key, String gameId, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	@Override
-	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, int pageNum, int pageSize) {
 
-		ClassificationBoard classificationBoard = new ClassificationBoard();
-		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
-
-		/**
-		 * db.playerState.find(
-		 * {"gameId":"57ac710fd4c6ac7872b0e7a1"}).sort( 
-		 * {
-		 * "concepts.PointConcept.green leaves.obj.score": -1 }
-		 * );
-		 */
-
-		Criteria general = Criteria.where("gameId").is(g.getId());
-		
-		Query query = new Query();
-		query.addCriteria(general);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept.green leaves.obj.score"));
-		query.fields().include("concepts.PointConcept.green leaves.obj.score");
-		query.fields().include("playerId");
-		// pagination.
-		query.skip(pageNum * pageSize);
-		query.limit(pageSize);
-		
-		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
-				eu.trentorise.game.model.mongo.PlayerState.class);
-
-		for (eu.trentorise.game.model.mongo.PlayerState state : pStates) {
-			classification.add(new ClassificationPosition(state.getGeneralItemScore(itemType), state.getPlayerId()));
-		}
-
-		classificationBoard.setBoard(classification);
-		classificationBoard.setType(ClassificationType.GENERAL);
-
-		return classificationBoard;
-	}
 
 }
 

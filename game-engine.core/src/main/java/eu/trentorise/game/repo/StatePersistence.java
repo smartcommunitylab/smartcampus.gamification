@@ -124,4 +124,61 @@ public class StatePersistence {
 	public void setMetadata(Map<String, Object> metadata) {
 		this.metadata = metadata;
 	}
+	
+	public double getIncrementalScore(String pointConceptName, String periodName, String key) {
+		double score = 0;
+
+		if (this.getConcepts() != null && this.getConcepts().containsKey("PointConcept")) {
+
+			Map<String, GenericObjectPersistence> t0 = (Map<String, GenericObjectPersistence>) this.getConcepts()
+					.get("PointConcept");
+
+			if (t0 != null && t0.containsKey(pointConceptName)) {
+
+				GenericObjectPersistence t = t0.get(pointConceptName);
+
+				if (t.getObj() != null && t.getObj().containsKey("periods")) {
+
+					Map<Object, Object> t2 = (Map<Object, Object>) t.getObj().get("periods");
+
+					if (t2 != null && t2.containsKey(periodName)) {
+						Map<Object, Object> t3 = (Map<Object, Object>) t2.get(periodName);
+
+						if (t3 != null && t3.containsKey("instances")) {
+							Map<Object, Object> t4 = (Map<Object, Object>) t3.get("instances");
+
+							if (t4 != null && t4.containsKey(key)) {
+								Map<Object, Object> t5 = (Map<Object, Object>) t4.get(key);
+
+								if (t5 != null && t5.containsKey("score"))
+									score = (Double) t5.get("score");
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return score;
+	}
+
+	public double getGeneralItemScore(String itemType) {
+		double score = 0;
+
+		if (this.getConcepts() != null && this.getConcepts().containsKey("PointConcept")) {
+
+			Map<String, GenericObjectPersistence> t0 = (Map<String, GenericObjectPersistence>) this.getConcepts()
+					.get("PointConcept");
+
+			if (t0 != null && t0.containsKey(itemType)) {
+				GenericObjectPersistence t = t0.get(itemType);
+
+				if (t.getObj() != null && t.getObj().containsKey("score")) {
+					score = (Double) t.getObj().get("score");
+				}
+			}
+		}
+
+		return score;
+	}
 }

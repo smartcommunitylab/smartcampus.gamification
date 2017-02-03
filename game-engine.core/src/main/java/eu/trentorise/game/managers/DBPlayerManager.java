@@ -412,9 +412,12 @@ public class DBPlayerManager implements PlayerService {
 
 	}
 
-	@Override
+	
+//	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
+//			String key, String gameId, int pageNum, int pageSize) {
+	@Override	
 	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
-			String key, String gameId, int pageNum, int pageSize) {
+			String key, String gameId, Pageable pageable) {
 
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 
@@ -438,8 +441,7 @@ public class DBPlayerManager implements PlayerService {
 				+ ".instances." + key + ".score");
 		query.fields().include("playerId");
 		// pagination.
-		query.skip(pageNum * pageSize);
-		query.limit(pageSize);
+		query.with(pageable);
 
 		
 		/**
@@ -452,11 +454,11 @@ public class DBPlayerManager implements PlayerService {
 		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score" : -1 }
 		 */
 
-		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
-				eu.trentorise.game.model.mongo.PlayerState.class);
+		List<StatePersistence> pStates = mongoTemplate.find(query,
+				StatePersistence.class);
 
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
-		for (eu.trentorise.game.model.mongo.PlayerState state : pStates) {
+		for (StatePersistence state : pStates) {
 			classification.add(new ClassificationPosition(state.getIncrementalScore(pointConceptName, periodName, key),
 					state.getPlayerId()));
 		}
@@ -468,7 +470,7 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, int pageNum, int pageSize) {
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable) {
 
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
@@ -485,17 +487,16 @@ public class DBPlayerManager implements PlayerService {
 
 		Query query = new Query();
 		query.addCriteria(general);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept.green leaves.obj.score"));
-		query.fields().include("concepts.PointConcept.green leaves.obj.score");
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + itemType + ".obj.score"));
+		query.fields().include("concepts.PointConcept." + itemType + ".obj.score");
 		query.fields().include("playerId");
 		// pagination.
-		query.skip(pageNum * pageSize);
-		query.limit(pageSize);
+		query.with(pageable);
 		
-		List<eu.trentorise.game.model.mongo.PlayerState> pStates = mongoTemplate.find(query,
-				eu.trentorise.game.model.mongo.PlayerState.class);
+		List<StatePersistence> pStates = mongoTemplate.find(query,
+				StatePersistence.class);
 
-		for (eu.trentorise.game.model.mongo.PlayerState state : pStates) {
+		for (StatePersistence state : pStates) {
 			classification.add(new ClassificationPosition(state.getGeneralItemScore(itemType), state.getPlayerId()));
 		}
 

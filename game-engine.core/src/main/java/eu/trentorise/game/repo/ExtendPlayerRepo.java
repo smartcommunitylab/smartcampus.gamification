@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ExtendPlayerRepo {
 
-	public List<StatePersistence> search(List<String> projectionFields);
+	public List<StatePersistence> search(List<String> projectionIncludeFields, List<String> projectionExcludeFields);
 }

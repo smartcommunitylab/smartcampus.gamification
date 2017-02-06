@@ -13,13 +13,18 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	private MongoTemplate mongo;
 
 	@Override
-	public List<StatePersistence> search(List<String> projectionFields) {
-		projectionFields = ListUtils.emptyIfNull(projectionFields);
+	public List<StatePersistence> search(List<String> projectionIncludeFields,
+			List<String> projectionExcludeFields) {
+		projectionIncludeFields = ListUtils
+				.emptyIfNull(projectionIncludeFields);
+		projectionExcludeFields = ListUtils
+				.emptyIfNull(projectionExcludeFields);
 		Query query = new Query();
-		if (!projectionFields.isEmpty()) {
-			for (String projField : projectionFields) {
-				query.fields().include(projField);
-			}
+		for (String projField : projectionIncludeFields) {
+			query.fields().include(projField);
+		}
+		for (String projField : projectionExcludeFields) {
+			query.fields().exclude(projField);
 		}
 
 		return mongo.find(query, StatePersistence.class);

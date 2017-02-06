@@ -44,14 +44,32 @@ public class PlayerRepoTest {
 		state.getCustomData().put("indicator", "indicator-value");
 		playerRepo.save(state);
 
-		List<StatePersistence> results = playerRepo.search(Arrays.asList(
-				"playerId", "customData.field"));
+		List<StatePersistence> results = playerRepo.search(
+				Arrays.asList("playerId", "customData.field"), null);
 		Assert.assertEquals(1, results.size());
 		Assert.assertNull(results.get(0).getGameId());
 		Assert.assertNotNull(results.get(0).getPlayerId());
 		Assert.assertNotNull(results.get(0).getId());
 		Assert.assertNotNull(results.get(0).getCustomData().get("field"));
 		Assert.assertNull(results.get(0).getCustomData().get("indicator"));
-
 	}
+
+	@Test
+	public void searchProjectionNonExistentField() {
+		StatePersistence state = new StatePersistence(GAME, PLAYER);
+		state.setCustomData(new CustomData());
+		state.getCustomData().put("field", "value");
+		state.getCustomData().put("indicator", "indicator-value");
+		playerRepo.save(state);
+
+		List<StatePersistence> results = playerRepo.search(Arrays.asList(
+				"playerId", "customData.field", "noExistentField"), null);
+		Assert.assertEquals(1, results.size());
+		Assert.assertNull(results.get(0).getGameId());
+		Assert.assertNotNull(results.get(0).getPlayerId());
+		Assert.assertNotNull(results.get(0).getId());
+		Assert.assertNotNull(results.get(0).getCustomData().get("field"));
+		Assert.assertNull(results.get(0).getCustomData().get("indicator"));
+	}
+
 }

@@ -457,6 +457,12 @@ public class ClassificationController {
 									classificDef.getPointConceptName(), -1,
 									periodInstanceIndex);
 
+						} else {
+							/** retrieve current classification **/
+							instance = ClassificationUtils.retreiveWindow(g,
+									classificDef.getPeriodName(),
+									classificDef.getPointConceptName(),
+									System.currentTimeMillis(), -1);
 						}
 
 						/** generate key. **/

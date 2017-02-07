@@ -45,7 +45,7 @@ public class PlayerRepoTest {
 		playerRepo.save(state);
 
 		List<StatePersistence> results = playerRepo.search(
-				Arrays.asList("playerId", "customData.field"), null);
+				Arrays.asList("playerId", "customData.field"), null, null);
 		Assert.assertEquals(1, results.size());
 		Assert.assertNull(results.get(0).getGameId());
 		Assert.assertNotNull(results.get(0).getPlayerId());
@@ -63,13 +63,33 @@ public class PlayerRepoTest {
 		playerRepo.save(state);
 
 		List<StatePersistence> results = playerRepo.search(Arrays.asList(
-				"playerId", "customData.field", "noExistentField"), null);
+				"playerId", "customData.field", "noExistentField"), null, null);
 		Assert.assertEquals(1, results.size());
 		Assert.assertNull(results.get(0).getGameId());
 		Assert.assertNotNull(results.get(0).getPlayerId());
 		Assert.assertNotNull(results.get(0).getId());
 		Assert.assertNotNull(results.get(0).getCustomData().get("field"));
 		Assert.assertNull(results.get(0).getCustomData().get("indicator"));
+	}
+
+	@Test
+	public void projectionExcludefield() {
+		StatePersistence state = new StatePersistence(GAME, PLAYER);
+		state.setCustomData(new CustomData());
+		state.getCustomData().put("field", "value");
+		state.getCustomData().put("indicator", "indicator-value");
+		playerRepo.save(state);
+
+		List<StatePersistence> results = playerRepo.search(Arrays.asList(
+				"playerId", "customData.field", "noExistentField"), Arrays
+				.asList("id"), null);
+		Assert.assertEquals(1, results.size());
+		Assert.assertNull(results.get(0).getGameId());
+		Assert.assertNotNull(results.get(0).getPlayerId());
+		Assert.assertNotNull(results.get(0).getCustomData().get("field"));
+		Assert.assertNull(results.get(0).getCustomData().get("indicator"));
+
+		Assert.assertNull(results.get(0).getId());
 	}
 
 }

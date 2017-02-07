@@ -40,11 +40,14 @@ public class PlayerState {
 
 	private CustomData customData = new CustomData();
 
+	public PlayerState() {
+	}
+	
 	public PlayerState(String gameId, String playerId) {
 		this.playerId = playerId;
 		this.gameId = gameId;
 	}
-
+	
 	public PlayerState(StatePersistence statePersistence) {
 		if (statePersistence != null) {
 			ObjectMapper mapper = new ObjectMapper();

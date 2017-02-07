@@ -3,12 +3,12 @@ package eu.trentorise.game.api.rest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.core.ResourceNotFoundException;
-import eu.trentorise.game.managers.ClassificationFactory;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -32,6 +32,7 @@ import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
+import eu.trentorise.game.utils.ClassificationUtils;
 import eu.trentorise.game.utils.Converter;
 
 @RestController
@@ -230,7 +231,8 @@ public class ClassificationController {
 	 * INCREMENTAL CLASSIFICATIONS
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/incclassification")
-	public IncrementalClassificationDTO createIncremental(@PathVariable String gameId,
+	public IncrementalClassificationDTO createIncremental(
+			@PathVariable String gameId,
 			@RequestBody IncrementalClassificationDTO classification) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -347,8 +349,8 @@ public class ClassificationController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/incclassification/{classificationId}")
-	public IncrementalClassificationDTO readIncremental(@PathVariable String gameId,
-			@PathVariable String classificationId) {
+	public IncrementalClassificationDTO readIncremental(
+			@PathVariable String gameId, @PathVariable String classificationId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -395,11 +397,19 @@ public class ClassificationController {
 		}
 	}
 
+	/*
+	 * used requestParam (page and size) instead of Pageable to maintain
+	 * compatibility with API version < 2.2.0
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/incclassification/{classificationId}")
 	public ClassificationBoard getIncrementalClassification(
 			@PathVariable String gameId, @PathVariable String classificationId,
 			@RequestParam(defaultValue = "-1") long timestamp,
-			@RequestParam(defaultValue = "-1") int periodInstanceIndex) {
+			@RequestParam(defaultValue = "-1") int periodInstanceIndex,
+			@RequestParam(required = false, defaultValue = "-1") int page,
+			@RequestParam(required = false, defaultValue = "-1") int size) {
+
+		PeriodInstance instance = null;
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -415,7 +425,14 @@ public class ClassificationController {
 
 		if (timestamp != -1 && periodInstanceIndex != -1) {
 			throw new IllegalArgumentException(
-					"Not use both timestamp and periodIndex parameters in the same request");
+					"Cannot use both timestamp and periodIndex parameters in the same request");
+		}
+
+		// put this to maintain same behavior of pageable config ( start page
+		// from index 1)
+		if (page == 0) {
+			throw new IllegalArgumentException(
+					"Page index must not be less than zero!");
 		}
 
 		Game g = gameSrv.loadGameDefinitionById(gameId);
@@ -425,36 +442,46 @@ public class ClassificationController {
 				for (GameTask gt : g.getTasks()) {
 					if (gt instanceof IncrementalClassificationTask
 							&& gt.getName().equals(classificationId)) {
-						IncrementalClassificationTask classificationDefinition = (IncrementalClassificationTask) gt;
+						IncrementalClassificationTask classificDef = (IncrementalClassificationTask) gt;
 						if (timestamp > -1) {
-							result = ClassificationFactory
-									.createIncrementalClassification(
-											playerSrv.loadStates(gameId),
-											classificationDefinition
-													.getPointConceptName(),
-											classificationDefinition
-													.getPeriodName(),
-											new Date(timestamp))
-									.getClassificationBoard();
+							/** identify window instance. **/
+							instance = ClassificationUtils.retrieveWindow(g,
+									classificDef.getPeriodName(),
+									classificDef.getPointConceptName(),
+									timestamp, -1);
+
 						} else if (periodInstanceIndex > -1) {
-							result = ClassificationFactory
-									.createIncrementalClassification(
-											playerSrv.loadStates(gameId),
-											classificationDefinition
-													.getPointConceptName(),
-											classificationDefinition
-													.getPeriodName(),
-											periodInstanceIndex)
-									.getClassificationBoard();
+							/** identify window instance using period. **/
+							instance = ClassificationUtils.retrieveWindow(g,
+									classificDef.getPeriodName(),
+									classificDef.getPointConceptName(), -1,
+									periodInstanceIndex);
+
 						} else {
-							result = ClassificationFactory
-									.createIncrementalClassification(
-											playerSrv.loadStates(gameId),
-											classificationDefinition
-													.getPointConceptName(),
-											classificationDefinition
-													.getPeriodName())
-									.getClassificationBoard();
+							/** retrieve current classification **/
+							instance = ClassificationUtils.retrieveWindow(g,
+									classificDef.getPeriodName(),
+									classificDef.getPointConceptName(),
+									System.currentTimeMillis(), -1);
+						}
+
+						/** generate key. **/
+						if (instance != null) {
+
+							String key = ClassificationUtils
+									.generateKey(instance);
+
+							/**
+							 * search in player state for all the that matches
+							 * classification + key.
+							 **/
+
+							result = playerSrv.classifyPlayerStatesWithKey(
+									timestamp,
+									classificDef.getPointConceptName(),
+									classificDef.getPeriodName(), key,
+									g.getId(), createPageRequest(page, size));
+
 						}
 
 					}
@@ -462,21 +489,38 @@ public class ClassificationController {
 			}
 		} else {
 			throw new IllegalArgumentException(String.format(
-					"game %s not exist", gameId));
+					"game %s does not exist", gameId));
 		}
 
 		if (result == null) {
 			throw new IllegalArgumentException(String.format(
-					"classification %s not exist in game %s", classificationId,
-					gameId));
+					"classification %s does not exist in game %s",
+					classificationId, gameId));
 		} else {
 			return result;
 		}
 	}
 
+	private PageRequest createPageRequest(int page, int size) {
+		PageRequest pageRequest = null;
+		if (page != -1 && size != -1) {
+			// put page-1 to maintain same behavior of pageable config ( start
+			// page
+			// from index 1)
+			pageRequest = new PageRequest(page - 1, size);
+		}
+		return pageRequest;
+	}
+
+	/*
+	 * used requestParam (page and size) instead of Pageable to maintain
+	 * compatibility with API version < 2.2.0
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/classification/{classificationId}")
 	public ClassificationBoard getGeneralClassification(
-			@PathVariable String gameId, @PathVariable String classificationId) {
+			@PathVariable String gameId, @PathVariable String classificationId,
+			@RequestParam(required = false, defaultValue = "-1") int page,
+			@RequestParam(required = false, defaultValue = "-1") int size) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -490,6 +534,13 @@ public class ClassificationController {
 					"classificationId is not UTF-8 encoded");
 		}
 
+		// put this to maintain same behavior of pageable config ( start page
+		// from index 1)
+		if (page == 0) {
+			throw new IllegalArgumentException(
+					"Page index must not be less than zero!");
+		}
+
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		ClassificationBoard result = null;
 		if (g != null) {
@@ -498,25 +549,22 @@ public class ClassificationController {
 					if (gt instanceof GeneralClassificationTask
 							&& gt.getName().equals(classificationId)) {
 						GeneralClassificationTask classificationDefinition = (GeneralClassificationTask) gt;
-
-						result = ClassificationFactory
-								.createGeneralClassification(
-										playerSrv.loadStates(gameId),
-										classificationDefinition.getItemType())
-								.getClassificationBoard();
+						result = playerSrv.classifyAllPlayerStates(g,
+								classificationDefinition.getItemType(),
+								createPageRequest(page, size));
 
 					}
 				}
 			}
 		} else {
 			throw new IllegalArgumentException(String.format(
-					"game %s not exist", gameId));
+					"game %s does not exist", gameId));
 		}
 
 		if (result == null) {
 			throw new IllegalArgumentException(String.format(
-					"classification %s not exist in game %s", classificationId,
-					gameId));
+					"classification %s does not exist in game %s",
+					classificationId, gameId));
 		} else {
 			return result;
 		}

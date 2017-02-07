@@ -25,8 +25,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ClassificationBoard;
 
 @Service
 public interface PlayerService {
@@ -41,6 +43,10 @@ public interface PlayerService {
 			Pageable pageable);
 
 	public List<PlayerState> loadStates(String gameId, String playerId);
+
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable);
+	
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, Pageable pageable);
 
 	public PlayerState saveState(PlayerState state);
 
@@ -76,4 +82,5 @@ public interface PlayerService {
 
 	public ChallengeConcept assignChallenge(String gameId, String playerId,
 			String modelName, String instanceName, Map<String, Object> data,Date start, Date end);
+	
 }

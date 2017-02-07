@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -47,6 +48,9 @@ import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ClassificationBoard;
+import eu.trentorise.game.model.core.ClassificationPosition;
+import eu.trentorise.game.model.core.ClassificationType;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
@@ -407,4 +411,101 @@ public class DBPlayerManager implements PlayerService {
 		return challenge;
 
 	}
+
+	// public ClassificationBoard classifyPlayerStatesWithKey(long timestamp,
+	// String pointConceptName, String periodName,
+	// String key, String gameId, int pageNum, int pageSize) {
+	@Override
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp,
+			String pointConceptName, String periodName, String key,
+			String gameId, Pageable pageable) {
+
+		ClassificationBoard classificationBoard = new ClassificationBoard();
+
+		/**
+		 * db.playerState.find( { "gameId":"57ac710fd4c6ac7872b0e7a1" }). sort(
+		 * {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score"
+		 * : -1 } );
+		 */
+
+		Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
+
+		Query query = new Query();
+		// criteria.
+		query.addCriteria(criteriaGameId);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
+				+ pointConceptName + ".obj.periods." + periodName
+				+ ".instances." + key + ".score"));
+		// fields in response.
+		query.fields().include(
+				"concepts.PointConcept." + pointConceptName + ".obj.periods."
+						+ periodName + ".instances." + key + ".score");
+		query.fields().include("playerId");
+		// pagination.
+		query.with(pageable);
+
+		/**
+		 * Query: { "gameId": "57ac710fd4c6ac7872b0e7a1", Fields: { // removed
+		 * the concept check.
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
+		 * : 1, "playerId": 1 }, Sort: {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
+		 * : -1 }
+		 */
+
+		List<StatePersistence> pStates = mongoTemplate.find(query,
+				StatePersistence.class);
+
+		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
+		for (StatePersistence state : pStates) {
+			classification.add(new ClassificationPosition(state
+					.getIncrementalScore(pointConceptName, periodName, key),
+					state.getPlayerId()));
+		}
+		classificationBoard.setBoard(classification);
+		classificationBoard.setType(ClassificationType.INCREMENTAL);
+		classificationBoard.setPointConceptName(pointConceptName);
+
+		return classificationBoard;
+	}
+
+	@Override
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType,
+			Pageable pageable) {
+
+		ClassificationBoard classificationBoard = new ClassificationBoard();
+		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
+
+		/**
+		 * db.playerState.find( {"gameId":"57ac710fd4c6ac7872b0e7a1"}).sort( {
+		 * "concepts.PointConcept.green leaves.obj.score": -1 } );
+		 */
+
+		Criteria general = Criteria.where("gameId").is(g.getId());
+
+		Query query = new Query();
+		query.addCriteria(general);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
+				+ itemType + ".obj.score"));
+		query.fields().include(
+				"concepts.PointConcept." + itemType + ".obj.score");
+		query.fields().include("playerId");
+		// pagination.
+		query.with(pageable);
+
+		List<StatePersistence> pStates = mongoTemplate.find(query,
+				StatePersistence.class);
+
+		for (StatePersistence state : pStates) {
+			classification.add(new ClassificationPosition(state
+					.getGeneralItemScore(itemType), state.getPlayerId()));
+		}
+		classificationBoard.setPointConceptName(itemType);
+		classificationBoard.setBoard(classification);
+		classificationBoard.setType(ClassificationType.GENERAL);
+
+		return classificationBoard;
+	}
+
 }

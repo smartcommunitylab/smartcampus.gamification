@@ -10,6 +10,10 @@ public class MessageNotification extends Notification {
 	private String key;
 	private Map<String, Object> data = new HashMap<String, Object>();
 
+	public MessageNotification() {
+		super();
+	}
+
 	public MessageNotification(String gameId, String playerId, String messageKey) {
 		super(gameId, playerId);
 		key = messageKey;

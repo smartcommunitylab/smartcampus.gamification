@@ -19,6 +19,19 @@ Build steps:
 2. run command `bower install`
 3. follow instructions from step 2 of [the setup chapter of wiki](https://github.com/smartcommunitylab/smartcampus.gamification/wiki/Setup#build) 
 
+## Upgrades
+
+### v2.1.0 -> v2.2.0
+
+In version 2.2.0 we have changed the persistence model representation of playerState and pointConcept, so if you migrate from v2.1.0 or prior version to v.2.2.0 you have to run following script
+to you mongo database.
+
+```
+mongo DB_NAME game-engine.core/src/main/scripts/migration-db/2.1.0-to-2.2.0/step1.js
+mongo DB_NAME game-engine.core/src/main/scripts/migration-db/2.1.0-to-2.2.0/step2.js
+mongo DB_NAME game-engine.core/src/main/scripts/migration-db/2.1.0-to-2.2.0/step3.js
+```
+
 ## Documentation
 Read the project [wiki](https://github.com/smartcommunitylab/smartcampus.gamification/wiki) for all details about the project
 

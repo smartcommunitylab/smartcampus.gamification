@@ -223,6 +223,18 @@ public class ClassificationControllerTest {
 			/** test sorting result. **/
 			JSONObject score = (JSONObject) board.get(0);
 			Assert.assertEquals(score.get("score"), 12d);
+			
+			/** test pagination. **/
+			builderP = MockMvcRequestBuilders
+					.get("/data/game/" + GAME + "/incclassification/enhanced/" + INC_CLASSIFICATION_NAME)
+					.param("timestamp", String.valueOf(System.currentTimeMillis())).param("page", "2")
+					.param("size", "5");
+
+			response = mocker.perform(builderP).andReturn();
+			classificaitonBoard = (JSONObject) parser.parse(response.getResponse().getContentAsString());
+			board = (JSONArray) classificaitonBoard.get("board");
+			Assert.assertEquals(board.size(), 0);
+
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -373,6 +385,17 @@ public class ClassificationControllerTest {
 			/** test sorting result. **/
 			JSONObject score = (JSONObject) board.get(0);
 			Assert.assertEquals(score.get("score"), 12d);
+			
+			builderP = MockMvcRequestBuilders
+					.get("/data/game/" + GAME + "/classification/enhanced/" + GEN_CLASSIFICATION_NAME)
+					.param("page", "2").param("size", "5");
+			
+			response = mocker.perform(builderP).andReturn();
+			classificaitonBoard = (JSONObject) parser.parse(response.getResponse().getContentAsString());
+			board = (JSONArray) classificaitonBoard.get("board");
+			
+			Assert.assertEquals(board.size(), 0);
+			
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

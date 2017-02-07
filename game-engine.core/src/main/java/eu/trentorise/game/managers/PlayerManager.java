@@ -30,14 +30,9 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,8 +42,6 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ClassificationBoard;
-import eu.trentorise.game.model.core.ClassificationPosition;
-import eu.trentorise.game.model.core.ClassificationType;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
 
@@ -68,9 +61,6 @@ public class PlayerManager implements PlayerService {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	private Map<String, StatePersistence> data;
-
-	@Autowired
-	private MongoTemplate mongoTemplate;
 
 	@PostConstruct
 	@SuppressWarnings("unused")
@@ -92,14 +82,17 @@ public class PlayerManager implements PlayerService {
 
 	public PlayerState loadState(String gameId, String playerId, boolean upsert) {
 		String key = playerId + "-" + gameId;
-		return data.get(key) != null ? convert(mapper.convertValue(data.get(key), StatePersistence.class))
-				: new PlayerState(gameId, playerId);
+		return data.get(key) != null ? convert(mapper.convertValue(
+				data.get(key), StatePersistence.class)) : new PlayerState(
+				gameId, playerId);
 	}
 
 	public PlayerState saveState(PlayerState state) {
 
-		if (StringUtils.isBlank(state.getGameId()) || StringUtils.isBlank(state.getPlayerId())) {
-			throw new IllegalArgumentException("field gameId and playerId of PlayerState MUST be set");
+		if (StringUtils.isBlank(state.getGameId())
+				|| StringUtils.isBlank(state.getPlayerId())) {
+			throw new IllegalArgumentException(
+					"field gameId and playerId of PlayerState MUST be set");
 		}
 
 		String key = state.getPlayerId() + "-" + state.getGameId();
@@ -109,7 +102,8 @@ public class PlayerManager implements PlayerService {
 			mapper.writeValue(new FileOutputStream("playerstorage"), data);
 			return state;
 		} catch (Exception e) {
-			logger.error("Error persisting playerstorage {}: {}", e.getClass().getName(), e.getMessage());
+			logger.error("Error persisting playerstorage {}: {}", e.getClass()
+					.getName(), e.getMessage());
 			return null;
 		}
 	}
@@ -117,8 +111,9 @@ public class PlayerManager implements PlayerService {
 	private StatePersistence convert(PlayerState ps) {
 		StatePersistence sp = new StatePersistence();
 		for (GameConcept gc : ps.getState()) {
-			sp.getConcepts()
-					.add(new ConceptPersistence(mapper.convertValue(gc, Map.class), gc.getClass().getCanonicalName()));
+			sp.getConcepts().add(
+					new ConceptPersistence(mapper.convertValue(gc, Map.class),
+							gc.getClass().getCanonicalName()));
 		}
 
 		return sp;
@@ -129,8 +124,10 @@ public class PlayerManager implements PlayerService {
 		for (ConceptPersistence cp : sp.getConcepts()) {
 			GameConcept gc;
 			try {
-				gc = mapper.convertValue(cp.getConcept(), (Class<? extends GameConcept>) Thread.currentThread()
-						.getContextClassLoader().loadClass(cp.getType()));
+				gc = mapper.convertValue(cp.getConcept(),
+						(Class<? extends GameConcept>) Thread.currentThread()
+								.getContextClassLoader()
+								.loadClass(cp.getType()));
 				ps.getState().add(gc);
 			} catch (Exception e) {
 				logger.error("Problem to load class {}", cp.getType());
@@ -162,7 +159,8 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable) {
+	public Page<PlayerState> loadStates(String gameId, String playerId,
+			Pageable pageable) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -204,7 +202,8 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
+	public TeamState removeFromTeam(String gameId, String teamId,
+			String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -216,30 +215,30 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public PlayerState updateCustomData(String gameId, String playerId, Map<String, Object> data) {
+	public PlayerState updateCustomData(String gameId, String playerId,
+			Map<String, Object> data) {
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName,
-			Map<String, Object> data, Date start, Date end) {
+	public ChallengeConcept assignChallenge(String gameId, String playerId,
+			String modelName, String instanceName, Map<String, Object> data,
+			Date start, Date end) {
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType,
+			Pageable pageable) {
+		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
-			String key, String gameId, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp,
+			String pointConceptName, String periodName, String key,
+			String gameId, Pageable pageable) {
+		throw new UnsupportedOperationException("method not implemented");
 	}
-
-
 
 }
 

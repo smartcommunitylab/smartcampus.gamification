@@ -412,46 +412,46 @@ public class DBPlayerManager implements PlayerService {
 
 	}
 
-	
-//	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
-//			String key, String gameId, int pageNum, int pageSize) {
-	@Override	
-	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
-			String key, String gameId, Pageable pageable) {
+	// public ClassificationBoard classifyPlayerStatesWithKey(long timestamp,
+	// String pointConceptName, String periodName,
+	// String key, String gameId, int pageNum, int pageSize) {
+	@Override
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp,
+			String pointConceptName, String periodName, String key,
+			String gameId, Pageable pageable) {
 
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 
 		/**
-		 * db.playerState.find( { 
-		 * "gameId":"57ac710fd4c6ac7872b0e7a1"
-		 * }).
-		 * sort( {
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score": -1 } );
+		 * db.playerState.find( { "gameId":"57ac710fd4c6ac7872b0e7a1" }). sort(
+		 * {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score"
+		 * : -1 } );
 		 */
 
 		Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
-	
+
 		Query query = new Query();
 		// criteria.
 		query.addCriteria(criteriaGameId);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
-				+ periodName + ".instances." + key + ".score"));
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
+				+ pointConceptName + ".obj.periods." + periodName
+				+ ".instances." + key + ".score"));
 		// fields in response.
-		query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
-				+ ".instances." + key + ".score");
+		query.fields().include(
+				"concepts.PointConcept." + pointConceptName + ".obj.periods."
+						+ periodName + ".instances." + key + ".score");
 		query.fields().include("playerId");
 		// pagination.
 		query.with(pageable);
 
-		
 		/**
-		 * Query: {
-		 * "gameId": "57ac710fd4c6ac7872b0e7a1",
-		 * Fields: { // removed the concept check.
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score" : 1,
-		 * "playerId": 1 },
-		 * Sort: {
-		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score" : -1 }
+		 * Query: { "gameId": "57ac710fd4c6ac7872b0e7a1", Fields: { // removed
+		 * the concept check.
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
+		 * : 1, "playerId": 1 }, Sort: {
+		 * "concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-03T00:00:00.score"
+		 * : -1 }
 		 */
 
 		List<StatePersistence> pStates = mongoTemplate.find(query,
@@ -459,7 +459,8 @@ public class DBPlayerManager implements PlayerService {
 
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
 		for (StatePersistence state : pStates) {
-			classification.add(new ClassificationPosition(state.getIncrementalScore(pointConceptName, periodName, key),
+			classification.add(new ClassificationPosition(state
+					.getIncrementalScore(pointConceptName, periodName, key),
 					state.getPlayerId()));
 		}
 		classificationBoard.setBoard(classification);
@@ -470,34 +471,35 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable) {
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType,
+			Pageable pageable) {
 
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
 
 		/**
-		 * db.playerState.find(
-		 * {"gameId":"57ac710fd4c6ac7872b0e7a1"}).sort( 
-		 * {
-		 * "concepts.PointConcept.green leaves.obj.score": -1 }
-		 * );
+		 * db.playerState.find( {"gameId":"57ac710fd4c6ac7872b0e7a1"}).sort( {
+		 * "concepts.PointConcept.green leaves.obj.score": -1 } );
 		 */
 
 		Criteria general = Criteria.where("gameId").is(g.getId());
 
 		Query query = new Query();
 		query.addCriteria(general);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + itemType + ".obj.score"));
-		query.fields().include("concepts.PointConcept." + itemType + ".obj.score");
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
+				+ itemType + ".obj.score"));
+		query.fields().include(
+				"concepts.PointConcept." + itemType + ".obj.score");
 		query.fields().include("playerId");
 		// pagination.
 		query.with(pageable);
-		
+
 		List<StatePersistence> pStates = mongoTemplate.find(query,
 				StatePersistence.class);
 
 		for (StatePersistence state : pStates) {
-			classification.add(new ClassificationPosition(state.getGeneralItemScore(itemType), state.getPlayerId()));
+			classification.add(new ClassificationPosition(state
+					.getGeneralItemScore(itemType), state.getPlayerId()));
 		}
 		classificationBoard.setPointConceptName(itemType);
 		classificationBoard.setBoard(classification);

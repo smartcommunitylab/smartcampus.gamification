@@ -13,7 +13,7 @@ public class ClassificationUtils {
 
 	static DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-	public static PeriodInstance retreiveWindow(Game g, String periodIdentifier, String pointClassificationName,
+	public static PeriodInstance retrieveWindow(Game g, String periodIdentifier, String pointClassificationName,
 			long moment, int instanceIndex) {
 
 		PeriodInstance periodInstance = null;

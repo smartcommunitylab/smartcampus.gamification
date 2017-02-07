@@ -445,21 +445,21 @@ public class ClassificationController {
 						IncrementalClassificationTask classificDef = (IncrementalClassificationTask) gt;
 						if (timestamp > -1) {
 							/** identify window instance. **/
-							instance = ClassificationUtils.retreiveWindow(g,
+							instance = ClassificationUtils.retrieveWindow(g,
 									classificDef.getPeriodName(),
 									classificDef.getPointConceptName(),
 									timestamp, -1);
 
 						} else if (periodInstanceIndex > -1) {
 							/** identify window instance using period. **/
-							instance = ClassificationUtils.retreiveWindow(g,
+							instance = ClassificationUtils.retrieveWindow(g,
 									classificDef.getPeriodName(),
 									classificDef.getPointConceptName(), -1,
 									periodInstanceIndex);
 
 						} else {
 							/** retrieve current classification **/
-							instance = ClassificationUtils.retreiveWindow(g,
+							instance = ClassificationUtils.retrieveWindow(g,
 									classificDef.getPeriodName(),
 									classificDef.getPointConceptName(),
 									System.currentTimeMillis(), -1);

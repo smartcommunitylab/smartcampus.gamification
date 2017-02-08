@@ -66,6 +66,7 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 			});
 		}
 		
+		$scope.deleteFieldInEditTab = function (idxC, idxF) {
 			var deletedField = $scope.savedChallenges[idxC].variables[idxF];
 			$scope.savedChallenges[idxC].variables.splice(idxF, 1);
 		}

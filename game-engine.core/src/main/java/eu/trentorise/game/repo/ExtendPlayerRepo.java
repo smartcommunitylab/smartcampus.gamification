@@ -1,8 +1,12 @@
 package eu.trentorise.game.repo;
 
-import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import eu.trentorise.game.model.core.SearchCriteria;
 
 public interface ExtendPlayerRepo {
 
-	public List<StatePersistence> search(List<String> projectionIncludeFields, List<String> projectionExcludeFields);
+	public Page<StatePersistence> search(SearchCriteria searchCriteria, Pageable pageable);
 }

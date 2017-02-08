@@ -247,7 +247,7 @@
 			</form>
 			<table class="table table-striped table-bordered">
 				<tbody>
-					<tr data-ng-repeat="model in savedChallenges">
+					<tr data-ng-repeat="model in savedChallenges track by $index">
 						<td>{{model.name}}
 							<button type="button"
 								class="btn btn-danger btn-circle pull-right"
@@ -256,9 +256,16 @@
 								<span class="glyphicon glyphicon-trash"></span>
 							</button>
 							<button type="button"
+								class="btn btn-primary btn-circle pull-right"
+								data-ng-click="hideEditMode = !hideEditMode; hide=true"
+								uib-tooltip="{{'labels:tool_edit' | i18next}}"
+								style="margin-right: 1em;">
+								<span class="glyphicon glyphicon-pencil"></span>
+							</button>
+							<button type="button"
 								class="btn btn-warning btn-circle pull-right"
 								style="margin-right: 1em;"
-								data-ng-click="hide = !hide;showPoint($index)"
+								data-ng-click="hide = !hide;showPoint($index);hideEditMode=true"
 								uib-tooltip="{{'labels:tool_view' | i18next}}">
 								<span class="glyphicon"
 									ng-class="{'glyphicon-eye-open': hide, 'glyphicon-eye-close': !hide}"></span>
@@ -266,15 +273,48 @@
 							<div class="row rule">
 								<div uib-collapse="hide" class="col-md-12">
 									<table class="table table-striped table-bordered">
-									<tr ng-repeat="v in model.variables">
-									<td>{{v}}</td>
-									</tr>
+										<tr ng-repeat="v in model.variables">
+											<td>{{v}}</td>
+										</tr>
 									</table>
+								</div>
+								<div uib-collapse="hideEditMode" class="col-md-12">
+									<div>
+										<input type="text" class="form-control text"
+											id="newChallengeInstanceName" ng-model="fieldName" required
+											autofocus />
+										<button type="button" class="btn btn-success"
+											data-ng-click="addFieldInEditMode($index, fieldName)"
+											uib-tooltip="{{'labels:tool_add' | i18next}}"
+											ng-disabled="disabled">Add field</button>
+									</div>
+									<table class="table table-striped table-bordered">
+										<tr ng-repeat="v in model.variables track by $index">
+											<td><input type="text" class="table-bordered"
+												ng-model="v"></input>
+												<button type="button"
+													class="btn btn-danger btn-circle pull-right"
+													data-ng-click="deleteFieldInEditTab($parent.$index, $index)"
+													uib-tooltip="{{'labels:tool_delete' | i18next}}">
+													<span class="glyphicon glyphicon-trash"></span>
+												</button></td>
+										</tr>
+									</table>
+									<div>
+										<button class="btn btn-success pull-right"
+											style="margin-right: 2px;"
+											data-ng-click="editChallenge($index)">{{'labels:btn_ok'|
+											i18next}}</button>
+										<button class="btn btn-danger pull-right"
+											style="margin-right: 2px;"
+											data-ng-click="hideEditMode=!hideEditMode">{{'labels:btn_cancel'|
+											i18next}}</button>
+
+									</div>
 								</div>
 							</div>
 						</td>
 					</tr>
-
 				</tbody>
 			</table>
 		</div>

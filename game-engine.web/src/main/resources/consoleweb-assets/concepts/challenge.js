@@ -3,16 +3,14 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 		$scope.hideEditMode = true;
 		
 		$scope.savedChallenges = [];
+		// maintain copy of challenge objects in edit mode.
+		$scope.editedChallenges = [];
 		
-		$scope.refreshChallengeModel = function() {
-			gamesFactory.readChallengeModels($rootScope.currentGameId).then(function (result) {
+		gamesFactory.readChallengeModels($rootScope.currentGameId).then(function (result) {
 				$scope.savedChallenges = result;
 			}, function (message) {
 				console.log("Challenge model failure");
 			});
-		}
-		
-		$scope.refreshChallengeModel();
 		
 		$scope.addField = function() {
 			$scope.challenge.fields.push('');
@@ -67,13 +65,21 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 			return {name:'', fields: []};
 		}
 		
+		$scope.initViewMode = function (challengeId) {
+			if ($scope.editedChallenges[challengeId]) {
+				if ($scope.editedChallenges[challengeId].variables.length != $scope.savedChallenges[challengeId].variables.length) {
+					$scope.savedChallenges[challengeId] = angular.copy($scope.editedChallenges[challengeId]); 
+				} 
+			}
+		}
+		
 		$scope.editChallenge = function (challengeId) {
 			var modelToEdit = $scope.savedChallenges[challengeId];
 			modelToEdit.fields = $scope.savedChallenges[challengeId].variables;
 			gamesFactory.saveChallengeModel($rootScope.currentGameId, modelToEdit).then(function (instance) {
 				console.log("Challenge: " + challengeId +  " edited successfully");
 				$scope.challenge.fieldEdited = true;
-				$scope.refreshChallengeModel();
+				$scope.editedChallenges[challengeId] = angular.copy($scope.savedChallenges[challengeId]);
 				$timeout(function () {
 					$scope.challenge.fieldEdited = false;
 				}, 4000);
@@ -83,12 +89,17 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 		}
 		
 		$scope.deleteFieldInEditTab = function (idxC, idxF) {
+			if ($scope.editedChallenges[idxC] == null) {
+				$scope.editedChallenges[idxC] = angular.copy($scope.savedChallenges[idxC]);
+			}
 			var deletedField = $scope.savedChallenges[idxC].variables[idxF];
 			$scope.savedChallenges[idxC].variables.splice(idxF, 1);
-			$scope.refreshChallengeModel();
 		}
 		
 		$scope.addFieldInEditMode = function(idxC, fieldName) {
+			if ($scope.editedChallenges[idxC] == null) {
+				$scope.editedChallenges[idxC] = angular.copy($scope.savedChallenges[idxC]); 
+			}
 			$scope.savedChallenges[idxC].variables.push(fieldName);
 		};
 	});

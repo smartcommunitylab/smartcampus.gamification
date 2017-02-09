@@ -261,7 +261,7 @@
 							</button>
 							<button type="button"
 								class="btn btn-primary btn-circle pull-right"
-								data-ng-click="hideEditMode = !hideEditMode; hide=true; refreshChallengeModel()"
+								data-ng-click="hideEditMode = !hideEditMode; hide=true"
 								uib-tooltip="{{'labels:tool_edit' | i18next}}"
 								style="margin-right: 1em;">
 								<span class="glyphicon glyphicon-pencil"></span>
@@ -269,7 +269,7 @@
 							<button type="button"
 								class="btn btn-warning btn-circle pull-right"
 								style="margin-right: 1em;"
-								data-ng-click="hide = !hide;showPoint($index);hideEditMode=true; refreshChallengeModel()"
+								data-ng-click="hide = !hide;showPoint($index);hideEditMode=true; initViewMode($index)"
 								uib-tooltip="{{'labels:tool_view' | i18next}}">
 								<span class="glyphicon"
 									ng-class="{'glyphicon-eye-open': hide, 'glyphicon-eye-close': !hide}"></span>

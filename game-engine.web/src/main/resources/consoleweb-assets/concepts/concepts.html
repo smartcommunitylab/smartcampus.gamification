@@ -246,6 +246,7 @@
 				</div>
 				<div class="col-md-12 text-center">
 					<uib-alert ng-if="!!challenge.fieldEdited" type="success" close="challenge.fieldEdited = false">{{'messages:msg_challenge_edited' | i18next}}</uib-alert>
+					<uib-alert ng-if="!!challenge.deleted" type="success" close="challenge.deleted = false">{{'messages:msg_challenge_deleted' | i18next}}</uib-alert>
 				</div>
 			</form>
 			<table class="table table-striped table-bordered">

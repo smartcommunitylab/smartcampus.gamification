@@ -53,6 +53,14 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 					}
 				}
 			});
+			
+			modalInstance.result.then(function () {
+				$scope.challenge.deleted = true;
+				
+				$timeout(function () {
+					$scope.challenge.deleted = false;
+				}, 4000);
+			});
 		}
 
 		function initChallenge() {
@@ -66,6 +74,9 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 				console.log("Challenge: " + challengeId +  " edited successfully");
 				$scope.challenge.fieldEdited = true;
 				$scope.refreshChallengeModel();
+				$timeout(function () {
+					$scope.challenge.fieldEdited = false;
+				}, 4000);
 			}, function (message) {
 				console.log("Challenge modification failure");
 			});

@@ -273,8 +273,8 @@
 							<div class="row rule">
 								<div uib-collapse="hide" class="col-md-12">
 									<table class="table table-striped table-bordered">
-										<tr ng-repeat="v in model.variables">
-											<td>{{v}}</td>
+										<tr ng-repeat="variable in model.variables track by $index">
+											<td>{{model.variables[$index]}}</td>
 										</tr>
 									</table>
 								</div>
@@ -289,9 +289,9 @@
 											ng-disabled="disabled">Add field</button>
 									</div>
 									<table class="table table-striped table-bordered">
-										<tr ng-repeat="v in model.variables track by $index">
+										<tr ng-repeat="variable in model.variables track by $index">
 											<td><input type="text" class="table-bordered"
-												ng-model="v"></input>
+												ng-model="model.variables[$index]"></input>
 												<button type="button"
 													class="btn btn-danger btn-circle pull-right"
 													data-ng-click="deleteFieldInEditTab($parent.$index, $index)"

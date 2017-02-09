@@ -4,12 +4,15 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 		
 		$scope.savedChallenges = [];
 		
-		gamesFactory.readChallengeModels($rootScope.currentGameId).then(function (result) {
-			$scope.savedChallenges = result;
-		}, function (message) {
-			console.log("Challenge model failure");
-		});
+		$scope.refreshChallengeModel = function() {
+			gamesFactory.readChallengeModels($rootScope.currentGameId).then(function (result) {
+				$scope.savedChallenges = result;
+			}, function (message) {
+				console.log("Challenge model failure");
+			});
+		}
 		
+		$scope.refreshChallengeModel();
 		
 		$scope.addField = function() {
 			$scope.challenge.fields.push('');
@@ -61,6 +64,8 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 			modelToEdit.fields = $scope.savedChallenges[challengeId].variables;
 			gamesFactory.saveChallengeModel($rootScope.currentGameId, modelToEdit).then(function (instance) {
 				console.log("Challenge: " + challengeId +  " edited successfully");
+				$scope.challenge.fieldEdited = true;
+				$scope.refreshChallengeModel();
 			}, function (message) {
 				console.log("Challenge modification failure");
 			});
@@ -69,6 +74,7 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 		$scope.deleteFieldInEditTab = function (idxC, idxF) {
 			var deletedField = $scope.savedChallenges[idxC].variables[idxF];
 			$scope.savedChallenges[idxC].variables.splice(idxF, 1);
+			$scope.refreshChallengeModel();
 		}
 		
 		$scope.addFieldInEditMode = function(idxC, fieldName) {

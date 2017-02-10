@@ -1,12 +1,27 @@
 package eu.trentorise.game.model.core;
 
 import java.util.List;
+import java.util.Map;
 
 public class SearchCriteria {
+	private Map<String, Object> rawQueryObj;
+	private String rawQuery;
+	private List<QueryPart> query;
 	private List<SortItem> sortItems;
 	private Projection projection;
 
-	public SearchCriteria(List<SortItem> sortItems, Projection projection) {
+	public SearchCriteria(Map<String, Object> rawQuery, List<QueryPart> query,
+			List<SortItem> sortItems, Projection projection) {
+		this.rawQueryObj = rawQuery;
+		this.query = query;
+		this.sortItems = sortItems;
+		this.projection = projection;
+	}
+
+	public SearchCriteria(String rawQuery, List<QueryPart> query,
+			List<SortItem> sortItems, Projection projection) {
+		this.rawQuery = rawQuery;
+		this.query = query;
 		this.sortItems = sortItems;
 		this.projection = projection;
 	}
@@ -20,6 +35,24 @@ public class SearchCriteria {
 
 	public Projection getProjection() {
 		return projection;
+	}
+
+	public static class QueryPart {
+		private String field;
+		private String clause;
+
+		public QueryPart(String field, String clause) {
+			this.field = field;
+			this.clause = clause;
+		}
+
+		public String getField() {
+			return field;
+		}
+
+		public String getClause() {
+			return clause;
+		}
 	}
 
 	public static class Projection {
@@ -38,6 +71,18 @@ public class SearchCriteria {
 		public List<String> getExcludeFields() {
 			return exclude;
 		}
+	}
+
+	public List<QueryPart> getQuery() {
+		return query;
+	}
+
+	public String getRawQuery() {
+		return rawQuery;
+	}
+
+	public Map<String, Object> getRawQueryObj() {
+		return rawQueryObj;
 	}
 
 }

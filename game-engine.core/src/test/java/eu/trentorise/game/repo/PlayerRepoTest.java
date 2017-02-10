@@ -1,7 +1,9 @@
 package eu.trentorise.game.repo;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +16,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
@@ -51,8 +56,8 @@ public class PlayerRepoTest {
 		playerRepo.save(state);
 
 		Page<StatePersistence> resultPaged = playerRepo.search(
-				new SearchCriteria(null, new Projection(Arrays.asList(
-						"playerId", "customData.field"), null)), null);
+				new SearchCriteria("", null, null, new Projection(Arrays
+						.asList("playerId", "customData.field"), null)), null);
 		List<StatePersistence> results = resultPaged.getContent();
 		Assert.assertEquals(1, results.size());
 		Assert.assertNull(results.get(0).getGameId());
@@ -71,9 +76,9 @@ public class PlayerRepoTest {
 		playerRepo.save(state);
 
 		Page<StatePersistence> resultPaged = playerRepo.search(
-				new SearchCriteria(null, new Projection(Arrays.asList(
-						"playerId", "customData.field",
-						"notExistentField.field"), null)), null);
+				new SearchCriteria("", null, null, new Projection(Arrays
+						.asList("playerId", "customData.field",
+								"notExistentField.field"), null)), null);
 		List<StatePersistence> results = resultPaged.getContent();
 		Assert.assertEquals(1, results.size());
 		Assert.assertNull(results.get(0).getGameId());
@@ -92,9 +97,9 @@ public class PlayerRepoTest {
 		playerRepo.save(state);
 
 		Page<StatePersistence> resultPaged = playerRepo.search(
-				new SearchCriteria(null, new Projection(Arrays.asList(
-						"playerId", "customData.field"), Arrays.asList("id"))),
-				null);
+				new SearchCriteria("", null, null, new Projection(Arrays
+						.asList("playerId", "customData.field"), Arrays
+						.asList("id"))), null);
 		List<StatePersistence> results = resultPaged.getContent();
 		Assert.assertEquals(1, results.size());
 		Assert.assertNull(results.get(0).getGameId());
@@ -139,6 +144,8 @@ public class PlayerRepoTest {
 		}
 
 		SearchCriteria criteria = new SearchCriteria(
+				"",
+				null,
 				Arrays.asList(new SortItem("customData.field", Direction.DESC)),
 				null);
 		Page<StatePersistence> results = playerRepo.search(criteria, null);
@@ -161,7 +168,7 @@ public class PlayerRepoTest {
 			playerRepo.save(state);
 		}
 
-		SearchCriteria criteria = new SearchCriteria(Arrays.asList(
+		SearchCriteria criteria = new SearchCriteria("", null, Arrays.asList(
 				new SortItem("customData.field", Direction.DESC), new SortItem(
 						"customData.points", Direction.ASC)), null);
 		Page<StatePersistence> results = playerRepo.search(criteria, null);
@@ -173,6 +180,625 @@ public class PlayerRepoTest {
 		Assert.assertEquals("value-1",
 				states.get(1).getCustomData().get("field"));
 		Assert.assertEquals(30, states.get(1).getCustomData().get("points"));
+	}
+
+	// @Test
+	// public void query() {
+	// for (int i = 0; i < 5; i++) {
+	// StatePersistence state = new StatePersistence(GAME, "100" + i);
+	// state.setCustomData(new CustomData());
+	// state.getCustomData().put("field", "value-" + i % 2);
+	// state.getCustomData().put("points", 10 * i);
+	// playerRepo.save(state);
+	// }
+	// SearchCriteria criteria = new SearchCriteria(null,
+	// Arrays.asList(new QueryPart("customData.points", "{$gt: 20}")),
+	// null, null);
+	// Page<StatePersistence> results = playerRepo.search(criteria, null);
+	// List<StatePersistence> states = results.getContent();
+	// Assert.assertEquals(2, states.size());
+	// }
+
+	// @Test(expected = IllegalArgumentException.class)
+	// public void queryInvalidOperator() {
+	// for (int i = 0; i < 5; i++) {
+	// StatePersistence state = new StatePersistence(GAME, "100" + i);
+	// state.setCustomData(new CustomData());
+	// state.getCustomData().put("field", "value-" + i % 2);
+	// state.getCustomData().put("points", 10 * i);
+	// playerRepo.save(state);
+	// }
+	// SearchCriteria criteria = new SearchCriteria(
+	// "",
+	// Arrays.asList(new QueryPart("customData.points", "{$gth: 20}")),
+	// null, null);
+	// Page<StatePersistence> results = playerRepo.search(criteria, null);
+	// List<StatePersistence> states = results.getContent();
+	// Assert.assertEquals(5, states.size());
+	// }
+
+	// @Test
+	// public void queryNotExistField() {
+	// for (int i = 0; i < 5; i++) {
+	// StatePersistence state = new StatePersistence(GAME, "100" + i);
+	// state.setCustomData(new CustomData());
+	// state.getCustomData().put("field", "value-" + i % 2);
+	// state.getCustomData().put("points", 10 * i);
+	// playerRepo.save(state);
+	// }
+	//
+	// SearchCriteria criteria = new SearchCriteria("",
+	// Arrays.asList(new QueryPart("custData.points", "{$gt: 20}")),
+	// null, null);
+	// Page<StatePersistence> results = playerRepo.search(criteria, null);
+	// List<StatePersistence> states = results.getContent();
+	// Assert.assertEquals(0, states.size());
+	// }
+
+	@Test
+	public void rawQueryAllStatesWithBikeSharingGreaterThanZero() {
+		setupEnv();
+
+		Map<String, Object> obj = new HashMap<String, Object>();
+		Map<String, Object> obj1 = new HashMap<String, Object>();
+		obj1.put("$gt", 0);
+		obj.put("concepts.PointConcept.BikeSharing_Km.obj.score", obj1);
+
+		SearchCriteria criteria = new SearchCriteria(obj, null, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(2, states.size());
 
 	}
+
+	@Test
+	public void rawQueryAllStatesWithPeriodicGreenLeavesLessThan1000() {
+		setupEnv();
+		Map<String, Object> obj = new HashMap<String, Object>();
+		Map<String, Object> obj1 = new HashMap<String, Object>();
+		obj1.put("$lt", 1000);
+		obj.put("concepts.PointConcept.green leaves.obj.periods.weekly.instances.2016-09-10T00:00:00.score",
+				obj1);
+		SearchCriteria criteria = new SearchCriteria(obj, null, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(1, states.size());
+
+	}
+
+	@Test
+	public void rawQuery() {
+		setupEnv();
+
+		String rawQuery = "{custData.points : {$gt: 20}}";
+		SearchCriteria criteria = new SearchCriteria(rawQuery, null, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(0, states.size());
+	}
+
+	@Test
+	public void rawQueryObjAboutNotExistingField() {
+		setupEnv();
+
+		Map<String, Object> obj = new HashMap<String, Object>();
+		Map<String, Object> obj1 = new HashMap<String, Object>();
+		obj1.put("$gt", 20);
+		obj.put("custData.points", obj1);
+		SearchCriteria criteria = new SearchCriteria(obj, null, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(0, states.size());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void rawQueryObjWithInvalidOperator() {
+		setupEnv();
+		Map<String, Object> obj = new HashMap<String, Object>();
+		Map<String, Object> obj1 = new HashMap<String, Object>();
+		obj1.put("$gth", 20);
+		obj.put("score", obj1);
+		SearchCriteria criteria = new SearchCriteria(obj, null, null, null);
+		playerRepo.search(criteria, null);
+	}
+
+	@Test
+	public void rawQueryObjEmpty() {
+		setupEnv();
+		Map<String, Object> obj = new HashMap<String, Object>();
+		SearchCriteria criteria = new SearchCriteria(obj, null, null, null);
+		playerRepo.search(criteria, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(3, states.size());
+	}
+
+	/*
+	 * {point: [{bikesharing_km:{$gt:0}}]} query mongo ->
+	 * {"concepts.PointConcept.BikeSharing_Km.obj.score":{$gt:0}}
+	 * 
+	 * permit raw query (as simple object) and query
+	 */
+
+	private void setupEnv() {
+		String state1 = "{\n"
+				+ "    \"gameId\" : \"repo-game\",\n"
+				+ "    \"playerId\" : \"24153\",\n"
+				+ "    \"concepts\" : {\n"
+				+ "        \"BadgeCollectionConcept\" : {\n"
+				+ "            \"public transport aficionado\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"public transport aficionado\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"5_pt_trip\", \n"
+				+ "                        \"10_pt_trip\", \n"
+				+ "                        \"25_pt_trip\", \n"
+				+ "                        \"50_pt_trip\", \n"
+				+ "                        \"100_pt_trip\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            },\n"
+				+ "            \"leaderboard top 3\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"leaderboard top 3\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"1st_of_the_week\", \n"
+				+ "                        \"2nd_of_the_week\", \n"
+				+ "                        \"3rd_of_the_week\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            },\n"
+				+ "            \"green leaves\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"green leaves\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"50_point_green\", \n"
+				+ "                        \"100_point_green\", \n"
+				+ "                        \"200_point_green\", \n"
+				+ "                        \"400_point_green\", \n"
+				+ "                        \"800_point_green\", \n"
+				+ "                        \"1500_point_green\", \n"
+				+ "                        \"2500_point_green\", \n"
+				+ "                        \"5000_point_green\", \n"
+				+ "                        \"10000_point_green\", \n"
+				+ "                        \"20000_point_green\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            }\n"
+				+ "        },\n"
+				+ "        \"PointConcept\" : {\n"
+				+ "            \"BikeSharing_Km\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"BikeSharing_Km\",\n"
+				+ "                    \"score\" : 0.0,\n"
+				+ "                    \"periods\" : {\n"
+				+ "                        \"weekly\" : {\n"
+				+ "                            \"start\" : 1472853600000,\n"
+				+ "                            \"period\" : 604800000,\n"
+				+ "                            \"identifier\" : \"weekly\",\n"
+				+ "                            \"instances\" : {}\n"
+				+ "                        }\n"
+				+ "                    }\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.PointConcept\"\n"
+				+ "            },\n"
+				+ "            \"green leaves\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"green leaves\",\n"
+				+ "                    \"score\" : 21020.0,\n"
+				+ "                    \"periods\" : {\n"
+				+ "                        \"weekly\" : {\n"
+				+ "                            \"start\" : 1472853600000,\n"
+				+ "                            \"period\" : 604800000,\n"
+				+ "                            \"identifier\" : \"weekly\",\n"
+				+ "                            \"instances\" : {\n"
+				+ "                                \"2016-09-03T00:00:00\" : {\n"
+				+ "                                    \"score\" : 0.0,\n"
+				+ "                                    \"index\" : 0,\n"
+				+ "                                    \"end\" : 1473458400000,\n"
+				+ "                                    \"start\" : 1472853600000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-10T00:00:00\" : {\n"
+				+ "                                    \"score\" : 720.0,\n"
+				+ "                                    \"index\" : 1,\n"
+				+ "                                    \"end\" : 1474063200000,\n"
+				+ "                                    \"start\" : 1473458400000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-17T00:00:00\" : {\n"
+				+ "                                    \"score\" : 2962.0,\n"
+				+ "                                    \"index\" : 2,\n"
+				+ "                                    \"end\" : 1474668000000,\n"
+				+ "                                    \"start\" : 1474063200000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-24T00:00:00\" : {\n"
+				+ "                                    \"score\" : 2590.0,\n"
+				+ "                                    \"index\" : 3,\n"
+				+ "                                    \"end\" : 1475272800000,\n"
+				+ "                                    \"start\" : 1474668000000\n"
+				+ "                                }\n"
+				+ "                            }\n"
+				+ "                        }\n"
+				+ "                    }\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.PointConcept\"\n"
+				+ "            }\n"
+				+ "        },\n"
+				+ "        \"ChallengeConcept\" : {\n"
+				+ "            \"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"name\" : \"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056\",\n"
+				+ "                    \"modelName\" : \"absoluteIncrement\",\n"
+				+ "                    \"fields\" : {\n"
+				+ "                        \"bonusScore\" : 150.0,\n"
+				+ "                        \"periodName\" : \"weekly\",\n"
+				+ "                        \"bonusPointType\" : \"green leaves\",\n"
+				+ "                        \"counterName\" : \"green leaves\",\n"
+				+ "                        \"target\" : 1200.0\n"
+				+ "                    },\n"
+				+ "                    \"start\" : 1478300400000,\n"
+				+ "                    \"end\" : 1478905200000,\n"
+				+ "                    \"completed\" : true,\n"
+				+ "                    \"dateCompleted\" : 1478888496028\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.ChallengeConcept\"\n"
+				+ "            },\n"
+				+ "            \"w2_zero_impact_8_eeec1d4d-74a8-47fd-b506-d0cc53008cd7\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"name\" : \"w2_zero_impact_8_eeec1d4d-74a8-47fd-b506-d0cc53008cd7\",\n"
+				+ "                    \"modelName\" : \"absoluteIncrement\",\n"
+				+ "                    \"fields\" : {\n"
+				+ "                        \"bonusScore\" : 100.0,\n"
+				+ "                        \"periodName\" : \"weekly\",\n"
+				+ "                        \"bonusPointType\" : \"green leaves\",\n"
+				+ "                        \"counterName\" : \"ZeroImpact_Trips\",\n"
+				+ "                        \"target\" : 8.0\n"
+				+ "                    },\n"
+				+ "                    \"start\" : 1474063200000,\n"
+				+ "                    \"end\" : 1474668000000,\n"
+				+ "                    \"completed\" : true,\n"
+				+ "                    \"dateCompleted\" : 1474129837683\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.ChallengeConcept\"\n"
+				+ "            }\n" + "        }\n" + "    },\n"
+				+ "    \"customData\" : {\n"
+				+ "        \"final_survey_complete\" : true\n" + "    },\n"
+				+ "    \"metadata\" : {}\n" + "}\n";
+		String state2 = "{\n"
+				+ "    \"gameId\" : \"repo-game\",\n"
+				+ "    \"playerId\" : \"24100\",\n"
+				+ "    \"concepts\" : {\n"
+				+ "        \"BadgeCollectionConcept\" : {\n"
+				+ "            \"public transport aficionado\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"public transport aficionado\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"5_pt_trip\", \n"
+				+ "                        \"10_pt_trip\", \n"
+				+ "                        \"25_pt_trip\", \n"
+				+ "                        \"50_pt_trip\", \n"
+				+ "                        \"100_pt_trip\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            },\n"
+				+ "            \"leaderboard top 3\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"leaderboard top 3\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"1st_of_the_week\", \n"
+				+ "                        \"2nd_of_the_week\", \n"
+				+ "                        \"3rd_of_the_week\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            },\n"
+				+ "            \"green leaves\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"green leaves\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"50_point_green\", \n"
+				+ "                        \"100_point_green\", \n"
+				+ "                        \"200_point_green\", \n"
+				+ "                        \"400_point_green\", \n"
+				+ "                        \"800_point_green\", \n"
+				+ "                        \"1500_point_green\", \n"
+				+ "                        \"2500_point_green\", \n"
+				+ "                        \"5000_point_green\", \n"
+				+ "                        \"10000_point_green\", \n"
+				+ "                        \"20000_point_green\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            }\n"
+				+ "        },\n"
+				+ "        \"PointConcept\" : {\n"
+				+ "            \"BikeSharing_Km\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"BikeSharing_Km\",\n"
+				+ "                    \"score\" : 20.0,\n"
+				+ "                    \"periods\" : {\n"
+				+ "                        \"weekly\" : {\n"
+				+ "                            \"start\" : 1472853600000,\n"
+				+ "                            \"period\" : 604800000,\n"
+				+ "                            \"identifier\" : \"weekly\",\n"
+				+ "                            \"instances\" : {}\n"
+				+ "                        }\n"
+				+ "                    }\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.PointConcept\"\n"
+				+ "            },\n"
+				+ "            \"green leaves\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"green leaves\",\n"
+				+ "                    \"score\" : 21020.0,\n"
+				+ "                    \"periods\" : {\n"
+				+ "                        \"weekly\" : {\n"
+				+ "                            \"start\" : 1472853600000,\n"
+				+ "                            \"period\" : 604800000,\n"
+				+ "                            \"identifier\" : \"weekly\",\n"
+				+ "                            \"instances\" : {\n"
+				+ "                                \"2016-09-03T00:00:00\" : {\n"
+				+ "                                    \"score\" : 0.0,\n"
+				+ "                                    \"index\" : 0,\n"
+				+ "                                    \"end\" : 1473458400000,\n"
+				+ "                                    \"start\" : 1472853600000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-10T00:00:00\" : {\n"
+				+ "                                    \"score\" : 2220.0,\n"
+				+ "                                    \"index\" : 1,\n"
+				+ "                                    \"end\" : 1474063200000,\n"
+				+ "                                    \"start\" : 1473458400000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-17T00:00:00\" : {\n"
+				+ "                                    \"score\" : 2962.0,\n"
+				+ "                                    \"index\" : 2,\n"
+				+ "                                    \"end\" : 1474668000000,\n"
+				+ "                                    \"start\" : 1474063200000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-24T00:00:00\" : {\n"
+				+ "                                    \"score\" : 2590.0,\n"
+				+ "                                    \"index\" : 3,\n"
+				+ "                                    \"end\" : 1475272800000,\n"
+				+ "                                    \"start\" : 1474668000000\n"
+				+ "                                }\n"
+				+ "                            }\n"
+				+ "                        }\n"
+				+ "                    }\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.PointConcept\"\n"
+				+ "            }\n"
+				+ "        },\n"
+				+ "        \"ChallengeConcept\" : {\n"
+				+ "            \"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"name\" : \"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056\",\n"
+				+ "                    \"modelName\" : \"absoluteIncrement\",\n"
+				+ "                    \"fields\" : {\n"
+				+ "                        \"bonusScore\" : 150.0,\n"
+				+ "                        \"periodName\" : \"weekly\",\n"
+				+ "                        \"bonusPointType\" : \"green leaves\",\n"
+				+ "                        \"counterName\" : \"green leaves\",\n"
+				+ "                        \"target\" : 1200.0\n"
+				+ "                    },\n"
+				+ "                    \"start\" : 1478300400000,\n"
+				+ "                    \"end\" : 1478905200000,\n"
+				+ "                    \"completed\" : true,\n"
+				+ "                    \"dateCompleted\" : 1478888496028\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.ChallengeConcept\"\n"
+				+ "            },\n"
+				+ "            \"w2_zero_impact_8_eeec1d4d-74a8-47fd-b506-d0cc53008cd7\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"name\" : \"w2_zero_impact_8_eeec1d4d-74a8-47fd-b506-d0cc53008cd7\",\n"
+				+ "                    \"modelName\" : \"absoluteIncrement\",\n"
+				+ "                    \"fields\" : {\n"
+				+ "                        \"bonusScore\" : 100.0,\n"
+				+ "                        \"periodName\" : \"weekly\",\n"
+				+ "                        \"bonusPointType\" : \"green leaves\",\n"
+				+ "                        \"counterName\" : \"ZeroImpact_Trips\",\n"
+				+ "                        \"target\" : 8.0\n"
+				+ "                    },\n"
+				+ "                    \"start\" : 1474063200000,\n"
+				+ "                    \"end\" : 1474668000000,\n"
+				+ "                    \"completed\" : true,\n"
+				+ "                    \"dateCompleted\" : 1474129837683\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.ChallengeConcept\"\n"
+				+ "            }\n" + "        }\n" + "    },\n"
+				+ "    \"customData\" : {\n"
+				+ "        \"final_survey_complete\" : false\n" + "    },\n"
+				+ "    \"metadata\" : {}\n" + "}\n" + "";
+		String state3 = "{\n"
+				+ "    \"gameId\" : \"repo-game\",\n"
+				+ "    \"playerId\" : \"24131\",\n"
+				+ "    \"concepts\" : {\n"
+				+ "        \"BadgeCollectionConcept\" : {\n"
+				+ "            \"public transport aficionado\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"public transport aficionado\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"5_pt_trip\", \n"
+				+ "                        \"10_pt_trip\", \n"
+				+ "                        \"25_pt_trip\", \n"
+				+ "                        \"50_pt_trip\", \n"
+				+ "                        \"100_pt_trip\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            },\n"
+				+ "            \"leaderboard top 3\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"leaderboard top 3\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"1st_of_the_week\", \n"
+				+ "                        \"2nd_of_the_week\", \n"
+				+ "                        \"3rd_of_the_week\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            },\n"
+				+ "            \"green leaves\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"green leaves\",\n"
+				+ "                    \"badgeEarned\" : [ \n"
+				+ "                        \"50_point_green\", \n"
+				+ "                        \"100_point_green\", \n"
+				+ "                        \"200_point_green\", \n"
+				+ "                        \"400_point_green\", \n"
+				+ "                        \"800_point_green\", \n"
+				+ "                        \"1500_point_green\", \n"
+				+ "                        \"2500_point_green\", \n"
+				+ "                        \"5000_point_green\", \n"
+				+ "                        \"10000_point_green\", \n"
+				+ "                        \"20000_point_green\"\n"
+				+ "                    ]\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
+				+ "            }\n"
+				+ "        },\n"
+				+ "        \"PointConcept\" : {\n"
+				+ "            \"BikeSharing_Km\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"BikeSharing_Km\",\n"
+				+ "                    \"score\" : 50.0,\n"
+				+ "                    \"periods\" : {\n"
+				+ "                        \"weekly\" : {\n"
+				+ "                            \"start\" : 1472853600000,\n"
+				+ "                            \"period\" : 604800000,\n"
+				+ "                            \"identifier\" : \"weekly\",\n"
+				+ "                            \"instances\" : {}\n"
+				+ "                        }\n"
+				+ "                    }\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.PointConcept\"\n"
+				+ "            },\n"
+				+ "            \"green leaves\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"id\" : \"1\",\n"
+				+ "                    \"name\" : \"green leaves\",\n"
+				+ "                    \"score\" : 21020.0,\n"
+				+ "                    \"periods\" : {\n"
+				+ "                        \"weekly\" : {\n"
+				+ "                            \"start\" : 1472853600000,\n"
+				+ "                            \"period\" : 604800000,\n"
+				+ "                            \"identifier\" : \"weekly\",\n"
+				+ "                            \"instances\" : {\n"
+				+ "                                \"2016-09-03T00:00:00\" : {\n"
+				+ "                                    \"score\" : 0.0,\n"
+				+ "                                    \"index\" : 0,\n"
+				+ "                                    \"end\" : 1473458400000,\n"
+				+ "                                    \"start\" : 1472853600000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-10T00:00:00\" : {\n"
+				+ "                                    \"score\" : 1720.0,\n"
+				+ "                                    \"index\" : 1,\n"
+				+ "                                    \"end\" : 1474063200000,\n"
+				+ "                                    \"start\" : 1473458400000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-17T00:00:00\" : {\n"
+				+ "                                    \"score\" : 2962.0,\n"
+				+ "                                    \"index\" : 2,\n"
+				+ "                                    \"end\" : 1474668000000,\n"
+				+ "                                    \"start\" : 1474063200000\n"
+				+ "                                },\n"
+				+ "                                \"2016-09-24T00:00:00\" : {\n"
+				+ "                                    \"score\" : 2590.0,\n"
+				+ "                                    \"index\" : 3,\n"
+				+ "                                    \"end\" : 1475272800000,\n"
+				+ "                                    \"start\" : 1474668000000\n"
+				+ "                                }\n"
+				+ "                            }\n"
+				+ "                        }\n"
+				+ "                    }\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.PointConcept\"\n"
+				+ "            }\n"
+				+ "        },\n"
+				+ "        \"ChallengeConcept\" : {\n"
+				+ "            \"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"name\" : \"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056\",\n"
+				+ "                    \"modelName\" : \"absoluteIncrement\",\n"
+				+ "                    \"fields\" : {\n"
+				+ "                        \"bonusScore\" : 150.0,\n"
+				+ "                        \"periodName\" : \"weekly\",\n"
+				+ "                        \"bonusPointType\" : \"green leaves\",\n"
+				+ "                        \"counterName\" : \"green leaves\",\n"
+				+ "                        \"target\" : 1200.0\n"
+				+ "                    },\n"
+				+ "                    \"start\" : 1478300400000,\n"
+				+ "                    \"end\" : 1478905200000,\n"
+				+ "                    \"completed\" : true,\n"
+				+ "                    \"dateCompleted\" : 1478888496028\n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.ChallengeConcept\"\n"
+				+ "            },\n"
+				+ "            \"w2_zero_impact_8_eeec1d4d-74a8-47fd-b506-d0cc53008cd7\" : {\n"
+				+ "                \"_class\" : \"eu.trentorise.game.repo.GenericObjectPersistence\",\n"
+				+ "                \"obj\" : {\n"
+				+ "                    \"name\" : \"w2_zero_impact_8_eeec1d4d-74a8-47fd-b506-d0cc53008cd7\",\n"
+				+ "                    \"modelName\" : \"absoluteIncrement\",\n"
+				+ "                    \"fields\" : {\n"
+				+ "                        \"bonusScore\" : 100.0,\n"
+				+ "                        \"periodName\" : \"weekly\",\n"
+				+ "                        \"bonusPointType\" : \"green leaves\",\n"
+				+ "                        \"counterName\" : \"ZeroImpact_Trips\",\n"
+				+ "                        \"target\" : 8.0\n"
+				+ "                    },\n"
+				+ "                    \"start\" : 1474063200000,\n"
+				+ "                    \"end\" : 1474668000000,\n"
+				+ "                    \"completed\" : false\n"
+				+ "                    \n"
+				+ "                },\n"
+				+ "                \"type\" : \"eu.trentorise.game.model.ChallengeConcept\"\n"
+				+ "            }\n" + "        }\n" + "    },\n"
+				+ "    \"customData\" : {\n"
+				+ "        \"final_survey_complete\" : true\n" + "    },\n"
+				+ "    \"metadata\" : {}\n" + "}\n" + "";
+
+		mongo.getCollection("playerState")
+				.insert((DBObject) JSON.parse(state1));
+		mongo.getCollection("playerState")
+				.insert((DBObject) JSON.parse(state2));
+		mongo.getCollection("playerState")
+				.insert((DBObject) JSON.parse(state3));
+	}
+
 }

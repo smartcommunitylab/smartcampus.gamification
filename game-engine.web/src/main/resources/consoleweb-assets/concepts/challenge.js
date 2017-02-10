@@ -67,11 +67,21 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 		
 		$scope.initViewMode = function (challengeId) {
 			if ($scope.editedChallenges[challengeId]) {
-				if ($scope.editedChallenges[challengeId].variables.length != $scope.savedChallenges[challengeId].variables.length) {
+				if ($scope.editedChallenges[challengeId].variables.length != $scope.savedChallenges[challengeId].variables.length
+						| !($scope.arraysIdentical($scope.editedChallenges[challengeId].variables, $scope.savedChallenges[challengeId].variables))) {
 					$scope.savedChallenges[challengeId] = angular.copy($scope.editedChallenges[challengeId]); 
 				} 
 			}
 		}
+		
+		$scope.arraysIdentical = function (a, b) {
+		    var i = a.length;
+		    if (i != b.length) return false;
+		    while (i--) {
+		        if (a[i] !== b[i]) return false;
+		    }
+		    return true;
+		};
 		
 		$scope.editChallenge = function (challengeId) {
 			var modelToEdit = $scope.savedChallenges[challengeId];

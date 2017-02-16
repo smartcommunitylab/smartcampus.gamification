@@ -1,10 +1,12 @@
 package eu.trentorise.game.repo;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +27,7 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.core.SearchCriteria;
 import eu.trentorise.game.model.core.SearchCriteria.Projection;
+import eu.trentorise.game.model.core.SearchCriteria.QueryPart;
 import eu.trentorise.game.model.core.SortItem;
 import eu.trentorise.game.model.core.SortItem.Direction;
 
@@ -182,58 +185,41 @@ public class PlayerRepoTest {
 		Assert.assertEquals(30, states.get(1).getCustomData().get("points"));
 	}
 
-	// @Test
-	// public void query() {
-	// for (int i = 0; i < 5; i++) {
-	// StatePersistence state = new StatePersistence(GAME, "100" + i);
-	// state.setCustomData(new CustomData());
-	// state.getCustomData().put("field", "value-" + i % 2);
-	// state.getCustomData().put("points", 10 * i);
-	// playerRepo.save(state);
-	// }
-	// SearchCriteria criteria = new SearchCriteria(null,
-	// Arrays.asList(new QueryPart("customData.points", "{$gt: 20}")),
-	// null, null);
-	// Page<StatePersistence> results = playerRepo.search(criteria, null);
-	// List<StatePersistence> states = results.getContent();
-	// Assert.assertEquals(2, states.size());
-	// }
+	@Test
+	public void queryCustomDataOneClause() {
+		for (int i = 0; i < 5; i++) {
+			StatePersistence state = new StatePersistence(GAME, "100" + i);
+			state.setCustomData(new CustomData());
+			state.getCustomData().put("field", "value-" + i % 2);
+			state.getCustomData().put("points", 10 * i);
+			playerRepo.save(state);
+		}
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("customData",
+				Arrays.asList(new QueryPart("points", "{$gt: 20}")));
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(2, states.size());
+	}
 
-	// @Test(expected = IllegalArgumentException.class)
-	// public void queryInvalidOperator() {
-	// for (int i = 0; i < 5; i++) {
-	// StatePersistence state = new StatePersistence(GAME, "100" + i);
-	// state.setCustomData(new CustomData());
-	// state.getCustomData().put("field", "value-" + i % 2);
-	// state.getCustomData().put("points", 10 * i);
-	// playerRepo.save(state);
-	// }
-	// SearchCriteria criteria = new SearchCriteria(
-	// "",
-	// Arrays.asList(new QueryPart("customData.points", "{$gth: 20}")),
-	// null, null);
-	// Page<StatePersistence> results = playerRepo.search(criteria, null);
-	// List<StatePersistence> states = results.getContent();
-	// Assert.assertEquals(5, states.size());
-	// }
-
-	// @Test
-	// public void queryNotExistField() {
-	// for (int i = 0; i < 5; i++) {
-	// StatePersistence state = new StatePersistence(GAME, "100" + i);
-	// state.setCustomData(new CustomData());
-	// state.getCustomData().put("field", "value-" + i % 2);
-	// state.getCustomData().put("points", 10 * i);
-	// playerRepo.save(state);
-	// }
-	//
-	// SearchCriteria criteria = new SearchCriteria("",
-	// Arrays.asList(new QueryPart("custData.points", "{$gt: 20}")),
-	// null, null);
-	// Page<StatePersistence> results = playerRepo.search(criteria, null);
-	// List<StatePersistence> states = results.getContent();
-	// Assert.assertEquals(0, states.size());
-	// }
+	@Test
+	public void queryCustomDataTwoClauses() {
+		for (int i = 0; i < 5; i++) {
+			StatePersistence state = new StatePersistence(GAME, "100" + i);
+			state.setCustomData(new CustomData());
+			state.getCustomData().put("field", "value-" + i % 2);
+			state.getCustomData().put("points", 10 * i);
+			playerRepo.save(state);
+		}
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("customData", Arrays.asList(new QueryPart("points",
+				"{$gt: 20}"), new QueryPart("field", "\"value-0\"")));
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(1, states.size());
+	}
 
 	@Test
 	public void rawQueryAllStatesWithBikeSharingGreaterThanZero() {
@@ -248,7 +234,6 @@ public class PlayerRepoTest {
 		Page<StatePersistence> results = playerRepo.search(criteria, null);
 		List<StatePersistence> states = results.getContent();
 		Assert.assertEquals(2, states.size());
-
 	}
 
 	@Test
@@ -263,15 +248,26 @@ public class PlayerRepoTest {
 		Page<StatePersistence> results = playerRepo.search(criteria, null);
 		List<StatePersistence> states = results.getContent();
 		Assert.assertEquals(1, states.size());
-
 	}
 
 	@Test
-	public void rawQuery() {
+	public void rawQueryStringCustomData() {
 		setupEnv();
-
 		String rawQuery = "{custData.points : {$gt: 20}}";
 		SearchCriteria criteria = new SearchCriteria(rawQuery, null, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(0, states.size());
+	}
+
+	@Test
+	public void rawQueryMapCustomData() {
+		setupEnv();
+		Map<String, Object> obj = new HashMap<String, Object>();
+		Map<String, Object> obj1 = new HashMap<String, Object>();
+		obj1.put("$gt", 20);
+		obj.put("customData.points", obj1);
+		SearchCriteria criteria = new SearchCriteria(obj, null, null, null);
 		Page<StatePersistence> results = playerRepo.search(criteria, null);
 		List<StatePersistence> states = results.getContent();
 		Assert.assertEquals(0, states.size());
@@ -313,12 +309,120 @@ public class PlayerRepoTest {
 		Assert.assertEquals(3, states.size());
 	}
 
-	/*
-	 * {point: [{bikesharing_km:{$gt:0}}]} query mongo ->
-	 * {"concepts.PointConcept.BikeSharing_Km.obj.score":{$gt:0}}
-	 * 
-	 * permit raw query (as simple object) and query
-	 */
+	@Test
+	public void queryBikeSharingGreaterThan0() {
+		setupEnv();
+
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("pointConcept",
+				Arrays.asList(new QueryPart("BikeSharing_Km", "{$gt: 0}")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		playerRepo.search(criteria, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(2, states.size());
+	}
+
+	@Test
+	public void queryGreenLeavesBadgesContainsValue() {
+		setupEnv();
+
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("badgeCollectionConcept", Arrays.asList(new QueryPart(
+				"green leaves", "\"5000_point_green\"")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		playerRepo.search(criteria, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(1, states.size());
+	}
+
+	@Test
+	public void queryGreenLeavesBadgesContains() {
+		setupEnv();
+
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("badgeCollectionConcept", Arrays.asList(new QueryPart(
+				"green leaves", "{$in : [\"50_point_green\"]}")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		playerRepo.search(criteria, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(3, states.size());
+	}
+
+	@Test
+	public void queryAllStatesWithPeriodicGreenLeavesLessThan1000() {
+		setupEnv();
+		Date date = new LocalDate(2016, 9, 10).toDate();
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("periodicPointConcept", Arrays.asList(new QueryPart(
+				"green leaves", "weekly", date, "{$lt: 1000}")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(1, states.size());
+	}
+
+	@Test
+	public void queryAllStatesWithCompletedChallenge() {
+		setupEnv();
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("challengeConcept", Arrays.asList(new QueryPart(
+				"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
+				"completed", "true")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(3, states.size());
+	}
+
+	@Test
+	public void queryAllStatesWithFailedChallenge() {
+		setupEnv();
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("challengeConcept", Arrays.asList(new QueryPart(
+				"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
+				"completed", "false")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(0, states.size());
+	}
+
+	@Test
+	public void queryAllStatesWithPeriodFieldChallenge() {
+		setupEnv();
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("challengeConcept", Arrays.asList(new QueryPart(
+				"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
+				"periodName", "\"weekly\"")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(3, states.size());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void queryAllStatesNotExistingConcept() {
+		setupEnv();
+		Map<String, List<QueryPart>> query = new HashMap<>();
+		query.put("poinConcept", Arrays.asList(new QueryPart(
+				"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
+				"periodName", "\"weekly\"")));
+
+		SearchCriteria criteria = new SearchCriteria("", query, null, null);
+		Page<StatePersistence> results = playerRepo.search(criteria, null);
+		List<StatePersistence> states = results.getContent();
+		Assert.assertEquals(3, states.size());
+	}
 
 	private void setupEnv() {
 		String state1 = "{\n"
@@ -518,15 +622,7 @@ public class PlayerRepoTest {
 				+ "                    \"name\" : \"green leaves\",\n"
 				+ "                    \"badgeEarned\" : [ \n"
 				+ "                        \"50_point_green\", \n"
-				+ "                        \"100_point_green\", \n"
-				+ "                        \"200_point_green\", \n"
-				+ "                        \"400_point_green\", \n"
-				+ "                        \"800_point_green\", \n"
-				+ "                        \"1500_point_green\", \n"
-				+ "                        \"2500_point_green\", \n"
-				+ "                        \"5000_point_green\", \n"
-				+ "                        \"10000_point_green\", \n"
-				+ "                        \"20000_point_green\"\n"
+				+ "                        \"100_point_green\""
 				+ "                    ]\n"
 				+ "                },\n"
 				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"
@@ -677,13 +773,7 @@ public class PlayerRepoTest {
 				+ "                        \"50_point_green\", \n"
 				+ "                        \"100_point_green\", \n"
 				+ "                        \"200_point_green\", \n"
-				+ "                        \"400_point_green\", \n"
-				+ "                        \"800_point_green\", \n"
-				+ "                        \"1500_point_green\", \n"
-				+ "                        \"2500_point_green\", \n"
-				+ "                        \"5000_point_green\", \n"
-				+ "                        \"10000_point_green\", \n"
-				+ "                        \"20000_point_green\"\n"
+				+ "                        \"400_point_green\""
 				+ "                    ]\n"
 				+ "                },\n"
 				+ "                \"type\" : \"eu.trentorise.game.model.BadgeCollectionConcept\"\n"

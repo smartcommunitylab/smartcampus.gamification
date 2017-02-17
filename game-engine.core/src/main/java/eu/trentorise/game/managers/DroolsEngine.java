@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -101,9 +102,7 @@ public class DroolsEngine implements GameEngine {
 
 	private KieServices kieServices = KieServices.Factory.get();
 
-	public PlayerState execute(String gameId, PlayerState state, String action,
-			Map<String, Object> data, String executionId, long executionMoment,
-			List<Object> factObjects) {
+	public PlayerState execute(String gameId, PlayerState state, String action, Map<String, Object> data, String executionId, long executionMoment, List<Object> factObjects) {
 
 		StopWatch stopWatch = LogManager.getLogger(
 				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
@@ -129,9 +128,11 @@ public class DroolsEngine implements GameEngine {
 
 		List<Command> cmds = new ArrayList<Command>();
 
-		if (data != null) {
-			cmds.add(CommandFactory.newInsert(new InputData(data)));
+		if (data == null) {
+			data = new HashMap<String, Object>();
 		}
+		cmds.add(CommandFactory.newInsert(new InputData(data)));
+
 		if (!StringUtils.isBlank(action)) {
 			cmds.add(CommandFactory.newInsert(new Action(action)));
 		}
@@ -260,8 +261,8 @@ public class DroolsEngine implements GameEngine {
 				fromPropagation = (Member) iter1.next().get("$data");
 			}
 			facts.add(new Member(state.getPlayerId(),
-					data == null ? (fromPropagation != null ? fromPropagation
-							.getInputData() : null) : data));
+					data.isEmpty() ? (fromPropagation != null ? fromPropagation
+							.getInputData() : data) : data));
 			for (TeamState team : playerTeams) {
 				workflow.apply(gameId, action, team.getPlayerId(), null,
 						new ArrayList<>(facts));
@@ -309,8 +310,7 @@ public class DroolsEngine implements GameEngine {
 		return state;
 	}
 
-	private StatelessKieSession loadGameConstants(StatelessKieSession kSession,
-			String gameId) {
+	private StatelessKieSession loadGameConstants(StatelessKieSession kSession, String gameId) {
 
 		// load game constants
 		InputStream constantsFileStream = null;

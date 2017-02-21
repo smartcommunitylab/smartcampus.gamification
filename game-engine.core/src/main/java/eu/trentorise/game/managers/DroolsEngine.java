@@ -260,9 +260,12 @@ public class DroolsEngine implements GameEngine {
 			if (iter1.hasNext()) {
 				fromPropagation = (Member) iter1.next().get("$data");
 			}
-			facts.add(new Member(state.getPlayerId(),
-					data.isEmpty() ? (fromPropagation != null ? fromPropagation
-							.getInputData() : data) : data));
+			Map<String, Object> payloadData = new HashMap<>(data);
+			if (fromPropagation != null
+					&& fromPropagation.getInputData() != null) {
+				payloadData.putAll(fromPropagation.getInputData());
+			}
+			facts.add(new Member(state.getPlayerId(), payloadData));
 			for (TeamState team : playerTeams) {
 				workflow.apply(gameId, action, team.getPlayerId(), null,
 						new ArrayList<>(facts));

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -28,10 +27,14 @@ import com.mongodb.MongoException;
 import com.mongodb.util.JSONParseException;
 
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.core.ComplexSearchQuery;
+import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.SearchCriteria;
+import eu.trentorise.game.model.core.SearchCriteria.Projection;
 import eu.trentorise.game.model.core.SearchCriteria.QueryPart;
 import eu.trentorise.game.model.core.SearchCriteria.SearchElement;
 import eu.trentorise.game.model.core.SortItem;
+import eu.trentorise.game.model.core.StringSearchQuery;
 
 public class PlayerRepoImpl implements ExtendPlayerRepo {
 
@@ -66,7 +69,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 					List<QueryPart> queryParts = q
 							.get(element.getDisplayName());
 					if (queryParts != null) {
-						buffer.append(queryPartToString(
+						buffer.append(queryPartToStringSearch(
 								element.getDisplayName(), queryParts));
 					}
 				}
@@ -81,40 +84,70 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 			}
 
-			if (searchCriteria.getProjection() != null) {
-				List<String> projectionIncludeFields = ListUtils
-						.emptyIfNull(searchCriteria.getProjection()
-								.getIncludeFields());
-				List<String> projectionExcludeFields = ListUtils
-						.emptyIfNull(searchCriteria.getProjection()
-								.getExcludeFields());
-
-				for (String projField : projectionIncludeFields) {
-					query.fields().include(projField);
-				}
-				for (String projField : projectionExcludeFields) {
-					query.fields().exclude(projField);
-				}
-
-			}
-			if (searchCriteria.getSortItems() != null) {
-				query.with(new Sort(createDataOders(searchCriteria
-						.getSortItems())));
-			}
-
+			query = addProjection(query, searchCriteria.getProjection());
+			query = addSort(query, searchCriteria.getSortItems());
 			query.with(pageable);
 
 			result = mongo.find(query, StatePersistence.class);
 		} catch (JSONParseException | UncategorizedMongoDbException
 				| MongoException | JsonProcessingException e) {
-			logger.error("Exception running mongo query in search", e);
-			throw new IllegalArgumentException("Query seems to be not valid");
+			exceptionHandler(e);
 		}
 		long totalSize = mongo.count(query, StatePersistence.class);
 		return new PageImpl<>(result, pageable, totalSize);
 	}
 
-	private String queryPartToString(String concept, List<QueryPart> parts) {
+	private Query addProjection(Query query, eu.trentorise.game.model.core.SearchQuery.Projection proj) {
+		if (proj != null) {
+			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
+					.getIncludeFields());
+			List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
+					.getExcludeFields());
+
+			for (String projField : projectionIncludeFields) {
+				query.fields().include(projField);
+			}
+			for (String projField : projectionExcludeFields) {
+				query.fields().exclude(projField);
+			}
+
+		}
+		return query;
+	}
+
+	/*
+	 * TO REMOVE
+	 */
+	private Query addProjection(Query query, Projection proj) {
+		if (proj != null) {
+			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
+					.getIncludeFields());
+			List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
+					.getExcludeFields());
+
+			for (String projField : projectionIncludeFields) {
+				query.fields().include(projField);
+			}
+			for (String projField : projectionExcludeFields) {
+				query.fields().exclude(projField);
+			}
+
+		}
+		return query;
+	}
+
+	private Query addSort(Query query, List<SortItem> sortItems) {
+		if (sortItems != null) {
+			query.with(new Sort(createDataOders(sortItems)));
+		}
+
+		return query;
+	}
+
+	/*
+	 * TO REMOVE
+	 */
+	private String queryPartToStringSearch(String concept, List<QueryPart> parts) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("{");
 		if (parts != null) {
@@ -132,7 +165,63 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return buffer.toString();
 	}
 
+	private String queryPartToString(String concept, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> parts) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("{");
+		if (parts != null) {
+			for (int i = 0; i < parts.size(); i++) {
+				eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart part = parts
+						.get(i);
+				buffer.append(fieldQueryString(concept, part));
+				buffer.append(":").append(part.getClause().trim());
+				if (i < parts.size() - 1) {
+					buffer.append(",");
+				}
+			}
+		}
+		buffer.append("}");
+
+		return buffer.toString();
+	}
+
+	/*
+	 * TO REMOVE
+	 */
 	private String fieldQueryString(String concept, QueryPart queryPart) {
+		String queryString = null;
+		String field = queryPart.getConceptName();
+		if ("customData".equals(concept)) {
+			queryString = String.format("\"customData.%s\"", field.trim());
+		} else if ("pointConcept".equals(concept)) {
+			queryString = String.format("\"concepts.%s.%s.obj.score\"",
+					convertConceptToString(concept), field.trim());
+		} else if ("badgeCollectionConcept".equals(concept)) {
+			queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
+					convertConceptToString(concept), field.trim());
+		} else if ("periodicPointConcept".equals(concept)) {
+			queryString = String.format(
+					"\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
+					convertConceptToString(concept), field.trim(), queryPart
+							.getPeriodName(),
+					new DateTime(queryPart.getInstanceDate())
+							.toString("YYYY-MM-dd'T'HH:mm:ss"));
+		} else if ("challengeConcept".equals(concept)) {
+			// if field is field or challenge-metadata
+			if (isMetaField(queryPart.getField())) {
+				queryString = "\"concepts.%s.%s.obj.%s\"";
+			} else {
+				queryString = "\"concepts.%s.%s.obj.fields.%s\"";
+			}
+
+			queryString = String.format(queryString,
+					convertConceptToString(concept),
+					queryPart.getConceptName(), queryPart.getField());
+		}
+
+		return queryString;
+	}
+
+	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart queryPart) {
 		String queryString = null;
 		String field = queryPart.getConceptName();
 		if ("customData".equals(concept)) {
@@ -203,30 +292,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return result;
 	}
 
-	private String parseToString(List<QueryPart> queryParts) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("{");
-		if (queryParts != null) {
-			for (QueryPart part : queryParts) {
-				String[] fieldTokens = part.getConceptName().split(".");
-
-				// necessary because actual persistence in mongodb uses
-				// GenericObjectPersistence
-				if (fieldTokens.length >= 4) {
-					fieldTokens = (String[]) ArrayUtils.add(fieldTokens, 3,
-							"obj");
-				}
-				for (int i = 0; i < fieldTokens.length; i++) {
-					buffer.append(fieldTokens[i]);
-					if (i < fieldTokens.length - 1) {
-						buffer.append(".");
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	private Order[] createDataOders(List<SortItem> sortItems) {
 		Order[] orders = new Order[sortItems.size()];
 		int index = 0;
@@ -236,4 +301,80 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		}
 		return orders;
 	}
+
+	@Override
+	public Page<StatePersistence> search(RawSearchQuery query, Pageable pageable) {
+		List<StatePersistence> result = null;
+		BasicQuery q = null;
+		try {
+			q = new BasicQuery(mapper.writeValueAsString(query.getRawQuery()));
+			q = (BasicQuery) addProjection(q, query.getProjection());
+			q = (BasicQuery) addSort(q, query.getSortItems());
+			q.with(pageable);
+
+			result = mongo.find(q, StatePersistence.class);
+
+		} catch (JSONParseException | UncategorizedMongoDbException
+				| MongoException | JsonProcessingException e) {
+			exceptionHandler(e);
+		}
+
+		long totalSize = mongo.count(q, StatePersistence.class);
+		return new PageImpl<>(result, pageable, totalSize);
+	}
+
+	@Override
+	public Page<StatePersistence> search(ComplexSearchQuery query, Pageable pageable) {
+		List<StatePersistence> result = null;
+		BasicQuery q = null;
+
+		StringBuffer buffer = new StringBuffer();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> parts = query
+				.getQuery();
+		for (SearchElement element : SearchCriteria.SearchElement.values()) {
+			List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> queryParts = parts
+					.get(element.getDisplayName());
+			if (queryParts != null) {
+				buffer.append(queryPartToString(element.getDisplayName(),
+						queryParts));
+			}
+		}
+		if (buffer.length() > 0) {
+			q = new BasicQuery(buffer.toString());
+		} else {
+			throw new IllegalArgumentException(
+					"Query seems to be not valid: searchElements not valid");
+		}
+
+		try {
+			result = mongo.find(q, StatePersistence.class);
+		} catch (JSONParseException | UncategorizedMongoDbException
+				| MongoException e) {
+			exceptionHandler(e);
+		}
+		long totalSize = mongo.count(q, StatePersistence.class);
+		return new PageImpl<>(result, pageable, totalSize);
+	}
+
+	private void exceptionHandler(Exception e) {
+		logger.error("Exception running mongo query in search", e);
+		throw new IllegalArgumentException("Query seems to be not valid");
+	}
+
+	@Override
+	public Page<StatePersistence> search(StringSearchQuery query, Pageable pageable) {
+		List<StatePersistence> result = null;
+		BasicQuery q = new BasicQuery(query.getRawQuery());
+
+		try {
+			result = mongo.find(q, StatePersistence.class);
+		} catch (JSONParseException | UncategorizedMongoDbException
+				| MongoException e) {
+			exceptionHandler(e);
+		}
+		long totalSize = mongo.count(q, StatePersistence.class);
+		return new PageImpl<>(result, pageable, totalSize);
+
+	}
+
 }

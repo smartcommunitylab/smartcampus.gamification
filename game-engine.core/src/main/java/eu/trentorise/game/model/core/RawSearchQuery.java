@@ -3,11 +3,17 @@ package eu.trentorise.game.model.core;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RawSearchQuery extends SearchQuery {
 	private Map<String, Object> rawQuery;
 
-	public RawSearchQuery(Map<String, Object> rawQuery,
-			List<SortItem> sortItems, Projection projection) {
+	@JsonCreator
+	public RawSearchQuery(
+			@JsonProperty("rawQuery") Map<String, Object> rawQuery,
+			@JsonProperty("projection") Projection projection,
+			@JsonProperty("sortItems") List<SortItem> sortItems) {
 		super(sortItems, projection);
 		this.rawQuery = rawQuery;
 	}

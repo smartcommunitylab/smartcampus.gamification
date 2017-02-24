@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.UncategorizedMongoDbException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -97,7 +98,61 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return new PageImpl<>(result, pageable, totalSize);
 	}
 
-	private Query addProjection(Query query, eu.trentorise.game.model.core.SearchQuery.Projection proj) {
+	private String addProjection(eu.trentorise.game.model.core.SearchQuery.Projection proj) {
+		String result = null;
+		if (proj != null) {
+			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
+					.getIncludeFields());
+			List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
+					.getExcludeFields());
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("{");
+
+			for (String includeField : projectionIncludeFields) {
+				if (buffer.length() > 1) {
+					buffer.append(",");
+				}
+				buffer.append(String.format("\"%s\":1", includeField));
+				// append type field when necessary to permit correct creation
+				// of
+				// instance of class concept
+				String typeField = appendTypeField(includeField);
+				if (typeField != null) {
+					buffer.append(String.format(",\"%s\":1", typeField));
+				}
+
+			}
+
+			for (String excludedField : projectionExcludeFields) {
+				if (buffer.length() > 1) {
+					buffer.append(",");
+				}
+				buffer.append(String.format("\"%s\":0", excludedField));
+				// append type field when necessary to permit correct creation
+				// of
+				// instance of class concept
+				String typeField = appendTypeField(excludedField);
+				if (typeField != null) {
+					buffer.append(String.format(",\"%s\":0", typeField));
+				}
+			}
+			buffer.append("}");
+			result = buffer.toString();
+		}
+
+		return result;
+	}
+
+	private String appendTypeField(String field) {
+		if (field != null && field.contains(".obj.")) {
+			return field.replaceFirst(".obj.*", ".type");
+		}
+
+		return null;
+
+	}
+
+	private BasicQuery addProjection(BasicQuery query, eu.trentorise.game.model.core.SearchQuery.Projection proj) {
 		if (proj != null) {
 			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
 					.getIncludeFields());
@@ -303,14 +358,27 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	}
 
 	@Override
-	public Page<StatePersistence> search(RawSearchQuery query, Pageable pageable) {
+	public Page<StatePersistence> search(String gameId, RawSearchQuery query, Pageable pageable) {
 		List<StatePersistence> result = null;
 		BasicQuery q = null;
+		String queryString = "{}";
+		String projection = null;
 		try {
-			q = new BasicQuery(mapper.writeValueAsString(query.getRawQuery()));
-			q = (BasicQuery) addProjection(q, query.getProjection());
-			q = (BasicQuery) addSort(q, query.getSortItems());
+			if (query != null) {
+				if (query.getRawQuery() != null) {
+					queryString = mapper
+							.writeValueAsString(query.getRawQuery());
+				}
+				projection = addProjection(query.getProjection());
+			}
+			q = new BasicQuery(queryString, projection);
+			q = (BasicQuery) addSort(q, query != null ? query.getSortItems()
+					: null);
 			q.with(pageable);
+
+			if (gameId != null) {
+				q.addCriteria(Criteria.where("gameId").is(gameId));
+			}
 
 			result = mongo.find(q, StatePersistence.class);
 
@@ -324,28 +392,42 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	}
 
 	@Override
-	public Page<StatePersistence> search(ComplexSearchQuery query, Pageable pageable) {
+	public Page<StatePersistence> search(String gameId, ComplexSearchQuery query, Pageable pageable) {
 		List<StatePersistence> result = null;
 		BasicQuery q = null;
-
+		String queryString = "{}";
+		String projection = null;
 		StringBuffer buffer = new StringBuffer();
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> parts = query
-				.getQuery();
-		for (SearchElement element : SearchCriteria.SearchElement.values()) {
-			List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> queryParts = parts
-					.get(element.getDisplayName());
-			if (queryParts != null) {
-				buffer.append(queryPartToString(element.getDisplayName(),
-						queryParts));
-			}
-		}
-		if (buffer.length() > 0) {
-			q = new BasicQuery(buffer.toString());
-		} else {
-			throw new IllegalArgumentException(
-					"Query seems to be not valid: searchElements not valid");
-		}
+		if (query != null) {
+			Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> parts = query
+					.getQuery();
+			if (parts != null) {
+				for (SearchElement element : SearchCriteria.SearchElement
+						.values()) {
+					List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> queryParts = parts
+							.get(element.getDisplayName());
+					if (queryParts != null) {
+						buffer.append(queryPartToString(
+								element.getDisplayName(), queryParts));
+					}
+				}
+				if (buffer.length() > 0) {
+					queryString = buffer.toString();
+				} else {
+					throw new IllegalArgumentException(
+							"Query seems to be not valid: searchElements not valid");
+				}
 
+			}
+
+			projection = addProjection(query.getProjection());
+		}
+		q = new BasicQuery(queryString, projection);
+		q = (BasicQuery) addSort(q, query != null ? query.getSortItems() : null);
+		q.with(pageable);
+		if (gameId != null) {
+			q.addCriteria(Criteria.where("gameId").is(gameId));
+		}
 		try {
 			result = mongo.find(q, StatePersistence.class);
 		} catch (JSONParseException | UncategorizedMongoDbException
@@ -362,10 +444,18 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	}
 
 	@Override
-	public Page<StatePersistence> search(StringSearchQuery query, Pageable pageable) {
+	public Page<StatePersistence> search(String gameId, StringSearchQuery query, Pageable pageable) {
 		List<StatePersistence> result = null;
-		BasicQuery q = new BasicQuery(query.getRawQuery());
+		String queryString = "{}";
+		if (query != null && query.getRawQuery() != null) {
+			queryString = query.getRawQuery();
+		}
 
+		BasicQuery q = new BasicQuery(queryString);
+		q.with(pageable);
+		if (gameId != null) {
+			q.addCriteria(Criteria.where("gameId").is(gameId));
+		}
 		try {
 			result = mongo.find(q, StatePersistence.class);
 		} catch (JSONParseException | UncategorizedMongoDbException

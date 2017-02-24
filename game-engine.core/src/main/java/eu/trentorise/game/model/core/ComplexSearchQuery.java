@@ -4,11 +4,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ComplexSearchQuery extends SearchQuery {
 	private Map<String, List<QueryPart>> query;
 
-	public ComplexSearchQuery(List<SortItem> sortItems, Projection projection,
-			Map<String, List<QueryPart>> query) {
+	@JsonCreator
+	public ComplexSearchQuery(
+			@JsonProperty("query") Map<String, List<QueryPart>> query,
+			@JsonProperty("projection") Projection projection,
+			@JsonProperty("sortItems") List<SortItem> sortItems) {
 		super(sortItems, projection);
 		this.query = query;
 	}
@@ -30,6 +36,24 @@ public class ComplexSearchQuery extends SearchQuery {
 			this.periodName = periodName;
 			this.instanceDate = instanceDate;
 			this.clause = clause;
+		}
+
+		/*
+		 * Jackson permits to have only one annotation JsonCreator per Class so
+		 * this private Constructor is used by jackson deserializer
+		 */
+		@JsonCreator
+		@SuppressWarnings("unused")
+		private QueryPart(@JsonProperty("conceptName") String conceptName,
+				@JsonProperty("periodName") String periodName,
+				@JsonProperty("instanceDate") Date instanceDate,
+				@JsonProperty("clause") String clause,
+				@JsonProperty("field") String field) {
+			this.conceptName = conceptName;
+			this.periodName = periodName;
+			this.instanceDate = instanceDate;
+			this.clause = clause;
+			this.field = field;
 		}
 
 		public QueryPart(String conceptName, String clause) {

@@ -12,10 +12,10 @@ public interface ExtendPlayerRepo {
 
 	public Page<StatePersistence> search(SearchCriteria searchCriteria, Pageable pageable);
 
-	public Page<StatePersistence> search(RawSearchQuery query, Pageable pageable);
+	public Page<StatePersistence> search(String gameId, RawSearchQuery query, Pageable pageable);
 
-	public Page<StatePersistence> search(ComplexSearchQuery query, Pageable pageable);
+	public Page<StatePersistence> search(String gameId, ComplexSearchQuery query, Pageable pageable);
 
-	public Page<StatePersistence> search(StringSearchQuery query, Pageable pageable);
+	public Page<StatePersistence> search(String gameId, StringSearchQuery query, Pageable pageable);
 
 }

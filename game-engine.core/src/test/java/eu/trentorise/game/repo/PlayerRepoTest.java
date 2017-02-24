@@ -203,10 +203,10 @@ public class PlayerRepoTest {
 			state.getCustomData().put("points", 10 * i);
 			playerRepo.save(state);
 		}
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"customData",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"points", "{$gt: 20}")));
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
 				null);
@@ -225,11 +225,11 @@ public class PlayerRepoTest {
 			state.getCustomData().put("points", 10 * i);
 			playerRepo.save(state);
 		}
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put("customData", Arrays.asList(
-				new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"points", "{$gt: 20}"),
-				new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"field", "\"value-0\"")));
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
 				null);
@@ -333,10 +333,10 @@ public class PlayerRepoTest {
 	public void complexQueryBikeSharingGreaterThan0() {
 		setupEnv();
 
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"pointConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"BikeSharing_Km", "{$gt: 0}")));
 
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
@@ -351,10 +351,10 @@ public class PlayerRepoTest {
 	public void complexQueryGreenLeavesBadgesContainsValue() {
 		setupEnv();
 
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"badgeCollectionConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"green leaves", "\"5000_point_green\"")));
 
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
@@ -369,10 +369,10 @@ public class PlayerRepoTest {
 	public void complexQueryGreenLeavesBadgesContains() {
 		setupEnv();
 
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"badgeCollectionConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"green leaves", "{$in : [\"50_point_green\"]}")));
 
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
@@ -387,10 +387,10 @@ public class PlayerRepoTest {
 	public void complexQueryAllStatesWithPeriodicGreenLeavesLessThan1000() {
 		setupEnv();
 		Date date = new LocalDate(2016, 9, 10).toDate();
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"periodicPointConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"green leaves", "weekly", date, "{$lt: 1000}")));
 
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
@@ -404,10 +404,10 @@ public class PlayerRepoTest {
 	@Test
 	public void complexQueryAllStatesWithCompletedChallenge() {
 		setupEnv();
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"challengeConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
 						"completed", "true")));
 
@@ -422,10 +422,10 @@ public class PlayerRepoTest {
 	@Test
 	public void complexQueryAllStatesWithFailedChallenge() {
 		setupEnv();
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"challengeConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
 						"completed", "false")));
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
@@ -439,10 +439,10 @@ public class PlayerRepoTest {
 	@Test
 	public void complexQueryAllStatesWithPeriodFieldChallenge() {
 		setupEnv();
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"challengeConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
 						"periodName", "\"weekly\"")));
 
@@ -457,10 +457,10 @@ public class PlayerRepoTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void complexQueryAllStatesNotExistingConcept() {
 		setupEnv();
-		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> query = new HashMap<>();
+		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
 		query.put(
 				"poinConcept",
-				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart(
+				Arrays.asList(new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
 						"w9_green_leaves_1200_fb4c6e83-abcf-49b6-aad7-a3bd38e03056",
 						"periodName", "\"weekly\"")));
 

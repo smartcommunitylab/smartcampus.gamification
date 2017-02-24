@@ -97,12 +97,12 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return query;
 	}
 
-	private String queryPartToString(String concept, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> parts) {
+	private String queryPartToString(String concept, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement> parts) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("{");
 		if (parts != null) {
 			for (int i = 0; i < parts.size(); i++) {
-				eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart part = parts
+				eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement part = parts
 						.get(i);
 				buffer.append(fieldQueryString(concept, part));
 				buffer.append(":").append(part.getClause().trim());
@@ -116,7 +116,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return buffer.toString();
 	}
 
-	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart queryPart) {
+	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement queryPart) {
 		String queryString = null;
 		String field = queryPart.getConceptName();
 		if ("customData".equals(concept)) {
@@ -238,12 +238,12 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		String projection = null;
 		StringBuffer buffer = new StringBuffer();
 		if (query != null) {
-			Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> parts = query
+			Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> parts = query
 					.getQuery();
 			if (parts != null) {
 				for (SearchElement element : ComplexSearchQuery.SearchElement
 						.values()) {
-					List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> queryParts = parts
+					List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement> queryParts = parts
 							.get(element.getDisplayName());
 					if (queryParts != null) {
 						buffer.append(queryPartToString(

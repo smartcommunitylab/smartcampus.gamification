@@ -8,29 +8,29 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ComplexSearchQuery extends SearchQuery {
-	private Map<String, List<QueryPart>> query;
+	private Map<String, List<QueryElement>> query;
 
 	@JsonCreator
 	public ComplexSearchQuery(
-			@JsonProperty("query") Map<String, List<QueryPart>> query,
+			@JsonProperty("query") Map<String, List<QueryElement>> query,
 			@JsonProperty("projection") Projection projection,
 			@JsonProperty("sortItems") List<SortItem> sortItems) {
 		super(sortItems, projection);
 		this.query = query;
 	}
 
-	public Map<String, List<QueryPart>> getQuery() {
+	public Map<String, List<QueryElement>> getQuery() {
 		return query;
 	}
 
-	public static class QueryPart {
+	public static class QueryElement {
 		private String conceptName;
 		private String periodName;
 		private Date instanceDate;
 		private String clause;
 		private String field;
 
-		public QueryPart(String conceptName, String periodName,
+		public QueryElement(String conceptName, String periodName,
 				Date instanceDate, String clause) {
 			this.conceptName = conceptName;
 			this.periodName = periodName;
@@ -44,7 +44,7 @@ public class ComplexSearchQuery extends SearchQuery {
 		 */
 		@JsonCreator
 		@SuppressWarnings("unused")
-		private QueryPart(@JsonProperty("conceptName") String conceptName,
+		private QueryElement(@JsonProperty("conceptName") String conceptName,
 				@JsonProperty("periodName") String periodName,
 				@JsonProperty("instanceDate") Date instanceDate,
 				@JsonProperty("clause") String clause,
@@ -56,12 +56,12 @@ public class ComplexSearchQuery extends SearchQuery {
 			this.field = field;
 		}
 
-		public QueryPart(String conceptName, String clause) {
+		public QueryElement(String conceptName, String clause) {
 			this.conceptName = conceptName;
 			this.clause = clause;
 		}
 
-		public QueryPart(String conceptName, String field, String clause) {
+		public QueryElement(String conceptName, String field, String clause) {
 			this.conceptName = conceptName;
 			this.clause = clause;
 			this.field = field;

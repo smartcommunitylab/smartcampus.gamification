@@ -28,8 +28,8 @@ import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.SearchQuery.Projection;
-import eu.trentorise.game.model.core.SortItem;
-import eu.trentorise.game.model.core.SortItem.Direction;
+import eu.trentorise.game.model.core.SearchQuery.SortItem;
+import eu.trentorise.game.model.core.SearchQuery.SortItem.Direction;
 import eu.trentorise.game.model.core.StringSearchQuery;
 
 @RunWith(SpringJUnit4ClassRunner.class)

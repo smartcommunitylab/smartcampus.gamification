@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +28,9 @@ import com.mongodb.util.JSONParseException;
 
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
+import eu.trentorise.game.model.core.ComplexSearchQuery.SearchElement;
 import eu.trentorise.game.model.core.RawSearchQuery;
-import eu.trentorise.game.model.core.SearchCriteria;
-import eu.trentorise.game.model.core.SearchCriteria.Projection;
-import eu.trentorise.game.model.core.SearchCriteria.QueryPart;
-import eu.trentorise.game.model.core.SearchCriteria.SearchElement;
-import eu.trentorise.game.model.core.SortItem;
+import eu.trentorise.game.model.core.SearchQuery.SortItem;
 import eu.trentorise.game.model.core.StringSearchQuery;
 
 public class PlayerRepoImpl implements ExtendPlayerRepo {
@@ -45,58 +41,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	private MongoTemplate mongo;
 
 	private ObjectMapper mapper = new ObjectMapper();
-
-	@Override
-	public Page<StatePersistence> search(SearchCriteria searchCriteria, Pageable pageable) {
-
-		if (searchCriteria == null) {
-			searchCriteria = new SearchCriteria();
-		}
-
-		Query query = null;
-		List<StatePersistence> result = null;
-
-		try {
-			if (searchCriteria.getRawQueryObj() != null) {
-				query = new BasicQuery(mapper.writeValueAsString(searchCriteria
-						.getRawQueryObj()));
-			} else if (StringUtils.isNotBlank(searchCriteria.getRawQuery())) {
-				query = new BasicQuery(searchCriteria.getRawQuery());
-			} else if (searchCriteria.getQuery() != null) {
-				StringBuffer buffer = new StringBuffer();
-				Map<String, List<QueryPart>> q = searchCriteria.getQuery();
-				for (SearchElement element : SearchCriteria.SearchElement
-						.values()) {
-					List<QueryPart> queryParts = q
-							.get(element.getDisplayName());
-					if (queryParts != null) {
-						buffer.append(queryPartToStringSearch(
-								element.getDisplayName(), queryParts));
-					}
-				}
-				if (buffer.length() > 0) {
-					query = new BasicQuery(buffer.toString());
-				} else {
-					throw new IllegalArgumentException(
-							"Query seems to be not valid: searchElements not valid");
-				}
-			} else {
-				query = new Query();
-
-			}
-
-			query = addProjection(query, searchCriteria.getProjection());
-			query = addSort(query, searchCriteria.getSortItems());
-			query.with(pageable);
-
-			result = mongo.find(query, StatePersistence.class);
-		} catch (JSONParseException | UncategorizedMongoDbException
-				| MongoException | JsonProcessingException e) {
-			exceptionHandler(e);
-		}
-		long totalSize = mongo.count(query, StatePersistence.class);
-		return new PageImpl<>(result, pageable, totalSize);
-	}
 
 	private String addProjection(eu.trentorise.game.model.core.SearchQuery.Projection proj) {
 		String result = null;
@@ -152,44 +96,53 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 	}
 
-	private BasicQuery addProjection(BasicQuery query, eu.trentorise.game.model.core.SearchQuery.Projection proj) {
-		if (proj != null) {
-			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
-					.getIncludeFields());
-			List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
-					.getExcludeFields());
-
-			for (String projField : projectionIncludeFields) {
-				query.fields().include(projField);
-			}
-			for (String projField : projectionExcludeFields) {
-				query.fields().exclude(projField);
-			}
-
-		}
-		return query;
-	}
+	// private BasicQuery addProjection(BasicQuery query,
+	// eu.trentorise.game.model.core.SearchQuery.Projection proj) {
+	// if (proj != null) {
+	// List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
+	// .getIncludeFields());
+	// List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
+	// .getExcludeFields());
+	//
+	// for (String projField : projectionIncludeFields) {
+	// query.fields().include(projField);
+	// }
+	// for (String projField : projectionExcludeFields) {
+	// query.fields().exclude(projField);
+	// }
+	//
+	// }
+	// return query;
+	// }
 
 	/*
 	 * TO REMOVE
 	 */
-	private Query addProjection(Query query, Projection proj) {
-		if (proj != null) {
-			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
-					.getIncludeFields());
-			List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
-					.getExcludeFields());
+	// private Query addProjection(Query query, Projection proj) {
+	// if (proj != null) {
+	// List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
+	// .getIncludeFields());
+	// List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
+	// .getExcludeFields());
+	//
+	// for (String projField : projectionIncludeFields) {
+	// query.fields().include(projField);
+	// }
+	// for (String projField : projectionExcludeFields) {
+	// query.fields().exclude(projField);
+	// }
+	//
+	// }
+	// return query;
+	// }
 
-			for (String projField : projectionIncludeFields) {
-				query.fields().include(projField);
-			}
-			for (String projField : projectionExcludeFields) {
-				query.fields().exclude(projField);
-			}
-
-		}
-		return query;
-	}
+	// private Query addSort(Query query, List<SortItemOld> sortItems) {
+	// if (sortItems != null) {
+	// query.with(new Sort(createDataOders(sortItems)));
+	// }
+	//
+	// return query;
+	// }
 
 	private Query addSort(Query query, List<SortItem> sortItems) {
 		if (sortItems != null) {
@@ -202,23 +155,24 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	/*
 	 * TO REMOVE
 	 */
-	private String queryPartToStringSearch(String concept, List<QueryPart> parts) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("{");
-		if (parts != null) {
-			for (int i = 0; i < parts.size(); i++) {
-				QueryPart part = parts.get(i);
-				buffer.append(fieldQueryString(concept, part));
-				buffer.append(":").append(part.getClause().trim());
-				if (i < parts.size() - 1) {
-					buffer.append(",");
-				}
-			}
-		}
-		buffer.append("}");
-
-		return buffer.toString();
-	}
+	// private String queryPartToStringSearch(String concept, List<QueryPart>
+	// parts) {
+	// StringBuffer buffer = new StringBuffer();
+	// buffer.append("{");
+	// if (parts != null) {
+	// for (int i = 0; i < parts.size(); i++) {
+	// QueryPart part = parts.get(i);
+	// buffer.append(fieldQueryString(concept, part));
+	// buffer.append(":").append(part.getClause().trim());
+	// if (i < parts.size() - 1) {
+	// buffer.append(",");
+	// }
+	// }
+	// }
+	// buffer.append("}");
+	//
+	// return buffer.toString();
+	// }
 
 	private String queryPartToString(String concept, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> parts) {
 		StringBuffer buffer = new StringBuffer();
@@ -242,39 +196,39 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	/*
 	 * TO REMOVE
 	 */
-	private String fieldQueryString(String concept, QueryPart queryPart) {
-		String queryString = null;
-		String field = queryPart.getConceptName();
-		if ("customData".equals(concept)) {
-			queryString = String.format("\"customData.%s\"", field.trim());
-		} else if ("pointConcept".equals(concept)) {
-			queryString = String.format("\"concepts.%s.%s.obj.score\"",
-					convertConceptToString(concept), field.trim());
-		} else if ("badgeCollectionConcept".equals(concept)) {
-			queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
-					convertConceptToString(concept), field.trim());
-		} else if ("periodicPointConcept".equals(concept)) {
-			queryString = String.format(
-					"\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
-					convertConceptToString(concept), field.trim(), queryPart
-							.getPeriodName(),
-					new DateTime(queryPart.getInstanceDate())
-							.toString("YYYY-MM-dd'T'HH:mm:ss"));
-		} else if ("challengeConcept".equals(concept)) {
-			// if field is field or challenge-metadata
-			if (isMetaField(queryPart.getField())) {
-				queryString = "\"concepts.%s.%s.obj.%s\"";
-			} else {
-				queryString = "\"concepts.%s.%s.obj.fields.%s\"";
-			}
-
-			queryString = String.format(queryString,
-					convertConceptToString(concept),
-					queryPart.getConceptName(), queryPart.getField());
-		}
-
-		return queryString;
-	}
+	// private String fieldQueryString(String concept, QueryPart queryPart) {
+	// String queryString = null;
+	// String field = queryPart.getConceptName();
+	// if ("customData".equals(concept)) {
+	// queryString = String.format("\"customData.%s\"", field.trim());
+	// } else if ("pointConcept".equals(concept)) {
+	// queryString = String.format("\"concepts.%s.%s.obj.score\"",
+	// convertConceptToString(concept), field.trim());
+	// } else if ("badgeCollectionConcept".equals(concept)) {
+	// queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
+	// convertConceptToString(concept), field.trim());
+	// } else if ("periodicPointConcept".equals(concept)) {
+	// queryString = String.format(
+	// "\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
+	// convertConceptToString(concept), field.trim(), queryPart
+	// .getPeriodName(),
+	// new DateTime(queryPart.getInstanceDate())
+	// .toString("YYYY-MM-dd'T'HH:mm:ss"));
+	// } else if ("challengeConcept".equals(concept)) {
+	// // if field is field or challenge-metadata
+	// if (isMetaField(queryPart.getField())) {
+	// queryString = "\"concepts.%s.%s.obj.%s\"";
+	// } else {
+	// queryString = "\"concepts.%s.%s.obj.fields.%s\"";
+	// }
+	//
+	// queryString = String.format(queryString,
+	// convertConceptToString(concept),
+	// queryPart.getConceptName(), queryPart.getField());
+	// }
+	//
+	// return queryString;
+	// }
 
 	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart queryPart) {
 		String queryString = null;
@@ -347,6 +301,16 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return result;
 	}
 
+	// private Order[] createDataOders(List<SortItemOld> sortItems) {
+	// Order[] orders = new Order[sortItems.size()];
+	// int index = 0;
+	// for (SortItemOld sortItem : sortItems) {
+	// orders[index++] = new Order(Direction.fromString(sortItem
+	// .getDirection().name()), sortItem.getField());
+	// }
+	// return orders;
+	// }
+
 	private Order[] createDataOders(List<SortItem> sortItems) {
 		Order[] orders = new Order[sortItems.size()];
 		int index = 0;
@@ -365,9 +329,8 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		String projection = null;
 		try {
 			if (query != null) {
-				if (query.getRawQuery() != null) {
-					queryString = mapper
-							.writeValueAsString(query.getRawQuery());
+				if (query.getQuery() != null) {
+					queryString = mapper.writeValueAsString(query.getQuery());
 				}
 				projection = addProjection(query.getProjection());
 			}
@@ -402,7 +365,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 			Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart>> parts = query
 					.getQuery();
 			if (parts != null) {
-				for (SearchElement element : SearchCriteria.SearchElement
+				for (SearchElement element : ComplexSearchQuery.SearchElement
 						.values()) {
 					List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> queryParts = parts
 							.get(element.getDisplayName());
@@ -447,8 +410,8 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	public Page<StatePersistence> search(String gameId, StringSearchQuery query, Pageable pageable) {
 		List<StatePersistence> result = null;
 		String queryString = "{}";
-		if (query != null && query.getRawQuery() != null) {
-			queryString = query.getRawQuery();
+		if (query != null && query.getQuery() != null) {
+			queryString = query.getQuery();
 		}
 
 		BasicQuery q = new BasicQuery(queryString);

@@ -88,4 +88,21 @@ public class ComplexSearchQuery extends SearchQuery {
 		}
 	}
 
+	public enum SearchElement {
+		POINT_CONCEPT("pointConcept"), PERIODIC_POINT_CONCEPT(
+				"periodicPointConcept"), BADGE_COLLECTION_CONCEPT(
+				"badgeCollectionConcept"), CHALLENGE_CONCEPT("challengeConcept"), CUSTOM_DATA(
+				"customData");
+
+		private String displayName;
+
+		private SearchElement(String displayName) {
+			this.displayName = displayName;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+	}
+
 }

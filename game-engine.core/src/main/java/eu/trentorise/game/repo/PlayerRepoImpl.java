@@ -72,13 +72,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 					buffer.append(",");
 				}
 				buffer.append(String.format("\"%s\":0", excludedField));
-				// append type field when necessary to permit correct creation
-				// of
-				// instance of class concept
-				String typeField = appendTypeField(excludedField);
-				if (typeField != null) {
-					buffer.append(String.format(",\"%s\":0", typeField));
-				}
 			}
 			buffer.append("}");
 			result = buffer.toString();

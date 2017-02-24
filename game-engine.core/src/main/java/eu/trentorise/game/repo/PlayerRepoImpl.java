@@ -89,54 +89,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 	}
 
-	// private BasicQuery addProjection(BasicQuery query,
-	// eu.trentorise.game.model.core.SearchQuery.Projection proj) {
-	// if (proj != null) {
-	// List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
-	// .getIncludeFields());
-	// List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
-	// .getExcludeFields());
-	//
-	// for (String projField : projectionIncludeFields) {
-	// query.fields().include(projField);
-	// }
-	// for (String projField : projectionExcludeFields) {
-	// query.fields().exclude(projField);
-	// }
-	//
-	// }
-	// return query;
-	// }
-
-	/*
-	 * TO REMOVE
-	 */
-	// private Query addProjection(Query query, Projection proj) {
-	// if (proj != null) {
-	// List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
-	// .getIncludeFields());
-	// List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
-	// .getExcludeFields());
-	//
-	// for (String projField : projectionIncludeFields) {
-	// query.fields().include(projField);
-	// }
-	// for (String projField : projectionExcludeFields) {
-	// query.fields().exclude(projField);
-	// }
-	//
-	// }
-	// return query;
-	// }
-
-	// private Query addSort(Query query, List<SortItemOld> sortItems) {
-	// if (sortItems != null) {
-	// query.with(new Sort(createDataOders(sortItems)));
-	// }
-	//
-	// return query;
-	// }
-
 	private Query addSort(Query query, List<SortItem> sortItems) {
 		if (sortItems != null) {
 			query.with(new Sort(createDataOders(sortItems)));
@@ -144,28 +96,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 		return query;
 	}
-
-	/*
-	 * TO REMOVE
-	 */
-	// private String queryPartToStringSearch(String concept, List<QueryPart>
-	// parts) {
-	// StringBuffer buffer = new StringBuffer();
-	// buffer.append("{");
-	// if (parts != null) {
-	// for (int i = 0; i < parts.size(); i++) {
-	// QueryPart part = parts.get(i);
-	// buffer.append(fieldQueryString(concept, part));
-	// buffer.append(":").append(part.getClause().trim());
-	// if (i < parts.size() - 1) {
-	// buffer.append(",");
-	// }
-	// }
-	// }
-	// buffer.append("}");
-	//
-	// return buffer.toString();
-	// }
 
 	private String queryPartToString(String concept, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart> parts) {
 		StringBuffer buffer = new StringBuffer();
@@ -185,43 +115,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 		return buffer.toString();
 	}
-
-	/*
-	 * TO REMOVE
-	 */
-	// private String fieldQueryString(String concept, QueryPart queryPart) {
-	// String queryString = null;
-	// String field = queryPart.getConceptName();
-	// if ("customData".equals(concept)) {
-	// queryString = String.format("\"customData.%s\"", field.trim());
-	// } else if ("pointConcept".equals(concept)) {
-	// queryString = String.format("\"concepts.%s.%s.obj.score\"",
-	// convertConceptToString(concept), field.trim());
-	// } else if ("badgeCollectionConcept".equals(concept)) {
-	// queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
-	// convertConceptToString(concept), field.trim());
-	// } else if ("periodicPointConcept".equals(concept)) {
-	// queryString = String.format(
-	// "\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
-	// convertConceptToString(concept), field.trim(), queryPart
-	// .getPeriodName(),
-	// new DateTime(queryPart.getInstanceDate())
-	// .toString("YYYY-MM-dd'T'HH:mm:ss"));
-	// } else if ("challengeConcept".equals(concept)) {
-	// // if field is field or challenge-metadata
-	// if (isMetaField(queryPart.getField())) {
-	// queryString = "\"concepts.%s.%s.obj.%s\"";
-	// } else {
-	// queryString = "\"concepts.%s.%s.obj.fields.%s\"";
-	// }
-	//
-	// queryString = String.format(queryString,
-	// convertConceptToString(concept),
-	// queryPart.getConceptName(), queryPart.getField());
-	// }
-	//
-	// return queryString;
-	// }
 
 	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryPart queryPart) {
 		String queryString = null;
@@ -293,16 +186,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 		return result;
 	}
-
-	// private Order[] createDataOders(List<SortItemOld> sortItems) {
-	// Order[] orders = new Order[sortItems.size()];
-	// int index = 0;
-	// for (SortItemOld sortItem : sortItems) {
-	// orders[index++] = new Order(Direction.fromString(sortItem
-	// .getDirection().name()), sortItem.getField());
-	// }
-	// return orders;
-	// }
 
 	private Order[] createDataOders(List<SortItem> sortItems) {
 		Order[] orders = new Order[sortItems.size()];

@@ -69,25 +69,28 @@ public class PointConcept extends GameConcept {
 	@JsonCreator
 	public PointConcept(Map<String, Object> jsonProps) {
 		super(jsonProps);
-		Object scoreField = jsonProps.get("score");
-		// fix: in some case PointConcept JSON representation contains 0 value
-		// in score field
-		// and so it is cast to Integer
-		if (scoreField != null) {
-			if (scoreField instanceof Double) {
-				score = (Double) scoreField;
+		if (jsonProps != null) {
+			Object scoreField = jsonProps.get("score");
+			// fix: in some case PointConcept JSON representation contains 0
+			// value
+			// in score field
+			// and so it is cast to Integer
+			if (scoreField != null) {
+				if (scoreField instanceof Double) {
+					score = (Double) scoreField;
+				}
+				if (scoreField instanceof Integer) {
+					score = ((Integer) scoreField).doubleValue();
+				}
 			}
-			if (scoreField instanceof Integer) {
-				score = ((Integer) scoreField).doubleValue();
-			}
-		}
-		Map<String, Object> temp = (Map<String, Object>) jsonProps
-				.get("periods");
-		if (temp != null) {
-			Set<Entry<String, Object>> entries = temp.entrySet();
-			for (Entry<String, Object> entry : entries) {
-				periods.put(entry.getKey(), new PeriodInternal(
-						(Map<String, Object>) entry.getValue()));
+			Map<String, Object> temp = (Map<String, Object>) jsonProps
+					.get("periods");
+			if (temp != null) {
+				Set<Entry<String, Object>> entries = temp.entrySet();
+				for (Entry<String, Object> entry : entries) {
+					periods.put(entry.getKey(), new PeriodInternal(
+							(Map<String, Object>) entry.getValue()));
+				}
 			}
 		}
 	}
@@ -213,8 +216,7 @@ public class PointConcept extends GameConcept {
 	 * @return PeriodInstance bound to the index or null if there is not
 	 *         PeriodInstance at that index
 	 */
-	public PeriodInstance getPeriodInstance(String periodIdentifier,
-			int instanceIndex) {
+	public PeriodInstance getPeriodInstance(String periodIdentifier, int instanceIndex) {
 		PeriodInstance result = null;
 		PeriodInternal p = periods.get(periodIdentifier);
 		if (p != null) {
@@ -272,29 +274,34 @@ public class PointConcept extends GameConcept {
 		}
 
 		public PeriodInternal(Map<String, Object> jsonProps) {
-			start = new Date((long) jsonProps.get("start"));
-			Object periodField = jsonProps.get("period");
-			if (periodField != null) {
-				if (periodField instanceof Long) {
-					period = (Long) periodField;
+			if (jsonProps != null) {
+				Object startField = jsonProps.get("start");
+				if (startField != null) {
+					start = new Date((long) startField);
 				}
-				if (periodField instanceof Integer) {
-					period = Integer.valueOf((Integer) periodField).longValue();
+				Object periodField = jsonProps.get("period");
+				if (periodField != null) {
+					if (periodField instanceof Long) {
+						period = (Long) periodField;
+					}
+					if (periodField instanceof Integer) {
+						period = Integer.valueOf((Integer) periodField)
+								.longValue();
+					}
+				}
+				identifier = (String) jsonProps.get("identifier");
+				Map<String, Map<String, Object>> tempInstances = (Map<String, Map<String, Object>>) jsonProps
+						.get("instances");
+				if (tempInstances != null) {
+					Set<Entry<String, Map<String, Object>>> entries = tempInstances
+							.entrySet();
+					for (Entry<String, Map<String, Object>> entry : entries) {
+						instances.put(PERIOD_KEY_FORMAT
+								.parseLocalDateTime(entry.getKey()),
+								new PeriodInstanceImpl(entry.getValue()));
+					}
 				}
 			}
-			identifier = (String) jsonProps.get("identifier");
-			Map<String, Map<String, Object>> tempInstances = (Map<String, Map<String, Object>>) jsonProps
-					.get("instances");
-			if (tempInstances != null) {
-				Set<Entry<String, Map<String, Object>>> entries = tempInstances
-						.entrySet();
-				for (Entry<String, Map<String, Object>> entry : entries) {
-					instances.put(PERIOD_KEY_FORMAT.parseLocalDateTime(entry
-							.getKey()),
-							new PeriodInstanceImpl(entry.getValue()));
-				}
-			}
-
 		}
 
 		private PeriodInstanceImpl getCurrentInstance() {
@@ -363,8 +370,7 @@ public class PointConcept extends GameConcept {
 			return instance;
 		}
 
-		private int getInstanceIndex(LocalDateTime start,
-				org.joda.time.Period period, LocalDateTime momentDate) {
+		private int getInstanceIndex(LocalDateTime start, org.joda.time.Period period, LocalDateTime momentDate) {
 			int index = -1;
 			Interval interval = null;
 			LocalDateTime cursorDate = start;
@@ -399,8 +405,7 @@ public class PointConcept extends GameConcept {
 			return instances;
 		}
 
-		public void setInstances(
-				TreeMap<LocalDateTime, PeriodInstanceImpl> instances) {
+		public void setInstances(TreeMap<LocalDateTime, PeriodInstanceImpl> instances) {
 			this.instances = instances;
 		}
 

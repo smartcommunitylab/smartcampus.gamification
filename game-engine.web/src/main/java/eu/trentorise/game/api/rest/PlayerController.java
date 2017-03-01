@@ -21,7 +21,6 @@ import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
-import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
 
@@ -33,9 +32,6 @@ public class PlayerController {
 
 	@Autowired
 	private PlayerService playerSrv;
-
-	@Autowired
-	private PlayerRepo playerRepo;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}/challenges")
 	public void assignChallenge(@RequestBody ChallengeDataDTO challengeData, @PathVariable String gameId, @PathVariable String playerId) {

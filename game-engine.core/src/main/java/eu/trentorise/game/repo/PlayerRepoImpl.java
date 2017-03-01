@@ -228,80 +228,22 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return queryString;
 	}
 
-	// private String fieldQueryString(String concept,
-	// eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement queryPart)
-	// {
-	// String queryString = null;
-	// String field = queryPart.getConceptName();
-	// if ("customData".equals(concept)) {
-	// queryString = String.format("\"customData.%s\"", field.trim());
-	// } else if ("pointConcept".equals(concept)) {
-	// queryString = String.format("\"concepts.%s.%s.obj.score\"",
-	// convertConceptToString(concept), field.trim());
-	// } else if ("badgeCollectionConcept".equals(concept)) {
-	// queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
-	// convertConceptToString(concept), field.trim());
-	// } else if ("periodicPointConcept".equals(concept)) {
-	// queryString = String.format(
-	// "\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
-	// convertConceptToString(concept), field.trim(), queryPart
-	// .getPeriodName(),
-	// new DateTime(queryPart.getInstanceDate())
-	// .toString("YYYY-MM-dd'T'HH:mm:ss"));
-	// } else if ("challengeConcept".equals(concept)) {
-	// // if field is field or challenge-metadata
-	// if (isMetaField(queryPart.getField())) {
-	// queryString = "\"concepts.%s.%s.obj.%s\"";
-	// } else {
-	// queryString = "\"concepts.%s.%s.obj.fields.%s\"";
-	// }
-	//
-	// queryString = String.format(queryString,
-	// convertConceptToString(concept),
-	// queryPart.getConceptName(), queryPart.getField());
-	// }
-	//
-	// return queryString;
-	// }
-
 	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement queryPart) {
 		String queryString = null;
-		// String field = queryPart.getConceptName();
 		if ("customData".equals(concept)) {
 			queryString = fieldQueryString(concept, null, null, null,
 					queryPart.getConceptName());
-			// queryString = String.format("\"customData.%s\"", field.trim());
 		} else if ("pointConcept".equals(concept)) {
-			// queryString = String.format("\"concepts.%s.%s.obj.score\"",
-			// convertConceptToString(concept), field.trim());
 			queryString = fieldQueryString(concept, queryPart.getConceptName(),
 					null, null, "score");
 		} else if ("badgeCollectionConcept".equals(concept)) {
-			// queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
-			// convertConceptToString(concept), field.trim());
 			queryString = fieldQueryString(concept, queryPart.getConceptName(),
 					null, null, "badgeEarned");
 		} else if ("periodicPointConcept".equals(concept)) {
-			// queryString = String.format(
-			// "\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
-			// convertConceptToString(concept), field.trim(), queryPart
-			// .getPeriodName(),
-			// new DateTime(queryPart.getInstanceDate())
-			// .toString("YYYY-MM-dd'T'HH:mm:ss"));
 			queryString = fieldQueryString(concept, queryPart.getConceptName(),
 					queryPart.getPeriodName(), queryPart.getInstanceDate(),
 					"score");
 		} else if ("challengeConcept".equals(concept)) {
-			// if field is field or challenge-metadata
-			// if (isMetaField(queryPart.getField())) {
-			// queryString = "\"concepts.%s.%s.obj.%s\"";
-			// } else {
-			// queryString = "\"concepts.%s.%s.obj.fields.%s\"";
-			// }
-			//
-			// queryString = String.format(queryString,
-			// convertConceptToString(concept),
-			// queryPart.getConceptName(), queryPart.getField());
 			queryString = fieldQueryString(concept, queryPart.getConceptName(),
 					null, null, queryPart.getField());
 		}

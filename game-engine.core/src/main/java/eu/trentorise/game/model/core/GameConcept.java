@@ -34,9 +34,11 @@ public abstract class GameConcept {
 	}
 
 	public GameConcept(Map<String, Object> jsonProps) {
-		Object idField = jsonProps.get("id");
-		id = (idField != null) ? String.valueOf(idField) : null;
-		name = (String) jsonProps.get("name");
+		if (jsonProps != null) {
+			Object idField = jsonProps.get("id");
+			id = (idField != null) ? String.valueOf(idField) : null;
+			name = (String) jsonProps.get("name");
+		}
 	}
 
 	public String getId() {

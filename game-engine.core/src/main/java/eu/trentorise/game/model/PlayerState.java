@@ -42,12 +42,12 @@ public class PlayerState {
 
 	public PlayerState() {
 	}
-	
+
 	public PlayerState(String gameId, String playerId) {
 		this.playerId = playerId;
 		this.gameId = gameId;
 	}
-	
+
 	public PlayerState(StatePersistence statePersistence) {
 		if (statePersistence != null) {
 			ObjectMapper mapper = new ObjectMapper();
@@ -66,7 +66,8 @@ public class PlayerState {
 										.getContextClassLoader()
 										.loadClass(obj.getType())));
 					} catch (Exception e) {
-						logger.error("Problem to load class {}", obj.getType());
+						logger.error("Problem to load class {}", obj.getType(),
+								e);
 					}
 				}
 			}

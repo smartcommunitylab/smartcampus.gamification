@@ -27,9 +27,9 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.RawSearchQuery;
-import eu.trentorise.game.model.core.SearchQuery.Projection;
-import eu.trentorise.game.model.core.SearchQuery.SortItem;
-import eu.trentorise.game.model.core.SearchQuery.SortItem.Direction;
+import eu.trentorise.game.model.core.RawSearchQuery.Projection;
+import eu.trentorise.game.model.core.RawSearchQuery.SortItem;
+import eu.trentorise.game.model.core.RawSearchQuery.SortItem.Direction;
 import eu.trentorise.game.model.core.StringSearchQuery;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,8 +59,8 @@ public class PlayerRepoTest {
 		state.getCustomData().put("indicator", "indicator-value");
 		playerRepo.save(state);
 
-		Projection proj = new eu.trentorise.game.model.core.SearchQuery.Projection(
-				Arrays.asList("playerId", "customData.field"), null);
+		Projection proj = new Projection(Arrays.asList("playerId",
+				"customData.field"), null);
 
 		RawSearchQuery query = new RawSearchQuery(null, proj, null);
 		Page<StatePersistence> resultPaged = playerRepo.search(GAME, query,
@@ -82,9 +82,8 @@ public class PlayerRepoTest {
 		state.getCustomData().put("indicator", "indicator-value");
 		playerRepo.save(state);
 
-		Projection proj = new eu.trentorise.game.model.core.SearchQuery.Projection(
-				Arrays.asList("playerId", "customData.field",
-						"notExistentField.field"), null);
+		Projection proj = new Projection(Arrays.asList("playerId",
+				"customData.field", "notExistentField.field"), null);
 
 		RawSearchQuery query = new RawSearchQuery(null, proj, null);
 		Page<StatePersistence> resultPaged = playerRepo.search(GAME, query,
@@ -109,7 +108,7 @@ public class PlayerRepoTest {
 		Map<String, Object> o = new HashMap<>();
 		o.put("gameId", GAME);
 		RawSearchQuery query = new RawSearchQuery(o,
-				new eu.trentorise.game.model.core.SearchQuery.Projection(
+				new eu.trentorise.game.model.core.RawSearchQuery.Projection(
 						Arrays.asList("playerId", "customData.field"),
 						Arrays.asList("id")), null);
 
@@ -179,9 +178,9 @@ public class PlayerRepoTest {
 			playerRepo.save(state);
 		}
 
-		List<SortItem> sortElements = Arrays.asList(new SortItem(
-				"customData.field", Direction.DESC), new SortItem(
-				"customData.points", Direction.ASC));
+		List<eu.trentorise.game.model.core.RawSearchQuery.SortItem> sortElements = Arrays
+				.asList(new SortItem("customData.field", Direction.DESC),
+						new SortItem("customData.points", Direction.ASC));
 		RawSearchQuery query = new RawSearchQuery(null, null, sortElements);
 		Page<StatePersistence> results = playerRepo.search(GAME, query, null);
 		List<StatePersistence> states = results.getContent();
@@ -226,11 +225,13 @@ public class PlayerRepoTest {
 			playerRepo.save(state);
 		}
 		Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> query = new HashMap<>();
-		query.put("customData", Arrays.asList(
-				new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
-						"points", "{$gt: 20}"),
-				new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
-						"field", "\"value-0\"")));
+		query.put(
+				"customData",
+				Arrays.asList(
+						new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
+								"points", "{$gt: 20}"),
+						new eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement(
+								"field", "\"value-0\"")));
 		ComplexSearchQuery complexQuery = new ComplexSearchQuery(query, null,
 				null);
 		Page<StatePersistence> results = playerRepo.search(GAME, complexQuery,

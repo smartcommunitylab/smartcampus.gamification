@@ -1,6 +1,7 @@
 package eu.trentorise.game.repo;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +30,10 @@ import com.mongodb.util.JSONParseException;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.ComplexSearchQuery.SearchElement;
+import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredElement;
+import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredSortItem;
 import eu.trentorise.game.model.core.RawSearchQuery;
-import eu.trentorise.game.model.core.SearchQuery.SortItem;
+import eu.trentorise.game.model.core.RawSearchQuery.SortItem;
 import eu.trentorise.game.model.core.StringSearchQuery;
 
 public class PlayerRepoImpl implements ExtendPlayerRepo {
@@ -42,7 +45,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	private String addProjection(eu.trentorise.game.model.core.SearchQuery.Projection proj) {
+	private String addProjection(eu.trentorise.game.model.core.RawSearchQuery.Projection proj) {
 		String result = null;
 		if (proj != null) {
 			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
@@ -80,6 +83,50 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return result;
 	}
 
+	private String addProjection(ComplexSearchQuery.StructuredProjection proj) {
+		String result = null;
+		if (proj != null) {
+			List<StructuredElement> projectionIncludeFields = ListUtils
+					.emptyIfNull(proj.getIncludeFields());
+			List<StructuredElement> projectionExcludeFields = ListUtils
+					.emptyIfNull(proj.getExcludeFields());
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("{");
+			for (StructuredElement element : projectionIncludeFields) {
+				if (buffer.length() > 1) {
+					buffer.append(",");
+				}
+				String includeField = fieldQueryString(element.getType(),
+						element.getConceptName(), element.getPeriodName(),
+						element.getInstanceDate(), element.getField());
+				buffer.append(String.format("\"%s\":1", includeField));
+
+				// append type field when necessary to permit correct creation
+				// of
+				// instance of class concept
+				String typeField = appendTypeField(includeField);
+				if (typeField != null) {
+					buffer.append(String.format(",\"%s\":1", typeField));
+				}
+			}
+
+			for (StructuredElement element : projectionExcludeFields) {
+				if (buffer.length() > 1) {
+					buffer.append(",");
+				}
+				buffer.append(String.format(
+						"\"%s\":0",
+						fieldQueryString(element.getType(),
+								element.getConceptName(),
+								element.getPeriodName(),
+								element.getInstanceDate(), element.getField())));
+			}
+			buffer.append("}");
+			result = buffer.toString();
+		}
+		return result;
+	}
+
 	private String appendTypeField(String field) {
 		if (field != null && field.contains(".obj.")) {
 			return field.replaceFirst(".obj.*", ".type");
@@ -93,7 +140,13 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		if (sortItems != null) {
 			query.with(new Sort(createDataOders(sortItems)));
 		}
+		return query;
+	}
 
+	private Query addStructuredSort(Query query, List<StructuredSortItem> sortItems) {
+		if (sortItems != null) {
+			query.with(new Sort(createStructuredDataOders(sortItems)));
+		}
 		return query;
 	}
 
@@ -104,7 +157,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 			for (int i = 0; i < parts.size(); i++) {
 				eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement part = parts
 						.get(i);
-				buffer.append(fieldQueryString(concept, part));
+				buffer.append("\"" + fieldQueryString(concept, part) + "\"");
 				buffer.append(":").append(part.getClause().trim());
 				if (i < parts.size() - 1) {
 					buffer.append(",");
@@ -116,35 +169,141 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return buffer.toString();
 	}
 
+	private String fieldQueryString(String fieldType, String conceptName, String periodName, Date instanceDate, String field) {
+		String queryString = null;
+		if ("customData".equals(fieldType)) {
+			queryString = "customData";
+			if (field != null)
+				queryString += "." + field.trim();
+		} else if ("pointConcept".equals(fieldType)) {
+			queryString = String.format("concepts.%s",
+					convertConceptToString(fieldType));
+			if (conceptName != null) {
+				queryString += "." + conceptName;
+			}
+			if (field != null) {
+				queryString += String.format(".obj.%s", field.trim());
+			}
+		} else if ("badgeCollectionConcept".equals(fieldType)) {
+			queryString = String.format("concepts.%s",
+					convertConceptToString(fieldType));
+			if (conceptName != null) {
+				queryString += "." + conceptName;
+			}
+			if (field != null) {
+				queryString += String.format(".obj.%s", field.trim());
+			}
+		} else if ("periodicPointConcept".equals(fieldType)) {
+			queryString = String.format("concepts.%s",
+					convertConceptToString(fieldType));
+			if (conceptName != null) {
+				queryString += "." + conceptName;
+			}
+			if (periodName != null) {
+				queryString += ".obj.periods." + periodName;
+			}
+			if (instanceDate != null) {
+				queryString += ".instances."
+						+ new DateTime(instanceDate)
+								.toString("YYYY-MM-dd'T'HH:mm:ss");
+			}
+			if (field != null) {
+				queryString += "." + field.trim();
+			}
+		} else if ("challengeConcept".equals(fieldType)) {
+			// if field is field or challenge-metadata
+			queryString = "concepts." + convertConceptToString(fieldType);
+			if (conceptName != null) {
+				queryString += "." + conceptName;
+			}
+			if (isMetaField(field)) {
+				queryString += ".obj." + field;
+			} else {
+				queryString += ".obj.fields." + field;
+			}
+		} else if ("general".equals(fieldType)) {
+			queryString = field;
+		}
+
+		return queryString;
+	}
+
+	// private String fieldQueryString(String concept,
+	// eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement queryPart)
+	// {
+	// String queryString = null;
+	// String field = queryPart.getConceptName();
+	// if ("customData".equals(concept)) {
+	// queryString = String.format("\"customData.%s\"", field.trim());
+	// } else if ("pointConcept".equals(concept)) {
+	// queryString = String.format("\"concepts.%s.%s.obj.score\"",
+	// convertConceptToString(concept), field.trim());
+	// } else if ("badgeCollectionConcept".equals(concept)) {
+	// queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
+	// convertConceptToString(concept), field.trim());
+	// } else if ("periodicPointConcept".equals(concept)) {
+	// queryString = String.format(
+	// "\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
+	// convertConceptToString(concept), field.trim(), queryPart
+	// .getPeriodName(),
+	// new DateTime(queryPart.getInstanceDate())
+	// .toString("YYYY-MM-dd'T'HH:mm:ss"));
+	// } else if ("challengeConcept".equals(concept)) {
+	// // if field is field or challenge-metadata
+	// if (isMetaField(queryPart.getField())) {
+	// queryString = "\"concepts.%s.%s.obj.%s\"";
+	// } else {
+	// queryString = "\"concepts.%s.%s.obj.fields.%s\"";
+	// }
+	//
+	// queryString = String.format(queryString,
+	// convertConceptToString(concept),
+	// queryPart.getConceptName(), queryPart.getField());
+	// }
+	//
+	// return queryString;
+	// }
+
 	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement queryPart) {
 		String queryString = null;
-		String field = queryPart.getConceptName();
+		// String field = queryPart.getConceptName();
 		if ("customData".equals(concept)) {
-			queryString = String.format("\"customData.%s\"", field.trim());
+			queryString = fieldQueryString(concept, null, null, null,
+					queryPart.getConceptName());
+			// queryString = String.format("\"customData.%s\"", field.trim());
 		} else if ("pointConcept".equals(concept)) {
-			queryString = String.format("\"concepts.%s.%s.obj.score\"",
-					convertConceptToString(concept), field.trim());
+			// queryString = String.format("\"concepts.%s.%s.obj.score\"",
+			// convertConceptToString(concept), field.trim());
+			queryString = fieldQueryString(concept, queryPart.getConceptName(),
+					null, null, "score");
 		} else if ("badgeCollectionConcept".equals(concept)) {
-			queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
-					convertConceptToString(concept), field.trim());
+			// queryString = String.format("\"concepts.%s.%s.obj.badgeEarned\"",
+			// convertConceptToString(concept), field.trim());
+			queryString = fieldQueryString(concept, queryPart.getConceptName(),
+					null, null, "badgeEarned");
 		} else if ("periodicPointConcept".equals(concept)) {
-			queryString = String.format(
-					"\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
-					convertConceptToString(concept), field.trim(), queryPart
-							.getPeriodName(),
-					new DateTime(queryPart.getInstanceDate())
-							.toString("YYYY-MM-dd'T'HH:mm:ss"));
+			// queryString = String.format(
+			// "\"concepts.%s.%s.obj.periods.%s.instances.%s.score\"",
+			// convertConceptToString(concept), field.trim(), queryPart
+			// .getPeriodName(),
+			// new DateTime(queryPart.getInstanceDate())
+			// .toString("YYYY-MM-dd'T'HH:mm:ss"));
+			queryString = fieldQueryString(concept, queryPart.getConceptName(),
+					queryPart.getPeriodName(), queryPart.getInstanceDate(),
+					"score");
 		} else if ("challengeConcept".equals(concept)) {
 			// if field is field or challenge-metadata
-			if (isMetaField(queryPart.getField())) {
-				queryString = "\"concepts.%s.%s.obj.%s\"";
-			} else {
-				queryString = "\"concepts.%s.%s.obj.fields.%s\"";
-			}
-
-			queryString = String.format(queryString,
-					convertConceptToString(concept),
-					queryPart.getConceptName(), queryPart.getField());
+			// if (isMetaField(queryPart.getField())) {
+			// queryString = "\"concepts.%s.%s.obj.%s\"";
+			// } else {
+			// queryString = "\"concepts.%s.%s.obj.fields.%s\"";
+			// }
+			//
+			// queryString = String.format(queryString,
+			// convertConceptToString(concept),
+			// queryPart.getConceptName(), queryPart.getField());
+			queryString = fieldQueryString(concept, queryPart.getConceptName(),
+					null, null, queryPart.getField());
 		}
 
 		return queryString;
@@ -193,6 +352,20 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		for (SortItem sortItem : sortItems) {
 			orders[index++] = new Order(Direction.fromString(sortItem
 					.getDirection().name()), sortItem.getField());
+		}
+		return orders;
+	}
+
+	private Order[] createStructuredDataOders(List<StructuredSortItem> sortItems) {
+		Order[] orders = new Order[sortItems.size()];
+		int index = 0;
+		for (StructuredSortItem sortItem : sortItems) {
+			orders[index++] = new Order(Direction.fromString(sortItem
+					.getDirection().name()), fieldQueryString(sortItem
+					.getField().getType(),
+					sortItem.getField().getConceptName(), sortItem.getField()
+							.getPeriodName(), sortItem.getField()
+							.getInstanceDate(), sortItem.getField().getField()));
 		}
 		return orders;
 	}
@@ -262,7 +435,8 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 			projection = addProjection(query.getProjection());
 		}
 		q = new BasicQuery(queryString, projection);
-		q = (BasicQuery) addSort(q, query != null ? query.getSortItems() : null);
+		q = (BasicQuery) addStructuredSort(q,
+				query != null ? query.getSortItems() : null);
 		q.with(pageable);
 		if (gameId != null) {
 			q.addCriteria(Criteria.where("gameId").is(gameId));

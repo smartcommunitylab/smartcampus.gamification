@@ -7,16 +7,29 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ComplexSearchQuery extends SearchQuery {
+public class ComplexSearchQuery {
 	private Map<String, List<QueryElement>> query;
+	private StructuredProjection projection;
+	private List<StructuredSortItem> sortItems;
+
+	// @JsonCreator
+	// public ComplexSearchQuery(
+	// @JsonProperty("query") Map<String, List<QueryElement>> query,
+	// @JsonProperty("projection") Projection projection,
+	// @JsonProperty("sortItems") List<SortItem> sortItems) {
+	// super(sortItems, projection);
+	// this.query = query;
+	// }
 
 	@JsonCreator
 	public ComplexSearchQuery(
 			@JsonProperty("query") Map<String, List<QueryElement>> query,
-			@JsonProperty("projection") Projection projection,
-			@JsonProperty("sortItems") List<SortItem> sortItems) {
-		super(sortItems, projection);
+			@JsonProperty("projection") StructuredProjection projection,
+			@JsonProperty("sortItems") List<StructuredSortItem> sortItems) {
+		// super(sortItems, projection);
 		this.query = query;
+		this.projection = projection;
+		this.sortItems = sortItems;
 	}
 
 	public Map<String, List<QueryElement>> getQuery() {
@@ -103,6 +116,102 @@ public class ComplexSearchQuery extends SearchQuery {
 		public String getDisplayName() {
 			return displayName;
 		}
+	}
+
+	public static class StructuredElement {
+		private String type;
+		private String conceptName;
+		private String periodName;
+		private Date instanceDate;
+		private String field;
+
+		@JsonCreator
+		public StructuredElement(@JsonProperty("type") String type,
+				@JsonProperty("conceptName") String conceptName,
+				@JsonProperty("periodName") String periodName,
+				@JsonProperty("instanceDate") Date instanceDate,
+				@JsonProperty("field") String field) {
+			this.type = type;
+			this.conceptName = conceptName;
+			this.periodName = periodName;
+			this.instanceDate = instanceDate;
+			this.field = field;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public String getConceptName() {
+			return conceptName;
+		}
+
+		public String getPeriodName() {
+			return periodName;
+		}
+
+		public Date getInstanceDate() {
+			return instanceDate;
+		}
+
+		public String getField() {
+			return field;
+		}
+
+	}
+
+	public static class StructuredSortItem {
+		public static enum Direction {
+			ASC, DESC;
+		}
+
+		private StructuredElement field;
+		private Direction direction;
+
+		@JsonCreator
+		public StructuredSortItem(
+				@JsonProperty("field") StructuredElement field,
+				@JsonProperty("direction") Direction direction) {
+			this.field = field;
+			this.direction = direction;
+		}
+
+		public StructuredElement getField() {
+			return field;
+		}
+
+		public Direction getDirection() {
+			return direction;
+		}
+	}
+
+	public static class StructuredProjection {
+		private List<StructuredElement> include;
+		private List<StructuredElement> exclude;
+
+		@JsonCreator
+		public StructuredProjection(
+				@JsonProperty("include") List<StructuredElement> include,
+				@JsonProperty("exclude") List<StructuredElement> exclude) {
+			this.include = include;
+			this.exclude = exclude;
+		}
+
+		public List<StructuredElement> getIncludeFields() {
+			return include;
+		}
+
+		public List<StructuredElement> getExcludeFields() {
+			return exclude;
+		}
+	}
+
+	public StructuredProjection getProjection() {
+		return projection;
+	}
+
+	public List<StructuredSortItem> getSortItems() {
+		return sortItems;
 	}
 
 }

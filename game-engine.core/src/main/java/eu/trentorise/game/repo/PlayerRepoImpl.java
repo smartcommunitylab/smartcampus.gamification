@@ -29,10 +29,12 @@ import com.mongodb.util.JSONParseException;
 
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
+import eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement;
 import eu.trentorise.game.model.core.ComplexSearchQuery.SearchElement;
 import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredElement;
 import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredSortItem;
 import eu.trentorise.game.model.core.RawSearchQuery;
+import eu.trentorise.game.model.core.RawSearchQuery.Projection;
 import eu.trentorise.game.model.core.RawSearchQuery.SortItem;
 import eu.trentorise.game.model.core.StringSearchQuery;
 
@@ -45,7 +47,111 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	private String addProjection(eu.trentorise.game.model.core.RawSearchQuery.Projection proj) {
+	@Override
+	public Page<StatePersistence> search(String gameId, RawSearchQuery query, Pageable pageable) {
+		List<StatePersistence> result = null;
+		BasicQuery q = null;
+		String queryString = "{}";
+		String projection = null;
+		try {
+			if (query != null) {
+				if (query.getQuery() != null) {
+					queryString = mapper.writeValueAsString(query.getQuery());
+				}
+				projection = addProjection(query.getProjection());
+			}
+			q = new BasicQuery(queryString, projection);
+			q = (BasicQuery) addSort(q, query != null ? query.getSortItems()
+					: null);
+			q.with(pageable);
+
+			if (gameId != null) {
+				q.addCriteria(Criteria.where("gameId").is(gameId));
+			}
+
+			result = mongo.find(q, StatePersistence.class);
+
+		} catch (JSONParseException | UncategorizedMongoDbException
+				| MongoException | JsonProcessingException e) {
+			exceptionHandler(e);
+		}
+
+		long totalSize = mongo.count(q, StatePersistence.class);
+		return new PageImpl<>(result, pageable, totalSize);
+	}
+
+	@Override
+	public Page<StatePersistence> search(String gameId, ComplexSearchQuery query, Pageable pageable) {
+		List<StatePersistence> result = null;
+		BasicQuery q = null;
+		String queryString = "{}";
+		String projection = null;
+		StringBuffer buffer = new StringBuffer();
+		if (query != null) {
+			Map<String, List<QueryElement>> parts = query.getQuery();
+			if (parts != null) {
+				for (SearchElement element : ComplexSearchQuery.SearchElement
+						.values()) {
+					List<QueryElement> queryParts = parts.get(element
+							.getDisplayName());
+					if (queryParts != null) {
+						buffer.append(queryPartToString(
+								element.getDisplayName(), queryParts));
+					}
+				}
+				if (buffer.length() > 0) {
+					queryString = buffer.toString();
+				} else {
+					throw new IllegalArgumentException(
+							"Query seems to be not valid: searchElements not valid");
+				}
+
+			}
+
+			projection = addProjection(query.getProjection());
+		}
+		q = new BasicQuery(queryString, projection);
+		q = (BasicQuery) addStructuredSort(q,
+				query != null ? query.getSortItems() : null);
+		q.with(pageable);
+		if (gameId != null) {
+			q.addCriteria(Criteria.where("gameId").is(gameId));
+		}
+		try {
+			result = mongo.find(q, StatePersistence.class);
+		} catch (JSONParseException | UncategorizedMongoDbException
+				| MongoException e) {
+			exceptionHandler(e);
+		}
+		long totalSize = mongo.count(q, StatePersistence.class);
+		return new PageImpl<>(result, pageable, totalSize);
+	}
+
+	@Override
+	public Page<StatePersistence> search(String gameId, StringSearchQuery query, Pageable pageable) {
+		List<StatePersistence> result = null;
+		String queryString = "{}";
+		if (query != null && query.getQuery() != null) {
+			queryString = query.getQuery();
+		}
+
+		BasicQuery q = new BasicQuery(queryString);
+		q.with(pageable);
+		if (gameId != null) {
+			q.addCriteria(Criteria.where("gameId").is(gameId));
+		}
+		try {
+			result = mongo.find(q, StatePersistence.class);
+		} catch (JSONParseException | UncategorizedMongoDbException
+				| MongoException e) {
+			exceptionHandler(e);
+		}
+		long totalSize = mongo.count(q, StatePersistence.class);
+		return new PageImpl<>(result, pageable, totalSize);
+
+	}
+
+	private String addProjection(Projection proj) {
 		String result = null;
 		if (proj != null) {
 			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
@@ -150,13 +256,12 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return query;
 	}
 
-	private String queryPartToString(String concept, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement> parts) {
+	private String queryPartToString(String concept, List<QueryElement> parts) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("{");
 		if (parts != null) {
 			for (int i = 0; i < parts.size(); i++) {
-				eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement part = parts
-						.get(i);
+				QueryElement part = parts.get(i);
 				buffer.append("\"" + fieldQueryString(concept, part) + "\"");
 				buffer.append(":").append(part.getClause().trim());
 				if (i < parts.size() - 1) {
@@ -228,7 +333,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return queryString;
 	}
 
-	private String fieldQueryString(String concept, eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement queryPart) {
+	private String fieldQueryString(String concept, QueryElement queryPart) {
 		String queryString = null;
 		if ("customData".equals(concept)) {
 			queryString = fieldQueryString(concept, null, null, null,
@@ -312,114 +417,9 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return orders;
 	}
 
-	@Override
-	public Page<StatePersistence> search(String gameId, RawSearchQuery query, Pageable pageable) {
-		List<StatePersistence> result = null;
-		BasicQuery q = null;
-		String queryString = "{}";
-		String projection = null;
-		try {
-			if (query != null) {
-				if (query.getQuery() != null) {
-					queryString = mapper.writeValueAsString(query.getQuery());
-				}
-				projection = addProjection(query.getProjection());
-			}
-			q = new BasicQuery(queryString, projection);
-			q = (BasicQuery) addSort(q, query != null ? query.getSortItems()
-					: null);
-			q.with(pageable);
-
-			if (gameId != null) {
-				q.addCriteria(Criteria.where("gameId").is(gameId));
-			}
-
-			result = mongo.find(q, StatePersistence.class);
-
-		} catch (JSONParseException | UncategorizedMongoDbException
-				| MongoException | JsonProcessingException e) {
-			exceptionHandler(e);
-		}
-
-		long totalSize = mongo.count(q, StatePersistence.class);
-		return new PageImpl<>(result, pageable, totalSize);
-	}
-
-	@Override
-	public Page<StatePersistence> search(String gameId, ComplexSearchQuery query, Pageable pageable) {
-		List<StatePersistence> result = null;
-		BasicQuery q = null;
-		String queryString = "{}";
-		String projection = null;
-		StringBuffer buffer = new StringBuffer();
-		if (query != null) {
-			Map<String, List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement>> parts = query
-					.getQuery();
-			if (parts != null) {
-				for (SearchElement element : ComplexSearchQuery.SearchElement
-						.values()) {
-					List<eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement> queryParts = parts
-							.get(element.getDisplayName());
-					if (queryParts != null) {
-						buffer.append(queryPartToString(
-								element.getDisplayName(), queryParts));
-					}
-				}
-				if (buffer.length() > 0) {
-					queryString = buffer.toString();
-				} else {
-					throw new IllegalArgumentException(
-							"Query seems to be not valid: searchElements not valid");
-				}
-
-			}
-
-			projection = addProjection(query.getProjection());
-		}
-		q = new BasicQuery(queryString, projection);
-		q = (BasicQuery) addStructuredSort(q,
-				query != null ? query.getSortItems() : null);
-		q.with(pageable);
-		if (gameId != null) {
-			q.addCriteria(Criteria.where("gameId").is(gameId));
-		}
-		try {
-			result = mongo.find(q, StatePersistence.class);
-		} catch (JSONParseException | UncategorizedMongoDbException
-				| MongoException e) {
-			exceptionHandler(e);
-		}
-		long totalSize = mongo.count(q, StatePersistence.class);
-		return new PageImpl<>(result, pageable, totalSize);
-	}
-
 	private void exceptionHandler(Exception e) {
 		logger.error("Exception running mongo query in search", e);
 		throw new IllegalArgumentException("Query seems to be not valid");
-	}
-
-	@Override
-	public Page<StatePersistence> search(String gameId, StringSearchQuery query, Pageable pageable) {
-		List<StatePersistence> result = null;
-		String queryString = "{}";
-		if (query != null && query.getQuery() != null) {
-			queryString = query.getQuery();
-		}
-
-		BasicQuery q = new BasicQuery(queryString);
-		q.with(pageable);
-		if (gameId != null) {
-			q.addCriteria(Criteria.where("gameId").is(gameId));
-		}
-		try {
-			result = mongo.find(q, StatePersistence.class);
-		} catch (JSONParseException | UncategorizedMongoDbException
-				| MongoException e) {
-			exceptionHandler(e);
-		}
-		long totalSize = mongo.count(q, StatePersistence.class);
-		return new PageImpl<>(result, pageable, totalSize);
-
 	}
 
 }

@@ -26,6 +26,9 @@ import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
+import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredElement;
+import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredProjection;
+import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredSortItem;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.RawSearchQuery.Projection;
 import eu.trentorise.game.model.core.RawSearchQuery.SortItem;
@@ -165,7 +168,6 @@ public class PlayerRepoTest {
 				states.get(0).getCustomData().get("field"));
 		Assert.assertEquals("value-3",
 				states.get(1).getCustomData().get("field"));
-
 	}
 
 	@Test
@@ -474,6 +476,42 @@ public class PlayerRepoTest {
 		Assert.assertEquals(3, states.size());
 	}
 
+	@Test
+	public void structuredSort() {
+		setupEnv();
+
+		StructuredElement element = new StructuredElement("pointConcept",
+				"green leaves", null, null, "score");
+		StructuredSortItem sort = new StructuredSortItem(
+				element,
+				eu.trentorise.game.model.core.ComplexSearchQuery.StructuredSortItem.Direction.DESC);
+		ComplexSearchQuery complexQuery = new ComplexSearchQuery(null, null,
+				Arrays.asList(sort));
+		Page<StatePersistence> results = playerRepo.search(GAME, complexQuery,
+				null);
+		Assert.assertEquals("24131", results.getContent().get(0).getPlayerId());
+		Assert.assertEquals("24153", results.getContent().get(1).getPlayerId());
+		Assert.assertEquals("24100", results.getContent().get(2).getPlayerId());
+	}
+
+	@Test
+	public void structuredProjection() {
+		setupEnv();
+
+		StructuredElement element = new StructuredElement("general", null,
+				null, null, "playerId");
+		StructuredElement element1 = new StructuredElement("pointConcept",
+				"green leaves", null, null, "score");
+		StructuredProjection proj = new StructuredProjection(Arrays.asList(
+				element, element1), null);
+		ComplexSearchQuery complexQuery = new ComplexSearchQuery(null, proj,
+				null);
+		Page<StatePersistence> results = playerRepo.search(GAME, complexQuery,
+				null);
+		Assert.assertNotNull(results.getContent().get(0).getPlayerId());
+		Assert.assertNull(results.getContent().get(0).getGameId());
+	}
+
 	private void setupEnv() {
 		String state1 = "{\n"
 				+ "    \"gameId\" : \"repo-game\",\n"
@@ -701,7 +739,7 @@ public class PlayerRepoTest {
 				+ "                \"obj\" : {\n"
 				+ "                    \"id\" : \"1\",\n"
 				+ "                    \"name\" : \"green leaves\",\n"
-				+ "                    \"score\" : 21020.0,\n"
+				+ "                    \"score\" : 2102.0,\n"
 				+ "                    \"periods\" : {\n"
 				+ "                        \"weekly\" : {\n"
 				+ "                            \"start\" : 1472853600000,\n"
@@ -852,7 +890,7 @@ public class PlayerRepoTest {
 				+ "                \"obj\" : {\n"
 				+ "                    \"id\" : \"1\",\n"
 				+ "                    \"name\" : \"green leaves\",\n"
-				+ "                    \"score\" : 21020.0,\n"
+				+ "                    \"score\" : 22020.0,\n"
 				+ "                    \"periods\" : {\n"
 				+ "                        \"weekly\" : {\n"
 				+ "                            \"start\" : 1472853600000,\n"

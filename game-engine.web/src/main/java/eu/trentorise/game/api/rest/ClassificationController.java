@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.core.ResourceNotFoundException;
+import eu.trentorise.game.managers.ClassificationUtils;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.PointConcept.PeriodInstance;
@@ -32,7 +33,6 @@ import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
-import eu.trentorise.game.utils.ClassificationUtils;
 import eu.trentorise.game.utils.Converter;
 
 @RestController

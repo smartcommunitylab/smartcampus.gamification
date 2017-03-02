@@ -3,6 +3,7 @@ package eu.trentorise.game.repo;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +26,19 @@ import com.mongodb.util.JSON;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.model.CustomData;
+import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredElement;
 import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredProjection;
 import eu.trentorise.game.model.core.ComplexSearchQuery.StructuredSortItem;
+import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.RawSearchQuery.Projection;
 import eu.trentorise.game.model.core.RawSearchQuery.SortItem;
 import eu.trentorise.game.model.core.RawSearchQuery.SortItem.Direction;
 import eu.trentorise.game.model.core.StringSearchQuery;
+import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
@@ -44,6 +49,9 @@ public class PlayerRepoTest {
 
 	@Autowired
 	private MongoTemplate mongo;
+
+	@Autowired
+	private GameService gameSrv;
 
 	@Before
 	public void cleanDB() {
@@ -513,6 +521,13 @@ public class PlayerRepoTest {
 	}
 
 	private void setupEnv() {
+		Game g = new Game(GAME);
+		g.setConcepts(new HashSet<GameConcept>());
+		PointConcept pc = new PointConcept("green leaves");
+		pc.addPeriod("weekly", new LocalDate(2016, 9, 3).toDate(), 7 * 24 * 60
+				* 60 * 1000);
+		g.getConcepts().add(pc);
+		gameSrv.saveGameDefinition(g);
 		String state1 = "{\n"
 				+ "    \"gameId\" : \"repo-game\",\n"
 				+ "    \"playerId\" : \"24153\",\n"

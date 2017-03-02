@@ -27,7 +27,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoException;
 import com.mongodb.util.JSONParseException;
 
+import eu.trentorise.game.managers.ClassificationUtils;
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.ComplexSearchQuery.QueryElement;
 import eu.trentorise.game.model.core.ComplexSearchQuery.SearchElement;
@@ -37,6 +40,7 @@ import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.RawSearchQuery.Projection;
 import eu.trentorise.game.model.core.RawSearchQuery.SortItem;
 import eu.trentorise.game.model.core.StringSearchQuery;
+import eu.trentorise.game.services.GameService;
 
 public class PlayerRepoImpl implements ExtendPlayerRepo {
 
@@ -46,6 +50,9 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	private MongoTemplate mongo;
 
 	private ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	private GameService gameSrv;
 
 	@Override
 	public Page<StatePersistence> search(String gameId, RawSearchQuery query, Pageable pageable) {
@@ -87,6 +94,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		String queryString = "{}";
 		String projection = null;
 		StringBuffer buffer = new StringBuffer();
+		Game game = gameSrv.loadGameDefinitionById(gameId);
 		if (query != null) {
 			Map<String, List<QueryElement>> parts = query.getQuery();
 			if (parts != null) {
@@ -95,7 +103,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 					List<QueryElement> queryParts = parts.get(element
 							.getDisplayName());
 					if (queryParts != null) {
-						buffer.append(queryPartToString(
+						buffer.append(queryPartToString(game,
 								element.getDisplayName(), queryParts));
 					}
 				}
@@ -108,10 +116,10 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 			}
 
-			projection = addProjection(query.getProjection());
+			projection = addProjection(game, query.getProjection());
 		}
 		q = new BasicQuery(queryString, projection);
-		q = (BasicQuery) addStructuredSort(q,
+		q = (BasicQuery) addStructuredSort(game, q,
 				query != null ? query.getSortItems() : null);
 		q.with(pageable);
 		if (gameId != null) {
@@ -189,7 +197,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return result;
 	}
 
-	private String addProjection(ComplexSearchQuery.StructuredProjection proj) {
+	private String addProjection(Game game, ComplexSearchQuery.StructuredProjection proj) {
 		String result = null;
 		if (proj != null) {
 			List<StructuredElement> projectionIncludeFields = ListUtils
@@ -202,7 +210,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				if (buffer.length() > 1) {
 					buffer.append(",");
 				}
-				String includeField = fieldQueryString(element.getType(),
+				String includeField = fieldQueryString(game, element.getType(),
 						element.getConceptName(), element.getPeriodName(),
 						element.getInstanceDate(), element.getField());
 				buffer.append(String.format("\"%s\":1", includeField));
@@ -222,7 +230,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				}
 				buffer.append(String.format(
 						"\"%s\":0",
-						fieldQueryString(element.getType(),
+						fieldQueryString(game, element.getType(),
 								element.getConceptName(),
 								element.getPeriodName(),
 								element.getInstanceDate(), element.getField())));
@@ -249,20 +257,21 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return query;
 	}
 
-	private Query addStructuredSort(Query query, List<StructuredSortItem> sortItems) {
+	private Query addStructuredSort(Game game, Query query, List<StructuredSortItem> sortItems) {
 		if (sortItems != null) {
-			query.with(new Sort(createStructuredDataOders(sortItems)));
+			query.with(new Sort(createStructuredDataOders(game, sortItems)));
 		}
 		return query;
 	}
 
-	private String queryPartToString(String concept, List<QueryElement> parts) {
+	private String queryPartToString(Game game, String concept, List<QueryElement> parts) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("{");
 		if (parts != null) {
 			for (int i = 0; i < parts.size(); i++) {
 				QueryElement part = parts.get(i);
-				buffer.append("\"" + fieldQueryString(concept, part) + "\"");
+				buffer.append("\"" + fieldQueryString(game, concept, part)
+						+ "\"");
 				buffer.append(":").append(part.getClause().trim());
 				if (i < parts.size() - 1) {
 					buffer.append(",");
@@ -274,7 +283,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return buffer.toString();
 	}
 
-	private String fieldQueryString(String fieldType, String conceptName, String periodName, Date instanceDate, String field) {
+	private String fieldQueryString(Game game, String fieldType, String conceptName, String periodName, Date instanceDate, String field) {
 		String queryString = null;
 		if ("customData".equals(fieldType)) {
 			queryString = "customData";
@@ -308,9 +317,14 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				queryString += ".obj.periods." + periodName;
 			}
 			if (instanceDate != null) {
-				queryString += ".instances."
-						+ new DateTime(instanceDate)
-								.toString("YYYY-MM-dd'T'HH:mm:ss");
+				PeriodInstance instance = ClassificationUtils.retrieveWindow(
+						game, periodName, conceptName, instanceDate.getTime(),
+						-1);
+				if (instance != null) {
+					queryString += ".instances."
+							+ new DateTime(instance.getStart())
+									.toString("YYYY-MM-dd'T'HH:mm:ss");
+				}
 			}
 			if (field != null) {
 				queryString += "." + field.trim();
@@ -333,24 +347,25 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return queryString;
 	}
 
-	private String fieldQueryString(String concept, QueryElement queryPart) {
+	private String fieldQueryString(Game game, String concept, QueryElement queryPart) {
 		String queryString = null;
 		if ("customData".equals(concept)) {
-			queryString = fieldQueryString(concept, null, null, null,
+			queryString = fieldQueryString(game, concept, null, null, null,
 					queryPart.getConceptName());
 		} else if ("pointConcept".equals(concept)) {
-			queryString = fieldQueryString(concept, queryPart.getConceptName(),
-					null, null, "score");
+			queryString = fieldQueryString(game, concept,
+					queryPart.getConceptName(), null, null, "score");
 		} else if ("badgeCollectionConcept".equals(concept)) {
-			queryString = fieldQueryString(concept, queryPart.getConceptName(),
-					null, null, "badgeEarned");
+			queryString = fieldQueryString(game, concept,
+					queryPart.getConceptName(), null, null, "badgeEarned");
 		} else if ("periodicPointConcept".equals(concept)) {
-			queryString = fieldQueryString(concept, queryPart.getConceptName(),
-					queryPart.getPeriodName(), queryPart.getInstanceDate(),
-					"score");
+			queryString = fieldQueryString(game, concept,
+					queryPart.getConceptName(), queryPart.getPeriodName(),
+					queryPart.getInstanceDate(), "score");
 		} else if ("challengeConcept".equals(concept)) {
-			queryString = fieldQueryString(concept, queryPart.getConceptName(),
-					null, null, queryPart.getField());
+			queryString = fieldQueryString(game, concept,
+					queryPart.getConceptName(), null, null,
+					queryPart.getField());
 		}
 
 		return queryString;
@@ -403,12 +418,12 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return orders;
 	}
 
-	private Order[] createStructuredDataOders(List<StructuredSortItem> sortItems) {
+	private Order[] createStructuredDataOders(Game game, List<StructuredSortItem> sortItems) {
 		Order[] orders = new Order[sortItems.size()];
 		int index = 0;
 		for (StructuredSortItem sortItem : sortItems) {
 			orders[index++] = new Order(Direction.fromString(sortItem
-					.getDirection().name()), fieldQueryString(sortItem
+					.getDirection().name()), fieldQueryString(game, sortItem
 					.getField().getType(),
 					sortItem.getField().getConceptName(), sortItem.getField()
 							.getPeriodName(), sortItem.getField()

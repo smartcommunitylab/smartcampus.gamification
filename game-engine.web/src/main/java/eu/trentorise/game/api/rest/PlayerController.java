@@ -217,27 +217,6 @@ public class PlayerController {
 
 	}
 
-	// Query player information
-	// POST /data/game/{id}/player/search
-	// Read player data using more complex queries
-	//
-	// Query structure:
-	// ­ sort​ definition: list of object of type (optional, no sort by default)
-	// ­ {element: element, field: field, order: 1/­1}
-	// ­ filter​ definition: list of objects of type
-	// ­ {element: element, condition: object (in mongo syntax)}
-	// ­ projection​ definition: list of object of type (optional, all elements
-	// by default)
-	// ­ {element: element, include:[fields] (optional, all by default),
-	// exclude: [fields]
-	// (optional, none by default)}
-	// ­ start​ : number (optional, defaults to 0)
-	// ­ count​ : number (optional, defaults to retrieve all)
-	// Player data elements:
-	// ­ custom
-	// ­ state
-	// ­ challenges
-
 	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/search")
 	public Page<PlayerStateDTO> searchByRawQuery(@PathVariable String gameId, @RequestBody WrapperQuery query, Pageable pageable) {
 		try {

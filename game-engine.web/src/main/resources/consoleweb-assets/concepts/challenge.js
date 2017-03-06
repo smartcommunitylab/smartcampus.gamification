@@ -33,7 +33,7 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 			// Delete a challenge.
 			var modalInstance = $uibModal.open({
 				templateUrl: 'modals/modal_delete_confirm.html',
-				controller: 'DeleteConceptConfirmModalInstanceCtrl',
+				controller: 'DeleteChallengeConfirmModalCtrl',
 				backdrop: "static",
 				resolve: {
 					game: function () {
@@ -114,7 +114,7 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 		};
 	});
 
-modals.controller('DeleteConceptConfirmModalInstanceCtrl', function ($scope, $rootScope, $uibModalInstance, game, challengeId, savedChallenges, argument, gamesFactory) {
+modals.controller('DeleteChallengeConfirmModalCtrl', function ($scope, $rootScope, $uibModalInstance, game, challengeId, savedChallenges, argument, gamesFactory) {
 	$scope.argument = argument;
 
 	$scope.alerts = {

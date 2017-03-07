@@ -1,16 +1,23 @@
 concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $uibModal, gamesFactory) {
 		$scope.challenge = initChallenge();
-		$scope.hideEditMode = true;
-		
 		$scope.savedChallenges = [];
+
 		// maintain copy of challenge objects in edit mode.
 		$scope.editedChallenges = [];
 		
+		$scope.fieldName = [];
+		$scope.hideEditMode = [];
+
 		gamesFactory.readChallengeModels($rootScope.currentGameId).then(function (result) {
 				$scope.savedChallenges = result;
+				for(var i = 0; i < $scope.savedChallenges.length; i++) {
+					$scope.hideEditMode[i] = true;
+				}
 			}, function (message) {
 				console.log("Challenge model failure");
 			});
+		
+
 		
 		$scope.addField = function() {
 			$scope.challenge.fields.push('');
@@ -53,11 +60,6 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 			});
 			
 			modalInstance.result.then(function () {
-				$scope.challenge.deleted = true;
-				
-				$timeout(function () {
-					$scope.challenge.deleted = false;
-				}, 4000);
 			});
 		}
 
@@ -83,16 +85,13 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 		    return true;
 		};
 		
-		$scope.editChallenge = function (challengeId) {
-			var modelToEdit = $scope.savedChallenges[challengeId];
-			modelToEdit.fields = $scope.savedChallenges[challengeId].variables;
+		$scope.editChallenge = function (index) {
+			var modelToEdit = $scope.savedChallenges[index];
+			modelToEdit.fields = $scope.savedChallenges[index].variables;
 			gamesFactory.saveChallengeModel($rootScope.currentGameId, modelToEdit).then(function (instance) {
-				console.log("Challenge: " + challengeId +  " edited successfully");
-				$scope.challenge.fieldEdited = true;
-				$scope.editedChallenges[challengeId] = angular.copy($scope.savedChallenges[challengeId]);
-				$timeout(function () {
-					$scope.challenge.fieldEdited = false;
-				}, 4000);
+				$scope.editedChallenges[index] = angular.copy($scope.savedChallenges[index]);
+				$scope.fieldName[index] = null;
+				$scope.hideEditMode[index] = true;
 			}, function (message) {
 				console.log("Challenge modification failure");
 			});
@@ -111,7 +110,13 @@ concepts.controller('ChallengeCtrl', function ($scope, $rootScope, $timeout, $ui
 				$scope.editedChallenges[idxC] = angular.copy($scope.savedChallenges[idxC]); 
 			}
 			$scope.savedChallenges[idxC].variables.push(fieldName);
+			$scope.fieldName[idxC] = null;
 		};
+		
+		$scope.cancel = function(index) {
+			$scope.hideEditMode[index]= !$scope.hideEditMode[index];
+			$scope.fieldName[index] = null;
+		}
 	});
 
 modals.controller('DeleteChallengeConfirmModalCtrl', function ($scope, $rootScope, $uibModalInstance, game, challengeId, savedChallenges, argument, gamesFactory) {

@@ -94,7 +94,6 @@
 							data-ng-click="addPoint()"
 							uib-tooltip="{{'labels:tool_add' | i18next}}"
 							ng-disabled="disabled">
-							<!-- span class="glyphicon glyphicon-plus"></span-->
 							Save point
 						</button>
 					</div>
@@ -235,13 +234,10 @@
 						data-ng-click="addModel()"
 						uib-tooltip="{{'labels:tool_add' | i18next}}"
 						ng-disabled="disabled">
-						<!-- span class="glyphicon glyphicon-plus"></span-->
 						Save model
 					</button>
 				</div>
 				<div class="col-md-12 text-center">
-					<uib-alert ng-if="!!challenge.fieldEdited" type="success" close="challenge.fieldEdited = false">{{'messages:msg_challenge_edited' | i18next}}</uib-alert>
-					<uib-alert ng-if="!!challenge.deleted" type="success" close="challenge.deleted = false">{{'messages:msg_challenge_deleted' | i18next}}</uib-alert>
 				</div>
 			</form>
 			<table class="table table-striped table-bordered">
@@ -256,7 +252,7 @@
 							</button>
 							<button type="button"
 								class="btn btn-primary btn-circle pull-right"
-								data-ng-click="hideEditMode = !hideEditMode; hide=true"
+								data-ng-click="hideEditMode[$index] = !hideEditMode[$index]; hide=true"
 								uib-tooltip="{{'labels:tool_edit' | i18next}}"
 								style="margin-right: 1em;">
 								<span class="glyphicon glyphicon-pencil"></span>
@@ -264,7 +260,7 @@
 							<button type="button"
 								class="btn btn-warning btn-circle pull-right"
 								style="margin-right: 1em;"
-								data-ng-click="hide = !hide;showPoint($index);hideEditMode=true; initViewMode($index)"
+								data-ng-click="hide = !hide;hideEditMode[$index]=true; initViewMode($index)"
 								uib-tooltip="{{'labels:tool_view' | i18next}}">
 								<span class="glyphicon"
 									ng-class="{'glyphicon-eye-open': hide, 'glyphicon-eye-close': !hide}"></span>
@@ -277,13 +273,13 @@
 										</tr>
 									</table>
 								</div>
-								<div uib-collapse="hideEditMode" class="col-md-12">
+								<div uib-collapse="hideEditMode[$index]" class="col-md-12">
 									<div>
 										<input type="text" class="form-control text"
-											id="newChallengeInstanceName" ng-model="fieldName" required
+											ng-model="fieldName[$index]" required
 											autofocus />
 										<button type="button" class="btn btn-success"
-											data-ng-click="addFieldInEditMode($index, fieldName)"
+											data-ng-click="addFieldInEditMode($index, fieldName[$index])"
 											uib-tooltip="{{'labels:tool_add' | i18next}}"
 											ng-disabled="disabled">Add field</button>
 									</div>
@@ -306,9 +302,8 @@
 											i18next}}</button>
 										<button class="btn btn-danger pull-right"
 											style="margin-right: 2px;"
-											data-ng-click="hideEditMode=!hideEditMode">{{'labels:btn_cancel'|
+											data-ng-click="cancel($index);">{{'labels:btn_cancel'|
 											i18next}}</button>
-
 									</div>
 								</div>
 							</div>

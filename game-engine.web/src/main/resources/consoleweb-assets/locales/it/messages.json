@@ -28,5 +28,6 @@
   "msg_point_deleted": "Punto eliminato con successo",
   "msg_badge_deleted": "Badge collection eliminata con successo",
   "msg_challenge_deleted": "Sfida eliminata con successo",
+  "msg_challenge_edited": "Sfida modificato con successo", 
   "msg_no_challenges" : "Nessuna sfida"
 }

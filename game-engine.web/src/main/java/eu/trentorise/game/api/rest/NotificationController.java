@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.core.Notification;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class NotificationController {
@@ -24,11 +25,11 @@ public class NotificationController {
 	// GET /notification/game/{id}/player/{playerId}?start=<num, optional,
 	// default=0>&count=<num,optional, default=­1 to retrieve all>
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}/player/{playerId}")
-	public List<Notification> readPlayerNotification(
-			@PathVariable String gameId, @PathVariable String playerId,
-			@RequestParam(defaultValue = "0") int start,
-			@RequestParam(defaultValue = "-1") int count,
+	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}/player/{playerId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player notifications")
+	public List<Notification> readPlayerNotification(@PathVariable String gameId, @PathVariable String playerId,
+			@RequestParam(defaultValue = "0") int start, @RequestParam(defaultValue = "-1") int count,
 			@RequestParam(required = false) Long timestamp) {
 
 		try {
@@ -43,8 +44,7 @@ public class NotificationController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, playerId,
-					timestamp);
+			return notificationSrv.readNotifications(gameId, playerId, timestamp);
 		} else {
 			return notificationSrv.readNotifications(gameId, playerId);
 		}
@@ -54,11 +54,11 @@ public class NotificationController {
 	// GET /notification/game/{id}/team/{teamId}?start=<num, optional,
 	// default=0>&count=<num,optional, default=­1 to retrieve all>
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}/team/{teamId}")
-	public List<Notification> readTeamNotification(@PathVariable String gameId,
-			@PathVariable String teamId,
-			@RequestParam(defaultValue = "0") int start,
-			@RequestParam(defaultValue = "-1") int count,
+	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}/team/{teamId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get team notifications")
+	public List<Notification> readTeamNotification(@PathVariable String gameId, @PathVariable String teamId,
+			@RequestParam(defaultValue = "0") int start, @RequestParam(defaultValue = "-1") int count,
 			@RequestParam(required = false) Long timestamp) {
 
 		return readPlayerNotification(gameId, teamId, start, count, timestamp);
@@ -69,11 +69,11 @@ public class NotificationController {
 	// default=0>&count=<num,optional,
 	// default=­1 to retrieve all>
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}")
-	public List<Notification> readNotification(@PathVariable String gameId,
-			@RequestParam(defaultValue = "0") int start,
-			@RequestParam(defaultValue = "-1") int count,
-			@RequestParam(required = false) Long timestamp) {
+	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get game notifications")
+	public List<Notification> readNotification(@PathVariable String gameId, @RequestParam(defaultValue = "0") int start,
+			@RequestParam(defaultValue = "-1") int count, @RequestParam(required = false) Long timestamp) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

@@ -46,13 +46,13 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.Workflow;
 import eu.trentorise.game.utils.Converter;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping(value = "/gengine")
 public class MainController {
 
-	private static Logger logger = org.slf4j.LoggerFactory
-			.getLogger(MainController.class);
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(MainController.class);
 
 	@Autowired
 	Workflow workflow;
@@ -69,26 +69,25 @@ public class MainController {
 	@Autowired
 	Converter converter;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/execute")
-	public void executeAction(@RequestBody ExecutionDataDTO data,
-			HttpServletResponse res) {
+	@RequestMapping(method = RequestMethod.POST, value = "/execute", consumes = { "application/json" }, produces = {
+			"application/json" })
+	@ApiOperation(value = "Execute an action", notes = "Execute an action in a game")
+	public void executeAction(@RequestBody ExecutionDataDTO data, HttpServletResponse res) {
 		Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
 		if (game != null && game.isTerminated()) {
 			try {
-				res.sendError(403,
-						String.format("game %s is expired", game.getId()));
+				res.sendError(403, String.format("game %s is expired", game.getId()));
 			} catch (IOException e1) {
 				logger.error("Exception sendError to client", e1);
 			}
 		} else {
-			workflow.apply(data.getGameId(), data.getActionId(),
-					data.getPlayerId(), data.getData(), null);
+			workflow.apply(data.getGameId(), data.getActionId(), data.getPlayerId(), data.getData(), null);
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}")
-	public PlayerStateDTO readPlayerState(@PathVariable String gameId,
-			@PathVariable String playerId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}", produces = { "application/json" })
+	@ApiOperation(value = "Get player state", notes = "Get the state of a player in a game")
+	public PlayerStateDTO readPlayerState(@PathVariable String gameId, @PathVariable String playerId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -101,13 +100,12 @@ public class MainController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 
-		return converter.convertPlayerState(playerSrv.loadState(gameId,
-				playerId, true));
+		return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}")
-	public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId,
-			Pageable pageable,
+	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}", produces = { "application/json" })
+	@ApiOperation(value = "Get player states", notes = "Get the state of players in a game filter by optional player name")
+	public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId, Pageable pageable,
 			@RequestParam(required = false) String playerFilter) {
 
 		try {
@@ -127,13 +125,13 @@ public class MainController {
 			resList.add(converter.convertPlayerState(ps));
 		}
 
-		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList,
-				pageable, page.getTotalElements());
+		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList, pageable, page.getTotalElements());
 
 		return res;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}")
+	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}", produces = { "application/json" })
+	@ApiOperation(value = "Get notifications", notes = "Get the notifications of a game")
 	public List<Notification> readNotification(@PathVariable String gameId,
 			@RequestParam(required = false) Long timestamp) {
 		try {
@@ -149,9 +147,10 @@ public class MainController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}/{playerId}")
-	public List<Notification> readNotification(@PathVariable String gameId,
-			@PathVariable String playerId,
+	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}/{playerId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player notifications", notes = "Get the player notifications of a game")
+	public List<Notification> readNotification(@PathVariable String gameId, @PathVariable String playerId,
 			@RequestParam(required = false) Long timestamp) {
 
 		try {
@@ -166,8 +165,7 @@ public class MainController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, playerId,
-					timestamp);
+			return notificationSrv.readNotifications(gameId, playerId, timestamp);
 		} else {
 			return notificationSrv.readNotifications(gameId, playerId);
 		}

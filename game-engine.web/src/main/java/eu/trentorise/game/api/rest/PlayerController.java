@@ -23,6 +23,7 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class PlayerController {
@@ -33,18 +34,19 @@ public class PlayerController {
 	@Autowired
 	private PlayerService playerSrv;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}/challenges")
-	public void assignChallenge(@RequestBody ChallengeDataDTO challengeData, @PathVariable String gameId, @PathVariable String playerId) {
+	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}/challenges", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Assign challenge")
+	public void assignChallenge(@RequestBody ChallengeDataDTO challengeData, @PathVariable String gameId,
+			@PathVariable String playerId) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
 		}
-		playerSrv.assignChallenge(gameId, playerId,
-				challengeData.getModelName(), challengeData.getInstanceName(),
-				challengeData.getData(), challengeData.getStart(),
-				challengeData.getEnd());
+		playerSrv.assignChallenge(gameId, playerId, challengeData.getModelName(), challengeData.getInstanceName(),
+				challengeData.getData(), challengeData.getStart(), challengeData.getEnd());
 	}
 
 	// Create a player
@@ -56,7 +58,9 @@ public class PlayerController {
 	// ­ No implicit fields (e.g., game) in input
 	// ­ No concept fields in input
 
-	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}")
+	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Create player")
 	public void createPlayer(@PathVariable String gameId, @RequestBody PlayerStateDTO player) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -66,9 +70,8 @@ public class PlayerController {
 
 		// check if player already exists
 		if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
-			throw new IllegalArgumentException(String.format(
-					"Player %s already exists in game %s",
-					player.getPlayerId(), gameId));
+			throw new IllegalArgumentException(
+					String.format("Player %s already exists in game %s", player.getPlayerId(), gameId));
 		}
 
 		player.setGameId(gameId);
@@ -81,7 +84,9 @@ public class PlayerController {
 	// ­ Return everything: playerId, alias, customData, state (concept fields),
 	// teams, challenges
 
-	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}")
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player state")
 	public PlayerStateDTO readPlayer(@PathVariable String gameId, @PathVariable String playerId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -95,8 +100,7 @@ public class PlayerController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 
-		return converter.convertPlayerState(playerSrv.loadState(gameId,
-				playerId, true));
+		return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
 	}
 
 	// Update a player
@@ -105,7 +109,9 @@ public class PlayerController {
 	// ­ Error if the player ID does not exist
 	// ­ If alias not present, do not update it; if customdata not present do
 	// not update it.
-	@RequestMapping(method = RequestMethod.PUT, value = "/data/game/{gameId}/player/{playerId}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/data/game/{gameId}/player/{playerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Edittttttt player state")
 	public void updatePlayer(@PathVariable String gameId, @PathVariable String playerId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -119,14 +125,15 @@ public class PlayerController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 
-		throw new UnsupportedOperationException(
-				"Operation actually not supported");
+		throw new UnsupportedOperationException("Operation actually not supported");
 	}
 
 	// Delete a player
 	// DELETE /data/game/{id}/player/{playerId}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/data/game/{gameId}/player/{playerId}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/data/game/{gameId}/player/{playerId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Delete player state")
 	public void deletePlayer(@PathVariable String gameId, @PathVariable String playerId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -145,7 +152,9 @@ public class PlayerController {
 	// Read player’s teams
 	// GET /data/game/{id}/player/{playerId}/teams
 
-	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/teams")
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/teams", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player teams")
 	public List<TeamDTO> readTeamsByMember(@PathVariable String gameId, @PathVariable String playerId) {
 
 		try {
@@ -171,7 +180,9 @@ public class PlayerController {
 	// Read user challenges
 	// GET /data/game/{id}/player/{playerId}/challenges
 
-	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/challenges")
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/challenges", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player challenges")
 	public void getPlayerChallenge(@PathVariable String gameId, @PathVariable String playerId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -185,20 +196,23 @@ public class PlayerController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 
-		throw new UnsupportedOperationException(
-				"Operation actually not supported");
+		throw new UnsupportedOperationException("Operation actually not supported");
 	}
 
 	// Read user game state
 	// GET /data/game/{id}/player/{playerId}/state
-	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/state")
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/state", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player state")
 	public PlayerStateDTO readState(@PathVariable String gameId, @PathVariable String playerId) {
 		return readPlayer(gameId, playerId);
 	}
 
 	// Read user custom data
 	// GET /data/game/{id}/player/{playerId}/custom
-	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/custom")
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/custom", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player custom data")
 	public PlayerStateDTO readCustomData(@PathVariable String gameId, @PathVariable String playerId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -212,13 +226,15 @@ public class PlayerController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 
-		throw new UnsupportedOperationException(
-				"Operation actually not supported");
+		throw new UnsupportedOperationException("Operation actually not supported");
 
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/search")
-	public Page<PlayerStateDTO> searchByRawQuery(@PathVariable String gameId, @RequestBody WrapperQuery query, Pageable pageable) {
+	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/search", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Search player states")
+	public Page<PlayerStateDTO> searchByQuery(@PathVariable String gameId, @RequestBody WrapperQuery query,
+			Pageable pageable) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -238,8 +254,7 @@ public class PlayerController {
 			resList.add(converter.convertPlayerState(ps));
 		}
 
-		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList,
-				pageable, page.getTotalElements());
+		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList, pageable, page.getTotalElements());
 
 		return res;
 

@@ -17,6 +17,7 @@ import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class TeamController {
@@ -36,9 +37,10 @@ public class TeamController {
 	// ­ Error if the team ID already exists
 	// ­ In body specify name (optional), member list (optional)
 	//
-	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/team/{teamId}")
-	public void createTeam(@PathVariable String gameId,
-			@RequestBody TeamDTO team) {
+	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/team/{teamId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Create team")
+	public void createTeam(@PathVariable String gameId, @RequestBody TeamDTO team) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -47,9 +49,8 @@ public class TeamController {
 
 		// check if player already exists
 		if (playerSrv.readTeam(gameId, team.getPlayerId()) != null) {
-			throw new IllegalArgumentException(String.format(
-					"Team %s already exists in game %s", team.getPlayerId(),
-					gameId));
+			throw new IllegalArgumentException(
+					String.format("Team %s already exists in game %s", team.getPlayerId(), gameId));
 		}
 
 		team.setGameId(gameId);
@@ -60,9 +61,10 @@ public class TeamController {
 	// Delete a team
 	// DELETE /data/game/{id}/team/{teamId}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/data/game/{gameId}/team/{teamId}")
-	public void deleteTeam(@PathVariable String gameId,
-			@PathVariable String teamId) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/data/game/{gameId}/team/{teamId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Delte team")
+	public void deleteTeam(@PathVariable String gameId, @PathVariable String teamId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -80,9 +82,10 @@ public class TeamController {
 	// Read team members
 	// GET /data/game/{id}/team/{teamId}/members
 
-	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/team/{teamId}/members")
-	public Collection<String> readTeamMembers(@PathVariable String gameId,
-			@PathVariable String teamId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/team/{teamId}/members", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Get team members")
+	public Collection<String> readTeamMembers(@PathVariable String gameId, @PathVariable String teamId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -102,9 +105,11 @@ public class TeamController {
 	// Update team members
 	// PUT /data/game/{id}/team/{teamId}/members
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/data/game/{gameId}/team/{teamId}/members")
-	public void updateTeamMembers(@PathVariable String gameId,
-			@PathVariable String teamId, @RequestBody List<String> members) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/data/game/{gameId}/team/{teamId}/members", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Edit team")
+	public void updateTeamMembers(@PathVariable String gameId, @PathVariable String teamId,
+			@RequestBody List<String> members) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -127,9 +132,10 @@ public class TeamController {
 	// Add team member
 	// PUT /data/game/{id}/team/{teamId}/members/{playerId}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/data/game/{gameId}/team/{teamId}/members/{playerId}")
-	public void addTeamMember(@PathVariable String gameId,
-			@PathVariable String teamId, @PathVariable String playerId,
+	@RequestMapping(method = RequestMethod.PUT, value = "/data/game/{gameId}/team/{teamId}/members/{playerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Add team member")
+	public void addTeamMember(@PathVariable String gameId, @PathVariable String teamId, @PathVariable String playerId,
 			@RequestBody List<String> members) {
 
 		try {
@@ -161,10 +167,11 @@ public class TeamController {
 	// Remove a team member
 	// DELETE /data/game/{id}/team/{teamId}/members/{playerId}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/data/game/{gameId}/team/{teamId}/members/{playerId}")
-	public void removeTeamMember(@PathVariable String gameId,
-			@PathVariable String teamId, @PathVariable String playerId,
-			@RequestBody List<String> members) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/data/game/{gameId}/team/{teamId}/members/{playerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Delete team member")
+	public void removeTeamMember(@PathVariable String gameId, @PathVariable String teamId,
+			@PathVariable String playerId, @RequestBody List<String> members) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");

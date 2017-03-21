@@ -25,6 +25,8 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.LogHub;
+
 /**
  * A game workflow that manage sequential execution queue of gameEngine to fix
  * issue https://github.com/smartcampuslab/smartcampus.gamification/issues/1
@@ -35,22 +37,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueueGameWorkflow extends GameWorkflow {
 
-	private final Logger logger = org.slf4j.LoggerFactory
-			.getLogger(QueueGameWorkflow.class);
+	private final Logger logger = org.slf4j.LoggerFactory.getLogger(QueueGameWorkflow.class);
 
-	private static ExecutorService executor = Executors
-			.newSingleThreadExecutor();
+	private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	@Override
-	public void apply(String gameId, String actionId, String userId,
-			Map<String, Object> data, List<Object> factObjects) {
+	public void apply(String gameId, String actionId, String userId, Map<String, Object> data,
+			List<Object> factObjects) {
 		try {
 			String executionId = UUID.randomUUID().toString();
 			long executionMoment = System.currentTimeMillis();
-			executor.execute(new Execution(gameId, actionId, userId,
-					executionId, executionMoment, data, factObjects));
+			executor.execute(new Execution(gameId, actionId, userId, executionId, executionMoment, data, factObjects));
 		} catch (Exception e) {
-			logger.error("Exception in game queue execution", e);
+			// logger.error("Exception in game queue execution", e);
+			LogHub.error(gameId, logger, "Exception in game queue execution", e);
 		}
 
 	}
@@ -65,8 +65,7 @@ public class QueueGameWorkflow extends GameWorkflow {
 		private Map<String, Object> data;
 		private List<Object> factObjects;
 
-		public Execution(String gameId, String actionId, String userId,
-				String executionId, long executionMoment,
+		public Execution(String gameId, String actionId, String userId, String executionId, long executionMoment,
 				Map<String, Object> data, List<Object> factObjects) {
 			this.gameId = gameId;
 			this.actionId = actionId;
@@ -79,8 +78,7 @@ public class QueueGameWorkflow extends GameWorkflow {
 		}
 
 		public void run() {
-			workflowExec(gameId, actionId, userId, executionId,
-					executionMoment, data, factObjects);
+			workflowExec(gameId, actionId, userId, executionId, executionMoment, data, factObjects);
 		}
 
 	}

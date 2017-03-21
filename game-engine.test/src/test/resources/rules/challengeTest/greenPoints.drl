@@ -1,12 +1,16 @@
 package eu.trentorise.game.model
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
 
 rule "update green points"
 when
     InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"],$train : data["trainDistance"])
     $pc : PointConcept(name == "green leaves")
 then
-	log("apply \'update green points\'");
+	utils.log("apply \'update green points\'");
 	Double bike = $bike != null ? (Double) $bike : 0;
 	Double walk = $walk != null ? (Double) $walk : 0;
     Double bus = $bus != null ? (Double) $bus : 0;

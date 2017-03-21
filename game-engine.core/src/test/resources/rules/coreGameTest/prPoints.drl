@@ -3,12 +3,16 @@ package eu.trentorise.game.model
 
 global Integer pr_points;
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
 rule "update p+r points"
 when
     InputData(data['p+r'] == true)
     $pc : PointConcept(name == "p+r")
 then
-	log("apply \'update p+r points\'");
+	utils.log("apply \'update p+r points\'");
 	    
     $pc.setScore($pc.getScore() + pr_points);
     update($pc);

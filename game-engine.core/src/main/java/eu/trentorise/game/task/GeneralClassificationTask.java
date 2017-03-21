@@ -19,8 +19,6 @@ package eu.trentorise.game.task;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
@@ -31,27 +29,21 @@ import eu.trentorise.game.model.core.ClassificationType;
 
 public class GeneralClassificationTask extends ClassificationTask {
 
-	private final Logger logger = LoggerFactory
-			.getLogger(GeneralClassificationTask.class);
-
 	private String itemType;
 
-	public GeneralClassificationTask(TaskSchedule schedule, String itemType,
-			String classificationName) {
+	public GeneralClassificationTask(TaskSchedule schedule, String itemType, String classificationName) {
 		super(classificationName, schedule);
 		if (StringUtils.isBlank(itemType)) {
-			throw new IllegalArgumentException(
-					"itemType cannot be null or empty");
+			throw new IllegalArgumentException("itemType cannot be null or empty");
 		}
 		this.itemType = itemType;
 	}
 
-	public GeneralClassificationTask(TaskSchedule schedule,
-			int itemsToNotificate, String itemType, String classificationName) {
+	public GeneralClassificationTask(TaskSchedule schedule, int itemsToNotificate, String itemType,
+			String classificationName) {
 		super(itemsToNotificate, classificationName, schedule);
 		if (StringUtils.isBlank(itemType)) {
-			throw new IllegalArgumentException(
-					"itemType cannot be null or empty");
+			throw new IllegalArgumentException("itemType cannot be null or empty");
 		}
 		this.itemType = itemType;
 	}
@@ -86,15 +78,12 @@ public class GeneralClassificationTask extends ClassificationTask {
 
 	@Override
 	protected ClassificationBuilder createBuilder(List<PlayerState> states) {
-		return ClassificationFactory.createGeneralClassification(states,
-				getScoreType());
+		return ClassificationFactory.createGeneralClassification(states, getScoreType());
 	}
 
 	@Override
-	protected Classification createClassificationObject(GameContext ctx,
-			double score, String scoreType, int position) {
-		Classification c = new Classification(getClassificationName(),
-				position, scoreType, ClassificationType.GENERAL);
+	protected Classification createClassificationObject(GameContext ctx, double score, String scoreType, int position) {
+		Classification c = new Classification(getClassificationName(), position, scoreType, ClassificationType.GENERAL);
 		c.setScore(score);
 		return c;
 	}

@@ -22,8 +22,7 @@ public class ComplexSearchQuery {
 	// }
 
 	@JsonCreator
-	public ComplexSearchQuery(
-			@JsonProperty("query") Map<String, List<QueryElement>> query,
+	public ComplexSearchQuery(@JsonProperty("query") Map<String, List<QueryElement>> query,
 			@JsonProperty("projection") StructuredProjection projection,
 			@JsonProperty("sortItems") List<StructuredSortItem> sortItems) {
 		// super(sortItems, projection);
@@ -43,8 +42,7 @@ public class ComplexSearchQuery {
 		private String clause;
 		private String field;
 
-		public QueryElement(String conceptName, String periodName,
-				Date instanceDate, String clause) {
+		public QueryElement(String conceptName, String periodName, Date instanceDate, String clause) {
 			this.conceptName = conceptName;
 			this.periodName = periodName;
 			this.instanceDate = instanceDate;
@@ -56,12 +54,9 @@ public class ComplexSearchQuery {
 		 * this private Constructor is used by jackson deserializer
 		 */
 		@JsonCreator
-		@SuppressWarnings("unused")
 		private QueryElement(@JsonProperty("conceptName") String conceptName,
-				@JsonProperty("periodName") String periodName,
-				@JsonProperty("instanceDate") Date instanceDate,
-				@JsonProperty("clause") String clause,
-				@JsonProperty("field") String field) {
+				@JsonProperty("periodName") String periodName, @JsonProperty("instanceDate") Date instanceDate,
+				@JsonProperty("clause") String clause, @JsonProperty("field") String field) {
 			this.conceptName = conceptName;
 			this.periodName = periodName;
 			this.instanceDate = instanceDate;
@@ -102,10 +97,8 @@ public class ComplexSearchQuery {
 	}
 
 	public enum SearchElement {
-		POINT_CONCEPT("pointConcept"), PERIODIC_POINT_CONCEPT(
-				"periodicPointConcept"), BADGE_COLLECTION_CONCEPT(
-				"badgeCollectionConcept"), CHALLENGE_CONCEPT("challengeConcept"), CUSTOM_DATA(
-				"customData");
+		POINT_CONCEPT("pointConcept"), PERIODIC_POINT_CONCEPT("periodicPointConcept"), BADGE_COLLECTION_CONCEPT(
+				"badgeCollectionConcept"), CHALLENGE_CONCEPT("challengeConcept"), CUSTOM_DATA("customData");
 
 		private String displayName;
 
@@ -126,10 +119,8 @@ public class ComplexSearchQuery {
 		private String field;
 
 		@JsonCreator
-		public StructuredElement(@JsonProperty("type") String type,
-				@JsonProperty("conceptName") String conceptName,
-				@JsonProperty("periodName") String periodName,
-				@JsonProperty("instanceDate") Date instanceDate,
+		public StructuredElement(@JsonProperty("type") String type, @JsonProperty("conceptName") String conceptName,
+				@JsonProperty("periodName") String periodName, @JsonProperty("instanceDate") Date instanceDate,
 				@JsonProperty("field") String field) {
 			this.type = type;
 			this.conceptName = conceptName;
@@ -169,8 +160,7 @@ public class ComplexSearchQuery {
 		private Direction direction;
 
 		@JsonCreator
-		public StructuredSortItem(
-				@JsonProperty("field") StructuredElement field,
+		public StructuredSortItem(@JsonProperty("field") StructuredElement field,
 				@JsonProperty("direction") Direction direction) {
 			this.field = field;
 			this.direction = direction;
@@ -190,8 +180,7 @@ public class ComplexSearchQuery {
 		private List<StructuredElement> exclude;
 
 		@JsonCreator
-		public StructuredProjection(
-				@JsonProperty("include") List<StructuredElement> include,
+		public StructuredProjection(@JsonProperty("include") List<StructuredElement> include,
 				@JsonProperty("exclude") List<StructuredElement> exclude) {
 			this.include = include;
 			this.exclude = exclude;

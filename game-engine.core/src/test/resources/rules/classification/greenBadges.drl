@@ -1,6 +1,10 @@
 package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
 
 rule "10 point green badge"
 	salience -1000
@@ -10,7 +14,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'10-point-green badge\'");
+	utils.log("apply \'10-point-green badge\'");
 	$bc.getBadgeEarned().add('10-point-green');
 	insert( new BadgeNotification($gameId,$playerId,'10-point-green'));
 	update( $bc );
@@ -24,7 +28,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'50-point-green badge\'");
+	utils.log("apply \'50-point-green badge\'");
 	$bc.getBadgeEarned().add('50-point-green');
 	insert(new BadgeNotification($gameId,$playerId,'50-point-green'));
 	update( $bc );
@@ -38,7 +42,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'100-point-green badge\'");
+	utils.log("apply \'100-point-green badge\'");
 	$bc.getBadgeEarned().add('100-point-green');
 	insert(new BadgeNotification($gameId,$playerId,'100-point-green'));
 	update( $bc );
@@ -52,7 +56,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'250-point-green badge\'");
+	utils.log("apply \'250-point-green badge\'");
 	$bc.getBadgeEarned().add('250-point-green');
 	insert( new BadgeNotification($gameId,$playerId,'250-point-green'));
 	update( $bc );
@@ -66,7 +70,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'500-point-green badge\'");
+	utils.log("apply \'500-point-green badge\'");
 	$bc.getBadgeEarned().add('500-point-green');
 	insert( new BadgeNotification($gameId,$playerId,'500-point-green'));
 	update( $bc );
@@ -80,7 +84,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'1000-point-green badge\'");
+	utils.log("apply \'1000-point-green badge\'");
 	$bc.getBadgeEarned().add('1000-point-green');
 	insert( new BadgeNotification($gameId,$playerId,'1000-point-green'));
 	update( $bc );

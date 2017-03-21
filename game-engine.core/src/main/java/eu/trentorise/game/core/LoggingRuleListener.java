@@ -16,15 +16,13 @@ import eu.trentorise.game.notification.BadgeNotification;
 public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 	private Logger logger = LoggerFactory.getLogger(LoggingRuleListener.class);
-	private Logger statsLogger = LoggerFactory.getLogger("stats");
 
 	private String gameId;
 	private String playerId;
 	private String executionId;
 	private long executionMoment;
 
-	public LoggingRuleListener(String gameId, String playerId,
-			String executionId, long executionMoment) {
+	public LoggingRuleListener(String gameId, String playerId, String executionId, long executionMoment) {
 		this.gameId = gameId;
 		this.playerId = playerId;
 		this.executionId = executionId;
@@ -44,41 +42,56 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof PointConcept) {
 			PointConcept pc = (PointConcept) workingObj;
-			logger.info("rule \'{}\' created PointConcept \'{}\' with score {}"
-					+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-					insertEvent.getRule() != null ? insertEvent.getRule()
-							.getName() : "-", pc.getName(), pc.getScore(),
+			// logger.info("rule \'{}\' created PointConcept \'{}\' with score
+			// {}"
+			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+			// insertEvent.getRule() != null ? insertEvent.getRule()
+			// .getName() : "-", pc.getName(), pc.getScore(),
+			// playerId);
+			LogHub.info(gameId, logger,
+					"rule \'{}\' created PointConcept \'{}\' with score {}"
+							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+					insertEvent.getRule() != null ? insertEvent.getRule().getName() : "-", pc.getName(), pc.getScore(),
 					playerId);
 		}
 
 		if (workingObj instanceof BadgeCollectionConcept) {
 			BadgeCollectionConcept bcc = (BadgeCollectionConcept) workingObj;
-			logger.info(
+			// logger.info(
+			// "rule \'{}\' created BadgeCollectionConcept \'{}\' with badges
+			// {}"
+			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+			// insertEvent.getRule() != null ? insertEvent.getRule().getName() :
+			// "-", bcc.getName(),
+			// bcc.getBadgeEarned(), playerId);
+			LogHub.info(gameId, logger,
 					"rule \'{}\' created BadgeCollectionConcept \'{}\' with badges {}"
-							+ (StringUtils.isBlank(playerId) ? ""
-									: " of player {}"),
-					insertEvent.getRule() != null ? insertEvent.getRule()
-							.getName() : "-", bcc.getName(), bcc
-							.getBadgeEarned(), playerId);
+							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+					insertEvent.getRule() != null ? insertEvent.getRule().getName() : "-", bcc.getName(),
+					bcc.getBadgeEarned(), playerId);
 		}
 
 		if (workingObj instanceof BadgeNotification) {
 			BadgeNotification bn = (BadgeNotification) workingObj;
-			logger.info(
+			// logger.info(
+			// "rule \'{}\' created BadgeNotification for badge \'{}\'"
+			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+			// insertEvent.getRule() != null ? insertEvent.getRule().getName() :
+			// "-", bn.getBadge(), playerId);
+			LogHub.info(gameId, logger,
 					"rule \'{}\' created BadgeNotification for badge \'{}\'"
-							+ (StringUtils.isBlank(playerId) ? ""
-									: " of player {}"),
-					insertEvent.getRule() != null ? insertEvent.getRule()
-							.getName() : "-", bn.getBadge(), playerId);
+							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+					insertEvent.getRule() != null ? insertEvent.getRule().getName() : "-", bn.getBadge(), playerId);
 		}
 
 		if (workingObj instanceof CustomData) {
-			logger.info(
-					"rule \'{}\' added CustomData"
-							+ (StringUtils.isBlank(playerId) ? ""
-									: " of player {}"),
-					insertEvent.getRule() != null ? insertEvent.getRule()
-							.getName() : "-", playerId);
+			// logger.info("rule \'{}\' added CustomData" +
+			// (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+			// insertEvent.getRule() != null ? insertEvent.getRule().getName() :
+			// "-", playerId);
+			LogHub.info(gameId, logger,
+					"rule \'{}\' added CustomData" + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+					insertEvent.getRule() != null ? insertEvent.getRule().getName() : "-", playerId);
 		}
 	}
 
@@ -88,37 +101,46 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof PointConcept) {
 			PointConcept pc = (PointConcept) workingObj;
-			logger.info("rule \'{}\' updated PointConcept \'{}\' to {}"
-					+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-					updateEvent.getRule() != null ? updateEvent.getRule()
-							.getName() : "-", pc.getName(), pc.getScore(),
+			// logger.info(
+			// "rule \'{}\' updated PointConcept \'{}\' to {}"
+			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+			// updateEvent.getRule() != null ? updateEvent.getRule().getName() :
+			// "-", pc.getName(), pc.getScore(),
+			// playerId);
+			LogHub.info(gameId, logger,
+					"rule \'{}\' updated PointConcept \'{}\' to {}"
+							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+					updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", pc.getName(), pc.getScore(),
 					playerId);
 
-			StatsLogger.logRule(gameId, playerId, executionId, executionMoment,
-					updateEvent.getRule().getName(), pc);
+			StatsLogger.logRule(gameId, playerId, executionId, executionMoment, updateEvent.getRule().getName(), pc);
 
 		}
 
 		if (workingObj instanceof BadgeCollectionConcept) {
 			BadgeCollectionConcept bcc = (BadgeCollectionConcept) workingObj;
-			logger.info(
+			// logger.info(
+			// "rule \'{}\' updated BadgeCollectionConcept \'{}\' to {}"
+			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+			// updateEvent.getRule() != null ? updateEvent.getRule().getName() :
+			// "-", bcc.getName(),
+			// bcc.getBadgeEarned(), playerId);
+			LogHub.info(gameId, logger,
 					"rule \'{}\' updated BadgeCollectionConcept \'{}\' to {}"
-							+ (StringUtils.isBlank(playerId) ? ""
-									: " of player {}"),
-					updateEvent.getRule() != null ? updateEvent.getRule()
-							.getName() : "-", bcc.getName(), bcc
-							.getBadgeEarned(), playerId);
-			StatsLogger.logRule(gameId, playerId, executionId, executionMoment,
-					updateEvent.getRule().getName(), bcc);
+							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+					updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", bcc.getName(),
+					bcc.getBadgeEarned(), playerId);
+			StatsLogger.logRule(gameId, playerId, executionId, executionMoment, updateEvent.getRule().getName(), bcc);
 		}
 
 		if (workingObj instanceof CustomData) {
-			logger.info(
-					"rule \'{}\' updated CustomData"
-							+ (StringUtils.isBlank(playerId) ? ""
-									: " of player {}"),
-					updateEvent.getRule() != null ? updateEvent.getRule()
-							.getName() : "-", playerId);
+			// logger.info("rule \'{}\' updated CustomData" +
+			// (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+			// updateEvent.getRule() != null ? updateEvent.getRule().getName() :
+			// "-", playerId);
+			LogHub.info(gameId, logger,
+					"rule \'{}\' updated CustomData" + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+					updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", playerId);
 		}
 	}
 }

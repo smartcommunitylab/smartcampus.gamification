@@ -1,5 +1,9 @@
 package eu.trentorise.game.model
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
 rule "zero_impact_ch_trace"
 lock-on-active
 when 
@@ -10,7 +14,7 @@ when
 		($car : data["carDistance"]==null || ((Double)$car)==0))
 	$challenge : ChallengeConcept( modelName == "zeroImpact", $counter: fields["counter"])
 then
-	log('zero_impact_ch_trace');
+	utils.log('zero_impact_ch_trace');
 	$challenge.getFields().put("counter", (Integer) $counter + 1);
 	update($challenge); 
 end
@@ -20,7 +24,7 @@ when
 	$challenge : ChallengeConcept( modelName == "zeroImpact", (Integer) fields["counter"] == (Integer) fields["target"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"] )
 	$pc : PointConcept(name == (String) $bonusPointType)
 then
-	log('zero_impact COMPLETED');
+	utils.log('zero_impact COMPLETED');
 	$challenge.completed();
 	$pc.increment((Double) $bonusScore);
 	update($pc); 

@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.ExecutionDataDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
@@ -78,7 +79,8 @@ public class MainController {
 			try {
 				res.sendError(403, String.format("game %s is expired", game.getId()));
 			} catch (IOException e1) {
-				logger.error("Exception sendError to client", e1);
+				// logger.error("Exception sendError to client", e1);
+				LogHub.error(game.getId(), logger, "Exception sendError to client", e1);
 			}
 		} else {
 			workflow.apply(data.getGameId(), data.getActionId(), data.getPlayerId(), data.getData(), null);

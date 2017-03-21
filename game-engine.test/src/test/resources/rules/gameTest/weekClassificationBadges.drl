@@ -3,6 +3,11 @@ package eu.trentorise.game.model
 import eu.trentorise.game.notification.BadgeNotification;
 import eu.trentorise.game.task.Classification;
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
+
 /* ***************************************************************************
 GREEN WEEK CLASSIFICATION
   
@@ -15,7 +20,7 @@ when
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'king-week-green')
 then
-	log("apply \'king-week-green badge\'");
+	utils.log("apply \'king-week-green badge\'");
 	$bc.getBadgeEarned().add('king-week-green');
 	insert( new BadgeNotification($gameId,$playerId,'king-week-green'));
 	update( $bc );
@@ -35,7 +40,7 @@ when
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'king-week-health')
 then
-	log("apply \'king-week-health badge\'");
+	utils.log("apply \'king-week-health badge\'");
 	$bc.getBadgeEarned().add('king-week-health');
 	insert( new BadgeNotification($gameId,$playerId,'king-week-health'));
 	update( $bc );
@@ -56,7 +61,7 @@ when
     Player( $playerId : id)
     $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'king-week-pr')
 then
-	log("apply \'king-week-pr badge\'");
+	utils.log("apply \'king-week-pr badge\'");
 	$bc.getBadgeEarned().add('king-week-pr');
 	insert( new BadgeNotification($gameId,$playerId,'king-week-pr'));
 	update( $bc );

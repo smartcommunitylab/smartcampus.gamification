@@ -57,7 +57,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.LoggingRuleListener;
+import eu.trentorise.game.core.Utility;
 import eu.trentorise.game.model.Action;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.CustomData;
@@ -102,29 +104,26 @@ public class DroolsEngine implements GameEngine {
 
 	private KieServices kieServices = KieServices.Factory.get();
 
-	public PlayerState execute(String gameId, PlayerState state, String action, Map<String, Object> data, String executionId, long executionMoment, List<Object> factObjects) {
+	public PlayerState execute(String gameId, PlayerState state, String action, Map<String, Object> data,
+			String executionId, long executionMoment, List<Object> factObjects) {
 
-		StopWatch stopWatch = LogManager.getLogger(
-				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
-				: null;
+		StopWatch stopWatch = LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
+				? new Log4JStopWatch() : null;
 		if (stopWatch != null) {
 			stopWatch.start("game execution");
 		}
 
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 		if (game != null && game.isTerminated()) {
-			throw new IllegalArgumentException(String.format(
-					"game %s is expired", gameId));
+			throw new IllegalArgumentException(String.format("game %s is expired", gameId));
 		}
 
 		loadGameRules(gameId);
 
-		KieContainer kieContainer = kieServices.newKieContainer(kieServices
-				.getRepository().getDefaultReleaseId());
+		KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
 
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
-		kSession.addEventListener(new LoggingRuleListener(gameId, state
-				.getPlayerId(), executionId, executionMoment));
+		kSession.addEventListener(new LoggingRuleListener(gameId, state.getPlayerId(), executionId, executionMoment));
 
 		List<Command> cmds = new ArrayList<Command>();
 
@@ -145,8 +144,7 @@ public class DroolsEngine implements GameEngine {
 
 		Player player = null;
 		if (state instanceof TeamState) {
-			player = new Player(state.getPlayerId(), true, ((TeamState) state)
-					.getMembers().size());
+			player = new Player(state.getPlayerId(), true, ((TeamState) state).getMembers().size());
 		} else {
 			player = new Player(state.getPlayerId(), false);
 		}
@@ -157,16 +155,12 @@ public class DroolsEngine implements GameEngine {
 		Set<GameConcept> filteredByChallenge = new HashSet<>(state.getState());
 		Set<GameConcept> archivedChallenges = new HashSet<>();
 		Date now = new Date();
-		for (Iterator<GameConcept> iter = filteredByChallenge.iterator(); iter
-				.hasNext();) {
+		for (Iterator<GameConcept> iter = filteredByChallenge.iterator(); iter.hasNext();) {
 			GameConcept gc = iter.next();
 			if (gc instanceof ChallengeConcept) {
 				ChallengeConcept challenge = (ChallengeConcept) gc;
-				if (challenge.isCompleted()
-						|| (challenge.getStart() != null && challenge
-								.getStart().after(now))
-						|| (challenge.getEnd() != null && challenge.getEnd()
-								.before(now))) {
+				if (challenge.isCompleted() || (challenge.getStart() != null && challenge.getStart().after(now))
+						|| (challenge.getEnd() != null && challenge.getEnd().before(now))) {
 					iter.remove();
 					archivedChallenges.add(gc);
 				}
@@ -183,132 +177,119 @@ public class DroolsEngine implements GameEngine {
 
 		// queries
 		cmds.add(CommandFactory.newQuery("retrieveState", "getGameConcepts"));
-		cmds.add(CommandFactory.newQuery("retrieveNotifications",
-				"getNotifications"));
+		cmds.add(CommandFactory.newQuery("retrieveNotifications", "getNotifications"));
 		cmds.add(CommandFactory.newQuery("retrieveCustomData", "getCustomData"));
-		cmds.add(CommandFactory.newQuery("retrieveUpdateTeams",
-				"getUpdateTeams"));
-		cmds.add(CommandFactory.newQuery("retrieveUpdateMembers",
-				"getUpdateMembers"));
+		cmds.add(CommandFactory.newQuery("retrieveUpdateTeams", "getUpdateTeams"));
+		cmds.add(CommandFactory.newQuery("retrieveUpdateMembers", "getUpdateMembers"));
 		cmds.add(CommandFactory.newQuery("retrieveLevel", "getLevel"));
 		cmds.add(CommandFactory.newQuery("retrieveMember", "getMember"));
 
+		// set gameId as constant
+		kSession.setGlobal("utils", new Utility(gameId));
+
 		kSession = loadGameConstants(kSession, gameId);
 
-		ExecutionResults results = kSession.execute(CommandFactory
-				.newBatchExecution(cmds));
+		ExecutionResults results = kSession.execute(CommandFactory.newBatchExecution(cmds));
 
 		// new state contains archived challenges and all GameConcept
 		// loaded in engine session
 		Set<GameConcept> newState = new HashSet<GameConcept>(archivedChallenges);
 
-		Iterator<QueryResultsRow> iter = ((QueryResults) results
-				.getValue("retrieveState")).iterator();
+		Iterator<QueryResultsRow> iter = ((QueryResults) results.getValue("retrieveState")).iterator();
 		while (iter.hasNext()) {
 			newState.add((GameConcept) iter.next().get("$result"));
 		}
 
 		List<CustomData> customData = new ArrayList<CustomData>();
 
-		iter = ((QueryResults) results.getValue("retrieveCustomData"))
-				.iterator();
+		iter = ((QueryResults) results.getValue("retrieveCustomData")).iterator();
 		while (iter.hasNext()) {
 			CustomData stateCustomData = (CustomData) iter.next().get("$data");
 			customData.add(stateCustomData);
 		}
 
-		iter = ((QueryResults) results.getValue("retrieveNotifications"))
-				.iterator();
+		iter = ((QueryResults) results.getValue("retrieveNotifications")).iterator();
 		while (iter.hasNext()) {
-			Notification note = (Notification) iter.next()
-					.get("$notifications");
+			Notification note = (Notification) iter.next().get("$notifications");
 			notificationSrv.notificate(note);
-			logger.info("send notification: {}", note.toString());
+			// logger.info("send notification: {}", note.toString());
+			LogHub.info(gameId, logger, "send notification: {}", note.toString());
 		}
 
-		iter = ((QueryResults) results.getValue("retrieveUpdateTeams"))
-				.iterator();
+		iter = ((QueryResults) results.getValue("retrieveUpdateTeams")).iterator();
 
 		if (iter.hasNext()) {
 			Set<Object> facts = new HashSet<>();
 			Iterator<QueryResultsRow> iter1 = null;
 			while (iter.hasNext()) {
-				UpdateTeams updateCalls = (UpdateTeams) iter.next()
-						.get("$data");
-				iter1 = ((QueryResults) results.getValue("retrieveLevel"))
-						.iterator();
+				UpdateTeams updateCalls = (UpdateTeams) iter.next().get("$data");
+				iter1 = ((QueryResults) results.getValue("retrieveLevel")).iterator();
 				int level = 1;
 				if (iter1.hasNext()) {
 					level = (int) iter1.next().get("$data");
 					level++;
 				}
-				facts.add(new Propagation(updateCalls.getPropagationAction(),
-						level));
+				facts.add(new Propagation(updateCalls.getPropagationAction(), level));
 			}
 
-			List<TeamState> playerTeams = playerSrv.readTeams(gameId,
-					state.getPlayerId());
-			logger.info("Player {} belongs to {} teams", state.getPlayerId(),
-					playerTeams.size());
+			List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
+			// logger.info("Player {} belongs to {} teams", state.getPlayerId(),
+			// playerTeams.size());
+			LogHub.info(gameId, logger, "Player {} belongs to {} teams", state.getPlayerId(), playerTeams.size());
 			if (playerTeams.size() > 0) {
-				logger.info("call for update with data {}", data);
+				// logger.info("call for update with data {}", data);
+				LogHub.info(gameId, logger, "call for update with data {}", data);
 			}
 
-			iter1 = ((QueryResults) results.getValue("retrieveMember"))
-					.iterator();
+			iter1 = ((QueryResults) results.getValue("retrieveMember")).iterator();
 			Member fromPropagation = null;
 			if (iter1.hasNext()) {
 				fromPropagation = (Member) iter1.next().get("$data");
 			}
 			Map<String, Object> payloadData = new HashMap<>(data);
-			if (fromPropagation != null
-					&& fromPropagation.getInputData() != null) {
+			if (fromPropagation != null && fromPropagation.getInputData() != null) {
 				payloadData.putAll(fromPropagation.getInputData());
 			}
 			facts.add(new Member(state.getPlayerId(), payloadData));
 			for (TeamState team : playerTeams) {
-				workflow.apply(gameId, action, team.getPlayerId(), null,
-						new ArrayList<>(facts));
+				workflow.apply(gameId, action, team.getPlayerId(), null, new ArrayList<>(facts));
 			}
 		}
-		iter = ((QueryResults) results.getValue("retrieveUpdateMembers"))
-				.iterator();
+		iter = ((QueryResults) results.getValue("retrieveUpdateMembers")).iterator();
 		if (iter.hasNext()) {
 			Set<Object> facts = new HashSet<>();
 			while (iter.hasNext()) {
-				UpdateMembers updateCalls = (UpdateMembers) iter.next().get(
-						"$data");
+				UpdateMembers updateCalls = (UpdateMembers) iter.next().get("$data");
 				facts.add(new Propagation(updateCalls.getPropagationAction()));
 			}
 			// check if a propagation to team members is needed
 			try {
-				TeamState team = playerSrv
-						.readTeam(gameId, state.getPlayerId());
+				TeamState team = playerSrv.readTeam(gameId, state.getPlayerId());
 				List<String> members = team.getMembers();
 				facts.add(new Team(state.getPlayerId(), data));
-				logger.info("Team {} has {} members", state.getPlayerId(),
-						members.size());
+				// logger.info("Team {} has {} members", state.getPlayerId(),
+				// members.size());
+				LogHub.info(gameId, logger, "Team {} has {} members", state.getPlayerId(), members.size());
 				for (String member : members) {
-					workflow.apply(gameId, action, member, null,
-							new ArrayList<>(facts));
+					workflow.apply(gameId, action, member, null, new ArrayList<>(facts));
 				}
 			} catch (ClassCastException e) {
-				logger.info(String
-						.format("%s is not a team, there is no propagation to team members",
-								state.getPlayerId()));
+				// logger.info(String.format("%s is not a team, there is no
+				// propagation to team members",
+				// state.getPlayerId()));
+				LogHub.info(gameId, logger, "{} is not a team, there is no propagation to team members",
+						state.getPlayerId());
 			}
 
 		}
 
 		state.setState(newState);
 		// fix for dataset prior than 0.9 version
-		state.setCustomData(customData.isEmpty() ? new CustomData()
-				: customData.get(0));
+		state.setCustomData(customData.isEmpty() ? new CustomData() : customData.get(0));
 
 		if (stopWatch != null) {
-			stopWatch.stop("game execution", String.format(
-					"execution for game %s of player %s", gameId,
-					state.getPlayerId()));
+			stopWatch.stop("game execution",
+					String.format("execution for game %s of player %s", gameId, state.getPlayerId()));
 		}
 		return state;
 	}
@@ -321,14 +302,13 @@ public class DroolsEngine implements GameEngine {
 		if (g != null && g.getRules() != null) {
 			for (String ruleUrl : g.getRules()) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
-				if ((r != null && r.getName() != null && r.getName().equals(
-						"constants"))
-						|| r instanceof UrlRule
-						&& ((UrlRule) r).getUrl().contains("constants")) {
+				if ((r != null && r.getName() != null && r.getName().equals("constants"))
+						|| r instanceof UrlRule && ((UrlRule) r).getUrl().contains("constants")) {
 					try {
 						constantsFileStream = r.getInputStream();
 					} catch (IOException e) {
-						logger.error("Exception loading constants file", e);
+						// logger.error("Exception loading constants file", e);
+						LogHub.error(gameId, logger, "Exception loading constants file", e);
 					}
 				}
 			}
@@ -339,29 +319,34 @@ public class DroolsEngine implements GameEngine {
 				PropertiesConfiguration constants = new PropertiesConfiguration();
 				constants.load(constantsFileStream);
 				constants.setListDelimiter(',');
-				logger.debug("constants file loaded for game {}", gameId);
+				// logger.debug("constants file loaded for game {}", gameId);
+				LogHub.debug(gameId, logger, "constants file loaded for game {}", gameId);
 				Iterator<String> constantsIter = constants.getKeys();
 				while (constantsIter.hasNext()) {
 					String constant = constantsIter.next();
-					Object value = numberConversion(constants
-							.getProperty(constant));
+					Object value = numberConversion(constants.getProperty(constant));
 					kSession.setGlobal(constant, value);
 					if (logger.isDebugEnabled()) {
 						List<Object> listValue = constants.getList(constant);
 						if (listValue.isEmpty()) {
-							logger.debug("constant {} loaded: {}", constant,
-									value);
+							// logger.debug("constant {} loaded: {}", constant,
+							// value);
+							LogHub.debug(gameId, logger, "constant {} loaded: {}", constant, value);
 						} else {
-							logger.debug("constant {} loaded: {}, size: {}",
-									constant, listValue, listValue.size());
+							// logger.debug("constant {} loaded: {}, size: {}",
+							// constant, listValue, listValue.size());
+							LogHub.debug(gameId, logger, "constant {} loaded: {}, size: {}", constant, listValue,
+									listValue.size());
 						}
 					}
 				}
 			} catch (ConfigurationException e) {
-				logger.error("constants loading exception");
+				// logger.error("constants loading exception");
+				LogHub.error(gameId, logger, "constants loading exception");
 			}
 		} else {
-			logger.info("Rule constants file not found");
+			// logger.info("Rule constants file not found");
+			LogHub.info(gameId, logger, "Rule constants file not found");
 		}
 		return kSession;
 	}
@@ -370,8 +355,7 @@ public class DroolsEngine implements GameEngine {
 
 		if (value instanceof String) {
 			String converted = (String) value;
-			if (NumberUtils.isNumber(converted)
-					&& converted.toLowerCase().contains("l")) {
+			if (NumberUtils.isNumber(converted) && converted.toLowerCase().contains("l")) {
 				return new Long(converted.substring(0, converted.length() - 1));
 			}
 			if (NumberUtils.isNumber(converted) && !converted.contains(".")) {
@@ -394,9 +378,11 @@ public class DroolsEngine implements GameEngine {
 		try {
 			coreRes = ruleLoader.load("classpath://rules/core.drl");
 			kfs.write(coreRes);
-			logger.info("Core rules loaded");
+			// logger.info("Core rules loaded");
+			LogHub.info(gameId, logger, "Core rules loaded");
 		} catch (MalformedURLException e) {
-			logger.error("Exception loading core.drl");
+			// logger.error("Exception loading core.drl");
+			LogHub.info(gameId, logger, "Exception loading core.drl");
 		}
 
 		// load rules
@@ -411,19 +397,22 @@ public class DroolsEngine implements GameEngine {
 					// fix to not load constant file
 					if (r1 != null) {
 						kfs.write(r1);
-						logger.debug("{} loaded", rule);
+						// logger.debug("{} loaded", rule);
+						LogHub.debug(gameId, logger, "{} loaded", rule);
 					}
 				} catch (MalformedURLException e) {
-					logger.error(
-							"Malformed URL loading rule {}, rule not loaded",
-							rule);
+					// logger.error("Malformed URL loading rule {}, rule not
+					// loaded", rule);
+					LogHub.error(gameId, logger, "Malformed URL loading rule {}, rule not loaded", rule);
 				} catch (RuntimeException e) {
-					logger.error("Exception loading rule {}", rule);
+					// logger.error("Exception loading rule {}", rule);
+					LogHub.error(gameId, logger, "Exception loading rule {}", rule);
 				}
 			}
 		}
 		kieServices.newKieBuilder(kfs).buildAll();
-		logger.info("Rules repository built");
+		// logger.info("Rules repository built");
+		LogHub.info(gameId, logger, "Rules repository built");
 
 	}
 
@@ -435,16 +424,12 @@ public class DroolsEngine implements GameEngine {
 		}
 
 		public boolean isConstantsRule(String ruleUrl) {
-			boolean classpathCheck = ruleUrl
-					.startsWith(ClasspathRule.URL_PROTOCOL)
-					&& ruleUrl.contains("/constants");
-			boolean fsCheck = ruleUrl.startsWith(FSRule.URL_PROTOCOL)
-					&& ruleUrl.contains("/constants");
+			boolean classpathCheck = ruleUrl.startsWith(ClasspathRule.URL_PROTOCOL) && ruleUrl.contains("/constants");
+			boolean fsCheck = ruleUrl.startsWith(FSRule.URL_PROTOCOL) && ruleUrl.contains("/constants");
 			boolean dbCheck = ruleUrl.startsWith(DBRule.URL_PROTOCOL);
 			if (dbCheck) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
-				dbCheck = r != null && r.getName() != null
-						&& r.getName().equals("constants");
+				dbCheck = r != null && r.getName() != null && r.getName().equals("constants");
 			}
 
 			return classpathCheck || fsCheck || dbCheck;
@@ -465,12 +450,11 @@ public class DroolsEngine implements GameEngine {
 			} else if (ruleUrl.startsWith(DBRule.URL_PROTOCOL)) {
 				Rule r = gameSrv.loadRule(gameId, ruleUrl);
 				if (r != null) {
-					res = kieServices.getResources().newReaderResource(
-							new StringReader(((DBRule) r).getContent()));
-					res.setSourcePath("rules/" + r.getGameId() + "/"
-							+ ((DBRule) r).getId() + ".drl");
+					res = kieServices.getResources().newReaderResource(new StringReader(((DBRule) r).getContent()));
+					res.setSourcePath("rules/" + r.getGameId() + "/" + ((DBRule) r).getId() + ".drl");
 				} else {
-					logger.error("DBRule {} not exist", url);
+					// logger.error("DBRule {} not exist", url);
+					LogHub.error(ruleUrl, logger, "DBRule {} not exist", url);
 				}
 			} else {
 				throw new MalformedURLException("resource URL not supported");
@@ -480,22 +464,21 @@ public class DroolsEngine implements GameEngine {
 	}
 
 	@Override
-	public List<String> validateRule(String content) {
+	public List<String> validateRule(String gameId, String content) {
 		List<String> result = new ArrayList<String>();
 		if (content != null) {
-			VerifierBuilder vBuilder = VerifierBuilderFactory
-					.newVerifierBuilder();
+			VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 			// Check that the builder works.
 			if (!vBuilder.hasErrors()) {
 				Verifier verifier = vBuilder.newVerifier();
-				verifier.addResourcesToVerify(
-						new ByteArrayResource(content.getBytes())
-								.setTargetPath("/t.drl"), ResourceType.DRL);
+				verifier.addResourcesToVerify(new ByteArrayResource(content.getBytes()).setTargetPath("/t.drl"),
+						ResourceType.DRL);
 				for (VerifierError err : verifier.getErrors()) {
 					result.add(err.getMessage());
 				}
 			} else {
-				logger.error("Drools verifier instantiation exception");
+				// logger.error("Drools verifier instantiation exception");
+				LogHub.error(gameId, logger, "Drools verifier instantiation exception");
 			}
 		}
 		return result;

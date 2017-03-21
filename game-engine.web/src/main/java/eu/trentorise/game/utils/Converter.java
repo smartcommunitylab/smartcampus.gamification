@@ -35,6 +35,7 @@ import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TeamDTO;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
 import eu.trentorise.game.model.BadgeCollectionConcept;
@@ -57,8 +58,7 @@ public class Converter {
 	@Autowired
 	private GameService gameSrv;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(Converter.class);
+	private static final Logger logger = LoggerFactory.getLogger(Converter.class);
 
 	public GameDTO convertGame(Game game) {
 		GameDTO gDTO = null;
@@ -71,8 +71,7 @@ public class Converter {
 			gDTO.setOwner(game.getOwner());
 
 			// remove internal actions
-			Iterator<String> iter = gDTO.getActions() != null ? gDTO
-					.getActions().iterator() : null;
+			Iterator<String> iter = gDTO.getActions() != null ? gDTO.getActions().iterator() : null;
 
 			while (iter != null && iter.hasNext()) {
 				if (iter.next().startsWith(GameManager.INTERNAL_ACTION_PREFIX)) {
@@ -104,8 +103,7 @@ public class Converter {
 					}
 
 					if (gc instanceof BadgeCollectionConcept) {
-						gDTO.getBadgeCollectionConcept().add(
-								(BadgeCollectionConcept) gc);
+						gDTO.getBadgeCollectionConcept().add((BadgeCollectionConcept) gc);
 					}
 				}
 			}
@@ -117,8 +115,7 @@ public class Converter {
 					if (gt instanceof GeneralClassificationTask) {
 						c = convertClassificationTask((GeneralClassificationTask) gt);
 					} else {
-						c = convertClassificationTask(game.getId(),
-								(IncrementalClassificationTask) gt);
+						c = convertClassificationTask(game.getId(), (IncrementalClassificationTask) gt);
 					}
 					gDTO.getClassificationTask().add(c);
 				}
@@ -159,11 +156,9 @@ public class Converter {
 			g.setTasks(new HashSet<GameTask>());
 			for (ClassificationDTO c : game.getClassificationTask()) {
 				if (c instanceof GeneralClassificationDTO) {
-					g.getTasks()
-							.add(convertClassificationTask((GeneralClassificationDTO) c));
+					g.getTasks().add(convertClassificationTask((GeneralClassificationDTO) c));
 				} else {
-					g.getTasks()
-							.add(convertClassificationTask((IncrementalClassificationDTO) c));
+					g.getTasks().add(convertClassificationTask((IncrementalClassificationDTO) c));
 
 				}
 			}
@@ -172,14 +167,12 @@ public class Converter {
 		return g;
 	}
 
-	public GeneralClassificationDTO convertClassificationTask(
-			GeneralClassificationTask t) {
+	public GeneralClassificationDTO convertClassificationTask(GeneralClassificationTask t) {
 		GeneralClassificationDTO task = null;
 		if (t != null) {
 			task = new GeneralClassificationDTO();
 			task.setClassificationName(t.getClassificationName());
-			task.setCronExpression(t.getSchedule() != null ? t.getSchedule()
-					.getCronExpression() : null);
+			task.setCronExpression(t.getSchedule() != null ? t.getSchedule().getCronExpression() : null);
 			task.setItemsToNotificate(t.getItemsToNotificate());
 			task.setItemType(t.getItemType());
 			task.setName(t.getName());
@@ -187,8 +180,7 @@ public class Converter {
 		return task;
 	}
 
-	public GeneralClassificationTask convertClassificationTask(
-			GeneralClassificationDTO t) {
+	public GeneralClassificationTask convertClassificationTask(GeneralClassificationDTO t) {
 		GeneralClassificationTask task = null;
 		if (t != null) {
 			task = new GeneralClassificationTask();
@@ -205,8 +197,7 @@ public class Converter {
 		return task;
 	}
 
-	public IncrementalClassificationTask convertClassificationTask(
-			IncrementalClassificationDTO t) {
+	public IncrementalClassificationTask convertClassificationTask(IncrementalClassificationDTO t) {
 		IncrementalClassificationTask task = null;
 		if (t != null) {
 			Set<GameConcept> concepts = null;
@@ -214,33 +205,31 @@ public class Converter {
 				concepts = gameSrv.readConceptInstances(t.getGameId());
 				PointConcept pc = null;
 				for (GameConcept gc : concepts) {
-					if (gc instanceof PointConcept
-							&& gc.getName().equals(t.getItemType())) {
+					if (gc instanceof PointConcept && gc.getName().equals(t.getItemType())) {
 						pc = (PointConcept) gc;
 					}
 				}
 
 				if (StringUtils.isBlank(t.getDelayUnit())) {
-					task = new IncrementalClassificationTask(pc,
-							t.getPeriodName(), t.getClassificationName());
+					task = new IncrementalClassificationTask(pc, t.getPeriodName(), t.getClassificationName());
 				} else {
-					task = new IncrementalClassificationTask(pc,
-							t.getPeriodName(), t.getClassificationName(),
-							new TimeInterval(t.getDelayValue(),
-									TimeUnit.valueOf(t.getDelayUnit())));
+					task = new IncrementalClassificationTask(pc, t.getPeriodName(), t.getClassificationName(),
+							new TimeInterval(t.getDelayValue(), TimeUnit.valueOf(t.getDelayUnit())));
 				}
 				task.setItemsToNotificate(t.getItemsToNotificate());
 				task.setName(t.getName());
 			} else {
-				logger.warn("Try to convert IncrementalClassificationDTO with null gameId field");
+				// logger.warn("Try to convert IncrementalClassificationDTO with
+				// null gameId field");
+				LogHub.warn(null, logger, "Try to convert IncrementalClassificationDTO with null gameId field");
 				throw new IllegalArgumentException("gameId is a required field");
 			}
 		}
 		return task;
 	}
 
-	public IncrementalClassificationDTO convertClassificationTask(
-			String gameId, IncrementalClassificationTask classification) {
+	public IncrementalClassificationDTO convertClassificationTask(String gameId,
+			IncrementalClassificationTask classification) {
 		IncrementalClassificationDTO result = null;
 		if (classification != null) {
 			result = new IncrementalClassificationDTO();
@@ -250,12 +239,9 @@ public class Converter {
 			result.setItemsToNotificate(classification.getItemsToNotificate());
 			result.setName(classification.getName());
 			result.setGameId(gameId);
-			if (classification.getSchedule() != null
-					&& classification.getSchedule().getDelay() != null) {
-				result.setDelayValue(classification.getSchedule().getDelay()
-						.getValue());
-				result.setDelayUnit(classification.getSchedule().getDelay()
-						.getUnit().toString());
+			if (classification.getSchedule() != null && classification.getSchedule().getDelay() != null) {
+				result.setDelayValue(classification.getSchedule().getDelay().getValue());
+				result.setDelayUnit(classification.getSchedule().getDelay().getUnit().toString());
 			}
 		}
 

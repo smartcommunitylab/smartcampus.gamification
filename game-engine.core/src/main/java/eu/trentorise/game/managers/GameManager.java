@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.ClasspathRule;
@@ -70,7 +71,6 @@ public class GameManager implements GameService {
 	private ChallengeModelRepo challengeModelRepo;
 
 	@PostConstruct
-	@SuppressWarnings("unused")
 	private void startup() {
 
 		for (Game game : loadGames(true)) {
@@ -171,9 +171,8 @@ public class GameManager implements GameService {
 		String ruleUrl = null;
 		boolean isEdit = false;
 		if (rule != null) {
-			StopWatch stopWatch = LogManager.getLogger(
-					StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
-					: null;
+			StopWatch stopWatch = LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
+					? new Log4JStopWatch() : null;
 			if (stopWatch != null) {
 				stopWatch.start("insert rule");
 			}
@@ -200,8 +199,7 @@ public class GameManager implements GameService {
 						r.setId(r.getId().replace(DBRule.URL_PROTOCOL, ""));
 						isEdit = true;
 					} else {
-						alreadyExist = ruleRepo.findByGameIdAndName(
-								rule.getGameId(), r.getName()) != null;
+						alreadyExist = ruleRepo.findByGameIdAndName(rule.getGameId(), r.getName()) != null;
 					}
 
 					if (!alreadyExist) {
@@ -210,21 +208,18 @@ public class GameManager implements GameService {
 					}
 				}
 
-				if (isEdit || ruleUrl != null
-						&& !game.getRules().contains(ruleUrl)) {
+				if (isEdit || ruleUrl != null && !game.getRules().contains(ruleUrl)) {
 					game.getRules().add(ruleUrl);
 					saveGameDefinition(game);
 				} else {
-					throw new IllegalArgumentException(
-							"the rule already exist for game "
-									+ rule.getGameId());
+					throw new IllegalArgumentException("the rule already exist for game " + rule.getGameId());
 				}
 				if (stopWatch != null) {
-					stopWatch.stop("insert rule", "inserted rule for game "
-							+ rule.getGameId());
+					stopWatch.stop("insert rule", "inserted rule for game " + rule.getGameId());
 				}
 			} else {
-				logger.error("Game {} not found", rule.getGameId());
+				// logger.error("Game {} not found", rule.getGameId());
+				LogHub.error(rule.getGameId(), logger, "Game {} not found", rule.getGameId());
 			}
 		}
 		return ruleUrl;
@@ -238,8 +233,7 @@ public class GameManager implements GameService {
 				return ruleRepo.findOne(url);
 			} else if (url.startsWith(ClasspathRule.URL_PROTOCOL)) {
 				url = url.substring(ClasspathRule.URL_PROTOCOL.length());
-				if (Thread.currentThread().getContextClassLoader()
-						.getResource(url) != null) {
+				if (Thread.currentThread().getContextClassLoader().getResource(url) != null) {
 					return new ClasspathRule(gameId, url);
 				}
 
@@ -255,7 +249,7 @@ public class GameManager implements GameService {
 
 	@Scheduled(cron = "0 0 1 * * *")
 	public void taskDestroyer() {
-		logger.info("task destroyer invocation");
+		LogHub.info(null, logger, "task destroyer invocation");
 		long deadline = System.currentTimeMillis();
 
 		List<Game> games = loadGames(true);
@@ -263,8 +257,10 @@ public class GameManager implements GameService {
 			if (game.getExpiration() > 0 && game.getExpiration() < deadline) {
 				for (GameTask task : game.getTasks()) {
 					if (taskSrv.destroyTask(task, game.getId())) {
-						logger.info("Destroy task - {} - of game {}",
-								task.getName(), game.getId());
+						// logger.info("Destroy task - {} - of game {}",
+						// task.getName(), game.getId());
+						LogHub.info(game.getId(), logger, "Destroy task - {} - of game {}", task.getName(),
+								game.getId());
 					}
 				}
 				game.setTerminated(true);
@@ -296,10 +292,9 @@ public class GameManager implements GameService {
 	public Set<GameConcept> readConceptInstances(String gameId) {
 		Game g = loadGameDefinitionById(gameId);
 		if (g != null) {
-			return g.getConcepts() != null ? g.getConcepts() : Collections
-					.<GameConcept> emptySet();
+			return g.getConcepts() != null ? g.getConcepts() : Collections.<GameConcept>emptySet();
 		} else {
-			return Collections.<GameConcept> emptySet();
+			return Collections.<GameConcept>emptySet();
 		}
 	}
 

@@ -2,6 +2,11 @@ package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
+
 rule "10 point health badge"
 	salience -1000
 when
@@ -10,7 +15,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'10-point-health badge\'");
+	utils.log("apply \'10-point-health badge\'");
 	$bc.getBadgeEarned().add('10-point-health');
 	insert( new BadgeNotification($gameId,$playerId,'10-point-health'));
 	update( $bc );
@@ -24,7 +29,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'25-point-health badge\'");
+	utils.log("apply \'25-point-health badge\'");
 	$bc.getBadgeEarned().add('25-point-health');
 	insert( new BadgeNotification($gameId,$playerId,'25-point-health'));
 	update( $bc );
@@ -39,7 +44,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'50-point-health badge\'");
+	utils.log("apply \'50-point-health badge\'");
 	$bc.getBadgeEarned().add('50-point-health');
 	insert( new BadgeNotification($gameId,$playerId,'50-point-health'));
 	update( $bc );
@@ -53,7 +58,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'100-point-health badge\'");
+	utils.log("apply \'100-point-health badge\'");
 	$bc.getBadgeEarned().add('100-point-health');
 	insert( new BadgeNotification($gameId,$playerId,'100-point-health'));
 	update( $bc );
@@ -67,7 +72,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'200-point-health badge\'");
+	utils.log("apply \'200-point-health badge\'");
 	$bc.getBadgeEarned().add('200-point-health');
 	insert( new BadgeNotification($gameId,$playerId,'200-point-health'));
 	update( $bc );

@@ -46,10 +46,10 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameJobQuartz;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.TimeInterval;
-import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
 
@@ -65,8 +65,7 @@ public class QuartzTaskManager extends TaskDataManager {
 	@Autowired
 	private AppContextProvider provider;
 
-	private final Logger logger = LoggerFactory
-			.getLogger(QuartzTaskManager.class);
+	private final Logger logger = LoggerFactory.getLogger(QuartzTaskManager.class);
 
 	private void init() {
 		try {
@@ -76,34 +75,34 @@ public class QuartzTaskManager extends TaskDataManager {
 			}
 			for (Game g : result) {
 				for (GameTask gt : g.getTasks()) {
-					scheduler.getContext().put(g.getId() + ":" + gt.getName(),
-							createGameCtx(g.getId(), gt));
-					logger.debug("Added gameCtx of game {} to scheduler ctx",
-							g.getId() + ":" + g.getName());
+					scheduler.getContext().put(g.getId() + ":" + gt.getName(), createGameCtx(g.getId(), gt));
+					logger.debug("Added gameCtx of game {} to scheduler ctx", g.getId() + ":" + g.getName());
 					scheduler.getContext().put(gt.getName(), gt);
 					logger.debug("Added {} task to scheduler ctx", gt.getName());
 				}
 			}
-			logger.debug("Init scheduler ctx");
+			// logger.debug("Init scheduler ctx");
+			LogHub.debug(null, logger, "Init scheduler ctx");
 			scheduler.start();
-			logger.debug("Scheduler started");
+			// logger.debug("Scheduler started");
+			LogHub.debug(null, logger, "Scheduler started");
 		} catch (SchedulerException e) {
-			logger.error("Scheduler not started: {}", e.getMessage());
+			// logger.error("Scheduler not started: {}", e.getMessage());
+			LogHub.error(null, logger, "Scheduler not started: {}", e.getMessage());
 		}
 	}
 
 	private GameContext createGameCtx(String gameId, GameTask task) {
-		return (GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", gameId, task);
+		return (GameContext) provider.getApplicationContext().getBean("gameCtx", gameId, task);
 	}
 
 	@PreDestroy
-	@SuppressWarnings("unused")
 	private void shutdown() {
 		try {
 			scheduler.shutdown();
 		} catch (SchedulerException e) {
 			logger.error("Scheduler shutdown problem: {}", e.getMessage());
+			LogHub.error(null, logger, "Scheduler shutdown problem: {}", e.getMessage());
 		}
 	}
 
@@ -119,23 +118,23 @@ public class QuartzTaskManager extends TaskDataManager {
 
 			GameContext ctx = createGameCtx(gameId, task);
 			// check scheduler context data
-			if (!scheduler.getContext().containsKey(
-					ctx.getGameRefId() + ":" + task.getName())) {
-				scheduler.getContext().put(
-						ctx.getGameRefId() + ":" + task.getName(), ctx);
-				logger.debug("Added gameCtx {} to scheduler ctx",
+			if (!scheduler.getContext().containsKey(ctx.getGameRefId() + ":" + task.getName())) {
+				scheduler.getContext().put(ctx.getGameRefId() + ":" + task.getName(), ctx);
+				// logger.debug("Added gameCtx {} to scheduler ctx",
+				// ctx.getGameRefId() + ":" + task.getName());
+				LogHub.debug(gameId, logger, "Added gameCtx {} to scheduler ctx",
 						ctx.getGameRefId() + ":" + task.getName());
 			}
 			if (!scheduler.getContext().containsKey(task.getName())) {
 				scheduler.getContext().put(task.getName(), task);
-				logger.debug("Added {} task to scheduler ctx", task.getName());
+				// logger.debug("Added {} task to scheduler ctx",
+				// task.getName());
+				LogHub.debug(gameId, logger, "Added {} task to scheduler ctx", task.getName());
 			}
 
 			// schedule task
-			if (!scheduler.checkExists(new JobKey(task.getName(), ctx
-					.getGameRefId()))
-					&& !scheduler.checkExists(new TriggerKey(task.getName(),
-							ctx.getGameRefId()))) {
+			if (!scheduler.checkExists(new JobKey(task.getName(), ctx.getGameRefId()))
+					&& !scheduler.checkExists(new TriggerKey(task.getName(), ctx.getGameRefId()))) {
 				JobDetailFactoryBean jobFactory = new JobDetailFactoryBean();
 				jobFactory.setJobClass(GameJobQuartz.class);
 				Map<String, Object> jobdata = new HashMap<String, Object>();
@@ -149,15 +148,21 @@ public class QuartzTaskManager extends TaskDataManager {
 
 				Trigger trigger = createTrigger(task, gameId, job);
 				scheduler.scheduleJob(job, trigger);
-				logger.info("Created and started job task {} in group {}",
-						task.getName(), ctx.getGameRefId());
+				// logger.info("Created and started job task {} in group {}",
+				// task.getName(), ctx.getGameRefId());
+				LogHub.info(gameId, logger, "Created and started job task {} in group {}", task.getName(),
+						ctx.getGameRefId());
 			} else {
-				logger.info("Job task {} in group {} already exists",
-						task.getName(), ctx.getGameRefId());
+				// logger.info("Job task {} in group {} already exists",
+				// task.getName(), ctx.getGameRefId());
+				LogHub.info(gameId, logger, "Job task {} in group {} already exists", task.getName(),
+						ctx.getGameRefId());
 			}
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			// logger.error(e.getMessage());
+			LogHub.error(gameId, logger, "Exception creating tasks {}", e.getMessage());
+
 		}
 	}
 
@@ -166,14 +171,17 @@ public class QuartzTaskManager extends TaskDataManager {
 			CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
 			String cronExpression = task.getSchedule().getCronExpression();
 			// fix for version 2.2.1 of CronTrigger
-			triggerFactory.setCronExpression(fixCronExpression(cronExpression));
+			String cron = fixCronExpression(cronExpression);
+			triggerFactory.setCronExpression(cron);
+			LogHub.info(null, logger, "fix cron expression for Quartz 2.2.1 issue: {}", cron);
 			triggerFactory.setName(task.getName());
 			triggerFactory.setGroup(gameId);
 			triggerFactory.setJobDetail(job);
 			try {
 				triggerFactory.afterPropertiesSet();
 			} catch (ParseException e) {
-				logger.error("Error creating task trigger", e);
+				// logger.error("Error creating task trigger", e);
+				LogHub.error(gameId, logger, "Error creating task trigger", e);
 				return null;
 			}
 			return triggerFactory.getObject();
@@ -181,21 +189,30 @@ public class QuartzTaskManager extends TaskDataManager {
 			CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
 			calTrigger.setName(task.getName());
 			calTrigger.setGroup(gameId);
-			logger.info("Scheduled startTime of task {} group {}: {} ",
-					task.getName(), gameId, task.getSchedule().getStart());
-			Date calculatedStart = calculateStartDate(task.getSchedule()
-					.getStart(), task.getSchedule().getPeriod());
-			logger.info("Set start task {} group {} on next triggerDate: {}",
-					task.getName(), gameId, calculatedStart);
+			// logger.info("Scheduled startTime of task {} group {}: {} ",
+			// task.getName(), gameId,
+			// task.getSchedule().getStart());
+			LogHub.info(gameId, logger, "Scheduled startTime of task {} group {}: {} ", task.getName(), gameId,
+					task.getSchedule().getStart());
+			Date calculatedStart = calculateStartDate(task.getSchedule().getStart(), task.getSchedule().getPeriod());
+			// logger.info("Set start task {} group {} on next triggerDate: {}",
+			// task.getName(), gameId, calculatedStart);
+			LogHub.info(gameId, logger, "Set start task {} group {} on next triggerDate: {}", task.getName(), gameId,
+					calculatedStart);
 			int delayMillis = getDelayInMillis(task.getSchedule().getDelay());
-			calTrigger.setStartTime(new DateTime(calculatedStart).plusMillis(
-					delayMillis).toDate());
+			calTrigger.setStartTime(new DateTime(calculatedStart).plusMillis(delayMillis).toDate());
 			if (delayMillis != 0) {
-				logger.info(
-						"Delay setted: {} millis, recalculated triggerDate: {}",
-						delayMillis, calTrigger.getStartTime());
+				// logger.info("Delay setted: {} millis, recalculated
+				// triggerDate: {}", delayMillis,
+				// calTrigger.getStartTime());
+				LogHub.info(gameId, logger, "Delay setted: {} millis, recalculated triggerDate: {}", delayMillis,
+						calTrigger.getStartTime());
 			}
 			Repeat repeat = extractRepeat((int) task.getSchedule().getPeriod());
+			// logger.debug("extract repeat every {} unit {}",
+			// repeat.getInterval(),repeat.getUnit().toString());
+			LogHub.debug(gameId, logger, "extract repeat every {} unit {}", repeat.getInterval(),
+					repeat.getUnit().toString());
 			calTrigger.setRepeatInterval(repeat.getInterval());
 			calTrigger.setRepeatIntervalUnit(repeat.getUnit());
 			return calTrigger;
@@ -240,100 +257,6 @@ public class QuartzTaskManager extends TaskDataManager {
 		return value;
 	}
 
-	private int transformDuration(int duration, TimeUnit source,
-			IntervalUnit destination) {
-		int result = -1;
-		boolean unsopportedOp = false;
-		switch (source) {
-		case MILLISEC:
-			switch (destination) {
-			case MINUTE:
-				result = duration / 60000;
-				break;
-			case HOUR:
-				result = duration / 3600000;
-				break;
-			case DAY:
-				result = duration / 24 * 3600000;
-				break;
-			default:
-				unsopportedOp = true;
-			}
-			break;
-		case SEC:
-			switch (destination) {
-			case MINUTE:
-				result = duration / 60;
-				break;
-			case HOUR:
-				result = duration / 3600;
-				break;
-			case DAY:
-				result = duration / 24 * 3600;
-				break;
-			default:
-				unsopportedOp = true;
-			}
-			break;
-		case MINUTE:
-			switch (destination) {
-			case MINUTE:
-				result = duration;
-				break;
-			case HOUR:
-				result = duration / 60;
-				break;
-			case DAY:
-				result = duration / 24 * 60;
-				break;
-			default:
-				unsopportedOp = true;
-			}
-			break;
-		case HOUR:
-			switch (destination) {
-			case MINUTE:
-				result = duration * 60;
-				break;
-			case HOUR:
-				result = duration;
-				break;
-			case DAY:
-				result = duration / 24;
-				break;
-			default:
-				unsopportedOp = true;
-			}
-			break;
-		case DAY:
-			switch (destination) {
-			case MINUTE:
-				result = duration * 60 * 24;
-				break;
-			case HOUR:
-				result = duration * 24;
-				break;
-			case DAY:
-				result = duration;
-				break;
-			default:
-				unsopportedOp = true;
-			}
-			break;
-		default:
-			unsopportedOp = true;
-		}
-
-		if (unsopportedOp) {
-			throw new IllegalArgumentException(String.format(
-					"unable to convert from TimeUnit %s to TimeInterval %s",
-					source, destination));
-		}
-		logger.info(String.format("transformed %s %s in %s %s", duration,
-				source, result, destination));
-		return result;
-	}
-
 	private Repeat extractRepeat(int period) {
 		final int MILLIS_IN_MINUTE = 60000;
 		final int MILLIS_IN_HOUR = 3600000;
@@ -351,12 +274,10 @@ public class QuartzTaskManager extends TaskDataManager {
 				if (result * MILLIS_IN_MINUTE == period) {
 					unit = IntervalUnit.MINUTE;
 				} else {
-					throw new IllegalArgumentException(
-							"period must representing valid minutes, hours or days value");
+					throw new IllegalArgumentException("period must representing valid minutes, hours or days value");
 				}
 			}
 		}
-		logger.debug("extract repeat every {} unit {}", result, unit.toString());
 		return new Repeat(result, unit);
 
 	}
@@ -402,7 +323,9 @@ public class QuartzTaskManager extends TaskDataManager {
 			}
 			cron = StringUtils.join(tokens, " ");
 
-			logger.info("fix cron expression for Quartz 2.2.1 issue: {}", cron);
+			// logger.info("fix cron expression for Quartz 2.2.1 issue: {}",
+			// cron);
+
 		}
 		return cron;
 	}
@@ -412,17 +335,20 @@ public class QuartzTaskManager extends TaskDataManager {
 		try {
 			if (scheduler.isStarted()) {
 
-				operationResult = scheduler.deleteJob(new JobKey(
-						task.getName(), gameId));
+				operationResult = scheduler.deleteJob(new JobKey(task.getName(), gameId));
 				if (operationResult) {
-					logger.info("task {} destroyed", task.getName());
+					// logger.info("task {} destroyed", task.getName());
+					LogHub.info(gameId, logger, "task {} destroyed", task.getName());
 					deleteData(gameId, task.getName());
-					logger.info("data of task {} deleted", task.getName());
+					// logger.info("data of task {} deleted", task.getName());
+					LogHub.info(gameId, logger, "data of task {} deleted", task.getName());
 				}
 				return operationResult;
 			}
 		} catch (SchedulerException e) {
-			logger.error("Scheduler exception removing task {}", task.getName());
+			// logger.error("Scheduler exception removing task {}",
+			// task.getName());
+			LogHub.error(gameId, logger, "Scheduler exception removing task {}", task.getName());
 		}
 		return operationResult;
 	}
@@ -434,16 +360,18 @@ public class QuartzTaskManager extends TaskDataManager {
 			job = scheduler.getJobDetail(new JobKey(task.getName(), gameId));
 			if (job != null) {
 				Trigger trigger = createTrigger(task, gameId, job);
-				scheduler.rescheduleJob(new TriggerKey(task.getName(), gameId),
-						trigger);
-				logger.info("task {} updated", task.getName());
+				scheduler.rescheduleJob(new TriggerKey(task.getName(), gameId), trigger);
+				// logger.info("task {} updated", task.getName());
+				LogHub.info(gameId, logger, "task {} updated", task.getName());
 			} else {
-				logger.warn("job task {} not found, task not updated",
-						task.getName());
+				// logger.warn("job task {} not found, task not updated",
+				// task.getName());
+				LogHub.warn(gameId, logger, "job task {} not found, task not updated", task.getName());
 			}
 		} catch (SchedulerException e) {
-			logger.error("SchedulerException: task {} not updated",
-					task.getName());
+			// logger.error("SchedulerException: task {} not updated",
+			// task.getName());
+			LogHub.error(gameId, logger, "SchedulerException: task {} not updated", task.getName());
 		}
 	}
 }

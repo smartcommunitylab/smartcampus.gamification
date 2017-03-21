@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoException;
 import com.mongodb.util.JSONParseException;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.ClassificationUtils;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
@@ -44,8 +45,7 @@ import eu.trentorise.game.services.GameService;
 
 public class PlayerRepoImpl implements ExtendPlayerRepo {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(PlayerRepoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PlayerRepoImpl.class);
 	@Autowired
 	private MongoTemplate mongo;
 
@@ -68,8 +68,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				projection = addProjection(query.getProjection());
 			}
 			q = new BasicQuery(queryString, projection);
-			q = (BasicQuery) addSort(q, query != null ? query.getSortItems()
-					: null);
+			q = (BasicQuery) addSort(q, query != null ? query.getSortItems() : null);
 			q.with(pageable);
 
 			if (gameId != null) {
@@ -78,9 +77,8 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 			result = mongo.find(q, StatePersistence.class);
 
-		} catch (JSONParseException | UncategorizedMongoDbException
-				| MongoException | JsonProcessingException e) {
-			exceptionHandler(e);
+		} catch (JSONParseException | UncategorizedMongoDbException | MongoException | JsonProcessingException e) {
+			exceptionHandler(gameId, e);
 		}
 
 		long totalSize = mongo.count(q, StatePersistence.class);
@@ -98,20 +96,16 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		if (query != null) {
 			Map<String, List<QueryElement>> parts = query.getQuery();
 			if (parts != null) {
-				for (SearchElement element : ComplexSearchQuery.SearchElement
-						.values()) {
-					List<QueryElement> queryParts = parts.get(element
-							.getDisplayName());
+				for (SearchElement element : ComplexSearchQuery.SearchElement.values()) {
+					List<QueryElement> queryParts = parts.get(element.getDisplayName());
 					if (queryParts != null) {
-						buffer.append(queryPartToString(game,
-								element.getDisplayName(), queryParts));
+						buffer.append(queryPartToString(game, element.getDisplayName(), queryParts));
 					}
 				}
 				if (buffer.length() > 0) {
 					queryString = buffer.toString();
 				} else {
-					throw new IllegalArgumentException(
-							"Query seems to be not valid: searchElements not valid");
+					throw new IllegalArgumentException("Query seems to be not valid: searchElements not valid");
 				}
 
 			}
@@ -119,17 +113,15 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 			projection = addProjection(game, query.getProjection());
 		}
 		q = new BasicQuery(queryString, projection);
-		q = (BasicQuery) addStructuredSort(game, q,
-				query != null ? query.getSortItems() : null);
+		q = (BasicQuery) addStructuredSort(game, q, query != null ? query.getSortItems() : null);
 		q.with(pageable);
 		if (gameId != null) {
 			q.addCriteria(Criteria.where("gameId").is(gameId));
 		}
 		try {
 			result = mongo.find(q, StatePersistence.class);
-		} catch (JSONParseException | UncategorizedMongoDbException
-				| MongoException e) {
-			exceptionHandler(e);
+		} catch (JSONParseException | UncategorizedMongoDbException | MongoException e) {
+			exceptionHandler(gameId, e);
 		}
 		long totalSize = mongo.count(q, StatePersistence.class);
 		return new PageImpl<>(result, pageable, totalSize);
@@ -150,9 +142,8 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		}
 		try {
 			result = mongo.find(q, StatePersistence.class);
-		} catch (JSONParseException | UncategorizedMongoDbException
-				| MongoException e) {
-			exceptionHandler(e);
+		} catch (JSONParseException | UncategorizedMongoDbException | MongoException e) {
+			exceptionHandler(gameId, e);
 		}
 		long totalSize = mongo.count(q, StatePersistence.class);
 		return new PageImpl<>(result, pageable, totalSize);
@@ -162,10 +153,8 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	private String addProjection(Projection proj) {
 		String result = null;
 		if (proj != null) {
-			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj
-					.getIncludeFields());
-			List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj
-					.getExcludeFields());
+			List<String> projectionIncludeFields = ListUtils.emptyIfNull(proj.getIncludeFields());
+			List<String> projectionExcludeFields = ListUtils.emptyIfNull(proj.getExcludeFields());
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("{");
 
@@ -200,19 +189,16 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	private String addProjection(Game game, ComplexSearchQuery.StructuredProjection proj) {
 		String result = null;
 		if (proj != null) {
-			List<StructuredElement> projectionIncludeFields = ListUtils
-					.emptyIfNull(proj.getIncludeFields());
-			List<StructuredElement> projectionExcludeFields = ListUtils
-					.emptyIfNull(proj.getExcludeFields());
+			List<StructuredElement> projectionIncludeFields = ListUtils.emptyIfNull(proj.getIncludeFields());
+			List<StructuredElement> projectionExcludeFields = ListUtils.emptyIfNull(proj.getExcludeFields());
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("{");
 			for (StructuredElement element : projectionIncludeFields) {
 				if (buffer.length() > 1) {
 					buffer.append(",");
 				}
-				String includeField = fieldQueryString(game, element.getType(),
-						element.getConceptName(), element.getPeriodName(),
-						element.getInstanceDate(), element.getField());
+				String includeField = fieldQueryString(game, element.getType(), element.getConceptName(),
+						element.getPeriodName(), element.getInstanceDate(), element.getField());
 				buffer.append(String.format("\"%s\":1", includeField));
 
 				// append type field when necessary to permit correct creation
@@ -228,12 +214,9 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				if (buffer.length() > 1) {
 					buffer.append(",");
 				}
-				buffer.append(String.format(
-						"\"%s\":0",
-						fieldQueryString(game, element.getType(),
-								element.getConceptName(),
-								element.getPeriodName(),
-								element.getInstanceDate(), element.getField())));
+				buffer.append(
+						String.format("\"%s\":0", fieldQueryString(game, element.getType(), element.getConceptName(),
+								element.getPeriodName(), element.getInstanceDate(), element.getField())));
 			}
 			buffer.append("}");
 			result = buffer.toString();
@@ -270,8 +253,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		if (parts != null) {
 			for (int i = 0; i < parts.size(); i++) {
 				QueryElement part = parts.get(i);
-				buffer.append("\"" + fieldQueryString(game, concept, part)
-						+ "\"");
+				buffer.append("\"" + fieldQueryString(game, concept, part) + "\"");
 				buffer.append(":").append(part.getClause().trim());
 				if (i < parts.size() - 1) {
 					buffer.append(",");
@@ -283,15 +265,15 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		return buffer.toString();
 	}
 
-	private String fieldQueryString(Game game, String fieldType, String conceptName, String periodName, Date instanceDate, String field) {
+	private String fieldQueryString(Game game, String fieldType, String conceptName, String periodName,
+			Date instanceDate, String field) {
 		String queryString = null;
 		if ("customData".equals(fieldType)) {
 			queryString = "customData";
 			if (field != null)
 				queryString += "." + field.trim();
 		} else if ("pointConcept".equals(fieldType)) {
-			queryString = String.format("concepts.%s",
-					convertConceptToString(fieldType));
+			queryString = String.format("concepts.%s", convertConceptToString(fieldType));
 			if (conceptName != null) {
 				queryString += "." + conceptName;
 			}
@@ -299,8 +281,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				queryString += String.format(".obj.%s", field.trim());
 			}
 		} else if ("badgeCollectionConcept".equals(fieldType)) {
-			queryString = String.format("concepts.%s",
-					convertConceptToString(fieldType));
+			queryString = String.format("concepts.%s", convertConceptToString(fieldType));
 			if (conceptName != null) {
 				queryString += "." + conceptName;
 			}
@@ -308,8 +289,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				queryString += String.format(".obj.%s", field.trim());
 			}
 		} else if ("periodicPointConcept".equals(fieldType)) {
-			queryString = String.format("concepts.%s",
-					convertConceptToString(fieldType));
+			queryString = String.format("concepts.%s", convertConceptToString(fieldType));
 			if (conceptName != null) {
 				queryString += "." + conceptName;
 			}
@@ -317,13 +297,10 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 				queryString += ".obj.periods." + periodName;
 			}
 			if (instanceDate != null) {
-				PeriodInstance instance = ClassificationUtils.retrieveWindow(
-						game, periodName, conceptName, instanceDate.getTime(),
-						-1);
+				PeriodInstance instance = ClassificationUtils.retrieveWindow(game, periodName, conceptName,
+						instanceDate.getTime(), -1);
 				if (instance != null) {
-					queryString += ".instances."
-							+ new DateTime(instance.getStart())
-									.toString("YYYY-MM-dd'T'HH:mm:ss");
+					queryString += ".instances." + new DateTime(instance.getStart()).toString("YYYY-MM-dd'T'HH:mm:ss");
 				}
 			}
 			if (field != null) {
@@ -350,22 +327,16 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	private String fieldQueryString(Game game, String concept, QueryElement queryPart) {
 		String queryString = null;
 		if ("customData".equals(concept)) {
-			queryString = fieldQueryString(game, concept, null, null, null,
-					queryPart.getConceptName());
+			queryString = fieldQueryString(game, concept, null, null, null, queryPart.getConceptName());
 		} else if ("pointConcept".equals(concept)) {
-			queryString = fieldQueryString(game, concept,
-					queryPart.getConceptName(), null, null, "score");
+			queryString = fieldQueryString(game, concept, queryPart.getConceptName(), null, null, "score");
 		} else if ("badgeCollectionConcept".equals(concept)) {
-			queryString = fieldQueryString(game, concept,
-					queryPart.getConceptName(), null, null, "badgeEarned");
+			queryString = fieldQueryString(game, concept, queryPart.getConceptName(), null, null, "badgeEarned");
 		} else if ("periodicPointConcept".equals(concept)) {
-			queryString = fieldQueryString(game, concept,
-					queryPart.getConceptName(), queryPart.getPeriodName(),
+			queryString = fieldQueryString(game, concept, queryPart.getConceptName(), queryPart.getPeriodName(),
 					queryPart.getInstanceDate(), "score");
 		} else if ("challengeConcept".equals(concept)) {
-			queryString = fieldQueryString(game, concept,
-					queryPart.getConceptName(), null, null,
-					queryPart.getField());
+			queryString = fieldQueryString(game, concept, queryPart.getConceptName(), null, null, queryPart.getField());
 		}
 
 		return queryString;
@@ -412,8 +383,7 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		Order[] orders = new Order[sortItems.size()];
 		int index = 0;
 		for (SortItem sortItem : sortItems) {
-			orders[index++] = new Order(Direction.fromString(sortItem
-					.getDirection().name()), sortItem.getField());
+			orders[index++] = new Order(Direction.fromString(sortItem.getDirection().name()), sortItem.getField());
 		}
 		return orders;
 	}
@@ -422,18 +392,17 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		Order[] orders = new Order[sortItems.size()];
 		int index = 0;
 		for (StructuredSortItem sortItem : sortItems) {
-			orders[index++] = new Order(Direction.fromString(sortItem
-					.getDirection().name()), fieldQueryString(game, sortItem
-					.getField().getType(),
-					sortItem.getField().getConceptName(), sortItem.getField()
-							.getPeriodName(), sortItem.getField()
-							.getInstanceDate(), sortItem.getField().getField()));
+			orders[index++] = new Order(Direction.fromString(sortItem.getDirection().name()),
+					fieldQueryString(game, sortItem.getField().getType(), sortItem.getField().getConceptName(),
+							sortItem.getField().getPeriodName(), sortItem.getField().getInstanceDate(),
+							sortItem.getField().getField()));
 		}
 		return orders;
 	}
 
-	private void exceptionHandler(Exception e) {
-		logger.error("Exception running mongo query in search", e);
+	private void exceptionHandler(String gameId, Exception e) {
+		// logger.error("Exception running mongo query in search", e);
+		LogHub.error(gameId, logger, "Exception running mongo query in search", e);
 		throw new IllegalArgumentException("Query seems to be not valid");
 	}
 

@@ -218,7 +218,6 @@ public class GameManager implements GameService {
 					stopWatch.stop("insert rule", "inserted rule for game " + rule.getGameId());
 				}
 			} else {
-				// logger.error("Game {} not found", rule.getGameId());
 				LogHub.error(rule.getGameId(), logger, "Game {} not found", rule.getGameId());
 			}
 		}
@@ -257,8 +256,6 @@ public class GameManager implements GameService {
 			if (game.getExpiration() > 0 && game.getExpiration() < deadline) {
 				for (GameTask task : game.getTasks()) {
 					if (taskSrv.destroyTask(task, game.getId())) {
-						// logger.info("Destroy task - {} - of game {}",
-						// task.getName(), game.getId());
 						LogHub.info(game.getId(), logger, "Destroy task - {} - of game {}", task.getName(),
 								game.getId());
 					}

@@ -69,8 +69,6 @@ public class AppConfig {
 		try {
 			boolean activatePersistence = env.getProperty("task.persistence.activate", Boolean.class, false);
 			if (activatePersistence) {
-				// logger.info("task persistence active..load quartz
-				// properties");
 				LogHub.info(null, logger, "task persistence active..load quartz properties");
 				Properties props = new Properties();
 				Map<String, Object> propsMap = new HashMap<String, Object>();
@@ -87,13 +85,11 @@ public class AppConfig {
 				props.putAll(propsMap);
 				return new StdSchedulerFactory(props).getScheduler();
 			} else {
-				// logger.info("task persistence unactive");
 				LogHub.info(null, logger, "task persistence unactive");
 				return new StdSchedulerFactory().getScheduler();
 
 			}
 		} catch (SchedulerException e) {
-			// logger.error("Error creating scheduler");
 			LogHub.error(null, logger, "Error creating scheduler");
 			return null;
 		}

@@ -212,7 +212,6 @@ public class DroolsEngine implements GameEngine {
 		while (iter.hasNext()) {
 			Notification note = (Notification) iter.next().get("$notifications");
 			notificationSrv.notificate(note);
-			// logger.info("send notification: {}", note.toString());
 			LogHub.info(gameId, logger, "send notification: {}", note.toString());
 		}
 
@@ -233,11 +232,8 @@ public class DroolsEngine implements GameEngine {
 			}
 
 			List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
-			// logger.info("Player {} belongs to {} teams", state.getPlayerId(),
-			// playerTeams.size());
 			LogHub.info(gameId, logger, "Player {} belongs to {} teams", state.getPlayerId(), playerTeams.size());
 			if (playerTeams.size() > 0) {
-				// logger.info("call for update with data {}", data);
 				LogHub.info(gameId, logger, "call for update with data {}", data);
 			}
 
@@ -267,16 +263,11 @@ public class DroolsEngine implements GameEngine {
 				TeamState team = playerSrv.readTeam(gameId, state.getPlayerId());
 				List<String> members = team.getMembers();
 				facts.add(new Team(state.getPlayerId(), data));
-				// logger.info("Team {} has {} members", state.getPlayerId(),
-				// members.size());
 				LogHub.info(gameId, logger, "Team {} has {} members", state.getPlayerId(), members.size());
 				for (String member : members) {
 					workflow.apply(gameId, action, member, null, new ArrayList<>(facts));
 				}
 			} catch (ClassCastException e) {
-				// logger.info(String.format("%s is not a team, there is no
-				// propagation to team members",
-				// state.getPlayerId()));
 				LogHub.info(gameId, logger, "{} is not a team, there is no propagation to team members",
 						state.getPlayerId());
 			}
@@ -307,7 +298,6 @@ public class DroolsEngine implements GameEngine {
 					try {
 						constantsFileStream = r.getInputStream();
 					} catch (IOException e) {
-						// logger.error("Exception loading constants file", e);
 						LogHub.error(gameId, logger, "Exception loading constants file", e);
 					}
 				}
@@ -319,7 +309,6 @@ public class DroolsEngine implements GameEngine {
 				PropertiesConfiguration constants = new PropertiesConfiguration();
 				constants.load(constantsFileStream);
 				constants.setListDelimiter(',');
-				// logger.debug("constants file loaded for game {}", gameId);
 				LogHub.debug(gameId, logger, "constants file loaded for game {}", gameId);
 				Iterator<String> constantsIter = constants.getKeys();
 				while (constantsIter.hasNext()) {
@@ -329,23 +318,17 @@ public class DroolsEngine implements GameEngine {
 					if (logger.isDebugEnabled()) {
 						List<Object> listValue = constants.getList(constant);
 						if (listValue.isEmpty()) {
-							// logger.debug("constant {} loaded: {}", constant,
-							// value);
 							LogHub.debug(gameId, logger, "constant {} loaded: {}", constant, value);
 						} else {
-							// logger.debug("constant {} loaded: {}, size: {}",
-							// constant, listValue, listValue.size());
 							LogHub.debug(gameId, logger, "constant {} loaded: {}, size: {}", constant, listValue,
 									listValue.size());
 						}
 					}
 				}
 			} catch (ConfigurationException e) {
-				// logger.error("constants loading exception");
 				LogHub.error(gameId, logger, "constants loading exception");
 			}
 		} else {
-			// logger.info("Rule constants file not found");
 			LogHub.info(gameId, logger, "Rule constants file not found");
 		}
 		return kSession;
@@ -378,10 +361,8 @@ public class DroolsEngine implements GameEngine {
 		try {
 			coreRes = ruleLoader.load("classpath://rules/core.drl");
 			kfs.write(coreRes);
-			// logger.info("Core rules loaded");
 			LogHub.info(gameId, logger, "Core rules loaded");
 		} catch (MalformedURLException e) {
-			// logger.error("Exception loading core.drl");
 			LogHub.info(gameId, logger, "Exception loading core.drl");
 		}
 
@@ -397,21 +378,16 @@ public class DroolsEngine implements GameEngine {
 					// fix to not load constant file
 					if (r1 != null) {
 						kfs.write(r1);
-						// logger.debug("{} loaded", rule);
 						LogHub.debug(gameId, logger, "{} loaded", rule);
 					}
 				} catch (MalformedURLException e) {
-					// logger.error("Malformed URL loading rule {}, rule not
-					// loaded", rule);
 					LogHub.error(gameId, logger, "Malformed URL loading rule {}, rule not loaded", rule);
 				} catch (RuntimeException e) {
-					// logger.error("Exception loading rule {}", rule);
 					LogHub.error(gameId, logger, "Exception loading rule {}", rule);
 				}
 			}
 		}
 		kieServices.newKieBuilder(kfs).buildAll();
-		// logger.info("Rules repository built");
 		LogHub.info(gameId, logger, "Rules repository built");
 
 	}
@@ -453,7 +429,6 @@ public class DroolsEngine implements GameEngine {
 					res = kieServices.getResources().newReaderResource(new StringReader(((DBRule) r).getContent()));
 					res.setSourcePath("rules/" + r.getGameId() + "/" + ((DBRule) r).getId() + ".drl");
 				} else {
-					// logger.error("DBRule {} not exist", url);
 					LogHub.error(ruleUrl, logger, "DBRule {} not exist", url);
 				}
 			} else {
@@ -477,7 +452,6 @@ public class DroolsEngine implements GameEngine {
 					result.add(err.getMessage());
 				}
 			} else {
-				// logger.error("Drools verifier instantiation exception");
 				LogHub.error(gameId, logger, "Drools verifier instantiation exception");
 			}
 		}

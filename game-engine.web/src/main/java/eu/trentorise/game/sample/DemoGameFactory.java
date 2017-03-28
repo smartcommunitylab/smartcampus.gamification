@@ -68,13 +68,9 @@ public class DemoGameFactory {
 			}
 		}
 		if (gameFound) {
-			// logger.info("sample {} already loaded for user {}", gameName,
-			// gameOwner);
 			LogHub.info(gameId, logger, "sample {} already loaded for user {}", gameName, gameOwner);
 			return null;
 		} else {
-			// logger.info("sample {} not loaded for user {}..start loading",
-			// gameName, gameOwner);
 			LogHub.info(gameId, logger, "sample {} not loaded for user {}..start loading", gameName, gameOwner);
 			Game game = new Game(gameId);
 			game.setName(gameName);
@@ -190,7 +186,6 @@ public class DemoGameFactory {
 				rule.setName("finalClassificationBadges");
 				gameSrv.addRule(rule);
 
-				// logger.info("{} saved", gameName);
 				LogHub.info(gameId, logger, "{} saved", gameName);
 				return game;
 			} catch (IOException e) {

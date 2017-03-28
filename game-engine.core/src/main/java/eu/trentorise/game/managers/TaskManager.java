@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.core.GameTask;
 
 @Component
@@ -39,13 +40,11 @@ public class TaskManager extends TaskDataManager {
 	private AppContextProvider provider;
 
 	private GameContext createGameCtx(String gameId, GameTask task) {
-		return (GameContext) provider.getApplicationContext().getBean(
-				"gameCtx", gameId, task);
+		return (GameContext) provider.getApplicationContext().getBean("gameCtx", gameId, task);
 	}
 
 	public void createTask(GameTask task, String gameId) {
-		CronTrigger trigger = new CronTrigger(task.getSchedule()
-				.getCronExpression());
+		CronTrigger trigger = new CronTrigger(task.getSchedule().getCronExpression());
 		GameContext ctx = createGameCtx(gameId, task);
 		scheduler.schedule(new TaskRun(task, ctx), trigger);
 
@@ -67,7 +66,7 @@ public class TaskManager extends TaskDataManager {
 		}
 
 		public void run() {
-			logger.info("RUN TASK");
+			LogHub.info(null, logger, "RUN TASK");
 			gameTask.execute(gameCtx);
 		}
 

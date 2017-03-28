@@ -42,12 +42,6 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof PointConcept) {
 			PointConcept pc = (PointConcept) workingObj;
-			// logger.info("rule \'{}\' created PointConcept \'{}\' with score
-			// {}"
-			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-			// insertEvent.getRule() != null ? insertEvent.getRule()
-			// .getName() : "-", pc.getName(), pc.getScore(),
-			// playerId);
 			LogHub.info(gameId, logger,
 					"rule \'{}\' created PointConcept \'{}\' with score {}"
 							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
@@ -57,13 +51,6 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof BadgeCollectionConcept) {
 			BadgeCollectionConcept bcc = (BadgeCollectionConcept) workingObj;
-			// logger.info(
-			// "rule \'{}\' created BadgeCollectionConcept \'{}\' with badges
-			// {}"
-			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-			// insertEvent.getRule() != null ? insertEvent.getRule().getName() :
-			// "-", bcc.getName(),
-			// bcc.getBadgeEarned(), playerId);
 			LogHub.info(gameId, logger,
 					"rule \'{}\' created BadgeCollectionConcept \'{}\' with badges {}"
 							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
@@ -73,11 +60,6 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof BadgeNotification) {
 			BadgeNotification bn = (BadgeNotification) workingObj;
-			// logger.info(
-			// "rule \'{}\' created BadgeNotification for badge \'{}\'"
-			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-			// insertEvent.getRule() != null ? insertEvent.getRule().getName() :
-			// "-", bn.getBadge(), playerId);
 			LogHub.info(gameId, logger,
 					"rule \'{}\' created BadgeNotification for badge \'{}\'"
 							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
@@ -85,10 +67,6 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 		}
 
 		if (workingObj instanceof CustomData) {
-			// logger.info("rule \'{}\' added CustomData" +
-			// (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-			// insertEvent.getRule() != null ? insertEvent.getRule().getName() :
-			// "-", playerId);
 			LogHub.info(gameId, logger,
 					"rule \'{}\' added CustomData" + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
 					insertEvent.getRule() != null ? insertEvent.getRule().getName() : "-", playerId);
@@ -101,12 +79,6 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof PointConcept) {
 			PointConcept pc = (PointConcept) workingObj;
-			// logger.info(
-			// "rule \'{}\' updated PointConcept \'{}\' to {}"
-			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-			// updateEvent.getRule() != null ? updateEvent.getRule().getName() :
-			// "-", pc.getName(), pc.getScore(),
-			// playerId);
 			LogHub.info(gameId, logger,
 					"rule \'{}\' updated PointConcept \'{}\' to {}"
 							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
@@ -119,12 +91,6 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof BadgeCollectionConcept) {
 			BadgeCollectionConcept bcc = (BadgeCollectionConcept) workingObj;
-			// logger.info(
-			// "rule \'{}\' updated BadgeCollectionConcept \'{}\' to {}"
-			// + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-			// updateEvent.getRule() != null ? updateEvent.getRule().getName() :
-			// "-", bcc.getName(),
-			// bcc.getBadgeEarned(), playerId);
 			LogHub.info(gameId, logger,
 					"rule \'{}\' updated BadgeCollectionConcept \'{}\' to {}"
 							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
@@ -134,10 +100,6 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 		}
 
 		if (workingObj instanceof CustomData) {
-			// logger.info("rule \'{}\' updated CustomData" +
-			// (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-			// updateEvent.getRule() != null ? updateEvent.getRule().getName() :
-			// "-", playerId);
 			LogHub.info(gameId, logger,
 					"rule \'{}\' updated CustomData" + (StringUtils.isBlank(playerId) ? "" : " of player {}"),
 					updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", playerId);

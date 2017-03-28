@@ -109,7 +109,6 @@ public class IncrementalClassificationTask extends ClassificationTask {
 			return;
 		}
 
-		// logger.debug("Execute of task {}", getClassificationName());
 		LogHub.debug(ctx.getGameRefId(), logger, "Execute of task {}", getClassificationName());
 
 		IncrementalClassificationTask execTask = (IncrementalClassificationTask) ctx.getTask();
@@ -157,20 +156,10 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		DateTime endDate = new LocalDateTime(startInstanceDate)
 				.withPeriodAdded(new org.joda.time.Period(periodLength), 1).toDateTime();
 
-		// logger.info(String.format(
-		// "run task \"%s\" of group %s on instance index: %s, instance date:
-		// %s, pointConcept: %s, periodName: %s",
-		// ctx.getTask().getName(), ctx.getGameRefId(), instanceIndex, new
-		// Date(startInstanceDate).toString(),
-		// pointConceptName, periodName));
 		LogHub.info(ctx.getGameRefId(), logger,
 				"run task \"{}\" of group {} on instance index: {}, instance date: {}, pointConcept: {}, periodName: {}",
 				ctx.getTask().getName(), ctx.getGameRefId(), instanceIndex, new Date(startInstanceDate).toString(),
 				pointConceptName, periodName);
-		// logger.info(String.format("run task \"%s\" of group %s: periodLength:
-		// %s, executionNumber: %s",
-		// ctx.getTask().getName(), ctx.getGameRefId(), periodLength,
-		// executionNumber));
 		LogHub.info(ctx.getGameRefId(), logger, "run task \"{}\" of group {}: periodLength: {}, executionNumber: {}",
 				ctx.getTask().getName(), ctx.getGameRefId(), periodLength, executionNumber);
 		ClassificationBuilder builder = ClassificationFactory.createIncrementalClassification(states, pointConceptName,
@@ -181,9 +170,6 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		// debug logging
 		if (logger.isDebugEnabled()) {
 			for (ClassificationPosition entry : classification) {
-				// logger.debug("{}: player {} score {}",
-				// getClassificationName(), entry.getPlayerId(),
-				// entry.getScore());
 				LogHub.debug(ctx.getGameRefId(), logger, "{}: player {} score {}", getClassificationName(),
 						entry.getPlayerId(), entry.getScore());
 			}

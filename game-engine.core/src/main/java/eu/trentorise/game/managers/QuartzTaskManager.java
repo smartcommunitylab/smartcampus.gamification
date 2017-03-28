@@ -76,18 +76,16 @@ public class QuartzTaskManager extends TaskDataManager {
 			for (Game g : result) {
 				for (GameTask gt : g.getTasks()) {
 					scheduler.getContext().put(g.getId() + ":" + gt.getName(), createGameCtx(g.getId(), gt));
-					logger.debug("Added gameCtx of game {} to scheduler ctx", g.getId() + ":" + g.getName());
+					LogHub.debug(g.getId(), logger, "Added gameCtx of game {} to scheduler ctx",
+							g.getId() + ":" + g.getName());
 					scheduler.getContext().put(gt.getName(), gt);
-					logger.debug("Added {} task to scheduler ctx", gt.getName());
+					LogHub.debug(g.getId(), logger, "Added {} task to scheduler ctx", gt.getName());
 				}
 			}
-			// logger.debug("Init scheduler ctx");
 			LogHub.debug(null, logger, "Init scheduler ctx");
 			scheduler.start();
-			// logger.debug("Scheduler started");
 			LogHub.debug(null, logger, "Scheduler started");
 		} catch (SchedulerException e) {
-			// logger.error("Scheduler not started: {}", e.getMessage());
 			LogHub.error(null, logger, "Scheduler not started: {}", e.getMessage());
 		}
 	}
@@ -120,15 +118,11 @@ public class QuartzTaskManager extends TaskDataManager {
 			// check scheduler context data
 			if (!scheduler.getContext().containsKey(ctx.getGameRefId() + ":" + task.getName())) {
 				scheduler.getContext().put(ctx.getGameRefId() + ":" + task.getName(), ctx);
-				// logger.debug("Added gameCtx {} to scheduler ctx",
-				// ctx.getGameRefId() + ":" + task.getName());
 				LogHub.debug(gameId, logger, "Added gameCtx {} to scheduler ctx",
 						ctx.getGameRefId() + ":" + task.getName());
 			}
 			if (!scheduler.getContext().containsKey(task.getName())) {
 				scheduler.getContext().put(task.getName(), task);
-				// logger.debug("Added {} task to scheduler ctx",
-				// task.getName());
 				LogHub.debug(gameId, logger, "Added {} task to scheduler ctx", task.getName());
 			}
 
@@ -148,19 +142,14 @@ public class QuartzTaskManager extends TaskDataManager {
 
 				Trigger trigger = createTrigger(task, gameId, job);
 				scheduler.scheduleJob(job, trigger);
-				// logger.info("Created and started job task {} in group {}",
-				// task.getName(), ctx.getGameRefId());
 				LogHub.info(gameId, logger, "Created and started job task {} in group {}", task.getName(),
 						ctx.getGameRefId());
 			} else {
-				// logger.info("Job task {} in group {} already exists",
-				// task.getName(), ctx.getGameRefId());
 				LogHub.info(gameId, logger, "Job task {} in group {} already exists", task.getName(),
 						ctx.getGameRefId());
 			}
 
 		} catch (Exception e) {
-			// logger.error(e.getMessage());
 			LogHub.error(gameId, logger, "Exception creating tasks {}", e.getMessage());
 
 		}
@@ -180,7 +169,6 @@ public class QuartzTaskManager extends TaskDataManager {
 			try {
 				triggerFactory.afterPropertiesSet();
 			} catch (ParseException e) {
-				// logger.error("Error creating task trigger", e);
 				LogHub.error(gameId, logger, "Error creating task trigger", e);
 				return null;
 			}
@@ -189,28 +177,18 @@ public class QuartzTaskManager extends TaskDataManager {
 			CalendarIntervalTriggerImpl calTrigger = new CalendarIntervalTriggerImpl();
 			calTrigger.setName(task.getName());
 			calTrigger.setGroup(gameId);
-			// logger.info("Scheduled startTime of task {} group {}: {} ",
-			// task.getName(), gameId,
-			// task.getSchedule().getStart());
 			LogHub.info(gameId, logger, "Scheduled startTime of task {} group {}: {} ", task.getName(), gameId,
 					task.getSchedule().getStart());
 			Date calculatedStart = calculateStartDate(task.getSchedule().getStart(), task.getSchedule().getPeriod());
-			// logger.info("Set start task {} group {} on next triggerDate: {}",
-			// task.getName(), gameId, calculatedStart);
 			LogHub.info(gameId, logger, "Set start task {} group {} on next triggerDate: {}", task.getName(), gameId,
 					calculatedStart);
 			int delayMillis = getDelayInMillis(task.getSchedule().getDelay());
 			calTrigger.setStartTime(new DateTime(calculatedStart).plusMillis(delayMillis).toDate());
 			if (delayMillis != 0) {
-				// logger.info("Delay setted: {} millis, recalculated
-				// triggerDate: {}", delayMillis,
-				// calTrigger.getStartTime());
 				LogHub.info(gameId, logger, "Delay setted: {} millis, recalculated triggerDate: {}", delayMillis,
 						calTrigger.getStartTime());
 			}
 			Repeat repeat = extractRepeat((int) task.getSchedule().getPeriod());
-			// logger.debug("extract repeat every {} unit {}",
-			// repeat.getInterval(),repeat.getUnit().toString());
 			LogHub.debug(gameId, logger, "extract repeat every {} unit {}", repeat.getInterval(),
 					repeat.getUnit().toString());
 			calTrigger.setRepeatInterval(repeat.getInterval());
@@ -337,17 +315,13 @@ public class QuartzTaskManager extends TaskDataManager {
 
 				operationResult = scheduler.deleteJob(new JobKey(task.getName(), gameId));
 				if (operationResult) {
-					// logger.info("task {} destroyed", task.getName());
 					LogHub.info(gameId, logger, "task {} destroyed", task.getName());
 					deleteData(gameId, task.getName());
-					// logger.info("data of task {} deleted", task.getName());
 					LogHub.info(gameId, logger, "data of task {} deleted", task.getName());
 				}
 				return operationResult;
 			}
 		} catch (SchedulerException e) {
-			// logger.error("Scheduler exception removing task {}",
-			// task.getName());
 			LogHub.error(gameId, logger, "Scheduler exception removing task {}", task.getName());
 		}
 		return operationResult;
@@ -361,16 +335,11 @@ public class QuartzTaskManager extends TaskDataManager {
 			if (job != null) {
 				Trigger trigger = createTrigger(task, gameId, job);
 				scheduler.rescheduleJob(new TriggerKey(task.getName(), gameId), trigger);
-				// logger.info("task {} updated", task.getName());
 				LogHub.info(gameId, logger, "task {} updated", task.getName());
 			} else {
-				// logger.warn("job task {} not found, task not updated",
-				// task.getName());
 				LogHub.warn(gameId, logger, "job task {} not found, task not updated", task.getName());
 			}
 		} catch (SchedulerException e) {
-			// logger.error("SchedulerException: task {} not updated",
-			// task.getName());
 			LogHub.error(gameId, logger, "SchedulerException: task {} not updated", task.getName());
 		}
 	}

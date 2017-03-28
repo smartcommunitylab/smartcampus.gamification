@@ -63,8 +63,6 @@ class GeneralClassificationBuilder extends AbstractClassificationBuilder {
 				return ((PointConcept) gc).getScore();
 			}
 		}
-		// logger.warn(String
-		// .format("PointConcept %s not found", pointConceptName));
 		LogHub.warn(state.getGameId(), logger, "PointConcept {} not found", pointConceptName);
 		return 0d;
 	}
@@ -109,8 +107,6 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 				}
 			}
 		}
-		// logger.warn(String.format("PointConcept %s not found",
-		// pointConceptName));
 		LogHub.warn(state.getGameId(), logger, "PointConcept {} not found", pointConceptName);
 		return 0d;
 	}

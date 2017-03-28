@@ -79,7 +79,6 @@ public class MainController {
 			try {
 				res.sendError(403, String.format("game %s is expired", game.getId()));
 			} catch (IOException e1) {
-				// logger.error("Exception sendError to client", e1);
 				LogHub.error(game.getId(), logger, "Exception sendError to client", e1);
 			}
 		} else {

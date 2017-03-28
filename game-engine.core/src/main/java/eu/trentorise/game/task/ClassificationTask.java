@@ -53,8 +53,6 @@ public abstract class ClassificationTask extends GameTask {
 			return;
 		}
 
-		// logger.info("run task {} of group {}", getName(),
-		// ctx.getGameRefId());
 		LogHub.info(ctx.getGameRefId(), logger, "run task {} of group {}", getName(), ctx.getGameRefId());
 
 		// read all game players

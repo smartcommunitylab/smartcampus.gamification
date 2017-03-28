@@ -401,7 +401,6 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 	}
 
 	private void exceptionHandler(String gameId, Exception e) {
-		// logger.error("Exception running mongo query in search", e);
 		LogHub.error(gameId, logger, "Exception running mongo query in search", e);
 		throw new IllegalArgumentException("Query seems to be not valid");
 	}

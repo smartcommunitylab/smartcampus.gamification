@@ -61,9 +61,6 @@ public class GameWorkflow implements Workflow {
 
 	protected void workflowExec(String gameId, String actionId, String userId, String executionId, long executionMoment,
 			Map<String, Object> data, List<Object> factObjects) {
-		// logger.info(
-		// "gameId:{}, actionId: {}, playerId: {}, data: {}, factObjs: {}",
-		// gameId, actionId, userId, data, factObjects);
 		LogHub.info(gameId, logger, "gameId:{}, actionId: {}, playerId: {}, data: {}, factObjs: {}", gameId, actionId,
 				userId, data, factObjects);
 		Game g = gameSrv.loadGameDefinitionById(gameId);
@@ -85,10 +82,8 @@ public class GameWorkflow implements Workflow {
 
 		if (env.getProperty("trace.playerMove", Boolean.class, false)) {
 			traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
-			// logger.info("Traced player {} move", userId);
 			LogHub.info(gameId, logger, "Traced player {} move", userId);
 		}
-		// logger.info("Process terminated: {}", result);
 		LogHub.info(gameId, logger, "Process terminated: {}", result);
 	}
 

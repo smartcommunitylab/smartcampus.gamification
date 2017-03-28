@@ -219,8 +219,6 @@ public class Converter {
 				task.setItemsToNotificate(t.getItemsToNotificate());
 				task.setName(t.getName());
 			} else {
-				// logger.warn("Try to convert IncrementalClassificationDTO with
-				// null gameId field");
 				LogHub.warn(null, logger, "Try to convert IncrementalClassificationDTO with null gameId field");
 				throw new IllegalArgumentException("gameId is a required field");
 			}

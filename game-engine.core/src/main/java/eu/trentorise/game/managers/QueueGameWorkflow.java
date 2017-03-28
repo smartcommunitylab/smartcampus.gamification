@@ -49,7 +49,6 @@ public class QueueGameWorkflow extends GameWorkflow {
 			long executionMoment = System.currentTimeMillis();
 			executor.execute(new Execution(gameId, actionId, userId, executionId, executionMoment, data, factObjects));
 		} catch (Exception e) {
-			// logger.error("Exception in game queue execution", e);
 			LogHub.error(gameId, logger, "Exception in game queue execution", e);
 		}
 

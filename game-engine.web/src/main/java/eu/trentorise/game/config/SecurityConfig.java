@@ -52,7 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		for (AuthUser user : usersProvider.getUsers()) {
 			auth.inMemoryAuthentication().withUser(user.getUsername()).password(user.getPassword())
 					.roles(user.getRole());
-			// logger.info("Loaded auth user {}", user.getUsername());
 			LogHub.info(null, logger, "Loaded auth user {}", user.getUsername());
 		}
 	}

@@ -371,6 +371,26 @@ angular.module('gamificationEngine.services', [])
 			return deferred.promise;
 		}
 		
+		var playersSearch = function (gameId, playerFilter, pageRequest, pageSize) {
+			var deferred = $q.defer();
+			var query = {};
+			query.rawQuery = {};
+			query.rawQuery.query = {};
+			query.rawQuery.query = {'playerId' : '/' +playerFiilter+'/'}
+			$http.post(url + '/gamification/data/game/' + gameId +'/player/search',query, {
+				params: {
+					page: pageRequest,
+					size: pageSize,
+				}
+			}).success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+
+			return deferred.promise;
+		}
+		
 		var saveChallengeModel = function(gameId, model) {
 			var deferred = $q.defer();
 			model.variables = [];

@@ -92,7 +92,7 @@ angular.module('gamificationEngine.monitor', [])
 
 		$scope.update = function () {
 			//$scope.expandIdx = -1000;
-			gamesFactory.getPlayersState($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {
+			gamesFactory.playersSearch($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {
 				data.content = enrichData(data.content);
 				$scope.playerStates = data;
 				$scope.totalItems = data.totalElements;

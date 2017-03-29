@@ -25,8 +25,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ClassificationBoard;
+import eu.trentorise.game.model.core.ComplexSearchQuery;
+import eu.trentorise.game.model.core.RawSearchQuery;
+import eu.trentorise.game.model.core.StringSearchQuery;
 
 @Service
 public interface PlayerService {
@@ -37,21 +42,29 @@ public interface PlayerService {
 
 	public List<PlayerState> loadStates(String gameId);
 
-	public Page<PlayerState> loadStates(String gameId, String playerId,
-			Pageable pageable);
+	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable);
 
 	public List<PlayerState> loadStates(String gameId, String playerId);
 
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable);
+
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, Pageable pageable);
+
 	public PlayerState saveState(PlayerState state);
 
-	public PlayerState updateCustomData(String gameId, String playerId,
-			Map<String, Object> data);
+	public PlayerState updateCustomData(String gameId, String playerId, Map<String, Object> data);
 
 	public void deleteState(String gameId, String playerId);
 
 	public Page<String> readPlayers(String gameId, Pageable pageable);
 
 	public List<String> readPlayers(String gameId);
+
+	public Page<PlayerState> search(String gameId, RawSearchQuery query, Pageable pageable);
+
+	public Page<PlayerState> search(String gameId, ComplexSearchQuery query, Pageable pageable);
+
+	public Page<PlayerState> search(String gameId, StringSearchQuery query, Pageable pageable);
 
 	/*
 	 * TEAM METHODS
@@ -67,13 +80,12 @@ public interface PlayerService {
 
 	public TeamState addToTeam(String gameId, String teamId, String playerId);
 
-	public TeamState removeFromTeam(String gameId, String teamId,
-			String playerId);
+	public TeamState removeFromTeam(String gameId, String teamId, String playerId);
 
 	/*
 	 * CHALLENGE METHODS
 	 */
 
-	public ChallengeConcept assignChallenge(String gameId, String playerId,
-			String modelName, String instanceName, Map<String, Object> data,Date start, Date end);
+	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName, Map<String, Object> data, Date start, Date end);
+
 }

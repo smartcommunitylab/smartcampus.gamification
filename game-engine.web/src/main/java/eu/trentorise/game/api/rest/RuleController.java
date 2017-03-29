@@ -19,6 +19,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class RuleController {
@@ -31,9 +32,10 @@ public class RuleController {
 
 	// Create rule
 	// POST /model/game/{id}/rule
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule")
-	public RuleDTO addRule(@PathVariable String gameId,
-			@RequestBody RuleDTO rule) {
+	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Add rule")
+	public RuleDTO addRule(@PathVariable String gameId, @RequestBody RuleDTO rule) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -50,9 +52,10 @@ public class RuleController {
 
 	// Update rule
 	// PUT /model/game/{id}/rule/{ruleId}
-	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/rule/{ruleId}")
-	public RuleDTO editRule(@PathVariable String gameId,
-			@RequestBody RuleDTO rule) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/rule/{ruleId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Edit rule")
+	public RuleDTO editRule(@PathVariable String gameId, @RequestBody RuleDTO rule) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -69,7 +72,8 @@ public class RuleController {
 
 	// Read all rules
 	// GET /model/game/{id}/rule
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/rule")
+	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/rule", produces = { "application/json" })
+	@ApiOperation(value = "Get rules")
 	public List<RuleDTO> readAllRules(@PathVariable String gameId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -94,9 +98,10 @@ public class RuleController {
 
 	// Read a rule
 	// GET /model/game/{id}/rule/{ruleId}
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/rule/{ruleId}")
-	public RuleDTO readDbRule(@PathVariable String gameId,
-			@PathVariable String ruleId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/rule/{ruleId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get rule")
+	public RuleDTO readDbRule(@PathVariable String gameId, @PathVariable String ruleId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -115,9 +120,10 @@ public class RuleController {
 	// Delete a rule
 	// DELETE /model/game/{id}/rule/{ruleId}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/rule/{ruleId}")
-	public boolean deleteDbRule(@PathVariable String gameId,
-			@PathVariable String ruleId) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/rule/{ruleId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Delete rule")
+	public boolean deleteDbRule(@PathVariable String gameId, @PathVariable String ruleId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -132,7 +138,9 @@ public class RuleController {
 	// POST /model/game/{id}/rule/validate
 	// ­ Rule wrapped in an object {rule: “<rule text>”}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule/validate")
+	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule/validate", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Validate rule")
 	public List<String> validateRule(@RequestBody RuleValidateWrapper wrapper) {
 		return gameEngine.validateRule(wrapper.getRuleContent());
 	}

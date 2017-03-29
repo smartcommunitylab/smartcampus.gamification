@@ -74,7 +74,8 @@ public class ConsoleController {
 	@Autowired
 	private IdentityLookupService identityLookup;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game")
+	@RequestMapping(method = RequestMethod.POST, value = "/game", consumes = { "application/json" }, produces = {
+			"application/json" })
 	public GameDTO saveGame(@RequestBody GameDTO game) {
 		// set creator
 		String user = identityLookup.getName();
@@ -83,7 +84,7 @@ public class ConsoleController {
 		return converter.convertGame(res);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}")
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}", produces = { "application/json" })
 	public GameDTO readGame(@PathVariable String gameId) {
 
 		try {
@@ -96,7 +97,7 @@ public class ConsoleController {
 		return g == null ? null : converter.convertGame(g);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}", produces = { "application/json" })
 	public void deleteGame(@PathVariable String gameId) {
 
 		try {
@@ -108,7 +109,7 @@ public class ConsoleController {
 		gameSrv.deleteGame(gameId);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/game")
+	@RequestMapping(method = RequestMethod.GET, value = "/game", produces = { "application/json" })
 	public List<GameDTO> readGames() {
 		String user = identityLookup.getName();
 		List<GameDTO> r = new ArrayList<GameDTO>();
@@ -118,9 +119,9 @@ public class ConsoleController {
 		return r;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/point")
-	public void addPoint(@PathVariable String gameId,
-			@RequestBody PointConcept point) {
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/point", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public void addPoint(@PathVariable String gameId, @RequestBody PointConcept point) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -130,7 +131,7 @@ public class ConsoleController {
 		gameSrv.addConceptInstance(gameId, point);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/point")
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/point", produces = { "application/json" })
 	public List<PointConcept> readPoints(@PathVariable String gameId) {
 
 		try {
@@ -152,9 +153,9 @@ public class ConsoleController {
 		return points;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/badgecoll")
-	public void addBadge(@PathVariable String gameId,
-			@RequestBody BadgeCollectionConcept badge) {
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/badgecoll", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public void addBadge(@PathVariable String gameId, @RequestBody BadgeCollectionConcept badge) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -164,9 +165,8 @@ public class ConsoleController {
 		gameSrv.addConceptInstance(gameId, badge);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/badgecoll")
-	public List<BadgeCollectionConcept> readBadgeCollections(
-			@PathVariable String gameId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/badgecoll", produces = { "application/json" })
+	public List<BadgeCollectionConcept> readBadgeCollections(@PathVariable String gameId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -185,9 +185,9 @@ public class ConsoleController {
 		return badgeColl;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/rule/db")
-	public RuleDTO addRule(@PathVariable String gameId,
-			@RequestBody RuleDTO rule) {
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/rule/db", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public RuleDTO addRule(@PathVariable String gameId, @RequestBody RuleDTO rule) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -203,9 +203,9 @@ public class ConsoleController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/rule/db/{ruleUrl}")
-	public boolean deleteDbRule(@PathVariable String gameId,
-			@PathVariable String ruleUrl) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/rule/db/{ruleUrl}", produces = {
+			"application/json" })
+	public boolean deleteDbRule(@PathVariable String gameId, @PathVariable String ruleUrl) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -216,9 +216,9 @@ public class ConsoleController {
 		return gameSrv.deleteRule(gameId, ruleUrl);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/rule/db/{ruleUrl}")
-	public RuleDTO readDbRule(@PathVariable String gameId,
-			@PathVariable String ruleUrl) {
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/rule/db/{ruleUrl}", produces = {
+			"application/json" })
+	public RuleDTO readDbRule(@PathVariable String gameId, @PathVariable String ruleUrl) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -234,9 +234,9 @@ public class ConsoleController {
 		return res;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task")
-	public GeneralClassificationDTO addClassificationTask(
-			@PathVariable String gameId,
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public GeneralClassificationDTO addClassificationTask(@PathVariable String gameId,
 			@RequestBody GeneralClassificationDTO task) {
 
 		try {
@@ -250,8 +250,7 @@ public class ConsoleController {
 			if (g.getTasks() == null) {
 				g.setTasks(new HashSet<GameTask>());
 			}
-			GeneralClassificationTask t = converter
-					.convertClassificationTask(task);
+			GeneralClassificationTask t = converter.convertClassificationTask(task);
 			t.setName(task.getName());
 			if (g.getTasks().contains(t)) {
 				throw new IllegalArgumentException("task name already exist");
@@ -267,9 +266,9 @@ public class ConsoleController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task/del")
-	public void deleteClassificationTask(@PathVariable String gameId,
-			@RequestBody GeneralClassificationDTO task) {
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/task/del", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public void deleteClassificationTask(@PathVariable String gameId, @RequestBody GeneralClassificationDTO task) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -279,8 +278,7 @@ public class ConsoleController {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
 			if (g.getTasks() != null) {
-				GeneralClassificationTask t = converter
-						.convertClassificationTask(task);
+				GeneralClassificationTask t = converter.convertClassificationTask(task);
 				t.setName(task.getName());
 				g.getTasks().remove(t);
 				gameSrv.saveGameDefinition(g);
@@ -291,9 +289,9 @@ public class ConsoleController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/task")
-	public void editClassificationTask(@PathVariable String gameId,
-			@RequestBody GeneralClassificationDTO task) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/task", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public void editClassificationTask(@PathVariable String gameId, @RequestBody GeneralClassificationDTO task) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -304,10 +302,8 @@ public class ConsoleController {
 		if (g != null) {
 			if (g.getTasks() != null) {
 				for (GameTask gt : g.getTasks()) {
-					if (gt instanceof GeneralClassificationTask
-							&& gt.getName().equals(task.getName())) {
-						GeneralClassificationTask t = converter
-								.convertClassificationTask(task);
+					if (gt instanceof GeneralClassificationTask && gt.getName().equals(task.getName())) {
+						GeneralClassificationTask t = converter.convertClassificationTask(task);
 						GeneralClassificationTask ct = (GeneralClassificationTask) gt;
 						ct.setItemsToNotificate(t.getItemsToNotificate());
 						ct.setClassificationName(t.getClassificationName());
@@ -323,9 +319,9 @@ public class ConsoleController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/player")
-	public void createPlayer(@PathVariable String gameId,
-			@RequestBody PlayerStateDTO player) {
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/player", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public void createPlayer(@PathVariable String gameId, @RequestBody PlayerStateDTO player) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -334,9 +330,8 @@ public class ConsoleController {
 
 		// check if player already exists
 		if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
-			throw new IllegalArgumentException(String.format(
-					"Player %s already exists in game %s",
-					player.getPlayerId(), gameId));
+			throw new IllegalArgumentException(
+					String.format("Player %s already exists in game %s", player.getPlayerId(), gameId));
 		}
 
 		player.setGameId(gameId);
@@ -344,9 +339,9 @@ public class ConsoleController {
 		playerSrv.saveState(p);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/player/{playerId}")
-	public void deletePlayer(@PathVariable String gameId,
-			@PathVariable String playerId) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/player/{playerId}", produces = {
+			"application/json" })
+	public void deletePlayer(@PathVariable String gameId, @PathVariable String playerId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -361,27 +356,25 @@ public class ConsoleController {
 		playerSrv.deleteState(gameId, playerId);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/player/{playerId}")
-	public PlayerStateDTO updateCustomData(@PathVariable String gameId,
-			@PathVariable String playerId,
+	@RequestMapping(method = RequestMethod.PUT, value = "/game/{gameId}/player/{playerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public PlayerStateDTO updateCustomData(@PathVariable String gameId, @PathVariable String playerId,
 			@RequestBody Map<String, Object> customData) {
 
 		PlayerState state = playerSrv.loadState(gameId, playerId, false);
 
 		if (state == null) {
-			throw new IllegalArgumentException(String.format(
-					"player %s doesn't exist in game %s", playerId, gameId));
+			throw new IllegalArgumentException(String.format("player %s doesn't exist in game %s", playerId, gameId));
 		} else {
 			state.getCustomData().putAll(customData);
-			state = playerSrv.updateCustomData(gameId, playerId,
-					state.getCustomData());
+			state = playerSrv.updateCustomData(gameId, playerId, state.getCustomData());
 			return converter.convertPlayerState(state);
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team")
-	public void createTeam(@PathVariable String gameId,
-			@RequestBody TeamDTO team) {
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public void createTeam(@PathVariable String gameId, @RequestBody TeamDTO team) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -390,9 +383,8 @@ public class ConsoleController {
 
 		// check if player already exists
 		if (playerSrv.readTeam(gameId, team.getPlayerId()) != null) {
-			throw new IllegalArgumentException(String.format(
-					"Team %s already exists in game %s", team.getPlayerId(),
-					gameId));
+			throw new IllegalArgumentException(
+					String.format("Team %s already exists in game %s", team.getPlayerId(), gameId));
 		}
 
 		team.setGameId(gameId);
@@ -400,9 +392,9 @@ public class ConsoleController {
 		playerSrv.saveTeam(t);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/team/{teamId}")
-	public void deleteTeam(@PathVariable String gameId,
-			@PathVariable String teamId) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/team/{teamId}", produces = {
+			"application/json" })
+	public void deleteTeam(@PathVariable String gameId, @PathVariable String teamId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -417,9 +409,9 @@ public class ConsoleController {
 		deletePlayer(gameId, teamId);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/player/{playerId}/teams")
-	public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
-			@PathVariable String playerId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/player/{playerId}/teams", produces = {
+			"application/json" })
+	public List<TeamDTO> readTeamsByMember(@PathVariable String gameId, @PathVariable String playerId) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -441,9 +433,10 @@ public class ConsoleController {
 		return converted;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team/{teamId}/members")
-	public void updateTeamMembers(@PathVariable String gameId,
-			@PathVariable String teamId, @RequestBody List<String> members) {
+	@RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/team/{teamId}/members", consumes = {
+			"application/json" }, produces = { "application/json" })
+	public void updateTeamMembers(@PathVariable String gameId, @PathVariable String teamId,
+			@RequestBody List<String> members) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -463,7 +456,8 @@ public class ConsoleController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/rule/validate")
+	@RequestMapping(method = RequestMethod.POST, value = "/rule/validate", consumes = {
+			"application/json" }, produces = { "application/json" })
 	public List<String> validateRule(@RequestBody String ruleContent) {
 		return gameEngine.validateRule(ruleContent);
 	}

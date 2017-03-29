@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -101,9 +102,7 @@ public class DroolsEngine implements GameEngine {
 
 	private KieServices kieServices = KieServices.Factory.get();
 
-	public PlayerState execute(String gameId, PlayerState state, String action,
-			Map<String, Object> data, String executionId, long executionMoment,
-			List<Object> factObjects) {
+	public PlayerState execute(String gameId, PlayerState state, String action, Map<String, Object> data, String executionId, long executionMoment, List<Object> factObjects) {
 
 		StopWatch stopWatch = LogManager.getLogger(
 				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
@@ -129,9 +128,11 @@ public class DroolsEngine implements GameEngine {
 
 		List<Command> cmds = new ArrayList<Command>();
 
-		if (data != null) {
-			cmds.add(CommandFactory.newInsert(new InputData(data)));
+		if (data == null) {
+			data = new HashMap<String, Object>();
 		}
+		cmds.add(CommandFactory.newInsert(new InputData(data)));
+
 		if (!StringUtils.isBlank(action)) {
 			cmds.add(CommandFactory.newInsert(new Action(action)));
 		}
@@ -142,8 +143,14 @@ public class DroolsEngine implements GameEngine {
 
 		cmds.add(CommandFactory.newInsert(new Game(gameId)));
 
-		cmds.add(CommandFactory.newInsert(new Player(state.getPlayerId(),
-				state instanceof TeamState)));
+		Player player = null;
+		if (state instanceof TeamState) {
+			player = new Player(state.getPlayerId(), true, ((TeamState) state)
+					.getMembers().size());
+		} else {
+			player = new Player(state.getPlayerId(), false);
+		}
+		cmds.add(CommandFactory.newInsert(player));
 
 		// filter state removing all ended or completed challenges for the
 		// player
@@ -253,9 +260,12 @@ public class DroolsEngine implements GameEngine {
 			if (iter1.hasNext()) {
 				fromPropagation = (Member) iter1.next().get("$data");
 			}
-			facts.add(new Member(state.getPlayerId(),
-					data == null ? (fromPropagation != null ? fromPropagation
-							.getInputData() : null) : data));
+			Map<String, Object> payloadData = new HashMap<>(data);
+			if (fromPropagation != null
+					&& fromPropagation.getInputData() != null) {
+				payloadData.putAll(fromPropagation.getInputData());
+			}
+			facts.add(new Member(state.getPlayerId(), payloadData));
 			for (TeamState team : playerTeams) {
 				workflow.apply(gameId, action, team.getPlayerId(), null,
 						new ArrayList<>(facts));
@@ -303,8 +313,7 @@ public class DroolsEngine implements GameEngine {
 		return state;
 	}
 
-	private StatelessKieSession loadGameConstants(StatelessKieSession kSession,
-			String gameId) {
+	private StatelessKieSession loadGameConstants(StatelessKieSession kSession, String gameId) {
 
 		// load game constants
 		InputStream constantsFileStream = null;

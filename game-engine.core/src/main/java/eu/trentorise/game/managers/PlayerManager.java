@@ -38,9 +38,14 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ClassificationBoard;
+import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.RawSearchQuery;
+import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.services.PlayerService;
 
 /**
@@ -157,8 +162,7 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Page<PlayerState> loadStates(String gameId, String playerId,
-			Pageable pageable) {
+	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -200,8 +204,7 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public TeamState removeFromTeam(String gameId, String teamId,
-			String playerId) {
+	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
 		logger.warn("method not implemented");
 		throw new UnsupportedOperationException("method not implemented");
 	}
@@ -213,16 +216,40 @@ public class PlayerManager implements PlayerService {
 	}
 
 	@Override
-	public PlayerState updateCustomData(String gameId, String playerId,
-			Map<String, Object> data) {
+	public PlayerState updateCustomData(String gameId, String playerId, Map<String, Object> data) {
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
 	@Override
-	public ChallengeConcept assignChallenge(String gameId, String playerId,
-			String modelName, String instanceName, Map<String, Object> data, Date start, Date end) {
+	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName, Map<String, Object> data, Date start, Date end) {
 		throw new UnsupportedOperationException("method not implemented");
 	}
+
+	@Override
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable) {
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, Pageable pageable) {
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public Page<PlayerState> search(String gameId, RawSearchQuery query, Pageable pageable) {
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public Page<PlayerState> search(String gameId, ComplexSearchQuery query, Pageable pageable) {
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
+	@Override
+	public Page<PlayerState> search(String gameId, StringSearchQuery query, Pageable pageable) {
+		throw new UnsupportedOperationException("method not implemented");
+	}
+
 }
 
 class ConceptPersistence {

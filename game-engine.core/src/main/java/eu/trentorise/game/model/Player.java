@@ -19,6 +19,7 @@ package eu.trentorise.game.model;
 public class Player {
 	private String id;
 	private boolean team = false;
+	private int totalMembers = 0;
 
 	public Player(String id) {
 		this.id = id;
@@ -29,20 +30,30 @@ public class Player {
 		this.team = isTeam;
 	}
 
+	public Player(String id, boolean isTeam, int totalMembers) {
+		this.id = id;
+		this.team = isTeam;
+		this.totalMembers = totalMembers;
+	}
+
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	// public void setId(String id) {
+	// this.id = id;
+	// }
 
 	public boolean isTeam() {
 		return team;
 	}
 
-	public void setTeam(boolean isTeam) {
-		this.team = isTeam;
+	public int getTotalMembers() {
+		return totalMembers;
 	}
+
+	// public void setTeam(boolean isTeam) {
+	// this.team = isTeam;
+	// }
 
 }

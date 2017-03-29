@@ -19,12 +19,12 @@ import eu.trentorise.game.bean.ExecutionDataDTO;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.Workflow;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class ExecutionController {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(ExecutionController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ExecutionController.class);
 
 	@Autowired
 	private GameService gameSrv;
@@ -35,10 +35,11 @@ public class ExecutionController {
 	// Execute
 	// POST /exec/game/{id}/action/{actionId}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/exec/game/{gameId}/action/{actionId}")
-	public void executeAction(@PathVariable String gameId,
-			@PathVariable String actionId, @RequestBody ExecutionDataDTO data,
-			HttpServletResponse res) {
+	@RequestMapping(method = RequestMethod.POST, value = "/exec/game/{gameId}/action/{actionId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Execute an action")
+	public void executeAction(@PathVariable String gameId, @PathVariable String actionId,
+			@RequestBody ExecutionDataDTO data, HttpServletResponse res) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -54,14 +55,12 @@ public class ExecutionController {
 		Game game = gameSrv.loadGameDefinitionByAction(actionId);
 		if (game != null && game.isTerminated()) {
 			try {
-				res.sendError(403,
-						String.format("game %s is expired", game.getId()));
+				res.sendError(403, String.format("game %s is expired", game.getId()));
 			} catch (IOException e1) {
 				logger.error("Exception sendError to client", e1);
 			}
 		} else {
-			workflow.apply(gameId, actionId, data.getPlayerId(),
-					data.getData(), null);
+			workflow.apply(gameId, actionId, data.getPlayerId(), data.getData(), null);
 		}
 	}
 }

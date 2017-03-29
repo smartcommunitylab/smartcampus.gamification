@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PlayerRepo extends
-		PagingAndSortingRepository<StatePersistence, String> {
+		PagingAndSortingRepository<StatePersistence, String>, ExtendPlayerRepo {
 
 	public List<StatePersistence> findByGameId(String gameId);
 

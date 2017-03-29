@@ -21,6 +21,7 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.utils.Converter;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class PointConceptController {
@@ -36,9 +37,10 @@ public class PointConceptController {
 	// ­ Response body should contain point concept id
 	// ­ May contain the periodic point definitions
 
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/point")
-	public PointConcept addPoint(@PathVariable String gameId,
-			@RequestBody PointConcept point) {
+	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/point", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Add point")
+	public PointConcept addPoint(@PathVariable String gameId, @RequestBody PointConcept point) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -55,23 +57,24 @@ public class PointConceptController {
 	// PUT /model/game/{id}/point/{pointId}
 	// ­ May contain the periodic point definitions
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/point/{pointId}")
-	public void updatePoint(@PathVariable String gameId,
-			@RequestBody PointConcept point) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/point/{pointId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Edit point")
+	public void updatePoint(@PathVariable String gameId, @RequestBody PointConcept point) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
 		}
 
-		throw new UnsupportedOperationException(
-				"Operation actually not supported");
+		throw new UnsupportedOperationException("Operation actually not supported");
 	}
 
 	// Read game point concepts
 	// GET /model/game/{id}/point
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/point")
+	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/point", produces = { "application/json" })
+	@ApiOperation(value = "Get points")
 	public List<PointConcept> readPoints(@PathVariable String gameId) {
 
 		try {
@@ -96,9 +99,10 @@ public class PointConceptController {
 	// Read game point concept
 	// GET /model/game/{id}/point/{pointId}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/point/{pointId}")
-	public PointConcept readPoint(@PathVariable String gameId,
-			@PathVariable String pointId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/point/{pointId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get point")
+	public PointConcept readPoint(@PathVariable String gameId, @PathVariable String pointId) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -119,16 +123,16 @@ public class PointConceptController {
 				return point;
 			}
 		}
-		throw new ResourceNotFoundException(String.format(
-				"pointId %s not exist in game %s", pointId, gameId));
+		throw new ResourceNotFoundException(String.format("pointId %s not exist in game %s", pointId, gameId));
 	}
 
 	// Delete game point concept
 	// DELETE /model/game/{id}/point/{pointId}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/point/{pointId}")
-	public void deletePoint(@PathVariable String gameId,
-			@PathVariable String pointId) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/point/{pointId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Delete point")
+	public void deletePoint(@PathVariable String gameId, @PathVariable String pointId) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -143,8 +147,7 @@ public class PointConceptController {
 
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (g != null) {
-			for (Iterator<GameConcept> iter = g.getConcepts().iterator(); iter
-					.hasNext();) {
+			for (Iterator<GameConcept> iter = g.getConcepts().iterator(); iter.hasNext();) {
 				GameConcept gc = iter.next();
 				if (gc instanceof PointConcept && pointId.equals(gc.getId())) {
 					iter.remove();

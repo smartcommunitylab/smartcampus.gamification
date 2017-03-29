@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -46,7 +48,13 @@ import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ClassificationBoard;
+import eu.trentorise.game.model.core.ClassificationPosition;
+import eu.trentorise.game.model.core.ClassificationType;
+import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.RawSearchQuery;
+import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.PlayerRepo;
@@ -108,31 +116,25 @@ public class DBPlayerManager implements PlayerService {
 				state.getConcepts(), state.getCustomData(), state.getMetadata());
 	}
 
-	private StatePersistence persistConcepts(String gameId, String playerId,
-			List<GenericObjectPersistence> concepts) {
+	private StatePersistence persistConcepts(String gameId, String playerId, Map<String, Map<String, GenericObjectPersistence>> concepts) {
 		return persist(gameId, playerId, concepts, null, null);
 	}
 
-	private StatePersistence persistCustomData(String gameId, String playerId,
-			CustomData data) {
+	private StatePersistence persistCustomData(String gameId, String playerId, CustomData data) {
 		return persist(gameId, playerId, null, data, null);
 	}
 
-	private StatePersistence persistCustomData(String gameId, String playerId,
-			Map<String, Object> customData) {
+	private StatePersistence persistCustomData(String gameId, String playerId, Map<String, Object> customData) {
 		CustomData c = new CustomData();
 		c.putAll(customData);
 		return persist(gameId, playerId, null, c, null);
 	}
 
-	private StatePersistence persistMetadata(String gameId, String playerId,
-			Map<String, Object> metadata) {
+	private StatePersistence persistMetadata(String gameId, String playerId, Map<String, Object> metadata) {
 		return persist(gameId, playerId, null, null, metadata);
 	}
 
-	private StatePersistence persist(String gameId, String playerId,
-			List<GenericObjectPersistence> concepts, CustomData customData,
-			Map<String, Object> metadata) {
+	private StatePersistence persist(String gameId, String playerId, Map<String, Map<String, GenericObjectPersistence>> concepts, CustomData customData, Map<String, Object> metadata) {
 		if (StringUtils.isBlank(gameId) || StringUtils.isBlank(playerId)) {
 			throw new IllegalArgumentException(
 					"field gameId and playerId of PlayerState MUST be set");
@@ -215,8 +217,7 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public Page<PlayerState> loadStates(String gameId, String playerId,
-			Pageable pageable) {
+	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable) {
 		Page<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(
 				gameId, playerId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
@@ -322,8 +323,7 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public TeamState removeFromTeam(String gameId, String teamId,
-			String playerId) {
+	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
 		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
 				teamId);
 		if (state != null) {
@@ -345,8 +345,7 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public PlayerState updateCustomData(String gameId, String playerId,
-			Map<String, Object> data) {
+	public PlayerState updateCustomData(String gameId, String playerId, Map<String, Object> data) {
 		// findAndModify only customdata to avoid concurrent accesses on same
 		// data
 		StatePersistence state = persistCustomData(gameId, playerId, data);
@@ -355,9 +354,7 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public ChallengeConcept assignChallenge(String gameId, String playerId,
-			String modelName, String instanceName, Map<String, Object> data,
-			Date start, Date end) {
+	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName, Map<String, Object> data, Date start, Date end) {
 
 		if (playerId == null) {
 			throw new IllegalArgumentException(
@@ -391,7 +388,10 @@ public class DBPlayerManager implements PlayerService {
 		challenge.setFields(data);
 		challenge.setStart(start);
 		challenge.setEnd(end);
-		challenge.setName(instanceName);
+		// needed since v2.2.0, gameConcept name is mandatory because it is used
+		// as key in persistence structure
+		challenge.setName(instanceName != null ? instanceName : UUID
+				.randomUUID().toString());
 
 		// save in playerState
 		PlayerState state = loadState(gameId, playerId, true);
@@ -403,4 +403,110 @@ public class DBPlayerManager implements PlayerService {
 		return challenge;
 
 	}
+
+	// public ClassificationBoard classifyPlayerStatesWithKey(long timestamp,
+	// String pointConceptName, String periodName,
+	// String key, String gameId, int pageNum, int pageSize) {
+	@Override
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, Pageable pageable) {
+
+		ClassificationBoard classificationBoard = new ClassificationBoard();
+
+		Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
+
+		Query query = new Query();
+		// criteria.
+		query.addCriteria(criteriaGameId);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
+				+ pointConceptName + ".obj.periods." + periodName
+				+ ".instances." + key + ".score"));
+		// fields in response.
+		query.fields().include(
+				"concepts.PointConcept." + pointConceptName + ".obj.periods."
+						+ periodName + ".instances." + key + ".score");
+		query.fields().include("playerId");
+		// pagination.
+		query.with(pageable);
+
+		List<StatePersistence> pStates = mongoTemplate.find(query,
+				StatePersistence.class);
+
+		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
+		for (StatePersistence state : pStates) {
+			classification.add(new ClassificationPosition(state
+					.getIncrementalScore(pointConceptName, periodName, key),
+					state.getPlayerId()));
+		}
+		classificationBoard.setBoard(classification);
+		classificationBoard.setType(ClassificationType.INCREMENTAL);
+		classificationBoard.setPointConceptName(pointConceptName);
+
+		return classificationBoard;
+	}
+
+	@Override
+	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable) {
+
+		ClassificationBoard classificationBoard = new ClassificationBoard();
+		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
+
+		Criteria general = Criteria.where("gameId").is(g.getId());
+
+		Query query = new Query();
+		query.addCriteria(general);
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
+				+ itemType + ".obj.score"));
+		query.fields().include(
+				"concepts.PointConcept." + itemType + ".obj.score");
+		query.fields().include("playerId");
+		// pagination.
+		query.with(pageable);
+
+		List<StatePersistence> pStates = mongoTemplate.find(query,
+				StatePersistence.class);
+
+		for (StatePersistence state : pStates) {
+			classification.add(new ClassificationPosition(state
+					.getGeneralItemScore(itemType), state.getPlayerId()));
+		}
+		classificationBoard.setPointConceptName(itemType);
+		classificationBoard.setBoard(classification);
+		classificationBoard.setType(ClassificationType.GENERAL);
+
+		return classificationBoard;
+	}
+
+	private Page<PlayerState> convertToPlayerState(Page<StatePersistence> states, Pageable pageable) {
+		List<PlayerState> contents = new ArrayList<>();
+		for (StatePersistence state : states) {
+			contents.add(new PlayerState(state));
+		}
+		Page<PlayerState> result = new PageImpl<>(contents, pageable,
+				states.getTotalElements());
+
+		return result;
+	}
+
+	@Override
+	public Page<PlayerState> search(String gameId, RawSearchQuery query, Pageable pageable) {
+		Page<StatePersistence> states = playerRepo.search(gameId, query,
+				pageable);
+		return convertToPlayerState(states, pageable);
+
+	}
+
+	@Override
+	public Page<PlayerState> search(String gameId, ComplexSearchQuery query, Pageable pageable) {
+		Page<StatePersistence> states = playerRepo.search(gameId, query,
+				pageable);
+		return convertToPlayerState(states, pageable);
+	}
+
+	@Override
+	public Page<PlayerState> search(String gameId, StringSearchQuery query, Pageable pageable) {
+		Page<StatePersistence> states = playerRepo.search(gameId, query,
+				pageable);
+		return convertToPlayerState(states, pageable);
+	}
+
 }

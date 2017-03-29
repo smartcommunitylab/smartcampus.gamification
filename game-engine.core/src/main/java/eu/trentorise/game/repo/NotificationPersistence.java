@@ -54,7 +54,7 @@ public class NotificationPersistence extends GenericObjectPersistence {
 					(Class<? extends Notification>) Thread.currentThread()
 							.getContextClassLoader().loadClass(getType()));
 		} catch (Exception e) {
-			logger.error("Problem to load class {}", getType());
+			logger.error("Problem to load class {}", getType(), e);
 			return null;
 		}
 	}

@@ -27,6 +27,7 @@
   "msg_action_deleted": "Operation success",
   "msg_point_deleted": "Operation success",
   "msg_badge_deleted": "Operation success",
-  "msg_challenge_deleted": "Operation success", 
+  "msg_challenge_deleted": "Operation success",
+  "msg_challenge_edited": "Challenge edited successfully", 
   "msg_no_challenges" : "No challenges"
 }

@@ -65,8 +65,8 @@ public class AnalizzatoreLog {
 
 					switch (record.getType()) {
 					case ACTION:
-						recordTrasformato = recordManager.analizzaAction(record
-								.getContent());
+						recordTrasformato = recordManager
+								.analizzaAction(record);
 						break;
 
 					default:

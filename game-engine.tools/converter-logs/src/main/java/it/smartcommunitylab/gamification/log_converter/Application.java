@@ -10,10 +10,8 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 public class Application {
-
 	public static String path = "C:\\Users\\sco\\Desktop\\test\\";
 	public static String ext = "";
-
 	private static final Logger logger = Logger.getLogger(Application.class);
 
 	public static void main(String[] args) throws IOException {
@@ -28,7 +26,8 @@ public class Application {
 			String nome = listOfFiles[i].getName();
 			logger.info(nome);
 			// nome = nome.replaceFirst("[.][^.]+$", "");
-			Tutto(nome);
+			if (!nome.contains("NEW"))
+				Tutto(nome);
 		}
 	}
 
@@ -117,7 +116,7 @@ public class Application {
 			fr = new FileReader(f);
 			br = new BufferedReader(fr);
 			fw = new FileWriter(path + nome + "-NEW");
-
+			Boolean scrivo = false;
 			try {
 				String str;
 				if (f.exists()) {
@@ -125,12 +124,22 @@ public class Application {
 						String[] elementi = str.split(" ");
 						try {
 							for (int i = 0; i < elementi.length; i++) {
-								if (!(elementi[i].contains("payload") || elementi[i]
-										.contains("oldState"))) {
-									fw.write(elementi[i] + " ");
-								}
+								if (elementi[i].contains("type=Action"))
+									scrivo = true;
 							}
-							fw.write("\n");
+							if (scrivo) {
+								for (int i = 0; i < elementi.length; i++) {
+									if (!(elementi[i].contains("payload") || elementi[i]
+											.contains("oldState"))) {
+										fw.write(elementi[i]);
+										if (i != elementi.length - 1) {
+											fw.write(" ");
+										}
+									}
+								}
+								fw.write("\n");
+								scrivo = false;
+							}
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						}

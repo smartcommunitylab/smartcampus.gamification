@@ -76,7 +76,7 @@ public class RecordManager {
 
 		out = splitXSpazi + "classificationPosition=" + classificationPosition
 				+ " classificationName=" + classificationName;
-		logger.info("il nuovo messaggio per action �: " + out);
+		logger.info("il nuovo messaggio per Classification �: " + out);
 		return out;
 	}
 

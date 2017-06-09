@@ -27,13 +27,14 @@ public class AnalizzatoreLog {
 		File folder = new File(logfolderPath);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
-			String nome = listOfFiles[i].getName();
-			System.out.println("nome file : " + nome);
-			logger.info("nome file : " + nome);
-
-			// se non � file non eseguire elabora
-			// messaggi di log per avvertire dello skip
-			elabora(logfolderPath, nome);
+			if (listOfFiles[i].isDirectory()) {
+				logger.warn("E' presente una directory - name: "
+						+ listOfFiles[i].getName());
+			} else {
+				String nome = listOfFiles[i].getName();
+				logger.info("nome file : " + nome);
+				elabora(logfolderPath, nome);
+			}
 		}
 	}
 
@@ -60,18 +61,14 @@ public class AnalizzatoreLog {
 
 					Record record = recordManager.analizza(inputLine);
 					logger.info("record type: " + record.getType());
-					System.out.println("inizio lo switching");
 					switch (record.getType()) {
 					case ACTION:
 						recordTrasformato = recordManager
 								.analizzaAction(record);
 						break;
 					case CLASSIFICATION:
-						System.out.println("entro??");
 						recordTrasformato = recordManager
 								.analizzaClassification(record);
-						System.out.println("MESSAGGIO CLASSIFICATION: "
-								+ recordTrasformato);
 						break;
 					default:
 						recordTrasformato = record.getContent();

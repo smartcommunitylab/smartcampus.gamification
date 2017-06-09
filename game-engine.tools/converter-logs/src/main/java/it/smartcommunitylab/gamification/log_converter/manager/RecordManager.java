@@ -1,9 +1,9 @@
 package it.smartcommunitylab.gamification.log_converter.manager;
 
+import org.apache.log4j.Logger;
+
 import it.smartcommunitylab.gamification.log_converter.beans.Record;
 import it.smartcommunitylab.gamification.log_converter.beans.RecordType;
-
-import org.apache.log4j.Logger;
 
 public class RecordManager {
 
@@ -22,8 +22,7 @@ public class RecordManager {
 			if (indiceDelCampo > 0) {
 				result.setIndexType(indiceDelCampo);
 				indiceDelCampo = indiceDelCampo + 5;
-				String type = record.substring(indiceDelCampo,
-						record.indexOf(" ", indiceDelCampo));
+				String type = record.substring(indiceDelCampo, record.indexOf(" ", indiceDelCampo));
 				logger.debug(String.format("Valore di type %s", type));
 				result.setType(valueOf(type));
 			} else {
@@ -37,10 +36,8 @@ public class RecordManager {
 	public String analizzaAction(Record record) {
 		String out = null;
 
-		String splitXSpazi = record.getContent().substring(0,
-				record.getIndexType());
-		String splitDiverso = record.getContent().substring(
-				record.getIndexType());
+		String splitXSpazi = record.getContent().substring(0, record.getIndexType());
+		String splitDiverso = record.getContent().substring(record.getIndexType());
 
 		// System.out.println(splitXSpazi);
 
@@ -62,18 +59,16 @@ public class RecordManager {
 		}
 		for (int i = 0; i < campi.length; i++) {
 			if (i < campi.length - 1) {
-				info[i] = splitDiverso.substring(indiciCampi[i],
-						indiciCampi[i + 1]);
-				// System.out.println("indice +1;  " + indiciCampi[i + 1]);
+				info[i] = splitDiverso.substring(indiciCampi[i], indiciCampi[i + 1]);
+				// System.out.println("indice +1; " + indiciCampi[i + 1]);
 			} else {
-				info[i] = splitDiverso.substring(indiciCampi[i],
-						splitDiverso.length() - 1);
+				info[i] = splitDiverso.substring(indiciCampi[i], splitDiverso.length() - 1);
 			}
 			// System.out.println("numero " + i + " stampa: " + info[i]);
 
 		}
 		out = splitXSpazi + info[0] + info[1];
-		logger.info("il nuovo messaggio per action è: " + out);
+		logger.info("il nuovo messaggio per action ï¿½: " + out);
 		return out;
 	}
 
@@ -99,8 +94,12 @@ public class RecordManager {
 			return RecordType.ACTION;
 		case "PointConcept":
 			return RecordType.RULE_POINTCONCEPT;
+		case "BadgeCollectionConcept":
+			return RecordType.RULE_BADGECOLLECTIONCONCEPT;
+		case "Classification":
+			return RecordType.CLASSIFICATION;
 		default:
-			throw new IllegalArgumentException(type + " non è supportato");
+			throw new IllegalArgumentException(type + " non ï¿½ supportato");
 		}
 	}
 }

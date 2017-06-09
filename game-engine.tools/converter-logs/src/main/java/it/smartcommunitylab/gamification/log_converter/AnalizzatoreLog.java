@@ -1,8 +1,5 @@
 package it.smartcommunitylab.gamification.log_converter;
 
-import it.smartcommunitylab.gamification.log_converter.beans.Record;
-import it.smartcommunitylab.gamification.log_converter.manager.RecordManager;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,19 +9,21 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import it.smartcommunitylab.gamification.log_converter.beans.Record;
+import it.smartcommunitylab.gamification.log_converter.manager.RecordManager;
+
 public class AnalizzatoreLog {
 
-	private static final Logger logger = Logger
-			.getLogger(AnalizzatoreLog.class);
+	private static final Logger logger = Logger.getLogger(AnalizzatoreLog.class);
 
 	private RecordManager recordManager = new RecordManager();
 
 	public AnalizzatoreLog() {
 	}
 
-	public void newData() throws IOException {
+	public void newData(String logfolderPath) throws IOException {
 		logger.debug("inizio newData");
-		File folder = new File(Application.LOG_FOLDER_PATH);
+		File folder = new File(logfolderPath);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			String nome = listOfFiles[i].getName();
@@ -33,28 +32,27 @@ public class AnalizzatoreLog {
 			// nome = nome.replaceFirst("[.][^.]+$", "");
 			// if (!nome.contains("NEW"))
 
-			// se non è file non eseguire elabora
+			// se non ï¿½ file non eseguire elabora
 			// messaggi di log per avvertire dello skip
-			elabora(nome);
+			elabora(logfolderPath, nome);
 		}
 	}
 
-	public void elabora(String nome) throws IOException {
+	public void elabora(String logFolderPath, String nome) throws IOException {
 		FileWriter fw = null;
 		FileReader fr = null;
 		BufferedReader br = null;
 		Boolean sovrascrivo = false;
 		File f;
 		try {
-			f = new File(Application.LOG_FOLDER_PATH + nome);
+			f = new File(logFolderPath + nome);
 			fr = new FileReader(f);
 			br = new BufferedReader(fr);
 			if (!f.getName().contains("NEW")) {// agg sovrascrivo
-				fw = new FileWriter(
-						Application.LOG_FOLDER_PATH + nome + "-NEW", false);
+				fw = new FileWriter(logFolderPath + nome + "-NEW", false);
 			} else {
 				// to do
-				fw = new FileWriter(Application.LOG_FOLDER_PATH + nome);
+				fw = new FileWriter(logFolderPath + nome);
 			}
 			// in base al type(action) che si vuole filtrare
 			Boolean scrivo = false;
@@ -67,8 +65,7 @@ public class AnalizzatoreLog {
 					logger.info(record.getType());
 					switch (record.getType()) {
 					case ACTION:
-						recordTrasformato = recordManager
-								.analizzaAction(record);
+						recordTrasformato = recordManager.analizzaAction(record);
 						break;
 
 					default:

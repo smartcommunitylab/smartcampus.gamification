@@ -5,14 +5,15 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 public class Application {
-	public static final String LOG_FOLDER_PATH = "C:\\Users\\sco\\Desktop\\test\\";
 	public static String ext = "";
 	private static final Logger logger = Logger.getLogger(Application.class);
 
 	public static void main(String[] args) throws IOException {
 		logger.info("start applicazione");
+		String logfolderPath = args[0];
+		logger.info("folder log path: " + logfolderPath);
 		AnalizzatoreLog analizzatoreLog = new AnalizzatoreLog();
-		analizzatoreLog.newData();
+		analizzatoreLog.newData(logfolderPath);
 		// analizzatoreLog.elabora("lol.txt");
 		// analizzatoreLog.elabora("");
 

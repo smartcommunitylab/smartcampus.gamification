@@ -123,7 +123,8 @@ public class DroolsEngine implements GameEngine {
 		KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
 
 		StatelessKieSession kSession = kieContainer.newStatelessKieSession();
-		kSession.addEventListener(new LoggingRuleListener(gameId, state.getPlayerId(), executionId, executionMoment));
+		kSession.addEventListener(
+				new LoggingRuleListener(gameId, state.getPlayerId(), state.clone(), executionId, executionMoment));
 
 		List<Command> cmds = new ArrayList<Command>();
 

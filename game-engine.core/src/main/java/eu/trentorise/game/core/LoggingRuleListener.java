@@ -1,5 +1,7 @@
 package eu.trentorise.game.core;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.CustomData;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.notification.BadgeNotification;
 
@@ -21,12 +24,15 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 	private String playerId;
 	private String executionId;
 	private long executionMoment;
+	private PlayerState playerState;
 
-	public LoggingRuleListener(String gameId, String playerId, String executionId, long executionMoment) {
+	public LoggingRuleListener(String gameId, String playerId, PlayerState playerState, String executionId,
+			long executionMoment) {
 		this.gameId = gameId;
 		this.playerId = playerId;
 		this.executionId = executionId;
 		this.executionMoment = executionMoment;
+		this.playerState = playerState;
 	}
 
 	public LoggingRuleListener() {
@@ -42,6 +48,7 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof PointConcept) {
 			PointConcept pc = (PointConcept) workingObj;
+
 			LogHub.info(gameId, logger,
 					"rule \'{}\' created PointConcept \'{}\' with score {}"
 							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
@@ -79,24 +86,33 @@ public class LoggingRuleListener implements RuleRuntimeEventListener {
 
 		if (workingObj instanceof PointConcept) {
 			PointConcept pc = (PointConcept) workingObj;
+			double deltaScore = PlayerStateUtils.getDeltaScore(playerState, pc.getName(), pc.getScore());
 			LogHub.info(gameId, logger,
-					"rule \'{}\' updated PointConcept \'{}\' to {}"
+					"rule \'{}\' updated PointConcept \'{}\' of {} (total: {})"
 							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-					updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", pc.getName(), pc.getScore(),
-					playerId);
+					updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", pc.getName(), deltaScore,
+					pc.getScore(), playerId);
 
-			StatsLogger.logRule(gameId, playerId, executionId, executionMoment, updateEvent.getRule().getName(), pc);
+			StatsLogger.logRulePointConceptDelta(gameId, playerId, executionId, executionMoment,
+					updateEvent.getRule().getName(), pc, deltaScore);
+			PlayerStateUtils.incrementPointConcept(playerState, pc.getName(), deltaScore);
 
 		}
 
 		if (workingObj instanceof BadgeCollectionConcept) {
 			BadgeCollectionConcept bcc = (BadgeCollectionConcept) workingObj;
-			LogHub.info(gameId, logger,
-					"rule \'{}\' updated BadgeCollectionConcept \'{}\' to {}"
-							+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
-					updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", bcc.getName(),
-					bcc.getBadgeEarned(), playerId);
-			StatsLogger.logRule(gameId, playerId, executionId, executionMoment, updateEvent.getRule().getName(), bcc);
+			List<String> deltaBadges = PlayerStateUtils.getDeltaBadges(playerState, bcc.getName(),
+					bcc.getBadgeEarned());
+			if (!deltaBadges.isEmpty()) {
+				LogHub.info(gameId, logger,
+						"rule \'{}\' updated BadgeCollectionConcept \'{}\' with \'{}\'"
+								+ (StringUtils.isBlank(playerId) ? "" : " of player {}"),
+						updateEvent.getRule() != null ? updateEvent.getRule().getName() : "-", bcc.getName(),
+						deltaBadges.get(0), playerId);
+				StatsLogger.logRuleBadgeCollectionConceptDelta(gameId, playerId, executionId, executionMoment,
+						updateEvent.getRule().getName(), bcc.getName(), deltaBadges.get(0));
+				PlayerStateUtils.incrementBadgeCollectionConcept(playerState, bcc.getName(), deltaBadges.get(0));
+			}
 		}
 
 		if (workingObj instanceof CustomData) {

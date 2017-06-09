@@ -22,60 +22,72 @@ public class StatsLogger {
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
-	public static void logRule(String gameId, String playerId,
-			String executionId, long executionMoment, long timestamp,
+	public static void logRule(String gameId, String playerId, String executionId, long executionMoment, long timestamp,
 			String ruleName, PointConcept concept) {
-		String msg = commonFieldsOutput(gameId, playerId, executionId,
-				executionMoment, timestamp);
-		msg += " "
-				+ String.format("type=%s ruleName=\"%s\" name=\"%s\" score=%s",
-						PointConcept.class.getSimpleName(), ruleName,
-						concept.getName(), concept.getScore());
+		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
+		msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" score=%s", PointConcept.class.getSimpleName(),
+				ruleName, concept.getName(), concept.getScore());
 		logger.info(msg);
 	}
 
-	public static void logRule(String gameId, String playerId,
-			String executionId, long executionMoment, String ruleName,
-			PointConcept concept) {
-		logRule(gameId, playerId, executionId, executionMoment,
-				System.currentTimeMillis(), ruleName, concept);
+	public static void logRule(String gameId, String playerId, String executionId, long executionMoment,
+			String ruleName, PointConcept concept) {
+		logRule(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(), ruleName, concept);
 	}
 
-	public static void logRule(String gameId, String playerId,
-			String executionId, long executionMoment, long timestamp,
+	public static void logRulePointConceptDelta(String gameId, String playerId, String executionId,
+			long executionMoment, String ruleName, PointConcept concept, double deltaScore) {
+		logRulePointConceptDelta(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(), ruleName,
+				concept, deltaScore);
+	}
+
+	public static void logRuleBadgeCollectionConceptDelta(String gameId, String playerId, String executionId,
+			long executionMoment, String ruleName, String conceptName, String badge) {
+		logRuleBadgeCollectionConceptDelta(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(),
+				ruleName, conceptName, badge);
+	}
+
+	public static void logRule(String gameId, String playerId, String executionId, long executionMoment, long timestamp,
 			String ruleName, BadgeCollectionConcept concept) {
-		String msg = commonFieldsOutput(gameId, playerId, executionId,
-				executionMoment, timestamp);
-		msg += " "
-				+ String.format(
-						"type=%s ruleName=\"%s\" name=\"%s\" badges=\"%s\"",
-						BadgeCollectionConcept.class.getSimpleName(), ruleName,
-						concept.getName(), concept.getBadgeEarned());
+		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
+		msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" badges=\"%s\"",
+				BadgeCollectionConcept.class.getSimpleName(), ruleName, concept.getName(), concept.getBadgeEarned());
 		logger.info(msg);
 	}
 
-	public static void logRule(String gameId, String playerId,
-			String executionId, long executionMoment, String ruleName,
-			BadgeCollectionConcept concept) {
-		logRule(gameId, playerId, executionId, executionMoment,
-				System.currentTimeMillis(), ruleName, concept);
+	public static void logRule(String gameId, String playerId, String executionId, long executionMoment,
+			String ruleName, BadgeCollectionConcept concept) {
+		logRule(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(), ruleName, concept);
 	}
 
-	public static void logAction(String gameId, String playerId,
-			String executionId, long executionMoment, String action,
-			Map<String, Object> inputData, List<Object> factObjects,
-			PlayerState state) {
-		logAction(gameId, playerId, executionId, executionMoment,
-				System.currentTimeMillis(), action, inputData, factObjects,
-				state);
+	private static void logRulePointConceptDelta(String gameId, String playerId, String executionId,
+			long executionMoment, long timestamp, String ruleName, PointConcept concept, double deltaScore) {
+		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
+
+		msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" score=\"%s\" deltaScore=\"%s\"",
+				PointConcept.class.getSimpleName(), ruleName, concept.getName(), concept.getScore(), deltaScore);
+
+		logger.info(msg);
 	}
 
-	public static void logAction(String gameId, String playerId,
-			String executionId, long executionMoment, long timestamp,
-			String action, Map<String, Object> inputData,
-			List<Object> factObjects, PlayerState state) {
-		String msg = commonFieldsOutput(gameId, playerId, executionId,
-				executionMoment, timestamp);
+	private static void logRuleBadgeCollectionConceptDelta(String gameId, String playerId, String executionId,
+			long executionMoment, long timestamp, String ruleName, String conceptName, String badge) {
+		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
+
+		msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" new_badge=\"%s\"",
+				BadgeCollectionConcept.class.getSimpleName(), ruleName, conceptName, badge);
+		logger.info(msg);
+	}
+
+	public static void logAction(String gameId, String playerId, String executionId, long executionMoment,
+			String action, Map<String, Object> inputData, List<Object> factObjects, PlayerState state) {
+		logAction(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(), action, inputData,
+				factObjects, state);
+	}
+
+	public static void logAction(String gameId, String playerId, String executionId, long executionMoment,
+			long timestamp, String action, Map<String, Object> inputData, List<Object> factObjects, PlayerState state) {
+		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
 
 		String stateString = null;
 
@@ -95,32 +107,25 @@ public class StatsLogger {
 				logger.error("Exception serializing inputData to JSON");
 			}
 
-			msg += " "
-					+ String.format(
-							"type=%s action=\"%s\" payload=\"%s\" oldState=\"%s\"",
-							"Action", action, inputDataString, stateString);
+			msg += " " + String.format("type=%s action=\"%s\" payload=\"%s\" oldState=\"%s\"", "Action", action,
+					inputDataString, stateString);
 		} else {
 			String internalDataString = null;
 			try {
 				internalDataString = mapper.writeValueAsString(factObjects);
-				internalDataString = StringEscapeUtils
-						.escapeJava(internalDataString);
+				internalDataString = StringEscapeUtils.escapeJava(internalDataString);
 			} catch (JsonProcessingException e) {
 				logger.error("Exception serializing factObjects to JSON");
 			}
 
-			msg += " "
-					+ String.format(
-							"type=%s action=\"%s\" internalData=\"%s\" oldState=\"%s\"",
-							"Classification", action, internalDataString,
-							stateString);
+			msg += " " + String.format("type=%s action=\"%s\" internalData=\"%s\" oldState=\"%s\"", "Classification",
+					action, internalDataString, stateString);
 		}
 		logger.info(msg);
 	}
 
-	private static String commonFieldsOutput(String gameId, String playerId,
-			String executionId, long executionMoment, long timestamp) {
-		return String.format("\"%s\" \"%s\" %s %s %s", gameId, playerId,
-				executionId, executionMoment, timestamp);
+	private static String commonFieldsOutput(String gameId, String playerId, String executionId, long executionMoment,
+			long timestamp) {
+		return String.format("\"%s\" \"%s\" %s %s %s", gameId, playerId, executionId, executionMoment, timestamp);
 	}
 }

@@ -16,7 +16,6 @@
 
 package eu.trentorise.game.managers;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,11 +27,8 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
-import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -72,7 +68,7 @@ public class GameWorkflow implements Workflow {
 		PlayerState playerState = playerSrv.loadState(gameId, userId, true);
 
 		// Actually GameService.execute modifies playerState passed as parameter
-		PlayerState oldState = copyState(playerState);
+		PlayerState oldState = playerState.clone();
 
 		StatsLogger.logAction(gameId, userId, executionId, executionMoment, actionId, data, factObjects, playerState);
 		PlayerState newState = gameEngine.execute(gameId, playerState, actionId, data, executionId, executionMoment,
@@ -87,23 +83,26 @@ public class GameWorkflow implements Workflow {
 		LogHub.info(gameId, logger, "Process terminated: {}", result);
 	}
 
-	public PlayerState copyState(PlayerState state) {
-		PlayerState cloned = new PlayerState(state.getGameId(), state.getPlayerId());
-		cloned.setState(new HashSet<GameConcept>());
-		for (GameConcept gc : state.getState()) {
-			if (gc instanceof PointConcept) {
-				PointConcept pointCopy = new PointConcept(gc.getName());
-				pointCopy.setScore(((PointConcept) gc).getScore());
-				cloned.getState().add(pointCopy);
-			} else if (gc instanceof BadgeCollectionConcept) {
-				BadgeCollectionConcept collectionCopy = new BadgeCollectionConcept(gc.getName());
-				collectionCopy.getBadgeEarned().addAll(((BadgeCollectionConcept) gc).getBadgeEarned());
-				cloned.getState().add(collectionCopy);
-			}
-		}
-
-		return cloned;
-	}
+	// public PlayerState copyState(PlayerState state) {
+	// PlayerState cloned = new PlayerState(state.getGameId(),
+	// state.getPlayerId());
+	// cloned.setState(new HashSet<GameConcept>());
+	// for (GameConcept gc : state.getState()) {
+	// if (gc instanceof PointConcept) {
+	// PointConcept pointCopy = new PointConcept(gc.getName());
+	// pointCopy.setScore(((PointConcept) gc).getScore());
+	// cloned.getState().add(pointCopy);
+	// } else if (gc instanceof BadgeCollectionConcept) {
+	// BadgeCollectionConcept collectionCopy = new
+	// BadgeCollectionConcept(gc.getName());
+	// collectionCopy.getBadgeEarned().addAll(((BadgeCollectionConcept)
+	// gc).getBadgeEarned());
+	// cloned.getState().add(collectionCopy);
+	// }
+	// }
+	//
+	// return cloned;
+	// }
 
 	public void apply(String gameId, String actionId, String userId, Map<String, Object> data,
 			List<Object> factObjects) {

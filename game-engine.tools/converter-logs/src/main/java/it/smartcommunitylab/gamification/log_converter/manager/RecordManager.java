@@ -48,6 +48,7 @@ public class RecordManager {
 		int[] indiciInformazioni = new int[4];
 		String[] info = new String[4];
 
+		// idicizzazione
 		for (int i = 0; i < campi.length; i++) {
 			if (splitDiverso.contains(campi[i])) {
 				indiciCampi[i] = splitDiverso.indexOf(campi[i]);
@@ -56,6 +57,7 @@ public class RecordManager {
 			}
 		}
 
+		// estrazione informazione dai campi attraverso indice
 		for (int i = 0; i < campi.length; i++) {
 			if (i < campi.length - 1) {
 				info[i] = splitDiverso.substring(indiciCampi[i],
@@ -66,14 +68,14 @@ public class RecordManager {
 			}
 		}
 
-		// creazione nuovi campi
-
+		// creazione nuovi campi classifica
 		String classificationPosition = "\""
 				+ info[2].split(",")[1].substring(13) + "\"";
 		String classificationName = info[2].split(",")[0].substring(
 				campi[2].length() + 3 + 10, info[2].split(",")[0].length() - 2)
 				+ "\"";
 
+		// restituzione risultato
 		out = splitXSpazi + "classificationPosition=" + classificationPosition
 				+ " classificationName=" + classificationName;
 		logger.info("il nuovo messaggio per Classification �: " + out);
@@ -108,6 +110,7 @@ public class RecordManager {
 			} else {
 				info[i] = splitDiverso.substring(indiciCampi[i],
 						splitDiverso.length() - 1);
+				System.out.println("accorcio?");
 			}
 
 		}

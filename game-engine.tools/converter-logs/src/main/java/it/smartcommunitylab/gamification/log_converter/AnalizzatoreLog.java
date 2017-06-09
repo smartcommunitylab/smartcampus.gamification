@@ -1,5 +1,8 @@
 package it.smartcommunitylab.gamification.log_converter;
 
+import it.smartcommunitylab.gamification.log_converter.beans.Record;
+import it.smartcommunitylab.gamification.log_converter.manager.RecordManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,12 +12,10 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import it.smartcommunitylab.gamification.log_converter.beans.Record;
-import it.smartcommunitylab.gamification.log_converter.manager.RecordManager;
-
 public class AnalizzatoreLog {
 
-	private static final Logger logger = Logger.getLogger(AnalizzatoreLog.class);
+	private static final Logger logger = Logger
+			.getLogger(AnalizzatoreLog.class);
 
 	private RecordManager recordManager = new RecordManager();
 
@@ -58,17 +59,25 @@ public class AnalizzatoreLog {
 				while ((inputLine = br.readLine()) != null) {
 
 					Record record = recordManager.analizza(inputLine);
-					logger.info(record.getType());
+					logger.info("record type: " + record.getType());
+					System.out.println("inizio lo switching");
 					switch (record.getType()) {
 					case ACTION:
-						recordTrasformato = recordManager.analizzaAction(record);
+						recordTrasformato = recordManager
+								.analizzaAction(record);
 						break;
-
+					case CLASSIFICATION:
+						System.out.println("entro??");
+						recordTrasformato = recordManager
+								.analizzaClassification(record);
+						System.out.println("MESSAGGIO CLASSIFICATION: "
+								+ recordTrasformato);
+						break;
 					default:
 						recordTrasformato = record.getContent();
 						break;
 					}
-
+					logger.debug("scrivo la nuova riga");
 					fw.write(recordTrasformato);
 					fw.write("\n");
 

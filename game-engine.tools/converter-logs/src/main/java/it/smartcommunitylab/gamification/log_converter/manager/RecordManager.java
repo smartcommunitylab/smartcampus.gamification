@@ -1,9 +1,9 @@
 package it.smartcommunitylab.gamification.log_converter.manager;
 
-import org.apache.log4j.Logger;
-
 import it.smartcommunitylab.gamification.log_converter.beans.Record;
 import it.smartcommunitylab.gamification.log_converter.beans.RecordType;
+
+import org.apache.log4j.Logger;
 
 public class RecordManager {
 
@@ -22,7 +22,8 @@ public class RecordManager {
 			if (indiceDelCampo > 0) {
 				result.setIndexType(indiceDelCampo);
 				indiceDelCampo = indiceDelCampo + 5;
-				String type = record.substring(indiceDelCampo, record.indexOf(" ", indiceDelCampo));
+				String type = record.substring(indiceDelCampo,
+						record.indexOf(" ", indiceDelCampo));
 				logger.debug(String.format("Valore di type %s", type));
 				result.setType(valueOf(type));
 			} else {
@@ -33,11 +34,59 @@ public class RecordManager {
 		return result;
 	}
 
+	public String analizzaClassification(Record record) {
+
+		String out = null;
+
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
+
+		String[] campi = { "type=", "action=", "internalData=", "oldState=" };
+		int[] indiciCampi = new int[4];
+		int[] indiciInformazioni = new int[4];
+		String[] info = new String[4];
+
+		for (int i = 0; i < campi.length; i++) {
+			if (splitDiverso.contains(campi[i])) {
+				indiciCampi[i] = splitDiverso.indexOf(campi[i]);
+				indiciInformazioni[i] = indiciCampi[i] + campi[i].length();
+
+			}
+		}
+
+		for (int i = 0; i < campi.length; i++) {
+			if (i < campi.length - 1) {
+				info[i] = splitDiverso.substring(indiciCampi[i],
+						indiciCampi[i + 1]);
+			} else {
+				info[i] = splitDiverso.substring(indiciCampi[i],
+						splitDiverso.length() - 1);
+			}
+		}
+
+		// creazione nuovi campi
+
+		String classificationPosition = "\""
+				+ info[2].split(",")[1].substring(13) + "\"";
+		String classificationName = info[2].split(",")[0].substring(
+				campi[2].length() + 3 + 10, info[2].split(",")[0].length() - 2)
+				+ "\"";
+
+		out = splitXSpazi + "classificationPosition=" + classificationPosition
+				+ " classificationName=" + classificationName;
+		logger.info("il nuovo messaggio per action �: " + out);
+		return out;
+	}
+
 	public String analizzaAction(Record record) {
 		String out = null;
 
-		String splitXSpazi = record.getContent().substring(0, record.getIndexType());
-		String splitDiverso = record.getContent().substring(record.getIndexType());
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
 
 		String[] campi = { "type=", "action=", "payload=", "oldState=" };
 		int[] indiciCampi = new int[4];
@@ -52,10 +101,13 @@ public class RecordManager {
 			}
 		}
 		for (int i = 0; i < campi.length; i++) {
+			// coltrollo toglire ultimo spazio
 			if (i < campi.length - 1) {
-				info[i] = splitDiverso.substring(indiciCampi[i], indiciCampi[i + 1]);
+				info[i] = splitDiverso.substring(indiciCampi[i],
+						indiciCampi[i + 1]);
 			} else {
-				info[i] = splitDiverso.substring(indiciCampi[i], splitDiverso.length() - 1);
+				info[i] = splitDiverso.substring(indiciCampi[i],
+						splitDiverso.length() - 1);
 			}
 
 		}

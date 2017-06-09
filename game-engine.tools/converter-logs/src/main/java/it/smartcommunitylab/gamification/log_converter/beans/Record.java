@@ -1,5 +1,6 @@
 package it.smartcommunitylab.gamification.log_converter.beans;
 
+
 public class Record {
 	private RecordType type;
 	private String content;

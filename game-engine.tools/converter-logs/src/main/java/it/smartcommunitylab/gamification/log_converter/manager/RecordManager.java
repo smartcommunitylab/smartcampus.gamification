@@ -42,9 +42,9 @@ public class RecordManager {
 		String splitDiverso = record.getContent().substring(
 				record.getIndexType());
 
-		System.out.println(splitXSpazi);
+		// System.out.println(splitXSpazi);
 
-		System.out.println(splitDiverso);
+		// System.out.println(splitDiverso);
 
 		String[] campi = { "type=", "action=", "payload=", "oldState=" };
 		int[] indiciCampi = new int[4];
@@ -64,16 +64,16 @@ public class RecordManager {
 			if (i < campi.length - 1) {
 				info[i] = splitDiverso.substring(indiciCampi[i],
 						indiciCampi[i + 1]);
-				System.out.println("indice +1;  " + indiciCampi[i + 1]);
+				// System.out.println("indice +1;  " + indiciCampi[i + 1]);
 			} else {
 				info[i] = splitDiverso.substring(indiciCampi[i],
 						splitDiverso.length() - 1);
 			}
-			System.out.println("numero " + i + " stampa: " + info[i]);
+			// System.out.println("numero " + i + " stampa: " + info[i]);
 
 		}
-
-		out = splitXSpazi + splitDiverso;
+		out = splitXSpazi + info[0] + info[1];
+		logger.info("il nuovo messaggio per action è: " + out);
 		return out;
 	}
 

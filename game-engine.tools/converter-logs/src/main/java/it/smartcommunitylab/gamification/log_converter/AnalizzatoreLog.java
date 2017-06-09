@@ -23,11 +23,13 @@ public class AnalizzatoreLog {
 	}
 
 	public void newData() throws IOException {
+		logger.debug("inizio newData");
 		File folder = new File(Application.LOG_FOLDER_PATH);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			String nome = listOfFiles[i].getName();
-			logger.info(nome);
+			System.out.println("nome file : " + nome);
+			logger.info("nome file : " + nome);
 			// nome = nome.replaceFirst("[.][^.]+$", "");
 			// if (!nome.contains("NEW"))
 
@@ -62,7 +64,7 @@ public class AnalizzatoreLog {
 				while ((inputLine = br.readLine()) != null) {
 
 					Record record = recordManager.analizza(inputLine);
-
+					logger.info(record.getType());
 					switch (record.getType()) {
 					case ACTION:
 						recordTrasformato = recordManager
@@ -70,10 +72,12 @@ public class AnalizzatoreLog {
 						break;
 
 					default:
+						recordTrasformato = record.getContent();
 						break;
 					}
 
 					fw.write(recordTrasformato);
+					fw.write("\n");
 
 					// String[] elementi = str.split(" ");
 					// try {

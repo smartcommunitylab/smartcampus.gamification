@@ -29,8 +29,6 @@ public class AnalizzatoreLog {
 			String nome = listOfFiles[i].getName();
 			System.out.println("nome file : " + nome);
 			logger.info("nome file : " + nome);
-			// nome = nome.replaceFirst("[.][^.]+$", "");
-			// if (!nome.contains("NEW"))
 
 			// se non � file non eseguire elabora
 			// messaggi di log per avvertire dello skip
@@ -42,7 +40,6 @@ public class AnalizzatoreLog {
 		FileWriter fw = null;
 		FileReader fr = null;
 		BufferedReader br = null;
-		Boolean sovrascrivo = false;
 		File f;
 		try {
 			f = new File(logFolderPath + nome);
@@ -55,7 +52,6 @@ public class AnalizzatoreLog {
 				fw = new FileWriter(logFolderPath + nome);
 			}
 			// in base al type(action) che si vuole filtrare
-			Boolean scrivo = false;
 			try {
 				String inputLine;
 				String recordTrasformato = null;
@@ -76,28 +72,6 @@ public class AnalizzatoreLog {
 					fw.write(recordTrasformato);
 					fw.write("\n");
 
-					// String[] elementi = str.split(" ");
-					// try {
-					// for (int i = 0; i < elementi.length; i++) {
-					// if (elementi[i].contains("type=Action"))
-					// scrivo = true;
-					// }
-					// if (scrivo) {
-					// for (int i = 0; i < elementi.length; i++) {
-					// if (!(elementi[i].contains("payload") || elementi[i]
-					// .contains("oldState"))) {
-					// fw.write(elementi[i]);
-					// if (i != elementi.length - 1) {
-					// fw.write(" ");
-					// }
-					// }
-					// }
-					// fw.write("\n");
-					// scrivo = false;
-					// }
-					// } catch (FileNotFoundException e) {
-					// e.printStackTrace();
-					// }
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

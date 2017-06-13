@@ -124,6 +124,13 @@ public class StatsLogger {
 		logger.info(msg);
 	}
 
+	public static void logUserCreation(String gameId, String playerId, String executionId, long timestamp) {
+		String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
+		msg += " " + String.format("type=%s", "UserCreation");
+		logger.info(msg);
+
+	}
+
 	private static String commonFieldsOutput(String gameId, String playerId, String executionId, long executionMoment,
 			long timestamp) {
 		return String.format("\"%s\" \"%s\" %s %s %s", gameId, playerId, executionId, executionMoment, timestamp);

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import eu.trentorise.game.bean.ChallengeDataDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.services.PlayerService;
@@ -77,6 +79,8 @@ public class PlayerController {
 		player.setGameId(gameId);
 		PlayerState p = converter.convertPlayerState(player);
 		playerSrv.saveState(p);
+		StatsLogger.logUserCreation(gameId, player.getPlayerId(), UUID.randomUUID().toString(),
+				System.currentTimeMillis());
 	}
 
 	// Read a player

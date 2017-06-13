@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,7 @@ import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TeamDTO;
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
@@ -337,6 +339,8 @@ public class ConsoleController {
 		player.setGameId(gameId);
 		PlayerState p = converter.convertPlayerState(player);
 		playerSrv.saveState(p);
+		StatsLogger.logUserCreation(gameId, player.getPlayerId(), UUID.randomUUID().toString(),
+				System.currentTimeMillis());
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}/player/{playerId}", produces = {

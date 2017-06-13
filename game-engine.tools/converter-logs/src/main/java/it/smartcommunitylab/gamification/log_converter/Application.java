@@ -14,8 +14,6 @@ public class Application {
 		logger.info("folder log path: " + logfolderPath);
 		AnalizzatoreLog analizzatoreLog = new AnalizzatoreLog();
 		analizzatoreLog.newData(logfolderPath);
-		// analizzatoreLog.elabora("lol.txt");
-		// analizzatoreLog.elabora("");
 
 	}
 }

@@ -3,12 +3,16 @@ package it.smartcommunitylab.gamification.log_converter.manager;
 import it.smartcommunitylab.gamification.log_converter.beans.Record;
 import it.smartcommunitylab.gamification.log_converter.beans.RecordType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,7 +39,7 @@ public class RecordManager {
 
 	private final static Logger logger = Logger.getLogger(RecordManager.class);
 
-	Map<String, String> dictionary = new HashMap<String, String>();
+	Map<String, List<String>> dictionary = new HashMap<String, List<String>>();
 	Gson gson = new GsonBuilder().create();
 
 	public RecordManager() {
@@ -111,6 +115,7 @@ public class RecordManager {
 		return out;
 	}
 
+	@SuppressWarnings("null")
 	public String analizzaAction(Record record) {
 		String out = null;
 
@@ -148,7 +153,7 @@ public class RecordManager {
 		// /////////////////////////
 		// MEMORIZZAZIONE VARIABILI
 		// pulizia json
-		System.out.println("indice campi 3 : " + indiciCampi[3]);
+		// System.out.println("indice campi 3 : " + indiciCampi[3]);
 		String json = info[3].substring(campi[3].length() + 1);// ,
 		String tmpjson = "";
 		// per rimuovere i backslash dal json
@@ -157,19 +162,100 @@ public class RecordManager {
 				tmpjson += c;
 			}
 		}
-		json = "{" + tmpjson + "}";
-		System.out.println("json passato: " + json);
-
-		// String nuovoJson = null;
-
-		String test = json.substring(json.indexOf("{"), json.indexOf("}") + 1);
-		System.out.println("test : " + test);
+		json = tmpjson;
+		// System.out.println("json passato: " + json);
 
 		//
 		JSONParser parser = new JSONParser();
+		try {
+			System.out.println("TRY");
+			// non esegue la parse correttamente
+			Object obj = parser.parse(json);
+			// System.out.println("stato oggetto: " + obj);
+			JSONArray array = (JSONArray) obj;
+
+			for (int i = 0; i < array.size(); i++) {
+				if (array.get(i).toString().contains("badgeEarned")) {
+					System.out.println("oggetto: " + array.get(i));
+					String splitArrayNome = array.get(i).toString().split(",")[0];
+					// System.out.println("splitArraynome: " + splitArrayNome);
+					// nome badge
+					String nome = splitArrayNome.substring(splitArrayNome
+							.indexOf("name") + 6);
+					System.out.println("nomeBadge==" + nome);
+
+					String splitArrayValore = array
+							.get(i)
+							.toString()
+							.substring(
+									array.get(i).toString()
+											.indexOf("badgeEarned"),
+									array.get(i).toString().indexOf("}"));
+					System.out.println("splitArrayvalore: " + splitArrayValore);
+					// nome badge
+					String valore = splitArrayValore.substring(splitArrayValore
+							.indexOf("badgeEarned") + 13);
+					System.out.println("badgeEarned==" + valore);
+
+					List<String> listaValori = new ArrayList<String>();
+
+					int lang = valore.split(",").length;
+					for (int j = 0; j < lang; j++) {
+
+						if (lang == 1 && valore != null) {
+							System.out.println(valore.substring(
+									valore.indexOf("[") + 1,
+									valore.indexOf("]")));
+							listaValori.add(valore.substring(
+									valore.indexOf("[") + 1,
+									valore.indexOf("]")));
+						} else {
+							String nuoviValori = valore.substring(
+									valore.indexOf("[") + 1,
+									valore.indexOf("]"));
+							if (nuoviValori != "" && nuoviValori != null
+									&& nuoviValori.contains(",")) {
+								System.out.println("nuovi val " + nuoviValori);
+
+								String[] vettore = nuoviValori.split(",");
+
+								vettore[j] = vettore[j].substring(vettore[j]
+										.indexOf("\"") + 1);
+								vettore[j] = vettore[j].substring(0,
+										vettore[j].indexOf("\""));
+
+								System.out.println("STAMPO: " + vettore[j]);
+								// .substring(
+								// 0,
+								// vettore[j]
+								// .indexOf("\"")));
+								listaValori.add(vettore[j]);
+								System.out.println("LISTT: "
+										+ listaValori.get(0));
+							}
+						}
+					}
+					System.out.println("GET: " + listaValori.get(0));
+					dictionary.put(nome, listaValori);
+				}
+			}
+			System.out.println("STAMPO DIZIONARIO");
+			System.out.println(dictionary);
+			/*
+			 * System.out.println(array.get(0));
+			 * 
+			 * JSONObject obj2 = (JSONObject) array.get(1);
+			 * System.out.println("obj2: " + obj2);
+			 * System.out.println("Field \"1\"");
+			 * System.out.println(obj2.get("1"));
+			 */
+		} catch (ParseException pe) {
+			System.out.println("position: " + pe.getPosition());
+			System.out.println(pe);
+		}
 
 		JSONObject g = new JSONObject(dictionary);
-		System.out.println("g = " + g);
+		// System.out.println("g = " + g);
 
 		/*
 		 * try { // JSONObject jsonObject = new JSONObject(); JsonObject
@@ -189,7 +275,7 @@ public class RecordManager {
 
 		// System.out.println("nuovo json: " + parse(test));// ,
 		// "public transport aficionado"));
-		System.out.println("GSON : " + gson);
+		// System.out.println("GSON : " + gson);
 
 		// dictionary.put("key", "value");
 		// String value = dictionary.get("key");

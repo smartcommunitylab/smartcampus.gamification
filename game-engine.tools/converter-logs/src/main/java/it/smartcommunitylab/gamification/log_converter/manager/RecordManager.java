@@ -21,6 +21,7 @@ public class RecordManager {
 	private final static Logger logger = Logger.getLogger(RecordManager.class);
 
 	Map<String, List<String>> badgesDictionary = new HashMap<String, List<String>>();
+	Map<String, Double> scoresDictionary = new HashMap<String, Double>();
 
 	public RecordManager() {
 	}
@@ -135,6 +136,7 @@ public class RecordManager {
 			}
 		}
 		badgesDictionary = creaDizionarioBadges(campi, info);
+		scoresDictionary = creaDizionarioScore(campi, info);
 		System.out.println("oldState classification: " + info[3]);
 		// creazione nuovi campi classifica
 		String classificationPosition = "\""
@@ -177,10 +179,46 @@ public class RecordManager {
 			}
 		}
 		badgesDictionary = creaDizionarioBadges(campi, info);
+		scoresDictionary = creaDizionarioScore(campi, info);
+		logger.debug("dizionario score: " + scoresDictionary);
 		out = splitXSpazi + info[0] + info[1];
 		out = out.substring(0, out.length() - 1);
 		logger.info("il nuovo messaggio per action �: " + out);
 		return out;
+	}
+
+	private Map<String, Double> creaDizionarioScore(String[] campi,
+			String[] info) {
+		logger.debug("ENTRO NEL DIZIONARIO");
+		Map<String, Double> dizionario = new HashMap<>();
+		String json = info[3].substring(campi[3].length() + 1);
+		String tmpjson = "";
+		for (char c : json.toCharArray()) {
+			if (c != '\\') {
+				tmpjson += c;
+			}
+		}
+		json = tmpjson;
+		JsonParser parser = new JsonParser();
+		logger.info("inizio parsing oldState");
+		JsonArray jsonArray = parser.parse(json).getAsJsonArray();
+
+		for (JsonElement element : jsonArray) {
+			JsonObject obj = element.getAsJsonObject();
+
+			if (obj.get("score") != null) {
+
+				logger.debug("oggetto: " + obj.toString());
+				String scoreName = obj.get("name").getAsString();
+				// nome badge
+				logger.debug("nomeScore==" + scoreName);
+				Double value = obj.get("score").getAsDouble();
+				logger.debug("value: " + value);
+				dizionario.put(scoreName, value);
+			}
+		}
+		logger.debug("dizionario valori badges: " + badgesDictionary);
+		return dizionario;
 	}
 
 	private Map<String, List<String>> creaDizionarioBadges(String[] campi,

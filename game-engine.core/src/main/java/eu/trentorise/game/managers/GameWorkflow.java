@@ -70,7 +70,12 @@ public class GameWorkflow implements Workflow {
 		// Actually GameService.execute modifies playerState passed as parameter
 		PlayerState oldState = playerState.clone();
 
-		StatsLogger.logAction(gameId, userId, executionId, executionMoment, actionId, data, factObjects, playerState);
+		if (isClassificationAction(actionId)) {
+			StatsLogger.logClassification(gameId, userId, executionId, executionMoment, data, factObjects);
+		} else {
+			StatsLogger.logAction(gameId, userId, executionId, executionMoment, actionId, data, factObjects,
+					playerState);
+		}
 		PlayerState newState = gameEngine.execute(gameId, playerState, actionId, data, executionId, executionMoment,
 				factObjects);
 
@@ -83,6 +88,9 @@ public class GameWorkflow implements Workflow {
 		LogHub.info(gameId, logger, "Process terminated: {}", result);
 	}
 
+	private boolean isClassificationAction(String actionId) {
+		return actionId != null && "scogei_classification".equals(actionId);
+	}
 	// public PlayerState copyState(PlayerState state) {
 	// PlayerState cloned = new PlayerState(state.getGameId(),
 	// state.getPlayerId());

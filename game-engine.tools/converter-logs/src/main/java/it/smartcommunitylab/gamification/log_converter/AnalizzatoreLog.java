@@ -73,6 +73,7 @@ public class AnalizzatoreLog {
 					case RULE_BADGECOLLECTIONCONCEPT:
 						recordTrasformato = recordManager
 								.analizzaBadgeCollection(record);
+						break;
 					default:
 						recordTrasformato = record.getContent();
 						break;

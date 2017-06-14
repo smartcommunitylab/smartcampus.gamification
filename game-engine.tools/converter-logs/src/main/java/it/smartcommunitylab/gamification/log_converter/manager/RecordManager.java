@@ -48,7 +48,7 @@ public class RecordManager {
 	}
 
 	public String analizzaBadgeCollection(Record record) {
-		String out = null;
+		String out = "";
 
 		String splitXSpazi = record.getContent().substring(0,
 				record.getIndexType());
@@ -76,6 +76,14 @@ public class RecordManager {
 						splitDiverso.length() - 1);
 			}
 		}
+		List<String> newBadges = elaboraDizionario(campi, info);
+		out = splitXSpazi + info[0] + info[1] + info[2] + "new_badge=" + "\""
+				+ newBadges.get(0) + "\"";
+		logger.info("Nuovo messaggio Badge: " + out);
+		return out;
+	}
+
+	private List<String> elaboraDizionario(String[] campi, String[] info) {
 		String badgeColl = info[3].substring(campi[3].length() + 1);// ,
 		badgeColl = badgeColl.substring(badgeColl.indexOf("[") + 1,
 				badgeColl.indexOf("]"));
@@ -92,39 +100,31 @@ public class RecordManager {
 			logger.debug("Valore oldState: " + badgesDictionary.get(nome));
 			newBadges = new ArrayList<String>(CollectionUtils.subtract(
 					newBadges, badgesDictionary.get(nome)));
-			System.out.println("nuovo badge: " + newBadges);
+			logger.debug("nuovo badge: " + newBadges);
 		} else {
 			logger.debug("nessun valore per badgeCollection: " + nome);
 		}
-		out = splitXSpazi + info[0] + info[1] + info[2] + "new_badge="
-				+ newBadges.toString();
-		logger.info("Nuovo messaggio Badge: " + out);
-		return out;
+		return newBadges;
 	}
 
 	public String analizzaClassification(Record record) {
-
+		badgesDictionary.clear();
 		String out = null;
-
 		String splitXSpazi = record.getContent().substring(0,
 				record.getIndexType());
 		String splitDiverso = record.getContent().substring(
 				record.getIndexType());
-
 		String[] campi = { "type=", "action=", "internalData=", "oldState=" };
 		int[] indiciCampi = new int[campi.length];
 		int[] indiciInformazioni = new int[campi.length];
 		String[] info = new String[campi.length];
-
 		// idicizzazione
 		for (int i = 0; i < campi.length; i++) {
 			if (splitDiverso.contains(campi[i])) {
 				indiciCampi[i] = splitDiverso.indexOf(campi[i]);
 				indiciInformazioni[i] = indiciCampi[i] + campi[i].length();
-
 			}
 		}
-
 		// estrazione informazione dai campi attraverso indice
 		for (int i = 0; i < campi.length; i++) {
 			if (i < campi.length - 1) {
@@ -135,14 +135,14 @@ public class RecordManager {
 						splitDiverso.length() - 1);
 			}
 		}
-
+		analizzaDizionario(campi, info);
+		System.out.println("oldState classification: " + info[3]);
 		// creazione nuovi campi classifica
 		String classificationPosition = "\""
 				+ info[2].split(",")[1].substring(13) + "\"";
 		String classificationName = info[2].split(",")[0].substring(
 				campi[2].length() + 3 + 10, info[2].split(",")[0].length() - 2)
 				+ "\"";
-
 		// restituzione risultato
 		out = splitXSpazi + "classificationPosition=" + classificationPosition
 				+ " classificationName=" + classificationName;
@@ -152,24 +152,19 @@ public class RecordManager {
 
 	public String analizzaAction(Record record) {
 		String out = null;
-
 		badgesDictionary.clear();
-
 		String splitXSpazi = record.getContent().substring(0,
 				record.getIndexType());
 		String splitDiverso = record.getContent().substring(
 				record.getIndexType());
-
 		String[] campi = { "type=", "action=", "payload=", "oldState=" };
 		int[] indiciCampi = new int[campi.length];
 		int[] indiciInformazioni = new int[campi.length];
 		String[] info = new String[4];
-
 		for (int i = 0; i < campi.length; i++) {
 			if (splitDiverso.contains(campi[i])) {
 				indiciCampi[i] = splitDiverso.indexOf(campi[i]);
 				indiciInformazioni[i] = indiciCampi[i] + campi[i].length();
-
 			}
 		}
 		for (int i = 0; i < campi.length; i++) {
@@ -180,10 +175,17 @@ public class RecordManager {
 			} else {
 				info[i] = splitDiverso.substring(indiciCampi[i],
 						splitDiverso.length() - 1);
-
 			}
-
 		}
+		analizzaDizionario(campi, info);
+		out = splitXSpazi + info[0] + info[1];
+		out = out.substring(0, out.length() - 1);
+		logger.info("il nuovo messaggio per action �: " + out);
+		return out;
+	}
+
+	private void analizzaDizionario(String[] campi, String[] info) {
+		System.out.println("ENTRO NEL DIZIO");
 		String json = info[3].substring(campi[3].length() + 1);
 		String tmpjson = "";
 		for (char c : json.toCharArray()) {
@@ -220,11 +222,6 @@ public class RecordManager {
 			}
 		}
 		logger.debug("dizionario valori badges: " + badgesDictionary);
-
-		out = splitXSpazi + info[0] + info[1];
-		out = out.substring(0, out.length() - 1);
-		logger.info("il nuovo messaggio per action �: " + out);
-		return out;
 	}
 
 	private RecordType valueOf(String type) {

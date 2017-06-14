@@ -40,6 +40,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
@@ -372,7 +373,8 @@ public class DBPlayerManager implements PlayerService {
 
 		state.getState().add(challenge);
 		persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
-
+		StatsLogger.logChallengeAssignment(gameId, playerId, UUID.randomUUID().toString(), System.currentTimeMillis(),
+				modelName, start, end);
 		return challenge;
 
 	}

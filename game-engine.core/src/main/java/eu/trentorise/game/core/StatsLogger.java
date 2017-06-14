@@ -1,5 +1,6 @@
 package eu.trentorise.game.core;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +160,14 @@ public class StatsLogger {
 		String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
 		msg += " " + String.format("type=%s", "UserCreation");
 		statsLogger.info(msg);
+	}
 
+	public static void logChallengeAssignment(String gameId, String playerId, String executionId, long timestamp,
+			String challengeName, Date start, Date end) {
+		String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
+		msg += " " + String.format("type=%s name=\"%s\" startDate=%s endDate=%s", "ChallengeAssigned", challengeName,
+				start.getTime(), end.getTime());
+		statsLogger.info(msg);
 	}
 
 	private static String commonFieldsOutput(String gameId, String playerId, String executionId, long executionMoment,

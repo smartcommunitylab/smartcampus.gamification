@@ -48,6 +48,52 @@ public class RecordManager {
 		return result;
 	}
 
+	public String analizzaPointConcept(Record record) {
+		String out = "";
+
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
+
+		String[] campi = { "type=", "ruleName=", "name=", "score=" };
+		int[] indiciCampi = new int[campi.length];
+		int[] indiciInformazioni = new int[campi.length];
+		String[] info = new String[4];
+
+		for (int i = 0; i < campi.length; i++) {
+			if (splitDiverso.contains(campi[i])) {
+				indiciCampi[i] = splitDiverso.indexOf(campi[i]);
+				indiciInformazioni[i] = indiciCampi[i] + campi[i].length();
+			}
+		}
+		for (int i = 0; i < campi.length; i++) {
+			// coltrollo toglire ultimo spazio
+			if (i < campi.length - 1) {
+				info[i] = splitDiverso.substring(indiciCampi[i],
+						indiciCampi[i + 1]);
+			} else {
+				info[i] = splitDiverso.substring(indiciCampi[i],
+						splitDiverso.length() - 1);
+			}
+		}
+
+		Double delta = 0.0;
+
+		String s = info[3].substring(info[3].indexOf("=") + 1);
+		Double score = Double.valueOf(s);
+		System.out.println("SCORE=" + s);
+
+		// CALCOLO IL DELTA!!!!
+		String name = info[2].substring(campi[2].length() + 1,
+				info[2].length() - 2);
+		System.out.println("name: " + name);
+		delta = score - scoresDictionary.get(name);
+		out = splitXSpazi + splitDiverso + " deltaScore=" + delta;
+		System.out.println("Nuovo messaggio Point: " + out);
+		return out;
+	}
+
 	public String analizzaBadgeCollection(Record record) {
 		String out = "";
 

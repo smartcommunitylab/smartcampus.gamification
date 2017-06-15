@@ -74,6 +74,10 @@ public class AnalizzatoreLog {
 						recordTrasformato = recordManager
 								.analizzaBadgeCollection(record);
 						break;
+					case RULE_POINTCONCEPT:
+						recordTrasformato = recordManager
+								.analizzaPointConcept(record);
+						break;
 					default:
 						recordTrasformato = record.getContent();
 						break;

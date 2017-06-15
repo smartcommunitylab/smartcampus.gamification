@@ -48,7 +48,7 @@ public class AnalizzatoreLog {
 			fr = new FileReader(f);
 			br = new BufferedReader(fr);
 			if (!f.getName().contains("NEW")) {// agg sovrascrivo
-				fw = new FileWriter(logFolderPath + nome + "-NEW", false);
+				fw = new FileWriter(logFolderPath + "NEW-" + nome, false);
 			} else {
 				// to do
 				fw = new FileWriter(logFolderPath + nome);

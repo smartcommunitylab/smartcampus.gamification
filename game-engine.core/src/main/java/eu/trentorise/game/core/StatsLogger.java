@@ -170,6 +170,13 @@ public class StatsLogger {
 		statsLogger.info(msg);
 	}
 
+	public static void logChallengeComplete(String gameId, String playerId, String executionId, long executionTime,
+			long timestamp, String challengeName) {
+		String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
+		msg += " " + String.format("type=%s name=\"%s\"", "ChallengeComplete", challengeName);
+		statsLogger.info(msg);
+	}
+
 	private static String commonFieldsOutput(String gameId, String playerId, String executionId, long executionMoment,
 			long timestamp) {
 		return String.format("\"%s\" \"%s\" %s %s %s", gameId, playerId, executionId, executionMoment, timestamp);

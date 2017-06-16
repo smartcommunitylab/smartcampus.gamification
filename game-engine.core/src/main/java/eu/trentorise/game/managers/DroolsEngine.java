@@ -69,6 +69,7 @@ import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.Propagation;
+import eu.trentorise.game.model.StatsChallengeConcept;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.UpdateMembers;
@@ -160,6 +161,7 @@ public class DroolsEngine implements GameEngine {
 			GameConcept gc = iter.next();
 			if (gc instanceof ChallengeConcept) {
 				ChallengeConcept challenge = (ChallengeConcept) gc;
+				challenge = enrichWithStatsRequiredInfo(challenge, gameId, state.getPlayerId(), executionId);
 				if (challenge.isCompleted() || (challenge.getStart() != null && challenge.getStart().after(now))
 						|| (challenge.getEnd() != null && challenge.getEnd().before(now))) {
 					iter.remove();
@@ -284,6 +286,22 @@ public class DroolsEngine implements GameEngine {
 					String.format("execution for game %s of player %s", gameId, state.getPlayerId()));
 		}
 		return state;
+	}
+
+	private ChallengeConcept enrichWithStatsRequiredInfo(ChallengeConcept challenge, String gameId, String playerId,
+			String executionId) {
+		ChallengeConcept converted = null;
+		if (challenge != null) {
+			converted = new StatsChallengeConcept(gameId, playerId, executionId);
+			converted.setEnd(challenge.getEnd());
+			converted.setStart(challenge.getStart());
+			converted.setFields(challenge.getFields());
+			converted.setId(challenge.getId());
+			converted.setModelName(challenge.getModelName());
+			converted.setName(challenge.getName());
+		}
+
+		return converted;
 	}
 
 	private StatelessKieSession loadGameConstants(StatelessKieSession kSession, String gameId) {

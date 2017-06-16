@@ -374,7 +374,7 @@ public class DBPlayerManager implements PlayerService {
 		state.getState().add(challenge);
 		persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
 		StatsLogger.logChallengeAssignment(gameId, playerId, UUID.randomUUID().toString(), System.currentTimeMillis(),
-				modelName, start, end);
+				challenge.getName(), start, end);
 		return challenge;
 
 	}

@@ -86,6 +86,7 @@ public class GameWorkflow implements Workflow {
 			LogHub.info(gameId, logger, "Traced player {} move", userId);
 		}
 		LogHub.info(gameId, logger, "Process terminated: {}", result);
+		StatsLogger.logEndGameAction(gameId, userId, executionId, executionMoment, System.currentTimeMillis());
 	}
 
 	private boolean isClassificationAction(String actionId) {

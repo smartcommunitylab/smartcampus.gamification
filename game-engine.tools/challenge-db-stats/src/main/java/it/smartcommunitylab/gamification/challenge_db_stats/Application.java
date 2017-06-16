@@ -56,18 +56,26 @@ public class Application {
 						logger.debug(obj);
 						String random = UUID.randomUUID().toString();
 						Object dateCompleted = obj.get("dateCompleted");
+						Object start = obj.get("start");
+						Object end = obj.get("end");
+						Object completed = obj.get("completed");
+
+						String sfidaAssegnata = "INFO - " + "\"" + gameId
+								+ "\" \"" + playerId + "\" " + random + " "
+								+ start + " " + start + " "
+								+ " type=ChallengeAssigned name=\"" + k + "\" "
+								+ "startDate=" + start + " endDate=" + end;
+						logger.info("assegnata: " + sfidaAssegnata);
+
 						if (dateCompleted != null) {
 							contChallengeCompleted++;
 
-							Object start = obj.get("start");
-							Object end = obj.get("end");
-							Object completed = obj.get("completed");
 							String out = "INFO - " + "\"" + gameId + "\" \""
 									+ playerId + "\" " + random + " "
 									+ dateCompleted + " " + dateCompleted + " "
 									+ " type=ChallengeComplete name=\"" + k
 									+ "\" ";
-							logger.info("out: " + out);
+							logger.info("completata: " + out);
 							righeDiLog++;
 						} else {
 							logger.debug("non si è completata la sfiga: " + k);

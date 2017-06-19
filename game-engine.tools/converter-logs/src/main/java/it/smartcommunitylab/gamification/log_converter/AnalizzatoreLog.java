@@ -34,7 +34,13 @@ public class AnalizzatoreLog {
 			} else {
 				String nome = listOfFiles[i].getName();
 				logger.info("nome file : " + nome);
-				elabora(logfolderPath, nome);
+				for (int j = 0; j < listOfFiles.length; j++) {
+					System.out
+							.println("list name: " + listOfFiles[i].getName());
+					if (listOfFiles[i].getName() != nome
+							&& !nome.contains("NEW"))
+						elabora(logfolderPath, nome);
+				}
 			}
 		}
 	}

@@ -110,7 +110,7 @@ public class StatsLogger {
 			for (Object factObj : factObjects) {
 				if (factObj instanceof Classification) {
 					Classification obj = (Classification) factObj;
-					msg += " " + String.format("type=%s classificationName=\"%s\" classificationPosition=\"%s\"",
+					msg += " " + String.format("type=%s classificationName=\"%s\" classificationPosition=%s",
 							"Classification", obj.getName(), obj.getPosition());
 					statsLogger.info(msg);
 				}

@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
@@ -94,38 +92,7 @@ public class StatsLogger {
 			long timestamp, String action, Map<String, Object> inputData, List<Object> factObjects, PlayerState state) {
 		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
 
-		String stateString = null;
-
-		try {
-			stateString = mapper.writeValueAsString(state.getState());
-			stateString = StringEscapeUtils.escapeJava(stateString);
-		} catch (JsonProcessingException e) {
-			statsLogger.error("Exception serializing state to JSON");
-		}
-
-		if (!"scogei_classification".equals(action)) {
-			String inputDataString = null;
-			try {
-				inputDataString = mapper.writeValueAsString(inputData);
-				inputDataString = StringEscapeUtils.escapeJava(inputDataString);
-			} catch (JsonProcessingException e) {
-				statsLogger.error("Exception serializing inputData to JSON");
-			}
-
-			msg += " " + String.format("type=%s action=\"%s\" payload=\"%s\" oldState=\"%s\"", "Action", action,
-					inputDataString, stateString);
-		} else {
-			String internalDataString = null;
-			try {
-				internalDataString = mapper.writeValueAsString(factObjects);
-				internalDataString = StringEscapeUtils.escapeJava(internalDataString);
-			} catch (JsonProcessingException e) {
-				statsLogger.error("Exception serializing factObjects to JSON");
-			}
-
-			msg += " " + String.format("type=%s action=\"%s\" internalData=\"%s\" oldState=\"%s\"", "Classification",
-					action, internalDataString, stateString);
-		}
+		msg += " " + String.format("type=%s action=\"%s\"", "Action", action);
 		statsLogger.info(msg);
 	}
 

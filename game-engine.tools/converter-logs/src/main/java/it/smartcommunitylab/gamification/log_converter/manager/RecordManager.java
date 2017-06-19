@@ -137,7 +137,7 @@ public class RecordManager {
 		String[] info = estraiInformazioni(splitDiverso, campi);
 		badgesDictionary = creaDizionarioBadges(campi, info);
 		scoresDictionary = creaDizionarioScore(campi, info);
-		System.out.println("oldState classification: " + info[3]);
+		logger.debug("oldState classification: " + info[3]);
 		// creazione nuovi campi classifica(da migliorare)
 		String classificationPosition = "\""
 				+ info[2].split(",")[1].substring(13) + "\"";

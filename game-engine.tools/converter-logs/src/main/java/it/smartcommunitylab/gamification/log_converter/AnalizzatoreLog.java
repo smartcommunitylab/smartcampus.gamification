@@ -35,8 +35,7 @@ public class AnalizzatoreLog {
 				String nome = listOfFiles[i].getName();
 				logger.info("nome file : " + nome);
 				for (int j = 0; j < listOfFiles.length; j++) {
-					System.out
-							.println("list name: " + listOfFiles[i].getName());
+					logger.debug("list name: " + listOfFiles[i].getName());
 					if (listOfFiles[i].getName() != nome
 							&& !nome.contains("NEW"))
 						elabora(logfolderPath, nome);

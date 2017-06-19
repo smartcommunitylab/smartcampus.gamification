@@ -17,6 +17,7 @@ import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.ClassificationPosition;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.notification.ClassificationNotification;
 
 public abstract class ClassificationTask extends GameTask {
 
@@ -109,6 +110,15 @@ public abstract class ClassificationTask extends GameTask {
 			List<Object> factObjs = new ArrayList<Object>();
 			factObjs.add(c);
 			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), null, factObjs);
+
+			ClassificationNotification classificationNotification = new ClassificationNotification();
+			classificationNotification.setGameId(ctx.getGameRefId());
+			classificationNotification.setPlayerId(item.getPlayerId());
+			classificationNotification.setClassificationName(classificationName);
+			classificationNotification.setClassificationPosition(position);
+
+			ctx.sendNotification(classificationNotification);
+			LogHub.info(ctx.getGameRefId(), logger, "send notification: {}", classificationNotification.toString());
 		}
 
 		// ClassificationList classification = new ClassificationList(states);

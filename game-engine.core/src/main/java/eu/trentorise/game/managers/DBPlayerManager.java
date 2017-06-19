@@ -28,6 +28,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,6 +42,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
@@ -53,6 +56,7 @@ import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.StringSearchQuery;
+import eu.trentorise.game.notification.ChallengeAssignedNotification;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.PlayerRepo;
@@ -64,6 +68,7 @@ import eu.trentorise.game.services.PlayerService;
 @Component
 public class DBPlayerManager implements PlayerService {
 
+	private final static Logger logger = LoggerFactory.getLogger(DBPlayerManager.class);
 	@Autowired
 	private PlayerRepo playerRepo;
 
@@ -75,6 +80,9 @@ public class DBPlayerManager implements PlayerService {
 
 	@Autowired
 	private ChallengeModelRepo challengeModelRepo;
+
+	@Autowired
+	private NotificationManager notificationSrv;
 
 	public PlayerState loadState(String gameId, String playerId, boolean upsert) {
 		eu.trentorise.game.repo.StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId, playerId);
@@ -372,6 +380,16 @@ public class DBPlayerManager implements PlayerService {
 
 		state.getState().add(challenge);
 		persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
+
+		ChallengeAssignedNotification challengeNotification = new ChallengeAssignedNotification();
+		challengeNotification.setChallengeName(challenge.getName());
+		challengeNotification.setGameId(gameId);
+		challengeNotification.setPlayerId(playerId);
+		challengeNotification.setStartDate(start);
+		challengeNotification.setEndDate(end);
+
+		notificationSrv.notificate(challengeNotification);
+		LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
 
 		return challenge;
 

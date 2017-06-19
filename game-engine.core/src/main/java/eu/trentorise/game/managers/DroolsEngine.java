@@ -80,6 +80,7 @@ import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.UrlRule;
+import eu.trentorise.game.notification.ChallengeCompletedNotication;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -197,7 +198,12 @@ public class DroolsEngine implements GameEngine {
 
 		Iterator<QueryResultsRow> iter = ((QueryResults) results.getValue("retrieveState")).iterator();
 		while (iter.hasNext()) {
-			newState.add((GameConcept) iter.next().get("$result"));
+			GameConcept stateElement = (GameConcept) iter.next().get("$result");
+			newState.add(stateElement);
+			if (stateElement instanceof ChallengeConcept) {
+				sendChallengeCompletedNotifications((ChallengeConcept) stateElement, gameId, player.getId(),
+						executionMoment);
+			}
 		}
 
 		List<CustomData> customData = new ArrayList<CustomData>();
@@ -283,6 +289,19 @@ public class DroolsEngine implements GameEngine {
 					String.format("execution for game %s of player %s", gameId, state.getPlayerId()));
 		}
 		return state;
+	}
+
+	private void sendChallengeCompletedNotifications(ChallengeConcept stateElement, String gameId, String playerId,
+			long executionMoment) {
+		if (stateElement.isCompleted()) {
+			ChallengeCompletedNotication challengeNotification = new ChallengeCompletedNotication();
+			challengeNotification.setGameId(gameId);
+			challengeNotification.setPlayerId(playerId);
+			challengeNotification.setChallengeName(stateElement.getName());
+			challengeNotification.setTimestamp(executionMoment);
+			notificationSrv.notificate(challengeNotification);
+			LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
+		}
 	}
 
 	private StatelessKieSession loadGameConstants(StatelessKieSession kSession, String gameId) {

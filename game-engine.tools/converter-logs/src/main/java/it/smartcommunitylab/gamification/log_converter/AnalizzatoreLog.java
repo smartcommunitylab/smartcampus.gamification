@@ -22,6 +22,7 @@ public class AnalizzatoreLog {
 	public AnalizzatoreLog() {
 	}
 
+	// TODO se file esiste già non toccare o sovrascrivere
 	public void newData(String logfolderPath) throws IOException {
 		logger.debug("inizio newData");
 		File folder = new File(logfolderPath);

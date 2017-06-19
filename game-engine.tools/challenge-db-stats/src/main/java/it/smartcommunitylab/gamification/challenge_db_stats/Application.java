@@ -3,7 +3,11 @@ package it.smartcommunitylab.gamification.challenge_db_stats;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Set;
@@ -22,12 +26,16 @@ public class Application {
 	private final static int DB_PORT = 27017;
 	private final static String DB_NAME = "gamification1506";
 	private static final Logger logger = Logger.getLogger(Application.class);
+	private static String filename;
 
-	public static void main(String[] args) {
-		creaLoggerChallenge();
+	public static void main(String[] args) throws IOException {
+		String logfolderPath = "C:\\Users\\sco\\Desktop\\test\\";
+		logger.debug("logfolderPath: " + logfolderPath);
+		creaLoggerChallenge(logfolderPath);
 	}
 
-	public static void creaLoggerChallenge() {
+	public static void creaLoggerChallenge(String logfolderPath)
+			throws IOException {
 		MongoClient mongoClient = new MongoClient(DB_HOST, DB_PORT);
 		MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 		for (String collection : db.listCollectionNames()) {
@@ -40,25 +48,30 @@ public class Application {
 		FindIterable<Document> playerState = playerStates.find(and(eq("gameId",
 				"57ac710fd4c6ac7872b0e7a1")));
 		String data = null;
+
 		for (Document document : playerState) {
 			int contChallengeCompleted = 0;
 			int contSfidaAssegnata = 0;
 			int righeDiLog = 0;
 			int contChallengeMiss = 0;
 			Document player = document;
+
 			Object gameId = player.get("gameId");
 			Object playerId = player.get("playerId");
 			@SuppressWarnings("unchecked")
 			Map<String, Object> campi = player.get("concepts", Map.class);
+
 			if (campi != null) {
 				logger.debug(campi.get("ChallengeConcept"));
 				@SuppressWarnings("unchecked")
 				Map<String, Object> challengeConcept = (Map<String, Object>) campi
 						.get("ChallengeConcept");
+
 				if (challengeConcept != null) {
 					logger.debug("si challengeConcept");
 					Set<String> chivi = challengeConcept.keySet();
 					logger.debug("chivi: " + chivi);
+
 					for (String k : chivi) {
 						Map<String, Object> sfide = (Map<String, Object>) challengeConcept;
 						@SuppressWarnings("unchecked")
@@ -74,7 +87,7 @@ public class Application {
 
 						data = dataFormat.format(start);
 						logger.debug("data della giocata=" + data);
-						if (trovaData(data, "C:\\Users\\sco\\Desktop\\test")) {
+						if (trovaData(data, logfolderPath)) {
 							logger.debug("FUNZIONA");
 						}
 
@@ -95,8 +108,10 @@ public class Application {
 									+ "\" ";
 							logger.info("completata: " + out);
 							righeDiLog++;
+							// scrittura riga
+							scrittura(out, logfolderPath);
 						} else {
-							logger.debug("non si è completata la sfiga: " + k);
+							logger.debug("non si è completata la sfida: " + k);
 							logger.debug("sfida non completata");
 							contChallengeMiss++;
 						}
@@ -115,6 +130,20 @@ public class Application {
 		}
 	}
 
+	public static void scrittura(String out, String logfolderPath)
+			throws IOException {
+		logger.debug("FILENAME: " + filename);
+		FileWriter fw = new FileWriter(logfolderPath + filename, true);
+		BufferedWriter bw = new BufferedWriter(fw);
+		PrintWriter pw = new PrintWriter(bw);
+		pw.write(out + "\n");
+		logger.debug("COSA DOVREI SCRIVERE: " + "\n" + out);
+		pw.flush();
+		pw.close();
+		bw.close();
+		fw.close();
+	}
+
 	public static Boolean trovaData(String data, String logfolderPath) {
 
 		Boolean ok = false;
@@ -130,9 +159,10 @@ public class Application {
 				logger.debug("la data è=" + data);
 				logger.debug(nome.contains(data));
 
-				if (nome.contains(data)) {
+				if (nome.contains(data) && nome.contains("NEW")) {
 					logger.info("TROVATO! - il file è: " + nome + " - data: "
 							+ data);
+					filename = nome;
 					ok = true;
 				}
 			}

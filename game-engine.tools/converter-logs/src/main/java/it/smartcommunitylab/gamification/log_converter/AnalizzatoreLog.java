@@ -54,7 +54,7 @@ public class AnalizzatoreLog {
 		try {
 			String outputLogFile = creaNomeFileElaborato(logFile);
 			if (!new File(outputLogFile).exists() || sovrascriviLogElaborati) {
-				logger.info("processo file : " + logFile.getName());
+				logger.info("elaboro file : " + logFile.getName());
 				fr = new FileReader(logFile);
 				br = new BufferedReader(fr);
 
@@ -66,7 +66,7 @@ public class AnalizzatoreLog {
 					while ((inputLine = br.readLine()) != null) {
 
 						Record record = recordManager.analizza(inputLine);
-						logger.info("record type: " + record.getType());
+						logger.debug("record type: " + record.getType());
 						switch (record.getType()) {
 						case ACTION:
 							recordTrasformato = recordManager.analizzaAction(record);
@@ -88,6 +88,7 @@ public class AnalizzatoreLog {
 						fw.write(recordTrasformato);
 						fw.write("\n");
 					}
+					logger.info("fine elaborazione file : " + logFile.getName());
 				} catch (FileNotFoundException e) {
 					logger.error(e);
 				}

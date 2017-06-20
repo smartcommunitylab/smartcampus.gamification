@@ -131,7 +131,7 @@ public class RecordManager {
 				info[2].split(",")[0].length() - 2) + "\"";
 		out = splitXSpazi + info[0] + "classificationName=" + classificationName + " classificationPosition="
 				+ classificationPosition;
-		logger.info("il nuovo messaggio per Classification �: " + out);
+		logger.debug("il nuovo messaggio per Classification �: " + out);
 		return out;
 	}
 
@@ -146,7 +146,7 @@ public class RecordManager {
 		logger.debug("dizionario score: " + scoresDictionary);
 		out = splitXSpazi + info[0] + info[1];
 		out = out.substring(0, out.length() - 1);
-		logger.info("il nuovo messaggio per action �: " + out);
+		logger.debug("il nuovo messaggio per action �: " + out);
 		return out;
 	}
 

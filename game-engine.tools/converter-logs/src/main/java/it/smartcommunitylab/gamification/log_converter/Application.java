@@ -12,7 +12,7 @@ public class Application {
 		String logfolderPath = args[0];
 		logger.info("folder log path: " + logfolderPath);
 		AnalizzatoreLog analizzatoreLog = new AnalizzatoreLog();
-		analizzatoreLog.newData(logfolderPath);
+		analizzatoreLog.analizzaCartella(logfolderPath);
 
 	}
 }

@@ -1,8 +1,5 @@
 package it.smartcommunitylab.gamification.log_converter;
 
-import it.smartcommunitylab.gamification.log_converter.beans.Record;
-import it.smartcommunitylab.gamification.log_converter.manager.RecordManager;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,33 +9,33 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import it.smartcommunitylab.gamification.log_converter.beans.Record;
+import it.smartcommunitylab.gamification.log_converter.manager.RecordManager;
+
 public class AnalizzatoreLog {
 
-	private static final Logger logger = Logger
-			.getLogger(AnalizzatoreLog.class);
+	private static final Logger logger = Logger.getLogger(AnalizzatoreLog.class);
+
+	private static final String PREFIX_PROCESSED_FILE = "NEW-";
 
 	private RecordManager recordManager = new RecordManager();
 
 	public AnalizzatoreLog() {
 	}
 
-	// TODO se file esiste già non toccare o sovrascrivere
-	public void newData(String logfolderPath) throws IOException {
+	// TODO se file esiste giï¿½ non toccare o sovrascrivere
+	public void analizzaCartella(String logfolderPath) throws IOException {
 		logger.debug("inizio newData");
 		File folder = new File(logfolderPath);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isDirectory()) {
-				logger.warn("E' presente una directory - name: "
-						+ listOfFiles[i].getName());
+				logger.warn("E' presente una directory - name: " + listOfFiles[i].getName());
 			} else {
 				String nome = listOfFiles[i].getName();
-				logger.info("nome file : " + nome);
-				for (int j = 0; j < listOfFiles.length; j++) {
-					logger.debug("list name: " + listOfFiles[i].getName());
-					if (listOfFiles[i].getName() != nome
-							&& !nome.contains("NEW"))
-						elabora(logfolderPath, nome);
+				if (!nome.startsWith(PREFIX_PROCESSED_FILE)) {
+					logger.info("processo file : " + nome);
+					elabora(logfolderPath, nome);
 				}
 			}
 		}
@@ -54,7 +51,7 @@ public class AnalizzatoreLog {
 			fr = new FileReader(f);
 			br = new BufferedReader(fr);
 			if (!f.getName().contains("NEW")) {// agg sovrascrivo
-				fw = new FileWriter(logFolderPath + "NEW-" + nome, false);
+				fw = new FileWriter(logFolderPath + PREFIX_PROCESSED_FILE + nome, false);
 			} else {
 				// to do
 				fw = new FileWriter(logFolderPath + nome);
@@ -69,20 +66,16 @@ public class AnalizzatoreLog {
 					logger.info("record type: " + record.getType());
 					switch (record.getType()) {
 					case ACTION:
-						recordTrasformato = recordManager
-								.analizzaAction(record);
+						recordTrasformato = recordManager.analizzaAction(record);
 						break;
 					case CLASSIFICATION:
-						recordTrasformato = recordManager
-								.analizzaClassification(record);
+						recordTrasformato = recordManager.analizzaClassification(record);
 						break;
 					case RULE_BADGECOLLECTIONCONCEPT:
-						recordTrasformato = recordManager
-								.analizzaBadgeCollection(record);
+						recordTrasformato = recordManager.analizzaBadgeCollection(record);
 						break;
 					case RULE_POINTCONCEPT:
-						recordTrasformato = recordManager
-								.analizzaPointConcept(record);
+						recordTrasformato = recordManager.analizzaPointConcept(record);
 						break;
 					default:
 						recordTrasformato = record.getContent();

@@ -53,7 +53,7 @@ public class AnalizzatoreLog {
 		BufferedReader br = null;
 		try {
 			String outputLogFile = creaNomeFileElaborato(logFile);
-			if (!new File(outputLogFile).exists() || !sovrascriviLogElaborati) {
+			if (!new File(outputLogFile).exists() || sovrascriviLogElaborati) {
 				logger.info("processo file : " + logFile.getName());
 				fr = new FileReader(logFile);
 				br = new BufferedReader(fr);

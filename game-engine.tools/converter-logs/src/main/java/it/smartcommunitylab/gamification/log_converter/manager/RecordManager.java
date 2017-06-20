@@ -126,11 +126,11 @@ public class RecordManager {
 		scoresDictionary = creaDizionarioScore(campi, info);
 		logger.debug("oldState classification: " + info[3]);
 		// creazione nuovi campi classifica(da migliorare)
-		String classificationPosition = "\"" + info[2].split(",")[1].substring(13) + "\"";
+		String classificationPosition = "" + info[2].split(",")[1].substring(13) + "";
 		String classificationName = info[2].split(",")[0].substring(campi[2].length() + 3 + 10,
 				info[2].split(",")[0].length() - 2) + "\"";
-		out = splitXSpazi + info[0] + "classificationPosition=" + classificationPosition + " classificationName="
-				+ classificationName;
+		out = splitXSpazi + info[0] + "classificationName=" + classificationName + " classificationPosition="
+				+ classificationPosition;
 		logger.info("il nuovo messaggio per Classification �: " + out);
 		return out;
 	}
@@ -151,11 +151,11 @@ public class RecordManager {
 	}
 
 	private Map<String, Double> creaDizionarioScore(String[] campi, String[] info) {
-		logger.debug("ENTRO NEL DIZIONARIO");
+		logger.debug("inizializzo dizionario per scores");
 		Map<String, Double> dizionario = new HashMap<>();
 		String json = puliziaJson(campi, info);
 		JsonParser parser = new JsonParser();
-		logger.info("inizio parsing oldState");
+		logger.debug("inizio parsing oldState");
 		JsonArray jsonArray = parser.parse(json).getAsJsonArray();
 		for (JsonElement element : jsonArray) {
 			JsonObject obj = element.getAsJsonObject();
@@ -174,7 +174,7 @@ public class RecordManager {
 	}
 
 	private Map<String, List<String>> creaDizionarioBadges(String[] campi, String[] info) {
-		logger.debug("ENTRO NEL DIZIONARIO");
+		logger.debug("inizializzo dizionario per badges");
 		Map<String, List<String>> dizionario = new HashMap<>();
 		String json = puliziaJson(campi, info);
 		JsonParser parser = new JsonParser();

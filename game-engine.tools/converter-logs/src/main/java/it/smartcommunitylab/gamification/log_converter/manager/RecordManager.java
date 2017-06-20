@@ -122,7 +122,7 @@ public class RecordManager {
 					newBadges, badgesDictionary.get(nome)));
 			logger.debug("nuovo badge: " + newBadges);
 		} else {
-			// logger.debug("nessun valore per badgeCollection: " + nome);
+			logger.debug("nessun valore per badgeCollection: " + nome);
 		}
 		return newBadges;
 	}
@@ -147,7 +147,7 @@ public class RecordManager {
 		out = splitXSpazi + info[0] + "classificationPosition="
 				+ classificationPosition + " classificationName="
 				+ classificationName;
-		// logger.info("il nuovo messaggio per Classification �: " + out);
+		logger.info("il nuovo messaggio per Classification �: " + out);
 		return out;
 	}
 
@@ -161,20 +161,20 @@ public class RecordManager {
 		String[] info = estraiInformazioni(splitDiverso, campi);
 		badgesDictionary = creaDizionarioBadges(campi, info);
 		scoresDictionary = creaDizionarioScore(campi, info);
-		// logger.debug("dizionario score: " + scoresDictionary);
+		logger.debug("dizionario score: " + scoresDictionary);
 		out = splitXSpazi + info[0] + info[1];
 		out = out.substring(0, out.length() - 1);
-		// logger.info("il nuovo messaggio per action �: " + out);
+		logger.info("il nuovo messaggio per action �: " + out);
 		return out;
 	}
 
 	private Map<String, Double> creaDizionarioScore(String[] campi,
 			String[] info) {
-		// logger.debug("ENTRO NEL DIZIONARIO");
+		logger.debug("ENTRO NEL DIZIONARIO");
 		Map<String, Double> dizionario = new HashMap<>();
 		String json = puliziaJson(campi, info);
 		JsonParser parser = new JsonParser();
-		// logger.info("inizio parsing oldState");
+		logger.info("inizio parsing oldState");
 		JsonArray jsonArray = parser.parse(json).getAsJsonArray();
 		for (JsonElement element : jsonArray) {
 			JsonObject obj = element.getAsJsonObject();
@@ -182,42 +182,42 @@ public class RecordManager {
 				// logger.debug("oggetto: " + obj.toString());
 				String scoreName = obj.get("name").getAsString();
 				// nome badge
-				// logger.debug("nomeScore==" + scoreName);
+				logger.debug("nomeScore==" + scoreName);
 				Double value = obj.get("score").getAsDouble();
-				// logger.debug("value: " + value);
+				logger.debug("value: " + value);
 				dizionario.put(scoreName, value);
 			}
 		}
-		// logger.debug("dizionario valori badges: " + badgesDictionary);
+		logger.debug("dizionario valori badges: " + badgesDictionary);
 		return dizionario;
 	}
 
 	private Map<String, List<String>> creaDizionarioBadges(String[] campi,
 			String[] info) {
-		// logger.debug("ENTRO NEL DIZIONARIO");
+		logger.debug("ENTRO NEL DIZIONARIO");
 		Map<String, List<String>> dizionario = new HashMap<>();
 		String json = puliziaJson(campi, info);
 		JsonParser parser = new JsonParser();
-		// logger.info("inizio parsing oldState");
+		logger.debug("inizio parsing oldState");
 		JsonArray jsonArray = parser.parse(json).getAsJsonArray();
 		for (JsonElement element : jsonArray) {
 			JsonObject obj = element.getAsJsonObject();
 			if (obj.get("badgeEarned") != null) {
-				// logger.debug("oggetto: " + obj.toString());
+				logger.debug("oggetto: " + obj.toString());
 				String badgeCollectionName = obj.get("name").getAsString();
 				// nome badge
-				// logger.debug("nomeBadge==" + badgeCollectionName);
+				logger.debug("nomeBadge==" + badgeCollectionName);
 				JsonArray badges = obj.get("badgeEarned").getAsJsonArray();
-				// logger.debug("badges: " + badges.toString());
+				logger.debug("badges: " + badges.toString());
 				List<String> listaValori = new ArrayList<String>();
 				for (JsonElement badgeElement : badges) {
 					listaValori.add(badgeElement.getAsString());
 				}
-				// logger.debug("badges array size: " + listaValori.size());
+				logger.debug("badges array size: " + listaValori.size());
 				dizionario.put(badgeCollectionName, listaValori);
 			}
 		}
-		// logger.debug("dizionario valori badges: " + badgesDictionary);
+		logger.debug("dizionario valori badges: " + badgesDictionary);
 		return dizionario;
 	}
 

@@ -29,7 +29,7 @@ public class Application {
 	private static String filename;
 
 	public static void main(String[] args) throws IOException {
-		String logfolderPath = "C:\\Users\\sco\\Desktop\\test\\";
+		String logfolderPath = args[0];
 		logger.debug("logfolderPath: " + logfolderPath);
 		creaLoggerChallenge(logfolderPath);
 	}

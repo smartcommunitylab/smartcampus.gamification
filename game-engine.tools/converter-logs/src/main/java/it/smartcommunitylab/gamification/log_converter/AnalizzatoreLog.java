@@ -24,7 +24,7 @@ public class AnalizzatoreLog {
 	}
 
 	// TODO se file esiste gi� non toccare o sovrascrivere
-	public void analizzaCartella(String logfolderPath) throws IOException {
+	public void analizzaCartella(String logfolderPath, boolean sovrascriviLogElaborati) throws IOException {
 		logger.debug("inizio newData");
 		File folder = new File(logfolderPath);
 		File[] listOfFiles = folder.listFiles();
@@ -32,65 +32,70 @@ public class AnalizzatoreLog {
 			if (listOfFiles[i].isDirectory()) {
 				logger.warn("E' presente una directory - name: " + listOfFiles[i].getName());
 			} else {
-				String nome = listOfFiles[i].getName();
-				if (!nome.startsWith(PREFIX_PROCESSED_FILE)) {
-					logger.info("processo file : " + nome);
-					elabora(logfolderPath, nome);
+				if (!isLogFileProcessato(listOfFiles[i])) {
+					elabora(listOfFiles[i], sovrascriviLogElaborati);
 				}
 			}
 		}
 	}
 
-	public void elabora(String logFolderPath, String nome) throws IOException {
+	private String creaNomeFileElaborato(File logFileDaElaborare) {
+		return logFileDaElaborare.getParent() + "/" + PREFIX_PROCESSED_FILE + logFileDaElaborare.getName();
+	}
+
+	private boolean isLogFileProcessato(File logFile) {
+		return logFile.getName().startsWith(PREFIX_PROCESSED_FILE);
+	}
+
+	public void elabora(File logFile, boolean sovrascriviLogElaborati) throws IOException {
 		FileWriter fw = null;
 		FileReader fr = null;
 		BufferedReader br = null;
-		File f;
 		try {
-			f = new File(logFolderPath + nome);
-			fr = new FileReader(f);
-			br = new BufferedReader(fr);
-			if (!f.getName().contains("NEW")) {// agg sovrascrivo
-				fw = new FileWriter(logFolderPath + PREFIX_PROCESSED_FILE + nome, false);
-			} else {
-				// to do
-				fw = new FileWriter(logFolderPath + nome);
-			}
-			// in base al type(action) che si vuole filtrare
-			try {
-				String inputLine;
-				String recordTrasformato = null;
-				while ((inputLine = br.readLine()) != null) {
+			String outputLogFile = creaNomeFileElaborato(logFile);
+			if (!new File(outputLogFile).exists() || !sovrascriviLogElaborati) {
+				logger.info("processo file : " + logFile.getName());
+				fr = new FileReader(logFile);
+				br = new BufferedReader(fr);
 
-					Record record = recordManager.analizza(inputLine);
-					logger.info("record type: " + record.getType());
-					switch (record.getType()) {
-					case ACTION:
-						recordTrasformato = recordManager.analizzaAction(record);
-						break;
-					case CLASSIFICATION:
-						recordTrasformato = recordManager.analizzaClassification(record);
-						break;
-					case RULE_BADGECOLLECTIONCONCEPT:
-						recordTrasformato = recordManager.analizzaBadgeCollection(record);
-						break;
-					case RULE_POINTCONCEPT:
-						recordTrasformato = recordManager.analizzaPointConcept(record);
-						break;
-					default:
-						recordTrasformato = record.getContent();
-						break;
+				fw = new FileWriter(outputLogFile);
+				// in base al type(action) che si vuole filtrare
+				try {
+					String inputLine;
+					String recordTrasformato = null;
+					while ((inputLine = br.readLine()) != null) {
+
+						Record record = recordManager.analizza(inputLine);
+						logger.info("record type: " + record.getType());
+						switch (record.getType()) {
+						case ACTION:
+							recordTrasformato = recordManager.analizzaAction(record);
+							break;
+						case CLASSIFICATION:
+							recordTrasformato = recordManager.analizzaClassification(record);
+							break;
+						case RULE_BADGECOLLECTIONCONCEPT:
+							recordTrasformato = recordManager.analizzaBadgeCollection(record);
+							break;
+						case RULE_POINTCONCEPT:
+							recordTrasformato = recordManager.analizzaPointConcept(record);
+							break;
+						default:
+							recordTrasformato = record.getContent();
+							break;
+						}
+						logger.debug("scrivo la nuova riga");
+						fw.write(recordTrasformato);
+						fw.write("\n");
 					}
-					logger.debug("scrivo la nuova riga");
-					fw.write(recordTrasformato);
-					fw.write("\n");
-
+				} catch (FileNotFoundException e) {
+					logger.error(e);
 				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+			} else {
+				logger.info(String.format("file %s non sovrascritto", outputLogFile));
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e);
 		} finally {
 			try {
 				if (fw != null)
@@ -98,7 +103,7 @@ public class AnalizzatoreLog {
 				if (br != null)
 					br.close();
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				logger.error(ex);
 			}
 		}
 

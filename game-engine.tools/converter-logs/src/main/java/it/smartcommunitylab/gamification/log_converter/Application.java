@@ -12,7 +12,16 @@ public class Application {
 		String logfolderPath = args[0];
 		logger.info("folder log path: " + logfolderPath);
 		AnalizzatoreLog analizzatoreLog = new AnalizzatoreLog();
-		analizzatoreLog.analizzaCartella(logfolderPath);
+		boolean sovrascriviLogElaborati;
+		try {
+			sovrascriviLogElaborati = Boolean.valueOf(args[1]);
+			logger.info("sovrascrivi log elaborati: " + sovrascriviLogElaborati);
+		} catch (Exception e) {
+			// valore di default
+			sovrascriviLogElaborati = false;
+			logger.info("valore di default per sovrascrivi log elaborati: " + sovrascriviLogElaborati);
+		}
+		analizzatoreLog.analizzaCartella(logfolderPath, sovrascriviLogElaborati);
 
 	}
 }

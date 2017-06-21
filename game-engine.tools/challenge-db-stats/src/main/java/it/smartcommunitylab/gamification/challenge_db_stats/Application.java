@@ -9,6 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -24,149 +28,166 @@ import com.mongodb.client.MongoDatabase;
 public class Application {
 	private final static String DB_HOST = "localhost";
 	private final static int DB_PORT = 27017;
-	private final static String DB_NAME = "gamification1506";
+	private final static String DB_NAME = "gamification0906";
 	private static final Logger logger = Logger.getLogger(Application.class);
 	private static String filename;
 
 	public static void main(String[] args) throws IOException {
 		String logfolderPath = args[0];
-		logger.debug("logfolderPath: " + logfolderPath);
+		logger.debug("cartella dei file di log: " + logfolderPath);
+		logger.info(String.format("host: %s port: %s db-name: %s", DB_HOST, DB_PORT, DB_NAME));
 		creaLoggerChallenge(logfolderPath);
 	}
 
-	public static void creaLoggerChallenge(String logfolderPath)
-			throws IOException {
+	@SuppressWarnings("unchecked")
+	public static void creaLoggerChallenge(String logfolderPath) throws IOException {
 		MongoClient mongoClient = new MongoClient(DB_HOST, DB_PORT);
 		MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-		for (String collection : db.listCollectionNames()) {
-			logger.info(collection);
-		}
 		SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-		MongoCollection<Document> playerStates = db
-				.getCollection("playerState");
-		FindIterable<Document> playerState = playerStates.find(and(eq("gameId",
-				"57ac710fd4c6ac7872b0e7a1")));
+		MongoCollection<Document> playerStates = db.getCollection("playerState");
+		FindIterable<Document> playerState = playerStates.find(and(eq("gameId", "57ac710fd4c6ac7872b0e7a1")));
 		String data = null;
+		int totalChallengeCompleted = 0;
+		int totalChallengeAssigned = 0;
+		int totalRigheLog = 0;
+		int totalChallengeMiss = 0;
 
-		for (Document document : playerState) {
+		for (Document player : playerState) {
 			int contChallengeCompleted = 0;
 			int contSfidaAssegnata = 0;
 			int righeDiLog = 0;
 			int contChallengeMiss = 0;
-			Document player = document;
 
 			Object gameId = player.get("gameId");
 			Object playerId = player.get("playerId");
-			@SuppressWarnings("unchecked")
 			Map<String, Object> campi = player.get("concepts", Map.class);
 
 			if (campi != null) {
-				logger.debug(campi.get("ChallengeConcept"));
-				@SuppressWarnings("unchecked")
-				Map<String, Object> challengeConcept = (Map<String, Object>) campi
-						.get("ChallengeConcept");
+				Map<String, Object> challengeConcepts = (Map<String, Object>) campi.get("ChallengeConcept");
 
-				if (challengeConcept != null) {
-					logger.debug("si challengeConcept");
-					Set<String> chivi = challengeConcept.keySet();
-					logger.debug("chivi: " + chivi);
+				if (challengeConcepts != null && !challengeConcepts.isEmpty()) {
+					logger.debug(String.format("Trovata challenge per giocatore %s", playerId));
+					Set<String> challenges = challengeConcepts.keySet();
+					logger.debug("challenges per il giocatore: " + challenges);
 
-					for (String k : chivi) {
-						Map<String, Object> sfide = (Map<String, Object>) challengeConcept;
-						@SuppressWarnings("unchecked")
-						Map<String, Object> obj = (Map<String, Object>) ((Document) sfide
-								.get(k)).get("obj");
+					for (String challengeName : challenges) {
+						Map<String, Object> sfide = (Map<String, Object>) challengeConcepts;
+						Map<String, Object> obj = (Map<String, Object>) ((Document) sfide.get(challengeName))
+								.get("obj");
 						contSfidaAssegnata++;
-						logger.debug(obj);
+						logger.debug("campi della challenge: " + obj);
 						String random = UUID.randomUUID().toString();
 						Object dateCompleted = obj.get("dateCompleted");
 						Object start = obj.get("start");
 						Object end = obj.get("end");
-						// Object completed = obj.get("completed");
 
 						data = dataFormat.format(start);
-						logger.debug("data della giocata=" + data);
-						if (trovaData(data, logfolderPath)) {
-							logger.debug("FUNZIONA");
-						}
+						logger.debug(String.format("data di inizio della challenge %s", data));
 
-						String sfidaAssegnata = "INFO - " + "\"" + gameId
-								+ "\" \"" + playerId + "\" " + random + " "
-								+ start + " " + start + " "
-								+ " type=ChallengeAssigned name=\"" + k + "\" "
+						String sfidaAssegnata = "INFO - " + "\"" + gameId + "\" \"" + playerId + "\" " + random + " "
+								+ start + " " + start + " " + " type=ChallengeAssigned name=\"" + challengeName + "\" "
 								+ "startDate=" + start + " endDate=" + end;
-						logger.info("assegnata: " + sfidaAssegnata);
+						logger.debug("sfida assegnata: " + sfidaAssegnata);
+						if (scritturaSuLog((Long) start, sfidaAssegnata, logfolderPath)) {
+							logger.info("sfida assignata scritta su log con successo su data "
+									+ Instant.ofEpochMilli((Long) start).atZone(ZoneId.systemDefault()).toLocalDate()
+											.format(DateTimeFormatter.ofPattern("YYYY-MM-dd")));
+							righeDiLog++;
+						}
 
 						if (dateCompleted != null) {
 							contChallengeCompleted++;
 
-							String out = "INFO - " + "\"" + gameId + "\" \""
-									+ playerId + "\" " + random + " "
-									+ dateCompleted + " " + dateCompleted + " "
-									+ " type=ChallengeComplete name=\"" + k
-									+ "\" ";
-							logger.info("completata: " + out);
-							righeDiLog++;
-							// scrittura riga
-							scrittura(out, logfolderPath);
+							String sfidaCompletata = "INFO - " + "\"" + gameId + "\" \"" + playerId + "\" " + random
+									+ " " + dateCompleted + " " + dateCompleted + " "
+									+ " type=ChallengeComplete name=\"" + challengeName + "\" ";
+							logger.debug("sfida completata: " + sfidaCompletata);
+
+							if (scritturaSuLog((Long) dateCompleted, sfidaCompletata, logfolderPath)) {
+								logger.info("sfida completata scritta su log con successo su data "
+										+ Instant.ofEpochMilli((Long) dateCompleted).atZone(ZoneId.systemDefault())
+												.toLocalDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")));
+								righeDiLog++;
+							}
+
 						} else {
-							logger.debug("non si è completata la sfida: " + k);
-							logger.debug("sfida non completata");
+							logger.debug("sfida non completata: " + challengeName);
 							contChallengeMiss++;
 						}
 					}
+					logger.info("playerId: " + playerId + " " + " - challenge completate: " + contChallengeCompleted
+							+ " - challenge mancate: " + contChallengeMiss + " sul totale di: " + contSfidaAssegnata
+							+ " assegnate" + " - righe di log: " + righeDiLog);
 				} else {
-					logger.debug("no challengeConcept");
+					logger.debug("nessuna challenge per giocatore " + playerId);
 				}
 			} else {
-				logger.debug("no fields");
+				logger.debug(String.format("lo stato del giocatore %s e' vuoto", playerId));
 			}
-			logger.info("playerId: " + playerId + " "
-					+ " - challenge completate: " + contChallengeCompleted
-					+ " - challenge mancate: " + contChallengeMiss
-					+ " sul totale di: " + contSfidaAssegnata + " assegnate"
-					+ " - righe di log: " + righeDiLog);
+
+			totalChallengeAssigned += contSfidaAssegnata;
+			totalChallengeCompleted += contChallengeCompleted;
+			totalChallengeMiss += contChallengeMiss;
+			totalRigheLog += righeDiLog;
+		}
+		logger.info(String.format("Challenge assegnate: %s, Challenge completate: %s, righe aggiunte al log: %s",
+				totalChallengeAssigned, totalChallengeCompleted, totalRigheLog));
+		mongoClient.close();
+	}
+
+	private static String getLogFileName(long dateTimestamp) {
+		LocalDate date = Instant.ofEpochMilli(dateTimestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+		if (date.isEqual(LocalDate.now())) {
+			return "NEW-gamification.stats.log";
+		} else {
+			return String.format("NEW-gamification.stats.log.%s",
+					date.format(DateTimeFormatter.ofPattern("YYYY-MM-dd")));
 		}
 	}
 
-	public static void scrittura(String out, String logfolderPath)
-			throws IOException {
-		logger.debug("FILENAME: " + filename);
-		FileWriter fw = new FileWriter(logfolderPath + filename, true);
-		BufferedWriter bw = new BufferedWriter(fw);
-		PrintWriter pw = new PrintWriter(bw);
-		pw.write(out + "\n");
-		logger.debug("COSA DOVREI SCRIVERE: " + "\n" + out);
-		pw.flush();
-		pw.close();
-		bw.close();
-		fw.close();
-	}
-
-	public static Boolean trovaData(String data, String logfolderPath) {
-
-		Boolean ok = false;
-		File folder = new File(logfolderPath);
-		File[] listOfFiles = folder.listFiles();
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isDirectory()) {
-				logger.warn("E' presente una directory - name: "
-						+ listOfFiles[i].getName());
-			} else {
-				String nome = listOfFiles[i].getName();
-				logger.debug(nome);
-				logger.debug("la data è=" + data);
-				logger.debug(nome.contains(data));
-
-				if (nome.contains(data) && nome.contains("NEW")) {
-					logger.info("TROVATO! - il file è: " + nome + " - data: "
-							+ data);
-					filename = nome;
-					ok = true;
-				}
-			}
+	private static boolean scritturaSuLog(long dateTimestamp, String out, String logfolderPath) throws IOException {
+		String logFilename = getLogFileName(dateTimestamp);
+		logger.debug("search for logFileName: " + logFilename);
+		File logFile = new File(logfolderPath, logFilename);
+		if (logFile.exists()) {
+			FileWriter fw = new FileWriter(logFile, true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
+			pw.write(out + "\n");
+			pw.flush();
+			pw.close();
+			bw.close();
+			fw.close();
+			return true;
+		} else {
+			logger.info(String.format("logFile %s not exist", logFile.getAbsolutePath()));
+			return false;
 		}
-		return ok;
 	}
+
+	// public static Boolean trovaData(String data, String logfolderPath) {
+	//
+	// Boolean ok = false;
+	// File folder = new File(logfolderPath);
+	// File[] listOfFiles = folder.listFiles();
+	// for (int i = 0; i < listOfFiles.length; i++) {
+	// if (listOfFiles[i].isDirectory()) {
+	// logger.warn("E' presente una directory - name: " +
+	// listOfFiles[i].getName());
+	// } else {
+	// String nome = listOfFiles[i].getName();
+	// logger.debug(nome);
+	// logger.debug("la data ï¿½=" + data);
+	// logger.debug(nome.contains(data));
+	//
+	// if (nome.contains(data) && nome.contains("NEW")) {
+	// logger.info("TROVATO! - il file ï¿½: " + nome + " - data: " + data);
+	// filename = nome;
+	// ok = true;
+	// }
+	// }
+	// }
+	// return ok;
+	// }
 }

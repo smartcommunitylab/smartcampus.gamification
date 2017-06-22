@@ -30,11 +30,10 @@ public class Application {
 	private final static int DB_PORT = 27017;
 	private final static String DB_NAME = "gamification0906";
 	private static final Logger logger = Logger.getLogger(Application.class);
-	private static String filename;
 
 	public static void main(String[] args) throws IOException {
 		String logfolderPath = args[0];
-		logger.debug("cartella dei file di log: " + logfolderPath);
+		logger.info("cartella dei file di log: " + logfolderPath);
 		logger.info(String.format("host: %s port: %s db-name: %s", DB_HOST, DB_PORT, DB_NAME));
 		creaLoggerChallenge(logfolderPath);
 	}
@@ -51,13 +50,11 @@ public class Application {
 		int totalChallengeCompleted = 0;
 		int totalChallengeAssigned = 0;
 		int totalRigheLog = 0;
-		int totalChallengeMiss = 0;
 
 		for (Document player : playerState) {
 			int contChallengeCompleted = 0;
 			int contSfidaAssegnata = 0;
 			int righeDiLog = 0;
-			int contChallengeMiss = 0;
 
 			Object gameId = player.get("gameId");
 			Object playerId = player.get("playerId");
@@ -113,12 +110,12 @@ public class Application {
 
 						} else {
 							logger.debug("sfida non completata: " + challengeName);
-							contChallengeMiss++;
 						}
 					}
-					logger.info("playerId: " + playerId + " " + " - challenge completate: " + contChallengeCompleted
-							+ " - challenge mancate: " + contChallengeMiss + " sul totale di: " + contSfidaAssegnata
-							+ " assegnate" + " - righe di log: " + righeDiLog);
+
+					logger.info(String.format(
+							"playerId: %s, Challenge assegnate: %s, Challenge completate: %s, righe aggiunte al log:%s ",
+							playerId, contSfidaAssegnata, contChallengeCompleted, righeDiLog));
 				} else {
 					logger.debug("nessuna challenge per giocatore " + playerId);
 				}
@@ -128,7 +125,6 @@ public class Application {
 
 			totalChallengeAssigned += contSfidaAssegnata;
 			totalChallengeCompleted += contChallengeCompleted;
-			totalChallengeMiss += contChallengeMiss;
 			totalRigheLog += righeDiLog;
 		}
 		logger.info(String.format("Challenge assegnate: %s, Challenge completate: %s, righe aggiunte al log: %s",
@@ -146,22 +142,42 @@ public class Application {
 		}
 	}
 
-	private static boolean scritturaSuLog(long dateTimestamp, String out, String logfolderPath) throws IOException {
+	private static boolean scritturaSuLog(long dateTimestamp, String out, String logfolderPath) {
 		String logFilename = getLogFileName(dateTimestamp);
 		logger.debug("search for logFileName: " + logFilename);
 		File logFile = new File(logfolderPath, logFilename);
 		if (logFile.exists()) {
-			FileWriter fw = new FileWriter(logFile, true);
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(bw);
-			pw.write(out + "\n");
-			pw.flush();
-			pw.close();
-			bw.close();
-			fw.close();
-			return true;
+			FileWriter fw = null;
+			BufferedWriter bw = null;
+			PrintWriter pw = null;
+			try {
+				fw = new FileWriter(logFile, true);
+				bw = new BufferedWriter(fw);
+				pw = new PrintWriter(bw);
+				pw.write(out + "\n");
+				pw.flush();
+				return true;
+			} catch (IOException e) {
+				logger.warn(String.format("Fallita scrittura su file %s: %s", logFile.getName(), e.getMessage()));
+				return false;
+			} finally {
+				try {
+					if (pw != null) {
+						pw.close();
+					}
+					if (bw != null) {
+						bw.close();
+					}
+					if (fw != null) {
+						fw.close();
+					}
+				} catch (IOException e) {
+					logger.error("Eccezione nella chiusura degli stream di scrittura");
+				}
+
+			}
 		} else {
-			logger.info(String.format("logFile %s not exist", logFile.getAbsolutePath()));
+			logger.info(String.format("logFile %s non esiste", logFile.getName()));
 			return false;
 		}
 	}

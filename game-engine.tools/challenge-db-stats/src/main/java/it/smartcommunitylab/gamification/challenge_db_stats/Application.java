@@ -31,7 +31,7 @@ public class Application {
 	private final static String DB_NAME = "gamification0906";
 	private static final Logger logger = Logger.getLogger(Application.class);
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		String logfolderPath = args[0];
 		logger.info("cartella dei file di log: " + logfolderPath);
 		logger.info(String.format("host: %s port: %s db-name: %s", DB_HOST, DB_PORT, DB_NAME));
@@ -39,7 +39,7 @@ public class Application {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void creaLoggerChallenge(String logfolderPath) throws IOException {
+	public static void creaLoggerChallenge(String logfolderPath) {
 		MongoClient mongoClient = new MongoClient(DB_HOST, DB_PORT);
 		MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 		SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -181,29 +181,4 @@ public class Application {
 			return false;
 		}
 	}
-
-	// public static Boolean trovaData(String data, String logfolderPath) {
-	//
-	// Boolean ok = false;
-	// File folder = new File(logfolderPath);
-	// File[] listOfFiles = folder.listFiles();
-	// for (int i = 0; i < listOfFiles.length; i++) {
-	// if (listOfFiles[i].isDirectory()) {
-	// logger.warn("E' presente una directory - name: " +
-	// listOfFiles[i].getName());
-	// } else {
-	// String nome = listOfFiles[i].getName();
-	// logger.debug(nome);
-	// logger.debug("la data �=" + data);
-	// logger.debug(nome.contains(data));
-	//
-	// if (nome.contains(data) && nome.contains("NEW")) {
-	// logger.info("TROVATO! - il file �: " + nome + " - data: " + data);
-	// filename = nome;
-	// ok = true;
-	// }
-	// }
-	// }
-	// return ok;
-	// }
 }

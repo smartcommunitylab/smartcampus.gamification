@@ -9,6 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -16,114 +20,146 @@ import org.apache.log4j.Logger;
 
 public class Application {
 	private static final Logger logger = Logger.getLogger(Application.class);
-	static String GameId = "57ac710fd4c6ac7872b0e7a1";
-	private static String filename;
+	private static String GAME_ID = "57ac710fd4c6ac7872b0e7a1";
 
 	public static void main(String[] args) throws IOException {
 		logger.info("start applicazione");
 		String logfolderPath = args[0];
+		String registrationUsersFile = args[1];
 		logger.info("folder log path: " + logfolderPath);
-		estraiRighe(logfolderPath, "registrations.csv");
+		logger.info("file registrazione utenti: " + registrationUsersFile);
+		elaboraRegistrazioni(logfolderPath, registrationUsersFile);
 
 	}
 
-	public static String[] estraiRighe(String logFolderPath, String nome) {
-		FileWriter fw = null;
+	public static void elaboraRegistrazioni(String logFolderPath, String registrationUsersFile) {
 		FileReader fr = null;
 		BufferedReader br = null;
 		File f;
 		String[] valori = null;
-		String out = null;
 		SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String data = null;
+		int totalRegistration = 0;
+		int totalRecordInserted = 0;
 		try {
-			f = new File(logFolderPath + nome);
+			f = new File(registrationUsersFile);
 			fr = new FileReader(f);
 			br = new BufferedReader(fr);
 			String inputLine;
-			String riga;
 			try {
 				while ((inputLine = br.readLine()) != null) {
 					if (!inputLine.contains("socialId,personalData.timestamp")) {
-						System.out.println("inputLine: " + inputLine);
-						riga = inputLine;
-						valori = riga.split(",");
-						logger.debug(valori[0]);
-						logger.info(creaStriga(valori));
-						out = creaStriga(valori);
+						logger.debug("inputLine: " + inputLine);
+						totalRegistration++;
+						valori = inputLine.split(",");
+						String recordLog = generaRecordLog(valori);
+						long timestampRegistrazione = Long.valueOf(valori[1]);
+						logger.debug(generaRecordLog(valori));
 						Date date = new Date(Long.valueOf(valori[1]));
 						data = dataFormat.format(date);
-						System.out.println("valori=" + valori[1] + ".");
 
-						// data = dataFormat.format(dataDaConvertire);
-						System.out.println("data: " + data);
-						// data = dataFormat.format(valori[1].toDate())
-						if (trovaData(data, logFolderPath)) {
-							scrittura(out, logFolderPath);
+						logger.debug("data: " + data);
+						if (scritturaSuLog(timestampRegistrazione, recordLog, logFolderPath)) {
+							logger.info("scrittura registrazione su log con successo " + data);
+							totalRecordInserted++;
 						}
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
 		} catch (FileNotFoundException e) {
-
+			logger.error(e);
 		}
-		return valori;
+		logger.info(String.format("Registrazioni totali: %s, Record inseriti in log: %s", totalRegistration,
+				totalRecordInserted));
 	}
 
-	public static String creaStriga(String[] vettore) {
+	public static String generaRecordLog(String[] data) {
 
 		String out = null;
 
-		String playerId = vettore[0];
-		String dataregistrazione = vettore[1];
+		String playerId = data[0].trim();
+		String dataregistrazione = data[1].trim();
 
-		out = "INFO - " + "\"" + GameId + "\"" + " " + playerId + " "
-				+ UUID.randomUUID().toString() + " " + dataregistrazione + " "
-				+ dataregistrazione + " type=UserCreation";
+		out = "INFO - " + "\"" + GAME_ID + "\"" + " " + playerId + " " + UUID.randomUUID().toString() + " "
+				+ dataregistrazione + " " + dataregistrazione + " type=UserCreation";
 		logger.debug("out :" + out);
 		return out;
 	}
 
-	public static void scrittura(String out, String logfolderPath)
-			throws IOException {
-		logger.debug("FILENAME: " + filename);
-		FileWriter fw = new FileWriter(logfolderPath + filename, true);
-		BufferedWriter bw = new BufferedWriter(fw);
-		PrintWriter pw = new PrintWriter(bw);
-		pw.write(out + "\n");
-		logger.debug("COSA DOVREI SCRIVERE: " + "\n" + out);
-		pw.flush();
-		pw.close();
-		bw.close();
-		fw.close();
-	}
-
-	public static Boolean trovaData(String data, String logfolderPath) {
-
-		Boolean ok = false;
-		File folder = new File(logfolderPath);
-		File[] listOfFiles = folder.listFiles();
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isDirectory()) {
-				logger.warn("E' presente una directory - name: "
-						+ listOfFiles[i].getName());
-			} else {
-				String nome = listOfFiles[i].getName();
-				logger.debug(nome);
-				logger.debug("la data è=" + data);
-				logger.debug(nome.contains(data));
-
-				if (nome.contains(data) && nome.contains("NEW")) {
-					logger.info("TROVATO! - il file è: " + nome + " - data: "
-							+ data);
-					filename = nome;
-					ok = true;
-				}
-			}
+	private static String getLogFileName(long dateTimestamp) {
+		LocalDate date = Instant.ofEpochMilli(dateTimestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+		if (date.isEqual(LocalDate.now())) {
+			return "NEW-gamification.stats.log";
+		} else {
+			return String.format("NEW-gamification.stats.log.%s",
+					date.format(DateTimeFormatter.ofPattern("YYYY-MM-dd")));
 		}
-		return ok;
 	}
+
+	private static boolean scritturaSuLog(long dateTimestamp, String out, String logfolderPath) {
+		String logFilename = getLogFileName(dateTimestamp);
+		logger.debug("search for logFileName: " + logFilename);
+		File logFile = new File(logfolderPath, logFilename);
+		if (logFile.exists()) {
+			FileWriter fw = null;
+			BufferedWriter bw = null;
+			PrintWriter pw = null;
+			try {
+				fw = new FileWriter(logFile, true);
+				bw = new BufferedWriter(fw);
+				pw = new PrintWriter(bw);
+				pw.write(out + "\n");
+				pw.flush();
+				return true;
+			} catch (IOException e) {
+				logger.warn(String.format("Fallita scrittura su file %s: %s", logFile.getName(), e.getMessage()));
+				return false;
+			} finally {
+				try {
+					if (pw != null) {
+						pw.close();
+					}
+					if (bw != null) {
+						bw.close();
+					}
+					if (fw != null) {
+						fw.close();
+					}
+				} catch (IOException e) {
+					logger.error("Eccezione nella chiusura degli stream di scrittura");
+				}
+
+			}
+		} else {
+			logger.info(String.format("logFile %s non esiste", logFile.getName()));
+			return false;
+		}
+	}
+
+	// public static Boolean trovaData(String data, String logfolderPath) {
+	//
+	// Boolean ok = false;
+	// File folder = new File(logfolderPath);
+	// File[] listOfFiles = folder.listFiles();
+	// for (int i = 0; i < listOfFiles.length; i++) {
+	// if (listOfFiles[i].isDirectory()) {
+	// logger.warn("E' presente una directory - name: " +
+	// listOfFiles[i].getName());
+	// } else {
+	// String nome = listOfFiles[i].getName();
+	// logger.debug(nome);
+	// logger.debug("la data ï¿½=" + data);
+	// logger.debug(nome.contains(data));
+	//
+	// if (nome.contains(data) && nome.contains("NEW")) {
+	// logger.info("TROVATO! - il file ï¿½: " + nome + " - data: " + data);
+	// filename = nome;
+	// ok = true;
+	// }
+	// }
+	// }
+	// return ok;
+	// }
 }

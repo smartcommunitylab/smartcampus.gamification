@@ -32,11 +32,25 @@ public interface NotificationRepo extends CrudRepository<NotificationPersistence
 	@Query(value = "{'obj.gameId' : ?0}")
 	public List<NotificationPersistence> findByGameId(String gameId, Pageable pageable);
 
-	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$gt' : ?1}}")
+	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$gte' : ?1}}")
 	public List<NotificationPersistence> findByGameIdAndTimestampGreaterThan(String gameId, long timestamp);
 
-	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$gt' : ?1}}")
+	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$gte' : ?1}}")
 	public List<NotificationPersistence> findByGameIdAndTimestampGreaterThan(String gameId, long timestamp,
+			Pageable pageable);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$lt' : ?1}}")
+	public List<NotificationPersistence> findByGameIdAndTimestampLessThan(String gameId, long timestamp);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$lt' : ?1}}")
+	public List<NotificationPersistence> findByGameIdAndTimestampLessThan(String gameId, long timestamp,
+			Pageable pageable);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$gte' : ?1, '$lt': ?2}}")
+	public List<NotificationPersistence> findByGameIdAndTimestampBetween(String gameId, long fromTs, long toTs);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.timestamp':{'$gte' : ?1, '$lt': ?2}}")
+	public List<NotificationPersistence> findByGameIdAndTimestampBetween(String gameId, long fromTs, long toTs,
 			Pageable pageable);
 
 	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1}")
@@ -45,11 +59,27 @@ public interface NotificationRepo extends CrudRepository<NotificationPersistence
 	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1}")
 	public List<NotificationPersistence> findByGameIdAndPlayerId(String gameId, String playerId, Pageable pageable);
 
-	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$gt' : ?2}}")
+	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$gte' : ?2}}")
 	public List<NotificationPersistence> findByGameIdAndPlayerIdAndTimestampGreaterThan(String gameId, String playerId,
 			long timestamp);
 
-	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$gt' : ?2}}")
+	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$gte' : ?2}}")
 	public List<NotificationPersistence> findByGameIdAndPlayerIdAndTimestampGreaterThan(String gameId, String playerId,
 			long timestamp, Pageable pageable);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$lt' : ?2}}")
+	public List<NotificationPersistence> findByGameIdAndPlayerIdAndTimestampLessThan(String gameId, String playerId,
+			long timestamp);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$lt' : ?2}}")
+	public List<NotificationPersistence> findByGameIdAndPlayerIdAndTimestampLessThan(String gameId, String playerId,
+			long timestamp, Pageable pageable);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$gte' : ?2, '$lt': ?3}}")
+	public List<NotificationPersistence> findByGameIdAndPlayerIdAndTimestampBetween(String gameId, String playerId,
+			long fromTs, long toTs);
+
+	@Query(value = "{'obj.gameId' : ?0, 'obj.playerId': ?1, 'obj.timestamp':{'$gte' : ?2, '$lt': ?3}}")
+	public List<NotificationPersistence> findByGameIdAndPlayerIdAndTimestampBetween(String gameId, String playerId,
+			long fromTs, long toTs, Pageable pageable);
 }

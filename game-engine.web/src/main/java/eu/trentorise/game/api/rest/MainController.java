@@ -149,7 +149,7 @@ public class MainController {
 		}
 
 		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, timestamp);
+			return notificationSrv.readNotifications(gameId, timestamp, -1);
 		} else {
 			return notificationSrv.readNotifications(gameId);
 		}
@@ -174,7 +174,7 @@ public class MainController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, playerId, timestamp);
+			return notificationSrv.readNotifications(gameId, playerId, timestamp, -1);
 		} else {
 			return notificationSrv.readNotifications(gameId, playerId);
 		}

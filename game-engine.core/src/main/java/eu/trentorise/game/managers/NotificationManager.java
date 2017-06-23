@@ -47,13 +47,27 @@ public class NotificationManager {
 		return convert(nots);
 	}
 
-	public List<Notification> readNotifications(String gameId, long timestamp) {
-		List<NotificationPersistence> nots = repo.findByGameIdAndTimestampGreaterThan(gameId, timestamp);
+	public List<Notification> readNotifications(String gameId, long fromTs, long toTs) {
+		List<NotificationPersistence> nots = null;
+		if (fromTs != -1 && toTs != -1) {
+			nots = repo.findByGameIdAndTimestampBetween(gameId, fromTs, toTs);
+		} else if (fromTs != -1) {
+			nots = repo.findByGameIdAndTimestampGreaterThan(gameId, fromTs);
+		} else {
+			nots = repo.findByGameIdAndTimestampLessThan(gameId, fromTs);
+		}
 		return convert(nots);
 	}
 
-	public List<Notification> readNotifications(String gameId, long timestamp, Pageable pageable) {
-		List<NotificationPersistence> nots = repo.findByGameIdAndTimestampGreaterThan(gameId, timestamp, pageable);
+	public List<Notification> readNotifications(String gameId, long fromTs, long toTs, Pageable pageable) {
+		List<NotificationPersistence> nots = null;
+		if (fromTs != -1 && toTs != -1) {
+			nots = repo.findByGameIdAndTimestampBetween(gameId, fromTs, toTs, pageable);
+		} else if (fromTs != -1) {
+			nots = repo.findByGameIdAndTimestampGreaterThan(gameId, fromTs, pageable);
+		} else {
+			nots = repo.findByGameIdAndTimestampLessThan(gameId, fromTs, pageable);
+		}
 		return convert(nots);
 	}
 
@@ -67,15 +81,29 @@ public class NotificationManager {
 		return convert(nots);
 	}
 
-	public List<Notification> readNotifications(String gameId, String playerId, long timestamp) {
-		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId, playerId,
-				timestamp);
+	public List<Notification> readNotifications(String gameId, String playerId, long fromTs, long toTs) {
+		List<NotificationPersistence> nots = null;
+		if (fromTs != -1 && toTs != -1) {
+			nots = repo.findByGameIdAndPlayerIdAndTimestampBetween(gameId, playerId, fromTs, toTs);
+		} else if (fromTs != -1) {
+			nots = repo.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId, playerId, fromTs);
+		} else {
+			nots = repo.findByGameIdAndPlayerIdAndTimestampLessThan(gameId, playerId, fromTs);
+		}
 		return convert(nots);
+
 	}
 
-	public List<Notification> readNotifications(String gameId, String playerId, long timestamp, Pageable pageable) {
-		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId, playerId,
-				timestamp, pageable);
+	public List<Notification> readNotifications(String gameId, String playerId, long fromTs, long toTs,
+			Pageable pageable) {
+		List<NotificationPersistence> nots = null;
+		if (fromTs != -1 && toTs != -1) {
+			nots = repo.findByGameIdAndPlayerIdAndTimestampBetween(gameId, playerId, fromTs, toTs, pageable);
+		} else if (fromTs != -1) {
+			nots = repo.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId, playerId, fromTs, pageable);
+		} else {
+			nots = repo.findByGameIdAndPlayerIdAndTimestampLessThan(gameId, playerId, fromTs, pageable);
+		}
 		return convert(nots);
 	}
 

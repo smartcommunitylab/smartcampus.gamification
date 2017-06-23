@@ -32,7 +32,8 @@ public class NotificationController {
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
 	public List<Notification> readPlayerNotification(@PathVariable String gameId, @PathVariable String playerId,
-			@ApiIgnore Pageable pageable, @RequestParam(required = false) Long timestamp) {
+			@ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
+			@RequestParam(defaultValue = "-1") long toTs) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -45,8 +46,8 @@ public class NotificationController {
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
-		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, playerId, timestamp, pageable);
+		if (fromTs != -1 || toTs != -1) {
+			return notificationSrv.readNotifications(gameId, playerId, fromTs, toTs, pageable);
 		} else {
 			return notificationSrv.readNotifications(gameId, playerId, pageable);
 		}
@@ -59,8 +60,9 @@ public class NotificationController {
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
 	public List<Notification> readTeamNotification(@PathVariable String gameId, @PathVariable String teamId,
-			@ApiIgnore Pageable pageable, @RequestParam(required = false) Long timestamp) {
-		return readPlayerNotification(gameId, teamId, pageable, timestamp);
+			@ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
+			@RequestParam(defaultValue = "-1") long toTs) {
+		return readPlayerNotification(gameId, teamId, pageable, fromTs, toTs);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}", produces = {
@@ -70,15 +72,15 @@ public class NotificationController {
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
 	public List<Notification> readNotification(@PathVariable String gameId, @ApiIgnore Pageable pageable,
-			@RequestParam(required = false) Long timestamp) {
+			@RequestParam(defaultValue = "-1") long fromTs, @RequestParam(defaultValue = "-1") long toTs) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
 		}
 
-		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, timestamp, pageable);
+		if (fromTs != -1 || toTs != -1) {
+			return notificationSrv.readNotifications(gameId, fromTs, toTs, pageable);
 		} else {
 			return notificationSrv.readNotifications(gameId, pageable);
 		}

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.core.Notification;
@@ -41,28 +42,44 @@ public class NotificationManager {
 		return convert(nots);
 	}
 
+	public List<Notification> readNotifications(String gameId, Pageable pageable) {
+		List<NotificationPersistence> nots = repo.findByGameId(gameId, pageable);
+		return convert(nots);
+	}
+
 	public List<Notification> readNotifications(String gameId, long timestamp) {
-		List<NotificationPersistence> nots = repo
-				.findByGameIdAndTimestampGreaterThan(gameId, timestamp);
+		List<NotificationPersistence> nots = repo.findByGameIdAndTimestampGreaterThan(gameId, timestamp);
+		return convert(nots);
+	}
+
+	public List<Notification> readNotifications(String gameId, long timestamp, Pageable pageable) {
+		List<NotificationPersistence> nots = repo.findByGameIdAndTimestampGreaterThan(gameId, timestamp, pageable);
 		return convert(nots);
 	}
 
 	public List<Notification> readNotifications(String gameId, String playerId) {
-		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerId(
-				gameId, playerId);
+		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerId(gameId, playerId);
 		return convert(nots);
 	}
 
-	public List<Notification> readNotifications(String gameId, String playerId,
-			long timestamp) {
-		List<NotificationPersistence> nots = repo
-				.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId,
-						playerId, timestamp);
+	public List<Notification> readNotifications(String gameId, String playerId, Pageable pageable) {
+		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerId(gameId, playerId, pageable);
 		return convert(nots);
 	}
 
-	private List<Notification> convert(
-			List<NotificationPersistence> notifications) {
+	public List<Notification> readNotifications(String gameId, String playerId, long timestamp) {
+		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId, playerId,
+				timestamp);
+		return convert(nots);
+	}
+
+	public List<Notification> readNotifications(String gameId, String playerId, long timestamp, Pageable pageable) {
+		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId, playerId,
+				timestamp, pageable);
+		return convert(nots);
+	}
+
+	private List<Notification> convert(List<NotificationPersistence> notifications) {
 		List<Notification> result = new ArrayList<Notification>();
 		for (NotificationPersistence not : notifications) {
 			Notification n = not.toNotification();

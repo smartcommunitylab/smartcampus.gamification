@@ -23,6 +23,22 @@ public class PostClass {
 		}
 	}
 
+	String popolaJsonClassification(String classificationName,
+			String classificationPosition, String eventType,
+			String executionId, String executionTime, String gameId,
+			String logLevel, String playerId, String timestamp) {
+
+		return "{\"classificationName\":" + classificationName + ","
+				+ "\"classificationPosition\":" + classificationPosition + ","
+				+ "\"eventType\":" + "\"" + eventType + "\","
+				+ "\"executionId\":" + "\"" + executionId + "\","
+				+ "\"executionTime\":" + executionTime + "," + "\"gameId\":"
+				+ "\"" + gameId + "\"" + "," + "\"logLevel\":" + "\""
+				+ logLevel + "\"," + "\"playerId\":" + "\"" + playerId + "\","
+				+ "\"timestamp\":" + timestamp + "}";
+
+	}
+
 	String popolaJsonAction(String actionName, String eventType,
 			String executionId, String executionTime, String gameId,
 			String logLevel, String playerId, String timestamp) {

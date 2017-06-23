@@ -12,7 +12,7 @@ public class Application {
 		FileReader fr = null;
 		BufferedReader br = null;
 		fr = new FileReader(args[0] + "\\"
-				+ "NEW-gamification.stats.log.2016-10-29");// CAMBIO!!
+				+ "NEW-gamification.stats.log.2016-10-22");// CAMBIO!!
 		br = new BufferedReader(fr);
 
 		String inputLine;
@@ -26,14 +26,19 @@ public class Application {
 				break;
 			case RULE_POINTCONCEPT:
 				analizzaPointconcept(record);
-				/*
-				 * case CLASSIFICATION: recordTrasformato =
-				 * recordManager.analizzaClassification(record); break; case
-				 * RULE_BADGECOLLECTIONCONCEPT: recordTrasformato =
-				 * recordManager.analizzaBadgeCollection(record); break; case
-				 * RULE_POINTCONCEPT: recordTrasformato =
-				 * recordManager.analizzaPointConcept(record); break;
-				 */
+				break;
+
+			case CLASSIFICATION:
+				analizzaClassification(record);
+				break;
+			/*
+			 * recordManager.analizzaClassification(record); break; case
+			 * RULE_BADGECOLLECTIONCONCEPT: recordTrasformato =
+			 * recordManager.analizzaBadgeCollection(record); break; case
+			 * RULE_POINTCONCEPT: recordTrasformato =
+			 * recordManager.analizzaPointConcept(record); break;
+			 */
+
 			default:
 				recordTrasformato = record.getContent();
 				break;
@@ -59,6 +64,67 @@ public class Application {
 			}
 		}
 		return result;
+	}
+
+	public static void analizzaClassification(Record record) throws IOException {
+		System.out.println("INIZIO AD ANALIZZARE Classification");
+		String out = null;
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
+		splitXSpazi = splitXSpazi.replaceAll("\"", "");
+		String[] campi = { "type=", "classificationPosition=",
+				"classificationName=" };
+		String[] info = estraiInformazioni(splitDiverso, campi);
+		String[] infoSpazi = splitXSpazi.split(" ");
+		System.out.println("info spazi: " + infoSpazi[0] + infoSpazi[1]
+				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
+
+		postClassification(campi, info, infoSpazi);
+		System.out.println("out: " + out);
+	}
+
+	public static void postClassification(String[] campi, String[] info,
+			String[] infoSpazi) throws IOException {
+		System.out.println("POST");
+		PostClass esempioPost = new PostClass();
+
+		for (int i = 0; i < infoSpazi.length; i++) {
+			System.out.println("info indice " + i + " = " + infoSpazi[i]);
+		}
+		String eventType = info[0].substring(campi[0].length(),
+				info[0].length() - 1);
+		String classificationName = info[1].substring(campi[1].length(),
+				info[1].length() - 1);
+		String classificationPosition = info[2].substring(campi[2].length());
+		String executionId = infoSpazi[4];
+		System.out.println("executionId:" + executionId);
+		String executionTime = infoSpazi[5];
+		System.out.println("executionTime:" + executionTime);
+		String gameId = infoSpazi[2];
+		System.out.println("gameId:" + gameId);
+		String logLevel = "INFO -";
+		System.out.println("logLevel:" + logLevel);
+		String playerId = infoSpazi[3];
+		System.out.println("playerId:" + playerId);
+		String timestamp = infoSpazi[6];
+		System.out.println("timestamp:" + timestamp);
+
+		String json = esempioPost.popolaJsonClassification(
+				classificationPosition, classificationName, eventType,
+				executionId, executionTime, gameId, logLevel, playerId,
+				timestamp);
+		String responsePost = esempioPost.post(
+				"http://localhost:9200/gamefication1/Classification", json);
+		System.out.println("json : " + json + "\n" + "response: "
+				+ responsePost);
+
+		System.out.println("GET");
+		GetClass esempioGet = new GetClass();
+		String responseGet = esempioGet
+				.run("http://localhost:9200/gamefication1/_search?q=*");
+		System.out.println("response: " + responseGet);
 	}
 
 	public static void analizzaPointconcept(Record record) throws IOException {

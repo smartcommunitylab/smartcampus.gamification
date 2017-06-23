@@ -23,15 +23,47 @@ public class PostClass {
 		}
 	}
 
-	String popolaJson() {
-		return "{\"name\":\"LOOOL\"}";
+	String popolaJsonAction(String actionName, String eventType,
+			String executionId, String executionTime, String gameId,
+			String logLevel, String playerId, String timestamp) {
+		// JsonParser parser = new JsonParser();
+		// JsonObject o = parser.parse(
+		/*
+		 * "{\"actionName\": \" " + actionName + " \"," + "\"eventType\": \" " +
+		 * eventType + " \", \"executionId\": \" " + executionId +
+		 * "\",\"executionTime\": \" " + executionTime + "\"\"gameId\": \" " +
+		 * gameId + "\",\"logLevel\": \" " + logLevel + "\",\"playerId\": \" " +
+		 * playerId + "\",\"timestamp\": \" " + timestamp + "\"}")
+		 * .getAsJsonObject();
+		 */
+		// System.out.println("json:" + o);
+
+		return "{\"actionName\":" + actionName + "," + "\"eventType\":" + "\""
+				+ eventType + "\"," + "\"executionId\":" + "\"" + executionId
+				+ "\"," + "\"executionTime\":" + executionTime + ","
+				+ "\"gameId\":" + "\"" + gameId + "\"" + "," + "\"logLevel\":"
+				+ "\"" + logLevel + "\"," + "\"playerId\":" + "\"" + playerId
+				+ "\"," + "\"timestamp\":" + timestamp + "}";
+
+	}
+
+	String popolaJsonPointCeption(String ruleName, String conceptName,
+			String score, String deltaScore, String eventType,
+			String executionId, String executionTime, String gameId,
+			String logLevel, String playerId, String timestamp) {
+
+		return "{\"ruleName\":" + ruleName + "," + "\"conceptName\":" + ""
+				+ conceptName + "," + "\"score\":" + "\"" + score + "\","
+				+ "\"deltaScore\":" + "\"" + deltaScore + "\","
+				+ "\"eventType\":" + "\"" + eventType + "\","
+				+ "\"executionId\":" + "\"" + executionId + "\","
+				+ "\"executionTime\":" + executionTime + "," + "\"gameId\":"
+				+ "\"" + gameId + "\"" + "," + "\"logLevel\":" + "\""
+				+ logLevel + "\"," + "\"playerId\":" + "\"" + playerId + "\","
+				+ "\"timestamp\":" + timestamp + "}";
+
 	}
 
 	public static void main(String[] args) throws IOException {
-		PostClass esempioPost = new PostClass();
-		String json = esempioPost.popolaJson();
-		String response = esempioPost.post(
-				"http://localhost:9200/libreria/brano", json);
-		System.out.println("json : " + json + "\n" + "response: " + response);
 	}
 }

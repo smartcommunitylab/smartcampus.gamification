@@ -30,6 +30,8 @@ import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.notification.ChallengeAssignedNotification;
+import eu.trentorise.game.notification.ChallengeCompletedNotication;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
@@ -167,6 +169,75 @@ public class NotificationControllerTest {
 
 	}
 
+	@Test
+	public void excludeNotificationTypeChallengeAssignedNotification() {
+		setup_ExcludeNotificationType();
+		RequestBuilder builder = MockMvcRequestBuilders
+				.get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1)
+				.param("excludeTypes", "ChallengeAssignedNotification");
+
+		try {
+			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+					.andExpect(jsonPath("$", Matchers.hasSize(2)));
+		} catch (Exception e) {
+			Assert.fail("exception: " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void exclude2TypesOfNotifications() {
+		setup_ExcludeNotificationType();
+		RequestBuilder builder = MockMvcRequestBuilders
+				.get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1)
+				.param("excludeTypes", "ChallengeAssignedNotification", "BadgeNotification");
+
+		try {
+			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+					.andExpect(jsonPath("$", Matchers.hasSize(1)));
+		} catch (Exception e) {
+			Assert.fail("exception: " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void includeChallengeAssignedNotification() {
+		setup_ExcludeNotificationType();
+		RequestBuilder builder = MockMvcRequestBuilders
+				.get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1)
+				.param("includeTypes", "ChallengeAssignedNotification");
+
+		try {
+			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+					.andExpect(jsonPath("$", Matchers.hasSize(2)));
+		} catch (Exception e) {
+			Assert.fail("exception: " + e.getMessage());
+		}
+	}
+
+	private void setup_ExcludeNotificationType() {
+		BadgeNotification notification = new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
+		notificationManager.notificate(notification);
+
+		ChallengeAssignedNotification assignNotification = new ChallengeAssignedNotification();
+		assignNotification.setGameId(GAME);
+		assignNotification.setPlayerId(PLAYER_1);
+		assignNotification.setChallengeName("challenge_1");
+		notificationManager.notificate(assignNotification);
+
+		assignNotification = new ChallengeAssignedNotification();
+		assignNotification.setGameId(GAME);
+		assignNotification.setPlayerId(PLAYER_1);
+		assignNotification.setChallengeName("challenge_2");
+		notificationManager.notificate(assignNotification);
+
+		ChallengeCompletedNotication completedNotification = new ChallengeCompletedNotication();
+		completedNotification.setPlayerId(PLAYER_1);
+		completedNotification.setGameId(GAME);
+		completedNotification.setChallengeName("challenge_1");
+		notificationManager.notificate(completedNotification);
+
+	}
+
 	private void setupPaginationTest() {
 		BadgeNotification notification = new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
 		notificationManager.notificate(notification);
@@ -196,4 +267,5 @@ public class NotificationControllerTest {
 		notification = new BadgeNotification(GAME, PLAYER_2, "chest", "1-gold-coin");
 		notificationManager.notificate(notification);
 	}
+
 }

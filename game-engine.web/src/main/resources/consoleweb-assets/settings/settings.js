@@ -8,6 +8,7 @@ angular.module('gamificationEngine.settings', [])
 		//$scope.newGame = angular.copy($scope.game);
 
 		$scope.newGame.name = game.name;
+		$scope.newGame.domain = game.domain;
 
 		if (game.expiration) {
 			$scope.newGame.expiration = new Date(game.expiration);
@@ -51,6 +52,7 @@ angular.module('gamificationEngine.settings', [])
 				var fields = {};
 				fields.name = $scope.newGame.name;
 				fields.expiration = $scope.newGame.expiration && !$scope.newGame.neverending ? $scope.newGame.expiration.getTime() : undefined;
+				fields.domain = $scope.newGame.domain;
 
 				// Edit game
 				gamesFactory.editGame(game, fields).then(
@@ -58,6 +60,7 @@ angular.module('gamificationEngine.settings', [])
 						// Settings edited
 						$scope.game.name = $scope.newGame.name;
 						$scope.game.expiration = $scope.newGame.expiration;
+						$scope.game.domain = $scope.newGame.domain;
 						$scope.alerts.settingsEdited = true;
 						$scope.disabled = false;
 						if ($scope.new) {

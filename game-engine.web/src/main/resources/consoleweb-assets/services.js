@@ -232,8 +232,9 @@ angular.module('gamificationEngine.services', [])
 				if (!game.id) {
 					game = {};
 				}
-				game.name = fields.name;
+				game.name = fields.name.trim();
 				game.expiration = fields.expiration;
+				game.domain = fields.domain.trim();
 
 				$http.post(url + '/console/game', game).
 				success(function (data, status, headers, config) {

@@ -93,5 +93,6 @@
   "title_add_rule" : "Create new rule",
   "title_add_task" : "Create new classification",
   "btn_publish" : "Publish",
-  "lbl_task_periodName" : "Period name"
- }
+  "lbl_task_periodName" : "Period name",
+  "lbl_game_domain" : "Domain"
+}

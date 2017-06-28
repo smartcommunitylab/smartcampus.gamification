@@ -49,6 +49,8 @@ public class GamePersistence {
 
 	private String owner;
 
+	private String domain;
+
 	private Set<String> actions = new HashSet<String>();
 
 	private Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
@@ -68,6 +70,7 @@ public class GamePersistence {
 		id = game.getId();
 		name = game.getName();
 		owner = game.getOwner();
+		domain = game.getDomain();
 		actions = game.getActions();
 		rules = game.getRules();
 		if (game.getTasks() != null) {
@@ -90,6 +93,7 @@ public class GamePersistence {
 		game.setId(id);
 		game.setName(name);
 		game.setOwner(owner);
+		game.setDomain(domain);
 		game.setActions(actions);
 		game.setRules(rules);
 		Set<GameTask> t = new HashSet<GameTask>();
@@ -198,6 +202,14 @@ public class GamePersistence {
 
 	public void setConcepts(Set<GenericObjectPersistence> concepts) {
 		this.concepts = concepts;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 }

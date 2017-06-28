@@ -69,6 +69,7 @@ public class Converter {
 			gDTO.setExpiration(game.getExpiration());
 			gDTO.setName(game.getName());
 			gDTO.setOwner(game.getOwner());
+			gDTO.setDomain(game.getDomain());
 
 			// remove internal actions
 			Iterator<String> iter = gDTO.getActions() != null ? gDTO.getActions().iterator() : null;
@@ -131,6 +132,7 @@ public class Converter {
 		g.setExpiration(game.getExpiration());
 		g.setName(game.getName());
 		g.setOwner(game.getOwner());
+		g.setDomain(game.getDomain());
 		if (game.getRules() != null) {
 			g.setRules(new HashSet<String>());
 			for (RuleDTO r : game.getRules()) {

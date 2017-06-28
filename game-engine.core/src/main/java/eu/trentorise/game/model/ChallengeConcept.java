@@ -55,7 +55,7 @@ public class ChallengeConcept extends GameConcept {
 	/**
 	 * Helper method of challenge
 	 * 
-	 * @return
+	 * @return true if challenge is completed
 	 */
 	public boolean completed() {
 		completed = true;

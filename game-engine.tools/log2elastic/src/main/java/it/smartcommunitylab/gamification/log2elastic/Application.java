@@ -4,7 +4,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 public class Application {
+
+	static final String index = "gamefication2";
+
+	private static final Logger logger = Logger.getLogger(Application.class);
 
 	public static void main(String[] args) throws IOException {
 
@@ -19,7 +25,7 @@ public class Application {
 		String recordTrasformato = null;
 		while ((inputLine = br.readLine()) != null) {
 			Record record = analizza(inputLine);
-			System.out.println("TYPE: " + record.getType());
+			logger.debug("TYPE: " + record.getType());
 			switch (record.getType()) {
 			case ACTION:
 				analizzaAction(record);
@@ -31,14 +37,19 @@ public class Application {
 			case CLASSIFICATION:
 				analizzaClassification(record);
 				break;
-			/*
-			 * recordManager.analizzaClassification(record); break; case
-			 * RULE_BADGECOLLECTIONCONCEPT: recordTrasformato =
-			 * recordManager.analizzaBadgeCollection(record); break; case
-			 * RULE_POINTCONCEPT: recordTrasformato =
-			 * recordManager.analizzaPointConcept(record); break;
-			 */
 
+			case RULE_BADGECOLLECTIONCONCEPT:
+				analizzaBadgeCollectionConcept(record);
+				break;
+			case USERCREATION:
+				analizzaUserCreation(record);
+				break;
+			case CHALLENGECOMPLETE:
+				analizzaChallengeComplete(record);
+				break;
+			case CHALLENGEASSIGNED:
+				analizzaChallengeAssigned(record);
+				break;
 			default:
 				recordTrasformato = record.getContent();
 				break;
@@ -51,47 +62,305 @@ public class Application {
 		if (record != null) {
 			result = new Record();
 			result.setContent(record);
-			System.out.println("RECORD : " + record.toString());
+			logger.debug("RECORD : " + record.toString());
 			int indiceDelCampo = record.indexOf("type=");
 			if (indiceDelCampo > 0) {
 				result.setIndexType(indiceDelCampo);
 				indiceDelCampo = indiceDelCampo + 5;
-				String type = record.substring(indiceDelCampo,
-						record.indexOf(" ", indiceDelCampo));
+				logger.debug("indice del campo: " + indiceDelCampo);
+				String type = null;
+				if (record.indexOf(" ", indiceDelCampo) >= 0) {
+					type = record.substring(indiceDelCampo,
+							record.indexOf(" ", indiceDelCampo));
+				} else {
+					type = record.substring(indiceDelCampo, record.length());
+				}
+				logger.debug("type: " + type);
 				result.setType(valueOf(type));
 			} else {
-				System.out.println("il record non contiene type=");
+				logger.debug("il record non contiene type=");
 			}
 		}
 		return result;
 	}
 
-	public static void analizzaClassification(Record record) throws IOException {
-		System.out.println("INIZIO AD ANALIZZARE Classification");
+	public static void analizzaChallengeAssigned(Record record)
+			throws IOException {
+		logger.debug("INIZIO ChallengeAssigned");
 		String out = null;
 		String splitXSpazi = record.getContent().substring(0,
 				record.getIndexType());
 		String splitDiverso = record.getContent().substring(
 				record.getIndexType());
 		splitXSpazi = splitXSpazi.replaceAll("\"", "");
-		String[] campi = { "type=", "classificationPosition=",
-				"classificationName=" };
+		String[] campi = { "type=", "name=", "startDate=", "endDate=" };//
 		String[] info = estraiInformazioni(splitDiverso, campi);
 		String[] infoSpazi = splitXSpazi.split(" ");
-		System.out.println("info spazi: " + infoSpazi[0] + infoSpazi[1]
+		logger.debug("info spazi: " + infoSpazi[0] + infoSpazi[1]
+				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
+		logger.debug("info: " + info[1]);
+		postChallengeAssigned(campi, info, infoSpazi);
+		logger.debug("out: " + out);
+	}
+
+	public static void postChallengeAssigned(String[] campi, String[] info,
+			String[] infoSpazi) throws IOException {
+		logger.debug("POST");
+		PostClass esempioPost = new PostClass();
+		for (int i = 0; i < infoSpazi.length; i++) {
+			logger.debug("info indice " + i + " = " + infoSpazi[i]);
+		}
+		for (int i = 0; i < info.length; i++) {
+			logger.debug("info normale " + i + " = " + info[i]);
+		}
+
+		String eventType = info[0].substring(campi[0].length(),
+				info[0].length() - 1);
+		String name = info[1].substring(campi[1].length() + 1,
+				info[1].length() - 2);
+		name.replace("\"", "");
+		String startDate = info[2].substring(campi[2].length(),
+				info[2].length() - 1);
+		String endDate = info[3].substring(campi[3].length(),
+				info[3].length() - 1);
+		String executionId = infoSpazi[4];
+		logger.debug("executionId:" + executionId);
+		String executionTime = infoSpazi[5];
+		logger.debug("executionTime:" + executionTime);
+		String gameId = infoSpazi[2];
+		logger.debug("gameId:" + gameId);
+		String logLevel = "INFO -";
+		logger.debug("logLevel:" + logLevel);
+		String playerId = infoSpazi[3];
+		logger.debug("playerId:" + playerId);
+		String timestamp = infoSpazi[6];
+		logger.debug("timestamp:" + timestamp);
+
+		String json = esempioPost.popolaJsonChallengeAssigned(eventType, name,
+				startDate, endDate, executionId, executionTime, gameId,
+				logLevel, playerId, timestamp);
+		String responsePost = esempioPost.post("http://localhost:9200/" + index
+				+ "/ChallengeAssigned", json);
+		logger.debug("json : " + json + "\n" + "response: " + responsePost);
+
+		logger.debug("GET");
+		GetClass esempioGet = new GetClass();
+		String responseGet = esempioGet.run("http://localhost:9200/" + index
+				+ "/_search?q=*");
+		logger.debug("response: " + responseGet);
+	}
+
+	public static void analizzaChallengeComplete(Record record)
+			throws IOException {
+		logger.debug("INIZIO ChallengeComplete");
+		String out = null;
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
+		splitXSpazi = splitXSpazi.replaceAll("\"", "");
+		String[] campi = { "type=", "name=" };//
+		String[] info = estraiInformazioni(splitDiverso, campi);
+		String[] infoSpazi = splitXSpazi.split(" ");
+		logger.debug("info spazi: " + infoSpazi[0] + infoSpazi[1]
+				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
+		// logger.debug("info: " + info[1]);
+		postChallengeComplete(campi, info, infoSpazi);
+		logger.debug("out: " + out);
+	}
+
+	public static void postChallengeComplete(String[] campi, String[] info,
+			String[] infoSpazi) throws IOException {
+		logger.debug("POST");
+		PostClass esempioPost = new PostClass();
+		for (int i = 0; i < infoSpazi.length; i++) {
+			logger.debug("info indice " + i + " = " + infoSpazi[i]);
+		}
+		for (int i = 0; i < info.length; i++) {
+			logger.debug("info normale " + i + " = " + info[i]);
+		}
+
+		String eventType = info[0].substring(campi[0].length(),
+				info[0].length() - 1);
+		String name = info[1].substring(campi[1].length() + 1,
+				info[1].length() - 2);
+		name.replace("\"", "");
+		logger.debug("name GUARDA!: " + name);
+
+		String executionId = infoSpazi[4];
+		logger.debug("executionId:" + executionId);
+		String executionTime = infoSpazi[5];
+		logger.debug("executionTime:" + executionTime);
+		String gameId = infoSpazi[2];
+		logger.debug("gameId:" + gameId);
+		String logLevel = "INFO -";
+		logger.debug("logLevel:" + logLevel);
+		String playerId = infoSpazi[3];
+		logger.debug("playerId:" + playerId);
+		String timestamp = infoSpazi[6];
+		logger.debug("timestamp:" + timestamp);
+
+		String json = esempioPost.popolaJsonChallengeComplete(eventType, name,
+				executionId, executionTime, gameId, logLevel, playerId,
+				timestamp);
+		String responsePost = esempioPost.post("http://localhost:9200/" + index
+				+ "/ChallengeComplete", json);
+		logger.debug("json : " + json + "\n" + "response: " + responsePost);
+
+		logger.debug("GET");
+		GetClass esempioGet = new GetClass();
+		String responseGet = esempioGet.run("http://localhost:9200/" + index
+				+ "/_search?q=*");
+		logger.debug("response: " + responseGet);
+	}
+
+	public static void analizzaUserCreation(Record record) throws IOException {
+		logger.debug("INIZIO AD ANALIZZARE USER");
+		String out = null;
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
+		splitXSpazi = splitXSpazi.replaceAll("\"", "");
+		String[] campi = { "type=" };//
+		String[] info = estraiInformazioni(splitDiverso, campi);
+		String[] infoSpazi = splitXSpazi.split(" ");
+		logger.debug("info spazi: " + infoSpazi[0] + infoSpazi[1]
+				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
+
+		postUserCreation(campi, info, infoSpazi);//
+		logger.debug("out: " + out);
+	}
+
+	public static void postUserCreation(String[] campi, String[] info,
+			String[] infoSpazi) throws IOException {
+		logger.debug("POST");
+		PostClass esempioPost = new PostClass();
+
+		for (int i = 0; i < infoSpazi.length; i++) {
+			logger.debug("info indice " + i + " = " + infoSpazi[i]);
+		}
+		String eventType = info[0].substring(campi[0].length(),
+				info[0].length() - 1);
+		logger.debug("eventType: " + eventType);
+
+		String executionId = infoSpazi[4];
+		logger.debug("executionId:" + executionId);
+		String executionTime = infoSpazi[5];
+		logger.debug("executionTime:" + executionTime);
+		String gameId = infoSpazi[2];
+		logger.debug("gameId:" + gameId);
+		String logLevel = "INFO -";
+		logger.debug("logLevel:" + logLevel);
+		String playerId = infoSpazi[3];
+		logger.debug("playerId:" + playerId);
+		String timestamp = infoSpazi[6];
+		logger.debug("timestamp:" + timestamp);
+
+		String json = esempioPost.popolaJsonUsercreation(eventType,
+				executionId, executionTime, gameId, logLevel, playerId,
+				timestamp);
+		String responsePost = esempioPost.post("http://localhost:9200/" + index
+				+ "/UserCreation", json);
+		logger.debug("json : " + json + "\n" + "response: " + responsePost);
+
+		logger.debug("GET");
+		GetClass esempioGet = new GetClass();
+		String responseGet = esempioGet.run("http://localhost:9200/" + index
+				+ "/_search?q=*");
+		logger.debug("response: " + responseGet);
+	}
+
+	public static void analizzaBadgeCollectionConcept(Record record)
+			throws IOException {
+		logger.debug("INIZIO AD ANALIZZARE BADGE COLLECTION");
+		String out = null;
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
+		splitXSpazi = splitXSpazi.replaceAll("\"", "");
+		String[] campi = { "type=", "ruleName=", "name=", "new_badge=" };
+		String[] info = estraiInformazioni(splitDiverso, campi);
+		String[] infoSpazi = splitXSpazi.split(" ");
+		logger.debug("info spazi: " + infoSpazi[0] + infoSpazi[1]
+				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
+
+		postBadgeCollectionConcept(campi, info, infoSpazi);
+		logger.debug("out: " + out);
+	}
+
+	public static void postBadgeCollectionConcept(String[] campi,
+			String[] info, String[] infoSpazi) throws IOException {
+		logger.debug("POST");
+		PostClass esempioPost = new PostClass();
+
+		for (int i = 0; i < infoSpazi.length; i++) {
+			logger.debug("info indice " + i + " = " + infoSpazi[i]);
+		}
+		String eventType = info[0].substring(campi[0].length(),
+				info[0].length() - 1);
+		String ruleName = info[1].substring(campi[1].length(),
+				info[1].length() - 1);
+		String name = info[2].substring(campi[2].length());
+		String new_badge = info[3].substring(campi[3].length());
+
+		String executionId = infoSpazi[4];
+		logger.debug("executionId:" + executionId);
+		String executionTime = infoSpazi[5];
+		logger.debug("executionTime:" + executionTime);
+		String gameId = infoSpazi[2];
+		logger.debug("gameId:" + gameId);
+		String logLevel = "INFO -";
+		logger.debug("logLevel:" + logLevel);
+		String playerId = infoSpazi[3];
+		logger.debug("playerId:" + playerId);
+		String timestamp = infoSpazi[6];
+		logger.debug("timestamp:" + timestamp);
+
+		String json = esempioPost.popolaJsonCollectionConcept(ruleName, name,
+				new_badge, eventType, executionId, executionTime, gameId,
+				logLevel, playerId, timestamp);
+		String responsePost = esempioPost.post("http://localhost:9200/" + index
+				+ "/BadgeCollectionConcept", json);
+		logger.debug("json : " + json + "\n" + "response: " + responsePost);
+
+		logger.debug("GET");
+		GetClass esempioGet = new GetClass();
+		String responseGet = esempioGet.run("http://localhost:9200/" + index
+				+ "/_search?q=*");
+		logger.debug("response: " + responseGet);
+	}
+
+	public static void analizzaClassification(Record record) throws IOException {
+		logger.debug("INIZIO AD ANALIZZARE Classification");
+		String out = null;
+		String splitXSpazi = record.getContent().substring(0,
+				record.getIndexType());
+		String splitDiverso = record.getContent().substring(
+				record.getIndexType());
+		splitXSpazi = splitXSpazi.replaceAll("\"", "");
+		String[] campi = { "type=", "classificationName=",
+				"classificationPosition=" };
+		String[] info = estraiInformazioni(splitDiverso, campi);
+		String[] infoSpazi = splitXSpazi.split(" ");
+		logger.debug("info spazi: " + infoSpazi[0] + infoSpazi[1]
 				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
 
 		postClassification(campi, info, infoSpazi);
-		System.out.println("out: " + out);
+		logger.debug("out: " + out);
 	}
 
 	public static void postClassification(String[] campi, String[] info,
 			String[] infoSpazi) throws IOException {
-		System.out.println("POST");
+		logger.debug("POST");
 		PostClass esempioPost = new PostClass();
 
 		for (int i = 0; i < infoSpazi.length; i++) {
-			System.out.println("info indice " + i + " = " + infoSpazi[i]);
+			logger.debug("info indice " + i + " = " + infoSpazi[i]);
+		}
+		for (int i = 0; i < info.length; i++) {
+			logger.debug("info NORMALE " + i + " = " + info[i]);
 		}
 		String eventType = info[0].substring(campi[0].length(),
 				info[0].length() - 1);
@@ -99,36 +368,35 @@ public class Application {
 				info[1].length() - 1);
 		String classificationPosition = info[2].substring(campi[2].length());
 		String executionId = infoSpazi[4];
-		System.out.println("executionId:" + executionId);
+		logger.debug("executionId:" + executionId);
 		String executionTime = infoSpazi[5];
-		System.out.println("executionTime:" + executionTime);
+		logger.debug("executionTime:" + executionTime);
 		String gameId = infoSpazi[2];
-		System.out.println("gameId:" + gameId);
+		logger.debug("gameId:" + gameId);
 		String logLevel = "INFO -";
-		System.out.println("logLevel:" + logLevel);
+		logger.debug("logLevel:" + logLevel);
 		String playerId = infoSpazi[3];
-		System.out.println("playerId:" + playerId);
+		logger.debug("playerId:" + playerId);
 		String timestamp = infoSpazi[6];
-		System.out.println("timestamp:" + timestamp);
+		logger.debug("timestamp:" + timestamp);
 
 		String json = esempioPost.popolaJsonClassification(
 				classificationPosition, classificationName, eventType,
 				executionId, executionTime, gameId, logLevel, playerId,
 				timestamp);
-		String responsePost = esempioPost.post(
-				"http://localhost:9200/gamefication1/Classification", json);
-		System.out.println("json : " + json + "\n" + "response: "
-				+ responsePost);
+		String responsePost = esempioPost.post("http://localhost:9200/" + index
+				+ "/Classification", json);
+		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		System.out.println("GET");
+		logger.debug("GET");
 		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet
-				.run("http://localhost:9200/gamefication1/_search?q=*");
-		System.out.println("response: " + responseGet);
+		String responseGet = esempioGet.run("http://localhost:9200/" + index
+				+ "/_search?q=*");
+		logger.debug("response: " + responseGet);
 	}
 
 	public static void analizzaPointconcept(Record record) throws IOException {
-		System.out.println("INIZIO AD ANALIZZARE POINTCONCEPT");
+		logger.debug("INIZIO AD ANALIZZARE POINTCONCEPT");
 		String out = null;
 		String splitXSpazi = record.getContent().substring(0,
 				record.getIndexType());
@@ -139,69 +407,68 @@ public class Application {
 				"deltaScore=" };
 		String[] info = estraiInformazioni(splitDiverso, campi);
 		String[] infoSpazi = splitXSpazi.split(" ");
-		System.out.println("info spazi: " + infoSpazi[0] + infoSpazi[1]
+		logger.debug("info spazi: " + infoSpazi[0] + infoSpazi[1]
 				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
 
 		postPointConcept(campi, info, infoSpazi);
-		System.out.println("out: " + out);
+		logger.debug("out: " + out);
 	}
 
 	public static void postPointConcept(String[] campi, String[] info,
 			String[] infoSpazi) throws IOException {
-		System.out.println("POST");
+		logger.debug("POST");
 		PostClass esempioPost = new PostClass();
 
 		for (int i = 0; i < infoSpazi.length; i++) {
-			System.out.println("infoSpazi indice " + i + " = " + infoSpazi[i]);
+			logger.debug("infoSpazi indice " + i + " = " + infoSpazi[i]);
 		}
 		for (int i = 0; i < info.length; i++) {
-			System.out.println("infoNormale indice " + i + " = " + info[i]);
+			logger.debug("infoNormale indice " + i + " = " + info[i]);
 		}
 
 		String name = info[2].substring(campi[2].length());
 		String ruleName = info[1].substring(campi[1].length(),
 				info[1].length() - 1);
-		System.out.println("ruleName: " + ruleName);
-		System.out.println("name: " + name);
+		logger.debug("ruleName: " + ruleName);
+		logger.debug("name: " + name);
 		String score = info[3].substring(campi[3].length(),
 				info[3].length() - 1);
-		System.out.println("score: " + score);
+		logger.debug("score: " + score);
 		String deltaScore = info[4].substring(campi[4].length());
-		System.out.println("deltascore: " + deltaScore);
+		logger.debug("deltascore: " + deltaScore);
 
 		String eventType = info[0].substring(campi[0].length(),
 				info[0].length() - 1);
 
 		String executionId = infoSpazi[4];
-		System.out.println("executionId:" + executionId);
+		logger.debug("executionId:" + executionId);
 		String executionTime = infoSpazi[5];
-		System.out.println("executionTime:" + executionTime);
+		logger.debug("executionTime:" + executionTime);
 		String gameId = infoSpazi[2];
-		System.out.println("gameId:" + gameId);
+		logger.debug("gameId:" + gameId);
 		String logLevel = "INFO -";
-		System.out.println("logLevel:" + logLevel);
+		logger.debug("logLevel:" + logLevel);
 		String playerId = infoSpazi[3];
-		System.out.println("playerId:" + playerId);
+		logger.debug("playerId:" + playerId);
 		String timestamp = infoSpazi[6];
-		System.out.println("timestamp:" + timestamp);
+		logger.debug("timestamp:" + timestamp);
 
 		String json = esempioPost.popolaJsonPointCeption(ruleName, name, score,
 				deltaScore, eventType, executionId, executionTime, gameId,
 				logLevel, playerId, timestamp);
-		String responsePost = esempioPost.post(
-				"http://localhost:9200/gamefication1/PointConcept", json);
-		System.out.println("json : " + json + "\n" + "response: "
-				+ responsePost);
+		String responsePost = esempioPost.post("http://localhost:9200/" + index
+				+ "/PointConcept", json);
+		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		System.out.println("GET");
+		logger.debug("GET");
 		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet
-				.run("http://localhost:9200/gamefication1/_search?q=*");
-		System.out.println("response: " + responseGet);
+		String responseGet = esempioGet.run("http://localhost:9200/" + index
+				+ "/_search?q=*");
+		logger.debug("response: " + responseGet);
 	}
 
 	public static void analizzaAction(Record record) throws IOException {
-		System.out.println("INIZIO AD ANALIZZARE ACTION");
+		logger.debug("INIZIO AD ANALIZZARE ACTION");
 		String out = null;
 		String splitXSpazi = record.getContent().substring(0,
 				record.getIndexType());
@@ -211,51 +478,50 @@ public class Application {
 		String[] campi = { "type=", "action=" };
 		String[] info = estraiInformazioni(splitDiverso, campi);
 		String[] infoSpazi = splitXSpazi.split(" ");
-		System.out.println("info spazi: " + infoSpazi[0] + infoSpazi[1]
+		logger.debug("info spazi: " + infoSpazi[0] + infoSpazi[1]
 				+ infoSpazi[2] + " " + infoSpazi[3] + " " + infoSpazi[4]);
 
 		postAction(campi, info, infoSpazi);
-		System.out.println("out: " + out);
+		logger.debug("out: " + out);
 	}
 
 	public static void postAction(String[] campi, String[] info,
 			String[] infoSpazi) throws IOException {
-		System.out.println("POST");
+		logger.debug("POST");
 		PostClass esempioPost = new PostClass();
 
 		for (int i = 0; i < infoSpazi.length; i++) {
-			System.out.println("info indice " + i + " = " + infoSpazi[i]);
+			logger.debug("info indice " + i + " = " + infoSpazi[i]);
 		}
 
 		String actionName = info[1].substring(campi[1].length());
 		String eventType = info[0].substring(campi[0].length(),
 				info[0].length() - 1);
 		String executionId = infoSpazi[4];
-		System.out.println("executionId:" + executionId);
+		logger.debug("executionId:" + executionId);
 		String executionTime = infoSpazi[5];
-		System.out.println("executionTime:" + executionTime);
+		logger.debug("executionTime:" + executionTime);
 		String gameId = infoSpazi[2];
-		System.out.println("gameId:" + gameId);
+		logger.debug("gameId:" + gameId);
 		String logLevel = "INFO -";
-		System.out.println("logLevel:" + logLevel);
+		logger.debug("logLevel:" + logLevel);
 		String playerId = infoSpazi[3];
-		System.out.println("playerId:" + playerId);
+		logger.debug("playerId:" + playerId);
 		String timestamp = infoSpazi[6];
-		System.out.println("timestamp:" + timestamp);
+		logger.debug("timestamp:" + timestamp);
 
 		String json = esempioPost.popolaJsonAction(actionName, eventType,
 				executionId, executionTime, gameId, logLevel, playerId,
 				timestamp);
-		String responsePost = esempioPost.post(
-				"http://localhost:9200/gamefication1/Action", json);
-		System.out.println("json : " + json + "\n" + "response: "
-				+ responsePost);
+		String responsePost = esempioPost.post("http://localhost:9200/" + index
+				+ "/Action", json);
+		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		System.out.println("GET");
+		logger.debug("GET");
 		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet
-				.run("http://localhost:9200/gamefication1/_search?q=*");
-		System.out.println("response: " + responseGet);
+		String responseGet = esempioGet.run("http://localhost:9200/" + index
+				+ "/_search?q=*");
+		logger.debug("response: " + responseGet);
 	}
 
 	private static String[] estraiInformazioni(String splitDiverso,
@@ -270,14 +536,22 @@ public class Application {
 			}
 		}
 		for (int i = 0; i < campi.length; i++) {
+			logger.debug("indice campii: " + indiciCampi[i]);
+		}
+		logger.debug("splitdiv: " + splitDiverso);
+
+		for (int i = 0; i < campi.length; i++) {
 			// coltrollo toglire ultimo spazio
+
 			if (i < campi.length - 1) {
 				info[i] = splitDiverso.substring(indiciCampi[i],
 						indiciCampi[i + 1]);
+
 			} else {
 				info[i] = splitDiverso.substring(indiciCampi[i],
 						splitDiverso.length());
 			}
+			logger.debug("COSA ESCE: " + info[i]);
 		}
 		return info;
 	}
@@ -292,6 +566,8 @@ public class Application {
 			return RecordType.RULE_BADGECOLLECTIONCONCEPT;
 		case "Classification":
 			return RecordType.CLASSIFICATION;
+		case "ChallengeAssigned":
+			return RecordType.CHALLENGEASSIGNED;
 		case "ChallengeComplete":
 			return RecordType.CHALLENGECOMPLETE;
 		case "UserCreation":

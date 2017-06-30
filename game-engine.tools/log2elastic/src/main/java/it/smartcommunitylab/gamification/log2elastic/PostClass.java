@@ -23,6 +23,62 @@ public class PostClass {
 		}
 	}
 
+	String popolaJsonChallengeAssigned(String eventType, String name,
+			String startDate, String endDate, String executionId,
+			String executionTime, String gameId, String logLevel,
+			String playerId, String timestamp) {
+
+		return "{\"eventType\":" + "\"" + eventType + "\"," + "\"nome\":"
+				+ "\"" + name + "\"," + "\"startDate\":" + startDate + ","
+				+ "\"endDate\":" + endDate + "," + "\"executionId\":" + "\""
+				+ executionId + "\"," + "\"executionTime\":" + executionTime
+				+ "," + "\"gameId\":" + "\"" + gameId + "\"" + ","
+				+ "\"logLevel\":" + "\"" + logLevel + "\"," + "\"playerId\":"
+				+ "\"" + playerId + "\"," + "\"timestamp\":" + timestamp + "}";
+
+	}
+
+	String popolaJsonChallengeComplete(String eventType, String name,
+			String executionId, String executionTime, String gameId,
+			String logLevel, String playerId, String timestamp) {
+
+		return "{\"eventType\":" + "\"" + eventType + "\"," + "\"nome\":"
+				+ "\"" + name + "\"," + "\"executionId\":" + "\"" + executionId
+				+ "\"," + "\"executionTime\":" + executionTime + ","
+				+ "\"gameId\":" + "\"" + gameId + "\"" + "," + "\"logLevel\":"
+				+ "\"" + logLevel + "\"," + "\"playerId\":" + "\"" + playerId
+				+ "\"," + "\"timestamp\":" + timestamp + "}";
+
+	}
+
+	String popolaJsonUsercreation(String eventType, String executionId,
+			String executionTime, String gameId, String logLevel,
+			String playerId, String timestamp) {
+
+		return "{\"eventType\":" + "\"" + eventType + "\","
+				+ "\"executionId\":" + "\"" + executionId + "\","
+				+ "\"executionTime\":" + executionTime + "," + "\"gameId\":"
+				+ "\"" + gameId + "\"" + "," + "\"logLevel\":" + "\""
+				+ logLevel + "\"," + "\"playerId\":" + "\"" + playerId + "\","
+				+ "\"timestamp\":" + timestamp + "}";
+
+	}
+
+	String popolaJsonCollectionConcept(String ruleName, String name,
+			String new_badge, String eventType, String executionId,
+			String executionTime, String gameId, String logLevel,
+			String playerId, String timestamp) {
+
+		return "{\"ruleName\":" + ruleName + "," + "\"name\":" + name + ","
+				+ "\"new_badge\":" + new_badge + "," + "\"eventType\":" + "\""
+				+ eventType + "\"," + "\"executionId\":" + "\"" + executionId
+				+ "\"," + "\"executionTime\":" + executionTime + ","
+				+ "\"gameId\":" + "\"" + gameId + "\"" + "," + "\"logLevel\":"
+				+ "\"" + logLevel + "\"," + "\"playerId\":" + "\"" + playerId
+				+ "\"," + "\"timestamp\":" + timestamp + "}";
+
+	}
+
 	String popolaJsonClassification(String classificationName,
 			String classificationPosition, String eventType,
 			String executionId, String executionTime, String gameId,

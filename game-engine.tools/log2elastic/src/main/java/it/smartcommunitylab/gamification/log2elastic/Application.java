@@ -1,60 +1,94 @@
 package it.smartcommunitylab.gamification.log2elastic;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
 public class Application {
+	private static final String PREFIX_PROCESSED_FILE = "NEW-";
 
-	static final String index = "gamefication2";
+	static final String index = "gamefication_test";
 
 	private static final Logger logger = Logger.getLogger(Application.class);
 
 	public static void main(String[] args) throws IOException {
+		String logfolderPath = args[0];
+		logger.debug("inizio newData");
+		File folder = new File(logfolderPath);
+		File[] listOfFiles = folder.listFiles();
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isDirectory()) {
+				logger.warn("E' presente una directory - name: "
+						+ listOfFiles[i].getName());
+			} else {
+				if (isLogFileProcessato(listOfFiles[i])) {
+					System.out.println("FILE: " + listOfFiles[i].getName());
+					FileReader fr = null;
+					BufferedReader br = null;
+					fr = new FileReader(args[0] + "\\"
+							+ listOfFiles[i].getName());
+					System.out
+							.println("file name: " + listOfFiles[i].getName());
+					br = new BufferedReader(fr);
 
-		// ----------
-		FileReader fr = null;
-		BufferedReader br = null;
-		fr = new FileReader(args[0] + "\\"
-				+ "NEW-gamification.stats.log.2016-10-22");// CAMBIO!!
-		br = new BufferedReader(fr);
+					String inputLine;
+					String recordTrasformato = null;
+					while ((inputLine = br.readLine()) != null) {
+						Record record = analizza(inputLine);
+						logger.debug("TYPE: " + record.getType());
+						switch (record.getType()) {
+						case ACTION:
+							System.out.println("ACTION");
 
-		String inputLine;
-		String recordTrasformato = null;
-		while ((inputLine = br.readLine()) != null) {
-			Record record = analizza(inputLine);
-			logger.debug("TYPE: " + record.getType());
-			switch (record.getType()) {
-			case ACTION:
-				analizzaAction(record);
-				break;
-			case RULE_POINTCONCEPT:
-				analizzaPointconcept(record);
-				break;
+							analizzaAction(record);
+							break;
+						case RULE_POINTCONCEPT:
+							System.out.println("RULE_POINTCONCEPT");
 
-			case CLASSIFICATION:
-				analizzaClassification(record);
-				break;
+							analizzaPointconcept(record);
+							break;
+						case CLASSIFICATION:
+							System.out.println("CLASSIFICATION");
 
-			case RULE_BADGECOLLECTIONCONCEPT:
-				analizzaBadgeCollectionConcept(record);
-				break;
-			case USERCREATION:
-				analizzaUserCreation(record);
-				break;
-			case CHALLENGECOMPLETE:
-				analizzaChallengeComplete(record);
-				break;
-			case CHALLENGEASSIGNED:
-				analizzaChallengeAssigned(record);
-				break;
-			default:
-				recordTrasformato = record.getContent();
-				break;
+							analizzaClassification(record);
+							break;
+						case RULE_BADGECOLLECTIONCONCEPT:
+							System.out.println("RULE_BADGECOLLECTIONCONCEPT");
+
+							analizzaBadgeCollectionConcept(record);
+							break;
+						case USERCREATION:
+							System.out.println("USERCREATION");
+
+							analizzaUserCreation(record);
+							break;
+						case CHALLENGECOMPLETE:
+							System.out.println("CHALLENGECOMPLETE");
+
+							analizzaChallengeComplete(record);
+							break;
+						case CHALLENGEASSIGNED:
+							System.out.println("CHALLENGEASSIGNED");
+							analizzaChallengeAssigned(record);
+							break;
+						default:
+							System.out.println("non faccio nulla");
+
+							recordTrasformato = record.getContent();
+							break;
+						}
+					}
+				}
+				System.out.println("non entro!!");
 			}
 		}
+	}
+
+	private static boolean isLogFileProcessato(File logFile) {
+		return logFile.getName().startsWith(PREFIX_PROCESSED_FILE);
 	}
 
 	public static Record analizza(String record) {
@@ -143,11 +177,6 @@ public class Application {
 				+ "/ChallengeAssigned", json);
 		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		logger.debug("GET");
-		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet.run("http://localhost:9200/" + index
-				+ "/_search?q=*");
-		logger.debug("response: " + responseGet);
 	}
 
 	public static void analizzaChallengeComplete(Record record)
@@ -207,11 +236,6 @@ public class Application {
 				+ "/ChallengeComplete", json);
 		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		logger.debug("GET");
-		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet.run("http://localhost:9200/" + index
-				+ "/_search?q=*");
-		logger.debug("response: " + responseGet);
 	}
 
 	public static void analizzaUserCreation(Record record) throws IOException {
@@ -264,6 +288,9 @@ public class Application {
 				+ "/UserCreation", json);
 		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
+	}
+
+	public static void getMethod() throws IOException {
 		logger.debug("GET");
 		GetClass esempioGet = new GetClass();
 		String responseGet = esempioGet.run("http://localhost:9200/" + index
@@ -325,11 +352,6 @@ public class Application {
 				+ "/BadgeCollectionConcept", json);
 		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		logger.debug("GET");
-		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet.run("http://localhost:9200/" + index
-				+ "/_search?q=*");
-		logger.debug("response: " + responseGet);
 	}
 
 	public static void analizzaClassification(Record record) throws IOException {
@@ -388,11 +410,6 @@ public class Application {
 				+ "/Classification", json);
 		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		logger.debug("GET");
-		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet.run("http://localhost:9200/" + index
-				+ "/_search?q=*");
-		logger.debug("response: " + responseGet);
 	}
 
 	public static void analizzaPointconcept(Record record) throws IOException {
@@ -460,11 +477,6 @@ public class Application {
 				+ "/PointConcept", json);
 		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		logger.debug("GET");
-		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet.run("http://localhost:9200/" + index
-				+ "/_search?q=*");
-		logger.debug("response: " + responseGet);
 	}
 
 	public static void analizzaAction(Record record) throws IOException {
@@ -517,11 +529,6 @@ public class Application {
 				+ "/Action", json);
 		logger.debug("json : " + json + "\n" + "response: " + responsePost);
 
-		logger.debug("GET");
-		GetClass esempioGet = new GetClass();
-		String responseGet = esempioGet.run("http://localhost:9200/" + index
-				+ "/_search?q=*");
-		logger.debug("response: " + responseGet);
 	}
 
 	private static String[] estraiInformazioni(String splitDiverso,

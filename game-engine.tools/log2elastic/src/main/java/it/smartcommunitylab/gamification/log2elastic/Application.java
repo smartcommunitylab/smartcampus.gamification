@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 public class Application {
 	private static final String PREFIX_PROCESSED_FILE = "NEW-";
 
-	static final String index = "gamefication_test";
+	static final String index = "gamefication";
 
 	private static final Logger logger = Logger.getLogger(Application.class);
 

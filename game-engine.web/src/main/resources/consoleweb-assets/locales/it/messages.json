@@ -29,5 +29,7 @@
   "msg_badge_deleted": "Badge collection eliminata con successo",
   "msg_challenge_deleted": "Sfida eliminata con successo",
   "msg_challenge_edited": "Sfida modificato con successo", 
-  "msg_no_challenges" : "Nessuna sfida"
+  "msg_no_challenges" : "Nessuna sfida",
+  "msg_period_name_error" : "Il nome di un periodo non è valido",
+  "msg_period_negative_error" : "La durata del periodo non può essere negativa"
 }

@@ -41,21 +41,36 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 			} else if (gamesFactory.existsInstanceByName($scope.game, $scope.points.name, 'points')) {
 				$scope.alerts.editInstanceError = 'messages:msg_instance_name_exists_error';
 			} else {
-				$scope.disabled = true;
-				// added periods to point to save
-				$scope.points.periods = $scope.tmpPeriods;
-				gamesFactory.editInstance($scope.game, 'points', $scope.points).then(function (instance) {
-					// Points instance edited
-					$scope.pointsView.unshift(processPointPeriods(instance));
-					$scope.game.pointConcept.unshift(instance);
-					$scope.points.name = '';
-					$scope.tmpPeriods = [];
-					$scope.disabled = false;
-				}, function (message) {
-					// Show error alert
-					$scope.alerts.genericError = 'messages:' + message;
-					$scope.disabled = false;
-				});
+				let validationError = false;
+				if($scope.tmpPeriods.length > 0){
+					$scope.tmpPeriods.forEach(function(xx) {
+						if(!xx.name) {
+							$scope.alerts.editInstanceError = 'messages:msg_period_name_error';
+							validationError = true;
+						}
+						if(xx.period < 0) {
+							$scope.alerts.editInstanceError = 'messages:msg_period_negative_error';
+							validationError = true;
+						}
+					});
+				}
+				if(!validationError) {
+					$scope.disabled = true;
+					// added periods to point to save
+					$scope.points.periods = $scope.tmpPeriods;
+					gamesFactory.editInstance($scope.game, 'points', $scope.points).then(function (instance) {
+						// Points instance edited
+						$scope.pointsView.unshift(processPointPeriods(instance));
+						$scope.game.pointConcept.unshift(instance);
+						$scope.points.name = '';
+						$scope.tmpPeriods = [];
+						$scope.disabled = false;
+					}, function (message) {
+						// Show error alert
+						$scope.alerts.genericError = 'messages:' + message;
+						$scope.disabled = false;
+					});
+				}
 			}
 		};
 

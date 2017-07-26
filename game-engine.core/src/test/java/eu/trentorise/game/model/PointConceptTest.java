@@ -1,5 +1,6 @@
 package eu.trentorise.game.model;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,8 +46,7 @@ public class PointConceptTest {
 	private static final long DAY_MILLISEC = HOUR_MILLISEC * 24;
 	private static final long WEEK_MILLISEC = DAY_MILLISEC * 7;
 
-	private static final DateTime TODAY_AT_MIDNIGHT = DateTime.now()
-			.withTimeAtStartOfDay();
+	private static final DateTime TODAY_AT_MIDNIGHT = DateTime.now().withTimeAtStartOfDay();
 
 	@Before
 	public void cleanDB() {
@@ -88,6 +88,57 @@ public class PointConceptTest {
 	}
 
 	@Test
+	public void persistPointConcept() {
+		final String GAME_ID = "TEST_GAME";
+		final String PLAYER_ID = "1000";
+		PointConcept pc = new PointConcept("testPoint");
+
+		pc.addPeriod("period", new Date(), 1000, 5);
+		pc.addPeriod("period1", new Date(), DAY_MILLISEC, 1);
+
+		pc.setScore(20d);
+		PlayerState ps = new PlayerState(GAME_ID, PLAYER_ID);
+		ps.getState().add(pc);
+		ps = playerSrv.saveState(ps);
+
+		PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false);
+
+		PointConcept p = (PointConcept) loaded.getState().iterator().next();
+
+		Assert.assertEquals(20d, p.getScore(), 0);
+
+	}
+
+	@Test
+	public void capacitySetted() throws InterruptedException {
+		PointConcept pc = new PointConcept("testPoint");
+
+		LocalDate start1 = new LocalDate();
+		pc.addPeriod("period1", start1.toDate(), DAY_MILLISEC, 3);
+		pc.setScore(1d);
+
+		pc.executionMoment = start1.plusDays(1).toDate().getTime();
+		pc.setScore(10d);
+
+		pc.executionMoment = start1.plusDays(2).toDate().getTime();
+		pc.setScore(30d);
+
+		Assert.assertEquals(20d, pc.getPeriodInstance("period1", 2).getScore(), 0);
+
+		pc.executionMoment = start1.plusDays(3).toDate().getTime();
+		pc.setScore(32d);
+
+		pc.executionMoment = start1.plusDays(4).toDate().getTime();
+		pc.setScore(33d);
+
+		pc.executionMoment = start1.plusDays(5).toDate().getTime();
+		pc.setScore(35d);
+
+		Assert.assertEquals(0d, pc.getPeriodInstance("period1", 2).getScore(), 0);
+
+	}
+
+	@Test
 	public void morePeriods() {
 		final String GAME_ID = "TEST_GAME";
 		final String PLAYER_ID = "1000";
@@ -117,8 +168,7 @@ public class PointConceptTest {
 	private PointConcept setupPointConceptWithPeriods() {
 		PointConcept pc = new PointConcept("testPoint");
 		LocalDate startPeriodToday = new LocalDate();
-		pc.addPeriod("period1", startPeriodToday.minusDays(1).toDate(),
-				DAY_MILLISEC);
+		pc.addPeriod("period1", startPeriodToday.minusDays(1).toDate(), DAY_MILLISEC);
 		pc.addPeriod("period2", startPeriodToday.toDate(), HOUR_MILLISEC);
 
 		/*
@@ -183,18 +233,15 @@ public class PointConceptTest {
 	public void instanceScoreByDate() {
 		PointConcept p = setupPointConceptWithPeriods();
 
-		Assert.assertEquals(new Double(1), p.getPeriodScore("period2",
-				TODAY_AT_MIDNIGHT.plusHours(2).getMillis()));
-		Assert.assertEquals(new Double(4),
-				p.getPeriodScore("period2", TODAY_AT_MIDNIGHT.getMillis()));
+		Assert.assertEquals(new Double(1), p.getPeriodScore("period2", TODAY_AT_MIDNIGHT.plusHours(2).getMillis()));
+		Assert.assertEquals(new Double(4), p.getPeriodScore("period2", TODAY_AT_MIDNIGHT.getMillis()));
 	}
 
 	@Test
 	public void instanceScoreByFutureDate() {
 		PointConcept p = setupPointConceptWithPeriods();
 
-		Assert.assertEquals(new Double(0), p.getPeriodScore("period2",
-				TODAY_AT_MIDNIGHT.plusDays(1).getMillis()));
+		Assert.assertEquals(new Double(0), p.getPeriodScore("period2", TODAY_AT_MIDNIGHT.plusDays(1).getMillis()));
 	}
 
 	@Test
@@ -211,10 +258,8 @@ public class PointConceptTest {
 		PeriodInstance current = p.getPeriodCurrentInstance("period2");
 		Assert.assertEquals(Double.valueOf(14), current.getScore());
 
-		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(3).getMillis(),
-				current.getStart());
-		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(3).getMillis()
-				+ HOUR_MILLISEC, current.getEnd());
+		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(3).getMillis(), current.getStart());
+		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(3).getMillis() + HOUR_MILLISEC, current.getEnd());
 	}
 
 	@Test
@@ -224,22 +269,18 @@ public class PointConceptTest {
 		PeriodInstance instance = p.getPeriodInstance("period2", 0);
 		Assert.assertEquals(Double.valueOf(4), instance.getScore());
 		Assert.assertEquals(TODAY_AT_MIDNIGHT.getMillis(), instance.getStart());
-		Assert.assertEquals(TODAY_AT_MIDNIGHT.getMillis() + HOUR_MILLISEC,
-				instance.getEnd());
+		Assert.assertEquals(TODAY_AT_MIDNIGHT.getMillis() + HOUR_MILLISEC, instance.getEnd());
 
 		instance = p.getPeriodInstance("period2", 2);
 		Assert.assertEquals(new Double(1), instance.getScore());
-		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(2).getMillis(),
-				instance.getStart());
-		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(2).getMillis()
-				+ HOUR_MILLISEC, instance.getEnd());
+		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(2).getMillis(), instance.getStart());
+		Assert.assertEquals(TODAY_AT_MIDNIGHT.plusHours(2).getMillis() + HOUR_MILLISEC, instance.getEnd());
 	}
 
 	@Test
 	public void instanceByNonExistingIndex() {
 		PointConcept p = setupPointConceptWithPeriods();
-		Assert.assertEquals(new Double(0), p.getPeriodInstance("period2", 20)
-				.getScore());
+		Assert.assertEquals(new Double(0), p.getPeriodInstance("period2", 20).getScore());
 	}
 
 	@Test
@@ -250,8 +291,7 @@ public class PointConceptTest {
 		p.executionMoment = TODAY_AT_MIDNIGHT.plusDays(5).getMillis();
 
 		Assert.assertEquals(new Double(0), p.getPeriodPreviousScore("period1"));
-		Assert.assertEquals(new Double(0),
-				p.getPeriodPreviousInstance("period1").getScore());
+		Assert.assertEquals(new Double(0), p.getPeriodPreviousInstance("period1").getScore());
 	}
 
 	@Test
@@ -291,11 +331,9 @@ public class PointConceptTest {
 		Assert.assertEquals(new Double(10), p.getPeriodPreviousScore("period1"));
 		Assert.assertEquals(new Double(0), p.getPeriodPreviousScore("period45"));
 		Assert.assertEquals(new Double(10), p.getPeriodScore("period1", 0));
-		Assert.assertEquals(new Double(1), p.getPeriodScore("period2",
-				TODAY_AT_MIDNIGHT.plusHours(2).getMillis()));
+		Assert.assertEquals(new Double(1), p.getPeriodScore("period2", TODAY_AT_MIDNIGHT.plusHours(2).getMillis()));
 
-		Assert.assertEquals(new Double(0), p.getPeriodScore("period2",
-				TODAY_AT_MIDNIGHT.plusDays(1).getMillis()));
+		Assert.assertEquals(new Double(0), p.getPeriodScore("period2", TODAY_AT_MIDNIGHT.plusDays(1).getMillis()));
 	}
 
 	/*
@@ -307,14 +345,12 @@ public class PointConceptTest {
 
 		final long WEEKLY_PERIOD_TS = 604800000;
 
-		PointConcept p = new PointConcept("green", new DateTime(2016, 12, 1,
-				10, 1).getMillis());
+		PointConcept p = new PointConcept("green", new DateTime(2016, 12, 1, 10, 1).getMillis());
 
 		p.addPeriod("dstPeriod", IN_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
 
 		PeriodInstance instance = p.getPeriodCurrentInstance("dstPeriod");
-		Assert.assertEquals(new DateTime(2016, 11, 26, 0, 0), new DateTime(
-				instance.getStart()));
+		Assert.assertEquals(new DateTime(2016, 11, 26, 0, 0), new DateTime(instance.getStart()));
 	}
 
 	@Test
@@ -323,14 +359,12 @@ public class PointConceptTest {
 
 		final long WEEKLY_PERIOD_TS = 604800000;
 
-		PointConcept p = new PointConcept("green", new DateTime(2016, 12, 1,
-				10, 1).getMillis());
+		PointConcept p = new PointConcept("green", new DateTime(2016, 12, 1, 10, 1).getMillis());
 
 		p.addPeriod("noDSTPeriod", OUT_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
 
 		PeriodInstance instance = p.getPeriodCurrentInstance("noDSTPeriod");
-		Assert.assertEquals(new DateTime(2016, 11, 26, 0, 0), new DateTime(
-				instance.getStart()));
+		Assert.assertEquals(new DateTime(2016, 11, 26, 0, 0), new DateTime(instance.getStart()));
 	}
 
 	@Test
@@ -339,14 +373,12 @@ public class PointConceptTest {
 
 		final long WEEKLY_PERIOD_TS = 604800000;
 
-		PointConcept p = new PointConcept("green", new DateTime(2017, 4, 25,
-				10, 1).getMillis());
+		PointConcept p = new PointConcept("green", new DateTime(2017, 4, 25, 10, 1).getMillis());
 
 		p.addPeriod("noDSTPeriod", OUT_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
 
 		PeriodInstance instance = p.getPeriodCurrentInstance("noDSTPeriod");
-		Assert.assertEquals(new DateTime(2017, 4, 22, 0, 0), new DateTime(
-				instance.getStart()));
+		Assert.assertEquals(new DateTime(2017, 4, 22, 0, 0), new DateTime(instance.getStart()));
 	}
 
 	@Test
@@ -355,14 +387,12 @@ public class PointConceptTest {
 
 		final long WEEKLY_PERIOD_TS = 604800000;
 
-		PointConcept p = new PointConcept("green", new DateTime(2017, 4, 25,
-				10, 1).getMillis());
+		PointConcept p = new PointConcept("green", new DateTime(2017, 4, 25, 10, 1).getMillis());
 
 		p.addPeriod("noDSTPeriod", OUT_DST_DATE.toDate(), WEEKLY_PERIOD_TS);
 
 		PeriodInstance instance = p.getPeriodCurrentInstance("noDSTPeriod");
-		Assert.assertEquals(new DateTime(2017, 4, 22, 0, 0), new DateTime(
-				instance.getStart()));
+		Assert.assertEquals(new DateTime(2017, 4, 22, 0, 0), new DateTime(instance.getStart()));
 	}
 
 	@Test
@@ -395,8 +425,7 @@ public class PointConceptTest {
 		Thread.sleep(30000);
 
 		Assert.assertEquals(new Double(4),
-				((PointConcept) playerSrv.loadState(GAME, "my player", false)
-						.getState().iterator().next()).getScore());
+				((PointConcept) playerSrv.loadState(GAME, "my player", false).getState().iterator().next()).getScore());
 
 	}
 }

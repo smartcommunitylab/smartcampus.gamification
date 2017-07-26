@@ -64,6 +64,7 @@
 								<th>period name</th>
 								<th>start date</th>
 								<th>period</th>
+								<th>capacity</th>
 							</tr>
 							<tr ng-repeat="instance in tmpPeriods">
 								<td><input class="form-control" type="text"
@@ -77,6 +78,10 @@
 										<input class="form-control" type="text"
 											ng-model="instance.period" /> <span>days</span>
 									</div>
+								</td>
+								<td>
+										<input class="form-control number-box" type="number" min="0"
+											ng-model="instance.capacity" />
 								</td>
 								<td>
 									<button type="button"
@@ -124,11 +129,13 @@
 											<th>period name</th>
 											<th>start date</th>
 											<th>period</th>
+											<th>capacity</th>
 										</tr>
 										<tr ng-repeat="instance in point.periodList">
 											<td>{{instance.identifier}}</td>
 											<td>{{instance.start | date:'dd/MM/yyyy'}}</td>
 											<td>{{instance.period}} days</td>
+											<td>{{!instance.capacity || instance.capacity <= 0 ? "-" : instance.capacity}}</td>
 										</tr>
 									</table>
 								</div>

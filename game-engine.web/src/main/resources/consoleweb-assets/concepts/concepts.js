@@ -2,16 +2,10 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 	.controller('ConceptsCtrl', function ($scope, $rootScope, $timeout, $uibModal, gamesFactory) {
 		$rootScope.currentNav = 'concepts';
 
-		//var game = $scope.game;
-
 		$scope.points = {};
 		$scope.pointsView = [];
-		//var instance = {};
-		//$scope.points.name = instance.name;
 
 		$scope.badges_collection = {};
-		//$scope.instance = {};
-		//$scope.badges_collection.name = instance.name;
 
 		// Error alerts object
 		$scope.alerts = {
@@ -52,13 +46,11 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 				$scope.points.periods = $scope.tmpPeriods;
 				gamesFactory.editInstance($scope.game, 'points', $scope.points).then(function (instance) {
 					// Points instance edited
-					//$scope.game.pointConcept.push(instance);
 					$scope.pointsView.unshift(processPointPeriods(instance));
 					$scope.game.pointConcept.unshift(instance);
 					$scope.points.name = '';
 					$scope.tmpPeriods = [];
 					$scope.disabled = false;
-					//$uibModalInstance.close();
 				}, function (message) {
 					// Show error alert
 					$scope.alerts.genericError = 'messages:' + message;
@@ -80,7 +72,6 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 				$scope.disabled = true;
 				gamesFactory.editInstance($scope.game, 'badges_collections', $scope.badges_collection).then(function (instance) {
 					// Badges collection instance edited
-					//$scope.game.badgeCollectionConcept.push(instance);
 					$scope.game.badgeCollectionConcept.unshift(instance);
 					$scope.badges_collection.name = '';
 					$scope.disabled = false;

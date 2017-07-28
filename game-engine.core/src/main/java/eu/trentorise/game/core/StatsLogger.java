@@ -67,8 +67,8 @@ public class StatsLogger {
 			long executionMoment, long timestamp, String ruleName, PointConcept concept, double deltaScore) {
 		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
 
-		msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" score=%s deltaScore=%s",
-				PointConcept.class.getSimpleName(), ruleName, concept.getName(), concept.getScore(), deltaScore);
+		msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" deltaScore=%s score=%s",
+				PointConcept.class.getSimpleName(), ruleName, concept.getName(), deltaScore, concept.getScore());
 
 		statsLogger.info(msg);
 	}
@@ -92,7 +92,7 @@ public class StatsLogger {
 			long timestamp, String action, Map<String, Object> inputData, List<Object> factObjects, PlayerState state) {
 		String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
 
-		msg += " " + String.format("type=%s action=\"%s\"", "Action", action);
+		msg += " " + String.format("type=%s actionName=\"%s\"", "Action", action);
 		statsLogger.info(msg);
 	}
 
@@ -125,7 +125,7 @@ public class StatsLogger {
 
 	public static void logUserCreation(String gameId, String playerId, String executionId, long timestamp) {
 		String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
-		msg += " " + String.format("type=%s", "UserCreation");
+		msg += " " + String.format("type=%s creation", "UserCreation");
 		statsLogger.info(msg);
 	}
 
@@ -140,7 +140,7 @@ public class StatsLogger {
 	public static void logChallengeComplete(String gameId, String playerId, String executionId, long executionTime,
 			long timestamp, String challengeName) {
 		String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
-		msg += " " + String.format("type=%s name=\"%s\"", "ChallengeComplete", challengeName);
+		msg += " " + String.format("type=%s name=\"%s\" completed", "ChallengeCompleted", challengeName);
 		statsLogger.info(msg);
 	}
 

@@ -137,7 +137,7 @@ public class StatsLogger {
 		statsLogger.info(msg);
 	}
 
-	public static void logChallengeComplete(String gameId, String playerId, String executionId, long executionTime,
+	public static void logChallengeCompleted(String gameId, String playerId, String executionId, long executionTime,
 			long timestamp, String challengeName) {
 		String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
 		msg += " " + String.format("type=%s name=\"%s\" completed", "ChallengeCompleted", challengeName);

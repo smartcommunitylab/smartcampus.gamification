@@ -17,7 +17,7 @@ public class StatsChallengeConcept extends ChallengeConcept {
 	public boolean completed() {
 		boolean isCompleted = super.completed();
 		if (isCompleted) {
-			StatsLogger.logChallengeComplete(gameId, playerId, executionId, getDateCompleted().getTime(),
+			StatsLogger.logChallengeCompleted(gameId, playerId, executionId, getDateCompleted().getTime(),
 					System.currentTimeMillis(), getName());
 		}
 		return isCompleted;

@@ -430,8 +430,10 @@ public class Application {
 		logger.debug("POST");
 		ESHelper esempioPost = new ESHelper();
 
-		for (int i = 0; i < infoSpazi.length; i++) {
-			logger.debug("info indice " + i + " = " + infoSpazi[i]);
+		if (logger.isDebugEnabled()) {
+			for (int i = 0; i < infoSpazi.length; i++) {
+				logger.debug("info indice " + i + " = " + infoSpazi[i]);
+			}
 		}
 
 		String actionName = info[1].substring(campi[1].length());

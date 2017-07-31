@@ -83,7 +83,7 @@ public class Application {
 		String dataregistrazione = data[1].trim();
 
 		out = "INFO - " + "\"" + GAME_ID + "\"" + " " + playerId + " " + UUID.randomUUID().toString() + " "
-				+ dataregistrazione + " " + dataregistrazione + " type=UserCreation";
+				+ dataregistrazione + " " + dataregistrazione + " type=UserCreation creation";
 		logger.debug("out :" + out);
 		return out;
 	}

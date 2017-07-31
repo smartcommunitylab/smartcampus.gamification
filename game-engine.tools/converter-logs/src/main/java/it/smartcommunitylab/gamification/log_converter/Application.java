@@ -17,7 +17,6 @@ public class Application {
 			sovrascriviLogElaborati = Boolean.valueOf(args[1]);
 			logger.info("sovrascrivi log elaborati: " + sovrascriviLogElaborati);
 		} catch (Exception e) {
-			// valore di default
 			sovrascriviLogElaborati = false;
 			logger.info("valore di default per sovrascrivi log elaborati: " + sovrascriviLogElaborati);
 		}

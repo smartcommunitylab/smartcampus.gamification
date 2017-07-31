@@ -23,7 +23,6 @@ public class AnalizzatoreLog {
 	public AnalizzatoreLog() {
 	}
 
-	// TODO se file esiste gi� non toccare o sovrascrivere
 	public void analizzaCartella(String logfolderPath, boolean sovrascriviLogElaborati) throws IOException {
 		logger.debug("inizio newData");
 		File folder = new File(logfolderPath);
@@ -69,16 +68,16 @@ public class AnalizzatoreLog {
 						logger.debug("record type: " + record.getType());
 						switch (record.getType()) {
 						case ACTION:
-							recordTrasformato = recordManager.analizzaAction(record);
+							recordTrasformato = recordManager.trasformaFormatoAction(record);
 							break;
 						case CLASSIFICATION:
-							recordTrasformato = recordManager.analizzaClassification(record);
+							recordTrasformato = recordManager.trasformaFormatoClassification(record);
 							break;
 						case RULE_BADGECOLLECTIONCONCEPT:
-							recordTrasformato = recordManager.analizzaBadgeCollection(record);
+							recordTrasformato = recordManager.trasformaFormatoBadgeCollection(record);
 							break;
 						case RULE_POINTCONCEPT:
-							recordTrasformato = recordManager.analizzaPointConcept(record);
+							recordTrasformato = recordManager.trasformaFormatoPointConcept(record);
 							break;
 						default:
 							recordTrasformato = record.getContent();

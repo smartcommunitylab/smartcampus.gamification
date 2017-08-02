@@ -8,22 +8,26 @@ global Integer green_sustainable_bonus;
 
 declare PRItinerary end
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
 
 rule "update green points"
 when
     InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"],$train : data["trainDistance"])
     $pc : PointConcept(name == "green leaves")
 then
-	log("apply \'update green points\'");
+	utils.log("apply \'update green points\'");
 	Double bike = $bike != null ? (Double) $bike : 0;
 	Double walk = $walk != null ? (Double) $walk : 0;
     Double bus = $bus != null ? (Double) $bus : 0;
     Double train = $train != null ? (Double) $train : 0;
 
 	Long dist1 = Math.round(bike + walk);
-	//log("dist1 " + dist1);
+	//utils.log("dist1 " + dist1);
 	Long dist2 = Math.round(bus + train);
-    //log("dist2 " + dist2);
+    //utils.log("dist2 " + dist2);
     
     $pc.setScore($pc.getScore() + green_walk_bike_points * dist1 + green_bus_train_points * dist2);
     update($pc);
@@ -35,7 +39,7 @@ when
     InputData(data['p+r'] == true) 
     $pc : PointConcept(name == "green leaves")
 then
-	log("apply \'green p+r bonus\'");
+	utils.log("apply \'green p+r bonus\'");
 	$pc.setScore($pc.getScore() + green_pr_bonus);
     update($pc);
     insert(new PRItinerary());
@@ -49,7 +53,7 @@ when
     not PRItinerary()
     $pc : PointConcept(name == "green leaves")
 then
-	log("apply \'green sustainable bonus\'");
+	utils.log("apply \'green sustainable bonus\'");
 	$pc.setScore($pc.getScore() + green_sustainable_bonus);
     update($pc);
 end

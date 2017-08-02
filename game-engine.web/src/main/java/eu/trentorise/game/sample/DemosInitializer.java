@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.AuthUser;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.sec.UsersProvider;
@@ -35,8 +36,7 @@ import eu.trentorise.game.services.GameService;
 @Component
 public class DemosInitializer {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DemosInitializer.class);
+	private static final Logger logger = LoggerFactory.getLogger(DemosInitializer.class);
 
 	@Autowired
 	private UsersProvider usersProvider;
@@ -51,13 +51,11 @@ public class DemosInitializer {
 	private Environment env;
 
 	@PostConstruct
-	@SuppressWarnings("unused")
 	private void initDemos() {
 		Game g = null;
-		boolean secProfileActive = Arrays.binarySearch(env.getActiveProfiles(),
-				"sec") >= 0;
+		boolean secProfileActive = Arrays.binarySearch(env.getActiveProfiles(), "sec") >= 0;
 		if (secProfileActive) {
-			logger.info("sec profile active..create sample game for every user");
+			LogHub.info(null, logger, "sec profile active..create sample game for every user");
 			for (AuthUser user : usersProvider.getUsers()) {
 				g = gameFactory.createGame(null, null, user.getUsername());
 				if (g != null) {
@@ -65,10 +63,9 @@ public class DemosInitializer {
 				}
 			}
 		} else {
-			logger.info("no-sec profile active..create sample game for default user");
+			LogHub.info(null, logger, "no-sec profile active..create sample game for default user");
 			// initialize demo-game for default user in no-sec env
-			g = gameFactory.createGame(null, null,
-					DefaultIdentityLookup.DEFAULT_USER);
+			g = gameFactory.createGame(null, null, DefaultIdentityLookup.DEFAULT_USER);
 			if (g != null) {
 				gameSrv.startupTasks(g.getId());
 			}

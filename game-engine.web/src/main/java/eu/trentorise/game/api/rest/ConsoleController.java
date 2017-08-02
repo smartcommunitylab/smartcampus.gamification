@@ -459,6 +459,6 @@ public class ConsoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/rule/validate", consumes = {
 			"application/json" }, produces = { "application/json" })
 	public List<String> validateRule(@RequestBody String ruleContent) {
-		return gameEngine.validateRule(ruleContent);
+		return gameEngine.validateRule(null, ruleContent);
 	}
 }

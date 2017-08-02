@@ -35,6 +35,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import eu.trentorise.game.core.AppContextProvider;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.DBPlayerManager;
 import eu.trentorise.game.managers.QuartzTaskManager;
 import eu.trentorise.game.managers.QueueGameWorkflow;
@@ -66,34 +67,30 @@ public class AppConfig {
 	@Bean
 	public Scheduler quartzScheduler() {
 		try {
-			boolean activatePersistence = env.getProperty(
-					"task.persistence.activate", Boolean.class, false);
+			boolean activatePersistence = env.getProperty("task.persistence.activate", Boolean.class, false);
 			if (activatePersistence) {
-				logger.info("task persistence active..load quartz properties");
+				LogHub.info(null, logger, "task persistence active..load quartz properties");
 				Properties props = new Properties();
 				Map<String, Object> propsMap = new HashMap<String, Object>();
-				propsMap.put("org.quartz.jobStore.class", env.getProperty(
-						"org.quartz.jobStore.class",
-						"com.novemberain.quartz.mongodb.MongoDBJobStore"));
-				propsMap.put("org.quartz.jobStore.addresses", env.getProperty(
-						"org.quartz.jobStore.addresses", "localhost"));
-				propsMap.put("org.quartz.jobStore.dbName", env
-						.getProperty("org.quartz.jobStore.dbName",
-								"gamification_task_store"));
-				propsMap.put("org.quartz.jobStore.collectionPrefix", env
-						.getProperty("org.quartz.jobStore.collectionPrefix",
-								"quartz"));
-				propsMap.put("org.quartz.threadPool.threadCount", env
-						.getProperty("org.quartz.threadPool.threadCount", "10"));
+				propsMap.put("org.quartz.jobStore.class",
+						env.getProperty("org.quartz.jobStore.class", "com.novemberain.quartz.mongodb.MongoDBJobStore"));
+				propsMap.put("org.quartz.jobStore.addresses",
+						env.getProperty("org.quartz.jobStore.addresses", "localhost"));
+				propsMap.put("org.quartz.jobStore.dbName",
+						env.getProperty("org.quartz.jobStore.dbName", "gamification_task_store"));
+				propsMap.put("org.quartz.jobStore.collectionPrefix",
+						env.getProperty("org.quartz.jobStore.collectionPrefix", "quartz"));
+				propsMap.put("org.quartz.threadPool.threadCount",
+						env.getProperty("org.quartz.threadPool.threadCount", "10"));
 				props.putAll(propsMap);
 				return new StdSchedulerFactory(props).getScheduler();
 			} else {
-				logger.info("task persistence unactive");
+				LogHub.info(null, logger, "task persistence unactive");
 				return new StdSchedulerFactory().getScheduler();
 
 			}
 		} catch (SchedulerException e) {
-			logger.error("Error creating scheduler");
+			LogHub.error(null, logger, "Error creating scheduler");
 			return null;
 		}
 

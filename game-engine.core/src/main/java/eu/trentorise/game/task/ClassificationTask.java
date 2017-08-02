@@ -11,16 +11,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.trentorise.game.core.GameContext;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.ClassificationPosition;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.notification.ClassificationNotification;
 
 public abstract class ClassificationTask extends GameTask {
 
-	private final Logger logger = LoggerFactory
-			.getLogger(ClassificationTask.class);
+	private final Logger logger = LoggerFactory.getLogger(ClassificationTask.class);
 
 	private static final int DEFAULT_VALUE = 3;
 
@@ -35,8 +36,7 @@ public abstract class ClassificationTask extends GameTask {
 
 	}
 
-	public ClassificationTask(Integer itemsToNotificate,
-			String classificationName, TaskSchedule schedule) {
+	public ClassificationTask(Integer itemsToNotificate, String classificationName, TaskSchedule schedule) {
 		super(classificationName, schedule);
 		this.classificationName = classificationName;
 		this.itemsToNotificate = itemsToNotificate;
@@ -54,7 +54,7 @@ public abstract class ClassificationTask extends GameTask {
 			return;
 		}
 
-		logger.info("run task {} of group {}", getName(), ctx.getGameRefId());
+		LogHub.info(ctx.getGameRefId(), logger, "run task {} of group {}", getName(), ctx.getGameRefId());
 
 		// read all game players
 		List<String> players = ctx.readPlayers();
@@ -67,13 +67,11 @@ public abstract class ClassificationTask extends GameTask {
 
 		ClassificationBuilder builder = createBuilder(states);
 
-		List<ClassificationPosition> classification = builder
-				.getClassificationBoard().getBoard();
+		List<ClassificationPosition> classification = builder.getClassificationBoard().getBoard();
 		// debug logging
 		if (logger.isDebugEnabled()) {
 			for (ClassificationPosition position : classification) {
-				logger.debug("{}: player {} score {}", classificationName,
-						position.getPlayerId(), position.getScore());
+				logger.debug("{}: player {} score {}", classificationName, position.getPlayerId(), position.getScore());
 
 			}
 		}
@@ -107,13 +105,20 @@ public abstract class ClassificationTask extends GameTask {
 			lastScore = item.getScore();
 			nextPosition++;
 
-			Classification c = createClassificationObject(ctx, item.getScore(),
-					getScoreType(), position);
+			Classification c = createClassificationObject(ctx, item.getScore(), getScoreType(), position);
 
 			List<Object> factObjs = new ArrayList<Object>();
 			factObjs.add(c);
-			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), null,
-					factObjs);
+			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), null, factObjs);
+
+			ClassificationNotification classificationNotification = new ClassificationNotification();
+			classificationNotification.setGameId(ctx.getGameRefId());
+			classificationNotification.setPlayerId(item.getPlayerId());
+			classificationNotification.setClassificationName(classificationName);
+			classificationNotification.setClassificationPosition(position);
+
+			ctx.sendNotification(classificationNotification);
+			LogHub.info(ctx.getGameRefId(), logger, "send notification: {}", classificationNotification.toString());
 		}
 
 		// ClassificationList classification = new ClassificationList(states);
@@ -192,15 +197,14 @@ public abstract class ClassificationTask extends GameTask {
 	//
 	// }
 
-	protected abstract ClassificationBuilder createBuilder(
-			List<PlayerState> states);
+	protected abstract ClassificationBuilder createBuilder(List<PlayerState> states);
 
 	// protected abstract double retrieveScore(PlayerState state);
 
 	protected abstract String getScoreType();
 
-	protected abstract Classification createClassificationObject(
-			GameContext ctx, double score, String scoreType, int position);
+	protected abstract Classification createClassificationObject(GameContext ctx, double score, String scoreType,
+			int position);
 
 	/*
 	 * protected PointConcept retrieveConcept(PlayerState p, String pointType) {

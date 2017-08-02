@@ -2,6 +2,9 @@ package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
 
 rule "player badge 1"
 when 
@@ -9,7 +12,7 @@ when
     $bc : BadgeCollectionConcept($b : 'poi_1', name =="itinerary", badgeEarned not contains $b) 
     Player( $playerId : id)
 then
-    log("PLAY badge 1");
+    utils.log("PLAY badge 1");
     $bc.getBadgeEarned().add($b);
     update( $bc );
     insert(new UpdateTeams("gained-poi_1"));
@@ -22,7 +25,7 @@ when
     $bc : BadgeCollectionConcept($b : 'poi_2', name =="itinerary", badgeEarned not contains $b) 
     Player( $playerId : id)
 then
-    log("PLAY badge 2");
+    utils.log("PLAY badge 2");
     $bc.getBadgeEarned().add($b);
     update( $bc );
     insert(new UpdateTeams("gained-poi_1"));
@@ -35,7 +38,7 @@ when
     $bc : BadgeCollectionConcept($b : 'poi_3', name =="itinerary", badgeEarned not contains $b) 
     Player( $playerId : id)
 then
-    log("PLAY badge 3");
+    utils.log("PLAY badge 3");
     $bc.getBadgeEarned().add($b);
     update( $bc );
     insert(new UpdateTeams("gained-poi_3"));
@@ -48,7 +51,7 @@ when
     $bc : BadgeCollectionConcept($b : 'team_1', name =="itinerary", badgeEarned not contains $b) 
     Player($playerId: id, team == true)
 then
-    log("apply \'R-add-badge leg-1\'");
+    utils.log("apply \'R-add-badge leg-1\'");
     $bc.getBadgeEarned().add($b);
     update( $bc );
     insert(new UpdateMembers("gained-team_1"));

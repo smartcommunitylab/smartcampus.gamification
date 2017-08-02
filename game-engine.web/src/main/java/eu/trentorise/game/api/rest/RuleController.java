@@ -141,8 +141,8 @@ public class RuleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule/validate", consumes = {
 			"application/json" }, produces = { "application/json" })
 	@ApiOperation(value = "Validate rule")
-	public List<String> validateRule(@RequestBody RuleValidateWrapper wrapper) {
-		return gameEngine.validateRule(wrapper.getRuleContent());
+	public List<String> validateRule(@PathVariable String gameId, @RequestBody RuleValidateWrapper wrapper) {
+		return gameEngine.validateRule(gameId, wrapper.getRuleContent());
 	}
 
 	private class RuleValidateWrapper {

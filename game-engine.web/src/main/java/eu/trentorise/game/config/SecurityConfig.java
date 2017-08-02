@@ -26,6 +26,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.AuthUser;
 import eu.trentorise.game.sec.UsersProvider;
 import eu.trentorise.game.service.IdentityLookupService;
@@ -36,8 +37,7 @@ import eu.trentorise.game.service.SpringSecurityIdentityLookup;
 @Profile({ "sec" })
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final Logger logger = org.slf4j.LoggerFactory
-			.getLogger(SecurityConfig.class);
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
 	@Autowired
 	private UsersProvider usersProvider;
 
@@ -47,23 +47,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth)
-			throws Exception {
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
 		for (AuthUser user : usersProvider.getUsers()) {
-			auth.inMemoryAuthentication().withUser(user.getUsername())
-					.password(user.getPassword()).roles(user.getRole());
-			logger.info("Loaded auth user {}", user.getUsername());
+			auth.inMemoryAuthentication().withUser(user.getUsername()).password(user.getPassword())
+					.roles(user.getRole());
+			LogHub.info(null, logger, "Loaded auth user {}", user.getUsername());
 		}
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/console/**")
-				.access("hasRole('ROLE_ADMIN')").antMatchers("/gengine/**")
-				.access("hasRole('ROLE_ADMIN')").antMatchers("/consoleweb/**")
-				.access("hasRole('ROLE_ADMIN')").antMatchers("/model/**")
-				.access("hasRole('ROLE_ADMIN')").and().httpBasic();
+		http.authorizeRequests().antMatchers("/console/**").access("hasRole('ROLE_ADMIN')").antMatchers("/gengine/**")
+				.access("hasRole('ROLE_ADMIN')").antMatchers("/consoleweb/**").access("hasRole('ROLE_ADMIN')")
+				.antMatchers("/model/**").access("hasRole('ROLE_ADMIN')").and().httpBasic();
 
 		// disable csrf permits POST http call to ConsoleController
 		// without using csrf token

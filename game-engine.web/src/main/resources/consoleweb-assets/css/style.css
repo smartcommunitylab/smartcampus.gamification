@@ -576,3 +576,7 @@ ul.point-monitor, ul.point-monitor > li {
 li.point-monitor {
 	border-bottom: 1px solid rgb(55,159,244);
 } 
+
+.number-box {
+	width: 5em;
+}

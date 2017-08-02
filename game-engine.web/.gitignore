@@ -6,3 +6,6 @@ src/main/resources/consoleweb-assets/bower_components
 */.DS_Store
 .DS_Store
 *.log
+
+# eclipse launch files
+*.launch

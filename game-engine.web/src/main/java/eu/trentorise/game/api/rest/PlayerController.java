@@ -23,7 +23,10 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 public class PlayerController {
@@ -233,8 +236,11 @@ public class PlayerController {
 	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/search", consumes = {
 			"application/json" }, produces = { "application/json" })
 	@ApiOperation(value = "Search player states")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
 	public Page<PlayerStateDTO> searchByQuery(@PathVariable String gameId, @RequestBody WrapperQuery query,
-			Pageable pageable) {
+			@ApiIgnore Pageable pageable) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.ExecutionDataDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
@@ -46,7 +47,10 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.Workflow;
 import eu.trentorise.game.utils.Converter;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping(value = "/gengine")
@@ -78,7 +82,7 @@ public class MainController {
 			try {
 				res.sendError(403, String.format("game %s is expired", game.getId()));
 			} catch (IOException e1) {
-				logger.error("Exception sendError to client", e1);
+				LogHub.error(game.getId(), logger, "Exception sendError to client", e1);
 			}
 		} else {
 			workflow.apply(data.getGameId(), data.getActionId(), data.getPlayerId(), data.getData(), null);
@@ -105,7 +109,10 @@ public class MainController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}", produces = { "application/json" })
 	@ApiOperation(value = "Get player states", notes = "Get the state of players in a game filter by optional player name")
-	public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId, Pageable pageable,
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
+	public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId, @ApiIgnore Pageable pageable,
 			@RequestParam(required = false) String playerFilter) {
 
 		try {
@@ -132,6 +139,7 @@ public class MainController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}", produces = { "application/json" })
 	@ApiOperation(value = "Get notifications", notes = "Get the notifications of a game")
+	@Deprecated
 	public List<Notification> readNotification(@PathVariable String gameId,
 			@RequestParam(required = false) Long timestamp) {
 		try {
@@ -141,7 +149,7 @@ public class MainController {
 		}
 
 		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, timestamp);
+			return notificationSrv.readNotifications(gameId, timestamp, -1);
 		} else {
 			return notificationSrv.readNotifications(gameId);
 		}
@@ -150,6 +158,7 @@ public class MainController {
 	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}/{playerId}", produces = {
 			"application/json" })
 	@ApiOperation(value = "Get player notifications", notes = "Get the player notifications of a game")
+	@Deprecated
 	public List<Notification> readNotification(@PathVariable String gameId, @PathVariable String playerId,
 			@RequestParam(required = false) Long timestamp) {
 
@@ -165,7 +174,7 @@ public class MainController {
 			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
 		}
 		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, playerId, timestamp);
+			return notificationSrv.readNotifications(gameId, playerId, timestamp, -1);
 		} else {
 			return notificationSrv.readNotifications(gameId, playerId);
 		}

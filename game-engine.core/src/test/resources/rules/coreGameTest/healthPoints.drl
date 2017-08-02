@@ -4,12 +4,17 @@ package eu.trentorise.game.model
 global Integer health_walk_points;
 global Integer health_bike_points;
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
+
 rule "update health points"
 when
     InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"])
     $pc : PointConcept(name == "health")
 then
-	log("apply \'update health points\'");
+	utils.log("apply \'update health points\'");
 	Double bike = $bike != null ? (Double) $bike : 0;
 	Double walk = $walk != null ? (Double) $walk : 0;
 

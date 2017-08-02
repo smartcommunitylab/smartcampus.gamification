@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -39,8 +40,7 @@ import eu.trentorise.game.task.GeneralClassificationTask;
 public class GamePersistence {
 
 	@Transient
-	private final Logger logger = LoggerFactory
-			.getLogger(GamePersistence.class);
+	private final Logger logger = LoggerFactory.getLogger(GamePersistence.class);
 
 	@Id
 	private String id;
@@ -48,6 +48,8 @@ public class GamePersistence {
 	private String name;
 
 	private String owner;
+
+	private String domain;
 
 	private Set<String> actions = new HashSet<String>();
 
@@ -68,6 +70,7 @@ public class GamePersistence {
 		id = game.getId();
 		name = game.getName();
 		owner = game.getOwner();
+		domain = game.getDomain();
 		actions = game.getActions();
 		rules = game.getRules();
 		if (game.getTasks() != null) {
@@ -90,30 +93,26 @@ public class GamePersistence {
 		game.setId(id);
 		game.setName(name);
 		game.setOwner(owner);
+		game.setDomain(domain);
 		game.setActions(actions);
 		game.setRules(rules);
 		Set<GameTask> t = new HashSet<GameTask>();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
-		mapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING,
-				true);
+		mapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
 		for (GenericObjectPersistence obj : tasks) {
 			// fix: Use @JsonDeserialize to maintain compatibility with
 			// databases previous of version 2.0.0 in which
 			// classificationTask was a concrete class representing general
 			// classifications
-			if (obj.getType().equals(
-					ClassificationTask.class.getCanonicalName())) {
+			if (obj.getType().equals(ClassificationTask.class.getCanonicalName())) {
 				obj.setType(GeneralClassificationTask.class.getCanonicalName());
 			}
 			try {
-				t.add(mapper.convertValue(
-						obj.getObj(),
-						(Class<? extends GameTask>) Thread.currentThread()
-								.getContextClassLoader()
-								.loadClass(obj.getType())));
+				t.add(mapper.convertValue(obj.getObj(), (Class<? extends GameTask>) Thread.currentThread()
+						.getContextClassLoader().loadClass(obj.getType())));
 			} catch (Exception e) {
-				logger.error("Problem to load class {}", obj.getType(), e);
+				LogHub.error(id, logger, "Problem to load class {}", obj.getType(), e);
 			}
 		}
 		game.setTasks(t);
@@ -121,11 +120,8 @@ public class GamePersistence {
 		Set<GameConcept> gc = new HashSet<GameConcept>();
 		for (GenericObjectPersistence obj : concepts) {
 			try {
-				gc.add(mapper.convertValue(
-						obj.getObj(),
-						(Class<? extends GameConcept>) Thread.currentThread()
-								.getContextClassLoader()
-								.loadClass(obj.getType())));
+				gc.add(mapper.convertValue(obj.getObj(), (Class<? extends GameConcept>) Thread.currentThread()
+						.getContextClassLoader().loadClass(obj.getType())));
 			} catch (Exception e) {
 				logger.error("Problem to load class {}", obj.getType());
 			}
@@ -206,6 +202,14 @@ public class GamePersistence {
 
 	public void setConcepts(Set<GenericObjectPersistence> concepts) {
 		this.concepts = concepts;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 }

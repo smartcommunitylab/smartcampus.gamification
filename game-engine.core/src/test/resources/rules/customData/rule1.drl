@@ -1,5 +1,8 @@
 package eu.trentorise.game.model
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
 
 rule "init customData"
 when
@@ -9,7 +12,7 @@ then
 	$cd.put("counter",1000);
 	$cd.put("areas", new java.util.ArrayList<String>()); 
 	update($cd);	
-	log("Action: " + $actionId);
+	utils.log("Action: " + $actionId);
 end
 
 rule "edit counter"
@@ -28,7 +31,7 @@ when
 then
 	java.util.List<String> areas = (java.util.List<String>) $cd.get("areas"); 
 	areas.add('area-51');
-	log('added area-51');
+	utils.log('added area-51');
 	update($cd);
 end
 

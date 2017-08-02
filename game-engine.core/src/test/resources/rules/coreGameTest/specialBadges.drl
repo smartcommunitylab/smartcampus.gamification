@@ -1,6 +1,9 @@
 package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
 
 /* ***************************************************************************
 E-MOTION  
@@ -15,7 +18,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'e-motion badge\'");
+	utils.log("apply \'e-motion badge\'");
 	$bc.getBadgeEarned().add('e-motion');
 	insert( new BadgeNotification($gameId,$playerId,'e-motion'));
 	update( $bc );
@@ -34,7 +37,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply  \'"+$park+"-park badge\'");
+	utils.log("apply  \'"+$park+"-park badge\'");
 	$bc.getBadgeEarned().add((String) $park+'-park');
 	insert( new BadgeNotification($gameId,$playerId,$park+'-park'));
 	update( $bc );
@@ -53,7 +56,7 @@ when
     Game( $gameId: id)
     Player( $playerId : id)
 then
-	log("apply \'zero-impact badge\'");
+	utils.log("apply \'zero-impact badge\'");
 	$bc.getBadgeEarned().add('zero-impact');
 	insert( new BadgeNotification($gameId,$playerId,'zero-impact'));
 	update( $bc );

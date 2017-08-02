@@ -30,6 +30,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import com.mongodb.Mongo;
 
+import eu.trentorise.game.core.LogHub;
+
 @Configuration
 @EnableMongoRepositories("eu.trentorise.game.repo")
 @PropertySource("classpath:engine.core.properties")
@@ -49,7 +51,7 @@ public class MongoConfig {
 			mongo.afterPropertiesSet();
 			return mongo.getObject();
 		} catch (Exception e) {
-			logger.error("Exception in mongo configuration: {}", e.getMessage());
+			LogHub.error(null, logger, "Exception in mongo configuration: {}", e.getMessage());
 			return null;
 		}
 	}
@@ -58,12 +60,10 @@ public class MongoConfig {
 	public MongoTemplate mongoTemplate() {
 		try {
 			MongoTemplate mongoTemplate = new MongoTemplate(
-					new SimpleMongoDbFactory(mongo(),
-							env.getProperty("mongo.dbname")));
+					new SimpleMongoDbFactory(mongo(), env.getProperty("mongo.dbname")));
 			return mongoTemplate;
 		} catch (Exception e) {
-			logger.error("Exception in mongotemplate configuration: {}",
-					e.getMessage());
+			LogHub.error(null, logger, "Exception in mongotemplate configuration: {}", e.getMessage());
 			return null;
 		}
 	}

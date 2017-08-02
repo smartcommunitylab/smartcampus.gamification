@@ -11,6 +11,7 @@ import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.ClassificationFactory.ClassificationBuilder;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
@@ -25,40 +26,32 @@ public class ClassificationFactory {
 		public ClassificationBoard getClassificationBoard();
 	}
 
-	public static ClassificationBuilder createGeneralClassification(
-			List<PlayerState> states, String pointConceptName) {
+	public static ClassificationBuilder createGeneralClassification(List<PlayerState> states, String pointConceptName) {
 		return new GeneralClassificationBuilder(states, pointConceptName);
 	}
 
-	public static ClassificationBuilder createIncrementalClassification(
-			List<PlayerState> states, String pointConceptName, String periodName) {
-		return new IncrementalClassificationBuilder(states, pointConceptName,
-				periodName);
+	public static ClassificationBuilder createIncrementalClassification(List<PlayerState> states,
+			String pointConceptName, String periodName) {
+		return new IncrementalClassificationBuilder(states, pointConceptName, periodName);
 	}
 
-	public static ClassificationBuilder createIncrementalClassification(
-			List<PlayerState> states, String pointConceptName,
-			String periodName, Date date) {
-		return new IncrementalClassificationBuilder(states, pointConceptName,
-				periodName, date.getTime());
+	public static ClassificationBuilder createIncrementalClassification(List<PlayerState> states,
+			String pointConceptName, String periodName, Date date) {
+		return new IncrementalClassificationBuilder(states, pointConceptName, periodName, date.getTime());
 	}
 
-	public static ClassificationBuilder createIncrementalClassification(
-			List<PlayerState> states, String pointConceptName,
-			String periodName, int periodInstanceIndex) {
-		return new IncrementalClassificationBuilder(states, pointConceptName,
-				periodName, periodInstanceIndex);
+	public static ClassificationBuilder createIncrementalClassification(List<PlayerState> states,
+			String pointConceptName, String periodName, int periodInstanceIndex) {
+		return new IncrementalClassificationBuilder(states, pointConceptName, periodName, periodInstanceIndex);
 	}
 
 }
 
 class GeneralClassificationBuilder extends AbstractClassificationBuilder {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(GeneralClassificationBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(GeneralClassificationBuilder.class);
 
-	public GeneralClassificationBuilder(List<PlayerState> states,
-			String pointConceptName) {
+	public GeneralClassificationBuilder(List<PlayerState> states, String pointConceptName) {
 		super(states, ClassificationType.GENERAL, pointConceptName);
 
 	}
@@ -66,13 +59,11 @@ class GeneralClassificationBuilder extends AbstractClassificationBuilder {
 	@Override
 	protected double retrieveScore(PlayerState state, long moment) {
 		for (GameConcept gc : state.getState()) {
-			if (gc instanceof PointConcept
-					&& ((PointConcept) gc).getName().equals(pointConceptName)) {
+			if (gc instanceof PointConcept && ((PointConcept) gc).getName().equals(pointConceptName)) {
 				return ((PointConcept) gc).getScore();
 			}
 		}
-		logger.warn(String
-				.format("PointConcept %s not found", pointConceptName));
+		LogHub.warn(state.getGameId(), logger, "PointConcept {} not found", pointConceptName);
 		return 0d;
 	}
 
@@ -80,25 +71,23 @@ class GeneralClassificationBuilder extends AbstractClassificationBuilder {
 
 class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(IncrementalClassificationBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(IncrementalClassificationBuilder.class);
 	private String periodName;
 	private int periodInstanceIndex = -1;
 
-	public IncrementalClassificationBuilder(List<PlayerState> states,
-			String pointConceptName, String periodName) {
+	public IncrementalClassificationBuilder(List<PlayerState> states, String pointConceptName, String periodName) {
 		super(states, ClassificationType.INCREMENTAL, pointConceptName);
 		this.periodName = periodName;
 	}
 
-	public IncrementalClassificationBuilder(List<PlayerState> states,
-			String pointConceptName, String periodName, long moment) {
+	public IncrementalClassificationBuilder(List<PlayerState> states, String pointConceptName, String periodName,
+			long moment) {
 		super(states, ClassificationType.INCREMENTAL, pointConceptName, moment);
 		this.periodName = periodName;
 	}
 
-	public IncrementalClassificationBuilder(List<PlayerState> states,
-			String pointConceptName, String periodName, int periodInstanceIndex) {
+	public IncrementalClassificationBuilder(List<PlayerState> states, String pointConceptName, String periodName,
+			int periodInstanceIndex) {
 		super(states, ClassificationType.INCREMENTAL, pointConceptName);
 		this.periodName = periodName;
 		this.periodInstanceIndex = periodInstanceIndex;
@@ -107,8 +96,7 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 	@Override
 	protected double retrieveScore(PlayerState state, long moment) {
 		for (GameConcept gc : state.getState()) {
-			if (gc instanceof PointConcept
-					&& gc.getName().equals(pointConceptName)) {
+			if (gc instanceof PointConcept && gc.getName().equals(pointConceptName)) {
 				PointConcept pc = (PointConcept) gc;
 				if (moment > 0) {
 					return pc.getPeriodScore(periodName, moment);
@@ -119,8 +107,7 @@ class IncrementalClassificationBuilder extends AbstractClassificationBuilder {
 				}
 			}
 		}
-		logger.warn(String
-				.format("PointConcept %s not found", pointConceptName));
+		LogHub.warn(state.getGameId(), logger, "PointConcept {} not found", pointConceptName);
 		return 0d;
 	}
 
@@ -133,15 +120,14 @@ abstract class AbstractClassificationBuilder implements ClassificationBuilder {
 	private ClassificationType classificationType;
 	protected String pointConceptName;
 
-	public AbstractClassificationBuilder(List<PlayerState> states,
-			ClassificationType type, String pointConceptName) {
+	public AbstractClassificationBuilder(List<PlayerState> states, ClassificationType type, String pointConceptName) {
 		this.states = states;
 		this.classificationType = type;
 		this.pointConceptName = pointConceptName;
 	}
 
-	public AbstractClassificationBuilder(List<PlayerState> states,
-			ClassificationType type, String pointConceptName, long moment) {
+	public AbstractClassificationBuilder(List<PlayerState> states, ClassificationType type, String pointConceptName,
+			long moment) {
 		this.states = states;
 		this.classificationType = type;
 		this.pointConceptName = pointConceptName;
@@ -155,8 +141,7 @@ abstract class AbstractClassificationBuilder implements ClassificationBuilder {
 	@Override
 	public ClassificationBoard getClassificationBoard() {
 		ClassificationBoard board = new ClassificationBoard();
-		board.setBoard(IteratorUtils.toList(new Board(states, moment)
-				.iterator()));
+		board.setBoard(IteratorUtils.toList(new Board(states, moment).iterator()));
 		board.setType(classificationType);
 		board.setPointConceptName(pointConceptName);
 		return board;
@@ -172,23 +157,19 @@ abstract class AbstractClassificationBuilder implements ClassificationBuilder {
 		private void init(List<PlayerState> states, long moment) {
 			classification = new ArrayList<ClassificationPosition>();
 			for (PlayerState state : states) {
-				classification.add(new ClassificationPosition(retrieveScore(
-						state, moment), state.getPlayerId()));
+				classification.add(new ClassificationPosition(retrieveScore(state, moment), state.getPlayerId()));
 			}
 
-			Collections.sort(classification,
-					Collections.reverseOrder(new ClassificationSorter()));
+			Collections.sort(classification, Collections.reverseOrder(new ClassificationSorter()));
 
 		}
 
-		private class ClassificationSorter implements
-				Comparator<ClassificationPosition> {
+		private class ClassificationSorter implements Comparator<ClassificationPosition> {
 
 			public ClassificationSorter() {
 			}
 
-			public int compare(ClassificationPosition o1,
-					ClassificationPosition o2) {
+			public int compare(ClassificationPosition o1, ClassificationPosition o2) {
 				return Double.compare(o1.getScore(), o2.getScore());
 			}
 

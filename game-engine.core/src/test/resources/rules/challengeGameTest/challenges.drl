@@ -1,11 +1,15 @@
 package eu.trentorise.game.model
 
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
 rule "challenge"
 when
     $challenge : ChallengeConcept(modelName == "prize")
     $pc : PointConcept(name == "green leaves")
 then
-	log("Challenge PRIZE winner");
+	utils.log("Challenge PRIZE winner");
 	$challenge.completed();
 	$pc.increment(100d);
     update($pc);

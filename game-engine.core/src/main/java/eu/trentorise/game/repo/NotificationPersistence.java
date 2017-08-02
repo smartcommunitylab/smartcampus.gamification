@@ -24,14 +24,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.core.Notification;
 
 @Document(collection = "notification")
 public class NotificationPersistence extends GenericObjectPersistence {
 
 	@Transient
-	private final Logger logger = LoggerFactory
-			.getLogger(NotificationPersistence.class);
+	private final Logger logger = LoggerFactory.getLogger(NotificationPersistence.class);
 	@Id
 	private String id;
 
@@ -50,11 +50,10 @@ public class NotificationPersistence extends GenericObjectPersistence {
 	public Notification toNotification() {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return mapper.convertValue(getObj(),
-					(Class<? extends Notification>) Thread.currentThread()
-							.getContextClassLoader().loadClass(getType()));
+			return mapper.convertValue(getObj(), (Class<? extends Notification>) Thread.currentThread()
+					.getContextClassLoader().loadClass(getType()));
 		} catch (Exception e) {
-			logger.error("Problem to load class {}", getType(), e);
+			LogHub.error(null, logger, "Problem to load class {}", getType(), e);
 			return null;
 		}
 	}

@@ -42,6 +42,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
@@ -55,6 +56,7 @@ import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.StringSearchQuery;
+import eu.trentorise.game.notification.ChallengeAssignedNotification;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.PlayerRepo;
@@ -66,9 +68,7 @@ import eu.trentorise.game.services.PlayerService;
 @Component
 public class DBPlayerManager implements PlayerService {
 
-	private final Logger logger = LoggerFactory
-			.getLogger(DBPlayerManager.class);
-
+	private final static Logger logger = LoggerFactory.getLogger(DBPlayerManager.class);
 	@Autowired
 	private PlayerRepo playerRepo;
 
@@ -81,12 +81,13 @@ public class DBPlayerManager implements PlayerService {
 	@Autowired
 	private ChallengeModelRepo challengeModelRepo;
 
+	@Autowired
+	private NotificationManager notificationSrv;
+
 	public PlayerState loadState(String gameId, String playerId, boolean upsert) {
-		eu.trentorise.game.repo.StatePersistence state = playerRepo
-				.findByGameIdAndPlayerId(gameId, playerId);
-		PlayerState res = state == null ? (upsert ? new PlayerState(gameId,
-				playerId) : null) : isTeam(state) ? new TeamState(state)
-				: new PlayerState(state);
+		eu.trentorise.game.repo.StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId, playerId);
+		PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
+				: isTeam(state) ? new TeamState(state) : new PlayerState(state);
 		return initConceptsStructure(res, gameId);
 	}
 
@@ -106,17 +107,17 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	private boolean isTeam(StatePersistence state) {
-		return state != null
-				&& state.getMetadata().get(TeamState.NAME_METADATA) != null
+		return state != null && state.getMetadata().get(TeamState.NAME_METADATA) != null
 				&& state.getMetadata().get(TeamState.MEMBERS_METADATA) != null;
 	}
 
 	private StatePersistence persist(StatePersistence state) {
-		return persist(state.getGameId(), state.getPlayerId(),
-				state.getConcepts(), state.getCustomData(), state.getMetadata());
+		return persist(state.getGameId(), state.getPlayerId(), state.getConcepts(), state.getCustomData(),
+				state.getMetadata());
 	}
 
-	private StatePersistence persistConcepts(String gameId, String playerId, Map<String, Map<String, GenericObjectPersistence>> concepts) {
+	private StatePersistence persistConcepts(String gameId, String playerId,
+			Map<String, Map<String, GenericObjectPersistence>> concepts) {
 		return persist(gameId, playerId, concepts, null, null);
 	}
 
@@ -134,15 +135,15 @@ public class DBPlayerManager implements PlayerService {
 		return persist(gameId, playerId, null, null, metadata);
 	}
 
-	private StatePersistence persist(String gameId, String playerId, Map<String, Map<String, GenericObjectPersistence>> concepts, CustomData customData, Map<String, Object> metadata) {
+	private StatePersistence persist(String gameId, String playerId,
+			Map<String, Map<String, GenericObjectPersistence>> concepts, CustomData customData,
+			Map<String, Object> metadata) {
 		if (StringUtils.isBlank(gameId) || StringUtils.isBlank(playerId)) {
-			throw new IllegalArgumentException(
-					"field gameId and playerId of PlayerState MUST be set");
+			throw new IllegalArgumentException("field gameId and playerId of PlayerState MUST be set");
 		}
 
 		Criteria criteria = new Criteria();
-		criteria = criteria.and("gameId").is(gameId).and("playerId")
-				.is(playerId);
+		criteria = criteria.and("gameId").is(gameId).and("playerId").is(playerId);
 		Query query = new Query(criteria);
 		Update update = new Update();
 		if (concepts != null) {
@@ -157,8 +158,7 @@ public class DBPlayerManager implements PlayerService {
 		FindAndModifyOptions options = new FindAndModifyOptions();
 		options.upsert(true);
 		options.returnNew(true);
-		return mongoTemplate.findAndModify(query, update, options,
-				StatePersistence.class);
+		return mongoTemplate.findAndModify(query, update, options, StatePersistence.class);
 	}
 
 	public List<String> readPlayers(String gameId) {
@@ -173,32 +173,27 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public Page<String> readPlayers(String gameId, Pageable pageable) {
-		Page<StatePersistence> states = playerRepo.findByGameId(gameId,
-				pageable);
+		Page<StatePersistence> states = playerRepo.findByGameId(gameId, pageable);
 		List<String> result = new ArrayList<String>();
 		for (StatePersistence state : states) {
 			result.add(state.getPlayerId());
 		}
-		PageImpl<String> res = new PageImpl<String>(result, pageable,
-				states.getTotalElements());
+		PageImpl<String> res = new PageImpl<String>(result, pageable, states.getTotalElements());
 		return res;
 	}
 
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable) {
-		StopWatch stopWatch = LogManager.getLogger(
-				StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null ? new Log4JStopWatch()
-				: null;
+		StopWatch stopWatch = LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
+				? new Log4JStopWatch() : null;
 		if (stopWatch != null) {
 			stopWatch.start("loadStates");
 		}
-		Page<StatePersistence> states = playerRepo.findByGameId(gameId,
-				pageable);
+		Page<StatePersistence> states = playerRepo.findByGameId(gameId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
 			result.add(initConceptsStructure(new PlayerState(state), gameId));
 		}
-		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
-				states.getTotalElements());
+		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
 		if (stopWatch != null) {
 			stopWatch.stop("loadStates", "Loaded states of game " + gameId);
 		}
@@ -218,21 +213,18 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable) {
-		Page<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(
-				gameId, playerId, pageable);
+		Page<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId, pageable);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
 			result.add(initConceptsStructure(new PlayerState(state), gameId));
 		}
-		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable,
-				states.getTotalElements());
+		PageImpl<PlayerState> res = new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
 		return res;
 	}
 
 	@Override
 	public List<PlayerState> loadStates(String gameId, String playerId) {
-		List<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(
-				gameId, playerId);
+		List<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId);
 		List<PlayerState> result = new ArrayList<PlayerState>();
 		for (StatePersistence state : states) {
 			result.add(initConceptsStructure(new PlayerState(state), gameId));
@@ -253,8 +245,7 @@ public class DBPlayerManager implements PlayerService {
 					for (GameConcept gc : g.getConcepts()) {
 						boolean found = false;
 						for (GameConcept pgc : ps.getState()) {
-							found = gc.getName().equals(pgc.getName())
-									&& gc.getClass().equals(pgc.getClass());
+							found = gc.getName().equals(pgc.getName()) && gc.getClass().equals(pgc.getClass());
 							if (found) {
 								break;
 							}
@@ -293,8 +284,7 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public List<TeamState> readTeams(String gameId, String playerId) {
-		List<StatePersistence> result = playerRepo.findTeamByMemberId(gameId,
-				playerId);
+		List<StatePersistence> result = playerRepo.findTeamByMemberId(gameId, playerId);
 		List<TeamState> converted = new ArrayList<>();
 		for (StatePersistence sp : result) {
 			converted.add(new TeamState(sp));
@@ -305,11 +295,9 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public TeamState addToTeam(String gameId, String teamId, String playerId) {
-		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
-				teamId);
+		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId, teamId);
 		if (state != null) {
-			List<String> members = (List<String>) state.getMetadata().get(
-					TeamState.MEMBERS_METADATA);
+			List<String> members = (List<String>) state.getMetadata().get(TeamState.MEMBERS_METADATA);
 			if (members != null) {
 				members.add(playerId);
 				state.getMetadata().put(TeamState.MEMBERS_METADATA, members);
@@ -324,11 +312,9 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public TeamState removeFromTeam(String gameId, String teamId, String playerId) {
-		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId,
-				teamId);
+		StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId, teamId);
 		if (state != null) {
-			List<String> members = (List<String>) state.getMetadata().get(
-					TeamState.MEMBERS_METADATA);
+			List<String> members = (List<String>) state.getMetadata().get(TeamState.MEMBERS_METADATA);
 			if (members != null) {
 				members.remove(playerId);
 				state.getMetadata().put(TeamState.MEMBERS_METADATA, members);
@@ -354,22 +340,19 @@ public class DBPlayerManager implements PlayerService {
 	}
 
 	@Override
-	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName, Map<String, Object> data, Date start, Date end) {
+	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName,
+			Map<String, Object> data, Date start, Date end) {
 
 		if (playerId == null) {
-			throw new IllegalArgumentException(
-					String.format("playerId cannot be null"));
+			throw new IllegalArgumentException(String.format("playerId cannot be null"));
 		}
 
 		if (modelName == null) {
-			throw new IllegalArgumentException(
-					String.format("modelName cannot be null"));
+			throw new IllegalArgumentException(String.format("modelName cannot be null"));
 		}
-		ChallengeModel model = challengeModelRepo.findByGameIdAndName(gameId,
-				modelName);
+		ChallengeModel model = challengeModelRepo.findByGameIdAndName(gameId, modelName);
 		if (model == null) {
-			throw new IllegalArgumentException(String.format(
-					"model %s not exist in game %s", modelName, gameId));
+			throw new IllegalArgumentException(String.format("model %s not exist in game %s", modelName, gameId));
 		}
 
 		if (data == null) {
@@ -377,8 +360,8 @@ public class DBPlayerManager implements PlayerService {
 		} else {
 			for (String var : data.keySet()) {
 				if (!model.getVariables().contains(var)) {
-					throw new IllegalArgumentException(String.format(
-							"field %s not present in model %s", var, modelName));
+					throw new IllegalArgumentException(
+							String.format("field %s not present in model %s", var, modelName));
 				}
 			}
 		}
@@ -390,15 +373,23 @@ public class DBPlayerManager implements PlayerService {
 		challenge.setEnd(end);
 		// needed since v2.2.0, gameConcept name is mandatory because it is used
 		// as key in persistence structure
-		challenge.setName(instanceName != null ? instanceName : UUID
-				.randomUUID().toString());
+		challenge.setName(instanceName != null ? instanceName : UUID.randomUUID().toString());
 
 		// save in playerState
 		PlayerState state = loadState(gameId, playerId, true);
 
 		state.getState().add(challenge);
-		persistConcepts(gameId, playerId,
-				new StatePersistence(state).getConcepts());
+		persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
+
+		ChallengeAssignedNotification challengeNotification = new ChallengeAssignedNotification();
+		challengeNotification.setChallengeName(challenge.getName());
+		challengeNotification.setGameId(gameId);
+		challengeNotification.setPlayerId(playerId);
+		challengeNotification.setStartDate(start);
+		challengeNotification.setEndDate(end);
+
+		notificationSrv.notificate(challengeNotification);
+		LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
 
 		return challenge;
 
@@ -408,7 +399,8 @@ public class DBPlayerManager implements PlayerService {
 	// String pointConceptName, String periodName,
 	// String key, String gameId, int pageNum, int pageSize) {
 	@Override
-	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, Pageable pageable) {
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
+			String key, String gameId, Pageable pageable) {
 
 		ClassificationBoard classificationBoard = new ClassificationBoard();
 
@@ -417,24 +409,20 @@ public class DBPlayerManager implements PlayerService {
 		Query query = new Query();
 		// criteria.
 		query.addCriteria(criteriaGameId);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
-				+ pointConceptName + ".obj.periods." + periodName
-				+ ".instances." + key + ".score"));
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName + ".obj.periods."
+				+ periodName + ".instances." + key + ".score"));
 		// fields in response.
-		query.fields().include(
-				"concepts.PointConcept." + pointConceptName + ".obj.periods."
-						+ periodName + ".instances." + key + ".score");
+		query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
+				+ ".instances." + key + ".score");
 		query.fields().include("playerId");
 		// pagination.
 		query.with(pageable);
 
-		List<StatePersistence> pStates = mongoTemplate.find(query,
-				StatePersistence.class);
+		List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
 
 		List<ClassificationPosition> classification = new ArrayList<ClassificationPosition>();
 		for (StatePersistence state : pStates) {
-			classification.add(new ClassificationPosition(state
-					.getIncrementalScore(pointConceptName, periodName, key),
+			classification.add(new ClassificationPosition(state.getIncrementalScore(pointConceptName, periodName, key),
 					state.getPlayerId()));
 		}
 		classificationBoard.setBoard(classification);
@@ -454,20 +442,16 @@ public class DBPlayerManager implements PlayerService {
 
 		Query query = new Query();
 		query.addCriteria(general);
-		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept."
-				+ itemType + ".obj.score"));
-		query.fields().include(
-				"concepts.PointConcept." + itemType + ".obj.score");
+		query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + itemType + ".obj.score"));
+		query.fields().include("concepts.PointConcept." + itemType + ".obj.score");
 		query.fields().include("playerId");
 		// pagination.
 		query.with(pageable);
 
-		List<StatePersistence> pStates = mongoTemplate.find(query,
-				StatePersistence.class);
+		List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
 
 		for (StatePersistence state : pStates) {
-			classification.add(new ClassificationPosition(state
-					.getGeneralItemScore(itemType), state.getPlayerId()));
+			classification.add(new ClassificationPosition(state.getGeneralItemScore(itemType), state.getPlayerId()));
 		}
 		classificationBoard.setPointConceptName(itemType);
 		classificationBoard.setBoard(classification);
@@ -481,31 +465,27 @@ public class DBPlayerManager implements PlayerService {
 		for (StatePersistence state : states) {
 			contents.add(new PlayerState(state));
 		}
-		Page<PlayerState> result = new PageImpl<>(contents, pageable,
-				states.getTotalElements());
+		Page<PlayerState> result = new PageImpl<>(contents, pageable, states.getTotalElements());
 
 		return result;
 	}
 
 	@Override
 	public Page<PlayerState> search(String gameId, RawSearchQuery query, Pageable pageable) {
-		Page<StatePersistence> states = playerRepo.search(gameId, query,
-				pageable);
+		Page<StatePersistence> states = playerRepo.search(gameId, query, pageable);
 		return convertToPlayerState(states, pageable);
 
 	}
 
 	@Override
 	public Page<PlayerState> search(String gameId, ComplexSearchQuery query, Pageable pageable) {
-		Page<StatePersistence> states = playerRepo.search(gameId, query,
-				pageable);
+		Page<StatePersistence> states = playerRepo.search(gameId, query, pageable);
 		return convertToPlayerState(states, pageable);
 	}
 
 	@Override
 	public Page<PlayerState> search(String gameId, StringSearchQuery query, Pageable pageable) {
-		Page<StatePersistence> states = playerRepo.search(gameId, query,
-				pageable);
+		Page<StatePersistence> states = playerRepo.search(gameId, query, pageable);
 		return convertToPlayerState(states, pageable);
 	}
 

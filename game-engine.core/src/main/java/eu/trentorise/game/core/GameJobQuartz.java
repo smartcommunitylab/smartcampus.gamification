@@ -36,16 +36,13 @@ public class GameJobQuartz extends QuartzJobBean {
 	}
 
 	@Override
-	protected void executeInternal(JobExecutionContext arg0)
-			throws JobExecutionException {
+	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			GameContext gameCtx = (GameContext) arg0.getScheduler()
-					.getContext().get(gameId + ":" + taskName);
-			GameTask task = (GameTask) arg0.getScheduler().getContext()
-					.get(taskName);
+			GameContext gameCtx = (GameContext) arg0.getScheduler().getContext().get(gameId + ":" + taskName);
+			GameTask task = (GameTask) arg0.getScheduler().getContext().get(taskName);
 			task.execute(gameCtx);
 		} catch (SchedulerException e) {
-			logger.error("Error getting gameContext in game task execution");
+			LogHub.error(gameId, logger, "Error getting gameContext in game task execution");
 		}
 	}
 

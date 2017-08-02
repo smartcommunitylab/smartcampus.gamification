@@ -37,8 +37,8 @@
 		<div class="col-md-12">
 			<form data-role="form" style="margin: 15px 0">
 				<div class="input-group">
-					<input id="player" type="text" data-ng-model="playerIdFilter"
-						ng-change="filter()" class="form-control"
+					<input id="player" type="text" data-ng-model="playerIdFilter" data-ng-model-options="{ debounce: 200 }"
+						data-ng-change="filter()" class="form-control"
 						placeholder="{{'labels:lbl_filter_ph' | i18next}}" autofocus /> <span
 						class="input-group-btn">
 						<button class="btn btn-primary" type="submit"

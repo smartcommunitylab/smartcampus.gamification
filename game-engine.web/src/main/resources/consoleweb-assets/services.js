@@ -232,8 +232,9 @@ angular.module('gamificationEngine.services', [])
 				if (!game.id) {
 					game = {};
 				}
-				game.name = fields.name;
+				game.name = fields.name.trim();
 				game.expiration = fields.expiration;
+				game.domain = fields.domain.trim();
 
 				$http.post(url + '/console/game', game).
 				success(function (data, status, headers, config) {
@@ -274,7 +275,7 @@ angular.module('gamificationEngine.services', [])
 				let periods = {};
 				let dayMillis = 24 * 3600 * 1000;
 				angular.forEach(instanceProperties.periods,function(value,key){
-					periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name};
+					periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name, capacity: value.capacity};
 				});
 				instance.periods = periods;
 				tmpGame.pointConcept.unshift(instance);
@@ -361,6 +362,26 @@ angular.module('gamificationEngine.services', [])
 					page: pageRequest,
 					size: pageSize,
 					playerFilter: playerFilter
+				}
+			}).success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+
+			return deferred.promise;
+		}
+		
+		var playersSearch = function (gameId, playerFilter, pageRequest, pageSize) {
+			var deferred = $q.defer();
+			var query = {};
+			query.rawQuery = {};
+			query.rawQuery.query = {};
+			query.rawQuery.query = {'playerId' : '/' +playerFiilter+'/'}
+			$http.post(url + '/gamification/data/game/' + gameId +'/player/search',query, {
+				params: {
+					page: pageRequest,
+					size: pageSize,
 				}
 			}).success(function (data, status, headers, config) {
 				deferred.resolve(data);

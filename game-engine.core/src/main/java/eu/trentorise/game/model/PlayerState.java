@@ -70,6 +70,24 @@ public class PlayerState {
 		}
 	}
 
+	public PlayerState clone() {
+		PlayerState cloned = new PlayerState(gameId, playerId);
+		cloned.setState(new HashSet<GameConcept>());
+		for (GameConcept gc : state) {
+			if (gc instanceof PointConcept) {
+				PointConcept pointCopy = new PointConcept(gc.getName());
+				pointCopy.setScore(((PointConcept) gc).getScore());
+				cloned.getState().add(pointCopy);
+			} else if (gc instanceof BadgeCollectionConcept) {
+				BadgeCollectionConcept collectionCopy = new BadgeCollectionConcept(gc.getName());
+				collectionCopy.getBadgeEarned().addAll(((BadgeCollectionConcept) gc).getBadgeEarned());
+				cloned.getState().add(collectionCopy);
+			}
+		}
+
+		return cloned;
+	}
+
 	public Set<GameConcept> getState() {
 		return state;
 	}

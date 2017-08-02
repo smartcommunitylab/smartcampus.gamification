@@ -23,6 +23,7 @@ import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.StatsChallengeConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -63,14 +64,33 @@ public class ChallengeTest {
 	}
 
 	@Test
+	public void challengeCompleted() {
+		ChallengeConcept challenge = new ChallengeConcept();
+		Assert.assertEquals(false, challenge.isCompleted());
+		Assert.assertNull(challenge.getDateCompleted());
+		challenge.completed();
+		Assert.assertEquals(true, challenge.isCompleted());
+		Assert.assertNotNull(challenge.getDateCompleted());
+	}
+
+	@Test
+	public void statsChallengeCompleted() {
+		ChallengeConcept challenge = new StatsChallengeConcept(GAME, PLAYER, "executionId");
+		challenge.setName("challengeName");
+		Assert.assertEquals(false, challenge.isCompleted());
+		Assert.assertNull(challenge.getDateCompleted());
+		challenge.completed();
+		Assert.assertEquals(true, challenge.isCompleted());
+		Assert.assertNotNull(challenge.getDateCompleted());
+	}
+
+	@Test
 	public void loadChallenges() {
 		Game game = gameSrv.saveGameDefinition(defineGame());
 
 		// add rules
-		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/challenges.drl"));
-		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenPoints.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenges.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
 
 		// define challenge Model
 		ChallengeModel model1 = new ChallengeModel();
@@ -78,14 +98,13 @@ public class ChallengeTest {
 		gameSrv.saveChallengeModel(GAME, model1);
 
 		LocalDate now = new LocalDate();
-		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null,
-				now.toDate(), now.dayOfMonth().addToCopy(2).toDate());
+		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now.toDate(),
+				now.dayOfMonth().addToCopy(2).toDate());
 
 		PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
 		// execution
-		p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
-				System.currentTimeMillis(), null);
+		p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(), System.currentTimeMillis(), null);
 
 		Assert.assertEquals(2, p.getState().size());
 		ChallengeConcept ch = null;
@@ -103,10 +122,8 @@ public class ChallengeTest {
 		Game game = gameSrv.saveGameDefinition(defineGame());
 
 		// add rules
-		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/challenges.drl"));
-		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenPoints.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenges.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
 
 		// define challenge Model
 		ChallengeModel model1 = new ChallengeModel();
@@ -114,19 +131,16 @@ public class ChallengeTest {
 		gameSrv.saveChallengeModel(GAME, model1);
 
 		LocalDate now = new LocalDate();
-		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now
-				.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth()
-				.addToCopy(-1).toDate());
+		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now.dayOfMonth().addToCopy(-2).toDate(),
+				now.dayOfMonth().addToCopy(-1).toDate());
 
-		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now
-				.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth()
-				.addToCopy(7).toDate());
+		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now.dayOfMonth().addToCopy(5).toDate(),
+				now.dayOfMonth().addToCopy(7).toDate());
 
 		PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
 		// execution
-		p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
-				System.currentTimeMillis(), null);
+		p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(), System.currentTimeMillis(), null);
 
 		Assert.assertEquals(3, p.getState().size());
 		ChallengeConcept ch = null;
@@ -143,10 +157,8 @@ public class ChallengeTest {
 		Game game = gameSrv.saveGameDefinition(defineGame());
 
 		// add rules
-		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/challenges.drl"));
-		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME
-				+ "/greenPoints.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenges.drl"));
+		gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
 
 		// define challenge Model
 		ChallengeModel model1 = new ChallengeModel();
@@ -154,15 +166,13 @@ public class ChallengeTest {
 		gameSrv.saveChallengeModel(GAME, model1);
 
 		LocalDate now = new LocalDate();
-		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now
-				.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth()
-				.addToCopy(-1).toDate());
+		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now.dayOfMonth().addToCopy(-2).toDate(),
+				now.dayOfMonth().addToCopy(-1).toDate());
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("wrongField", 50);
-		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, params, now
-				.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth()
-				.addToCopy(7).toDate());
+		playerSrv.assignChallenge(GAME, PLAYER, "prize", null, params, now.dayOfMonth().addToCopy(5).toDate(),
+				now.dayOfMonth().addToCopy(7).toDate());
 
 	}
 

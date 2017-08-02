@@ -43,6 +43,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
@@ -391,6 +392,8 @@ public class DBPlayerManager implements PlayerService {
 		notificationSrv.notificate(challengeNotification);
 		LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
 
+		StatsLogger.logChallengeAssignment(gameId, playerId, UUID.randomUUID().toString(), System.currentTimeMillis(),
+				challenge.getName(), start, end);
 		return challenge;
 
 	}

@@ -23,27 +23,8 @@ public class BadgeCollectionConceptRecordAnalyzer extends BaseRecordAnalyzer {
 		String name = specificFields.get(campi[2]);
 		String newBadge = specificFields.get(campi[3]);
 
-		String executionId = commonFields.get("executionId");
-		logger.debug("executionId:" + executionId);
-		String executionTime = commonFields.get("executionTime");
-		logger.debug("executionTime:" + executionTime);
-		String gameId = commonFields.get("gameId");
-		logger.debug("gameId:" + gameId);
-		String logLevel = commonFields.get("logLevel");
-		logger.debug("logLevel:" + logLevel);
-		String playerId = commonFields.get("playerId");
-		logger.debug("playerId:" + playerId);
-		String timestamp = commonFields.get("timestamp");
-		logger.debug("timestamp:" + timestamp);
-
-		Map<String, String> data = new HashMap<>();
-		data.put("logLevel", logLevel);
-		data.put("executionId", executionId);
-		data.put("executionTime", executionTime);
-		data.put("timestamp", timestamp);
+		Map<String, String> data = new HashMap<>(commonFields);
 		data.put("eventType", eventType);
-		data.put("gameId", gameId);
-		data.put("playerId", playerId);
 		data.put("ruleName", ruleName);
 		data.put("new_badge", newBadge);
 		data.put("name", name);

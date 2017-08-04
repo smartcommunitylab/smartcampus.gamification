@@ -25,7 +25,7 @@ public abstract class BaseRecordAnalyzer implements RecordAnalyzer {
 		String valoriComuni = record.getContent().substring(0, record.getIndexType()).trim();
 		String valoriSpecifici = record.getContent().substring(record.getIndexType()).trim();
 		commonFields = estraiCampiComuni(valoriComuni);
-		specificFields = estraiInformazioni(valoriSpecifici);
+		specificFields = estraiCampiSpecifici(valoriSpecifici);
 		campi = getNomiCampi();
 		this.record = record;
 
@@ -69,7 +69,7 @@ public abstract class BaseRecordAnalyzer implements RecordAnalyzer {
 
 	}
 
-	protected Map<String, String> estraiInformazioni(String valoriSpecifici) {
+	protected Map<String, String> estraiCampiSpecifici(String valoriSpecifici) {
 		String[] nomiCampi = getNomiCampi();
 		int[] indiciCampi = new int[nomiCampi.length];
 
@@ -94,4 +94,5 @@ public abstract class BaseRecordAnalyzer implements RecordAnalyzer {
 
 		return infos;
 	}
+
 }

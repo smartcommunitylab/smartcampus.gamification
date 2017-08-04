@@ -26,6 +26,16 @@ public class GameDTO {
 	private String id;
 	private String name;
 	private String owner;
+	private String domain;
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
 	private Set<String> actions = new HashSet<>();
 	private Set<RuleDTO> rules = new HashSet<>();
 	private long expiration;
@@ -95,8 +105,7 @@ public class GameDTO {
 		return badgeCollectionConcept;
 	}
 
-	public void setBadgeCollectionConcept(
-			Set<BadgeCollectionConcept> badgeCollectionConcept) {
+	public void setBadgeCollectionConcept(Set<BadgeCollectionConcept> badgeCollectionConcept) {
 		this.badgeCollectionConcept = badgeCollectionConcept;
 	}
 

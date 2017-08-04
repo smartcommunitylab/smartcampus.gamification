@@ -1,0 +1,242 @@
+package eu.trentorise.game.model
+
+// All Timestamps in Time Zone "Europe/Berlin"
+// start week2: 1461362460000 -> 23/04 00:01
+// start week3: 1461967260000 -> 30/04 00:01
+// start week4: 1462572060000 -> 07/05 00:01 
+// start week5: 1463176860000 -> 14/05 00:01
+// start week6: 1463781660000 -> 21/05 00:01
+// start week7: 1464386460000 -> 28/05 00:01
+// start week8: 1464991260000 -> 04/06 00:01
+// start week9: 1465596060000 -> 11/06 00:01
+//   end week9: 1466200860000 -> 18/06 00:01
+//start week10: 1466805660000 -> 25/06 00:01
+//start week11: 1467410460000 -> 02/07 00:01
+//start week12: 1468015260000 -> 09/07 00:01
+//start week13: 1468620060000 -> 16/07 00:01
+//start week14: 1469224860000 -> 23/07 00:01
+//start week15: 1469829660000 -> 30/07 00:01
+//start week16: 1470434460000 -> 06/08 00:01
+//start week17: 1471039260000 -> 13/08 00:01
+//start week18: 1471644060000 -> 20/08 00:01
+//start week19: 1472248860000 -> 27/08 00:01
+
+
+
+rule "GreenLeavesWeek2"
+when
+	
+	InputData($now : System.currentTimeMillis(), $now >= 1461362460000 , $now < 1461967260000)
+	$pc : PointConcept(name == "green leaves week 2")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 2 =  1461362460000 to 1461967260000");		
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+
+rule "GreenLeavesWeek3"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1461967260000 , $now < 1462572060000)
+	$pc : PointConcept(name == "green leaves week 3")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 3 = 1461967260000 to 1462572060000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek4"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1462572060000 , $now < 1463176860000)
+	$pc : PointConcept(name == "green leaves week 4")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 4 = 1462572060000 to 1463176860000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek5"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1463176860000 , $now < 1463781660000)
+	$pc : PointConcept(name == "green leaves week 5")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 5 = 1463176860000 to 1463781660000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek6"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1463781660000 , $now < 1464386460000)
+	$pc : PointConcept(name == "green leaves week 6")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 6 = 1463781660000 to 1464386460000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek7"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1464386460000 , $now < 1464991260000)
+	$pc : PointConcept(name == "green leaves week 7")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 7 = 1464386460000 to 1464991260000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek8"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1464991260000 , $now < 1465596060000)
+	$pc : PointConcept(name == "green leaves week 8")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 8 = 1464991260000 to 1465596060000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek9"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1465596060000 , $now < 1466200860000)
+	$pc : PointConcept(name == "green leaves week 9")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 9 = 1465596060000 to 1466200860000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek10"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1466200860000 , $now < 1466805660000)
+	$pc : PointConcept(name == "green leaves week 10")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 10 = 1466200860000 to 1466805660000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek11"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1466805660000 , $now < 1467410460000)
+	$pc : PointConcept(name == "green leaves week 11")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 11 = 1466805660000 to 1467410460000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek12"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1467410460000 , $now < 1468015260000)
+	$pc : PointConcept(name == "green leaves week 12")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 12 = 1467410460000 to 1468015260000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek13"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1468015260000 , $now < 1468620060000)
+	$pc : PointConcept(name == "green leaves week 13")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 13 = 1468015260000 to 1468620060000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek14"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1468620060000 , $now < 1469224860000)
+	$pc : PointConcept(name == "green leaves week 14")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 14 = 1468620060000 to 1469224860000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek15"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1469224860000 , $now < 1469829660000)
+	$pc : PointConcept(name == "green leaves week 15")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 15 = 1469224860000 to 1469829660000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek16"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1469829660000 , $now < 1470434460000)
+	$pc : PointConcept(name == "green leaves week 16")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 16 = 1469829660000 to 1470434460000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek17"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1470434460000 , $now < 1471039260000)
+	$pc : PointConcept(name == "green leaves week 17")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 17 = 1470434460000 to 1471039260000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek18"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1471039260000 , $now < 1471644060000)
+	$pc : PointConcept(name == "green leaves week 18")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 18 = 1471039260000 to 1471644060000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end
+
+rule "GreenLeavesWeek19"
+when
+	InputData($now : System.currentTimeMillis(), $now >= 1471644060000 , $now < 1472248860000)
+	$pc : PointConcept(name == "green leaves week 19")
+	$pd : PointDelta(this.pointType == "green leaves", $delta : this.delta)
+then
+	log("Now: " + $now + " scarico punti delta week 19 = 1471644060000 to 1472248860000");
+	$pc.setScore($pc.getScore() + (long) $delta);
+	update($pc);
+	retract ($pd); 
+end

@@ -29,5 +29,7 @@
   "msg_badge_deleted": "Operation success",
   "msg_challenge_deleted": "Operation success",
   "msg_challenge_edited": "Challenge edited successfully", 
-  "msg_no_challenges" : "No challenges"
+  "msg_no_challenges" : "No challenges",
+  "msg_period_name_error" : "A period name is invalid",
+  "msg_period_negative_error" : "Period duration cannot be negative"
 }

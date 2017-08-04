@@ -113,6 +113,7 @@ public class GameManager implements GameService {
 				pers.setExpiration(game.getExpiration());
 				pers.setTerminated(game.isTerminated());
 				pers.setRules(game.getRules());
+				pers.setDomain(game.getDomain());
 
 				if (game.getConcepts() != null) {
 					Set<GenericObjectPersistence> concepts = new HashSet<GenericObjectPersistence>();

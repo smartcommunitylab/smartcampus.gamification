@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,11 +20,15 @@ import eu.trentorise.game.bean.ChallengeDataDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 public class PlayerController {
@@ -77,6 +82,8 @@ public class PlayerController {
 		player.setGameId(gameId);
 		PlayerState p = converter.convertPlayerState(player);
 		playerSrv.saveState(p);
+		StatsLogger.logUserCreation(gameId, player.getPlayerId(), UUID.randomUUID().toString(),
+				System.currentTimeMillis());
 	}
 
 	// Read a player
@@ -233,8 +240,11 @@ public class PlayerController {
 	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/search", consumes = {
 			"application/json" }, produces = { "application/json" })
 	@ApiOperation(value = "Search player states")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
 	public Page<PlayerStateDTO> searchByQuery(@PathVariable String gameId, @RequestBody WrapperQuery query,
-			Pageable pageable) {
+			@ApiIgnore Pageable pageable) {
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

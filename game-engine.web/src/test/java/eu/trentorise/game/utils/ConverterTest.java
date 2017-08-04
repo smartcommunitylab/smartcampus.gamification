@@ -8,12 +8,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.Assert;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.WebConfig;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
@@ -22,7 +25,9 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.IncrementalClassificationTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
+		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
+@WebAppConfiguration
 public class ConverterTest {
 
 	@Autowired
@@ -46,8 +51,7 @@ public class ConverterTest {
 		incrClassDTO.setItemType(POINT_CONCEPT);
 		incrClassDTO.setPeriodName(PERIOD_NAME);
 		incrClassDTO.setGameId(GAME_ID);
-		IncrementalClassificationTask converted = converter
-				.convertClassificationTask(incrClassDTO);
+		IncrementalClassificationTask converted = converter.convertClassificationTask(incrClassDTO);
 		Assert.notNull(converted.getSchedule());
 		Assert.notNull(converted.getSchedule().getStart());
 		Assert.notNull(converted.getSchedule().getPeriod());
@@ -64,8 +68,7 @@ public class ConverterTest {
 		incrClassDTO.setItemType(POINT_CONCEPT);
 		incrClassDTO.setPeriodName(PERIOD_NAME);
 
-		IncrementalClassificationTask converted = converter
-				.convertClassificationTask(incrClassDTO);
+		IncrementalClassificationTask converted = converter.convertClassificationTask(incrClassDTO);
 		Assert.notNull(converted.getSchedule());
 		Assert.notNull(converted.getSchedule().getStart());
 		Assert.notNull(converted.getSchedule().getPeriod());
@@ -83,4 +86,17 @@ public class ConverterTest {
 		g.setTasks(new HashSet<GameTask>());
 		return g;
 	}
+}
+
+/**
+ * Without @EnablaWebMvc MockMvc not work correctly to simulate controller
+ * Cannot add annotation to WebConfig to conflict with WebMvcConfigurerAdapter
+ * extension
+ * 
+ * @author mirko perillo
+ * 
+ */
+@EnableWebMvc
+class TestMVCConfiguration extends WebConfig {
+
 }

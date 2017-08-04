@@ -24,9 +24,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.managers.GameManager;
+import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TaskDataConverter;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.services.Workflow;
@@ -47,6 +49,9 @@ public class GameContext {
 	@Autowired
 	private TaskService taskSrv;
 
+	@Autowired
+	private NotificationManager notificationSrv;
+
 	private TaskDataConverter converter = new TaskDataConverter();
 
 	public enum Order {
@@ -62,21 +67,23 @@ public class GameContext {
 
 	}
 
-	public synchronized void sendAction(String action, String playerId,
-			Map<String, Object> params) {
+	public synchronized void sendAction(String action, String playerId, Map<String, Object> params) {
 		// transform in internalAction
 		action = action.startsWith(GameManager.INTERNAL_ACTION_PREFIX) ? action
 				: GameManager.INTERNAL_ACTION_PREFIX + action;
 		workflow.apply(gameRefId, action, playerId, params, null);
 	}
 
-	public synchronized void sendAction(String action, String playerId,
-			Map<String, Object> params, List<Object> workingMemoryObjects) {
+	public synchronized void sendAction(String action, String playerId, Map<String, Object> params,
+			List<Object> workingMemoryObjects) {
 		// transform in internalAction
 		action = action.startsWith(GameManager.INTERNAL_ACTION_PREFIX) ? action
 				: GameManager.INTERNAL_ACTION_PREFIX + action;
-		workflow.apply(gameRefId, action, playerId, params,
-				workingMemoryObjects);
+		workflow.apply(gameRefId, action, playerId, params, workingMemoryObjects);
+	}
+
+	public synchronized void sendNotification(Notification notification) {
+		notificationSrv.notificate(notification);
 	}
 
 	public PlayerState readStatus(String playerId) {

@@ -25,6 +25,7 @@ public class Game {
 	private String id;
 	private String name;
 	private String owner;
+	private String domain;
 	private Set<String> actions;
 	private Set<GameTask> tasks;
 	private Set<String> rules;
@@ -93,8 +94,7 @@ public class Game {
 	}
 
 	public boolean isTerminated() {
-		terminated = terminated || expiration > 0
-				&& expiration < System.currentTimeMillis();
+		terminated = terminated || expiration > 0 && expiration < System.currentTimeMillis();
 		return terminated;
 	}
 
@@ -116,6 +116,14 @@ public class Game {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 }

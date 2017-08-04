@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.repo.NotificationPersistence;
+import eu.trentorise.game.repo.NotificationQuery;
 import eu.trentorise.game.repo.NotificationRepo;
 
 @Component
@@ -37,32 +39,85 @@ public class NotificationManager {
 	}
 
 	public List<Notification> readNotifications(String gameId) {
-		List<NotificationPersistence> nots = repo.findByGameId(gameId);
+		List<NotificationPersistence> nots = repo.findGameNotificationsByQuery(gameId, null, null);
 		return convert(nots);
 	}
 
-	public List<Notification> readNotifications(String gameId, long timestamp) {
-		List<NotificationPersistence> nots = repo
-				.findByGameIdAndTimestampGreaterThan(gameId, timestamp);
+	public List<Notification> readNotifications(String gameId, Pageable pageable) {
+		List<NotificationPersistence> nots = repo.findGameNotificationsByQuery(gameId, null, pageable);
+		return convert(nots);
+	}
+
+	public List<Notification> readNotifications(String gameId, long fromTs, long toTs) {
+		return readNotifications(gameId, fromTs, toTs, null);
+	}
+
+	public List<Notification> readNotifications(String gameId, long fromTs, long toTs, Pageable pageable) {
+		NotificationQuery query = new NotificationQuery();
+		query.setFromTs(fromTs);
+		query.setToTs(toTs);
+		List<NotificationPersistence> nots = repo.findGameNotificationsByQuery(gameId, query, pageable);
 		return convert(nots);
 	}
 
 	public List<Notification> readNotifications(String gameId, String playerId) {
-		List<NotificationPersistence> nots = repo.findByGameIdAndPlayerId(
-				gameId, playerId);
+		return readNotifications(gameId, playerId, null);
+	}
+
+	public List<Notification> readNotifications(String gameId, String playerId, Pageable pageable) {
+		List<NotificationPersistence> nots = repo.findPlayerNotificationsByQuery(gameId, playerId, null, pageable);
 		return convert(nots);
 	}
 
-	public List<Notification> readNotifications(String gameId, String playerId,
-			long timestamp) {
-		List<NotificationPersistence> nots = repo
-				.findByGameIdAndPlayerIdAndTimestampGreaterThan(gameId,
-						playerId, timestamp);
+	public List<Notification> readNotificationsWithIncludedTypes(String gameId, String playerId,
+			List<String> includeNotificationTypes, Pageable pageable) {
+
+		NotificationQuery query = new NotificationQuery();
+		query.setIncludeTypes(includeNotificationTypes);
+		List<NotificationPersistence> nots = repo.findPlayerNotificationsByQuery(gameId, playerId, query, pageable);
 		return convert(nots);
 	}
 
-	private List<Notification> convert(
-			List<NotificationPersistence> notifications) {
+	public List<Notification> readNotificationsWithExcludedTypes(String gameId, String playerId,
+			List<String> excludeNotificationTypes, Pageable pageable) {
+		NotificationQuery query = new NotificationQuery();
+		query.setExcludeTypes(excludeNotificationTypes);
+		List<NotificationPersistence> nots = repo.findPlayerNotificationsByQuery(gameId, playerId, query, pageable);
+		return convert(nots);
+	}
+
+	public List<Notification> readNotifications(String gameId, String playerId, long fromTs, long toTs) {
+		return readNotifications(gameId, playerId, fromTs, toTs, null, null, null);
+
+	}
+
+	public List<Notification> readNotifications(String gameId, long fromTs, long toTs, List<String> includeTypes,
+			List<String> excludeTypes, Pageable pageable) {
+
+		NotificationQuery query = new NotificationQuery();
+		query.setFromTs(fromTs);
+		query.setToTs(toTs);
+		query.setIncludeTypes(includeTypes);
+		query.setExcludeTypes(excludeTypes);
+
+		List<NotificationPersistence> nots = repo.findGameNotificationsByQuery(gameId, query, pageable);
+		return convert(nots);
+	}
+
+	public List<Notification> readNotifications(String gameId, String playerId, long fromTs, long toTs,
+			List<String> includeTypes, List<String> excludeTypes, Pageable pageable) {
+
+		NotificationQuery query = new NotificationQuery();
+		query.setFromTs(fromTs);
+		query.setToTs(toTs);
+		query.setIncludeTypes(includeTypes);
+		query.setExcludeTypes(excludeTypes);
+
+		List<NotificationPersistence> nots = repo.findPlayerNotificationsByQuery(gameId, playerId, query, pageable);
+		return convert(nots);
+	}
+
+	private List<Notification> convert(List<NotificationPersistence> notifications) {
 		List<Notification> result = new ArrayList<Notification>();
 		for (NotificationPersistence not : notifications) {
 			Notification n = not.toNotification();
@@ -73,4 +128,5 @@ public class NotificationManager {
 		return result;
 
 	}
+
 }

@@ -51,8 +51,7 @@ public class PointConcept extends GameConcept {
 	private Map<String, PeriodInternal> periods = new LinkedHashMap<String, PeriodInternal>();
 
 	@JsonIgnore
-	public static final DateTimeFormatter PERIOD_KEY_FORMAT = DateTimeFormat
-			.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+	public static final DateTimeFormatter PERIOD_KEY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
 	@JsonIgnore
 	long executionMoment = System.currentTimeMillis();
@@ -83,13 +82,12 @@ public class PointConcept extends GameConcept {
 					score = ((Integer) scoreField).doubleValue();
 				}
 			}
-			Map<String, Object> temp = (Map<String, Object>) jsonProps
-					.get("periods");
+
+			Map<String, Object> temp = (Map<String, Object>) jsonProps.get("periods");
 			if (temp != null) {
 				Set<Entry<String, Object>> entries = temp.entrySet();
 				for (Entry<String, Object> entry : entries) {
-					periods.put(entry.getKey(), new PeriodInternal(
-							(Map<String, Object>) entry.getValue()));
+					periods.put(entry.getKey(), new PeriodInternal((Map<String, Object>) entry.getValue()));
 				}
 			}
 		}
@@ -143,28 +141,31 @@ public class PointConcept extends GameConcept {
 		}
 	}
 
+	public void addPeriod(String identifier, Date start, long period, int capacity) {
+		PeriodInternal p = new PeriodInternal(identifier, start, period, capacity);
+		if (!periods.containsKey(identifier)) {
+			periods.put(identifier, p);
+		}
+	}
+
 	public void deletePeriod(String identifier) {
 		periods.remove(identifier);
 	}
 
 	public Double getPeriodCurrentScore(int periodIndex) {
-		return new ArrayList<>(periods.values()).get(periodIndex)
-				.getCurrentScore();
+		return new ArrayList<>(periods.values()).get(periodIndex).getCurrentScore();
 	}
 
 	public Double getPeriodCurrentScore(String periodIdentifier) {
-		return periods.containsKey(periodIdentifier) ? periods.get(
-				periodIdentifier).getCurrentScore() : 0d;
+		return periods.containsKey(periodIdentifier) ? periods.get(periodIdentifier).getCurrentScore() : 0d;
 	}
 
 	public PeriodInstance getPeriodCurrentInstance(int periodIndex) {
-		return new ArrayList<>(periods.values()).get(periodIndex)
-				.getCurrentInstance();
+		return new ArrayList<>(periods.values()).get(periodIndex).getCurrentInstance();
 	}
 
 	public PeriodInstance getPeriodCurrentInstance(String periodIdentifier) {
-		return periods.containsKey(periodIdentifier) ? periods.get(
-				periodIdentifier).getCurrentInstance() : null;
+		return periods.containsKey(periodIdentifier) ? periods.get(periodIdentifier).getCurrentInstance() : null;
 	}
 
 	public Double getPeriodPreviousScore(String periodIdentifier) {
@@ -174,18 +175,15 @@ public class PointConcept extends GameConcept {
 
 	public PeriodInstance getPeriodPreviousInstance(String periodIdentifier) {
 		int currentIndex = getCurrentInstanceIndex(periodIdentifier);
-		return currentIndex != -1 ? getPeriodInstance(periodIdentifier,
-				currentIndex - 1) : null;
+		return currentIndex != -1 ? getPeriodInstance(periodIdentifier, currentIndex - 1) : null;
 	}
 
 	public Double getPeriodScore(String periodIdentifier, long moment) {
-		return periods.containsKey(periodIdentifier) ? periods.get(
-				periodIdentifier).getScore(moment) : 0d;
+		return periods.containsKey(periodIdentifier) ? periods.get(periodIdentifier).getScore(moment) : 0d;
 	}
 
 	public PeriodInstance getPeriodInstance(String periodIdentifier, long moment) {
-		return periods.containsKey(periodIdentifier) ? periods.get(
-				periodIdentifier).retrieveInstance(moment) : null;
+		return periods.containsKey(periodIdentifier) ? periods.get(periodIdentifier).retrieveInstance(moment) : null;
 	}
 
 	private int getCurrentInstanceIndex(String periodIdentifier) {
@@ -198,8 +196,7 @@ public class PointConcept extends GameConcept {
 		Double result = 0d;
 		PeriodInternal p = periods.get(periodIdentifier);
 		if (p != null) {
-			PeriodInstance instance = getPeriodInstance(periodIdentifier,
-					instanceIndex);
+			PeriodInstance instance = getPeriodInstance(periodIdentifier, instanceIndex);
 			result = instance != null ? instance.getScore() : 0d;
 		}
 
@@ -221,10 +218,8 @@ public class PointConcept extends GameConcept {
 		PeriodInternal p = periods.get(periodIdentifier);
 		if (p != null) {
 			LocalDateTime dateCursor = new LocalDateTime(p.start);
-			dateCursor = dateCursor.withPeriodAdded(new org.joda.time.Period(
-					p.period), instanceIndex);
-			result = getPeriodInstance(periodIdentifier, dateCursor.toDate()
-					.getTime());
+			dateCursor = dateCursor.withPeriodAdded(new org.joda.time.Period(p.period), instanceIndex);
+			result = getPeriodInstance(periodIdentifier, dateCursor.toDate().getTime());
 		}
 
 		return result;
@@ -236,6 +231,8 @@ public class PointConcept extends GameConcept {
 		public long getPeriod();
 
 		public String getIdentifier();
+
+		public int getCapacity();
 	}
 
 	public interface PeriodInstance {
@@ -252,6 +249,7 @@ public class PointConcept extends GameConcept {
 		private Date start;
 		private long period;
 		private String identifier;
+		private int capacity;
 
 		/*
 		 * JsonDeserialize is used by convertValue method of ObjectMapper field
@@ -273,6 +271,13 @@ public class PointConcept extends GameConcept {
 			this.identifier = identifier;
 		}
 
+		public PeriodInternal(String identifier, Date start, long period, int capacity) {
+			this.start = start;
+			this.period = period;
+			this.identifier = identifier;
+			this.capacity = capacity;
+		}
+
 		public PeriodInternal(Map<String, Object> jsonProps) {
 			if (jsonProps != null) {
 				Object startField = jsonProps.get("start");
@@ -285,19 +290,20 @@ public class PointConcept extends GameConcept {
 						period = (Long) periodField;
 					}
 					if (periodField instanceof Integer) {
-						period = Integer.valueOf((Integer) periodField)
-								.longValue();
+						period = Integer.valueOf((Integer) periodField).longValue();
 					}
 				}
 				identifier = (String) jsonProps.get("identifier");
+				Object capacityField = jsonProps.get("capacity");
+				if (capacityField != null) {
+					capacity = (int) capacityField;
+				}
 				Map<String, Map<String, Object>> tempInstances = (Map<String, Map<String, Object>>) jsonProps
 						.get("instances");
 				if (tempInstances != null) {
-					Set<Entry<String, Map<String, Object>>> entries = tempInstances
-							.entrySet();
+					Set<Entry<String, Map<String, Object>>> entries = tempInstances.entrySet();
 					for (Entry<String, Map<String, Object>> entry : entries) {
-						instances.put(PERIOD_KEY_FORMAT
-								.parseLocalDateTime(entry.getKey()),
+						instances.put(PERIOD_KEY_FORMAT.parseLocalDateTime(entry.getKey()),
 								new PeriodInstanceImpl(entry.getValue()));
 					}
 				}
@@ -337,8 +343,7 @@ public class PointConcept extends GameConcept {
 		private PeriodInstanceImpl retrieveInstance(long moment) {
 			LocalDateTime momentDate = new LocalDateTime(moment);
 			if (start.after(momentDate.toDate())) {
-				throw new IllegalArgumentException(
-						"moment is previous than startDate of period");
+				throw new IllegalArgumentException("moment is previous than startDate of period");
 			}
 
 			PeriodInstanceImpl instance = null;
@@ -351,20 +356,19 @@ public class PointConcept extends GameConcept {
 			Interval interval = null;
 			do {
 				interval = new Interval(lowerBoundDate.toDateTime(),
-						lowerBoundDate.withPeriodAdded(jodaPeriod, 1)
-								.toDateTime());
+						lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime());
 				lowerBoundDate = interval.getEnd().toLocalDateTime();
 			} while (!interval.contains(moment));
 
 			instance = instances.get(interval.getStart().toLocalDateTime());
 			if (instance == null) {
-				instance = new PeriodInstanceImpl(interval.getStartMillis(),
-						interval.getEndMillis());
-				instance.setIndex(getInstanceIndex(
-						new LocalDateTime(start.getTime()), jodaPeriod,
-						momentDate));
+				instance = new PeriodInstanceImpl(interval.getStartMillis(), interval.getEndMillis());
+				instance.setIndex(getInstanceIndex(new LocalDateTime(start.getTime()), jodaPeriod, momentDate));
 				key = interval.getStart().toLocalDateTime();
 				instances.put(key, instance);
+				if (capacity > 0 && instances.size() > capacity) {
+					instances.pollFirstEntry();
+				}
 			}
 
 			return instance;
@@ -376,8 +380,7 @@ public class PointConcept extends GameConcept {
 			LocalDateTime cursorDate = start;
 			DateTime moment = momentDate.toDateTime();
 			do {
-				interval = new Interval(cursorDate.toDateTime(), cursorDate
-						.withPeriodAdded(period, 1).toDateTime());
+				interval = new Interval(cursorDate.toDateTime(), cursorDate.withPeriodAdded(period, 1).toDateTime());
 				cursorDate = interval.getEnd().toLocalDateTime();
 				index++;
 			} while (!interval.contains(moment));
@@ -415,6 +418,15 @@ public class PointConcept extends GameConcept {
 
 		public String getIdentifier() {
 			return identifier;
+		}
+
+		@Override
+		public int getCapacity() {
+			return capacity;
+		}
+
+		public int setCapacity(int capacity) {
+			return this.capacity = capacity;
 		}
 
 	}
@@ -504,8 +516,7 @@ public class PointConcept extends GameConcept {
 		@Override
 		public String toString() {
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			return String.format("[start: %s, end: %s, score: %s, index: %s]",
-					formatter.format(new Date(start)),
+			return String.format("[start: %s, end: %s, score: %s, index: %s]", formatter.format(new Date(start)),
 					formatter.format(new Date(end)), score, index);
 		}
 

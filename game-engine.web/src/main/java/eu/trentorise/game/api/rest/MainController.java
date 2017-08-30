@@ -1,17 +1,15 @@
 /**
- *    Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+ * Copyright 2015 Fondazione Bruno Kessler - Trento RISE
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package eu.trentorise.game.api.rest;
@@ -56,127 +54,142 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping(value = "/gengine")
 public class MainController {
 
-	private static Logger logger = org.slf4j.LoggerFactory.getLogger(MainController.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(MainController.class);
 
-	@Autowired
-	Workflow workflow;
+    @Autowired
+    Workflow workflow;
 
-	@Autowired
-	PlayerService playerSrv;
+    @Autowired
+    PlayerService playerSrv;
 
-	@Autowired
-	GameService gameSrv;
+    @Autowired
+    GameService gameSrv;
 
-	@Autowired
-	NotificationManager notificationSrv;
+    @Autowired
+    NotificationManager notificationSrv;
 
-	@Autowired
-	Converter converter;
+    @Autowired
+    Converter converter;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/execute", consumes = { "application/json" }, produces = {
-			"application/json" })
-	@ApiOperation(value = "Execute an action", notes = "Execute an action in a game")
-	public void executeAction(@RequestBody ExecutionDataDTO data, HttpServletResponse res) {
-		Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
-		if (game != null && game.isTerminated()) {
-			try {
-				res.sendError(403, String.format("game %s is expired", game.getId()));
-			} catch (IOException e1) {
-				LogHub.error(game.getId(), logger, "Exception sendError to client", e1);
-			}
-		} else {
-			workflow.apply(data.getGameId(), data.getActionId(), data.getPlayerId(), data.getData(), null);
-		}
-	}
+    @RequestMapping(method = RequestMethod.POST, value = "/execute",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Execute an action", notes = "Execute an action in a game")
+    public void executeAction(@RequestBody ExecutionDataDTO data, HttpServletResponse res) {
+        Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
+        if (game != null && game.isTerminated()) {
+            try {
+                res.sendError(403, String.format("game %s is expired", game.getId()));
+            } catch (IOException e1) {
+                LogHub.error(game.getId(), logger, "Exception sendError to client", e1);
+            }
+        } else {
+            if (data.getExecutionMoment() == null) {
+                workflow.apply(data.getGameId(), data.getActionId(), data.getPlayerId(),
+                        data.getData(), null);
+            } else {
+                workflow.apply(data.getGameId(), data.getActionId(), data.getPlayerId(),
+                        data.getExecutionMoment().getTime(), data.getData(), null);
+            }
+        }
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}", produces = { "application/json" })
-	@ApiOperation(value = "Get player state", notes = "Get the state of a player in a game")
-	public PlayerStateDTO readPlayerState(@PathVariable String gameId, @PathVariable String playerId) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get player state", notes = "Get the state of a player in a game")
+    public PlayerStateDTO readPlayerState(@PathVariable String gameId,
+            @PathVariable String playerId) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		try {
-			playerId = URLDecoder.decode(playerId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-		}
+        try {
+            playerId = URLDecoder.decode(playerId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+        }
 
-		return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
-	}
+        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}", produces = { "application/json" })
-	@ApiOperation(value = "Get player states", notes = "Get the state of players in a game filter by optional player name")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
-			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
-	public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId, @ApiIgnore Pageable pageable,
-			@RequestParam(required = false) String playerFilter) {
+    @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get player states",
+            notes = "Get the state of players in a game filter by optional player name")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve "),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page."),})
+    public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId,
+            @ApiIgnore Pageable pageable, @RequestParam(required = false) String playerFilter) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
-		Page<PlayerState> page = null;
-		if (playerFilter == null) {
-			page = playerSrv.loadStates(gameId, pageable);
-		} else {
-			page = playerSrv.loadStates(gameId, playerFilter, pageable);
-		}
-		for (PlayerState ps : page) {
-			resList.add(converter.convertPlayerState(ps));
-		}
+        List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
+        Page<PlayerState> page = null;
+        if (playerFilter == null) {
+            page = playerSrv.loadStates(gameId, pageable);
+        } else {
+            page = playerSrv.loadStates(gameId, playerFilter, pageable);
+        }
+        for (PlayerState ps : page) {
+            resList.add(converter.convertPlayerState(ps));
+        }
 
-		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList, pageable, page.getTotalElements());
+        PageImpl<PlayerStateDTO> res =
+                new PageImpl<PlayerStateDTO>(resList, pageable, page.getTotalElements());
 
-		return res;
-	}
+        return res;
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}", produces = { "application/json" })
-	@ApiOperation(value = "Get notifications", notes = "Get the notifications of a game")
-	@Deprecated
-	public List<Notification> readNotification(@PathVariable String gameId,
-			@RequestParam(required = false) Long timestamp) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    @RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get notifications", notes = "Get the notifications of a game")
+    @Deprecated
+    public List<Notification> readNotification(@PathVariable String gameId,
+            @RequestParam(required = false) Long timestamp) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, timestamp, -1);
-		} else {
-			return notificationSrv.readNotifications(gameId);
-		}
-	}
+        if (timestamp != null) {
+            return notificationSrv.readNotifications(gameId, timestamp, -1);
+        } else {
+            return notificationSrv.readNotifications(gameId);
+        }
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}/{playerId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get player notifications", notes = "Get the player notifications of a game")
-	@Deprecated
-	public List<Notification> readNotification(@PathVariable String gameId, @PathVariable String playerId,
-			@RequestParam(required = false) Long timestamp) {
+    @RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}/{playerId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get player notifications",
+            notes = "Get the player notifications of a game")
+    @Deprecated
+    public List<Notification> readNotification(@PathVariable String gameId,
+            @PathVariable String playerId, @RequestParam(required = false) Long timestamp) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		try {
-			playerId = URLDecoder.decode(playerId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-		}
-		if (timestamp != null) {
-			return notificationSrv.readNotifications(gameId, playerId, timestamp, -1);
-		} else {
-			return notificationSrv.readNotifications(gameId, playerId);
-		}
-	}
+        try {
+            playerId = URLDecoder.decode(playerId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+        }
+        if (timestamp != null) {
+            return notificationSrv.readNotifications(gameId, playerId, timestamp, -1);
+        } else {
+            return notificationSrv.readNotifications(gameId, playerId);
+        }
+    }
 }

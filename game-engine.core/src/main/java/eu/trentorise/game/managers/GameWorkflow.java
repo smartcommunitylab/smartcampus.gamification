@@ -1,21 +1,21 @@
 /**
- *    Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+ * Copyright 2015 Fondazione Bruno Kessler - Trento RISE
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package eu.trentorise.game.managers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,86 +38,84 @@ import eu.trentorise.game.services.Workflow;
 @Component
 public class GameWorkflow implements Workflow {
 
-	private final Logger logger = org.slf4j.LoggerFactory.getLogger(GameWorkflow.class);
+    private final Logger logger = org.slf4j.LoggerFactory.getLogger(GameWorkflow.class);
 
-	@Autowired
-	protected GameEngine gameEngine;
+    @Autowired
+    protected GameEngine gameEngine;
 
-	@Autowired
-	protected PlayerService playerSrv;
+    @Autowired
+    protected PlayerService playerSrv;
 
-	@Autowired
-	protected GameService gameSrv;
+    @Autowired
+    protected GameService gameSrv;
 
-	@Autowired
-	private TraceService traceSrv;
+    @Autowired
+    private TraceService traceSrv;
 
-	@Autowired
-	private Environment env;
+    @Autowired
+    private Environment env;
 
-	protected void workflowExec(String gameId, String actionId, String userId, String executionId, long executionMoment,
-			Map<String, Object> data, List<Object> factObjects) {
-		LogHub.info(gameId, logger, "gameId:{}, actionId: {}, playerId: {}, data: {}, factObjs: {}", gameId, actionId,
-				userId, data, factObjects);
-		Game g = gameSrv.loadGameDefinitionById(gameId);
-		if (g == null || g.getActions() == null || !g.getActions().contains(actionId)) {
-			throw new IllegalArgumentException(
-					String.format("game %s not exist or action %s not belong to it", gameId, actionId));
-		}
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-		PlayerState playerState = playerSrv.loadState(gameId, userId, true);
+    protected void workflowExec(String gameId, String actionId, String userId, String executionId,
+            long executionMoment, Map<String, Object> data, List<Object> factObjects) {
+        LogHub.info(gameId, logger,
+                "gameId:{}, actionId: {}, playerId: {}, executionMoment: {}, data: {}, factObjs: {}",
+                gameId, actionId, userId, dateFormat.format(new Date(executionMoment)), data,
+                factObjects);
+        Game g = gameSrv.loadGameDefinitionById(gameId);
+        if (g == null || g.getActions() == null || !g.getActions().contains(actionId)) {
+            throw new IllegalArgumentException(String
+                    .format("game %s not exist or action %s not belong to it", gameId, actionId));
+        }
 
-		// Actually GameService.execute modifies playerState passed as parameter
-		PlayerState oldState = playerState.clone();
+        PlayerState playerState = playerSrv.loadState(gameId, userId, true);
 
-		if (isClassificationAction(actionId)) {
-			StatsLogger.logClassification(gameId, userId, executionId, executionMoment, data, factObjects);
-		} else {
-			StatsLogger.logAction(gameId, userId, executionId, executionMoment, actionId, data, factObjects,
-					playerState);
-		}
-		PlayerState newState = gameEngine.execute(gameId, playerState, actionId, data, executionId, executionMoment,
-				factObjects);
+        // Actually GameService.execute modifies playerState passed as parameter
+        PlayerState oldState = playerState.clone();
 
-		boolean result = playerSrv.saveState(newState) != null;
+        if (isClassificationAction(actionId)) {
+            StatsLogger.logClassification(gameId, userId, executionId, executionMoment, data,
+                    factObjects);
+        } else {
+            StatsLogger.logAction(gameId, userId, executionId, executionMoment, actionId, data,
+                    factObjects, playerState);
+        }
+        PlayerState newState = gameEngine.execute(gameId, playerState, actionId, data, executionId,
+                executionMoment, factObjects);
 
-		if (env.getProperty("trace.playerMove", Boolean.class, false)) {
-			traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
-			LogHub.info(gameId, logger, "Traced player {} move", userId);
-		}
-		LogHub.info(gameId, logger, "Process terminated: {}", result);
-		StatsLogger.logEndGameAction(gameId, userId, executionId, executionMoment, System.currentTimeMillis());
-	}
+        boolean result = playerSrv.saveState(newState) != null;
 
-	private boolean isClassificationAction(String actionId) {
-		return actionId != null && "scogei_classification".equals(actionId);
-	}
-	// public PlayerState copyState(PlayerState state) {
-	// PlayerState cloned = new PlayerState(state.getGameId(),
-	// state.getPlayerId());
-	// cloned.setState(new HashSet<GameConcept>());
-	// for (GameConcept gc : state.getState()) {
-	// if (gc instanceof PointConcept) {
-	// PointConcept pointCopy = new PointConcept(gc.getName());
-	// pointCopy.setScore(((PointConcept) gc).getScore());
-	// cloned.getState().add(pointCopy);
-	// } else if (gc instanceof BadgeCollectionConcept) {
-	// BadgeCollectionConcept collectionCopy = new
-	// BadgeCollectionConcept(gc.getName());
-	// collectionCopy.getBadgeEarned().addAll(((BadgeCollectionConcept)
-	// gc).getBadgeEarned());
-	// cloned.getState().add(collectionCopy);
-	// }
-	// }
-	//
-	// return cloned;
-	// }
+        if (env.getProperty("trace.playerMove", Boolean.class, false)) {
+            traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
+            LogHub.info(gameId, logger, "Traced player {} move", userId);
+        }
+        LogHub.info(gameId, logger, "Process terminated: {}", result);
+        StatsLogger.logEndGameAction(gameId, userId, executionId, executionMoment,
+                System.currentTimeMillis());
+    }
 
-	public void apply(String gameId, String actionId, String userId, Map<String, Object> data,
-			List<Object> factObjects) {
-		String executionId = UUID.randomUUID().toString();
-		long executionMoment = System.currentTimeMillis();
-		workflowExec(gameId, actionId, userId, executionId, executionMoment, data, factObjects);
+    private boolean isClassificationAction(String actionId) {
+        return actionId != null && "scogei_classification".equals(actionId);
+    }
 
-	}
+    public void apply(String gameId, String actionId, String userId, Map<String, Object> data,
+            List<Object> factObjects) {
+        String executionId = generateExecutionId();
+        long executionMoment = System.currentTimeMillis();
+        workflowExec(gameId, actionId, userId, executionId, executionMoment, data, factObjects);
+
+    }
+
+    @Override
+    public void apply(String gameId, String actionId, String playerId, long executionMoment,
+            Map<String, Object> data, List<Object> factObjects) {
+        String executionId = generateExecutionId();
+        workflowExec(gameId, actionId, playerId, executionId, executionMoment, data, factObjects);
+    }
+
+    private String generateExecutionId() {
+        return UUID.randomUUID().toString();
+    }
+
 }

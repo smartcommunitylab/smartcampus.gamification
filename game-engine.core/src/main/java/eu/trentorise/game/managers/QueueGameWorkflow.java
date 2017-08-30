@@ -1,17 +1,15 @@
 /**
- *    Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+ * Copyright 2015 Fondazione Bruno Kessler - Trento RISE
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package eu.trentorise.game.managers;
@@ -28,8 +26,8 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.core.LogHub;
 
 /**
- * A game workflow that manage sequential execution queue of gameEngine to fix
- * issue https://github.com/smartcampuslab/smartcampus.gamification/issues/1
+ * A game workflow that manage sequential execution queue of gameEngine to fix issue
+ * https://github.com/smartcampuslab/smartcampus.gamification/issues/1
  * 
  * @author mirko perillo
  * 
@@ -37,48 +35,60 @@ import eu.trentorise.game.core.LogHub;
 @Component
 public class QueueGameWorkflow extends GameWorkflow {
 
-	private final Logger logger = org.slf4j.LoggerFactory.getLogger(QueueGameWorkflow.class);
+    private final Logger logger = org.slf4j.LoggerFactory.getLogger(QueueGameWorkflow.class);
 
-	private static ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
-	@Override
-	public void apply(String gameId, String actionId, String userId, Map<String, Object> data,
-			List<Object> factObjects) {
-		try {
-			String executionId = UUID.randomUUID().toString();
-			long executionMoment = System.currentTimeMillis();
-			executor.execute(new Execution(gameId, actionId, userId, executionId, executionMoment, data, factObjects));
-		} catch (Exception e) {
-			LogHub.error(gameId, logger, "Exception in game queue execution", e);
-		}
+    @Override
+    public void apply(String gameId, String actionId, String userId, Map<String, Object> data,
+            List<Object> factObjects) {
+        try {
+            String executionId = UUID.randomUUID().toString();
+            long executionMoment = System.currentTimeMillis();
+            executor.execute(new Execution(gameId, actionId, userId, executionId, executionMoment,
+                    data, factObjects));
+        } catch (Exception e) {
+            LogHub.error(gameId, logger, "Exception in game queue execution", e);
+        }
+    }
 
-	}
+    @Override
+    public void apply(String gameId, String actionId, String userId, long executionMoment,
+            Map<String, Object> data, List<Object> factObjects) {
+        try {
+            String executionId = UUID.randomUUID().toString();
+            executor.execute(new Execution(gameId, actionId, userId, executionId, executionMoment,
+                    data, factObjects));
+        } catch (Exception e) {
+            LogHub.error(gameId, logger, "Exception in game queue execution", e);
+        }
+    }
 
-	class Execution implements Runnable {
+    class Execution implements Runnable {
 
-		private String gameId;
-		private String actionId;
-		private String userId;
-		private String executionId;
-		private long executionMoment;
-		private Map<String, Object> data;
-		private List<Object> factObjects;
+        private String gameId;
+        private String actionId;
+        private String userId;
+        private String executionId;
+        private long executionMoment;
+        private Map<String, Object> data;
+        private List<Object> factObjects;
 
-		public Execution(String gameId, String actionId, String userId, String executionId, long executionMoment,
-				Map<String, Object> data, List<Object> factObjects) {
-			this.gameId = gameId;
-			this.actionId = actionId;
-			this.userId = userId;
-			this.executionId = executionId;
-			this.executionMoment = executionMoment;
-			this.data = data;
-			this.factObjects = factObjects;
+        public Execution(String gameId, String actionId, String userId, String executionId,
+                long executionMoment, Map<String, Object> data, List<Object> factObjects) {
+            this.gameId = gameId;
+            this.actionId = actionId;
+            this.userId = userId;
+            this.executionId = executionId;
+            this.executionMoment = executionMoment;
+            this.data = data;
+            this.factObjects = factObjects;
 
-		}
+        }
 
-		public void run() {
-			workflowExec(gameId, actionId, userId, executionId, executionMoment, data, factObjects);
-		}
+        public void run() {
+            workflowExec(gameId, actionId, userId, executionId, executionMoment, data, factObjects);
+        }
 
-	}
+    }
 }

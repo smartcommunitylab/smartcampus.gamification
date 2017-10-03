@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -159,16 +158,14 @@ public class DroolsEngine implements GameEngine {
         // player
         Set<GameConcept> filteredByChallenge = new HashSet<>(state.getState());
         Set<GameConcept> archivedChallenges = new HashSet<>();
-        Date now = new Date();
+
         for (Iterator<GameConcept> iter = filteredByChallenge.iterator(); iter.hasNext();) {
             GameConcept gc = iter.next();
             if (gc instanceof ChallengeConcept) {
                 ChallengeConcept challenge = (ChallengeConcept) gc;
                 challenge = enrichWithStatsRequiredInfo(challenge, gameId, state.getPlayerId(),
                         executionId);
-                if (challenge.isCompleted()
-                        || (challenge.getStart() != null && challenge.getStart().after(now))
-                        || (challenge.getEnd() != null && challenge.getEnd().before(now))) {
+                if (challenge.isCompleted() || !challenge.isActive(executionMoment)) {
                     iter.remove();
                     archivedChallenges.add(gc);
                 }

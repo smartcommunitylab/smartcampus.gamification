@@ -25,7 +25,6 @@ import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.StatsChallengeConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -69,17 +68,6 @@ public class ChallengeTest {
     @Test
     public void challengeCompleted() {
         ChallengeConcept challenge = new ChallengeConcept();
-        Assert.assertEquals(false, challenge.isCompleted());
-        Assert.assertNull(challenge.getDateCompleted());
-        challenge.completed();
-        Assert.assertEquals(true, challenge.isCompleted());
-        Assert.assertNotNull(challenge.getDateCompleted());
-    }
-
-    @Test
-    public void statsChallengeCompleted() {
-        ChallengeConcept challenge = new StatsChallengeConcept(GAME, PLAYER, "executionId");
-        challenge.setName("challengeName");
         Assert.assertEquals(false, challenge.isCompleted());
         Assert.assertNull(challenge.getDateCompleted());
         challenge.completed();

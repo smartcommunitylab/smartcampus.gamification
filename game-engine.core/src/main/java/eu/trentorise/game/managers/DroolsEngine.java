@@ -56,6 +56,7 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.LoggingRuleListener;
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.core.Utility;
 import eu.trentorise.game.model.Action;
 import eu.trentorise.game.model.ChallengeConcept;
@@ -67,7 +68,6 @@ import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Propagation;
-import eu.trentorise.game.model.StatsChallengeConcept;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.UpdateMembers;
@@ -163,8 +163,6 @@ public class DroolsEngine implements GameEngine {
             GameConcept gc = iter.next();
             if (gc instanceof ChallengeConcept) {
                 ChallengeConcept challenge = (ChallengeConcept) gc;
-                challenge = enrichWithStatsRequiredInfo(challenge, gameId, state.getPlayerId(),
-                        executionId);
                 if (challenge.isCompleted() || !challenge.isActive(executionMoment)) {
                     iter.remove();
                     archivedChallenges.add(gc);
@@ -210,8 +208,10 @@ public class DroolsEngine implements GameEngine {
             GameConcept stateElement = (GameConcept) iter.next().get("$result");
             newState.add(stateElement);
             if (stateElement instanceof ChallengeConcept) {
-                sendChallengeCompletedNotifications((ChallengeConcept) stateElement, gameId,
-                        player.getId(), executionMoment);
+                ChallengeConcept challenge = (ChallengeConcept) stateElement;
+                sendChallengeCompletedNotifications(challenge, gameId, player.getId(),
+                        executionMoment);
+                logCompletedChallenge(gameId, executionId, executionMoment, player, challenge);
             }
         }
 
@@ -305,6 +305,16 @@ public class DroolsEngine implements GameEngine {
         return state;
     }
 
+
+    private void logCompletedChallenge(String gameId, String executionId, long executionMoment,
+            Player player, ChallengeConcept challenge) {
+        if (challenge != null && challenge.isCompleted()) {
+            StatsLogger.logChallengeCompleted(gameId, player.getId(), executionId, executionMoment,
+                    System.currentTimeMillis(), challenge.getName());
+        }
+    }
+
+
     private void sendChallengeCompletedNotifications(ChallengeConcept stateElement, String gameId,
             String playerId, long executionMoment) {
         if (stateElement.isCompleted()) {
@@ -318,21 +328,6 @@ public class DroolsEngine implements GameEngine {
         }
     }
 
-    private ChallengeConcept enrichWithStatsRequiredInfo(ChallengeConcept challenge, String gameId,
-            String playerId, String executionId) {
-        ChallengeConcept converted = null;
-        if (challenge != null) {
-            converted = new StatsChallengeConcept(gameId, playerId, executionId);
-            converted.setEnd(challenge.getEnd());
-            converted.setStart(challenge.getStart());
-            converted.setFields(challenge.getFields());
-            converted.setId(challenge.getId());
-            converted.setModelName(challenge.getModelName());
-            converted.setName(challenge.getName());
-        }
-
-        return converted;
-    }
 
     private StatelessKieSession loadGameConstants(StatelessKieSession kSession, String gameId) {
 

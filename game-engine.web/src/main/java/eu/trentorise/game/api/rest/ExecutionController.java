@@ -24,43 +24,48 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 public class ExecutionController {
 
-	private static final Logger logger = LoggerFactory.getLogger(ExecutionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExecutionController.class);
 
-	@Autowired
-	private GameService gameSrv;
+    @Autowired
+    private GameService gameSrv;
 
-	@Autowired
-	private Workflow workflow;
+    @Autowired
+    private Workflow workflow;
 
-	// Execute
-	// POST /exec/game/{id}/action/{actionId}
+    // Execute
+    // POST /exec/game/{id}/action/{actionId}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/exec/game/{gameId}/action/{actionId}", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Execute an action")
-	public void executeAction(@PathVariable String gameId, @PathVariable String actionId,
-			@RequestBody ExecutionDataDTO data, HttpServletResponse res) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    @RequestMapping(method = RequestMethod.POST, value = "/exec/game/{gameId}/action/{actionId}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Execute an action")
+    public void executeAction(@PathVariable String gameId, @PathVariable String actionId,
+            @RequestBody ExecutionDataDTO data, HttpServletResponse res) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		try {
-			actionId = URLDecoder.decode(actionId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            actionId = URLDecoder.decode(actionId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		Game game = gameSrv.loadGameDefinitionByAction(actionId);
-		if (game != null && game.isTerminated()) {
-			try {
-				res.sendError(403, String.format("game %s is expired", game.getId()));
-			} catch (IOException e1) {
-				logger.error("Exception sendError to client", e1);
-			}
-		} else {
-			workflow.apply(gameId, actionId, data.getPlayerId(), data.getData(), null);
-		}
-	}
+        Game game = gameSrv.loadGameDefinitionByAction(actionId);
+        if (game != null && game.isTerminated()) {
+            try {
+                res.sendError(403, String.format("game %s is expired", game.getId()));
+            } catch (IOException e1) {
+                logger.error("Exception sendError to client", e1);
+            }
+        } else {
+            if (data.getExecutionMoment() == null) {
+                workflow.apply(gameId, actionId, data.getPlayerId(), data.getData(), null);
+            } else {
+                workflow.apply(gameId, actionId, data.getPlayerId(),
+                        data.getExecutionMoment().getTime(), data.getData(), null);
+            }
+        }
+    }
 }

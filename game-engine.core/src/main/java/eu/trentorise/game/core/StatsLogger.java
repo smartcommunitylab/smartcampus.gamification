@@ -142,7 +142,8 @@ public class StatsLogger {
             long timestamp, String challengeName, Date start, Date end) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
         msg += " " + String.format("type=%s name=\"%s\" startDate=%s endDate=%s",
-                "ChallengeAssigned", challengeName, start.getTime(), end.getTime());
+                "ChallengeAssigned", challengeName, start != null ? start.getTime() : null,
+                end != null ? end.getTime() : null);
         statsLogger.info(msg);
     }
 

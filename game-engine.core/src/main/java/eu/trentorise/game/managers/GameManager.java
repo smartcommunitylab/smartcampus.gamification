@@ -1,17 +1,15 @@
 /**
- *    Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+ * Copyright 2015 Fondazione Bruno Kessler - Trento RISE
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package eu.trentorise.game.managers;
@@ -35,6 +33,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.ClasspathRule;
@@ -54,303 +53,311 @@ import eu.trentorise.game.services.TaskService;
 @Component
 public class GameManager implements GameService {
 
-	private final Logger logger = LoggerFactory.getLogger(GameManager.class);
+    private final Logger logger = LoggerFactory.getLogger(GameManager.class);
 
-	public static final String INTERNAL_ACTION_PREFIX = "scogei_";
+    public static final String INTERNAL_ACTION_PREFIX = "scogei_";
 
-	@Autowired
-	private TaskService taskSrv;
+    @Autowired
+    private TaskService taskSrv;
 
-	@Autowired
-	private GameRepo gameRepo;
+    @Autowired
+    private GameRepo gameRepo;
 
-	@Autowired
-	private RuleRepo ruleRepo;
+    @Autowired
+    private RuleRepo ruleRepo;
 
-	@Autowired
-	private ChallengeModelRepo challengeModelRepo;
+    @Autowired
+    private ChallengeModelRepo challengeModelRepo;
 
-	@PostConstruct
-	private void startup() {
+    @Autowired
+    private KieContainerFactory kieContainerFactory;
 
-		for (Game game : loadGames(true)) {
-			startupTasks(game.getId());
-		}
+    @PostConstruct
+    private void startup() {
 
-	}
+        for (Game game : loadGames(true)) {
+            startupTasks(game.getId());
+        }
 
-	public String getGameIdByAction(String actionId) {
-		GamePersistence game = gameRepo.findByActions(actionId);
-		return game != null ? game.getId() : null;
-	}
+    }
 
-	public void startupTasks(String gameId) {
-		Game game = loadGameDefinitionById(gameId);
-		if (game != null) {
-			for (GameTask task : game.getTasks()) {
-				taskSrv.createTask(task, gameId);
-			}
-		}
-	}
+    public String getGameIdByAction(String actionId) {
+        GamePersistence game = gameRepo.findByActions(actionId);
+        return game != null ? game.getId() : null;
+    }
 
-	public Game saveGameDefinition(Game game) {
-		GamePersistence pers = null;
-		if (game.getId() != null) {
-			pers = gameRepo.findOne(game.getId());
-			if (pers != null) {
-				pers.setName(game.getName());
-				pers.setActions(new HashSet<String>());
+    public void startupTasks(String gameId) {
+        Game game = loadGameDefinitionById(gameId);
+        if (game != null) {
+            for (GameTask task : game.getTasks()) {
+                taskSrv.createTask(task, gameId);
+            }
+        }
+    }
 
-				// add all external actions
-				if (game.getActions() != null) {
-					for (String a : game.getActions()) {
-						if (!a.startsWith(INTERNAL_ACTION_PREFIX)) {
-							pers.getActions().add(a);
-						}
+    public Game saveGameDefinition(Game game) {
+        GamePersistence pers = null;
+        if (game.getId() != null) {
+            pers = gameRepo.findOne(game.getId());
+            if (pers != null) {
+                pers.setName(game.getName());
+                pers.setActions(new HashSet<String>());
 
-					}
-				}
-				pers.setExpiration(game.getExpiration());
-				pers.setTerminated(game.isTerminated());
-				pers.setRules(game.getRules());
-				pers.setDomain(game.getDomain());
+                // add all external actions
+                if (game.getActions() != null) {
+                    for (String a : game.getActions()) {
+                        if (!a.startsWith(INTERNAL_ACTION_PREFIX)) {
+                            pers.getActions().add(a);
+                        }
 
-				if (game.getConcepts() != null) {
-					Set<GenericObjectPersistence> concepts = new HashSet<GenericObjectPersistence>();
-					for (GameConcept c : game.getConcepts()) {
-						concepts.add(new GenericObjectPersistence(c));
-					}
-					pers.setConcepts(concepts);
-				} else {
-					pers.setConcepts(null);
-				}
+                    }
+                }
+                pers.setExpiration(game.getExpiration());
+                pers.setTerminated(game.isTerminated());
+                pers.setRules(game.getRules());
+                pers.setDomain(game.getDomain());
 
-				if (game.getTasks() != null) {
-					Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
-					for (GameTask t : game.getTasks()) {
-						tasks.add(new GenericObjectPersistence(t));
-						// set internal actions
-						pers.getActions().addAll(t.retrieveActions());
-					}
-					pers.setTasks(tasks);
-				} else {
-					pers.setTasks(null);
-				}
-			} else {
-				pers = new GamePersistence(game);
-			}
-		} else {
-			pers = new GamePersistence(game);
-		}
+                if (game.getConcepts() != null) {
+                    Set<GenericObjectPersistence> concepts =
+                            new HashSet<GenericObjectPersistence>();
+                    for (GameConcept c : game.getConcepts()) {
+                        concepts.add(new GenericObjectPersistence(c));
+                    }
+                    pers.setConcepts(concepts);
+                } else {
+                    pers.setConcepts(null);
+                }
 
-		pers = gameRepo.save(pers);
-		return pers.toGame();
-	}
+                if (game.getTasks() != null) {
+                    Set<GenericObjectPersistence> tasks = new HashSet<GenericObjectPersistence>();
+                    for (GameTask t : game.getTasks()) {
+                        tasks.add(new GenericObjectPersistence(t));
+                        // set internal actions
+                        pers.getActions().addAll(t.retrieveActions());
+                    }
+                    pers.setTasks(tasks);
+                } else {
+                    pers.setTasks(null);
+                }
+            } else {
+                pers = new GamePersistence(game);
+            }
+        } else {
+            pers = new GamePersistence(game);
+        }
 
-	public Game loadGameDefinitionById(String gameId) {
-		GamePersistence gp = gameRepo.findOne(gameId);
-		return gp == null ? null : gp.toGame();
-	}
+        pers = gameRepo.save(pers);
+        return pers.toGame();
+    }
 
-	public List<Game> loadGames(boolean onlyActive) {
-		List<Game> result = new ArrayList<Game>();
-		for (GamePersistence gp : gameRepo.findByTerminated(!onlyActive)) {
-			result.add(gp.toGame());
-		}
-		return result;
-	}
+    public Game loadGameDefinitionById(String gameId) {
+        GamePersistence gp = gameRepo.findOne(gameId);
+        return gp == null ? null : gp.toGame();
+    }
 
-	public List<Game> loadAllGames() {
-		List<Game> result = new ArrayList<Game>();
-		for (GamePersistence gp : gameRepo.findAll()) {
-			result.add(gp.toGame());
-		}
-		return result;
-	}
+    public List<Game> loadGames(boolean onlyActive) {
+        List<Game> result = new ArrayList<Game>();
+        for (GamePersistence gp : gameRepo.findByTerminated(!onlyActive)) {
+            result.add(gp.toGame());
+        }
+        return result;
+    }
 
-	public String addRule(Rule rule) {
-		String ruleUrl = null;
-		boolean isEdit = false;
-		if (rule != null) {
-			StopWatch stopWatch = LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
-					? new Log4JStopWatch() : null;
-			if (stopWatch != null) {
-				stopWatch.start("insert rule");
-			}
-			Game game = loadGameDefinitionById(rule.getGameId());
-			if (game != null) {
-				if (rule instanceof ClasspathRule) {
-					ClasspathRule r = (ClasspathRule) rule;
-					if (!(r.getUrl().startsWith(ClasspathRule.URL_PROTOCOL))) {
-						ruleUrl = ClasspathRule.URL_PROTOCOL + r.getUrl();
-					}
-				}
+    public List<Game> loadAllGames() {
+        List<Game> result = new ArrayList<Game>();
+        for (GamePersistence gp : gameRepo.findAll()) {
+            result.add(gp.toGame());
+        }
+        return result;
+    }
 
-				if (rule instanceof FSRule) {
-					FSRule r = (FSRule) rule;
-					if (!(r.getUrl().startsWith(FSRule.URL_PROTOCOL))) {
-						ruleUrl = FSRule.URL_PROTOCOL + r.getUrl();
-					}
-				}
+    public String addRule(Rule rule) {
+        String ruleUrl = null;
+        boolean isEdit = false;
+        if (rule != null) {
+            StopWatch stopWatch = LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME)
+                    .getAppender("perf-file") != null ? new Log4JStopWatch() : null;
+            if (stopWatch != null) {
+                stopWatch.start("insert rule");
+            }
+            Game game = loadGameDefinitionById(rule.getGameId());
+            if (game != null) {
+                if (rule instanceof ClasspathRule) {
+                    ClasspathRule r = (ClasspathRule) rule;
+                    if (!(r.getUrl().startsWith(ClasspathRule.URL_PROTOCOL))) {
+                        ruleUrl = ClasspathRule.URL_PROTOCOL + r.getUrl();
+                    }
+                }
 
-				if (rule instanceof DBRule) {
-					boolean alreadyExist = false;
-					DBRule r = (DBRule) rule;
-					if (r.getId() != null) {
-						r.setId(r.getId().replace(DBRule.URL_PROTOCOL, ""));
-						isEdit = true;
-					} else {
-						alreadyExist = ruleRepo.findByGameIdAndName(rule.getGameId(), r.getName()) != null;
-					}
+                if (rule instanceof FSRule) {
+                    FSRule r = (FSRule) rule;
+                    if (!(r.getUrl().startsWith(FSRule.URL_PROTOCOL))) {
+                        ruleUrl = FSRule.URL_PROTOCOL + r.getUrl();
+                    }
+                }
 
-					if (!alreadyExist) {
-						rule = ruleRepo.save(r);
-						ruleUrl = DBRule.URL_PROTOCOL + r.getId();
-					}
-				}
+                if (rule instanceof DBRule) {
+                    boolean alreadyExist = false;
+                    DBRule r = (DBRule) rule;
+                    if (r.getId() != null) {
+                        r.setId(r.getId().replace(DBRule.URL_PROTOCOL, ""));
+                        isEdit = true;
+                    } else {
+                        alreadyExist =
+                                ruleRepo.findByGameIdAndName(rule.getGameId(), r.getName()) != null;
+                    }
 
-				if (isEdit || ruleUrl != null && !game.getRules().contains(ruleUrl)) {
-					game.getRules().add(ruleUrl);
-					saveGameDefinition(game);
-				} else {
-					throw new IllegalArgumentException("the rule already exist for game " + rule.getGameId());
-				}
-				if (stopWatch != null) {
-					stopWatch.stop("insert rule", "inserted rule for game " + rule.getGameId());
-				}
-			} else {
-				LogHub.error(rule.getGameId(), logger, "Game {} not found", rule.getGameId());
-			}
-		}
-		return ruleUrl;
-	}
+                    if (!alreadyExist) {
+                        rule = ruleRepo.save(r);
+                        ruleUrl = DBRule.URL_PROTOCOL + r.getId();
+                    }
+                }
 
-	public Rule loadRule(String gameId, String url) {
-		Rule rule = null;
-		if (url != null) {
-			if (url.startsWith(DBRule.URL_PROTOCOL)) {
-				url = url.substring(DBRule.URL_PROTOCOL.length());
-				return ruleRepo.findOne(url);
-			} else if (url.startsWith(ClasspathRule.URL_PROTOCOL)) {
-				url = url.substring(ClasspathRule.URL_PROTOCOL.length());
-				if (Thread.currentThread().getContextClassLoader().getResource(url) != null) {
-					return new ClasspathRule(gameId, url);
-				}
+                if (isEdit || ruleUrl != null && !game.getRules().contains(ruleUrl)) {
+                    game.getRules().add(ruleUrl);
+                    saveGameDefinition(game);
+                    kieContainerFactory.purgeContainer(rule.getGameId());
+                } else {
+                    throw new IllegalArgumentException(
+                            "the rule already exist for game " + rule.getGameId());
+                }
+                if (stopWatch != null) {
+                    stopWatch.stop("insert rule", "inserted rule for game " + rule.getGameId());
+                }
+            } else {
+                LogHub.error(rule.getGameId(), logger, "Game {} not found", rule.getGameId());
+            }
+        }
+        return ruleUrl;
+    }
 
-			} else if (url.startsWith(FSRule.URL_PROTOCOL)) {
-				url = url.substring(FSRule.URL_PROTOCOL.length());
-				if (new File(url).exists()) {
-					return new FSRule(gameId, url);
-				}
-			}
-		}
-		return rule;
-	}
+    public Rule loadRule(String gameId, String url) {
+        Rule rule = null;
+        if (url != null) {
+            if (url.startsWith(DBRule.URL_PROTOCOL)) {
+                url = url.substring(DBRule.URL_PROTOCOL.length());
+                return ruleRepo.findOne(url);
+            } else if (url.startsWith(ClasspathRule.URL_PROTOCOL)) {
+                url = url.substring(ClasspathRule.URL_PROTOCOL.length());
+                if (Thread.currentThread().getContextClassLoader().getResource(url) != null) {
+                    return new ClasspathRule(gameId, url);
+                }
 
-	@Scheduled(cron = "0 0 1 * * *")
-	public void taskDestroyer() {
-		LogHub.info(null, logger, "task destroyer invocation");
-		long deadline = System.currentTimeMillis();
+            } else if (url.startsWith(FSRule.URL_PROTOCOL)) {
+                url = url.substring(FSRule.URL_PROTOCOL.length());
+                if (new File(url).exists()) {
+                    return new FSRule(gameId, url);
+                }
+            }
+        }
+        return rule;
+    }
 
-		List<Game> games = loadGames(true);
-		for (Game game : games) {
-			if (game.getExpiration() > 0 && game.getExpiration() < deadline) {
-				for (GameTask task : game.getTasks()) {
-					if (taskSrv.destroyTask(task, game.getId())) {
-						LogHub.info(game.getId(), logger, "Destroy task - {} - of game {}", task.getName(),
-								game.getId());
-					}
-				}
-				game.setTerminated(true);
-				saveGameDefinition(game);
-			}
-		}
+    @Scheduled(cron = "0 0 1 * * *")
+    public void taskDestroyer() {
+        LogHub.info(null, logger, "task destroyer invocation");
+        long deadline = System.currentTimeMillis();
 
-	}
+        List<Game> games = loadGames(true);
+        for (Game game : games) {
+            if (game.getExpiration() > 0 && game.getExpiration() < deadline) {
+                for (GameTask task : game.getTasks()) {
+                    if (taskSrv.destroyTask(task, game.getId())) {
+                        LogHub.info(game.getId(), logger, "Destroy task - {} - of game {}",
+                                task.getName(), game.getId());
+                    }
+                }
+                game.setTerminated(true);
+                saveGameDefinition(game);
+            }
+        }
 
-	public Game loadGameDefinitionByAction(String actionId) {
-		GamePersistence gp = gameRepo.findByActions(actionId);
-		return gp != null ? gp.toGame() : null;
-	}
+    }
 
-	@Override
-	public void addConceptInstance(String gameId, GameConcept gc) {
-		Game g = loadGameDefinitionById(gameId);
-		if (g != null) {
-			if (g.getConcepts() == null) {
-				g.setConcepts(new HashSet<GameConcept>());
-			}
-			g.getConcepts().add(gc);
-			saveGameDefinition(g);
-		}
+    public Game loadGameDefinitionByAction(String actionId) {
+        GamePersistence gp = gameRepo.findByActions(actionId);
+        return gp != null ? gp.toGame() : null;
+    }
 
-	}
+    @Override
+    public void addConceptInstance(String gameId, GameConcept gc) {
+        Game g = loadGameDefinitionById(gameId);
+        if (g != null) {
+            if (g.getConcepts() == null) {
+                g.setConcepts(new HashSet<GameConcept>());
+            }
+            g.getConcepts().add(gc);
+            saveGameDefinition(g);
+        }
 
-	@Override
-	public Set<GameConcept> readConceptInstances(String gameId) {
-		Game g = loadGameDefinitionById(gameId);
-		if (g != null) {
-			return g.getConcepts() != null ? g.getConcepts() : Collections.<GameConcept>emptySet();
-		} else {
-			return Collections.<GameConcept>emptySet();
-		}
-	}
+    }
 
-	@Override
-	public boolean deleteRule(String gameId, String url) {
-		Game g = loadGameDefinitionById(gameId);
-		boolean res = false;
-		if (g != null && url != null && url.indexOf(DBRule.URL_PROTOCOL) != -1) {
-			String id = url.substring(5);
-			ruleRepo.delete(id);
-			res = g.getRules().remove(url);
-			saveGameDefinition(g);
-		}
+    @Override
+    public Set<GameConcept> readConceptInstances(String gameId) {
+        Game g = loadGameDefinitionById(gameId);
+        if (g != null) {
+            return g.getConcepts() != null ? g.getConcepts() : Collections.<GameConcept>emptySet();
+        } else {
+            return Collections.<GameConcept>emptySet();
+        }
+    }
 
-		return res;
-	}
+    @Override
+    public boolean deleteRule(String gameId, String url) {
+        Game g = loadGameDefinitionById(gameId);
+        boolean res = false;
+        if (g != null && url != null && url.indexOf(DBRule.URL_PROTOCOL) != -1) {
+            String id = url.substring(5);
+            ruleRepo.delete(id);
+            res = g.getRules().remove(url);
+            saveGameDefinition(g);
+            kieContainerFactory.purgeContainer(gameId);
+        }
 
-	@Override
-	public boolean deleteGame(String gameId) {
-		boolean res = false;
-		if (gameId != null) {
-			gameRepo.delete(gameId);
-			res = true;
-		}
-		return res;
-	}
+        return res;
+    }
 
-	@Override
-	public List<Game> loadGameByOwner(String user) {
-		List<Game> result = new ArrayList<Game>();
-		if (user != null) {
-			for (GamePersistence gp : gameRepo.findByOwner(user)) {
-				result.add(gp.toGame());
-			}
-		}
-		return result;
+    @Override
+    public boolean deleteGame(String gameId) {
+        boolean res = false;
+        if (gameId != null) {
+            gameRepo.delete(gameId);
+            res = true;
+        }
+        return res;
+    }
 
-	}
+    @Override
+    public List<Game> loadGameByOwner(String user) {
+        List<Game> result = new ArrayList<Game>();
+        if (user != null) {
+            for (GamePersistence gp : gameRepo.findByOwner(user)) {
+                result.add(gp.toGame());
+            }
+        }
+        return result;
 
-	@Override
-	public ChallengeModel saveChallengeModel(String gameId, ChallengeModel model) {
-		model.setGameId(gameId);
-		return challengeModelRepo.save(model);
-	}
+    }
 
-	@Override
-	public boolean deleteChallengeModel(String gameId, String modelId) {
-		challengeModelRepo.delete(modelId);
-		return true;
-	}
+    @Override
+    public ChallengeModel saveChallengeModel(String gameId, ChallengeModel model) {
+        model.setGameId(gameId);
+        return challengeModelRepo.save(model);
+    }
 
-	@Override
-	public Set<ChallengeModel> readChallengeModels(String gameId) {
-		return challengeModelRepo.findByGameId(gameId);
-	}
+    @Override
+    public boolean deleteChallengeModel(String gameId, String modelId) {
+        challengeModelRepo.delete(modelId);
+        return true;
+    }
 
-	@Override
-	public ChallengeModel readChallengeModel(String gameId, String modelId) {
-		return challengeModelRepo.findByGameIdAndId(gameId, modelId);
-	}
+    @Override
+    public Set<ChallengeModel> readChallengeModels(String gameId) {
+        return challengeModelRepo.findByGameId(gameId);
+    }
+
+    @Override
+    public ChallengeModel readChallengeModel(String gameId, String modelId) {
+        return challengeModelRepo.findByGameIdAndId(gameId, modelId);
+    }
 }

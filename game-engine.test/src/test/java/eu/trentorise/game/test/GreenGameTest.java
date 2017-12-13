@@ -29,6 +29,7 @@ public class GreenGameTest extends GameTest {
 
     private static final String GAME = "gameTest";
     private static final String ACTION = "save_itinerary";
+    private static final String DOMAIN = "my-domain";
 
     @Override
     public void initEnv() {
@@ -70,7 +71,7 @@ public class GreenGameTest extends GameTest {
         concepts.add(new BadgeCollectionConcept("p+r"));
         concepts.add(new BadgeCollectionConcept("special"));
 
-        defineGameHelper(GAME, Arrays.asList(ACTION), concepts);
+        defineGameHelper(DOMAIN, GAME, Arrays.asList(ACTION), concepts);
 
         try {
             loadClasspathRules(GAME, "rules/" + GAME);

@@ -25,73 +25,75 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.IncrementalClassificationTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
-		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestMVCConfiguration.class},
+        loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class ConverterTest {
 
-	@Autowired
-	private Converter converter;
+    @Autowired
+    private Converter converter;
 
-	@Autowired
-	private GameService gameSrv;
+    @Autowired
+    private GameService gameSrv;
 
-	private final String POINT_CONCEPT = "green";
-	private final String PERIOD_NAME = "p1";
-	private final String GAME_ID = "mytest";
+    private final String POINT_CONCEPT = "green";
+    private final String PERIOD_NAME = "p1";
+    private final String GAME_ID = "mytest";
+    private static final String DOMAIN = "my-domain";
 
-	@Test
-	public void convertIncrementalClassification() {
+    @Test
+    public void convertIncrementalClassification() {
 
-		gameSrv.saveGameDefinition(defineGame());
+        gameSrv.saveGameDefinition(defineGame());
 
-		IncrementalClassificationDTO incrClassDTO = new IncrementalClassificationDTO();
-		incrClassDTO.setClassificationName("test");
-		incrClassDTO.setItemsToNotificate(2);
-		incrClassDTO.setItemType(POINT_CONCEPT);
-		incrClassDTO.setPeriodName(PERIOD_NAME);
-		incrClassDTO.setGameId(GAME_ID);
-		IncrementalClassificationTask converted = converter.convertClassificationTask(incrClassDTO);
-		Assert.notNull(converted.getSchedule());
-		Assert.notNull(converted.getSchedule().getStart());
-		Assert.notNull(converted.getSchedule().getPeriod());
-	}
+        IncrementalClassificationDTO incrClassDTO = new IncrementalClassificationDTO();
+        incrClassDTO.setClassificationName("test");
+        incrClassDTO.setItemsToNotificate(2);
+        incrClassDTO.setItemType(POINT_CONCEPT);
+        incrClassDTO.setPeriodName(PERIOD_NAME);
+        incrClassDTO.setGameId(GAME_ID);
+        IncrementalClassificationTask converted = converter.convertClassificationTask(incrClassDTO);
+        Assert.notNull(converted.getSchedule());
+        Assert.notNull(converted.getSchedule().getStart());
+        Assert.notNull(converted.getSchedule().getPeriod());
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void incrementalNoGameId() {
+    @Test(expected = IllegalArgumentException.class)
+    public void incrementalNoGameId() {
 
-		gameSrv.saveGameDefinition(defineGame());
+        gameSrv.saveGameDefinition(defineGame());
 
-		IncrementalClassificationDTO incrClassDTO = new IncrementalClassificationDTO();
-		incrClassDTO.setClassificationName("test");
-		incrClassDTO.setItemsToNotificate(2);
-		incrClassDTO.setItemType(POINT_CONCEPT);
-		incrClassDTO.setPeriodName(PERIOD_NAME);
+        IncrementalClassificationDTO incrClassDTO = new IncrementalClassificationDTO();
+        incrClassDTO.setClassificationName("test");
+        incrClassDTO.setItemsToNotificate(2);
+        incrClassDTO.setItemType(POINT_CONCEPT);
+        incrClassDTO.setPeriodName(PERIOD_NAME);
 
-		IncrementalClassificationTask converted = converter.convertClassificationTask(incrClassDTO);
-		Assert.notNull(converted.getSchedule());
-		Assert.notNull(converted.getSchedule().getStart());
-		Assert.notNull(converted.getSchedule().getPeriod());
-	}
+        IncrementalClassificationTask converted = converter.convertClassificationTask(incrClassDTO);
+        Assert.notNull(converted.getSchedule());
+        Assert.notNull(converted.getSchedule().getStart());
+        Assert.notNull(converted.getSchedule().getPeriod());
+    }
 
-	private Game defineGame() {
-		PointConcept p = new PointConcept(POINT_CONCEPT);
-		p.addPeriod(PERIOD_NAME, new LocalDate().toDate(), 60000);
+    private Game defineGame() {
+        PointConcept p = new PointConcept(POINT_CONCEPT);
+        p.addPeriod(PERIOD_NAME, new LocalDate().toDate(), 60000);
 
-		Game g = new Game();
-		g.setId(GAME_ID);
-		g.setName(GAME_ID);
-		g.setConcepts(new HashSet<GameConcept>());
-		g.getConcepts().add(p);
-		g.setTasks(new HashSet<GameTask>());
-		return g;
-	}
+        Game g = new Game();
+        g.setId(GAME_ID);
+        g.setName(GAME_ID);
+        g.setDomain(DOMAIN);
+        g.setConcepts(new HashSet<GameConcept>());
+        g.getConcepts().add(p);
+        g.setTasks(new HashSet<GameTask>());
+        return g;
+    }
 }
 
+
 /**
- * Without @EnablaWebMvc MockMvc not work correctly to simulate controller
- * Cannot add annotation to WebConfig to conflict with WebMvcConfigurerAdapter
- * extension
+ * Without @EnablaWebMvc MockMvc not work correctly to simulate controller Cannot add annotation to
+ * WebConfig to conflict with WebMvcConfigurerAdapter extension
  * 
  * @author mirko perillo
  * 

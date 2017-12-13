@@ -37,74 +37,78 @@ import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
-		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestMVCConfiguration.class},
+        loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class ConsoleControllerTest {
 
-	@Autowired
-	private GameService gameSrv;
+    @Autowired
+    private GameService gameSrv;
 
-	@Autowired
-	private MongoTemplate mongo;
+    @Autowired
+    private MongoTemplate mongo;
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private WebApplicationContext wac;
 
-	private MockMvc mocker;
+    private MockMvc mocker;
 
-	private ObjectMapper mapper;
+    private ObjectMapper mapper;
 
-	private static final String GAME = "gameTest";
-	private static final String ACTION = "save_itinerary";
+    private static final String GAME = "gameTest";
+    private static final String ACTION = "save_itinerary";
+    private static final String DOMAIN = "my-domain";
 
-	@PostConstruct
-	public void init() {
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		mapper = new ObjectMapper();
-	}
+    @PostConstruct
+    public void init() {
+        mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+        mapper = new ObjectMapper();
+    }
 
-	@Before
-	public void cleanDB() {
-		// clean mongo
-		mongo.dropCollection(StatePersistence.class);
-		mongo.dropCollection(GamePersistence.class);
-		mongo.dropCollection(NotificationPersistence.class);
-	}
+    @Before
+    public void cleanDB() {
+        // clean mongo
+        mongo.dropCollection(StatePersistence.class);
+        mongo.dropCollection(GamePersistence.class);
+        mongo.dropCollection(NotificationPersistence.class);
+    }
 
-	private Game defineGame() {
-		Game game = new Game();
+    private Game defineGame() {
+        Game game = new Game();
 
-		game.setId(GAME);
-		game.setName(GAME);
+        game.setId(GAME);
+        game.setName(GAME);
+        game.setDomain(DOMAIN);
 
-		game.setActions(new HashSet<String>());
-		game.getActions().add(ACTION);
-		game.getActions().add("classification");
+        game.setActions(new HashSet<String>());
+        game.getActions().add(ACTION);
+        game.getActions().add("classification");
 
-		game.setConcepts(new HashSet<GameConcept>());
+        game.setConcepts(new HashSet<GameConcept>());
 
-		game.setTasks(new HashSet<GameTask>());
+        game.setTasks(new HashSet<GameTask>());
 
-		return game;
-	}
+        return game;
+    }
 
-	@Test
-	public void createPlayer() {
-		Game game = defineGame();
-		gameSrv.saveGameDefinition(game);
+    @Test
+    public void createPlayer() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
 
-		try {
-			PlayerStateDTO player = new PlayerStateDTO();
-			player.setPlayerId("10001");
-			RequestBuilder builder = MockMvcRequestBuilders.post("/console/game/{gameId}/player", game.getId())
-					.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(player));
+        try {
+            PlayerStateDTO player = new PlayerStateDTO();
+            player.setPlayerId("10001");
+            RequestBuilder builder =
+                    MockMvcRequestBuilders.post("/console/game/{gameId}/player", game.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(player));
 
-			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
-					.andExpect(MockMvcResultMatchers.status().is(200));
+            mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
 
-		} catch (Exception e) {
-			Assert.fail("exception " + e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            Assert.fail("exception " + e.getMessage());
+        }
+    }
 }

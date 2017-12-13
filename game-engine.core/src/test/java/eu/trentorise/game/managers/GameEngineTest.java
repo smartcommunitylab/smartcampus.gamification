@@ -104,6 +104,7 @@ public class GameEngineTest {
     private static final String ACTION = "save_itinerary";
     private static final String PLAYER = "iansolo";
     private static final String OWNER = "chewbecca";
+    private static final String DOMAIN = "my-domain";
 
     private static final long WAIT_EXEC = 15 * 1000;
 
@@ -281,6 +282,7 @@ public class GameEngineTest {
         Game game = new Game();
 
         game.setId(GAME);
+        game.setDomain(DOMAIN);
         game.setName("test game");
 
         game.setActions(new HashSet<String>());
@@ -412,6 +414,7 @@ public class GameEngineTest {
         game.setId(GAME);
         game.setName(GAME);
         game.setOwner(OWNER);
+        game.setDomain(DOMAIN);
 
         game.setActions(new HashSet<String>());
         game.getActions().add(ACTION);

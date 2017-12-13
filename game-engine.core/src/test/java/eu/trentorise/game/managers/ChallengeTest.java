@@ -55,6 +55,7 @@ public class ChallengeTest {
     private static final String GAME = "challengeGameTest";
     private static final String PLAYER = "eddie brock";
     private static final String ACTION = "beatme";
+    private static final String DOMAIN = "my-domain";
 
     @Before
     public void cleanDB() {
@@ -276,6 +277,7 @@ public class ChallengeTest {
         game.setId(GAME);
         game.setName(GAME);
         game.setOwner(OWNER);
+        game.setDomain(DOMAIN);
 
         game.setActions(new HashSet<String>());
         game.getActions().add(ACTION);

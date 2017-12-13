@@ -23,6 +23,8 @@ public class ChallengeGameTest extends GameTest {
     private static final String GAME = "challengeTest";
     private static final String ACTION = "play";
 
+    private static final String DOMAIN = "my-domain";
+
     private static final String PLAYER_1 = "rick grames";
     private static final String PLAYER_2 = "Bob Stookey";
 
@@ -70,7 +72,7 @@ public class ChallengeGameTest extends GameTest {
         List<GameConcept> concepts = new ArrayList<GameConcept>();
         concepts.add(new PointConcept("green leaves"));
 
-        defineGameHelper(GAME, Arrays.asList(ACTION), concepts);
+        defineGameHelper(DOMAIN, GAME, Arrays.asList(ACTION), concepts);
 
         try {
             loadClasspathRules(GAME, "rules/" + GAME);

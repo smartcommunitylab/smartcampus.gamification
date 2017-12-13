@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
@@ -97,6 +98,13 @@ public class GameManager implements GameService {
 
     public Game saveGameDefinition(Game game) {
         GamePersistence pers = null;
+
+        if (game == null) {
+            throw new IllegalArgumentException("game cannot be null");
+        }
+        if (StringUtils.isBlank(game.getDomain())) {
+            throw new IllegalArgumentException("domain cannot be blank");
+        }
         if (game.getId() != null) {
             pers = gameRepo.findOne(game.getId());
             if (pers != null) {
@@ -156,19 +164,11 @@ public class GameManager implements GameService {
     }
 
     public List<Game> loadGames(boolean onlyActive) {
-        List<Game> result = new ArrayList<Game>();
-        for (GamePersistence gp : gameRepo.findByTerminated(!onlyActive)) {
-            result.add(gp.toGame());
-        }
-        return result;
+        return convert(gameRepo.findByTerminated(!onlyActive));
     }
 
     public List<Game> loadAllGames() {
-        List<Game> result = new ArrayList<Game>();
-        for (GamePersistence gp : gameRepo.findAll()) {
-            result.add(gp.toGame());
-        }
-        return result;
+        return convert(gameRepo.findAll());
     }
 
     public String addRule(Rule rule) {
@@ -331,9 +331,7 @@ public class GameManager implements GameService {
     public List<Game> loadGameByOwner(String user) {
         List<Game> result = new ArrayList<Game>();
         if (user != null) {
-            for (GamePersistence gp : gameRepo.findByOwner(user)) {
-                result.add(gp.toGame());
-            }
+            convert(gameRepo.findByOwner(user));
         }
         return result;
 
@@ -359,5 +357,31 @@ public class GameManager implements GameService {
     @Override
     public ChallengeModel readChallengeModel(String gameId, String modelId) {
         return challengeModelRepo.findByGameIdAndId(gameId, modelId);
+    }
+
+    @Override
+    public List<Game> loadGameByOwner(String domain, String user) {
+        return convert(gameRepo.findByDomainAndOwner(domain, user));
+    }
+
+    @Override
+    public List<Game> loadGameByDomain(String domain) {
+        List<Game> games = new ArrayList<>();
+        if (domain != null) {
+            games = convert(gameRepo.findByDomain(domain));
+        }
+        return games;
+    }
+
+    private List<Game> convert(Iterable<GamePersistence> gamesPersistence) {
+        List<Game> games = null;
+        if (gamesPersistence != null) {
+            games = new ArrayList<>();
+            for (GamePersistence gamePersistence : gamesPersistence) {
+                games.add(gamePersistence.toGame());
+            }
+        }
+
+        return games;
     }
 }

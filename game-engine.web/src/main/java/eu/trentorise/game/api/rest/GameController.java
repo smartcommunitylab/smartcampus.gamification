@@ -24,217 +24,225 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 public class GameController {
 
-	@Autowired
-	private GameService gameSrv;
+    @Autowired
+    private GameService gameSrv;
 
-	@Autowired
-	private Converter converter;
+    @Autowired
+    private Converter converter;
 
-	@Autowired
-	private IdentityLookupService identityLookup;
+    @Autowired
+    private IdentityLookupService identityLookup;
 
-	/**
-	 * *************************************************************************
-	 * GAME API
-	 * ************************************************************************
-	 */
+    /**
+     * ************************************************************************* GAME API
+     * ************************************************************************
+     */
 
-	// Create a game
-	// POST /model/game
-	// TODO: ­ Remove from body implicit elements (e.g., owner) , The content
-	// elements are optional (except name)
+    // Create a game
+    // POST /model/game
+    // TODO: ­ Remove from body implicit elements (e.g., owner) , The content
+    // elements are optional (except name)
 
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game", consumes = { "application/json" }, produces = {
-			"application/json" })
-	@ApiOperation(value = "Save a game")
-	public GameDTO saveGame(@RequestBody GameDTO game) {
-		// set creator
-		String user = identityLookup.getName();
-		game.setOwner(user);
-		Game res = gameSrv.saveGameDefinition(converter.convertGame(game));
-		return converter.convertGame(res);
-	}
+    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{domain}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Save a game")
+    public GameDTO saveGame(@PathVariable String domain, @RequestBody GameDTO game) {
+        // set creator
+        String user = identityLookup.getName();
+        game.setOwner(user);
+        game.setDomain(domain);
+        Game res = gameSrv.saveGameDefinition(converter.convertGame(game));
+        return converter.convertGame(res);
+    }
 
-	//
-	// Read a game
-	// GET /model/game/{id}
+    //
+    // Read a game
+    // GET /model/game/{id}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}", produces = { "application/json" })
-	@ApiOperation(value = "Read game definition")
-	public GameDTO readGame(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{domain}/{gameId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Read game definition")
+    public GameDTO readGame(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		Game g = gameSrv.loadGameDefinitionById(gameId);
-		return g == null ? null : converter.convertGame(g);
-	}
+        Game g = gameSrv.loadGameDefinitionById(gameId);
+        return g == null ? null : converter.convertGame(g);
+    }
 
-	// Read all games of the user
-	// GET /model/game
+    // Read all games of the user
+    // GET /model/game
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game", produces = { "application/json" })
-	@ApiOperation(value = "Get games", notes = "Get all the game definitions in the system")
-	public List<GameDTO> readGames() {
-		String user = identityLookup.getName();
-		List<GameDTO> r = new ArrayList<GameDTO>();
-		for (Game g : gameSrv.loadGameByOwner(user)) {
-			r.add(converter.convertGame(g));
-		}
-		return r;
-	}
+    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{domain}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get games", notes = "Get all the game definitions in the system")
+    public List<GameDTO> readGames(@PathVariable String domain) {
+        String user = identityLookup.getName();
+        List<GameDTO> r = new ArrayList<GameDTO>();
+        for (Game g : gameSrv.loadGameByOwner(user)) {
+            r.add(converter.convertGame(g));
+        }
+        return r;
+    }
 
-	// Delete a game
-	// DELETE /model/game/{id}
+    // Delete a game
+    // DELETE /model/game/{id}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}", produces = { "application/json" })
-	@ApiOperation(value = "Delete game")
-	public void deleteGame(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{domain}/{gameId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Delete game")
+    public void deleteGame(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		gameSrv.deleteGame(gameId);
-	}
+        gameSrv.deleteGame(gameId);
+    }
 
-	// Start a game
-	// PUT /model/game/{id}/start
+    // Start a game
+    // PUT /model/game/{id}/start
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/start", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Start game", notes = "The game is able to accept action executions")
-	public void startGame(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.PUT, value = "/model/game/{domain}/{gameId}/start",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Start game", notes = "The game is able to accept action executions")
+    public void startGame(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-		throw new UnsupportedOperationException("Operation actually not supported");
-	}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+        throw new UnsupportedOperationException("Operation actually not supported");
+    }
 
-	// Stop a game
-	// PUT /model/game/{id}/stop
+    // Stop a game
+    // PUT /model/game/{id}/stop
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/stop", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Stop a game", notes = "The game will not accept action execution anymore")
-	public void stopGame(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.PUT, value = "/model/game/{domain}/{gameId}/stop",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Stop a game",
+            notes = "The game will not accept action execution anymore")
+    public void stopGame(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		throw new UnsupportedOperationException("Operation actually not supported");
-	}
+        throw new UnsupportedOperationException("Operation actually not supported");
+    }
 
-	/**
-	 * *************************************************************************
-	 * ACTION API
-	 * ************************************************************************
-	 */
+    /**
+     * ************************************************************************* ACTION API
+     * ************************************************************************
+     */
 
-	// Create action concept
-	// POST /model/game/{id}/action/{actionId}
-	// ­ Action should be unique. Error if exists
-	// ­ Consider other fields: name, description
+    // Create action concept
+    // POST /model/game/{id}/action/{actionId}
+    // ­ Action should be unique. Error if exists
+    // ­ Consider other fields: name, description
 
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/action/{actionId}", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Add action")
-	public void addAction(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/model/game/{domain}/{gameId}/action/{actionId}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Add action")
+    public void addAction(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-		throw new UnsupportedOperationException("Operation actually not supported");
-	}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+        throw new UnsupportedOperationException("Operation actually not supported");
+    }
 
-	// Modify an action
-	// PUT /model/game/{id}/action/{actionId}
+    // Modify an action
+    // PUT /model/game/{id}/action/{actionId}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/action/{actionId}", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Edit action")
-	public void editAction(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.PUT,
+            value = "/model/game/{domain}/{gameId}/action/{actionId}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Edit action")
+    public void editAction(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-		throw new UnsupportedOperationException("Operation actually not supported");
-	}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+        throw new UnsupportedOperationException("Operation actually not supported");
+    }
 
-	// Read all actions
-	// GET /model/game/{id}/action
+    // Read all actions
+    // GET /model/game/{id}/action
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/action", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get actions")
-	public Set<String> readAllAction(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{domain}/{gameId}/action",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get actions")
+    public Set<String> readAllAction(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-		Game g = gameSrv.loadGameDefinitionById(gameId);
-		return g != null ? g.getActions() : Collections.<String>emptySet();
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+        Game g = gameSrv.loadGameDefinitionById(gameId);
+        return g != null ? g.getActions() : Collections.<String>emptySet();
 
-	}
+    }
 
-	// Read an action
-	// GET /model/game/{id}/action/{actionId}
+    // Read an action
+    // GET /model/game/{id}/action/{actionId}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/action/{actionId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get action")
-	public void readAction(@PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/model/game/{domain}/{gameId}/action/{actionId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get action")
+    public void readAction(@PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-		throw new UnsupportedOperationException("Operation actually not supported");
-	}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+        throw new UnsupportedOperationException("Operation actually not supported");
+    }
 
-	// Delete an action
-	// DELETE /model/game/{id}/action/{actionId}
-	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/action/{actionId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Delete action")
-	public void deleteAction(@PathVariable String gameId, @PathVariable String actionId) {
+    // Delete an action
+    // DELETE /model/game/{id}/action/{actionId}
+    @RequestMapping(method = RequestMethod.DELETE,
+            value = "/model/game/{domain}/{gameId}/action/{actionId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Delete action")
+    public void deleteAction(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String actionId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		try {
-			actionId = URLDecoder.decode(actionId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("actionId is not UTF-8 encoded");
-		}
-		Game g = gameSrv.loadGameDefinitionById(gameId);
+        try {
+            actionId = URLDecoder.decode(actionId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("actionId is not UTF-8 encoded");
+        }
+        Game g = gameSrv.loadGameDefinitionById(gameId);
 
-		if (g != null) {
-			g.getActions().remove(actionId);
-			gameSrv.saveGameDefinition(g);
-		}
+        if (g != null) {
+            g.getActions().remove(actionId);
+            gameSrv.saveGameDefinition(g);
+        }
 
-	}
+    }
 
 }

@@ -160,11 +160,13 @@ public abstract class GameTest {
         }
     }
 
-    public void defineGameHelper(String gameId, List<String> actions, List<GameConcept> concepts) {
+    public void defineGameHelper(String domain, String gameId, List<String> actions,
+            List<GameConcept> concepts) {
         Game g = new Game();
         g.setId(gameId);
         g.setName(gameId);
         g.setActions(new HashSet<String>(actions));
+        g.setDomain(domain);
 
         g.setConcepts(new HashSet<GameConcept>());
         if (concepts != null) {

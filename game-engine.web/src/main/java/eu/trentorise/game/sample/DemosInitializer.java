@@ -57,7 +57,7 @@ public class DemosInitializer {
 		if (secProfileActive) {
 			LogHub.info(null, logger, "sec profile active..create sample game for every user");
 			for (AuthUser user : usersProvider.getUsers()) {
-				g = gameFactory.createGame(null, null, user.getUsername());
+				g = gameFactory.createGame(null, null, null, user.getUsername());
 				if (g != null) {
 					gameSrv.startupTasks(g.getId());
 				}
@@ -65,7 +65,7 @@ public class DemosInitializer {
 		} else {
 			LogHub.info(null, logger, "no-sec profile active..create sample game for default user");
 			// initialize demo-game for default user in no-sec env
-			g = gameFactory.createGame(null, null, DefaultIdentityLookup.DEFAULT_USER);
+			g = gameFactory.createGame(null, null, null, DefaultIdentityLookup.DEFAULT_USER);
 			if (g != null) {
 				gameSrv.startupTasks(g.getId());
 			}

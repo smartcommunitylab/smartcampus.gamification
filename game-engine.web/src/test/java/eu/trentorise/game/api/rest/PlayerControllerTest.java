@@ -37,75 +37,79 @@ import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
-		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestMVCConfiguration.class},
+        loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class PlayerControllerTest {
 
-	@Autowired
-	private GameService gameSrv;
+    private static final String DOMAIN = "my-domain";
 
-	@Autowired
-	private MongoTemplate mongo;
+    @Autowired
+    private GameService gameSrv;
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private MongoTemplate mongo;
 
-	private MockMvc mocker;
+    @Autowired
+    private WebApplicationContext wac;
 
-	private ObjectMapper mapper;
+    private MockMvc mocker;
 
-	private static final String GAME = "gameTest";
-	private static final String ACTION = "save_itinerary";
+    private ObjectMapper mapper;
 
-	@PostConstruct
-	public void init() {
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		mapper = new ObjectMapper();
-	}
+    private static final String GAME = "gameTest";
+    private static final String ACTION = "save_itinerary";
 
-	@Before
-	public void cleanDB() {
-		// clean mongo
-		mongo.dropCollection(StatePersistence.class);
-		mongo.dropCollection(GamePersistence.class);
-		mongo.dropCollection(NotificationPersistence.class);
-	}
+    @PostConstruct
+    public void init() {
+        mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+        mapper = new ObjectMapper();
+    }
 
-	private Game defineGame() {
-		Game game = new Game();
+    @Before
+    public void cleanDB() {
+        // clean mongo
+        mongo.dropCollection(StatePersistence.class);
+        mongo.dropCollection(GamePersistence.class);
+        mongo.dropCollection(NotificationPersistence.class);
+    }
 
-		game.setId(GAME);
-		game.setName(GAME);
+    private Game defineGame() {
+        Game game = new Game();
 
-		game.setActions(new HashSet<String>());
-		game.getActions().add(ACTION);
-		game.getActions().add("classification");
+        game.setId(GAME);
+        game.setName(GAME);
 
-		game.setConcepts(new HashSet<GameConcept>());
+        game.setActions(new HashSet<String>());
+        game.getActions().add(ACTION);
+        game.getActions().add("classification");
 
-		game.setTasks(new HashSet<GameTask>());
+        game.setConcepts(new HashSet<GameConcept>());
 
-		return game;
-	}
+        game.setTasks(new HashSet<GameTask>());
 
-	@Test
-	public void createPlayer() {
-		Game game = defineGame();
-		gameSrv.saveGameDefinition(game);
+        return game;
+    }
 
-		try {
-			PlayerStateDTO player = new PlayerStateDTO();
-			player.setPlayerId("10001");
-			RequestBuilder builder = MockMvcRequestBuilders
-					.post("/data/game/{gameId}/player/{playerId}", game.getId(), "10001")
-					.contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(player));
+    @Test
+    public void createPlayer() {
+        Game game = defineGame();
+        game.setDomain(DOMAIN);
+        gameSrv.saveGameDefinition(game);
 
-			mocker.perform(builder).andDo(MockMvcResultHandlers.print())
-					.andExpect(MockMvcResultMatchers.status().is(200));
+        try {
+            PlayerStateDTO player = new PlayerStateDTO();
+            player.setPlayerId("10001");
+            RequestBuilder builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}", game.getId(), "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(player));
 
-		} catch (Exception e) {
-			Assert.fail("exception " + e.getMessage());
-		}
-	}
+            mocker.perform(builder).andDo(MockMvcResultHandlers.print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
+
+        } catch (Exception e) {
+            Assert.fail("exception " + e.getMessage());
+        }
+    }
 }

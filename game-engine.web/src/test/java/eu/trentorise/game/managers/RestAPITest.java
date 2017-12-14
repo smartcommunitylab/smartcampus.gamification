@@ -131,7 +131,7 @@ public class RestAPITest {
         bean.setActionId(ACTION);
         bean.setPlayerId("1");
         bean.setGameId(gp.getId());
-        RequestBuilder builder = MockMvcRequestBuilders.post("/gengine/execute")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/gengine/execute/{domain}", DOMAIN)
                 .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(bean));
         try {
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
@@ -155,10 +155,10 @@ public class RestAPITest {
         Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
 
         try {
-            RequestBuilder builder =
-                    MockMvcRequestBuilders.post("/console/game/" + GAME + "/player")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(mapper.writeValueAsString(player));
+            RequestBuilder builder = MockMvcRequestBuilders
+                    .post("/console/game/{domain}/{game}/player", DOMAIN, GAME)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(player));
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -167,8 +167,9 @@ public class RestAPITest {
             Assert.assertNotNull(play);
             Assert.assertEquals(21, play.getCustomData().get("level"));
 
-            builder = MockMvcRequestBuilders
-                    .delete("/console/game/" + GAME + "/player/" + play.getPlayerId());
+            builder =
+                    MockMvcRequestBuilders.delete("/console/game/{domain}/{game}/player/{playerId}",
+                            DOMAIN, GAME, play.getPlayerId());
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -197,7 +198,8 @@ public class RestAPITest {
 
         try {
             RequestBuilder builder = MockMvcRequestBuilders
-                    .put("/console/game/" + GAME + "/player/" + player.getPlayerId())
+                    .put("/console/game/{domain}/{game}/player/{playerId}", DOMAIN, GAME,
+                            player.getPlayerId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(updateData));
 
@@ -224,10 +226,10 @@ public class RestAPITest {
         Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
 
         try {
-            RequestBuilder builder =
-                    MockMvcRequestBuilders.post("/console/game/" + GAME + "/player")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(mapper.writeValueAsString(player));
+            RequestBuilder builder = MockMvcRequestBuilders
+                    .post("/console/game/{domain}/{game}/player", DOMAIN, GAME)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(player));
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -257,7 +259,8 @@ public class RestAPITest {
         Assert.assertNull(playerSrv.readTeam(GAME, "t1"));
 
         try {
-            RequestBuilder builder = MockMvcRequestBuilders.post("/console/game/" + GAME + "/team")
+            RequestBuilder builder = MockMvcRequestBuilders
+                    .post("/console/game/{domain}/{gameId}/team", DOMAIN, GAME)
                     .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(t));
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
@@ -272,7 +275,8 @@ public class RestAPITest {
             Assert.assertEquals(3, team.getState().size());
 
             builder = MockMvcRequestBuilders
-                    .post("/console/game/" + GAME + "/team/" + team.getPlayerId() + "/members")
+                    .post("/console/game/{domain}/{game}/team/{teamId}/members", DOMAIN, GAME,
+                            team.getPlayerId())
                     .contentType(MediaType.APPLICATION_JSON).content("[\"p20\",\"p22\"]");
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
@@ -284,8 +288,8 @@ public class RestAPITest {
             Assert.assertArrayEquals(new String[] {"p20", "p22"},
                     team.getMembers().toArray(new String[0]));
 
-            builder = MockMvcRequestBuilders
-                    .delete("/console/game/" + GAME + "/team/" + team.getPlayerId());
+            builder = MockMvcRequestBuilders.delete("/console/game/{domain}/{game}/team/{teamId}",
+                    DOMAIN, GAME, team.getPlayerId());
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -321,8 +325,8 @@ public class RestAPITest {
 
         RequestBuilder builder;
         try {
-            builder = MockMvcRequestBuilders
-                    .get("/console/game/" + GAME + "/player/" + "p1" + "/teams");
+            builder = MockMvcRequestBuilders.get(
+                    "/console/game/{domain}/{game}/player/{playerId}/teams", DOMAIN, GAME, "p1");
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200))
                     .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
@@ -347,14 +351,15 @@ public class RestAPITest {
 
         RequestBuilder builder;
         try {
-            builder = MockMvcRequestBuilders.get("/gengine/state/" + GAME + "/" + p.getPlayerId());
+            builder = MockMvcRequestBuilders.get("/gengine/state/{domain}/{gameId}/{playerId}",
+                    DOMAIN, GAME, p.getPlayerId());
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.playerId", Matchers.is("p1")))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.customData.myattr",
                             Matchers.is("I\'m the winner")));
 
-            builder = MockMvcRequestBuilders.get("/gengine/state/" + GAME);
+            builder = MockMvcRequestBuilders.get("/gengine/state/{domain}/{gameId}", DOMAIN, GAME);
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(2)))

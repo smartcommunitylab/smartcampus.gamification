@@ -71,10 +71,11 @@ public class MainController {
     @Autowired
     Converter converter;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/execute",
+    @RequestMapping(method = RequestMethod.POST, value = "/execute/{domain}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Execute an action", notes = "Execute an action in a game")
-    public void executeAction(@RequestBody ExecutionDataDTO data, HttpServletResponse res) {
+    public void executeAction(@PathVariable String domain, @RequestBody ExecutionDataDTO data,
+            HttpServletResponse res) {
         Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
         if (game != null && game.isTerminated()) {
             try {
@@ -93,10 +94,10 @@ public class MainController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/state/{domain}/{gameId}/{playerId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get player state", notes = "Get the state of a player in a game")
-    public PlayerStateDTO readPlayerState(@PathVariable String gameId,
+    public PlayerStateDTO readPlayerState(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -113,7 +114,7 @@ public class MainController {
         return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/state/{domain}/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get player states",
             notes = "Get the state of players in a game filter by optional player name")
@@ -122,8 +123,9 @@ public class MainController {
                     value = "Results page you want to retrieve "),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page."),})
-    public Page<PlayerStateDTO> readPlayerState(@PathVariable String gameId,
-            @ApiIgnore Pageable pageable, @RequestParam(required = false) String playerFilter) {
+    public Page<PlayerStateDTO> readPlayerState(@PathVariable String domain,
+            @PathVariable String gameId, @ApiIgnore Pageable pageable,
+            @RequestParam(required = false) String playerFilter) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -148,12 +150,12 @@ public class MainController {
         return res;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/notification/{domain}/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get notifications", notes = "Get the notifications of a game")
     @Deprecated
-    public List<Notification> readNotification(@PathVariable String gameId,
-            @RequestParam(required = false) Long timestamp) {
+    public List<Notification> readNotification(@PathVariable String domain,
+            @PathVariable String gameId, @RequestParam(required = false) Long timestamp) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -167,13 +169,14 @@ public class MainController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}/{playerId}",
-            produces = {"application/json"})
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/notification/{domain}/{gameId}/{playerId}", produces = {"application/json"})
     @ApiOperation(value = "Get player notifications",
             notes = "Get the player notifications of a game")
     @Deprecated
-    public List<Notification> readNotification(@PathVariable String gameId,
-            @PathVariable String playerId, @RequestParam(required = false) Long timestamp) {
+    public List<Notification> readNotification(@PathVariable String domain,
+            @PathVariable String gameId, @PathVariable String playerId,
+            @RequestParam(required = false) Long timestamp) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");

@@ -99,10 +99,10 @@ public class ConsoleControllerTest {
         try {
             PlayerStateDTO player = new PlayerStateDTO();
             player.setPlayerId("10001");
-            RequestBuilder builder =
-                    MockMvcRequestBuilders.post("/console/game/{gameId}/player", game.getId())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(mapper.writeValueAsString(player));
+            RequestBuilder builder = MockMvcRequestBuilders
+                    .post("/console/game/{domain}/{gameId}/player", DOMAIN, game.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(player));
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));

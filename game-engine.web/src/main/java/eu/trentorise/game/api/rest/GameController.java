@@ -79,7 +79,7 @@ public class GameController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/model/game/{domain}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get games", notes = "Get all the game definitions in the system")
+    @ApiOperation(value = "Get games", notes = "Get all the game definitions of a user")
     public List<GameDTO> readGames(@PathVariable String domain) {
         String user = identityLookup.getName();
         List<GameDTO> r = new ArrayList<GameDTO>();

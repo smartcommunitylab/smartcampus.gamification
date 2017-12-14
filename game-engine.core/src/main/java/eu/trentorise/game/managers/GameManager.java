@@ -331,7 +331,7 @@ public class GameManager implements GameService {
     public List<Game> loadGameByOwner(String user) {
         List<Game> result = new ArrayList<Game>();
         if (user != null) {
-            convert(gameRepo.findByOwner(user));
+            result = convert(gameRepo.findByOwner(user));
         }
         return result;
 

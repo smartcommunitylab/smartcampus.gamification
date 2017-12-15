@@ -21,52 +21,55 @@ public class StatsLogger {
 
     private static final Logger internalLogger = LoggerFactory.getLogger(StatsLogger.class);
 
-    public static void logRule(String gameId, String playerId, String executionId,
+    public static String logRule(String gameId, String playerId, String executionId,
             long executionMoment, long timestamp, String ruleName, PointConcept concept) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
         msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" score=%s",
                 PointConcept.class.getSimpleName(), ruleName, concept.getName(),
                 concept.getScore());
         statsLogger.info(msg);
+        return msg;
     }
 
-    public static void logRule(String gameId, String playerId, String executionId,
+    public static String logRule(String gameId, String playerId, String executionId,
             long executionMoment, String ruleName, PointConcept concept) {
-        logRule(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(),
+        return logRule(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(),
                 ruleName, concept);
     }
 
-    public static void logRulePointConceptDelta(String gameId, String playerId, String executionId,
-            long executionMoment, String ruleName, PointConcept concept, double deltaScore) {
-        logRulePointConceptDelta(gameId, playerId, executionId, executionMoment,
+    public static String logRulePointConceptDelta(String gameId, String playerId,
+            String executionId, long executionMoment, String ruleName, PointConcept concept,
+            double deltaScore) {
+        return logRulePointConceptDelta(gameId, playerId, executionId, executionMoment,
                 System.currentTimeMillis(), ruleName, concept, deltaScore);
     }
 
-    public static void logRuleBadgeCollectionConceptDelta(String gameId, String playerId,
+    public static String logRuleBadgeCollectionConceptDelta(String gameId, String playerId,
             String executionId, long executionMoment, String ruleName, String conceptName,
             String badge) {
-        logRuleBadgeCollectionConceptDelta(gameId, playerId, executionId, executionMoment,
+        return logRuleBadgeCollectionConceptDelta(gameId, playerId, executionId, executionMoment,
                 System.currentTimeMillis(), ruleName, conceptName, badge);
     }
 
-    public static void logRule(String gameId, String playerId, String executionId,
+    public static String logRule(String gameId, String playerId, String executionId,
             long executionMoment, long timestamp, String ruleName, BadgeCollectionConcept concept) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
         msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" badges=\"%s\"",
                 BadgeCollectionConcept.class.getSimpleName(), ruleName, concept.getName(),
                 concept.getBadgeEarned());
         statsLogger.info(msg);
+        return msg;
     }
 
-    public static void logRule(String gameId, String playerId, String executionId,
+    public static String logRule(String gameId, String playerId, String executionId,
             long executionMoment, String ruleName, BadgeCollectionConcept concept) {
-        logRule(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(),
+        return logRule(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(),
                 ruleName, concept);
     }
 
-    private static void logRulePointConceptDelta(String gameId, String playerId, String executionId,
-            long executionMoment, long timestamp, String ruleName, PointConcept concept,
-            double deltaScore) {
+    private static String logRulePointConceptDelta(String gameId, String playerId,
+            String executionId, long executionMoment, long timestamp, String ruleName,
+            PointConcept concept, double deltaScore) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
 
         msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" deltaScore=%s score=%s",
@@ -74,9 +77,10 @@ public class StatsLogger {
                 concept.getScore());
 
         statsLogger.info(msg);
+        return msg;
     }
 
-    private static void logRuleBadgeCollectionConceptDelta(String gameId, String playerId,
+    private static String logRuleBadgeCollectionConceptDelta(String gameId, String playerId,
             String executionId, long executionMoment, long timestamp, String ruleName,
             String conceptName, String badge) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
@@ -84,31 +88,33 @@ public class StatsLogger {
         msg += " " + String.format("type=%s ruleName=\"%s\" name=\"%s\" new_badge=\"%s\"",
                 BadgeCollectionConcept.class.getSimpleName(), ruleName, conceptName, badge);
         statsLogger.info(msg);
+        return msg;
     }
 
-    public static void logAction(String gameId, String playerId, String executionId,
+    public static String logAction(String gameId, String playerId, String executionId,
             long executionMoment, String action, Map<String, Object> inputData,
             List<Object> factObjects, PlayerState state) {
-        logAction(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(),
+        return logAction(gameId, playerId, executionId, executionMoment, System.currentTimeMillis(),
                 action, inputData, factObjects, state);
     }
 
-    public static void logAction(String gameId, String playerId, String executionId,
+    public static String logAction(String gameId, String playerId, String executionId,
             long executionMoment, long timestamp, String action, Map<String, Object> inputData,
             List<Object> factObjects, PlayerState state) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
 
         msg += " " + String.format("type=%s actionName=\"%s\"", "Action", action);
         statsLogger.info(msg);
+        return msg;
     }
 
-    public static void logClassification(String gameId, String playerId, String executionId,
+    public static String logClassification(String gameId, String playerId, String executionId,
             long executionMoment, Map<String, Object> inputData, List<Object> factObjects) {
-        logClassification(gameId, playerId, executionId, executionMoment,
+        return logClassification(gameId, playerId, executionId, executionMoment,
                 System.currentTimeMillis(), inputData, factObjects);
     }
 
-    public static void logClassification(String gameId, String playerId, String executionId,
+    public static String logClassification(String gameId, String playerId, String executionId,
             long executionMoment, long timestamp, Map<String, Object> inputData,
             List<Object> factObjects) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, executionMoment, timestamp);
@@ -121,6 +127,7 @@ public class StatsLogger {
                             "type=%s classificationName=\"%s\" classificationPosition=%s",
                             "Classification", obj.getName(), obj.getPosition());
                     statsLogger.info(msg);
+                    return msg;
                 }
             }
         } else {
@@ -128,38 +135,42 @@ public class StatsLogger {
                     "Classification event with Classification payload null or absent in game {} for player {}",
                     gameId, playerId);
         }
-
+        return "";
     }
 
-    public static void logUserCreation(String gameId, String playerId, String executionId,
+    public static String logUserCreation(String gameId, String playerId, String executionId,
             long timestamp) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
         msg += " " + String.format("type=%s creation", "UserCreation");
         statsLogger.info(msg);
+        return msg;
     }
 
-    public static void logChallengeAssignment(String gameId, String playerId, String executionId,
+    public static String logChallengeAssignment(String gameId, String playerId, String executionId,
             long timestamp, String challengeName, Date start, Date end) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
         msg += " " + String.format("type=%s name=\"%s\" startDate=%s endDate=%s",
                 "ChallengeAssigned", challengeName, start != null ? start.getTime() : null,
                 end != null ? end.getTime() : null);
         statsLogger.info(msg);
+        return msg;
     }
 
-    public static void logChallengeCompleted(String gameId, String playerId, String executionId,
+    public static String logChallengeCompleted(String gameId, String playerId, String executionId,
             long executionTime, long timestamp, String challengeName) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
         msg += " " + String.format("type=%s name=\"%s\" completed", "ChallengeCompleted",
                 challengeName);
         statsLogger.info(msg);
+        return msg;
     }
 
-    public static void logEndGameAction(String gameId, String playerId, String executionId,
+    public static String logEndGameAction(String gameId, String playerId, String executionId,
             long executionTime, long timestamp) {
         String msg = commonFieldsOutput(gameId, playerId, executionId, timestamp, timestamp);
         msg += " " + String.format("type=%s", "EndGameAction");
         statsLogger.info(msg);
+        return msg;
     }
 
     private static String commonFieldsOutput(String gameId, String playerId, String executionId,

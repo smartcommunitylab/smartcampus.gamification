@@ -118,8 +118,8 @@ public class DroolsEngine implements GameEngine {
         KieContainer kieContainer = kieContainerFactory.getContainer(gameId);
 
         StatelessKieSession kSession = kieContainer.newStatelessKieSession();
-        kSession.addEventListener(new LoggingRuleListener(gameId, state.getPlayerId(),
-                state.clone(), executionId, executionMoment));
+        kSession.addEventListener(new LoggingRuleListener(game.getDomain(), gameId,
+                state.getPlayerId(), state.clone(), executionId, executionMoment));
 
         List<Command> cmds = new ArrayList<Command>();
 
@@ -203,7 +203,8 @@ public class DroolsEngine implements GameEngine {
                 ChallengeConcept challenge = (ChallengeConcept) stateElement;
                 sendChallengeCompletedNotifications(challenge, gameId, player.getId(),
                         executionMoment);
-                logCompletedChallenge(gameId, executionId, executionMoment, player, challenge);
+                logCompletedChallenge(game.getDomain(), gameId, executionId, executionMoment,
+                        player, challenge);
             }
         }
 
@@ -298,11 +299,11 @@ public class DroolsEngine implements GameEngine {
     }
 
 
-    private void logCompletedChallenge(String gameId, String executionId, long executionMoment,
-            Player player, ChallengeConcept challenge) {
+    private void logCompletedChallenge(String domain, String gameId, String executionId,
+            long executionMoment, Player player, ChallengeConcept challenge) {
         if (challenge != null && challenge.isCompleted()) {
-            StatsLogger.logChallengeCompleted(gameId, player.getId(), executionId, executionMoment,
-                    System.currentTimeMillis(), challenge.getName());
+            StatsLogger.logChallengeCompleted(domain, gameId, player.getId(), executionId,
+                    executionMoment, System.currentTimeMillis(), challenge.getName());
         }
     }
 

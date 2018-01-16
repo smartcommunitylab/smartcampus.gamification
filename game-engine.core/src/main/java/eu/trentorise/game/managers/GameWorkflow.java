@@ -75,11 +75,11 @@ public class GameWorkflow implements Workflow {
         PlayerState oldState = playerState.clone();
 
         if (isClassificationAction(actionId)) {
-            StatsLogger.logClassification(gameId, userId, executionId, executionMoment, data,
-                    factObjects);
+            StatsLogger.logClassification(g.getDomain(), gameId, userId, executionId,
+                    executionMoment, data, factObjects);
         } else {
-            StatsLogger.logAction(gameId, userId, executionId, executionMoment, actionId, data,
-                    factObjects, playerState);
+            StatsLogger.logAction(g.getDomain(), gameId, userId, executionId, executionMoment,
+                    actionId, data, factObjects, playerState);
         }
         PlayerState newState = gameEngine.execute(gameId, playerState, actionId, data, executionId,
                 executionMoment, factObjects);
@@ -91,7 +91,7 @@ public class GameWorkflow implements Workflow {
             LogHub.info(gameId, logger, "Traced player {} move", userId);
         }
         LogHub.info(gameId, logger, "Process terminated: {}", result);
-        StatsLogger.logEndGameAction(gameId, userId, executionId, executionMoment,
+        StatsLogger.logEndGameAction(g.getDomain(), gameId, userId, executionId, executionMoment,
                 System.currentTimeMillis());
     }
 

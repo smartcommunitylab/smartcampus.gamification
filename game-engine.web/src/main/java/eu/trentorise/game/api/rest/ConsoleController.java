@@ -353,8 +353,8 @@ public class ConsoleController {
         player.setGameId(gameId);
         PlayerState p = converter.convertPlayerState(player);
         playerSrv.saveState(p);
-        StatsLogger.logUserCreation(gameId, player.getPlayerId(), UUID.randomUUID().toString(),
-                System.currentTimeMillis());
+        StatsLogger.logUserCreation(domain, gameId, player.getPlayerId(),
+                UUID.randomUUID().toString(), System.currentTimeMillis());
     }
 
     @RequestMapping(method = RequestMethod.DELETE,

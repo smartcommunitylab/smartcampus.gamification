@@ -9,7 +9,7 @@ Events are:
 ### converter-logs
 Convert statistic logs from version 1.0 to 2.0
 ### user-creation-logs
-Create user creation events and log them into statistic format reading the database or player registrations
+Create user creation events and log them into statistic format reading the database of player registrations
 ### log2elastic
 Push gamification events to elasticsearch storage. Take as input log statistic format.
 ### dashboards/kibana

@@ -1,6 +1,9 @@
 ## Gamification Engine Tools
 A set of tools to manage gamification operations
 
+### log2stats
+Extract statistic events from game-engine execution logs
+
 ### challenge-db-stats
 Create challenge events and log them into statistic format reading the database or gamification engine.
 Events are: 

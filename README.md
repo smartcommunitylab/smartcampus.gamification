@@ -9,6 +9,18 @@ Platform is developed in Java using Apache Maven as build tool.
 * game-engine.games: collection of production games.
 
 
+## Quickstart run
+
+You can use docker to have a quick running system.
+
+1. run `docker-compose up` from the root folder.
+
+**NOTE**
+* gamification-engine will be up and running on host port **8010** at url **http://http://localhost:8010/gamification/consoleweb/**
+* mongodb container exposes to host port **5000** to inspect the data inside
+* gamification-engine exposes a JMX connection on host port **7777**
+
+
 ## Quickstart build
 
 To build a complete game engine instance you need following tools: 

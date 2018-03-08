@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo:3.6.2-jessie
+    container_name: gamification-mongo
+    ports:
+      - "50000:27017"
+    volumes:
+      - mongo-data:/data/db
+  gamification-engine:
+    build: 
+      context: .
+    container_name: gamification-engine
+    ports:
+      - "8010:8010"
+      - "7777:7777"
+    depends_on:
+      - mongo
+    links:
+      - mongo:mongodb
+    volumes:
+      - ./logs:/app/game-engine.web/logs
+volumes:
+  mongo-data:

@@ -1,0 +1,16 @@
+{
+  "name": "clone-game",
+  "version": "1.0.0",
+  "description": "clone gamification game utility",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "smartcommunitylab",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "mongodb": "~3.0.2",
+    "winston": "~2.4.0"
+  }
+}

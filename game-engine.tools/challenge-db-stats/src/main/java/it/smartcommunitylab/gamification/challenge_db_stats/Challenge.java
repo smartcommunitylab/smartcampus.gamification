@@ -39,7 +39,7 @@ public class Challenge {
         return String.format(
                 "INFO - \"%s\" \"%s\" %s %s %s type=ChallengeAssigned name=\"%s\" startDate=%s endDate=%s",
                 gameId, playerId, executionId, start.getTime(), start.getTime(), challengeName,
-                start.getTime(), end.getTime());
+                start.getTime(), end != null ? end.getTime() : null);
     }
 
 
@@ -50,8 +50,8 @@ public class Challenge {
         String executionId = generateUUID();
         return String.format(
                 "INFO - \"%s\" \"%s\" %s %s %s type=ChallengeCompleted name=\"%s\" completed",
-                gameId, playerId, executionId, start.getTime(), start.getTime(), challengeName,
-                start.getTime(), end.getTime());
+                gameId, playerId, executionId, dateCompleted.getTime(), dateCompleted.getTime(),
+                challengeName);
     }
 
     public boolean isCompleted() {

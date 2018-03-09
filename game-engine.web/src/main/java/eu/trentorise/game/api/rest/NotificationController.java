@@ -22,66 +22,83 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class NotificationController {
 
-	@Autowired
-	private NotificationManager notificationSrv;
+    @Autowired
+    private NotificationManager notificationSrv;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}/player/{playerId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get player notifications")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
-			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
-	public List<Notification> readPlayerNotification(@PathVariable String gameId, @PathVariable String playerId,
-			@ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
-			@RequestParam(defaultValue = "-1") long toTs, @RequestParam(required = false) List<String> includeTypes,
-			@RequestParam(required = false) List<String> excludeTypes) {
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/notification/game/{domain}/{gameId}/player/{playerId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get player notifications")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve "),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page."),})
+    public List<Notification> readPlayerNotification(@PathVariable String domain,
+            @PathVariable String gameId, @PathVariable String playerId,
+            @ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
+            @RequestParam(defaultValue = "-1") long toTs,
+            @RequestParam(required = false) List<String> includeTypes,
+            @RequestParam(required = false) List<String> excludeTypes) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		try {
-			playerId = URLDecoder.decode(playerId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-		}
-		return notificationSrv.readNotifications(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, pageable);
+        try {
+            playerId = URLDecoder.decode(playerId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+        }
+        return notificationSrv.readNotifications(gameId, playerId, fromTs, toTs, includeTypes,
+                excludeTypes, pageable);
 
-	}
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}/team/{teamId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get team notifications")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
-			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
-	public List<Notification> readTeamNotification(@PathVariable String gameId, @PathVariable String teamId,
-			@ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
-			@RequestParam(defaultValue = "-1") long toTs, @RequestParam(required = false) List<String> includeTypes,
-			@RequestParam(required = false) List<String> excludeTypes) {
-		return readPlayerNotification(gameId, teamId, pageable, fromTs, toTs, includeTypes, excludeTypes);
-	}
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/notification/game/{domain}/{gameId}/team/{teamId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get team notifications")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve "),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page."),})
+    public List<Notification> readTeamNotification(@PathVariable String domain,
+            @PathVariable String gameId, @PathVariable String teamId, @ApiIgnore Pageable pageable,
+            @RequestParam(defaultValue = "-1") long fromTs,
+            @RequestParam(defaultValue = "-1") long toTs,
+            @RequestParam(required = false) List<String> includeTypes,
+            @RequestParam(required = false) List<String> excludeTypes) {
+        return readPlayerNotification(domain, gameId, teamId, pageable, fromTs, toTs, includeTypes,
+                excludeTypes);
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get game notifications")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
-			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
-	public List<Notification> readNotification(@PathVariable String gameId, @ApiIgnore Pageable pageable,
-			@RequestParam(defaultValue = "-1") long fromTs, @RequestParam(defaultValue = "-1") long toTs,
-			@RequestParam(required = false) List<String> includeTypes,
-			@RequestParam(required = false) List<String> excludeTypes) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    @RequestMapping(method = RequestMethod.GET, value = "/notification/game/{domain}/{gameId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get game notifications")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve "),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page."),})
+    public List<Notification> readNotification(@PathVariable String domain,
+            @PathVariable String gameId, @ApiIgnore Pageable pageable,
+            @RequestParam(defaultValue = "-1") long fromTs,
+            @RequestParam(defaultValue = "-1") long toTs,
+            @RequestParam(required = false) List<String> includeTypes,
+            @RequestParam(required = false) List<String> excludeTypes) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		return notificationSrv.readNotifications(gameId, fromTs, toTs, includeTypes, excludeTypes, pageable);
-	}
+        return notificationSrv.readNotifications(gameId, fromTs, toTs, includeTypes, excludeTypes,
+                pageable);
+    }
 
-	// TODO: consider a possibility to write notifications
+    // TODO: consider a possibility to write notifications
 }

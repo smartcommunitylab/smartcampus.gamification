@@ -48,7 +48,7 @@ public class GameController {
     @ApiOperation(value = "Save a game")
     public GameDTO saveGame(@PathVariable String domain, @RequestBody GameDTO game) {
         // set creator
-        String user = identityLookup.getName();
+        String user = identityLookup.getRole();
         game.setOwner(user);
         game.setDomain(domain);
         Game res = gameSrv.saveGameDefinition(converter.convertGame(game));
@@ -81,7 +81,7 @@ public class GameController {
             produces = {"application/json"})
     @ApiOperation(value = "Get games", notes = "Get all the game definitions of a user")
     public List<GameDTO> readGames(@PathVariable String domain) {
-        String user = identityLookup.getName();
+        String user = identityLookup.getRole();
         List<GameDTO> r = new ArrayList<GameDTO>();
         for (Game g : gameSrv.loadGameByOwner(user)) {
             r.add(converter.convertGame(g));

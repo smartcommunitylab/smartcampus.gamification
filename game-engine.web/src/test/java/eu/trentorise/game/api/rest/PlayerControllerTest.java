@@ -101,7 +101,8 @@ public class PlayerControllerTest {
             PlayerStateDTO player = new PlayerStateDTO();
             player.setPlayerId("10001");
             RequestBuilder builder = MockMvcRequestBuilders
-                    .post("/data/game/{gameId}/player/{playerId}", game.getId(), "10001")
+                    .post("/data/game/{domain}/{gameId}/player/{playerId}", DOMAIN, game.getId(),
+                            "10001")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(player));
 

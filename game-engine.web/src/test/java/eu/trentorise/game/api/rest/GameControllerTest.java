@@ -45,6 +45,8 @@ import eu.trentorise.game.services.GameService;
 @WebAppConfiguration
 public class GameControllerTest {
 
+    private static final String ROLE = "ADMIN";
+
     private MockMvc mocker;
 
     private ObjectMapper mapper;
@@ -101,7 +103,7 @@ public class GameControllerTest {
     public void read_a_game() {
         Game g = new Game();
         g.setDomain(DOMAIN);
-        g.setOwner("sco_master");
+        g.setOwner(ROLE);
         g.setName("the game");
         Set<String> actions = new HashSet<>();
         actions.add("a1");
@@ -127,7 +129,7 @@ public class GameControllerTest {
     public void read_all_user_game() {
         Game g = new Game();
         g.setDomain(DOMAIN);
-        g.setOwner("sco_master");
+        g.setOwner(ROLE);
         g.setName("the game");
         Set<String> actions = new HashSet<>();
         actions.add("a1");
@@ -137,7 +139,7 @@ public class GameControllerTest {
 
         g = new Game();
         g.setDomain(DOMAIN);
-        g.setOwner("sco_master");
+        g.setOwner(ROLE);
         g.setName("the new game");
         actions = new HashSet<>();
         actions.add("a1");
@@ -162,7 +164,7 @@ public class GameControllerTest {
 
         Game g = new Game();
         g.setDomain(DOMAIN);
-        g.setOwner("sco_master");
+        g.setOwner(ROLE);
         g.setName("the game");
         Set<String> actions = new HashSet<>();
         actions.add("a1");

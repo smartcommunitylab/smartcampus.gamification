@@ -155,8 +155,9 @@ public class ClassificationControllerTest {
         state.getState().add(green);
         playerSrv.saveState(state);
         try {
-            RequestBuilder builder = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/incclassification/" + INC_CLASSIFICATION_NAME);
+            RequestBuilder builder = MockMvcRequestBuilders.get(
+                    "/data/game/{domain}/{game}/incclassification/{classificationName}", DOMAIN,
+                    GAME, INC_CLASSIFICATION_NAME);
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -198,7 +199,8 @@ public class ClassificationControllerTest {
         try {
             /** using period index. **/
             RequestBuilder builder = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/incclassification/" + INC_CLASSIFICATION_NAME)
+                    .get("/data/game/{domain}/{game}/incclassification/{classificationName}",
+                            DOMAIN, GAME, INC_CLASSIFICATION_NAME)
                     .param("periodInstanceIndex", "1");
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
@@ -211,7 +213,8 @@ public class ClassificationControllerTest {
         /** test pagination using time stamp. **/
         try {
             RequestBuilder builderP = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/incclassification/" + INC_CLASSIFICATION_NAME)
+                    .get("/data/game/{domain}/{game}/incclassification/{classificationName}",
+                            DOMAIN, GAME, INC_CLASSIFICATION_NAME)
                     .param("timestamp", String.valueOf(System.currentTimeMillis()))
                     .param("page", "1").param("size", "1");
 
@@ -228,7 +231,8 @@ public class ClassificationControllerTest {
 
             /** test pagination. **/
             builderP = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/incclassification/" + INC_CLASSIFICATION_NAME)
+                    .get("/data/game/{domain}/{game}/incclassification/{classificationName}",
+                            DOMAIN, GAME, INC_CLASSIFICATION_NAME)
                     .param("timestamp", String.valueOf(System.currentTimeMillis()))
                     .param("page", "2").param("size", "5");
 
@@ -256,10 +260,10 @@ public class ClassificationControllerTest {
             incrClassDTO.setPeriodName(PERIOD_NAME);
             incrClassDTO.setGameId(GAME);
 
-            RequestBuilder builder =
-                    MockMvcRequestBuilders.post("/model/game/" + GAME + "/incclassification")
-                            .header("Content-Type", "application/json")
-                            .content(mapper.writeValueAsString(incrClassDTO));
+            RequestBuilder builder = MockMvcRequestBuilders
+                    .post("/model/game/{domain}/{game}/incclassification", DOMAIN, GAME)
+                    .header("Content-Type", "application/json")
+                    .content(mapper.writeValueAsString(incrClassDTO));
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -280,10 +284,10 @@ public class ClassificationControllerTest {
             incrClassDTO.setItemType(POINT_CONCEPT);
             incrClassDTO.setPeriodName(PERIOD_NAME);
 
-            RequestBuilder builder =
-                    MockMvcRequestBuilders.post("/model/game/" + GAME + "/incclassification")
-                            .header("Content-Type", "application/json")
-                            .content(mapper.writeValueAsString(incrClassDTO));
+            RequestBuilder builder = MockMvcRequestBuilders
+                    .post("/model/game/{domain}/{game}/incclassification", DOMAIN, GAME)
+                    .header("Content-Type", "application/json")
+                    .content(mapper.writeValueAsString(incrClassDTO));
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -319,8 +323,9 @@ public class ClassificationControllerTest {
         state.getState().add(green);
         playerSrv.saveState(state);
         try {
-            RequestBuilder builder = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/classification/" + GEN_CLASSIFICATION_NAME);
+            RequestBuilder builder = MockMvcRequestBuilders.get(
+                    "/data/game/{domain}/{game}/classification/{classificationName}", DOMAIN, GAME,
+                    GEN_CLASSIFICATION_NAME);
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -356,8 +361,9 @@ public class ClassificationControllerTest {
         state.getState().add(green);
         playerSrv.saveState(state);
         try {
-            RequestBuilder builder = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/classification/" + GEN_CLASSIFICATION_NAME);
+            RequestBuilder builder = MockMvcRequestBuilders.get(
+                    "/data/game/{domain}/{game}/classification/{classificationName}", DOMAIN, GAME,
+                    GEN_CLASSIFICATION_NAME);
 
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
@@ -368,9 +374,11 @@ public class ClassificationControllerTest {
 
         /** test pagination. **/
         try {
-            RequestBuilder builderP = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/classification/" + GEN_CLASSIFICATION_NAME)
-                    .param("page", "1").param("size", "2");
+            RequestBuilder builderP =
+                    MockMvcRequestBuilders
+                            .get("/data/game/{domain}/{game}/classification/{classificationName}",
+                                    DOMAIN, GAME, GEN_CLASSIFICATION_NAME)
+                            .param("page", "1").param("size", "2");
 
             MvcResult response = mocker.perform(builderP).andReturn();
             JSONParser parser = new JSONParser(-1);
@@ -383,9 +391,11 @@ public class ClassificationControllerTest {
             JSONObject score = (JSONObject) board.get(0);
             Assert.assertEquals(score.get("score"), 12d);
 
-            builderP = MockMvcRequestBuilders
-                    .get("/data/game/" + GAME + "/classification/" + GEN_CLASSIFICATION_NAME)
-                    .param("page", "2").param("size", "5");
+            builderP =
+                    MockMvcRequestBuilders
+                            .get("/data/game/{domain}/{game}/classification/{classificationName}",
+                                    DOMAIN, GAME, GEN_CLASSIFICATION_NAME)
+                            .param("page", "2").param("size", "5");
 
             response = mocker.perform(builderP).andReturn();
             classificaitonBoard =

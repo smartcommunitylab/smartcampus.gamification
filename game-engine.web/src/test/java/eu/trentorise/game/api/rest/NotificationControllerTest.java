@@ -34,238 +34,252 @@ import eu.trentorise.game.notification.ChallengeAssignedNotification;
 import eu.trentorise.game.notification.ChallengeCompletedNotication;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class,
-		TestMVCConfiguration.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestMVCConfiguration.class},
+        loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class NotificationControllerTest {
 
-	private static final String GAME = "gameTest";
-	private static final String PLAYER_1 = "player1";
-	private static final String PLAYER_2 = "player2";
+    private static final String GAME = "gameTest";
+    private static final String DOMAIN = "my-domain";
+    private static final String PLAYER_1 = "player1";
+    private static final String PLAYER_2 = "player2";
 
-	private MockMvc mocker;
+    private MockMvc mocker;
 
-	private ObjectMapper mapper;
+    private ObjectMapper mapper;
 
-	@Autowired
-	private MongoTemplate mongo;
+    @Autowired
+    private MongoTemplate mongo;
 
-	@Autowired
-	private NotificationManager notificationManager;
+    @Autowired
+    private NotificationManager notificationManager;
 
-	@Before
-	public void cleanDB() {
-		mongo.getDb().dropDatabase();
-	}
+    @Before
+    public void cleanDB() {
+        mongo.getDb().dropDatabase();
+    }
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private WebApplicationContext wac;
 
-	@PostConstruct
-	public void init() {
-		mocker = MockMvcBuilders.webAppContextSetup(wac).build();
-		mapper = new ObjectMapper();
-	}
+    @PostConstruct
+    public void init() {
+        mocker = MockMvcBuilders.webAppContextSetup(wac).build();
+        mapper = new ObjectMapper();
+    }
 
-	@Test
-	public void emptyNotificationsInGame() {
+    @Test
+    public void emptyNotificationsInGame() {
 
-		RequestBuilder builder = MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME);
+        RequestBuilder builder =
+                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}", DOMAIN, GAME);
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200)).andExpect(content().string("[]"));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
-	}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(content().string("[]"));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
+    }
 
-	@Test
-	public void retrieveAllNotificationsInGame() {
-		setupTest_RetrieveAllNotificationsInGame();
-		RequestBuilder builder = MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME);
+    @Test
+    public void retrieveAllNotificationsInGame() {
+        setupTest_RetrieveAllNotificationsInGame();
+        RequestBuilder builder =
+                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}", DOMAIN, GAME);
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(2)));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(2)));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
 
-	}
+    }
 
-	@Test
-	public void retrieveAllNotificationsPlayer1() {
-		setupTest_RetrieveAllNotificationsPlayer1();
-		RequestBuilder builder = MockMvcRequestBuilders.get("/notification/game/{gameId}/player/{playerId}", GAME,
-				PLAYER_1);
+    @Test
+    public void retrieveAllNotificationsPlayer1() {
+        setupTest_RetrieveAllNotificationsPlayer1();
+        RequestBuilder builder = MockMvcRequestBuilders.get(
+                "/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME, PLAYER_1);
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(1)));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(1)));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
 
-	}
+    }
 
-	@Test
-	public void paginateNotificationToSize3() {
-		setupPaginationTest();
-		RequestBuilder builder = MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME).param("size", "3");
+    @Test
+    public void paginateNotificationToSize3() {
+        setupPaginationTest();
+        RequestBuilder builder = MockMvcRequestBuilders
+                .get("/notification/game/{domain}/{gameId}", DOMAIN, GAME).param("size", "3");
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(3)));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(3)));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
 
-	}
+    }
 
-	@Test
-	public void paginateNotificationPage2OfSize2() {
-		setupPaginationTest();
-		RequestBuilder builder = MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME).param("size", "2")
-				.param("page", "2");
+    @Test
+    public void paginateNotificationPage2OfSize2() {
+        setupPaginationTest();
+        RequestBuilder builder =
+                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}", DOMAIN, GAME)
+                        .param("size", "2").param("page", "2");
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(2)))
-					.andExpect(jsonPath("$[1].badge", Matchers.equalTo("4-gold-coin")));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(2)))
+                    .andExpect(jsonPath("$[1].badge", Matchers.equalTo("4-gold-coin")));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
 
-	}
+    }
 
-	@Test
-	public void paginateNotificationPage2() {
-		setupPaginationTest();
-		RequestBuilder builder = MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME).param("page", "2");
+    @Test
+    public void paginateNotificationPage2() {
+        setupPaginationTest();
+        RequestBuilder builder = MockMvcRequestBuilders
+                .get("/notification/game/{domain}/{gameId}", DOMAIN, GAME).param("page", "2");
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(0)));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(0)));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
 
-	}
+    }
 
-	@Test
-	public void paginateNotificationPage2OfSize2Player1() {
-		setupPaginationTest();
-		RequestBuilder builder = MockMvcRequestBuilders
-				.get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1).param("size", "2")
-				.param("page", "2");
+    @Test
+    public void paginateNotificationPage2OfSize2Player1() {
+        setupPaginationTest();
+        RequestBuilder builder =
+                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}/player/{playerId}",
+                        DOMAIN, GAME, PLAYER_1).param("size", "2").param("page", "2");
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(2)))
-					.andExpect(jsonPath("$[1].badge", Matchers.equalTo("5-gold-coin")));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(2)))
+                    .andExpect(jsonPath("$[1].badge", Matchers.equalTo("5-gold-coin")));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
 
-	}
+    }
 
-	@Test
-	public void excludeNotificationTypeChallengeAssignedNotification() {
-		setup_ExcludeNotificationType();
-		RequestBuilder builder = MockMvcRequestBuilders
-				.get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1)
-				.param("excludeTypes", "ChallengeAssignedNotification");
+    @Test
+    public void excludeNotificationTypeChallengeAssignedNotification() {
+        setup_ExcludeNotificationType();
+        RequestBuilder builder = MockMvcRequestBuilders
+                .get("/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME,
+                        PLAYER_1)
+                .param("excludeTypes", "ChallengeAssignedNotification");
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(2)));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
-	}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(2)));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
+    }
 
-	@Test
-	public void exclude2TypesOfNotifications() {
-		setup_ExcludeNotificationType();
-		RequestBuilder builder = MockMvcRequestBuilders
-				.get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1)
-				.param("excludeTypes", "ChallengeAssignedNotification", "BadgeNotification");
+    @Test
+    public void exclude2TypesOfNotifications() {
+        setup_ExcludeNotificationType();
+        RequestBuilder builder = MockMvcRequestBuilders
+                .get("/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME,
+                        PLAYER_1)
+                .param("excludeTypes", "ChallengeAssignedNotification", "BadgeNotification");
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(1)));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
-	}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(1)));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
+    }
 
-	@Test
-	public void includeChallengeAssignedNotification() {
-		setup_ExcludeNotificationType();
-		RequestBuilder builder = MockMvcRequestBuilders
-				.get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1)
-				.param("includeTypes", "ChallengeAssignedNotification");
+    @Test
+    public void includeChallengeAssignedNotification() {
+        setup_ExcludeNotificationType();
+        RequestBuilder builder = MockMvcRequestBuilders
+                .get("/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME,
+                        PLAYER_1)
+                .param("includeTypes", "ChallengeAssignedNotification");
 
-		try {
-			mocker.perform(builder).andDo(print()).andExpect(status().is(200))
-					.andExpect(jsonPath("$", Matchers.hasSize(2)));
-		} catch (Exception e) {
-			Assert.fail("exception: " + e.getMessage());
-		}
-	}
+        try {
+            mocker.perform(builder).andDo(print()).andExpect(status().is(200))
+                    .andExpect(jsonPath("$", Matchers.hasSize(2)));
+        } catch (Exception e) {
+            Assert.fail("exception: " + e.getMessage());
+        }
+    }
 
-	private void setup_ExcludeNotificationType() {
-		BadgeNotification notification = new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
-		notificationManager.notificate(notification);
+    private void setup_ExcludeNotificationType() {
+        BadgeNotification notification =
+                new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
+        notificationManager.notificate(notification);
 
-		ChallengeAssignedNotification assignNotification = new ChallengeAssignedNotification();
-		assignNotification.setGameId(GAME);
-		assignNotification.setPlayerId(PLAYER_1);
-		assignNotification.setChallengeName("challenge_1");
-		notificationManager.notificate(assignNotification);
+        ChallengeAssignedNotification assignNotification = new ChallengeAssignedNotification();
+        assignNotification.setGameId(GAME);
+        assignNotification.setPlayerId(PLAYER_1);
+        assignNotification.setChallengeName("challenge_1");
+        notificationManager.notificate(assignNotification);
 
-		assignNotification = new ChallengeAssignedNotification();
-		assignNotification.setGameId(GAME);
-		assignNotification.setPlayerId(PLAYER_1);
-		assignNotification.setChallengeName("challenge_2");
-		notificationManager.notificate(assignNotification);
+        assignNotification = new ChallengeAssignedNotification();
+        assignNotification.setGameId(GAME);
+        assignNotification.setPlayerId(PLAYER_1);
+        assignNotification.setChallengeName("challenge_2");
+        notificationManager.notificate(assignNotification);
 
-		ChallengeCompletedNotication completedNotification = new ChallengeCompletedNotication();
-		completedNotification.setPlayerId(PLAYER_1);
-		completedNotification.setGameId(GAME);
-		completedNotification.setChallengeName("challenge_1");
-		notificationManager.notificate(completedNotification);
+        ChallengeCompletedNotication completedNotification = new ChallengeCompletedNotication();
+        completedNotification.setPlayerId(PLAYER_1);
+        completedNotification.setGameId(GAME);
+        completedNotification.setChallengeName("challenge_1");
+        notificationManager.notificate(completedNotification);
 
-	}
+    }
 
-	private void setupPaginationTest() {
-		BadgeNotification notification = new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
-		notificationManager.notificate(notification);
-		notification = new BadgeNotification(GAME, PLAYER_1, "chest", "2-gold-coin");
-		notificationManager.notificate(notification);
-		notification = new BadgeNotification(GAME, PLAYER_1, "chest", "3-gold-coin");
-		notificationManager.notificate(notification);
-		notification = new BadgeNotification(GAME, PLAYER_2, "chest", "4-gold-coin");
-		notificationManager.notificate(notification);
-		notification = new BadgeNotification(GAME, PLAYER_1, "chest", "5-gold-coin");
-		notificationManager.notificate(notification);
+    private void setupPaginationTest() {
+        BadgeNotification notification =
+                new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
+        notificationManager.notificate(notification);
+        notification = new BadgeNotification(GAME, PLAYER_1, "chest", "2-gold-coin");
+        notificationManager.notificate(notification);
+        notification = new BadgeNotification(GAME, PLAYER_1, "chest", "3-gold-coin");
+        notificationManager.notificate(notification);
+        notification = new BadgeNotification(GAME, PLAYER_2, "chest", "4-gold-coin");
+        notificationManager.notificate(notification);
+        notification = new BadgeNotification(GAME, PLAYER_1, "chest", "5-gold-coin");
+        notificationManager.notificate(notification);
 
-	}
+    }
 
-	private void setupTest_RetrieveAllNotificationsInGame() {
-		BadgeNotification notification = new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
-		notificationManager.notificate(notification);
+    private void setupTest_RetrieveAllNotificationsInGame() {
+        BadgeNotification notification =
+                new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
+        notificationManager.notificate(notification);
 
-		notification = new BadgeNotification(GAME, PLAYER_1, "chest", "2-gold-coin");
-		notificationManager.notificate(notification);
-	}
+        notification = new BadgeNotification(GAME, PLAYER_1, "chest", "2-gold-coin");
+        notificationManager.notificate(notification);
+    }
 
-	private void setupTest_RetrieveAllNotificationsPlayer1() {
-		BadgeNotification notification = new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
-		notificationManager.notificate(notification);
+    private void setupTest_RetrieveAllNotificationsPlayer1() {
+        BadgeNotification notification =
+                new BadgeNotification(GAME, PLAYER_1, "chest", "1-gold-coin");
+        notificationManager.notificate(notification);
 
-		notification = new BadgeNotification(GAME, PLAYER_2, "chest", "1-gold-coin");
-		notificationManager.notificate(notification);
-	}
+        notification = new BadgeNotification(GAME, PLAYER_2, "chest", "1-gold-coin");
+        notificationManager.notificate(notification);
+    }
 
 }

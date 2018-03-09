@@ -18,45 +18,49 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 public class ChallengeModelController {
 
-	@Autowired
-	private GameService gameSrv;
+    @Autowired
+    private GameService gameSrv;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/challenge", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Add challenge model")
-	public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel, @PathVariable String gameId) {
+    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{domain}/{gameId}/challenge",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Add challenge model")
+    public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel,
+            @PathVariable String domain, @PathVariable String gameId) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		return gameSrv.saveChallengeModel(gameId, challengeModel);
-	}
+        return gameSrv.saveChallengeModel(gameId, challengeModel);
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/challenge", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get challenge models")
-	public Set<ChallengeModel> readChallengeModels(@PathVariable String gameId) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-		return gameSrv.readChallengeModels(gameId);
-	}
+    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{domain}/{gameId}/challenge",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get challenge models")
+    public Set<ChallengeModel> readChallengeModels(@PathVariable String domain,
+            @PathVariable String gameId) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+        return gameSrv.readChallengeModels(gameId);
+    }
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/challenge/{modelId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Delete challenge model")
-	public void deleteChallengeModels(@PathVariable String gameId, @PathVariable String modelId) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-			gameSrv.deleteChallengeModel(gameId, modelId);
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-	}
+    @RequestMapping(method = RequestMethod.DELETE,
+            value = "/model/game/{domain}/{gameId}/challenge/{modelId}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Delete challenge model")
+    public void deleteChallengeModels(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String modelId) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+            gameSrv.deleteChallengeModel(gameId, modelId);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+    }
 
 }

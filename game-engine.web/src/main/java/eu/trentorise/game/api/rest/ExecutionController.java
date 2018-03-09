@@ -35,11 +35,13 @@ public class ExecutionController {
     // Execute
     // POST /exec/game/{id}/action/{actionId}
 
-    @RequestMapping(method = RequestMethod.POST, value = "/exec/game/{gameId}/action/{actionId}",
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/exec/game/{domain}/{gameId}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Execute an action")
-    public void executeAction(@PathVariable String gameId, @PathVariable String actionId,
-            @RequestBody ExecutionDataDTO data, HttpServletResponse res) {
+    public void executeAction(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String actionId, @RequestBody ExecutionDataDTO data,
+            HttpServletResponse res) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {

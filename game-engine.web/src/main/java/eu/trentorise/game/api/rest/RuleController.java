@@ -24,139 +24,146 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 public class RuleController {
 
-	@Autowired
-	private GameService gameSrv;
+    @Autowired
+    private GameService gameSrv;
 
-	@Autowired
-	private GameEngine gameEngine;
+    @Autowired
+    private GameEngine gameEngine;
 
-	// Create rule
-	// POST /model/game/{id}/rule
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Add rule")
-	public RuleDTO addRule(@PathVariable String gameId, @RequestBody RuleDTO rule) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    // Create rule
+    // POST /model/game/{id}/rule
+    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{domain}/{gameId}/rule",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Add rule")
+    public RuleDTO addRule(@PathVariable String domain, @PathVariable String gameId,
+            @RequestBody RuleDTO rule) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		DBRule r = new DBRule(gameId, rule.getContent());
-		r.setName(rule.getName());
-		r.setId(rule.getId());
-		String ruleUrl = gameSrv.addRule(r);
-		rule.setId(ruleUrl);
-		return rule;
-	}
+        DBRule r = new DBRule(gameId, rule.getContent());
+        r.setName(rule.getName());
+        r.setId(rule.getId());
+        String ruleUrl = gameSrv.addRule(r);
+        rule.setId(ruleUrl);
+        return rule;
+    }
 
-	// Update rule
-	// PUT /model/game/{id}/rule/{ruleId}
-	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/rule/{ruleId}", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Edit rule")
-	public RuleDTO editRule(@PathVariable String gameId, @RequestBody RuleDTO rule) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    // Update rule
+    // PUT /model/game/{id}/rule/{ruleId}
+    @RequestMapping(method = RequestMethod.PUT,
+            value = "/model/game/{domain}/{gameId}/rule/{ruleId}", consumes = {"application/json"},
+            produces = {"application/json"})
+    @ApiOperation(value = "Edit rule")
+    public RuleDTO editRule(@PathVariable String domain, @PathVariable String gameId,
+            @RequestBody RuleDTO rule) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		DBRule r = new DBRule(gameId, rule.getContent());
-		r.setName(rule.getName());
-		r.setId(rule.getId());
-		String ruleUrl = gameSrv.addRule(r);
-		rule.setId(ruleUrl);
-		return rule;
-	}
+        DBRule r = new DBRule(gameId, rule.getContent());
+        r.setName(rule.getName());
+        r.setId(rule.getId());
+        String ruleUrl = gameSrv.addRule(r);
+        rule.setId(ruleUrl);
+        return rule;
+    }
 
-	// Read all rules
-	// GET /model/game/{id}/rule
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/rule", produces = { "application/json" })
-	@ApiOperation(value = "Get rules")
-	public List<RuleDTO> readAllRules(@PathVariable String gameId) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
-		Game g = gameSrv.loadGameDefinitionById(gameId);
-		List<RuleDTO> rules = new ArrayList<>();
-		if (g != null) {
-			for (String ruleUrl : g.getRules()) {
-				ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
-				DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
-				RuleDTO res = new RuleDTO();
-				res.setId(r.getId());
-				res.setName(r.getName());
-				res.setContent(r.getContent());
-				rules.add(res);
-			}
-		}
-		return rules;
-	}
+    // Read all rules
+    // GET /model/game/{id}/rule
+    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{domain}/{gameId}/rule",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get rules")
+    public List<RuleDTO> readAllRules(@PathVariable String domain, @PathVariable String gameId) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+        Game g = gameSrv.loadGameDefinitionById(gameId);
+        List<RuleDTO> rules = new ArrayList<>();
+        if (g != null) {
+            for (String ruleUrl : g.getRules()) {
+                ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
+                DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
+                RuleDTO res = new RuleDTO();
+                res.setId(r.getId());
+                res.setName(r.getName());
+                res.setContent(r.getContent());
+                rules.add(res);
+            }
+        }
+        return rules;
+    }
 
-	// Read a rule
-	// GET /model/game/{id}/rule/{ruleId}
-	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/rule/{ruleId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Get rule")
-	public RuleDTO readDbRule(@PathVariable String gameId, @PathVariable String ruleId) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    // Read a rule
+    // GET /model/game/{id}/rule/{ruleId}
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/model/game/{domain}/{gameId}/rule/{ruleId}", produces = {"application/json"})
+    @ApiOperation(value = "Get rule")
+    public RuleDTO readDbRule(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String ruleId) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		ruleId = DBRule.URL_PROTOCOL + ruleId;
-		DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleId);
-		RuleDTO res = new RuleDTO();
-		res.setId(r.getId());
-		res.setName(r.getName());
-		res.setContent(r.getContent());
-		return res;
-	}
+        ruleId = DBRule.URL_PROTOCOL + ruleId;
+        DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleId);
+        RuleDTO res = new RuleDTO();
+        res.setId(r.getId());
+        res.setName(r.getName());
+        res.setContent(r.getContent());
+        return res;
+    }
 
-	// Delete a rule
-	// DELETE /model/game/{id}/rule/{ruleId}
+    // Delete a rule
+    // DELETE /model/game/{id}/rule/{ruleId}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/rule/{ruleId}", produces = {
-			"application/json" })
-	@ApiOperation(value = "Delete rule")
-	public boolean deleteDbRule(@PathVariable String gameId, @PathVariable String ruleId) {
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+    @RequestMapping(method = RequestMethod.DELETE,
+            value = "/model/game/{domain}/{gameId}/rule/{ruleId}", produces = {"application/json"})
+    @ApiOperation(value = "Delete rule")
+    public boolean deleteDbRule(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String ruleId) {
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
 
-		ruleId = DBRule.URL_PROTOCOL + ruleId;
-		return gameSrv.deleteRule(gameId, ruleId);
-	}
+        ruleId = DBRule.URL_PROTOCOL + ruleId;
+        return gameSrv.deleteRule(gameId, ruleId);
+    }
 
-	// Validate a rule
-	// POST /model/game/{id}/rule/validate
-	// ­ Rule wrapped in an object {rule: “<rule text>”}
+    // Validate a rule
+    // POST /model/game/{id}/rule/validate
+    // ­ Rule wrapped in an object {rule: “<rule text>”}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule/validate", consumes = {
-			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Validate rule")
-	public List<String> validateRule(@PathVariable String gameId, @RequestBody RuleValidateWrapper wrapper) {
-		return gameEngine.validateRule(gameId, wrapper.getRuleContent());
-	}
+    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule/validate",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Validate rule")
+    public List<String> validateRule(@PathVariable String gameId,
+            @RequestBody RuleValidateWrapper wrapper) {
+        return gameEngine.validateRule(gameId, wrapper.getRuleContent());
+    }
 
-	private class RuleValidateWrapper {
+    private class RuleValidateWrapper {
 
-		@JsonProperty(value = "rule")
-		private String ruleContent;
+        @JsonProperty(value = "rule")
+        private String ruleContent;
 
-		public String getRuleContent() {
-			return ruleContent;
-		}
+        public String getRuleContent() {
+            return ruleContent;
+        }
 
-		public void setRuleContent(String ruleContent) {
-			this.ruleContent = ruleContent;
-		}
+        public void setRuleContent(String ruleContent) {
+            this.ruleContent = ruleContent;
+        }
 
-	}
+    }
 }

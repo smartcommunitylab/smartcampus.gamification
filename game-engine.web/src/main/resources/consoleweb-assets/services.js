@@ -19,6 +19,9 @@ angular.module('gamificationEngine.services', [])
 		// Games data operations factory
 		//var url = "https://dev.smartcommunitylab.it/gamification";
 		var url = "..";
+		
+		const domain = 'my-domain';
+		
 		// Get games
 		var getGames = function () {
 			var deferred = $q.defer();
@@ -26,7 +29,7 @@ angular.module('gamificationEngine.services', [])
 			// If games haven't been already loaded
 			if (!$rootScope.games || $rootScope.games.length === 0) {
 				// Load games
-				$http.get(url + '/console/game').success(function (data) {
+				$http.get(url + `/console/game/${domain}`).success(function (data) {
 					$rootScope.games = data;
 					deferred.resolve();
 				}).error(function () {
@@ -100,7 +103,7 @@ angular.module('gamificationEngine.services', [])
 		var getPoints = function (gameId) {
 			var deferred = $q.defer();
 
-			$http.get(url + '/console/game/' + gameId + "/point").
+			$http.get(url + `/console/game/${domain}/${gameId}/point`).
 			success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).
@@ -114,7 +117,7 @@ angular.module('gamificationEngine.services', [])
 		var getBadges = function (gameId) {
 			var deferred = $q.defer();
 
-			$http.get(url + '/console/game/' + gameId + "/badgecoll").
+			$http.get(url + `/console/game/${domain}/${gameId}/badgecoll`).
 			success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).
@@ -130,7 +133,7 @@ angular.module('gamificationEngine.services', [])
 			// ^\s*($|#|\w+\s*=|(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?(?:,(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?)*)\s+(\?|\*|(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?(?:,(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?)*)\s+(\?|\*|(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\?|\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\s+(\?|\*|(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?)*|\?|\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\s)+(\?|\*|(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?(?:,(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?)*))$
 			// reg exp for cron validation
 			var deferred = $q.defer();
-			$http.post(url + '/console/game/' + game.id + "/task", task).
+			$http.post(url + `/console/game/${domain}/${game.id}/task`, task).
 			success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).
@@ -145,7 +148,7 @@ angular.module('gamificationEngine.services', [])
 			// ^\s*($|#|\w+\s*=|(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?(?:,(?:[0-5]?\d)(?:(?:-|\/|\,)(?:[0-5]?\d))?)*)\s+(\?|\*|(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?(?:,(?:[01]?\d|2[0-3])(?:(?:-|\/|\,)(?:[01]?\d|2[0-3]))?)*)\s+(\?|\*|(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?(?:,(?:0?[1-9]|[12]\d|3[01])(?:(?:-|\/|\,)(?:0?[1-9]|[12]\d|3[01]))?)*)\s+(\?|\*|(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\/|\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\?|\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\s+(\?|\*|(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\/|\,|#)(?:[0-6]))?(?:L)?)*|\?|\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\s)+(\?|\*|(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?(?:,(?:|\d{4})(?:(?:-|\/|\,)(?:|\d{4}))?)*))$
 			// reg exp for cron validation
 			var deferred = $q.defer();
-			$http.put(url + '/console/game/' + game.id + "/task", task).
+			$http.put(url + `/console/game/${domain}/${game.id}/task`, task).
 			success(function (data, status, headers, config) {
 				deferred.resolve();
 			}).
@@ -158,7 +161,7 @@ angular.module('gamificationEngine.services', [])
 
 		var deleteTask = function (game, task) {
 			var deferred = $q.defer();
-			$http.post(url + '/console/game/' + game.id + "/task/del", task).
+			$http.post(url + `/console/game/${domain}/${game.id}/task/del`, task).
 			success(function (data, status, headers, config) {
 				deferred.resolve();
 			}).
@@ -172,7 +175,7 @@ angular.module('gamificationEngine.services', [])
 		
 		var addIncrementalClassification = function(game, classification) {
 			var deferred = $q.defer();
-			$http.post(url + '/model/game/' + game.id + "/incclassification", classification).
+			$http.post(url + `/model/game/${domain}/${game.id}/incclassification`, classification).
 			success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).
@@ -185,7 +188,7 @@ angular.module('gamificationEngine.services', [])
 		
 		var deleteIncrementalClassification = function (game, classification) {
 			var deferred = $q.defer();
-			$http.delete(url + '/model/game/' + game.id + "/incclassification/"+ classification.name).
+			$http.delete(url + `/model/game/${domain}/${game.id}/incclassification/${classificatino.name}`).
 			success(function (data, status, headers, config) {
 				deferred.resolve();
 			}).
@@ -198,7 +201,7 @@ angular.module('gamificationEngine.services', [])
 		
 		var editIncrementalClassification = function (game, classification) {
 			var deferred = $q.defer();
-			$http.put(url + '/model/game/' + game.id + "/incclassification/"+ classification.name, classification).
+			$http.put(url + `/model/game/${domain}/${game.id}/incclassification/${classification.name}`, classification).
 			success(function (data, status, headers, config) {
 				deferred.resolve();
 			}).
@@ -214,7 +217,7 @@ angular.module('gamificationEngine.services', [])
 		var saveGame = function (game) {
 			var deferred = $q.defer();
 
-			$http.post(url + '/console/game', game).
+			$http.post(url + `/console/game/${domain}`, game).
 			success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).
@@ -236,7 +239,7 @@ angular.module('gamificationEngine.services', [])
 				game.expiration = fields.expiration;
 				game.domain = fields.domain.trim();
 
-				$http.post(url + '/console/game', game).
+				$http.post(url + `/console/game/${domain}`, game).
 				success(function (data, status, headers, config) {
 					if (!game.id) {
 						$rootScope.games.unshift(data);
@@ -283,7 +286,7 @@ angular.module('gamificationEngine.services', [])
 				tmpGame.badgeCollectionConcept.unshift(instance);
 			}
 
-			$http.post(url + '/console/game', tmpGame).success(function (data, status, headers, config) {
+			$http.post(url + `/console/game/${domain}`, tmpGame).success(function (data, status, headers, config) {
 
 				deferred.resolve(instance);
 			}).error(function (data, status, headers, config) {
@@ -297,7 +300,7 @@ angular.module('gamificationEngine.services', [])
 		var deleteGame = function (game) {
 			var deferred = $q.defer();
 
-			$http.delete(url + '/console/game/' + game.id).success(function (data, status, headers, config) {
+			$http.delete(url + `/console/game/${domain}/${game.id}`).success(function (data, status, headers, config) {
 				angular.forEach($rootScope.games, function (g, index) {
 					if (g.id == game.id) {
 						$rootScope.games.splice(index, 1);
@@ -314,7 +317,7 @@ angular.module('gamificationEngine.services', [])
 		var addRule = function (game, rule) {
 			var deferred = $q.defer();
 
-			$http.post(url + '/console/game/' + game.id + "/rule/db", rule).success(function (data, status, headers, config) {
+			$http.post(url + `/console/game/${domain}/${game.id}/rule/db`, rule).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
 				deferred.reject('msg_generic_error');
@@ -326,7 +329,7 @@ angular.module('gamificationEngine.services', [])
 			var deferred = $q.defer();
 			var rule = {};
 			ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
-			$http.delete(url + '/console/game/' + game.id + "/rule/db/" + ruleId).success(function (data, status, headers, config) {
+			$http.delete(url + `/console/game/${domain}/${game.id}/rule/db/${ruleId}`).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
 				deferred.reject('msg_delete_error');
@@ -336,7 +339,7 @@ angular.module('gamificationEngine.services', [])
 
 		var validateRule = function (ruleContent) {
 			var deferred = $q.defer();
-			$http.post(url + '/console/rule/validate', ruleContent).success(function (data, status, headers, config) {
+			$http.post(url + `/console/rule/validate/${domain}`, ruleContent).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
 				deferred.reject('msg_generic_error');
@@ -347,7 +350,7 @@ angular.module('gamificationEngine.services', [])
 		var getRule = function (game, ruleId) {
 			var deferred = $q.defer();
 			ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
-			$http.get(url + '/console/game/' + game.id + "/rule/db/" + ruleId).success(function (data, status, headers, config) {
+			$http.get(url + `/console/game/${domain}/${game.id}/rule/db/${ruleId}`).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
 				deferred.reject('msg_rule_error');
@@ -357,7 +360,7 @@ angular.module('gamificationEngine.services', [])
 
 		var getPlayersState = function (gameId, playerFilter, pageRequest, pageSize) {
 			var deferred = $q.defer();
-			$http.get(url + '/gengine/state/' + gameId, {
+			$http.get(url + `/gengine/state/${domain}/${gameId}`, {
 				params: {
 					page: pageRequest,
 					size: pageSize,
@@ -377,8 +380,8 @@ angular.module('gamificationEngine.services', [])
 			var query = {};
 			query.rawQuery = {};
 			query.rawQuery.query = {};
-			query.rawQuery.query = {'playerId' : '/' +playerFiilter+'/'}
-			$http.post(url + '/gamification/data/game/' + gameId +'/player/search',query, {
+			query.rawQuery.query = {'playerId' : '/' +playerFilter+'/'}
+			$http.post(url + `/gamification/data/game/${domain}/${gameId}/player/search`,query, {
 				params: {
 					page: pageRequest,
 					size: pageSize,
@@ -397,7 +400,7 @@ angular.module('gamificationEngine.services', [])
 			model.variables = [];
 			angular.copy(model.fields , model.variables);
 			delete model.fields;
-			$http.post(url + '/model/game/'+ gameId+'/challenge', model).success(function (data, status, headers, config) {
+			$http.post(url + `/model/game/${domain}/${gameId}/challenge`, model).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
 				deferred.reject('msg_generic_error');
@@ -408,7 +411,7 @@ angular.module('gamificationEngine.services', [])
 		
 		var readChallengeModels = function(gameId) {
 			var deferred = $q.defer();
-			$http.get(url + '/model/game/'+ gameId+'/challenge').success(function (data, status, headers, config) {
+			$http.get(url + `/model/game/${domain}/${gameId}/challenge`).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
 				deferred.reject('msg_generic_error');
@@ -419,7 +422,7 @@ angular.module('gamificationEngine.services', [])
 		
 		var deleteChallengeModel = function(gameId,modelId) {
 			var deferred = $q.defer();
-			$http.delete(url + '/model/game/'+ gameId+'/challenge/' + modelId).success(function (data, status, headers, config) {
+			$http.delete(url + `/model/game/${domain}/${gameId}/challenge/${modelId}`).success(function (data, status, headers, config) {
 				deferred.resolve(data);
 			}).error(function (data, status, headers, config) {
 				deferred.reject('msg_generic_error');

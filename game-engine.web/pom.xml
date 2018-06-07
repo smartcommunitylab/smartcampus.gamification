@@ -81,6 +81,20 @@
 		</dependency>
 
 
+
+		<dependency>
+			<groupId>it.smartcommunitylab</groupId>
+			<artifactId>aac.client</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+
+		<!-- version required by profileservice -->
+		<!-- <dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.3</version>$NO-MVN-MAN-VER$
+		</dependency> -->
+		
 		<!-- SWAGGER DOCUMENTATION -->
 		<dependency>
 			<groupId>io.springfox</groupId>

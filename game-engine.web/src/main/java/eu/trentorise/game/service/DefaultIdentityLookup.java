@@ -41,7 +41,7 @@ public class DefaultIdentityLookup implements IdentityLookupService {
     }
 
     @Override
-    public String getRole() {
+    public String getDomain() {
         return getAuthentication().getAuthorities().stream().findFirst().get().getAuthority();
     }
 

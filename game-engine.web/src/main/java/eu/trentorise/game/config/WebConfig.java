@@ -18,22 +18,19 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import eu.trentorise.game.api.rest.AuthorizationInterceptor;
 
 /*
  * extend WebMvcConfigurerAdapter and not use annotation @EnableMvc to permit correct static
  * resources publishing and restController functionalities
  */
 @Configuration
-@PropertySource("classpath:engine.web.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     /**
@@ -43,7 +40,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private static final String CONSOLE_URL_MAPPING = "consoleweb";
 
     @Autowired
-    AuthorizationInterceptor authInterceptor;
+    private HandlerInterceptor authInterceptor;
+
+    @Autowired
+    private HandlerInterceptor tokenInterceptor;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -59,6 +59,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(tokenInterceptor).addPathPatterns("/gengine/**", "/console/**",
+                "/model/**", "/data/**", "/notification/**", "/exec/**");
         registry.addInterceptor(authInterceptor).addPathPatterns("/console/game/**",
                 "/model/game/**");
     }

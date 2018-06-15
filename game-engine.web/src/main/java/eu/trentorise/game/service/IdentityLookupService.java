@@ -22,7 +22,7 @@ public interface IdentityLookupService {
 
     String getName();
 
-    String getRole();
+    String getDomain();
 
     Authentication getAuthentication();
 

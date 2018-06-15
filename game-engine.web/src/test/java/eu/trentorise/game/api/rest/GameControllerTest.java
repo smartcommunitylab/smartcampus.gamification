@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
@@ -36,11 +37,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.NoSecurityConfig;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestMVCConfiguration.class},
+@ActiveProfiles("no-sec")
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
+        TestMVCConfiguration.class},
         loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class GameControllerTest {
@@ -103,7 +107,6 @@ public class GameControllerTest {
     public void read_a_game() {
         Game g = new Game();
         g.setDomain(DOMAIN);
-        g.setOwner(ROLE);
         g.setName("the game");
         Set<String> actions = new HashSet<>();
         actions.add("a1");
@@ -129,7 +132,7 @@ public class GameControllerTest {
     public void read_all_user_game() {
         Game g = new Game();
         g.setDomain(DOMAIN);
-        g.setOwner(ROLE);
+        g.setOwner("sco_master");
         g.setName("the game");
         Set<String> actions = new HashSet<>();
         actions.add("a1");
@@ -139,7 +142,7 @@ public class GameControllerTest {
 
         g = new Game();
         g.setDomain(DOMAIN);
-        g.setOwner(ROLE);
+        g.setOwner("sco_master");
         g.setName("the new game");
         actions = new HashSet<>();
         actions.add("a1");

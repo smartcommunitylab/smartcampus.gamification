@@ -78,7 +78,7 @@ public class ConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public GameDTO saveGame(@PathVariable String domain, @RequestBody GameDTO game) {
         // set creator
-        String user = identityLookup.getRole();
+        String user = identityLookup.getName();
         game.setOwner(user);
         game.setDomain(domain);
         Game res = gameSrv.saveGameDefinition(converter.convertGame(game));
@@ -115,7 +115,7 @@ public class ConsoleController {
     @RequestMapping(method = RequestMethod.GET, value = "/game/{domain}",
             produces = {"application/json"})
     public List<GameDTO> readGames(@PathVariable String domain) {
-        String user = identityLookup.getRole();
+        String user = identityLookup.getName();
         List<GameDTO> r = new ArrayList<GameDTO>();
         for (Game g : gameSrv.loadGameByOwner(domain, user)) {
             r.add(converter.convertGame(g));

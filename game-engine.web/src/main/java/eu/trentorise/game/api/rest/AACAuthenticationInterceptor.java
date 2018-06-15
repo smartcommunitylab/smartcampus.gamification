@@ -1,6 +1,8 @@
 package eu.trentorise.game.api.rest;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,33 +10,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import it.smartcommunitylab.aac.AACException;
-import it.smartcommunitylab.aac.AACProfileService;
-import it.smartcommunitylab.aac.AACService;
-import it.smartcommunitylab.aac.model.AccountProfile;
+import eu.trentorise.game.platform.PlatformRolesClient;
 
-@Component
-@Profile("platform")
 public class AACAuthenticationInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger =
             LoggerFactory.getLogger(AACAuthenticationInterceptor.class);
 
     @Autowired
-    private AACProfileService aacProfileService;
-
-    @Autowired
-    private AACService aacService;
-
-    @Value("${aac.gamification.scopes}")
-    private String gamificationScopes;
+    private PlatformRolesClient platformRoles;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -42,27 +31,32 @@ public class AACAuthenticationInterceptor extends HandlerInterceptorAdapter {
 
 
         String token = extractToken(request);
+        String domain = extractDomain(request);
+
         boolean passRequest = true;
         if (token != null) {
-            AccountProfile profile = null;
-            String email = null;
             try {
-                profile = aacProfileService.findAccountProfile(token);
-                email = profile.getAttribute("google", "email");
-            } catch (SecurityException | AACException e) {
-                logger.warn("Exception in findAccountProfile of aacProfileService", e.getMessage());
+                List<String> roles = platformRoles.getRolesByToken(token);
+
+                if (!roles.contains(domain)) {
+                    logger.warn("User has not privileges to operate with domain {}", domain);
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, String
+                            .format("User has not privileges to operate with domain %s", domain));
+                    passRequest = false;
+                } else {
+                List<SimpleGrantedAuthority> authorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+                SecurityContextHolder.getContext()
+                        .setAuthentication(new UsernamePasswordAuthenticationToken(null, null,
+                                authorities));
+                }
+            } catch (SecurityException | IllegalArgumentException e) {
+                logger.warn("Exception retrieving user roles", e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "token is not valid");
+                logger.warn("Token could be invalid");
+                passRequest = false;
             }
 
-            if (!hasGamificationScope(token)) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                        "not the right security scope");
-                logger.warn("Token has not scope: {}", gamificationScopes);
-                passRequest = false;
-            } else {
-                SecurityContextHolder.getContext()
-                        .setAuthentication(new UsernamePasswordAuthenticationToken(email, null));
-                // aggiungere i roles
-            }
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "request should be authenticated");
@@ -73,6 +67,10 @@ public class AACAuthenticationInterceptor extends HandlerInterceptorAdapter {
         return passRequest;
     }
 
+    private String extractDomain(HttpServletRequest request) {
+        return "test";
+    }
+
     private String extractToken(HttpServletRequest request) {
         String authHeaderValue = request.getHeader("Authorization");
         if (authHeaderValue != null) {
@@ -80,15 +78,6 @@ public class AACAuthenticationInterceptor extends HandlerInterceptorAdapter {
         }
 
         return null;
-    }
-
-    private boolean hasGamificationScope(String token) {
-        try {
-                return aacService.isTokenApplicable(token, gamificationScopes);
-        } catch (AACException e) {
-            logger.error("AACService exception: ", e);
-            return false;
-        }
     }
 
 }

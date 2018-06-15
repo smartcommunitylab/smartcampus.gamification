@@ -37,4 +37,15 @@ public class PermissionManager {
 
 		return true;
 	}
+
+    public boolean checkDomain(String domain, String gameId) {
+        if (gameId != null) {
+            Game game = gameManager.loadGameDefinitionById(gameId);
+            boolean gameCond =
+                    game == null || game.getDomain() == null || game.getDomain().equals(domain);
+            return domain != null && gameCond;
+        }
+
+        return true;
+    }
 }

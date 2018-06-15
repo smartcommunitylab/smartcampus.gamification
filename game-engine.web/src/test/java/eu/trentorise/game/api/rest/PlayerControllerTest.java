@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.NoSecurityConfig;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -37,7 +39,9 @@ import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestMVCConfiguration.class},
+@ActiveProfiles("no-sec")
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
+        TestMVCConfiguration.class},
         loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class PlayerControllerTest {

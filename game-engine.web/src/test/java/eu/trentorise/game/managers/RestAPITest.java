@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
@@ -52,6 +53,7 @@ import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.NoSecurityConfig;
 import eu.trentorise.game.config.WebConfig;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.BadgeCollectionConcept;
@@ -78,7 +80,9 @@ import eu.trentorise.game.task.GeneralClassificationTask;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestMVCConfiguration.class},
+@ActiveProfiles("no-sec")
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
+        TestMVCConfiguration.class},
         loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class RestAPITest {

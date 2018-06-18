@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -23,8 +23,8 @@ import eu.trentorise.game.services.GameService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class RuleController {
+@Profile("platform")
+public class DomainRuleController {
 
     @Autowired
     private GameService gameSrv;
@@ -34,10 +34,10 @@ public class RuleController {
 
     // Create rule
     // POST /model/game/{id}/rule
-    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule",
+    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game/{gameId}/rule",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add rule")
-    public RuleDTO addRule(@PathVariable String gameId,
+    public RuleDTO addRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleDTO rule) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -56,10 +56,10 @@ public class RuleController {
     // Update rule
     // PUT /model/game/{id}/rule/{ruleId}
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/game/{gameId}/rule/{ruleId}", consumes = {"application/json"},
+            value = "/{domain}/model/game/{gameId}/rule/{ruleId}", consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Edit rule")
-    public RuleDTO editRule(@PathVariable String gameId,
+    public RuleDTO editRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleDTO rule) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -77,10 +77,10 @@ public class RuleController {
 
     // Read all rules
     // GET /model/game/{id}/rule
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/rule",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/rule",
             produces = {"application/json"})
     @ApiOperation(value = "Get rules")
-    public List<RuleDTO> readAllRules(@PathVariable String gameId) {
+    public List<RuleDTO> readAllRules(@PathVariable String domain, @PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -105,9 +105,9 @@ public class RuleController {
     // Read a rule
     // GET /model/game/{id}/rule/{ruleId}
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
+            value = "/{domain}/model/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
     @ApiOperation(value = "Get rule")
-    public RuleDTO readDbRule(@PathVariable String gameId,
+    public RuleDTO readDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -128,9 +128,9 @@ public class RuleController {
     // DELETE /model/game/{id}/rule/{ruleId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
+            value = "/{domain}/model/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
     @ApiOperation(value = "Delete rule")
-    public boolean deleteDbRule(@PathVariable String gameId,
+    public boolean deleteDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -146,7 +146,8 @@ public class RuleController {
     // POST /model/game/{id}/rule/validate
     // ­ Rule wrapped in an object {rule: “<rule text>”}
 
-    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/rule/validate",
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/{domain}/model/game/{gameId}/rule/validate",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Validate rule")
     public List<String> validateRule(@PathVariable String gameId,

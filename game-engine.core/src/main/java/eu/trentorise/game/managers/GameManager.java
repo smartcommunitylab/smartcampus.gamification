@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
@@ -101,9 +100,6 @@ public class GameManager implements GameService {
 
         if (game == null) {
             throw new IllegalArgumentException("game cannot be null");
-        }
-        if (StringUtils.isBlank(game.getDomain())) {
-            throw new IllegalArgumentException("domain cannot be blank");
         }
         if (game.getId() != null) {
             pers = gameRepo.findOne(game.getId());

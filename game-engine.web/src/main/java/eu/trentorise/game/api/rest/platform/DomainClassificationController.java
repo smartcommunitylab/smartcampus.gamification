@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -38,8 +38,8 @@ import eu.trentorise.game.utils.Converter;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class ClassificationController {
+@Profile("platform")
+public class DomainClassificationController {
 
     @Autowired
     private GameService gameSrv;
@@ -61,11 +61,11 @@ public class ClassificationController {
     // POST /model/game/{id}/classification
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/model/game/{gameId}/classification", consumes = {"application/json"},
+            value = "/{domain}/model/game/{gameId}/classification", consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Add general classification definition")
-    public GeneralClassificationDTO addClassificationTask(@PathVariable String gameId,
-            @RequestBody GeneralClassificationDTO task) {
+    public GeneralClassificationDTO addClassificationTask(@PathVariable String domain,
+            @PathVariable String gameId, @RequestBody GeneralClassificationDTO task) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -98,10 +98,10 @@ public class ClassificationController {
     // PUT /model/game/{id}/classification/{classificationId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/game/{gameId}/classification/{classificationId}",
+            value = "/{domain}/model/game/{gameId}/classification/{classificationId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit general classification definition")
-    public void editClassificationTask(@PathVariable String gameId,
+    public void editClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId, @RequestBody GeneralClassificationDTO task) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -141,9 +141,9 @@ public class ClassificationController {
     // GET /model/game/{id}/classification
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/classification", produces = {"application/json"})
+            value = "/{domain}/model/game/{gameId}/classification", produces = {"application/json"})
     @ApiOperation(value = "Get general classification definitions")
-    public List<GeneralClassificationDTO> readAllGeneralClassifications(
+    public List<GeneralClassificationDTO> readAllGeneralClassifications(@PathVariable String domain,
             @PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -173,10 +173,10 @@ public class ClassificationController {
     // GET /model/game/{id}/classification/{classificationId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/classification/{classificationId}",
+            value = "/{domain}/model/game/{gameId}/classification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get general classification definition")
-    public GeneralClassificationDTO readGeneralClassification(
+    public GeneralClassificationDTO readGeneralClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -190,7 +190,7 @@ public class ClassificationController {
             throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
         }
 
-        List<GeneralClassificationDTO> result = readAllGeneralClassifications(gameId);
+        List<GeneralClassificationDTO> result = readAllGeneralClassifications(domain, gameId);
         for (GeneralClassificationDTO r : result) {
             if (r.getName().equals(classificationId)) {
                 return r;
@@ -205,10 +205,10 @@ public class ClassificationController {
     // DELETE /model/game/{id}/classification/{classificationId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{gameId}/task/{classificationId}",
+            value = "/{domain}/model/game/{gameId}/task/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete general classification definition")
-    public void deleteClassificationTask(@PathVariable String gameId,
+    public void deleteClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -240,10 +240,10 @@ public class ClassificationController {
      * INCREMENTAL CLASSIFICATIONS
      */
     @RequestMapping(method = RequestMethod.POST,
-            value = "/model/game/{gameId}/incclassification",
+            value = "/{domain}/model/game/{gameId}/incclassification",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add incremental classification definition")
-    public IncrementalClassificationDTO createIncremental(
+    public IncrementalClassificationDTO createIncremental(@PathVariable String domain,
             @PathVariable String gameId, @RequestBody IncrementalClassificationDTO classification) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -273,10 +273,10 @@ public class ClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/game/{gameId}/incclassification/{classificationId}",
+            value = "/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit general classification definition")
-    public void updateIncrementalClassification(
+    public void updateIncrementalClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestBody IncrementalClassificationDTO classification) {
         try {
@@ -329,10 +329,10 @@ public class ClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/incclassification",
+            value = "/{domain}/model/game/{gameId}/incclassification",
             produces = {"application/json"})
     @ApiOperation(value = "Get incremental classification defintions")
-    public List<IncrementalClassificationDTO> readAllIncremental(
+    public List<IncrementalClassificationDTO> readAllIncremental(@PathVariable String domain,
             @PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -355,10 +355,10 @@ public class ClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/incclassification/{classificationId}",
+            value = "/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get incremental classification defition")
-    public IncrementalClassificationDTO readIncremental(
+    public IncrementalClassificationDTO readIncremental(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -380,10 +380,10 @@ public class ClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{gameId}/incclassification/{classificationId}",
+            value = "/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete incremental classification definition")
-    public void deleteIncremental(@PathVariable String gameId,
+    public void deleteIncremental(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -414,10 +414,10 @@ public class ClassificationController {
      * version < 2.2.0
      */
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/game/{gameId}/incclassification/{classificationId}",
+            value = "/{domain}/data/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Read incremental classification board")
-    public ClassificationBoard getIncrementalClassification(
+    public ClassificationBoard getIncrementalClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestParam(defaultValue = "-1") long timestamp,
             @RequestParam(defaultValue = "-1") int periodInstanceIndex,
@@ -524,10 +524,10 @@ public class ClassificationController {
      * version < 2.2.0
      */
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/game/{gameId}/classification/{classificationId}",
+            value = "/{domain}/data/game/{gameId}/classification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Read general classification board")
-    public ClassificationBoard getGeneralClassification(
+    public ClassificationBoard getGeneralClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestParam(required = false, defaultValue = "-1") int page,
             @RequestParam(required = false, defaultValue = "-1") int size) {

@@ -61,7 +61,6 @@ public class ConsoleControllerTest {
 
     private static final String GAME = "gameTest";
     private static final String ACTION = "save_itinerary";
-    private static final String DOMAIN = "my-domain";
 
     @PostConstruct
     public void init() {
@@ -82,7 +81,6 @@ public class ConsoleControllerTest {
 
         game.setId(GAME);
         game.setName(GAME);
-        game.setDomain(DOMAIN);
 
         game.setActions(new HashSet<String>());
         game.getActions().add(ACTION);
@@ -105,7 +103,7 @@ public class ConsoleControllerTest {
             PlayerStateDTO player = new PlayerStateDTO();
             player.setPlayerId("10001");
             RequestBuilder builder = MockMvcRequestBuilders
-                    .post("/console/game/{domain}/{gameId}/player", DOMAIN, game.getId())
+                    .post("/console/game/{gameId}/player", game.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(player));
 

@@ -103,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/consoleweb/**").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/model/**").access("hasRole('ROLE_ADMIN')").and().httpBasic();
 
-        // disable csrf permits POST http call to ConsoleController
+        // disable csrf permits POST http call to DomainConsoleController
         // without using csrf token
         http.csrf().disable();
 

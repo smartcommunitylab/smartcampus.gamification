@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import eu.trentorise.game.utils.Converter;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+@Profile({"sec", "no-sec"})
 public class BadgeCollectionConceptController {
 
     @Autowired
@@ -38,11 +40,11 @@ public class BadgeCollectionConceptController {
     // Create badge collection concept
     // POST /model/game/{id}/badges
 
-    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{domain}/{gameId}/badges",
+    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/badges",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add a badge collection",
             notes = "Add a badge collection to the game definition")
-    public void addBadge(@PathVariable String domain, @PathVariable String gameId,
+    public void addBadge(@PathVariable String gameId,
             @RequestBody BadgeCollectionConcept badge) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -57,10 +59,10 @@ public class BadgeCollectionConceptController {
     // PUT /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/game/{domain}/{gameId}/badges/{collectionId}",
+            value = "/model/game/{gameId}/badges/{collectionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Update a badge collection")
-    public void updateBadgeCollection(@PathVariable String domain, @PathVariable String gameId) {
+    public void updateBadgeCollection(@PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -73,10 +75,10 @@ public class BadgeCollectionConceptController {
     // Read badge collection concepts
     // GET /model/game/{id}/badges
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{domain}/{gameId}/badges",
+    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/badges",
             produces = {"application/json"})
     @ApiOperation(value = "Get the badge collections", notes = "Get badge collections in a game")
-    public List<BadgeCollectionConcept> readBadgeCollections(@PathVariable String domain,
+    public List<BadgeCollectionConcept> readBadgeCollections(
             @PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -100,11 +102,11 @@ public class BadgeCollectionConceptController {
     // GET /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{domain}/{gameId}/badges/{collectionId}",
+            value = "/model/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get a badge collection",
             notes = "Get the definition of a badge collection in a game")
-    public BadgeCollectionConcept readBadgeCollection(@PathVariable String domain,
+    public BadgeCollectionConcept readBadgeCollection(
             @PathVariable String gameId, @PathVariable String collectionId) {
 
         try {
@@ -119,7 +121,7 @@ public class BadgeCollectionConceptController {
             throw new IllegalArgumentException("pointId is not UTF-8 encoded");
         }
 
-        List<BadgeCollectionConcept> collection = readBadgeCollections(domain, gameId);
+        List<BadgeCollectionConcept> collection = readBadgeCollections(gameId);
 
         for (BadgeCollectionConcept c : collection) {
             if (collectionId.equals(c.getId())) {
@@ -134,10 +136,10 @@ public class BadgeCollectionConceptController {
     // DELETE /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{domain}/{gameId}/badges/{collectionId}",
+            value = "/model/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete a badge collection")
-    public void deleteBadgeCollection(@PathVariable String domain, @PathVariable String gameId,
+    public void deleteBadgeCollection(@PathVariable String gameId,
             @PathVariable String collectionId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");

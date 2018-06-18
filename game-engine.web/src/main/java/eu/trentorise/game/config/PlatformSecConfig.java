@@ -59,7 +59,7 @@ public class PlatformSecConfig extends WebSecurityConfigurerAdapter {
                 "/notification/**", "/exec/**").anonymous();
 
 
-        // disable csrf permits POST http call to ConsoleController
+        // disable csrf permits POST http call to DomainConsoleController
         // without using csrf token
         http.csrf().disable();
     }

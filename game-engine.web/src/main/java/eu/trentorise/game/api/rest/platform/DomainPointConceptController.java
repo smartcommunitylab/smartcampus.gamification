@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -25,8 +25,8 @@ import eu.trentorise.game.utils.Converter;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class PointConceptController {
+@Profile("platform")
+public class DomainPointConceptController {
 
     @Autowired
     private GameService gameSrv;
@@ -39,10 +39,10 @@ public class PointConceptController {
     // ­ Response body should contain point concept id
     // ­ May contain the periodic point definitions
 
-    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/point",
+    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game/{gameId}/point",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add point")
-    public PointConcept addPoint(@PathVariable String gameId,
+    public PointConcept addPoint(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody PointConcept point) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -61,10 +61,10 @@ public class PointConceptController {
     // ­ May contain the periodic point definitions
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/game/{gameId}/point/{pointId}",
+            value = "/{domain}/model/game/{gameId}/point/{pointId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit point")
-    public void updatePoint(@PathVariable String gameId,
+    public void updatePoint(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody PointConcept point) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -78,10 +78,10 @@ public class PointConceptController {
     // Read game point concepts
     // GET /model/game/{id}/point
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/point",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/point",
             produces = {"application/json"})
     @ApiOperation(value = "Get points")
-    public List<PointConcept> readPoints(@PathVariable String gameId) {
+    public List<PointConcept> readPoints(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -106,10 +106,10 @@ public class PointConceptController {
     // GET /model/game/{id}/point/{pointId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/point/{pointId}",
+            value = "/{domain}/model/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get point")
-    public PointConcept readPoint(@PathVariable String gameId,
+    public PointConcept readPoint(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String pointId) {
 
         try {
@@ -124,7 +124,7 @@ public class PointConceptController {
             throw new IllegalArgumentException("pointId is not UTF-8 encoded");
         }
 
-        List<PointConcept> points = readPoints(gameId);
+        List<PointConcept> points = readPoints(domain, gameId);
 
         for (PointConcept point : points) {
             if (pointId.equals(point.getId())) {
@@ -139,10 +139,10 @@ public class PointConceptController {
     // DELETE /model/game/{id}/point/{pointId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{gameId}/point/{pointId}",
+            value = "/{domain}/model/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete point")
-    public void deletePoint(@PathVariable String gameId,
+    public void deletePoint(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String pointId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");

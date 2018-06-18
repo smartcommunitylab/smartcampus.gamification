@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -186,7 +187,12 @@ public class StatsLogger {
 
     private static String commonFieldsOutput(String domain, String gameId, String playerId,
             String executionId, long executionMoment, long timestamp) {
+        if(StringUtils.isBlank(domain)){
+            return String.format("\"%s\" \"%s\" %s %s %s", gameId, playerId, executionId,
+                    executionMoment, timestamp);   
+        }else{
         return String.format("\"%s\" \"%s\" \"%s\" %s %s %s", domain, gameId, playerId, executionId,
                 executionMoment, timestamp);
+        }
     }
 }

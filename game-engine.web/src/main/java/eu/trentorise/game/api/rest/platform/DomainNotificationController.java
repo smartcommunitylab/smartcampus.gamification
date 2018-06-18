@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -21,14 +21,14 @@ import io.swagger.annotations.ApiOperation;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class NotificationController {
+@Profile("platform")
+public class DomainNotificationController {
 
     @Autowired
     private NotificationManager notificationSrv;
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/notification/game/{gameId}/player/{playerId}",
+            value = "/{domain}/notification/game/{gameId}/player/{playerId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get player notifications")
     @ApiImplicitParams({
@@ -36,7 +36,7 @@ public class NotificationController {
                     value = "Results page you want to retrieve "),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page."),})
-    public List<Notification> readPlayerNotification(
+    public List<Notification> readPlayerNotification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String playerId,
             @ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
             @RequestParam(defaultValue = "-1") long toTs,
@@ -60,7 +60,7 @@ public class NotificationController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/notification/game/{gameId}/team/{teamId}",
+            value = "/{domain}/notification/game/{gameId}/team/{teamId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get team notifications")
     @ApiImplicitParams({
@@ -68,17 +68,17 @@ public class NotificationController {
                     value = "Results page you want to retrieve "),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page."),})
-    public List<Notification> readTeamNotification(
+    public List<Notification> readTeamNotification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String teamId, @ApiIgnore Pageable pageable,
             @RequestParam(defaultValue = "-1") long fromTs,
             @RequestParam(defaultValue = "-1") long toTs,
             @RequestParam(required = false) List<String> includeTypes,
             @RequestParam(required = false) List<String> excludeTypes) {
-        return readPlayerNotification(gameId, teamId, pageable, fromTs, toTs, includeTypes,
+        return readPlayerNotification(domain, gameId, teamId, pageable, fromTs, toTs, includeTypes,
                 excludeTypes);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/notification/game/{gameId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/notification/game/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get game notifications")
     @ApiImplicitParams({
@@ -86,7 +86,7 @@ public class NotificationController {
                     value = "Results page you want to retrieve "),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page."),})
-    public List<Notification> readNotification(
+    public List<Notification> readNotification(@PathVariable String domain,
             @PathVariable String gameId, @ApiIgnore Pageable pageable,
             @RequestParam(defaultValue = "-1") long fromTs,
             @RequestParam(defaultValue = "-1") long toTs,

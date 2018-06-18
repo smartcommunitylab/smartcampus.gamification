@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -17,16 +16,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.core.ResourceNotFoundException;
+import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.utils.Converter;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class PointConceptController {
+@Profile("platform")
+public class DomainBadgeCollectionConceptController {
 
     @Autowired
     private GameService gameSrv;
@@ -34,38 +34,35 @@ public class PointConceptController {
     @Autowired
     private Converter converter;
 
-    // Create game point concept
-    // POST /model/game/{id}/point
-    // ­ Response body should contain point concept id
-    // ­ May contain the periodic point definitions
+    @Autowired
+    private IdentityLookupService identityLookup;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/point",
+    // Create badge collection concept
+    // POST /model/game/{id}/badges
+
+    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game/{gameId}/badges",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add point")
-    public PointConcept addPoint(@PathVariable String gameId,
-            @RequestBody PointConcept point) {
+    @ApiOperation(value = "Add a badge collection",
+            notes = "Add a badge collection to the game definition")
+    public void addBadge(@PathVariable String domain, @PathVariable String gameId,
+            @RequestBody BadgeCollectionConcept badge) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("gameId is not UTF-8 encoded");
         }
 
-        point.setId(UUID.randomUUID().toString());
-
-        gameSrv.addConceptInstance(gameId, point);
-        return point;
+        gameSrv.addConceptInstance(gameId, badge);
     }
 
-    // Update game point concept
-    // PUT /model/game/{id}/point/{pointId}
-    // ­ May contain the periodic point definitions
+    // Update badge collection concept
+    // PUT /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/game/{gameId}/point/{pointId}",
+            value = "/{domain}/model/game/{gameId}/badges/{collectionId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Edit point")
-    public void updatePoint(@PathVariable String gameId,
-            @RequestBody PointConcept point) {
+    @ApiOperation(value = "Update a badge collection")
+    public void updateBadgeCollection(@PathVariable String domain, @PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -75,14 +72,14 @@ public class PointConceptController {
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
-    // Read game point concepts
-    // GET /model/game/{id}/point
+    // Read badge collection concepts
+    // GET /model/game/{id}/badges
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/point",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/badges",
             produces = {"application/json"})
-    @ApiOperation(value = "Get points")
-    public List<PointConcept> readPoints(@PathVariable String gameId) {
-
+    @ApiOperation(value = "Get the badge collections", notes = "Get badge collections in a game")
+    public List<BadgeCollectionConcept> readBadgeCollections(@PathVariable String domain,
+            @PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -90,27 +87,27 @@ public class PointConceptController {
         }
 
         Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
-        List<PointConcept> points = new ArrayList<PointConcept>();
+        List<BadgeCollectionConcept> badgeColl = new ArrayList<BadgeCollectionConcept>();
         if (concepts != null) {
             for (GameConcept gc : concepts) {
-                if (gc instanceof PointConcept) {
-                    points.add((PointConcept) gc);
+                if (gc instanceof BadgeCollectionConcept) {
+                    badgeColl.add((BadgeCollectionConcept) gc);
                 }
             }
         }
-
-        return points;
+        return badgeColl;
     }
 
-    // Read game point concept
-    // GET /model/game/{id}/point/{pointId}
+    // Read badge collection concept
+    // GET /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/point/{pointId}",
+            value = "/{domain}/model/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get point")
-    public PointConcept readPoint(@PathVariable String gameId,
-            @PathVariable String pointId) {
+    @ApiOperation(value = "Get a badge collection",
+            notes = "Get the definition of a badge collection in a game")
+    public BadgeCollectionConcept readBadgeCollection(@PathVariable String domain,
+            @PathVariable String gameId, @PathVariable String collectionId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -119,31 +116,31 @@ public class PointConceptController {
         }
 
         try {
-            pointId = URLDecoder.decode(pointId, "UTF-8");
+            collectionId = URLDecoder.decode(collectionId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("pointId is not UTF-8 encoded");
         }
 
-        List<PointConcept> points = readPoints(gameId);
+        List<BadgeCollectionConcept> collection = readBadgeCollections(domain, gameId);
 
-        for (PointConcept point : points) {
-            if (pointId.equals(point.getId())) {
-                return point;
+        for (BadgeCollectionConcept c : collection) {
+            if (collectionId.equals(c.getId())) {
+                return c;
             }
         }
         throw new ResourceNotFoundException(
-                String.format("pointId %s not exist in game %s", pointId, gameId));
+                String.format("BadgeCollectionId %s not exist in game %s", collectionId, gameId));
     }
 
-    // Delete game point concept
-    // DELETE /model/game/{id}/point/{pointId}
+    // Delete badge collection concept
+    // DELETE /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{gameId}/point/{pointId}",
+            value = "/{domain}/model/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete point")
-    public void deletePoint(@PathVariable String gameId,
-            @PathVariable String pointId) {
+    @ApiOperation(value = "Delete a badge collection")
+    public void deleteBadgeCollection(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String collectionId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -151,16 +148,16 @@ public class PointConceptController {
         }
 
         try {
-            pointId = URLDecoder.decode(pointId, "UTF-8");
+            collectionId = URLDecoder.decode(collectionId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("pointId is not UTF-8 encoded");
+            throw new IllegalArgumentException("collectionId is not UTF-8 encoded");
         }
 
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             for (Iterator<GameConcept> iter = g.getConcepts().iterator(); iter.hasNext();) {
                 GameConcept gc = iter.next();
-                if (gc instanceof PointConcept && pointId.equals(gc.getId())) {
+                if (gc instanceof BadgeCollectionConcept && collectionId.equals(gc.getId())) {
                     iter.remove();
                     break;
                 }
@@ -169,5 +166,4 @@ public class PointConceptController {
         }
 
     }
-
 }

@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,10 +23,10 @@ import eu.trentorise.game.services.Workflow;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class ExecutionController {
+@Profile("platform")
+public class DomainExecutionController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExecutionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DomainExecutionController.class);
 
     @Autowired
     private GameService gameSrv;
@@ -38,10 +38,10 @@ public class ExecutionController {
     // POST /exec/game/{id}/action/{actionId}
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/exec/game/{gameId}/action/{actionId}",
+            value = "/{domain}/exec/game/{gameId}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Execute an action")
-    public void executeAction(@PathVariable String gameId,
+    public void executeAction(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String actionId, @RequestBody ExecutionDataDTO data,
             HttpServletResponse res) {
         try {

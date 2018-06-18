@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -23,8 +23,8 @@ import eu.trentorise.game.utils.Converter;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class GameController {
+@Profile("platform")
+public class DomainGameController  {
 
     @Autowired
     private GameService gameSrv;
@@ -45,13 +45,14 @@ public class GameController {
     // TODO: ­ Remove from body implicit elements (e.g., owner) , The content
     // elements are optional (except name)
 
-    @RequestMapping(method = RequestMethod.POST, value = "/model/game",
+    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Save a game")
-    public GameDTO saveGame(@RequestBody GameDTO game) {
+    public GameDTO saveGame(@PathVariable String domain, @RequestBody GameDTO game) {
         // set creator
         String user = identityLookup.getName();
         game.setOwner(user);
+        game.setDomain(domain);
         Game res = gameSrv.saveGameDefinition(converter.convertGame(game));
         return converter.convertGame(res);
     }
@@ -60,10 +61,10 @@ public class GameController {
     // Read a game
     // GET /model/game/{id}
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Read game definition")
-    public GameDTO readGame(@PathVariable String gameId) {
+    public GameDTO readGame(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -78,10 +79,10 @@ public class GameController {
     // Read all games of the user
     // GET /model/game
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game",
             produces = {"application/json"})
     @ApiOperation(value = "Get games", notes = "Get all the game definitions of a user")
-    public List<GameDTO> readGames() {
+    public List<GameDTO> readGames(@PathVariable String domain) {
         String user = identityLookup.getName();
         List<GameDTO> r = new ArrayList<GameDTO>();
         for (Game g : gameSrv.loadGameByOwner(user)) {
@@ -93,10 +94,10 @@ public class GameController {
     // Delete a game
     // DELETE /model/game/{id}
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}",
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{domain}/model/game/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete game")
-    public void deleteGame(@PathVariable String gameId) {
+    public void deleteGame(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -110,10 +111,10 @@ public class GameController {
     // Start a game
     // PUT /model/game/{id}/start
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/start",
+    @RequestMapping(method = RequestMethod.PUT, value = "/{domain}/model/game/{gameId}/start",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Start game", notes = "The game is able to accept action executions")
-    public void startGame(@PathVariable String gameId) {
+    public void startGame(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -126,11 +127,11 @@ public class GameController {
     // Stop a game
     // PUT /model/game/{id}/stop
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/stop",
+    @RequestMapping(method = RequestMethod.PUT, value = "/{domain}/model/game/{gameId}/stop",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Stop a game",
             notes = "The game will not accept action execution anymore")
-    public void stopGame(@PathVariable String gameId) {
+    public void stopGame(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -152,10 +153,10 @@ public class GameController {
     // ­ Consider other fields: name, description
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/model/game/{gameId}/action/{actionId}",
+            value = "/{domain}/model/game/{gameId}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add action")
-    public void addAction(@PathVariable String gameId) {
+    public void addAction(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -169,10 +170,10 @@ public class GameController {
     // PUT /model/game/{id}/action/{actionId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/game/{domain}/action/{actionId}",
+            value = "/{domain}/model/game/{domain}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit action")
-    public void editAction(@PathVariable String gameId) {
+    public void editAction(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -185,10 +186,10 @@ public class GameController {
     // Read all actions
     // GET /model/game/{id}/action
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/action",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/action",
             produces = {"application/json"})
     @ApiOperation(value = "Get actions")
-    public Set<String> readAllAction(@PathVariable String gameId) {
+    public Set<String> readAllAction(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -204,10 +205,10 @@ public class GameController {
     // GET /model/game/{id}/action/{actionId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/game/{gameId}/action/{actionId}",
+            value = "/{domain}/model/game/{gameId}/action/{actionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get action")
-    public void readAction(@PathVariable String gameId) {
+    public void readAction(@PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -220,10 +221,10 @@ public class GameController {
     // Delete an action
     // DELETE /model/game/{id}/action/{actionId}
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{gameId}/action/{actionId}",
+            value = "/{domain}/model/game/{gameId}/action/{actionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete action")
-    public void deleteAction(@PathVariable String gameId,
+    public void deleteAction(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String actionId) {
 
         try {

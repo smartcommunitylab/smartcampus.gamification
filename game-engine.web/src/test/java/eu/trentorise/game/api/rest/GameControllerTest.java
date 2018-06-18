@@ -82,20 +82,18 @@ public class GameControllerTest {
     @Test
     public void create_a_new_game() throws JsonProcessingException {
         GameDTO game = new GameDTO();
-        game.setDomain("fake_domain");
         final String gameName = "the game";
         game.setName(gameName);
         Set<String> actions = new HashSet<>();
         actions.add("action1");
         game.setActions(actions);
 
-        RequestBuilder builder = MockMvcRequestBuilders.post("/model/game/{domain}", DOMAIN)
+        RequestBuilder builder = MockMvcRequestBuilders.post("/model/game")
                 .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(game));
 
         try {
             mocker.perform(builder).andDo(print()).andExpect(status().is(200))
                     .andExpect(jsonPath("$.id", Matchers.notNullValue()))
-                    .andExpect(jsonPath("$.domain", is(DOMAIN)))
                     .andExpect(jsonPath("$.name", is(gameName)))
                     .andExpect(jsonPath("$.actions", contains("action1")));
         } catch (Exception e) {
@@ -106,7 +104,6 @@ public class GameControllerTest {
     @Test
     public void read_a_game() {
         Game g = new Game();
-        g.setDomain(DOMAIN);
         g.setName("the game");
         Set<String> actions = new HashSet<>();
         actions.add("a1");
@@ -115,12 +112,11 @@ public class GameControllerTest {
         g = gameSrv.saveGameDefinition(g);
 
         RequestBuilder builder =
-                MockMvcRequestBuilders.get("/model/game/{domain}/{gameId}", DOMAIN, g.getId());
+                MockMvcRequestBuilders.get("/model/game/{gameId}", g.getId());
 
         try {
             mocker.perform(builder).andExpect(status().is(200))
                     .andExpect(jsonPath("$.id", is(g.getId())))
-                    .andExpect(jsonPath("$.domain", is(DOMAIN)))
                     .andExpect(jsonPath("$.name", is(g.getName())))
                     .andExpect(jsonPath("$.actions", contains("a1", "a2")));
         } catch (Exception e) {
@@ -131,7 +127,6 @@ public class GameControllerTest {
     @Test
     public void read_all_user_game() {
         Game g = new Game();
-        g.setDomain(DOMAIN);
         g.setOwner("sco_master");
         g.setName("the game");
         Set<String> actions = new HashSet<>();
@@ -141,7 +136,6 @@ public class GameControllerTest {
         gameSrv.saveGameDefinition(g);
 
         g = new Game();
-        g.setDomain(DOMAIN);
         g.setOwner("sco_master");
         g.setName("the new game");
         actions = new HashSet<>();
@@ -151,7 +145,7 @@ public class GameControllerTest {
         gameSrv.saveGameDefinition(g);
 
 
-        RequestBuilder builder = MockMvcRequestBuilders.get("/model/game/{domain}", DOMAIN);
+        RequestBuilder builder = MockMvcRequestBuilders.get("/model/game");
 
         try {
             mocker.perform(builder).andExpect(status().is(200))
@@ -166,7 +160,6 @@ public class GameControllerTest {
     public void delete_a_game() {
 
         Game g = new Game();
-        g.setDomain(DOMAIN);
         g.setOwner(ROLE);
         g.setName("the game");
         Set<String> actions = new HashSet<>();
@@ -176,7 +169,7 @@ public class GameControllerTest {
         g = gameSrv.saveGameDefinition(g);
 
         RequestBuilder builder =
-                MockMvcRequestBuilders.delete("/model/game/{domain}/{gameId}", DOMAIN, g.getId());
+                MockMvcRequestBuilders.delete("/model/game/{gameId}", g.getId());
 
         try {
             mocker.perform(builder).andExpect(status().is(200));

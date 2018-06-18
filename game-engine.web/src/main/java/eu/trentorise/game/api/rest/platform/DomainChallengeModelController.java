@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -17,17 +17,17 @@ import eu.trentorise.game.services.GameService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class ChallengeModelController {
+@Profile("platform")
+public class DomainChallengeModelController {
 
     @Autowired
     private GameService gameSrv;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/challenge",
+    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game/{gameId}/challenge",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add challenge model")
     public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel,
-            @PathVariable String gameId) {
+            @PathVariable String domain, @PathVariable String gameId) {
 
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -38,10 +38,10 @@ public class ChallengeModelController {
         return gameSrv.saveChallengeModel(gameId, challengeModel);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/challenge",
+    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/challenge",
             produces = {"application/json"})
     @ApiOperation(value = "Get challenge models")
-    public Set<ChallengeModel> readChallengeModels(
+    public Set<ChallengeModel> readChallengeModels(@PathVariable String domain,
             @PathVariable String gameId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -52,10 +52,10 @@ public class ChallengeModelController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/game/{gameId}/challenge/{modelId}",
+            value = "/{domain}/model/game/{domain}/challenge/{modelId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete challenge model")
-    public void deleteChallengeModels(@PathVariable String gameId,
+    public void deleteChallengeModels(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String modelId) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");

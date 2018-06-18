@@ -46,8 +46,6 @@ import eu.trentorise.game.services.GameService;
 @WebAppConfiguration
 public class PlayerControllerTest {
 
-    private static final String DOMAIN = "my-domain";
-
     @Autowired
     private GameService gameSrv;
 
@@ -98,14 +96,13 @@ public class PlayerControllerTest {
     @Test
     public void createPlayer() {
         Game game = defineGame();
-        game.setDomain(DOMAIN);
         gameSrv.saveGameDefinition(game);
 
         try {
             PlayerStateDTO player = new PlayerStateDTO();
             player.setPlayerId("10001");
             RequestBuilder builder = MockMvcRequestBuilders
-                    .post("/data/game/{domain}/{gameId}/player/{playerId}", DOMAIN, game.getId(),
+                    .post("/data/game/{gameId}/player/{playerId}", game.getId(),
                             "10001")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(player));

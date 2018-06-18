@@ -1,4 +1,4 @@
-package eu.trentorise.game.api.rest;
+package eu.trentorise.game.api.rest.platform;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -34,8 +34,8 @@ import io.swagger.annotations.ApiOperation;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@Profile({"sec", "no-sec"})
-public class PlayerController {
+@Profile({"platform"})
+public class DomainPlayerController {
 
     @Autowired
     private Converter converter;
@@ -47,7 +47,7 @@ public class PlayerController {
     private GameService gameSrv;
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/data/game/{gameId}/player/{playerId}/challenges",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}/challenges",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Assign challenge")
     public void assignChallenge(@RequestBody ChallengeDataDTO challengeData,
@@ -74,7 +74,7 @@ public class PlayerController {
     // ­ No concept fields in input
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/data/game/{gameId}/player/{playerId}",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Create player")
     public void createPlayer(@PathVariable String gameId,
@@ -106,7 +106,7 @@ public class PlayerController {
     // teams, challenges
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/game/{gameId}/player/{playerId}",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get player state")
     public PlayerStateDTO readPlayer(@PathVariable String gameId,
@@ -133,7 +133,7 @@ public class PlayerController {
     // ­ If alias not present, do not update it; if customdata not present do
     // not update it.
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/data/game/{gameId}/player/{playerId}",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit player state")
     public void updatePlayer(@PathVariable String gameId,
@@ -157,7 +157,7 @@ public class PlayerController {
     // DELETE /data/game/{id}/player/{playerId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/data/game/{gameId}/player/{playerId}",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete player state")
     public void deletePlayer(@PathVariable String gameId,
@@ -180,7 +180,7 @@ public class PlayerController {
     // GET /data/game/{id}/player/{playerId}/teams
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/game/{gameId}/player/{playerId}/teams",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}/teams",
             produces = {"application/json"})
     @ApiOperation(value = "Get player teams")
     public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
@@ -210,7 +210,7 @@ public class PlayerController {
     // GET /data/game/{id}/player/{playerId}/challenges
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/game/{gameId}/player/{playerId}/challenges",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}/challenges",
             produces = {"application/json"})
     @ApiOperation(value = "Get player challenges")
     public void getPlayerChallenge(@PathVariable String gameId,
@@ -233,7 +233,7 @@ public class PlayerController {
     // Read user game state
     // GET /data/game/{id}/player/{playerId}/state
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/game/{gameId}/player/{playerId}/state",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}/state",
             produces = {"application/json"})
     @ApiOperation(value = "Get player state")
     public PlayerStateDTO readState(@PathVariable String gameId,
@@ -244,7 +244,7 @@ public class PlayerController {
     // Read user custom data
     // GET /data/game/{id}/player/{playerId}/custom
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/game/{gameId}/player/{playerId}/custom",
+            value = "/{domain}/data/game/{gameId}/player/{playerId}/custom",
             produces = {"application/json"})
     @ApiOperation(value = "Get player custom data")
     public PlayerStateDTO readCustomData(@PathVariable String gameId,
@@ -266,7 +266,7 @@ public class PlayerController {
     }
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/data/game/{gameId}/player/search", consumes = {"application/json"},
+            value = "/{domain}/data/game/{gameId}/player/search", consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Search player states")
     @ApiImplicitParams({

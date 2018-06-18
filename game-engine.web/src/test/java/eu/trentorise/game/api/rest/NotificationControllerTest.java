@@ -44,7 +44,6 @@ import eu.trentorise.game.notification.ChallengeCompletedNotication;
 public class NotificationControllerTest {
 
     private static final String GAME = "gameTest";
-    private static final String DOMAIN = "my-domain";
     private static final String PLAYER_1 = "player1";
     private static final String PLAYER_2 = "player2";
 
@@ -76,7 +75,7 @@ public class NotificationControllerTest {
     public void emptyNotificationsInGame() {
 
         RequestBuilder builder =
-                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}", DOMAIN, GAME);
+                MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME);
 
         try {
             mocker.perform(builder).andDo(print()).andExpect(status().is(200))
@@ -90,7 +89,7 @@ public class NotificationControllerTest {
     public void retrieveAllNotificationsInGame() {
         setupTest_RetrieveAllNotificationsInGame();
         RequestBuilder builder =
-                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}", DOMAIN, GAME);
+                MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME);
 
         try {
             mocker.perform(builder).andDo(print()).andExpect(status().is(200))
@@ -105,7 +104,7 @@ public class NotificationControllerTest {
     public void retrieveAllNotificationsPlayer1() {
         setupTest_RetrieveAllNotificationsPlayer1();
         RequestBuilder builder = MockMvcRequestBuilders.get(
-                "/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME, PLAYER_1);
+                "/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1);
 
         try {
             mocker.perform(builder).andDo(print()).andExpect(status().is(200))
@@ -120,7 +119,7 @@ public class NotificationControllerTest {
     public void paginateNotificationToSize3() {
         setupPaginationTest();
         RequestBuilder builder = MockMvcRequestBuilders
-                .get("/notification/game/{domain}/{gameId}", DOMAIN, GAME).param("size", "3");
+                .get("/notification/game/{gameId}", GAME).param("size", "3");
 
         try {
             mocker.perform(builder).andDo(print()).andExpect(status().is(200))
@@ -135,7 +134,7 @@ public class NotificationControllerTest {
     public void paginateNotificationPage2OfSize2() {
         setupPaginationTest();
         RequestBuilder builder =
-                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}", DOMAIN, GAME)
+                MockMvcRequestBuilders.get("/notification/game/{gameId}", GAME)
                         .param("size", "2").param("page", "2");
 
         try {
@@ -152,7 +151,7 @@ public class NotificationControllerTest {
     public void paginateNotificationPage2() {
         setupPaginationTest();
         RequestBuilder builder = MockMvcRequestBuilders
-                .get("/notification/game/{domain}/{gameId}", DOMAIN, GAME).param("page", "2");
+                .get("/notification/game/{gameId}", GAME).param("page", "2");
 
         try {
             mocker.perform(builder).andDo(print()).andExpect(status().is(200))
@@ -167,8 +166,9 @@ public class NotificationControllerTest {
     public void paginateNotificationPage2OfSize2Player1() {
         setupPaginationTest();
         RequestBuilder builder =
-                MockMvcRequestBuilders.get("/notification/game/{domain}/{gameId}/player/{playerId}",
-                        DOMAIN, GAME, PLAYER_1).param("size", "2").param("page", "2");
+                MockMvcRequestBuilders
+                        .get("/notification/game/{gameId}/player/{playerId}", GAME, PLAYER_1)
+                        .param("size", "2").param("page", "2");
 
         try {
             mocker.perform(builder).andDo(print()).andExpect(status().is(200))
@@ -184,7 +184,7 @@ public class NotificationControllerTest {
     public void excludeNotificationTypeChallengeAssignedNotification() {
         setup_ExcludeNotificationType();
         RequestBuilder builder = MockMvcRequestBuilders
-                .get("/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME,
+                .get("/notification/game/{gameId}/player/{playerId}", GAME,
                         PLAYER_1)
                 .param("excludeTypes", "ChallengeAssignedNotification");
 
@@ -200,7 +200,7 @@ public class NotificationControllerTest {
     public void exclude2TypesOfNotifications() {
         setup_ExcludeNotificationType();
         RequestBuilder builder = MockMvcRequestBuilders
-                .get("/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME,
+                .get("/notification/game/{gameId}/player/{playerId}", GAME,
                         PLAYER_1)
                 .param("excludeTypes", "ChallengeAssignedNotification", "BadgeNotification");
 
@@ -216,7 +216,7 @@ public class NotificationControllerTest {
     public void includeChallengeAssignedNotification() {
         setup_ExcludeNotificationType();
         RequestBuilder builder = MockMvcRequestBuilders
-                .get("/notification/game/{domain}/{gameId}/player/{playerId}", DOMAIN, GAME,
+                .get("/notification/game/{gameId}/player/{playerId}", GAME,
                         PLAYER_1)
                 .param("includeTypes", "ChallengeAssignedNotification");
 

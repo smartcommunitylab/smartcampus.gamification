@@ -68,7 +68,13 @@ public class AACAuthenticationInterceptor extends HandlerInterceptorAdapter {
     }
 
     private String extractDomain(HttpServletRequest request) {
-        return "test";
+        String url = request.getRequestURI();
+        url = url.substring(request.getContextPath().length());
+        int lowerIndex = url.indexOf("/", 1) + 1;
+        int upperIndex = url.indexOf("/", lowerIndex);
+        String domain = url.substring(lowerIndex, upperIndex);
+        logger.debug("Extracted domain from request: {}", request);
+        return domain;
     }
 
     private String extractToken(HttpServletRequest request) {

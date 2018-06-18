@@ -34,7 +34,7 @@ public class DomainRuleController {
 
     // Create rule
     // POST /model/game/{id}/rule
-    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game/{gameId}/rule",
+    @RequestMapping(method = RequestMethod.POST, value = "/model/{domain}/game/{gameId}/rule",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add rule")
     public RuleDTO addRule(@PathVariable String domain, @PathVariable String gameId,
@@ -56,7 +56,7 @@ public class DomainRuleController {
     // Update rule
     // PUT /model/game/{id}/rule/{ruleId}
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/{domain}/model/game/{gameId}/rule/{ruleId}", consumes = {"application/json"},
+            value = "/model/{domain}/game/{gameId}/rule/{ruleId}", consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Edit rule")
     public RuleDTO editRule(@PathVariable String domain, @PathVariable String gameId,
@@ -77,7 +77,7 @@ public class DomainRuleController {
 
     // Read all rules
     // GET /model/game/{id}/rule
-    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/rule",
+    @RequestMapping(method = RequestMethod.GET, value = "/model/{domain}/game/{gameId}/rule",
             produces = {"application/json"})
     @ApiOperation(value = "Get rules")
     public List<RuleDTO> readAllRules(@PathVariable String domain, @PathVariable String gameId) {
@@ -105,7 +105,7 @@ public class DomainRuleController {
     // Read a rule
     // GET /model/game/{id}/rule/{ruleId}
     @RequestMapping(method = RequestMethod.GET,
-            value = "/{domain}/model/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
+            value = "/model/{domain}/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
     @ApiOperation(value = "Get rule")
     public RuleDTO readDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
@@ -128,7 +128,7 @@ public class DomainRuleController {
     // DELETE /model/game/{id}/rule/{ruleId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/{domain}/model/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
+            value = "/model/{domain}/game/{gameId}/rule/{ruleId}", produces = {"application/json"})
     @ApiOperation(value = "Delete rule")
     public boolean deleteDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
@@ -147,7 +147,7 @@ public class DomainRuleController {
     // ­ Rule wrapped in an object {rule: “<rule text>”}
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/{domain}/model/game/{gameId}/rule/validate",
+            value = "/model/{domain}/game/{gameId}/rule/validate",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Validate rule")
     public List<String> validateRule(@PathVariable String gameId,

@@ -39,7 +39,7 @@ public class DomainPointConceptController {
     // ­ Response body should contain point concept id
     // ­ May contain the periodic point definitions
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game/{gameId}/point",
+    @RequestMapping(method = RequestMethod.POST, value = "/model/{domain}/game/{gameId}/point",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add point")
     public PointConcept addPoint(@PathVariable String domain, @PathVariable String gameId,
@@ -61,7 +61,7 @@ public class DomainPointConceptController {
     // ­ May contain the periodic point definitions
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/{domain}/model/game/{gameId}/point/{pointId}",
+            value = "/model/{domain}/game/{gameId}/point/{pointId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit point")
     public void updatePoint(@PathVariable String domain, @PathVariable String gameId,
@@ -78,7 +78,7 @@ public class DomainPointConceptController {
     // Read game point concepts
     // GET /model/game/{id}/point
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/point",
+    @RequestMapping(method = RequestMethod.GET, value = "/model/{domain}/game/{gameId}/point",
             produces = {"application/json"})
     @ApiOperation(value = "Get points")
     public List<PointConcept> readPoints(@PathVariable String domain, @PathVariable String gameId) {
@@ -106,7 +106,7 @@ public class DomainPointConceptController {
     // GET /model/game/{id}/point/{pointId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/{domain}/model/game/{gameId}/point/{pointId}",
+            value = "/model/{domain}/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get point")
     public PointConcept readPoint(@PathVariable String domain, @PathVariable String gameId,
@@ -139,7 +139,7 @@ public class DomainPointConceptController {
     // DELETE /model/game/{id}/point/{pointId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/{domain}/model/game/{gameId}/point/{pointId}",
+            value = "/model/{domain}/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete point")
     public void deletePoint(@PathVariable String domain, @PathVariable String gameId,

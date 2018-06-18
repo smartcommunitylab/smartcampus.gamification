@@ -45,7 +45,7 @@ public class DomainGameController  {
     // TODO: ­ Remove from body implicit elements (e.g., owner) , The content
     // elements are optional (except name)
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game",
+    @RequestMapping(method = RequestMethod.POST, value = "/model/{domain}/game",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Save a game")
     public GameDTO saveGame(@PathVariable String domain, @RequestBody GameDTO game) {
@@ -61,7 +61,7 @@ public class DomainGameController  {
     // Read a game
     // GET /model/game/{id}
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/model/{domain}/game/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Read game definition")
     public GameDTO readGame(@PathVariable String domain, @PathVariable String gameId) {
@@ -79,7 +79,7 @@ public class DomainGameController  {
     // Read all games of the user
     // GET /model/game
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game",
+    @RequestMapping(method = RequestMethod.GET, value = "/model/{domain}/game",
             produces = {"application/json"})
     @ApiOperation(value = "Get games", notes = "Get all the game definitions of a user")
     public List<GameDTO> readGames(@PathVariable String domain) {
@@ -94,7 +94,7 @@ public class DomainGameController  {
     // Delete a game
     // DELETE /model/game/{id}
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{domain}/model/game/{gameId}",
+    @RequestMapping(method = RequestMethod.DELETE, value = "/model/{domain}/game/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete game")
     public void deleteGame(@PathVariable String domain, @PathVariable String gameId) {
@@ -111,7 +111,7 @@ public class DomainGameController  {
     // Start a game
     // PUT /model/game/{id}/start
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/{domain}/model/game/{gameId}/start",
+    @RequestMapping(method = RequestMethod.PUT, value = "/model/{domain}/game/{gameId}/start",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Start game", notes = "The game is able to accept action executions")
     public void startGame(@PathVariable String domain, @PathVariable String gameId) {
@@ -127,7 +127,7 @@ public class DomainGameController  {
     // Stop a game
     // PUT /model/game/{id}/stop
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/{domain}/model/game/{gameId}/stop",
+    @RequestMapping(method = RequestMethod.PUT, value = "/model/{domain}/game/{gameId}/stop",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Stop a game",
             notes = "The game will not accept action execution anymore")
@@ -153,7 +153,7 @@ public class DomainGameController  {
     // ­ Consider other fields: name, description
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/{domain}/model/game/{gameId}/action/{actionId}",
+            value = "/model/{domain}/game/{gameId}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add action")
     public void addAction(@PathVariable String domain, @PathVariable String gameId) {
@@ -170,7 +170,7 @@ public class DomainGameController  {
     // PUT /model/game/{id}/action/{actionId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/{domain}/model/game/{domain}/action/{actionId}",
+            value = "/model/{domain}/game/{domain}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit action")
     public void editAction(@PathVariable String domain, @PathVariable String gameId) {
@@ -186,7 +186,7 @@ public class DomainGameController  {
     // Read all actions
     // GET /model/game/{id}/action
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/action",
+    @RequestMapping(method = RequestMethod.GET, value = "/model/{domain}/game/{gameId}/action",
             produces = {"application/json"})
     @ApiOperation(value = "Get actions")
     public Set<String> readAllAction(@PathVariable String domain, @PathVariable String gameId) {
@@ -205,7 +205,7 @@ public class DomainGameController  {
     // GET /model/game/{id}/action/{actionId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/{domain}/model/game/{gameId}/action/{actionId}",
+            value = "/model/{domain}/game/{gameId}/action/{actionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get action")
     public void readAction(@PathVariable String domain, @PathVariable String gameId) {
@@ -221,7 +221,7 @@ public class DomainGameController  {
     // Delete an action
     // DELETE /model/game/{id}/action/{actionId}
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/{domain}/model/game/{gameId}/action/{actionId}",
+            value = "/model/{domain}/game/{gameId}/action/{actionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete action")
     public void deleteAction(@PathVariable String domain, @PathVariable String gameId,

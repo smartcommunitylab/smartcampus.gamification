@@ -38,7 +38,7 @@ public class DomainExecutionController {
     // POST /exec/game/{id}/action/{actionId}
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/{domain}/exec/game/{gameId}/action/{actionId}",
+            value = "/exec/{domain}/game/{gameId}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Execute an action")
     public void executeAction(@PathVariable String domain, @PathVariable String gameId,

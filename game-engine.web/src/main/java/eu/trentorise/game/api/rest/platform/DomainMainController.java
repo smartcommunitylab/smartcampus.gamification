@@ -52,7 +52,7 @@ import io.swagger.annotations.ApiOperation;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@RequestMapping(value = "/{domain}/gengine")
+@RequestMapping(value = "/gengine/{domain}")
 @Profile("platform")
 public class DomainMainController {
 

@@ -40,7 +40,7 @@ public class DomainBadgeCollectionConceptController {
     // Create badge collection concept
     // POST /model/game/{id}/badges
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{domain}/model/game/{gameId}/badges",
+    @RequestMapping(method = RequestMethod.POST, value = "/model/{domain}/game/{gameId}/badges",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add a badge collection",
             notes = "Add a badge collection to the game definition")
@@ -59,7 +59,7 @@ public class DomainBadgeCollectionConceptController {
     // PUT /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/{domain}/model/game/{gameId}/badges/{collectionId}",
+            value = "/model/{domain}/game/{gameId}/badges/{collectionId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Update a badge collection")
     public void updateBadgeCollection(@PathVariable String domain, @PathVariable String gameId) {
@@ -75,7 +75,7 @@ public class DomainBadgeCollectionConceptController {
     // Read badge collection concepts
     // GET /model/game/{id}/badges
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{domain}/model/game/{gameId}/badges",
+    @RequestMapping(method = RequestMethod.GET, value = "/model/{domain}/game/{gameId}/badges",
             produces = {"application/json"})
     @ApiOperation(value = "Get the badge collections", notes = "Get badge collections in a game")
     public List<BadgeCollectionConcept> readBadgeCollections(@PathVariable String domain,
@@ -102,7 +102,7 @@ public class DomainBadgeCollectionConceptController {
     // GET /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/{domain}/model/game/{gameId}/badges/{collectionId}",
+            value = "/model/{domain}/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get a badge collection",
             notes = "Get the definition of a badge collection in a game")
@@ -136,7 +136,7 @@ public class DomainBadgeCollectionConceptController {
     // DELETE /model/game/{id}/badges/{colllectionId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/{domain}/model/game/{gameId}/badges/{collectionId}",
+            value = "/model/{domain}/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete a badge collection")
     public void deleteBadgeCollection(@PathVariable String domain, @PathVariable String gameId,

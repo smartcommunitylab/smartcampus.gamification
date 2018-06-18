@@ -54,7 +54,7 @@ import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.utils.Converter;
 
 @RestController
-@RequestMapping(value = "/{domain}/console")
+@RequestMapping(value = "/console/{domain}")
 @Profile("platform")
 public class DomainConsoleController {
 

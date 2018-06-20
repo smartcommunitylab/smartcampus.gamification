@@ -33,7 +33,8 @@ public class SpringSecurityIdentityLookup implements IdentityLookupService {
 
     @Override
     public String getDomain() {
-        return getAuthentication().getAuthorities().stream().findFirst().toString();
+        return getAuthentication().getAuthorities().stream().findFirst().orElse(null)
+                .getAuthority();
     }
 
 }

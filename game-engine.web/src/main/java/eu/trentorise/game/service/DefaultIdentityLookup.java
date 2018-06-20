@@ -19,9 +19,8 @@ import java.util.Arrays;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
-@Component
+// @Component
 public class DefaultIdentityLookup implements IdentityLookupService {
 
     public static final String DEFAULT_USER = "sco_master";

@@ -61,7 +61,8 @@ public class DomainClassificationController {
     // POST /model/game/{id}/classification
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/model/{domain}/game/{gameId}/classification", consumes = {"application/json"},
+            value = "/api/{domain}/model/game/{gameId}/classification",
+            consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Add general classification definition")
     public GeneralClassificationDTO addClassificationTask(@PathVariable String domain,
@@ -98,7 +99,7 @@ public class DomainClassificationController {
     // PUT /model/game/{id}/classification/{classificationId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/{domain}/game/{gameId}/classification/{classificationId}",
+            value = "/api/{domain}/model/game/{gameId}/classification/{classificationId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit general classification definition")
     public void editClassificationTask(@PathVariable String domain, @PathVariable String gameId,
@@ -141,7 +142,8 @@ public class DomainClassificationController {
     // GET /model/game/{id}/classification
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/{domain}/game/{gameId}/classification", produces = {"application/json"})
+            value = "/api/{domain}/model/game/{gameId}/classification",
+            produces = {"application/json"})
     @ApiOperation(value = "Get general classification definitions")
     public List<GeneralClassificationDTO> readAllGeneralClassifications(@PathVariable String domain,
             @PathVariable String gameId) {
@@ -173,7 +175,7 @@ public class DomainClassificationController {
     // GET /model/game/{id}/classification/{classificationId}
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/{domain}/game/{gameId}/classification/{classificationId}",
+            value = "/api/{domain}/model/game/{gameId}/classification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get general classification definition")
     public GeneralClassificationDTO readGeneralClassification(@PathVariable String domain,
@@ -205,7 +207,7 @@ public class DomainClassificationController {
     // DELETE /model/game/{id}/classification/{classificationId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/{domain}/game/{gameId}/task/{classificationId}",
+            value = "/api/{domain}/model/game/{gameId}/task/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete general classification definition")
     public void deleteClassificationTask(@PathVariable String domain, @PathVariable String gameId,
@@ -240,7 +242,7 @@ public class DomainClassificationController {
      * INCREMENTAL CLASSIFICATIONS
      */
     @RequestMapping(method = RequestMethod.POST,
-            value = "/model/{domain}/game/{gameId}/incclassification",
+            value = "/api/{domain}/model/game/{gameId}/incclassification",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add incremental classification definition")
     public IncrementalClassificationDTO createIncremental(@PathVariable String domain,
@@ -273,7 +275,7 @@ public class DomainClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/model/{domain}/game/{gameId}/incclassification/{classificationId}",
+            value = "/api/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit general classification definition")
     public void updateIncrementalClassification(@PathVariable String domain,
@@ -329,7 +331,7 @@ public class DomainClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/{domain}/game/{gameId}/incclassification",
+            value = "/api/{domain}/model/game/{gameId}/incclassification",
             produces = {"application/json"})
     @ApiOperation(value = "Get incremental classification defintions")
     public List<IncrementalClassificationDTO> readAllIncremental(@PathVariable String domain,
@@ -355,7 +357,7 @@ public class DomainClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/model/{domain}/game/{gameId}/incclassification/{classificationId}",
+            value = "/api/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get incremental classification defition")
     public IncrementalClassificationDTO readIncremental(@PathVariable String domain,
@@ -380,7 +382,7 @@ public class DomainClassificationController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/{domain}/game/{gameId}/incclassification/{classificationId}",
+            value = "/api/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete incremental classification definition")
     public void deleteIncremental(@PathVariable String domain, @PathVariable String gameId,
@@ -414,7 +416,7 @@ public class DomainClassificationController {
      * version < 2.2.0
      */
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/{domain}/game/{gameId}/incclassification/{classificationId}",
+            value = "/api/{domain}/data/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Read incremental classification board")
     public ClassificationBoard getIncrementalClassification(@PathVariable String domain,
@@ -524,7 +526,7 @@ public class DomainClassificationController {
      * version < 2.2.0
      */
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/{domain}/game/{gameId}/classification/{classificationId}",
+            value = "/api/{domain}/data/game/{gameId}/classification/{classificationId}",
             produces = {"application/json"})
     @ApiOperation(value = "Read general classification board")
     public ClassificationBoard getGeneralClassification(@PathVariable String domain,

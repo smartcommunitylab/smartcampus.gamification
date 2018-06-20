@@ -28,7 +28,7 @@ public class DomainNotificationController {
     private NotificationManager notificationSrv;
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/notification/{domain}/game/{gameId}/player/{playerId}",
+            value = "/api/{domain}/notification/game/{gameId}/player/{playerId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get player notifications")
     @ApiImplicitParams({
@@ -60,7 +60,7 @@ public class DomainNotificationController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/notification/{domain}/game/{gameId}/team/{teamId}",
+            value = "/api/{domain}/notification/game/{gameId}/team/{teamId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get team notifications")
     @ApiImplicitParams({
@@ -78,7 +78,7 @@ public class DomainNotificationController {
                 excludeTypes);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/notification/{domain}/game/{gameId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/notification/game/{gameId}",
             produces = {"application/json"})
     @ApiOperation(value = "Get game notifications")
     @ApiImplicitParams({

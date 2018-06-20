@@ -23,7 +23,8 @@ public class DomainChallengeModelController {
     @Autowired
     private GameService gameSrv;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/model/{domain}/game/{gameId}/challenge",
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/model/game/{gameId}/challenge",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add challenge model")
     public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel,
@@ -38,7 +39,8 @@ public class DomainChallengeModelController {
         return gameSrv.saveChallengeModel(gameId, challengeModel);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/model/{domain}/game/{gameId}/challenge",
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/api/{domain}/model/game/{gameId}/challenge",
             produces = {"application/json"})
     @ApiOperation(value = "Get challenge models")
     public Set<ChallengeModel> readChallengeModels(@PathVariable String domain,
@@ -52,7 +54,7 @@ public class DomainChallengeModelController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/model/{domain}/game/{domain}/challenge/{modelId}",
+            value = "/api/{domain}/model/game/{domain}/challenge/{modelId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete challenge model")
     public void deleteChallengeModels(@PathVariable String domain, @PathVariable String gameId,

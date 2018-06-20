@@ -40,7 +40,8 @@ public class DomainTeamController {
     // ­ In body specify name (optional), member list (optional)
     //
     @RequestMapping(method = RequestMethod.POST,
-            value = "/data/{domain}/game/{gameId}/team/{teamId}", consumes = {"application/json"},
+            value = "/api/{domain}/data/game/{gameId}/team/{teamId}",
+            consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Create team")
     public void createTeam(@PathVariable String domain, @PathVariable String gameId,
@@ -66,7 +67,8 @@ public class DomainTeamController {
     // DELETE /data/game/{id}/team/{teamId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/data/{domain}/game/{gameId}/team/{teamId}", consumes = {"application/json"},
+            value = "/api/{domain}/data/game/{gameId}/team/{teamId}",
+            consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Delte team")
     public void deleteTeam(@PathVariable String domain, @PathVariable String gameId,
@@ -89,7 +91,7 @@ public class DomainTeamController {
     // GET /data/game/{id}/team/{teamId}/members
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/data/{domain}/game/{gameId}/team/{teamId}/members",
+            value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Get team members")
     public Collection<String> readTeamMembers(@PathVariable String domain,
@@ -114,7 +116,7 @@ public class DomainTeamController {
     // PUT /data/game/{id}/team/{teamId}/members
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/data/{domain}/game/{gameId}/team/{teamId}/members",
+            value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit team")
     public void updateTeamMembers(@PathVariable String domain, @PathVariable String gameId,
@@ -142,7 +144,7 @@ public class DomainTeamController {
     // PUT /data/game/{id}/team/{teamId}/members/{playerId}
 
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/data/{domain}/game/{gameId}/team/{teamId}/members/{playerId}",
+            value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members/{playerId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add team member")
     public void addTeamMember(@PathVariable String domain, @PathVariable String gameId,
@@ -179,7 +181,7 @@ public class DomainTeamController {
     // DELETE /data/game/{id}/team/{teamId}/members/{playerId}
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/data/{domain}/game/{gameId}/team/{teamId}/members/{playerId}",
+            value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members/{playerId}",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Delete team member")
     public void removeTeamMember(@PathVariable String domain, @PathVariable String gameId,

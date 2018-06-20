@@ -42,9 +42,11 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("no-sec")
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
-        TestMVCConfiguration.class},
+@ActiveProfiles({"no-sec"})
+@ContextConfiguration(
+        classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
+                TestMVCConfiguration.class,
+},
         loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 public class GameControllerTest {
@@ -58,7 +60,6 @@ public class GameControllerTest {
     @Autowired
     private MongoTemplate mongo;
 
-    private static final String DOMAIN = "my-domain";
 
     @Before
     public void cleanDB() {
@@ -160,7 +161,7 @@ public class GameControllerTest {
     public void delete_a_game() {
 
         Game g = new Game();
-        g.setOwner(ROLE);
+        g.setOwner("sco_master");
         g.setName("the game");
         Set<String> actions = new HashSet<>();
         actions.add("a1");

@@ -14,9 +14,6 @@
 
 package eu.trentorise.game.config;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +25,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.trentorise.game.api.rest.AuthorizationInterceptor;
 import eu.trentorise.game.core.LogHub;
@@ -39,7 +35,7 @@ import eu.trentorise.game.service.SpringSecurityIdentityLookup;
 
 @Configuration
 @EnableWebSecurity
-@Profile({"sec"})
+@Profile({"sec", "platform"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
@@ -55,31 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public HandlerInterceptor authInterceptor() {
         return new AuthorizationInterceptor();
-    }
-
-    @Bean
-    public HandlerInterceptor tokenInterceptor() {
-        // dummie interceptor
-        return new HandlerInterceptor() {
-
-            @Override
-            public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                    Object handler) throws Exception {
-                return true;
-            }
-
-            @Override
-            public void postHandle(HttpServletRequest request, HttpServletResponse response,
-                    Object handler, ModelAndView modelAndView) throws Exception {
-
-            }
-
-            @Override
-            public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                    Object handler, Exception ex) throws Exception {
-
-            }
-        };
     }
 
     @Autowired
@@ -98,10 +69,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // application never creates an http session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers("/console/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/gengine/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/consoleweb/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/model/**").access("hasRole('ROLE_ADMIN')").and().httpBasic();
+        http.authorizeRequests()
+                .antMatchers("/gengine/**", "/console/**", "/model/**", "/data/**", "/exec/**",
+                        "/notification/**")
+                .access("hasRole('ROLE_ADMIN')").and().httpBasic();
+
+        http.authorizeRequests().antMatchers("/api/**").anonymous();
+
 
         // disable csrf permits POST http call to DomainConsoleController
         // without using csrf token

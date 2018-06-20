@@ -14,9 +14,6 @@
 
 package eu.trentorise.game.config;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,8 +23,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
+import eu.trentorise.game.api.rest.AuthorizationInterceptor;
 import eu.trentorise.game.service.DefaultIdentityLookup;
 import eu.trentorise.game.service.IdentityLookupService;
 
@@ -42,28 +39,8 @@ public class NoSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public HandlerInterceptor tokenInterceptor() {
-        // dummie interceptor
-        return new HandlerInterceptor() {
-
-            @Override
-            public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                    Object handler) throws Exception {
-                return true;
-            }
-
-            @Override
-            public void postHandle(HttpServletRequest request, HttpServletResponse response,
-                    Object handler, ModelAndView modelAndView) throws Exception {
-
-            }
-
-            @Override
-            public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                    Object handler, Exception ex) throws Exception {
-
-            }
-        };
+    public HandlerInterceptor authInterceptor() {
+        return new AuthorizationInterceptor();
     }
 
 

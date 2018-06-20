@@ -42,9 +42,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private HandlerInterceptor authInterceptor;
 
-    @Autowired
-    private HandlerInterceptor tokenInterceptor;
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(String.format("/%s/**", CONSOLE_URL_MAPPING))
@@ -59,10 +56,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(tokenInterceptor).addPathPatterns("/gengine/**", "/console/**",
-                "/model/**", "/data/**", "/notification/**", "/exec/**");
-        registry.addInterceptor(authInterceptor).addPathPatterns("/console/game/**",
-                "/model/game/**");
+        registry.addInterceptor(authInterceptor).addPathPatterns("/gengine/**",
+                "/console/**", "/model/**", "/data/**", "/exec/**", "/notification/**");
     }
 
     @Override

@@ -94,5 +94,8 @@
   "title_add_task" : "Crea nuova classifica",
   "btn_publish" : "Pubblica",
   "lbl_task_periodName" : "Nome del periodo",
-  "lbl_game_domain" : "Dominio"
+  "lbl_game_domain" : "Dominio",
+  "lbl_levels_menu" : "Livelli",
+  "lbl_pointConcept" : "Pointconcept di riferimento",
+  "lbl_add_level" : "Crea livello"
 }

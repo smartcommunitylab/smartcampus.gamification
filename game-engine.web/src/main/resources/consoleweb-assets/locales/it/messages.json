@@ -31,5 +31,10 @@
   "msg_challenge_edited": "Sfida modificato con successo", 
   "msg_no_challenges" : "Nessuna sfida",
   "msg_period_name_error" : "Il nome di un periodo non è valido",
-  "msg_period_negative_error" : "La durata del periodo non può essere negativa"
+  "msg_period_negative_error" : "La durata del periodo non può essere negativa",
+  "msg_level_name" : "Nome del livello già utilizzato",
+  "msg_level_pointConcept" : "PointConcept utilizzato da un altro livello",
+  "msg_threshold_name" : "Il nome usato per la soglia è già presente",
+  "msg_threshold_value" : "Il valore usato per la soglia è già presente",
+  "msg_threshold_valid_value" :"La soglia deve essere un numero positivo"
 }

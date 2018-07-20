@@ -21,16 +21,6 @@
 		<uib-alert ng-if="alerts.loadGameError" type="danger">{{'messages:msg_load_games_error' | i18next}}</uib-alert>
 	</div>
 </div>
-<!--<div class="row">
-	<div class="col-md-12 text-center">
-		<uib-alert ng-if="alerts.cantCreateLeaderboards" type="danger">{{'messages:msg_leaderboards_error' | i18next}}</uib-alert>
-	</div>
-</div>-->
-<!--<div class="row">
-	<div class="col-md-12 text-center">
-		<uib-alert ng-if="alerts.settingsEdited" type="success" close="closeAlert('settingsEdited')">{{'messages:msg_game_settings_edited' | i18next}}</uib-alert>
-	</div>
-</div>-->
 
 <div class="row">
 	<div class="col-md-12">
@@ -42,12 +32,6 @@
 <div class="row">
 	<div ng-show="!new" class="col-md-2" id="side-menu" data-ng-include="'game-menu/game-menu.html'"></div>
 	<div class="col-md-10" id="main-container">
-		<!--<h4 data-ng-show="viewName == 'settings'">{{'labels:lbl_edit_game_menu' | i18next}}</h4>
-		<h4 data-ng-show="viewName == 'concepts'">{{'labels:lbl_concepts_menu' | i18next}}</h4>
-		<h4 data-ng-show="viewName == 'actions'">{{'labels:lbl_actions_menu' | i18next}}</h4>
-		<h4 data-ng-show="viewName == 'rules'">{{'labels:lbl_rules_menu' | i18next}}</h4>
-		<h4 data-ng-show="viewName == 'tasks'">{{'labels:lbl_tasks_menu' | i18next}}</h4>
-		<h4 data-ng-show="viewName == 'game-monitor'">{{'labels:lbl_monitor_menu' | i18next}}</h4>-->
 		<div data-ng-include="viewName+'/'+viewName+'.html'" class="container-fluid"></div>
 	</div>
 </div>

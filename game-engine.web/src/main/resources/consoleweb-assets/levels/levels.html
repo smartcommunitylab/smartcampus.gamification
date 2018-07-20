@@ -1,0 +1,129 @@
+<div data-ng-controller="LevelsCtrl" class="top-margined">
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<uib-alert ng-if="errors" type="danger">{{errors |
+			i18next}}</uib-alert>
+		</div>
+	</div>
+	<div class="row" ng-if="!showForm">
+		<div class="col-md-12">
+			<button class="btn btn-success btn-add" data-ng-click="addLevel()">{{'labels:lbl_add_level'
+				| i18next}}</button>
+		</div>
+	</div>
+	<div class="row" uib-collapse="!showForm">
+		<div class="col-md-12">
+			<form>
+				<div class="form-group" ng-class="{'has-error': errors}">
+					<label for="name">{{'labels:lbl_name' | i18next}}</label> <input
+						type="text" class="form-control" id="name"
+						data-ng-model="input.levelName"
+						placeholder="{{'labels:lbl_enter_new_name' | i18next}}" autofocus ng-disabled="editMode"/>
+				</div>
+				<div class="form-group" ng-class="{'has-error': errors}">
+					<label for="pointConcept">{{'labels:lbl_pointConcept' |
+						i18next}}</label> <select id="pointConcept" class="form-control"
+						ng-model="input.pointConcept"
+						ng-options="name for name in pointConcepts">
+					</select>
+				</div>
+
+				<h4>Thresholds</h4>
+				<div class="form-inline top-spaced" ng-repeat="thres in thresholds">
+					<div class="form-group">
+						<label for="threshold-name">Name</label> <input type="text"
+							class="form-control" id="threshold-name" ng-model="thres.name" ng-disabled="true"></input>
+					</div>
+					<div class="form-group">
+						<label for="threshold-value">Value</label> <input type="text"
+							class="form-control" id="threshold-value" ng-model="thres.value" ng-disabled="!thres.edit"></input>
+					</div>
+					<button type="button" class="btn btn-danger btn-circle"
+						data-ng-click="deleteThreshold($index)"
+						uib-tooltip="{{'labels:tool_delete' | i18next}}"  ng-if="!thres.edit">
+						<span class="glyphicon glyphicon-trash"></span>
+					</button>
+					<button type="button" class="btn btn-primary btn-circle" data-ng-click="editThreshold($index)" uib-tooltip="{{'labels:tool_edit' | i18next}}" ng-if="!thres.edit">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</button>
+					<button type="button" class="btn btn-success" data-ng-click="updateThreshold($index)" uib-tooltip="{{'labels:tool_edit' | i18next}}" ng-if="thres.edit">
+						Save
+					</button>
+					<button type="button" class="btn btn-danger" data-ng-click="cancelThresholdEditing($index)" uib-tooltip="{{'labels:tool_edit' | i18next}}" ng-if="thres.edit">
+						Cancel
+					</button>
+					<span ng-if="thres.validationMsg" class="error">{{thres.validationMsg | i18next}}</span>
+				</div>
+				<div class="form-inline">
+					<div class="form-group">
+						<label for="threshold-name">Name</label> <input type="text"
+							class="form-control" id="threshold-name"
+							ng-model="threshold.name"></input>
+					</div>
+					<div class="form-group">
+						<label for="threshold-value">Value</label> <input type="text"
+							class="form-control" id="threshold-value"
+							ng-model="threshold.value"></input>
+					</div>
+					<button type="button" class="btn btn-default"
+						data-ng-click="saveThreshold()">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</button>
+
+					<span ng-if="validationMsg" class="error">{{validationMsg | i18next}}</span>
+				</div>
+				<div class="form-group text-right top-spaced">
+					<button class="btn btn-success" data-ng-click="saveLevel()" ng-if="!editMode">{{'labels:btn_save'
+						| i18next}}</button>
+					<button class="btn btn-success" data-ng-click="updateLevel()" ng-if="editMode">{{'labels:btn_save'
+						| i18next}}</button>
+					<button class="btn btn-danger" data-ng-click="cancel()">{{'labels:btn_cancel'
+						| i18next}}</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<hr />
+	<h5>{{'labels:lbl_levels_menu' | i18next}}</h5>
+	<table class="table table-striped">
+				<tbody>
+					<tr data-ng-repeat="level in levels">
+						<td>{{level.name}}
+							<button type="button"
+								class="btn btn-danger btn-circle pull-right"
+								data-ng-click="deleteLevel($index)"
+								uib-tooltip="{{'labels:tool_delete' | i18next}}">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+							<button type="button" class="btn btn-primary btn-circle pull-right" style="margin-right: 1em;" data-ng-click="editLevel($index)" uib-tooltip="{{'labels:tool_edit' | i18next}}">
+									<span class="glyphicon glyphicon-pencil"></span>
+							</button>
+							<button type="button"
+								class="btn btn-warning btn-circle pull-right"
+								style="margin-right: 1em;"
+								data-ng-click="hide = !hide"
+								uib-tooltip="{{'labels:tool_view' | i18next}}">
+								<span class="glyphicon"
+									ng-class="{'glyphicon-eye-open': hide, 'glyphicon-eye-close': !hide}"></span>
+							</button>
+							<div class="row">
+								<div uib-collapse="hide" class="col-md-12">
+									<table class="table table-striped">
+										<tr ng-show="level.thresholds.length > 0">
+											<th>name</th>
+											<th>value</th>
+										</tr>
+										<tr ng-repeat="threshold in level.thresholds">
+											<td>{{threshold.name}}</td>
+											<td>{{threshold.value | number : 1}}</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+</div>
+

@@ -19,20 +19,6 @@ angular.module('gamificationEngine.home', [])
 			$scope.alerts.loadGameError = true;
 		});
 
-		/*$scope.openGameModal = function () {
-			// Add new game
-			var modalInstance = $uibModal.open({
-				templateUrl: 'modals/modal_game_edit.html',
-				controller: 'EditGameModalInstanceCtrl',
-				backdrop: "static",
-				resolve: {
-					game: function () {
-						return {};
-					}
-				}
-			});
-		};*/
-
 		$scope.deleteGame = function (game) {
 			// Delete a game
 			var modalInstance = $uibModal.open({
@@ -94,10 +80,6 @@ angular.module('gamificationEngine.home', [])
 				}
 			});
 		};
-
-		/*$scope.getLength = function (game, type) {
-			return utilsFactory.getLength(game, type);
-		};*/
 
 		$scope.goto = function (path) {
 			$window.location.href = path;

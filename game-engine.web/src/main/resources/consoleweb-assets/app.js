@@ -18,6 +18,7 @@
 var app = angular.module('gamificationEngine', [
 	'gamificationEngine.main',
 	'gamificationEngine.actions',
+	'gamificationEngine.levels',
 	'gamificationEngine.game',
 	'gamificationEngine.concepts',
 	'gamificationEngine.monitor',
@@ -32,7 +33,6 @@ var app = angular.module('gamificationEngine', [
 	'ngAnimate',
 	'ui.bootstrap',
 	'jm.i18next',
-	//'toggle-switch',
 	'ui.bootstrap.datetimepicker'
 ])
 

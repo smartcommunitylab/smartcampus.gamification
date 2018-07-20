@@ -94,5 +94,8 @@
   "title_add_task" : "Create new classification",
   "btn_publish" : "Publish",
   "lbl_task_periodName" : "Period name",
-  "lbl_game_domain" : "Domain"
+  "lbl_game_domain" : "Domain",
+  "lbl_levels_menu" : "Levels",
+  "lbl_pointConcept" : "Point concept Reference",
+  "lbl_add_level" : "Create level"
 }

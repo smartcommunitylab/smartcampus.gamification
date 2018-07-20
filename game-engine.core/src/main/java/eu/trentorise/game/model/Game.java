@@ -16,6 +16,8 @@
 
 package eu.trentorise.game.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import eu.trentorise.game.model.core.GameConcept;
@@ -30,6 +32,7 @@ public class Game {
 	private Set<GameTask> tasks;
 	private Set<String> rules;
 	private Set<GameConcept> concepts;
+    private List<Level> levels = new ArrayList<>();
 
 	/**
 	 * game expiration time. If game must live forever set a negative value
@@ -125,5 +128,9 @@ public class Game {
 	public void setDomain(String domain) {
 		this.domain = domain;
 	}
+
+    public List<Level> getLevels() {
+        return levels;
+    }
 
 }

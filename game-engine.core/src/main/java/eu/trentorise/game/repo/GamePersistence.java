@@ -16,7 +16,9 @@
 
 package eu.trentorise.game.repo;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.task.ClassificationTask;
@@ -59,6 +62,8 @@ public class GamePersistence {
 
 	private Set<GenericObjectPersistence> concepts = new HashSet<GenericObjectPersistence>();
 
+    private List<Level> levels = new ArrayList<>();
+
 	private long expiration;
 	private boolean terminated;
 
@@ -84,6 +89,8 @@ public class GamePersistence {
 				concepts.add(new GenericObjectPersistence(gc));
 			}
 		}
+
+        game.getLevels().forEach(level -> levels.add(level));
 		expiration = game.getExpiration();
 		terminated = game.isTerminated();
 	}
@@ -127,6 +134,11 @@ public class GamePersistence {
 			}
 		}
 		game.setConcepts(gc);
+
+        if (levels != null) {
+        levels.stream().forEach(level -> game.getLevels().add(level));
+        }
+
 		game.setExpiration(expiration);
 		game.setTerminated(terminated);
 		return game;
@@ -211,5 +223,13 @@ public class GamePersistence {
 	public void setDomain(String domain) {
 		this.domain = domain;
 	}
+
+    public List<Level> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<Level> levels) {
+        this.levels = levels;
+    }
 
 }

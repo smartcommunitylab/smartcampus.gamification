@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Rule;
 
@@ -66,4 +68,15 @@ public interface GameService {
     public Set<ChallengeModel> readChallengeModels(String gameId);
 
     public ChallengeModel readChallengeModel(String gameId, String modelId);
+
+    Game upsertLevel(String gameId, Level level);
+
+    Game deleteLevel(String gameId, String levelName);
+
+    Level addLevelThreshold(String gameId, String levelName, Threshold threshold);
+
+    Level deleteLevelThreshold(String gameId, String levelName, String thresholdName);
+
+    Level updateLevelThreshold(String gameId, String levelName, String thresholdName,
+            double thresholdValue);
 }

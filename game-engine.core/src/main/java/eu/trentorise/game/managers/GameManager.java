@@ -36,6 +36,9 @@ import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.FSRule;
@@ -143,6 +146,9 @@ public class GameManager implements GameService {
                 } else {
                     pers.setTasks(null);
                 }
+
+                pers.getLevels().clear();
+                pers.getLevels().addAll(game.getLevels());
             } else {
                 pers = new GamePersistence(game);
             }
@@ -380,4 +386,119 @@ public class GameManager implements GameService {
 
         return games;
     }
+
+    @Override
+    public Game upsertLevel(String gameId, Level level) {
+        Game game = loadGameDefinitionById(gameId);
+        if (game != null) {
+
+            if (!isPointConceptDefinedInGame(game, level.getPointConceptName())) {
+                throw new IllegalArgumentException(String.format("level %s not defined in game %s",
+                        level.getPointConceptName(), gameId));
+            }
+
+            Level toEdit = getLevelFromGame(game, level.getName());
+            if (toEdit != null) { // update the level
+                int levelIdx = game.getLevels().indexOf(toEdit);
+                game.getLevels().remove(levelIdx);
+                game.getLevels().add(levelIdx, level);
+            } else { // new level
+            if (game.getLevels().stream().anyMatch(
+                    lev -> lev.getPointConceptName().equals(level.getPointConceptName()))) {
+                throw new IllegalArgumentException(String.format(
+                        "multiple levels bound to pointConcept %s", level.getPointConceptName()));
+            }
+                game.getLevels().add(level);
+            }
+            saveGameDefinition(game);
+        } else {
+            throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+        }
+
+        return game;
+    }
+
+    private boolean isPointConceptDefinedInGame(Game game, String pointConceptName) {
+            return game != null &&game.getConcepts().stream().anyMatch(gc -> {
+               return gc instanceof PointConcept && gc.getName().equals(pointConceptName); 
+        });
+    }
+
+    @Override
+    public Game deleteLevel(String gameId, String levelName) {
+        Game game = loadGameDefinitionById(gameId);
+        if (game != null) {
+            game.getLevels().removeIf(level -> level.getName().equals(levelName));
+            game = saveGameDefinition(game);
+        } else {
+            throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+        }
+        return game;
+    }
+
+    @Override
+    public Level addLevelThreshold(String gameId, String levelName, Threshold threshold) {
+        Game game = loadGameDefinitionById(gameId);
+        if (game != null) {
+            Level level = getLevelFromGame(game, levelName);
+            if (!level.getThresholds().contains(threshold)) {
+                level.getThresholds().add(threshold);
+                game = saveGameDefinition(game);
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("threshold %s already present", threshold.getName()));
+            }
+            return level;
+        } else {
+            throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+        }
+    }
+
+    @Override
+    public Level deleteLevelThreshold(String gameId, String levelName, String thresholdName) {
+        Game game = loadGameDefinitionById(gameId);
+        if (game != null) {
+            Level level = getLevelFromGame(game, levelName);
+            level.getThresholds().removeIf(thres -> thres.getName().equals(thresholdName));
+            saveGameDefinition(game);
+            return level;
+        } else {
+            throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+        }
+    }
+
+    private Level getLevelFromGame(Game game, String levelName) {
+        if (game != null) {
+            for (Level level : game.getLevels()) {
+                if (level.getName().equals(levelName)) {
+                    return level;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Level updateLevelThreshold(String gameId, String levelName, String thresholdName,
+            double thresholdValue) {
+        Game game = loadGameDefinitionById(gameId);
+        if (game != null) {
+            Level level = getLevelFromGame(game, levelName);
+            if (level != null) {
+                for (Threshold threshold : level.getThresholds()) {
+                    if (threshold.getName().equals(thresholdName)) {
+                        threshold.updateValue(thresholdValue);
+                        saveGameDefinition(game);
+                    }
+                }
+                return level;
+            }
+            return null;
+        } else {
+            throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+        }
+
+    }
+
+
 }

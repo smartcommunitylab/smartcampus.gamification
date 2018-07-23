@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ import eu.trentorise.game.bean.ClassificationDTO;
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
+import eu.trentorise.game.bean.LevelDTO;
+import eu.trentorise.game.bean.LevelDTO.ThresholdDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TeamDTO;
@@ -40,6 +43,8 @@ import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.TeamState;
@@ -70,6 +75,8 @@ public class Converter {
 			gDTO.setName(game.getName());
 			gDTO.setOwner(game.getOwner());
 			gDTO.setDomain(game.getDomain());
+            gDTO.setLevels(game.getLevels().stream().map(level -> convert(level))
+                    .collect(Collectors.toList()));
 
 			// remove internal actions
 			Iterator<String> iter = gDTO.getActions() != null ? gDTO.getActions().iterator() : null;
@@ -140,6 +147,9 @@ public class Converter {
 			}
 		}
 		g.setTerminated(game.isTerminated());
+
+        g.getLevels().addAll(
+                game.getLevels().stream().map(dto -> convert(dto)).collect(Collectors.toList()));
 
 		if (game.getPointConcept() != null) {
 			g.setConcepts(new HashSet<GameConcept>());
@@ -326,5 +336,37 @@ public class Converter {
 		}
 
 		return team;
+	}
+
+
+    public Level convert(LevelDTO level) {
+	    Level lev = null;
+	    if(level != null) {
+	        lev = new Level(level.getName(),level.getPointConceptName());
+            lev.getThresholds()
+                    .addAll(level.getThresholds().stream()
+                            .map(dto -> new Threshold(dto.getName(), dto.getValue())
+	        ).collect(Collectors.toList()));
+	    }
+        return lev;
+	}
+
+    public LevelDTO convert(Level level) {
+	    LevelDTO levelDTO = null;
+        if (level != null) {
+
+            levelDTO = new LevelDTO();
+            levelDTO.setName(level.getName());
+            levelDTO.setPointConceptName(level.getPointConceptName());
+
+            levelDTO.setThresholds(level.getThresholds().stream().map(thres -> {
+
+                ThresholdDTO dto = new ThresholdDTO();
+                dto.setName(thres.getName());
+                dto.setValue(thres.getValue());
+                return dto;
+            }).collect(Collectors.toList()));
+        }
+        return levelDTO;
 	}
 }

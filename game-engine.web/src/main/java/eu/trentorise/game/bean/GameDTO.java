@@ -16,7 +16,9 @@
 
 package eu.trentorise.game.bean;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
@@ -28,6 +30,17 @@ public class GameDTO {
 	private String owner;
 	private String domain;
 
+    private Set<String> actions = new HashSet<>();
+    private Set<RuleDTO> rules = new HashSet<>();
+    private List<LevelDTO> levels = new ArrayList<>();
+
+    private long expiration;
+    private boolean terminated;
+
+    private Set<ClassificationDTO> classificationTask = new HashSet<>();
+    private Set<PointConcept> pointConcept = new HashSet<>();
+    private Set<BadgeCollectionConcept> badgeCollectionConcept = new HashSet<>();
+
 	public String getDomain() {
 		return domain;
 	}
@@ -36,14 +49,6 @@ public class GameDTO {
 		this.domain = domain;
 	}
 
-	private Set<String> actions = new HashSet<>();
-	private Set<RuleDTO> rules = new HashSet<>();
-	private long expiration;
-	private boolean terminated;
-
-	private Set<ClassificationDTO> classificationTask = new HashSet<>();
-	private Set<PointConcept> pointConcept = new HashSet<>();
-	private Set<BadgeCollectionConcept> badgeCollectionConcept = new HashSet<>();
 
 	public String getId() {
 		return id;
@@ -128,5 +133,13 @@ public class GameDTO {
 	public GameDTO() {
 
 	}
+
+    public List<LevelDTO> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<LevelDTO> levels) {
+        this.levels = levels;
+    }
 
 }

@@ -411,6 +411,11 @@ public class GameManager implements GameService {
                 game.getLevels().add(level);
             }
             saveGameDefinition(game);
+            if (toEdit != null) {
+                LogHub.info(gameId, logger, String.format("updated level %s", toEdit.getName()));
+            } else {
+                LogHub.info(gameId, logger, String.format("saved level %s", level.getName()));
+            }
         } else {
             throw new IllegalArgumentException(String.format("game %s not exist", gameId));
         }
@@ -430,6 +435,7 @@ public class GameManager implements GameService {
         if (game != null) {
             game.getLevels().removeIf(level -> level.getName().equals(levelName));
             game = saveGameDefinition(game);
+            LogHub.info(gameId, logger, String.format("deleted level %s", levelName));
         } else {
             throw new IllegalArgumentException(String.format("game %s not exist", gameId));
         }
@@ -444,6 +450,8 @@ public class GameManager implements GameService {
             if (!level.getThresholds().contains(threshold)) {
                 level.getThresholds().add(threshold);
                 game = saveGameDefinition(game);
+                LogHub.info(gameId, logger, String.format("added threshold %s to level %s",
+                        threshold.getName(), level.getName()));
             } else {
                 throw new IllegalArgumentException(
                         String.format("threshold %s already present", threshold.getName()));
@@ -461,6 +469,8 @@ public class GameManager implements GameService {
             Level level = getLevelFromGame(game, levelName);
             level.getThresholds().removeIf(thres -> thres.getName().equals(thresholdName));
             saveGameDefinition(game);
+            LogHub.info(gameId, logger, String.format("deleted threshold %s to level %s",
+                    thresholdName, level.getName()));
             return level;
         } else {
             throw new IllegalArgumentException(String.format("game %s not exist", gameId));

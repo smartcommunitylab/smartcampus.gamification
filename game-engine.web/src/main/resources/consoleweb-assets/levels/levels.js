@@ -1,5 +1,5 @@
 angular.module('gamificationEngine.levels', [])
-	.controller('LevelsCtrl', function ($scope, $rootScope, $uibModal) {
+	.controller('LevelsCtrl', function ($scope, $rootScope, $uibModal, $stateParams, gamesFactory) {
 		$rootScope.currentNav = 'levels';
 		
 		$scope.levels = [];
@@ -12,9 +12,18 @@ angular.module('gamificationEngine.levels', [])
 		$scope.editMode = false;
 		$scope.loadedLevelIdx = -1;
 		
-		$scope.levels.push({name: 'Explorer', pointConcept:'green', thresholds: [{name :'Beginner', value:0.0},{name :'Expert', value:1000.0}]})
-		$scope.levels.push({name: 'Viking', pointConcept:'yellow', thresholds: [{name :'Child', value:0.0},{name :'Warrior', value:1000.0}]})
-		$scope.levels.push({name: 'Druid', pointConcept:'black', thresholds: []})
+		const gameId = $stateParams.id;
+		// Load games
+		gamesFactory.getGameById(gameId).then(function (game) {
+			$scope.levels = game.levels;
+		}, function () {
+			// Show error alert
+			$scope.alerts.loadGameError = true;
+		});
+		
+//		$scope.levels.push({name: 'Explorer', pointConcept:'green', thresholds: [{name :'Beginner', value:0.0},{name :'Expert', value:1000.0}]})
+//		$scope.levels.push({name: 'Viking', pointConcept:'yellow', thresholds: [{name :'Child', value:0.0},{name :'Warrior', value:1000.0}]})
+//		$scope.levels.push({name: 'Druid', pointConcept:'black', thresholds: []})
 		
 		$scope.addLevel = () => {
 			$scope.showForm = true;
@@ -50,7 +59,13 @@ angular.module('gamificationEngine.levels', [])
 			
 			if(elemIdx > -1) {
 				restoreThresholds();
-				$scope.levels.splice(elemIdx,1,{name: $scope.input.levelName, pointConcept: $scope.input.pointConcept, thresholds: $scope.thresholds});
+				const lev = {name: $scope.input.levelName, pointConcept: $scope.input.pointConcept, thresholds: $scope.thresholds};
+				gamesFactory.saveLevel(gameId, lev).then(function(level) {
+					$scope.levels.splice(elemIdx,1,level);
+				}, function(msg) {
+					$scope.errors = 'messages:'+msg;
+				});
+				
 			}
 			
 			collapseForm();
@@ -72,7 +87,13 @@ angular.module('gamificationEngine.levels', [])
 					return;
 				}
 				restoreThresholds();
-				$scope.levels.push({name: $scope.input.levelName, pointConcept: $scope.input.pointConcept, thresholds: $scope.thresholds});
+				const lev = {name: $scope.input.levelName, pointConcept: $scope.input.pointConcept, thresholds: $scope.thresholds};
+				gamesFactory.saveLevel(gameId, lev).then(function(level) {
+					$scope.levels.push(level);
+				}, function(msg) {
+					$scope.errors = 'messages:'+msg;
+				});
+				
 
 				collapseForm();
 			}
@@ -207,7 +228,17 @@ angular.module('gamificationEngine.levels', [])
 			 });
 			
 			modalInstance.result.then( () => {
-				$scope.levels.splice(levelIdx,1);
+				gamesFactory.deleteLevel(gameId , $scope.levels[levelIdx]).then(
+					function() {
+						$scope.levels.splice(levelIdx,1);
+						if($scope.loadedLevelIdx == levelIdx) {
+							collapseForm();
+						}
+					},
+					function(msg) {
+						$scope.errors = 'messages:'+msg;
+					}
+				);
 			});
 			
 		};

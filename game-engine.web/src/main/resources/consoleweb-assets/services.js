@@ -429,6 +429,29 @@ angular.module('gamificationEngine.services', [])
 			return deferred.promise;
 		}
 
+		
+		const saveLevel = function (gameId, level) {
+			var deferred = $q.defer();
+
+			$http.post(url + `/model/game/${gameId}/level`, level).success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+			return deferred.promise;
+		}
+		
+		const deleteLevel = function (gameId, level) {
+			var deferred = $q.defer();
+
+			$http.delete(url + `/model/game/${gameId}/level/${level.name}`).success(function (data, status, headers, config) {
+				deferred.resolve();
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+			return deferred.promise;
+		}
+		
 		return {
 			'getGames': getGames,
 			'getGameById': getGameById,
@@ -453,7 +476,9 @@ angular.module('gamificationEngine.services', [])
 			'deleteChallengeModel' : deleteChallengeModel,
 			'addIncrementalClassification' : addIncrementalClassification,
 			'deleteIncrementalClassification' : deleteIncrementalClassification,
-			'editIncrementalClassification' : editIncrementalClassification
+			'editIncrementalClassification' : editIncrementalClassification,
+			'saveLevel' : saveLevel,
+			'deleteLevel' : deleteLevel
 		};
 	})
 	.factory('utilsFactory', function () {

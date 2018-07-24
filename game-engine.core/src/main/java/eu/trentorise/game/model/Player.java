@@ -16,10 +16,16 @@
 
 package eu.trentorise.game.model;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Player {
 	private String id;
 	private boolean team = false;
 	private int totalMembers = 0;
+    private Map<String, String> levels = new HashMap<>();
 
 	public Player(String id) {
 		this.id = id;
@@ -36,13 +42,32 @@ public class Player {
 		this.totalMembers = totalMembers;
 	}
 
+    public Player(PlayerState state) {
+        if (state != null) {
+            this.id = state.getPlayerId();
+            this.team = state instanceof TeamState;
+            if (team) {
+                TeamState teamState = (TeamState) state;
+                this.totalMembers = teamState.getMembers().size();
+            }
+            
+            levels = convert(state.getLevels());
+        }
+    }
+
+    private Map<String, String> convert(List<PlayerLevel> levels) {
+        Map<String, String> mapLevels = new HashMap<>();
+        if (levels != null) {
+            levels.forEach(lev -> mapLevels.put(lev.getLevelName(), lev.getLevelValue()));
+        }
+
+        return mapLevels;
+    }
+
 	public String getId() {
 		return id;
 	}
 
-	// public void setId(String id) {
-	// this.id = id;
-	// }
 
 	public boolean isTeam() {
 		return team;
@@ -52,8 +77,8 @@ public class Player {
 		return totalMembers;
 	}
 
-	// public void setTeam(boolean isTeam) {
-	// this.team = isTeam;
-	// }
+    public Map<String, String> getLevels() {
+        return Collections.unmodifiableMap(levels);
+    }
 
 }

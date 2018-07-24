@@ -17,13 +17,8 @@ angular.module('gamificationEngine.levels', [])
 		gamesFactory.getGameById(gameId).then(function (game) {
 			$scope.levels = game.levels;
 		}, function () {
-			// Show error alert
-			$scope.alerts.loadGameError = true;
+			// do nothing
 		});
-		
-//		$scope.levels.push({name: 'Explorer', pointConcept:'green', thresholds: [{name :'Beginner', value:0.0},{name :'Expert', value:1000.0}]})
-//		$scope.levels.push({name: 'Viking', pointConcept:'yellow', thresholds: [{name :'Child', value:0.0},{name :'Warrior', value:1000.0}]})
-//		$scope.levels.push({name: 'Druid', pointConcept:'black', thresholds: []})
 		
 		$scope.addLevel = () => {
 			$scope.showForm = true;

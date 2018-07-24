@@ -3,6 +3,7 @@ package eu.trentorise.game.api.rest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.services.GameService;
@@ -241,6 +243,20 @@ public class PlayerController {
         return readPlayer(gameId, playerId);
     }
 
+
+
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/data/game/{gameId}/player/{playerId}/levels", produces = {"application/json"})
+    @ApiOperation(value = "Get player levels")
+    public List<PlayerLevel> readLevels(@PathVariable String gameId,
+            @PathVariable String playerId) {
+        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        if (state != null) {
+            return state.getLevels();
+        } else {
+            return Collections.emptyList();
+        }
+    }
     // Read user custom data
     // GET /data/game/{id}/player/{playerId}/custom
     @RequestMapping(method = RequestMethod.GET,

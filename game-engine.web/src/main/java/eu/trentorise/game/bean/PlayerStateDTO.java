@@ -16,7 +16,9 @@
 
 package eu.trentorise.game.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eu.trentorise.game.model.CustomData;
+import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.core.GameConcept;
 
 @JsonInclude(Include.NON_NULL)
@@ -32,6 +35,8 @@ public class PlayerStateDTO {
 	private String gameId;
 
 	private Map<String, Set<GameConcept>> state = new HashMap<String, Set<GameConcept>>();
+    private List<PlayerLevel> levels = new ArrayList<>();
+
 	private CustomData customData = new CustomData();
 
 	public String getPlayerId() {
@@ -65,5 +70,13 @@ public class PlayerStateDTO {
 	public void setCustomData(CustomData customData) {
 		this.customData = customData;
 	}
+
+    public List<PlayerLevel> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<PlayerLevel> levels) {
+        this.levels = levels;
+    }
 
 }

@@ -267,6 +267,7 @@ public class Converter {
 			for (Set<GameConcept> s : concepts) {
 				res.getState().addAll(s);
 			}
+            res.getLevels().addAll(ps.getLevels());
 		}
 
 		return res;
@@ -281,6 +282,7 @@ public class Converter {
 			res.setCustomData(ps.getCustomData());
 
 			res.setState(new HashMap<String, Set<GameConcept>>());
+            // FIXME state is never null in PlayerState by design
 			if (ps.getState() != null) {
 				for (GameConcept gc : ps.getState()) {
 					String conceptType = gc.getClass().getSimpleName();
@@ -292,6 +294,9 @@ public class Converter {
 					gcSet.add(gc);
 				}
 			}
+
+            res.getLevels().addAll(ps.getLevels());
+
 		}
 
 		return res;

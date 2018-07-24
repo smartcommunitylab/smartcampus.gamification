@@ -16,7 +16,9 @@
 
 package eu.trentorise.game.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,6 +39,7 @@ public class PlayerState {
 	private String playerId;
 	private String gameId;
 
+    private List<PlayerLevel> levels = new ArrayList<>();
 	private Set<GameConcept> state = new HashSet<GameConcept>();
 
 	private CustomData customData = new CustomData();
@@ -55,7 +58,10 @@ public class PlayerState {
 			gameId = statePersistence.getGameId();
 			playerId = statePersistence.getPlayerId();
 			customData = statePersistence.getCustomData();
+
+            // FIXME useless
 			state = new HashSet<GameConcept>();
+
 			for (Map<String, GenericObjectPersistence> map : statePersistence.getConcepts().values()) {
 				for (GenericObjectPersistence obj : map.values()) {
 					try {
@@ -67,6 +73,8 @@ public class PlayerState {
 					}
 				}
 			}
+
+            levels.addAll(statePersistence.getLevels());
 		}
 	}
 
@@ -87,6 +95,20 @@ public class PlayerState {
 
 		return cloned;
 	}
+
+    /**
+     * Clear and update levels for the player
+     * 
+     * @param newLevelState
+     * @return
+     */
+    public PlayerState updateLevels(List<PlayerLevel> newLevelState) {
+        levels.clear();
+        if (levels != null) {
+            levels.addAll(newLevelState);
+        }
+        return this;
+    }
 
 	public Set<GameConcept> getState() {
 		return state;
@@ -119,5 +141,9 @@ public class PlayerState {
 	public void setCustomData(CustomData customData) {
 		this.customData = customData;
 	}
+
+    public List<PlayerLevel> getLevels() {
+        return levels;
+    }
 
 }

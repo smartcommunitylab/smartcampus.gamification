@@ -61,6 +61,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
+import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Propagation;
@@ -288,6 +289,11 @@ public class DroolsEngine implements GameEngine {
         }
 
         state.setState(newState);
+
+        List<PlayerLevel> playerLevels = gameSrv.calculateLevels(gameId, state);
+        state = state.updateLevels(playerLevels);
+        logLevelStatus(gameId, playerLevels);
+
         // fix for dataset prior than 0.9 version
         state.setCustomData(customData.isEmpty() ? new CustomData() : customData.get(0));
 
@@ -298,7 +304,21 @@ public class DroolsEngine implements GameEngine {
         return state;
     }
 
+    private void logLevelStatus(String gameId, List<PlayerLevel> levels) {
+        if (levels != null && !levels.isEmpty()) {
+        StringBuffer levelStatus = new StringBuffer();
+        for (PlayerLevel lev : levels) {
+                if (levelStatus.length() != 0) {
+                    levelStatus.append(",");
+                }
+                levelStatus.append(String.format("{levelName=%s,levelValue=%s,toNextLevel=%s}",
+                    lev.getLevelName(), lev.getLevelValue(), lev.getToNextLevel()));
+        }
+            LogHub.info(gameId, logger, "Level status: " + levelStatus.toString());
+        }
 
+
+    }
     private void logCompletedChallenge(String domain, String gameId, String executionId,
             long executionMoment, Player player, ChallengeConcept challenge) {
         if (challenge != null && challenge.isCompleted()) {

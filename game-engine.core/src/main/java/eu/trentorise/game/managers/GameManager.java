@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -38,6 +40,8 @@ import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PlayerLevel;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
@@ -508,6 +512,54 @@ public class GameManager implements GameService {
             throw new IllegalArgumentException(String.format("game %s not exist", gameId));
         }
 
+    }
+
+    @Override
+    public List<PlayerLevel> calculateLevels(String gameId, PlayerState playerState) {
+        Game game = loadGameDefinitionById(gameId);
+        if (game != null) {
+            List<PlayerLevel> playerLevels = new ArrayList<>();
+            if (playerState != null) {
+                List<Level> levelsDefinition = game.getLevels();
+                levelsDefinition.stream().forEach(definition -> {
+                    PointConcept pointConceptValue = (PointConcept) playerState.getState().stream()
+                            .filter(concept -> concept instanceof PointConcept
+                                    && concept.getName().equals(definition.getPointConceptName()))
+                            .findFirst().orElse(null);
+                    final double actualValue =
+                            pointConceptValue != null ? pointConceptValue.getScore() : 0d;
+                    final List<Threshold> thresholds = definition.getThresholds();
+                    Threshold actualLevelValue = null;
+                    try {
+                        if (actualValue == 0 && thresholds.size() > 0) {
+                            actualLevelValue = thresholds.get(0);
+                        } else {
+                            actualLevelValue = thresholds.stream()
+                                    .filter(thres -> thres.getValue() < actualValue)
+                                    .collect(Collectors.toCollection(java.util.LinkedList::new))
+                                    .getLast();
+                        }
+                        if (actualLevelValue != null) {
+                            int idx = thresholds.indexOf(actualLevelValue);
+                            int nextLevelIdx = idx + 1;
+                            double toNextLevel = 0d;
+                            if (nextLevelIdx < thresholds.size()) {
+                                double nextLevelValue = thresholds.get(nextLevelIdx).getValue();
+                                toNextLevel = nextLevelValue - actualValue;
+                            }
+                            playerLevels.add(new PlayerLevel(definition, actualLevelValue.getName(),
+                                    toNextLevel));
+                        }
+                    } catch (NoSuchElementException e) {
+                        // do nothing
+                    }
+                });
+            }
+            return playerLevels;
+
+        } else {
+            throw new IllegalArgumentException(String.format("game %s not exist", gameId));
+        }
     }
 
 

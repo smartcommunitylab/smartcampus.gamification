@@ -23,6 +23,8 @@ import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PlayerLevel;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Rule;
 
@@ -79,4 +81,8 @@ public interface GameService {
 
     Level updateLevelThreshold(String gameId, String levelName, String thresholdName,
             double thresholdValue);
+
+    List<PlayerLevel> calculateLevels(String gameId, PlayerState playerState);
+
+
 }

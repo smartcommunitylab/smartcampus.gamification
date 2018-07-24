@@ -18,10 +18,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,6 +52,8 @@ import eu.trentorise.game.managers.GameEngineTest.TestConfiguration;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
@@ -309,7 +313,6 @@ public class GameEngineTest {
         gameManager.taskDestroyer();
         Game g = gameManager.loadGameDefinitionById(GAME);
         Assert.assertEquals(true, g.isTerminated());
-
     }
 
     @Test
@@ -407,6 +410,81 @@ public class GameEngineTest {
         }
 
     }
+
+
+    @Test
+    public void only_level_on_green_leaves() throws InterruptedException {
+
+        initDBRuleGame();
+        Game g = gameManager.loadGameDefinitionById(GAME);
+        List<Level> levelsDefinition = new ArrayList<>();
+        Level explorer = new Level("explorer", "green leaves");
+        explorer.getThresholds().add(new Threshold("child", 0d));
+        explorer.getThresholds().add(new Threshold("adept", 10d));
+        explorer.getThresholds().add(new Threshold("master", 110d));
+        levelsDefinition.add(explorer);
+        g.getLevels().addAll(levelsDefinition);
+        g = gameManager.saveGameDefinition(g);
+
+        Map<String, Object> inputData = new HashMap<String, Object>();
+        inputData.put("bikeDistance", 8.43);
+        inputData.put("walkDistance", 3.100);
+        inputData.put("bikesharing", true);
+        inputData.put("sustainable", true);
+        inputData.put("p+r", true);
+        inputData.put("park", "MANIFATTURA");
+        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
+                System.currentTimeMillis(), null);
+
+        Thread.sleep(WAIT_EXEC);
+
+        Assert.assertEquals(1, p.getLevels().size());
+        Assert.assertEquals("adept", p.getLevels().get(0).getLevelValue());
+
+    }
+
+    @Test
+    public void levels_on_green_leaves_and_health() throws InterruptedException {
+
+        initDBRuleGame();
+        Game g = gameManager.loadGameDefinitionById(GAME);
+        List<Level> levelsDefinition = new ArrayList<>();
+        Level explorer = new Level("explorer", "green leaves");
+        explorer.getThresholds().add(new Threshold("child", 0d));
+        explorer.getThresholds().add(new Threshold("adept", 10d));
+        explorer.getThresholds().add(new Threshold("master", 110d));
+        levelsDefinition.add(explorer);
+
+        Level druid = new Level("druid", "health");
+        druid.getThresholds().add(new Threshold("base", 0d));
+        druid.getThresholds().add(new Threshold("master", 50d));
+        levelsDefinition.add(druid);
+
+        g.getLevels().addAll(levelsDefinition);
+        g = gameManager.saveGameDefinition(g);
+
+        Map<String, Object> inputData = new HashMap<String, Object>();
+        inputData.put("bikeDistance", 8.43);
+        inputData.put("walkDistance", 3.100);
+        inputData.put("bikesharing", true);
+        inputData.put("sustainable", true);
+        inputData.put("p+r", true);
+        inputData.put("park", "MANIFATTURA");
+        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
+                System.currentTimeMillis(), null);
+
+        Thread.sleep(WAIT_EXEC);
+
+        Assert.assertEquals(2, p.getLevels().size());
+        Assert.assertEquals("adept", p.getLevels().get(0).getLevelValue());
+        Assert.assertEquals(40d, p.getLevels().get(0).getToNextLevel(), 0);
+        Assert.assertEquals("master", p.getLevels().get(1).getLevelValue());
+        Assert.assertEquals(0d, p.getLevels().get(1).getToNextLevel(), 0);
+
+    }
+
 
     private GamePersistence defineGame() {
         Game game = new Game();

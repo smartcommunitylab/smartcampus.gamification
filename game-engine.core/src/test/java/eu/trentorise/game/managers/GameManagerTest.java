@@ -1,6 +1,7 @@
 package eu.trentorise.game.managers;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +18,8 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PlayerLevel;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.services.GameService;
 
@@ -264,6 +267,177 @@ public class GameManagerTest {
         gameSrv.addLevelThreshold("MY_GAME", "miner", new Threshold("beginner", 100d));
         Level lev = gameSrv.updateLevelThreshold("MY_GAME", "miner", "expert", 400d);
         Assert.assertEquals(100d, lev.getThresholds().get(0).getValue(), 0);
+    }
+
+    @Test
+    public void return_actual_level() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+
+        Level explorerLevel = new Level("explorer", "green");
+        explorerLevel.getThresholds().add(new Threshold("child", 0d));
+        explorerLevel.getThresholds().add(new Threshold("adept", 100d));
+        g.getLevels().add(explorerLevel);
+
+        g = gameSrv.saveGameDefinition(g);
+
+
+        PlayerState playerState = new PlayerState(gameId, "player");
+        PointConcept greenScore = new PointConcept("green");
+        greenScore.setScore(56d);
+        playerState.getState().add(greenScore);
+
+        List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
+
+        Assert.assertEquals(1, levels.size());
+        Assert.assertEquals("child", levels.get(0).getLevelValue());
+        Assert.assertEquals(44d, levels.get(0).getToNextLevel(), 0);
+    }
+
+    @Test
+    public void state_with_score_at_zero() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+
+        Level explorerLevel = new Level("explorer", "green");
+        explorerLevel.getThresholds().add(new Threshold("child", 0d));
+        explorerLevel.getThresholds().add(new Threshold("adept", 100d));
+        g.getLevels().add(explorerLevel);
+
+        g = gameSrv.saveGameDefinition(g);
+
+
+        PlayerState playerState = new PlayerState(gameId, "player");
+        PointConcept greenScore = new PointConcept("green");
+        greenScore.setScore(0d);
+        playerState.getState().add(greenScore);
+
+        List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
+
+        Assert.assertEquals(1, levels.size());
+        Assert.assertEquals("child", levels.get(0).getLevelValue());
+        Assert.assertEquals(100d, levels.get(0).getToNextLevel(), 0);
+    }
+
+    @Test
+    public void return_multiple_levels() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+        g.getConcepts().add(new PointConcept("black"));
+
+        Level explorerLevel = new Level("explorer", "green");
+        explorerLevel.getThresholds().add(new Threshold("child", 0d));
+        explorerLevel.getThresholds().add(new Threshold("adept", 100d));
+        g.getLevels().add(explorerLevel);
+
+        explorerLevel = new Level("warrior", "black");
+        explorerLevel.getThresholds().add(new Threshold("foot soldier", 0d));
+        explorerLevel.getThresholds().add(new Threshold("assassin", 500d));
+        g.getLevels().add(explorerLevel);
+
+        g = gameSrv.saveGameDefinition(g);
+
+        
+        PlayerState playerState = new PlayerState(gameId, "player");
+        PointConcept greenScore = new PointConcept("green");
+        greenScore.setScore(56d);
+        playerState.getState().add(greenScore);
+
+        PointConcept blackScore = new PointConcept("black");
+        blackScore.setScore(0d);
+        playerState.getState().add(blackScore);
+
+        List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
+
+        Assert.assertEquals(2, levels.size());
+        Assert.assertEquals("child", levels.get(0).getLevelValue());
+        Assert.assertEquals(44d, levels.get(0).getToNextLevel(), 0);
+        Assert.assertEquals("foot soldier", levels.get(1).getLevelValue());
+        Assert.assertEquals(500d, levels.get(1).getToNextLevel(), 0);
+    }
+
+    @Test
+    public void level_when_score_in_state_is_missing() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+        g.getConcepts().add(new PointConcept("black"));
+
+        Level explorerLevel = new Level("explorer", "green");
+        explorerLevel.getThresholds().add(new Threshold("child", 0d));
+        explorerLevel.getThresholds().add(new Threshold("adept", 100d));
+        g.getLevels().add(explorerLevel);
+
+        g = gameSrv.saveGameDefinition(g);
+
+        PlayerState playerState = new PlayerState(gameId, "player");
+
+        List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
+
+        Assert.assertEquals(1, levels.size());
+        Assert.assertEquals("child", levels.get(0).getLevelValue());
+        Assert.assertEquals(100d, levels.get(0).getToNextLevel(), 0);
+    }
+
+    @Test
+    public void return_no_next_level() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+
+        Level explorerLevel = new Level("explorer", "green");
+        explorerLevel.getThresholds().add(new Threshold("child", 0d));
+        explorerLevel.getThresholds().add(new Threshold("adept", 100d));
+        g.getLevels().add(explorerLevel);
+
+        g = gameSrv.saveGameDefinition(g);
+
+
+        PlayerState playerState = new PlayerState(gameId, "player");
+        PointConcept greenScore = new PointConcept("green");
+        greenScore.setScore(200d);
+        playerState.getState().add(greenScore);
+
+        List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
+
+        Assert.assertEquals(1, levels.size());
+        Assert.assertEquals("adept", levels.get(0).getLevelValue());
+        Assert.assertEquals(0d, levels.get(0).getToNextLevel(), 0);
+    }
+
+    @Test
+    public void no_level_definitions_for_game() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+
+
+        g = gameSrv.saveGameDefinition(g);
+
+
+        PlayerState playerState = new PlayerState(gameId, "player");
+        PointConcept greenScore = new PointConcept("green");
+        greenScore.setScore(200d);
+        playerState.getState().add(greenScore);
+
+        List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
+
+        Assert.assertEquals(0, levels.size());
     }
 
 }

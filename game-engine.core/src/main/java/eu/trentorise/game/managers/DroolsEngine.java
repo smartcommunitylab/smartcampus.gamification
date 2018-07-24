@@ -139,12 +139,7 @@ public class DroolsEngine implements GameEngine {
 
         cmds.add(CommandFactory.newInsert(new Game(gameId)));
 
-        Player player = null;
-        if (state instanceof TeamState) {
-            player = new Player(state.getPlayerId(), true, ((TeamState) state).getMembers().size());
-        } else {
-            player = new Player(state.getPlayerId(), false);
-        }
+        Player player = new Player(state);
         cmds.add(CommandFactory.newInsert(player));
 
         // filter state removing all ended or completed challenges for the

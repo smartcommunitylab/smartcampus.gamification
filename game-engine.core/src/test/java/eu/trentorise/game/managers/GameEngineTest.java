@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
@@ -548,6 +550,56 @@ public class GameEngineTest {
         return new GamePersistence(game);
 
     }
+
+
+    @Test
+    public void level_in_rules_present() throws InterruptedException {
+        Game g = new Game(GAME);
+        g.setActions(new HashSet<>());
+        g.getActions().add(ACTION);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+        gameManager.saveGameDefinition(g);
+
+
+        gameManager.addRule(new ClasspathRule(GAME, "rules/testLevel/rules.drl"));
+
+        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        p.updateLevels(
+                Arrays.asList(new PlayerLevel(new Level("livello", "green"), "explorer", 200d)));
+        p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+                System.currentTimeMillis(), null);
+        Thread.sleep(WAIT_EXEC);
+        PointConcept green = (PointConcept) p.getState().stream()
+                .filter(gc -> gc.getName().equals("green")).findFirst().get();
+        Assert.assertEquals(10d, green.getScore(), 0);
+    }
+
+
+    @Test
+    public void level_in_rules_not_present() throws InterruptedException {
+        Game g = new Game(GAME);
+        g.setActions(new HashSet<>());
+        g.getActions().add(ACTION);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+        gameManager.saveGameDefinition(g);
+
+
+        gameManager.addRule(new ClasspathRule(GAME, "rules/testLevel/rules.drl"));
+
+        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        p.updateLevels(
+                Arrays.asList(new PlayerLevel(new Level("livello", "green"), "expert", 200d)));
+        p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+                System.currentTimeMillis(), null);
+        Thread.sleep(WAIT_EXEC);
+        PointConcept green = (PointConcept) p.getState().stream()
+                .filter(gc -> gc.getName().equals("green")).findFirst().get();
+        Assert.assertEquals(0d, green.getScore(), 0);
+    }
+
+
 
     @Configuration
     static class TestConfiguration {

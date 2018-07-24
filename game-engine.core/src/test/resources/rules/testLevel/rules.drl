@@ -1,0 +1,13 @@
+package eu.trentorise.game.model
+
+rule "my rule"
+when
+    Player($levels : levels)
+    $pc : PointConcept(name == 'green')
+then
+	if($levels.containsKey('livello') && $levels.get('livello').equals('explorer')) {
+		$pc.setScore(10d);
+		update($pc);
+	}
+end
+

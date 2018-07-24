@@ -109,8 +109,6 @@
 																ng-class="{'glyphicon-eye-open': hideInstances, 'glyphicon-eye-close': !hideInstances}"></span>
 														</button>
 														<ul class="point-monitor" uib-collapse="hideInstances">
-															<!-- <li class="point-monitor"
-																ng-repeat="instance in elem.periods[period].instances | orderBy:'':true | limitTo : limitPeriodInstances"-->
 																<li class="point-monitor" ng-repeat="(key, value) in elem.periods[period].instances | orderObjectBy:orderByAttribute">
 																
 																<div>
@@ -175,11 +173,12 @@
 										<div ng-show="player.state['ChallengeConcept'].length != 0">
 											<div class="challenge-box"
 												data-ng-repeat="challenge in player.state['ChallengeConcept'] | orderBy : '-end'">
-												<span class="challenge-title">{{challenge.modelName}}</span>
+												<span ng-attr-title="{{challenge.name}}" class="challenge-title">{{challenge.name | limitTo: challengeNameLimit}}</span>
+												<div class="challenge-date">{{challenge.modelName}}</div>
 												<div class="challenge-status">
 													<span ng-show="challenge.active"
 														class="label label-success">{{'labels:lbl_challenge_active'| i18next }}</span><span
-														ng-show="challenge.completed" class="label label-success">{{'labels:lbl_challenge_completed'| i18next }}</span><span
+														ng-show="challenge.completed" class="label label-success">{{'labels:lbl_challenge_completed'| i18next }} - {{challenge.dateCompleted | date:'dd/MM/yyyy HH:mm:ss'}}</span><span
 														ng-show="challenge.failed" class="label label-danger">{{'labels:lbl_challenge_failed'| i18next }}</span>
 												</div>
 												<div class="challenge-date">{{challenge.start | date:

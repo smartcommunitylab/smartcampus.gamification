@@ -4,6 +4,7 @@ angular.module('gamificationEngine.monitor', [])
 		$rootScope.currentGameId = $stateParams.id;
 		$scope.currentPage = 1;
 		$scope.items4Page = 10;
+		$scope.challengeNameLimit = 30;
 
 		if ($state.current.data) {
 			$rootScope.page = $state.current.data.page;
@@ -61,6 +62,7 @@ angular.module('gamificationEngine.monitor', [])
 			return data;
 		}
 
+		
 		$scope.hideDetails = true;
 		$scope.hidePeriods = true;
 		$scope.hideInstances = true;

@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.LevelDTO;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Level;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.utils.Converter;
@@ -244,6 +246,29 @@ public class DomainGameController  {
             g.getActions().remove(actionId);
             gameSrv.saveGameDefinition(g);
         }
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/model/game/{gameId}/level",
+            produces = {"application/json"})
+    @ApiOperation(value = "Save a level")
+    public LevelDTO saveLevel(@PathVariable String gameId, @RequestBody LevelDTO level) {
+        Game game = gameSrv.upsertLevel(gameId, converter.convert(level));
+
+        Level saved = game.getLevels().stream().filter(lev -> lev.getName().equals(level.getName()))
+                .findFirst().orElse(null);
+        return converter.convert(saved);
+
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE,
+            value = "/api/{domain}/model/game/{gameId}/level/{levelName}",
+            produces = {"application/json"})
+    @ApiOperation(value = "Delete a level")
+    public boolean deleteLevel(@PathVariable String gameId, @PathVariable String levelName) {
+        gameSrv.deleteLevel(gameId, levelName);
+        return true;
+
 
     }
 

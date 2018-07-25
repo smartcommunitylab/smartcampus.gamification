@@ -1,5 +1,6 @@
 package eu.trentorise.game.managers;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -336,5 +337,43 @@ public class ClassificationTaskTest {
                 break;
             }
         }
+    }
+
+    @Test
+    public void create_incremental_using_a_period_already_start() {
+        PointConcept score = new PointConcept("green");
+        Date today = LocalDate.now().toDate();
+        long oneDay = 86400000;
+        score.addPeriod("my-period", today, oneDay);
+        IncrementalClassificationTask task =
+                new IncrementalClassificationTask(score, "my-period", "classification");
+
+        Assert.assertEquals(today.getTime(), task.getStartupPeriodInstance());
+        Assert.assertEquals(0, task.getStartupInstanceIndex());
+        Date tomorrow = LocalDate.now().plusDays(1).toDate();
+        Assert.assertEquals(tomorrow, task.getSchedule().getStart());
+    }
+
+    @Test
+    public void create_incremental_using_a_period_starting_in_future() {
+        PointConcept score = new PointConcept("green");
+        Date tomorrow = LocalDate.now().plusDays(1).toDate();
+        long oneDay = 86400000;
+        score.addPeriod("my-period", tomorrow, oneDay);
+        IncrementalClassificationTask task =
+                new IncrementalClassificationTask(score, "my-period", "classification");
+
+        Assert.assertEquals(tomorrow.getTime(), task.getStartupPeriodInstance());
+        Assert.assertEquals(0, task.getStartupInstanceIndex());
+        Date sinceTwoDays = LocalDate.now().plusDays(2).toDate();
+        Assert.assertEquals(sinceTwoDays, task.getSchedule().getStart());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void create_incremental_using_non_existent() {
+        PointConcept score = new PointConcept("green");
+        IncrementalClassificationTask task =
+                new IncrementalClassificationTask(score, "my-period", "classification");
+        
     }
 }

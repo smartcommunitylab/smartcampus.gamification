@@ -60,20 +60,44 @@ public class IncrementalClassificationTask extends ClassificationTask {
 	public final void updatePointConceptData(PointConcept pc, String periodName, TimeInterval delay) {
 		if (pc != null) {
 			Period period = pc.getPeriod(periodName);
-			PeriodInstance periodInstance = pc.getPeriodCurrentInstance(periodName);
+			if(period == null) {
+                throw new IllegalArgumentException(
+                        String.format("period %s not exist", periodName));
+			}
+            long instanceStartDate = -1;
+            long instanceEndDate = -1;
+            int instanceIndex = -1;
+            try {
+                PeriodInstance periodInstance = pc.getPeriodCurrentInstance(periodName);
+                instanceStartDate = periodInstance.getStart();
+                instanceEndDate = periodInstance.getEnd();
+                instanceIndex = periodInstance.getIndex();
+            } catch (IllegalArgumentException e) {
+                // try to retrieve a future period
+                // set schedule data to first valid period instance
+                instanceIndex = 0;
+                instanceStartDate = period.getStart().getTime();
+                instanceEndDate = instanceEndDate(instanceStartDate, period.getPeriod());
+            }
 			pointConceptName = pc.getName();
 			this.periodName = periodName;
-			startupPeriodInstance = periodInstance.getStart();
+			startupPeriodInstance = instanceStartDate;
 			periodLength = period.getPeriod();
-			startupInstanceIndex = periodInstance.getIndex();
+			startupInstanceIndex = instanceIndex;
 			TaskSchedule schedule = new TaskSchedule();
-			schedule.setStart(new Date(periodInstance.getEnd()));
+			schedule.setStart(new Date(instanceEndDate));
 			schedule.setPeriod(periodLength);
 			schedule.setDelay(delay);
 			super.setSchedule(schedule);
 		}
 	}
 
+
+    private long instanceEndDate(long startDate, long duration) {
+        org.joda.time.Period period = new org.joda.time.Period(duration);
+        LocalDateTime start = new LocalDateTime(startDate);
+        return start.withPeriodAdded(period, 1).toDate().getTime();
+    }
 	@Override
 	protected String getScoreType() {
 		return pointConceptName;

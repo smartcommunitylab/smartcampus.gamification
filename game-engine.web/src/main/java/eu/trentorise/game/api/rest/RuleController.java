@@ -90,7 +90,6 @@ public class RuleController {
         List<RuleDTO> rules = new ArrayList<>();
         if (g != null) {
             for (String ruleUrl : g.getRules()) {
-                ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
                 DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
                 RuleDTO res = new RuleDTO();
                 res.setId(r.getId());

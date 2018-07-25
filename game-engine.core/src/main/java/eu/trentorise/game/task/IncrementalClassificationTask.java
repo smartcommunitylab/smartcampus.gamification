@@ -142,9 +142,7 @@ public class IncrementalClassificationTask extends ClassificationTask {
 		String pointConceptName = execTask.getPointConceptName();
 		String periodName = execTask.getPeriodName();
 
-		// read all game players
 		List<String> players = ctx.readPlayers();
-		// load players status
 
 		List<PlayerState> states = new ArrayList<PlayerState>();
 		for (String p : players) {
@@ -191,7 +189,6 @@ public class IncrementalClassificationTask extends ClassificationTask {
 
 		List<ClassificationPosition> classification = builder.getClassificationBoard().getBoard();
 
-		// debug logging
 		if (logger.isDebugEnabled()) {
 			for (ClassificationPosition entry : classification) {
 				LogHub.debug(ctx.getGameRefId(), logger, "{}: player {} score {}", getClassificationName(),

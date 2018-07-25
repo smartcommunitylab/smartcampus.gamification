@@ -59,18 +59,6 @@ public class GeneralClassificationTask extends ClassificationTask {
 		this.itemType = itemType;
 	}
 
-	// @Override
-	// protected double retrieveScore(PlayerState state) {
-	// for (GameConcept gc : state.getState()) {
-	// if (gc instanceof PointConcept
-	// && ((PointConcept) gc).getName().equals(itemType)) {
-	// return ((PointConcept) gc).getScore();
-	// }
-	// }
-	//
-	// return 0d;
-	// }
-
 	@Override
 	protected String getScoreType() {
 		return itemType;

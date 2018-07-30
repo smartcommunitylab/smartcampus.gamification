@@ -1,5 +1,9 @@
 package eu.trentorise.game.api.rest;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import java.util.HashSet;
 
 import javax.annotation.PostConstruct;
@@ -26,14 +30,20 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.trentorise.game.bean.ChallengeAssignmentDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.NoSecurityConfig;
+import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
+import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("no-sec")
@@ -45,6 +55,9 @@ public class PlayerControllerTest {
 
     @Autowired
     private GameService gameSrv;
+
+    @Autowired
+    private PlayerService playerSrv;
 
     @Autowired
     private MongoTemplate mongo;
@@ -107,6 +120,104 @@ public class PlayerControllerTest {
 
         } catch (Exception e) {
             Assert.fail("exception " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void assign_a_proposed_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+        ChallengeAssignmentDTO assignment = new ChallengeAssignmentDTO();
+        assignment.setInstanceName("new-instance");
+        assignment.setModelName("model_1");
+        assignment.setState("proposed");
+
+
+        RequestBuilder builder;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/challenges", game.getId(), "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(assignment));
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
+            
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            ChallengeConcept challenge =
+                    (ChallengeConcept) player.getState().stream().findFirst().get();
+            assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void assign_invalid_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+        ChallengeAssignmentDTO assignment = new ChallengeAssignmentDTO();
+        assignment.setInstanceName("new-instance");
+        assignment.setModelName("model_1");
+        assignment.setState("dummie");
+
+
+        RequestBuilder builder;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/challenges", game.getId(), "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(assignment));
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(400));
+
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void assign_challenge_without_declare_type_of_assignment() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+        ChallengeAssignmentDTO assignment = new ChallengeAssignmentDTO();
+        assignment.setInstanceName("new-instance");
+        assignment.setModelName("model_1");
+
+        RequestBuilder builder;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/challenges", game.getId(), "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(assignment));
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
+
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            ChallengeConcept challenge =
+                    (ChallengeConcept) player.getState().stream().findFirst().get();
+            assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
         }
     }
 }

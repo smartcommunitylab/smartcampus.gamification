@@ -62,7 +62,9 @@ public class PlayerController {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("gameId is not UTF-8 encoded");
         }
-        playerSrv.assignChallenge(new ChallengeAssignment(gameId, playerId, challengeData.getModelName(), challengeData.getInstanceName(), challengeData.getData(), null, challengeData.getStart(),
+        playerSrv.assignChallenge(new ChallengeAssignment(gameId, playerId,
+                challengeData.getModelName(), challengeData.getInstanceName(),
+                challengeData.getData(), challengeData.getState(), challengeData.getStart(),
                 challengeData.getEnd()));
     }
 

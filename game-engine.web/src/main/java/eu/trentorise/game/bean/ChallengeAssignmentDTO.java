@@ -3,7 +3,7 @@ package eu.trentorise.game.bean;
 import java.util.Date;
 import java.util.Map;
 
-public class ChallengeDataDTO {
+public class ChallengeAssignmentDTO {
 	private String modelName;
 	private String instanceName;
 	private Map<String, Object> data;

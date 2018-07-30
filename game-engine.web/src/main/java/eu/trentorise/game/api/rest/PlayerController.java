@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.trentorise.game.bean.ChallengeDataDTO;
+import eu.trentorise.game.bean.ChallengeAssignmentDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
@@ -53,7 +53,7 @@ public class PlayerController {
             value = "/data/game/{gameId}/player/{playerId}/challenges",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Assign challenge")
-    public void assignChallenge(@RequestBody ChallengeDataDTO challengeData,
+    public void assignChallenge(@RequestBody ChallengeAssignmentDTO challengeData,
             @PathVariable String gameId,
             @PathVariable String playerId) {
 

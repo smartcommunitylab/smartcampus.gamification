@@ -16,7 +16,6 @@
 
 package eu.trentorise.game.services;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +27,7 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.RawSearchQuery;
@@ -86,6 +86,5 @@ public interface PlayerService {
 	 * CHALLENGE METHODS
 	 */
 
-	public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName, String instanceName, Map<String, Object> data, Date start, Date end);
-
+    public ChallengeConcept assignChallenge(ChallengeAssignment challengeAssignment);
 }

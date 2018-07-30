@@ -1,0 +1,15 @@
+{
+   "name" : "w7_green_leaves_200_da814903-4200-4a1a-8fbf-9544f1b6bcb9",
+   "modelName" : "absoluteIncrement",
+   "fields" : {
+      "bonusScore" : 150.0,
+      "periodName" : "weekly",
+      "bonusPointType" : "green leaves",
+      "counterName" : "green leaves",
+      "target" : 200.0
+   },
+   "start" : 1508536800000,
+   "end" : 1509141600000,
+   "completed" : true,
+   "dateCompleted" : 1508612159045
+}

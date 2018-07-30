@@ -6,8 +6,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.core.SystemClock;
 import eu.trentorise.game.model.core.GameConcept;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class ChallengeConcept extends GameConcept {
     private String modelName;
     private Map<String, Object> fields = new HashMap<String, Object>();
@@ -15,10 +22,53 @@ public class ChallengeConcept extends GameConcept {
     private Date end;
 
     // metadata fields
+
+    // field use in engine version <= 2.4.0
     private boolean completed = false;
+    // field use in engine version <= 2.4.0
     private Date dateCompleted;
 
+    private ChallengeState state;
+
+    private Map<ChallengeState, Date> stateDate = new HashMap<>();
+
+    @JsonIgnore
+    private Date objectCreationDate;
+
+    @JsonIgnore
+    private Clock clock;
+
+    @JsonIgnore
     private static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+    @JsonIgnore
+    private static final ChallengeState DEFAULT_STATE = ChallengeState.ASSIGNED;
+
+    @JsonIgnore
+    private static final Clock DEFAULT_CLOCK = new SystemClock();
+
+    public static enum ChallengeState {
+        PROPOSED, ASSIGNED, ACTIVE, COMPLETED, FAILED
+    }
+
+
+    public ChallengeConcept() {
+        this.clock = DEFAULT_CLOCK;
+    }
+
+    public ChallengeConcept(Clock clock) {
+        this(DEFAULT_STATE, clock);
+    }
+
+    public ChallengeConcept(ChallengeState state) {
+        this(state, DEFAULT_CLOCK);
+    }
+
+    public ChallengeConcept(ChallengeState state, Clock clock) {
+        this.clock = clock;
+        updateState(state == null ? ChallengeState.ASSIGNED : state);
+        this.objectCreationDate = clock.now();
+    }
 
     public String getModelName() {
         return modelName;
@@ -53,7 +103,7 @@ public class ChallengeConcept extends GameConcept {
     }
 
     public Date getDateCompleted() {
-        return dateCompleted;
+        return dateCompleted != null ? dateCompleted : stateDate.get(ChallengeState.COMPLETED);
     }
 
 
@@ -64,19 +114,31 @@ public class ChallengeConcept extends GameConcept {
                 end != null ? dateFormatter.format(end) : null);
     }
 
+    public ChallengeState getState() {
+        if (state == null) {
+            if (isCompleted()) { // loaded a completed ChallengeConcept <= 2.4.0
+                state = ChallengeState.COMPLETED;
+                stateDate.put(ChallengeState.COMPLETED, dateCompleted);
+            } else {
+                state = DEFAULT_STATE;
+                stateDate.put(DEFAULT_STATE, objectCreationDate);
+            }
+        }
+        return state;
+    }
+
     /**
      * Helper method of challenge
      * 
      * @return true if challenge is completed
      */
     public boolean completed() {
-        completed = true;
-        dateCompleted = new Date();
+        updateState(ChallengeState.COMPLETED);
         return true;
     }
 
     public boolean isCompleted() {
-        return completed;
+        return completed || state == ChallengeState.COMPLETED;
     }
 
     /**
@@ -105,6 +167,19 @@ public class ChallengeConcept extends GameConcept {
     public boolean isActive(long when) {
         return when < 0 || isActive(new Date(when));
 
+    }
+
+    public ChallengeConcept updateState(ChallengeState state) {
+        if (state == null) {
+            throw new IllegalArgumentException("Cannot update to a null state");
+        }
+        this.state = state;
+        stateDate.put(state, clock.now());
+        return this;
+    }
+
+    public Date getDate(ChallengeState state) {
+        return stateDate.get(state);
     }
 
 }

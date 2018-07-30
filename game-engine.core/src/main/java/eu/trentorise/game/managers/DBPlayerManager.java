@@ -15,7 +15,6 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,12 +42,14 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ClassificationPosition;
 import eu.trentorise.game.model.core.ClassificationType;
@@ -354,20 +355,20 @@ public class DBPlayerManager implements PlayerService {
     }
 
     @Override
-    public ChallengeConcept assignChallenge(String gameId, String playerId, String modelName,
-            String instanceName, Map<String, Object> data, Date start, Date end) {
+    public ChallengeConcept assignChallenge(ChallengeAssignment challengeAssignment) {
 
-        if (playerId == null) {
-            throw new IllegalArgumentException(String.format("playerId cannot be null"));
+        Map<String, Object> data = challengeAssignment.getData();
+        if (challengeAssignment.getPlayerId() == null) {
+            throw new IllegalArgumentException("playerId cannot be null");
         }
 
-        if (modelName == null) {
-            throw new IllegalArgumentException(String.format("modelName cannot be null"));
+        if (challengeAssignment.getModelName() == null) {
+            throw new IllegalArgumentException("modelName cannot be null");
         }
-        ChallengeModel model = challengeModelRepo.findByGameIdAndName(gameId, modelName);
+        ChallengeModel model = challengeModelRepo.findByGameIdAndName(challengeAssignment.getGameId(), challengeAssignment.getModelName());
         if (model == null) {
             throw new IllegalArgumentException(
-                    String.format("model %s not exist in game %s", modelName, gameId));
+                    String.format("model %s not exist in game %s", challengeAssignment.getModelName(), challengeAssignment.getGameId()));
         }
 
         if (data == null) {
@@ -376,42 +377,56 @@ public class DBPlayerManager implements PlayerService {
             for (String var : data.keySet()) {
                 if (!model.getVariables().contains(var)) {
                     throw new IllegalArgumentException(
-                            String.format("field %s not present in model %s", var, modelName));
+                            String.format("field %s not present in model %s", var, challengeAssignment.getModelName()));
                 }
             }
         }
 
-        ChallengeConcept challenge = new ChallengeConcept();
-        challenge.setModelName(modelName);
+        ChallengeConcept challenge = null;
+        try {
+            challenge = new ChallengeConcept(convertToChallengeState(challengeAssignment.getChallengeType()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    String.format("You cannot create a challenge with state %s", challengeAssignment.getChallengeType()));
+        }
+        challenge.setModelName(challengeAssignment.getModelName());
         challenge.setFields(data);
-        challenge.setStart(start);
-        challenge.setEnd(end);
+        challenge.setStart(challengeAssignment.getStart());
+        challenge.setEnd(challengeAssignment.getEnd());
         // needed since v2.2.0, gameConcept name is mandatory because it is used
         // as key in persistence structure
-        challenge.setName(instanceName != null ? instanceName : UUID.randomUUID().toString());
+        challenge.setName(challengeAssignment.getInstanceName() != null ? challengeAssignment.getInstanceName() : UUID.randomUUID().toString());
 
         // save in playerState
-        PlayerState state = loadState(gameId, playerId, true);
+        PlayerState state = loadState(challengeAssignment.getGameId(), challengeAssignment.getPlayerId(), true);
 
         state.getState().add(challenge);
-        persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
+        persistConcepts(challengeAssignment.getGameId(), challengeAssignment.getPlayerId(), new StatePersistence(state).getConcepts());
 
         ChallengeAssignedNotification challengeNotification = new ChallengeAssignedNotification();
         challengeNotification.setChallengeName(challenge.getName());
-        challengeNotification.setGameId(gameId);
-        challengeNotification.setPlayerId(playerId);
-        challengeNotification.setStartDate(start);
-        challengeNotification.setEndDate(end);
+        challengeNotification.setGameId(challengeAssignment.getGameId());
+        challengeNotification.setPlayerId(challengeAssignment.getPlayerId());
+        challengeNotification.setStartDate(challengeAssignment.getStart());
+        challengeNotification.setEndDate(challengeAssignment.getEnd());
 
         notificationSrv.notificate(challengeNotification);
-        LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
+        LogHub.info(challengeAssignment.getGameId(), logger, "send notification: {}", challengeNotification.toString());
 
-        Game game = gameSrv.loadGameDefinitionById(gameId);
-        StatsLogger.logChallengeAssignment(game.getDomain(), gameId, playerId,
+        Game game = gameSrv.loadGameDefinitionById(challengeAssignment.getGameId());
+        StatsLogger.logChallengeAssignment(game.getDomain(), challengeAssignment.getGameId(), challengeAssignment.getPlayerId(),
                 UUID.randomUUID().toString(), System.currentTimeMillis(), challenge.getName(),
-                start, end);
+                challengeAssignment.getStart(), challengeAssignment.getEnd());
         return challenge;
 
+    }
+
+    private ChallengeState convertToChallengeState(String challengeType) {
+        if (challengeType == null) {
+            return null;
+        } else {
+            return ChallengeState.valueOf(challengeType.toUpperCase());
+        }
     }
 
     // public ClassificationBoard classifyPlayerStatesWithKey(long timestamp,

@@ -1,5 +1,8 @@
 package eu.trentorise.game.managers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,16 +24,15 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
-import eu.trentorise.game.repo.GamePersistence;
-import eu.trentorise.game.repo.NotificationPersistence;
-import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -58,12 +60,10 @@ public class ChallengeTest {
     private static final String DOMAIN = "my-domain";
 
     @Before
-    public void cleanDB() {
+    public void setup() {
         // clean mongo
-        mongo.dropCollection(StatePersistence.class);
-        mongo.dropCollection(GamePersistence.class);
-        mongo.dropCollection(NotificationPersistence.class);
-        mongo.dropCollection(ChallengeModel.class);
+        mongo.getDb().dropDatabase();
+
     }
 
     @Test
@@ -89,9 +89,10 @@ public class ChallengeTest {
         model1.setName("prize");
         gameSrv.saveChallengeModel(GAME, model1);
 
+
+
         LocalDate now = new LocalDate();
-        playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null, now.toDate(),
-                now.dayOfMonth().addToCopy(2).toDate());
+        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.toDate(), now.dayOfMonth().addToCopy(2).toDate()));
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
@@ -124,11 +125,9 @@ public class ChallengeTest {
         gameSrv.saveChallengeModel(GAME, model1);
 
         LocalDate now = new LocalDate();
-        playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null,
-                now.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth().addToCopy(-1).toDate());
+        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth().addToCopy(-1).toDate()));
 
-        playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null,
-                now.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth().addToCopy(7).toDate());
+        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth().addToCopy(7).toDate()));
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
@@ -258,15 +257,80 @@ public class ChallengeTest {
         gameSrv.saveChallengeModel(GAME, model1);
 
         LocalDate now = new LocalDate();
-        playerSrv.assignChallenge(GAME, PLAYER, "prize", null, null,
-                now.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth().addToCopy(-1).toDate());
+        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth().addToCopy(-1).toDate()));
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("wrongField", 50);
-        playerSrv.assignChallenge(GAME, PLAYER, "prize", null, params,
-                now.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth().addToCopy(7).toDate());
+        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, params, null, now.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth().addToCopy(7).toDate()));
 
     }
+
+    @Test
+    public void assign_proposed_challenge() {
+        gameSrv.saveGameDefinition(defineGame());
+
+
+        // define challenge Model
+        ChallengeModel model1 = new ChallengeModel();
+        model1.setName("prize");
+        gameSrv.saveChallengeModel(GAME, model1);
+
+        LocalDate today = new LocalDate();
+        LocalDate tomorrow = today.plusDays(1);
+
+        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, "PROPOSED", today.toDate(), tomorrow.toDate()));
+        assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
+
+    }
+
+    @Test
+    public void assign_assigned_challenge() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel model1 = new ChallengeModel();
+        model1.setName("prize");
+        gameSrv.saveChallengeModel(GAME, model1);
+
+        LocalDate today = new LocalDate();
+        LocalDate tomorrow = today.plusDays(1);
+
+        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, "assigned", today.toDate(), tomorrow.toDate()));
+        assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void assign_non_existent_type() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel model1 = new ChallengeModel();
+        model1.setName("prize");
+        gameSrv.saveChallengeModel(GAME, model1);
+
+        LocalDate today = new LocalDate();
+        LocalDate tomorrow = today.plusDays(1);
+
+        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, "DUMMIE", today.toDate(), tomorrow.toDate()));
+        assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
+    }
+
+    @Test
+    public void assign_to_default_value() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel model1 = new ChallengeModel();
+        model1.setName("prize");
+        gameSrv.saveChallengeModel(GAME, model1);
+
+        LocalDate today = new LocalDate();
+        LocalDate tomorrow = today.plusDays(1);
+
+        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, today.toDate(), tomorrow.toDate()));
+        assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
+    }
+
 
     private Game defineGame() {
 

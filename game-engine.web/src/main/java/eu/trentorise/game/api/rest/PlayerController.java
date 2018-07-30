@@ -27,6 +27,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
@@ -61,9 +62,8 @@ public class PlayerController {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("gameId is not UTF-8 encoded");
         }
-        playerSrv.assignChallenge(gameId, playerId, challengeData.getModelName(),
-                challengeData.getInstanceName(), challengeData.getData(), challengeData.getStart(),
-                challengeData.getEnd());
+        playerSrv.assignChallenge(new ChallengeAssignment(gameId, playerId, challengeData.getModelName(), challengeData.getInstanceName(), challengeData.getData(), null, challengeData.getStart(),
+                challengeData.getEnd()));
     }
 
     // Create a player

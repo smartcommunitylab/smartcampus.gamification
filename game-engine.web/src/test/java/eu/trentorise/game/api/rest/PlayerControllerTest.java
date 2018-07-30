@@ -33,9 +33,6 @@ import eu.trentorise.game.config.NoSecurityConfig;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
-import eu.trentorise.game.repo.GamePersistence;
-import eu.trentorise.game.repo.NotificationPersistence;
-import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -71,9 +68,7 @@ public class PlayerControllerTest {
     @Before
     public void cleanDB() {
         // clean mongo
-        mongo.dropCollection(StatePersistence.class);
-        mongo.dropCollection(GamePersistence.class);
-        mongo.dropCollection(NotificationPersistence.class);
+        mongo.getDb().dropDatabase();
     }
 
     private Game defineGame() {

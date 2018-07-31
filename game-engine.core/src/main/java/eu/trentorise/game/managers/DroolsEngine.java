@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.core.ExecutionClock;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.LoggingRuleListener;
 import eu.trentorise.game.core.StatsLogger;
@@ -144,16 +145,18 @@ public class DroolsEngine implements GameEngine {
 
         // filter state removing all ended or completed challenges for the
         // player
-        Set<GameConcept> filteredByChallenge = new HashSet<>(state.getState());
-        Set<GameConcept> archivedChallenges = new HashSet<>();
+        Set<GameConcept> activeConcepts = new HashSet<>(state.getState());
+        Set<GameConcept> inactiveConcepts = new HashSet<>();
 
-        for (Iterator<GameConcept> iter = filteredByChallenge.iterator(); iter.hasNext();) {
+        for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
             GameConcept gc = iter.next();
             if (gc instanceof ChallengeConcept) {
                 ChallengeConcept challenge = (ChallengeConcept) gc;
                 if (challenge.isCompleted() || !challenge.isActive(executionMoment)) {
                     iter.remove();
-                    archivedChallenges.add(gc);
+                    inactiveConcepts.add(gc);
+                } else {
+                    challenge.setClock(new ExecutionClock(executionMoment));
                 }
             }
 
@@ -163,10 +166,10 @@ public class DroolsEngine implements GameEngine {
                 pointConcept.setExecutionMoment(executionMoment);
             }
         }
-
+        
         // ATTENTION: Drools modifies objects inserted in working memory by
         // reference
-        cmds.add(CommandFactory.newInsertElements(filteredByChallenge));
+        cmds.add(CommandFactory.newInsertElements(activeConcepts));
         cmds.add(CommandFactory.newInsert(state.getCustomData()));
         cmds.add(CommandFactory.newFireAllRules());
 
@@ -188,7 +191,7 @@ public class DroolsEngine implements GameEngine {
 
         // new state contains archived challenges and all GameConcept
         // loaded in engine session
-        Set<GameConcept> newState = new HashSet<GameConcept>(archivedChallenges);
+        Set<GameConcept> newState = new HashSet<GameConcept>(inactiveConcepts);
 
         Iterator<QueryResultsRow> iter =
                 ((QueryResults) results.getValue("retrieveState")).iterator();

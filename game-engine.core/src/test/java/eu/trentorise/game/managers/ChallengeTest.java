@@ -91,8 +91,10 @@ public class ChallengeTest {
 
 
 
-        LocalDate now = new LocalDate();
-        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.toDate(), now.dayOfMonth().addToCopy(2).toDate()));
+        LocalDate today = new LocalDate();
+        ChallengeAssignment assignment = new ChallengeAssignment("prize", null, null, null,
+                today.toDate(), today.dayOfMonth().addToCopy(2).toDate());
+        playerSrv.assignChallenge(GAME, PLAYER, assignment);
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
@@ -124,10 +126,17 @@ public class ChallengeTest {
         model1.setName("prize");
         gameSrv.saveChallengeModel(GAME, model1);
 
-        LocalDate now = new LocalDate();
-        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth().addToCopy(-1).toDate()));
+        LocalDate today = new LocalDate();
 
-        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth().addToCopy(7).toDate()));
+        playerSrv.assignChallenge(GAME, PLAYER,
+                new ChallengeAssignment("prize", null, null, null,
+                        today.dayOfMonth().addToCopy(-2).toDate(),
+                        today.dayOfMonth().addToCopy(-1).toDate()));
+
+        playerSrv.assignChallenge(GAME, PLAYER,
+                new ChallengeAssignment("prize", null, null, null,
+                        today.dayOfMonth().addToCopy(5).toDate(),
+                        today.dayOfMonth().addToCopy(7).toDate()));
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
 
@@ -256,12 +265,14 @@ public class ChallengeTest {
         model1.setName("prize");
         gameSrv.saveChallengeModel(GAME, model1);
 
-        LocalDate now = new LocalDate();
-        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, now.dayOfMonth().addToCopy(-2).toDate(), now.dayOfMonth().addToCopy(-1).toDate()));
+        LocalDate today = new LocalDate();
+        playerSrv.assignChallenge(GAME, PLAYER, new ChallengeAssignment("prize", null, null, null,
+                today.dayOfMonth().addToCopy(-2).toDate(), today.dayOfMonth().addToCopy(-1).toDate()));
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("wrongField", 50);
-        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, params, null, now.dayOfMonth().addToCopy(5).toDate(), now.dayOfMonth().addToCopy(7).toDate()));
+        playerSrv.assignChallenge(GAME, PLAYER, new ChallengeAssignment("prize", null, params, null,
+                today.dayOfMonth().addToCopy(5).toDate(), today.dayOfMonth().addToCopy(7).toDate()));
 
     }
 
@@ -278,7 +289,9 @@ public class ChallengeTest {
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plusDays(1);
 
-        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, "PROPOSED", today.toDate(), tomorrow.toDate()));
+        ChallengeConcept challenge =
+                playerSrv.assignChallenge(GAME, PLAYER, new ChallengeAssignment("prize", null, null,
+                        "PROPOSED", today.toDate(), tomorrow.toDate()));
         assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
 
     }
@@ -295,7 +308,9 @@ public class ChallengeTest {
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plusDays(1);
 
-        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, "assigned", today.toDate(), tomorrow.toDate()));
+        ChallengeConcept challenge =
+                playerSrv.assignChallenge(GAME, PLAYER, new ChallengeAssignment("prize", null, null,
+                        "assigned", today.toDate(), tomorrow.toDate()));
         assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
     }
 
@@ -311,7 +326,9 @@ public class ChallengeTest {
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plusDays(1);
 
-        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, "DUMMIE", today.toDate(), tomorrow.toDate()));
+        ChallengeConcept challenge =
+                playerSrv.assignChallenge(GAME, PLAYER, new ChallengeAssignment("prize", null, null,
+                        "DUMMIE", today.toDate(), tomorrow.toDate()));
         assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
     }
 
@@ -327,7 +344,9 @@ public class ChallengeTest {
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plusDays(1);
 
-        ChallengeConcept challenge = playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER, "prize", null, null, null, today.toDate(), tomorrow.toDate()));
+        ChallengeConcept challenge =
+                playerSrv.assignChallenge(GAME, PLAYER, new ChallengeAssignment("prize", null, null,
+                        null, today.toDate(), tomorrow.toDate()));
         assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
     }
 

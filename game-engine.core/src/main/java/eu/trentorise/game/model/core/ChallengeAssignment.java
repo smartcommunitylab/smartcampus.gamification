@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.Map;
 
 public class ChallengeAssignment {
-    private String gameId;
-    private String playerId;
     private String modelName;
     private String instanceName;
     private Map<String, Object> data;
@@ -13,11 +11,9 @@ public class ChallengeAssignment {
     private Date start;
     private Date end;
 
-    public ChallengeAssignment(String gameId, String playerId, String modelName,
+    public ChallengeAssignment(String modelName,
             String instanceName, Map<String, Object> data, String challengeType, Date start,
             Date end) {
-        this.gameId = gameId;
-        this.playerId = playerId;
         this.modelName = modelName;
         this.instanceName = instanceName;
         this.data = data;
@@ -26,21 +22,10 @@ public class ChallengeAssignment {
         this.end = end;
     }
 
-    public String getGameId() {
-        return gameId;
+    public ChallengeAssignment() {
+
     }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
 
     public String getModelName() {
         return modelName;

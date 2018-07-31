@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.trentorise.game.bean.ChallengeAssignmentDTO;
 import eu.trentorise.game.bean.ClassificationDTO;
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
@@ -48,6 +49,7 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
@@ -374,4 +376,32 @@ public class Converter {
         }
         return levelDTO;
 	}
+
+    public ChallengeAssignmentDTO convert(ChallengeAssignment challengeAssignment) {
+        ChallengeAssignmentDTO dto = null;
+        if (challengeAssignment != null) {
+            dto = new ChallengeAssignmentDTO();
+            dto.setInstanceName(challengeAssignment.getInstanceName());
+            dto.setModelName(challengeAssignment.getModelName());
+            dto.setData(challengeAssignment.getData());
+            dto.setStart(challengeAssignment.getStart());
+            dto.setEnd(challengeAssignment.getEnd());
+            dto.setState(challengeAssignment.getChallengeType());
+        }
+        return dto;
+    }
+
+    public ChallengeAssignment convert(ChallengeAssignmentDTO dto) {
+        ChallengeAssignment challengeAssignment = null;
+        if(dto != null) {
+            challengeAssignment = new ChallengeAssignment();
+            challengeAssignment.setChallengeType(dto.getState());
+            challengeAssignment.setData(dto.getData());
+            challengeAssignment.setStart(dto.getStart());
+            challengeAssignment.setEnd(dto.getEnd());
+            challengeAssignment.setInstanceName(dto.getInstanceName());
+            challengeAssignment.setModelName(dto.getModelName());
+        }
+        return challengeAssignment;
+    }
 }

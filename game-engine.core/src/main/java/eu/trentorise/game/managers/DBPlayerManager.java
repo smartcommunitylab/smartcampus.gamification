@@ -355,20 +355,22 @@ public class DBPlayerManager implements PlayerService {
     }
 
     @Override
-    public ChallengeConcept assignChallenge(ChallengeAssignment challengeAssignment) {
+    public ChallengeConcept assignChallenge(String gameId, String playerId, ChallengeAssignment challengeAssignment) {
 
         Map<String, Object> data = challengeAssignment.getData();
-        if (challengeAssignment.getPlayerId() == null) {
+        if (playerId == null) {
             throw new IllegalArgumentException("playerId cannot be null");
         }
 
         if (challengeAssignment.getModelName() == null) {
             throw new IllegalArgumentException("modelName cannot be null");
         }
-        ChallengeModel model = challengeModelRepo.findByGameIdAndName(challengeAssignment.getGameId(), challengeAssignment.getModelName());
+        ChallengeModel model =
+                challengeModelRepo.findByGameIdAndName(gameId, challengeAssignment.getModelName());
         if (model == null) {
             throw new IllegalArgumentException(
-                    String.format("model %s not exist in game %s", challengeAssignment.getModelName(), challengeAssignment.getGameId()));
+                    String.format("model %s not exist in game %s",
+                            challengeAssignment.getModelName(), gameId));
         }
 
         if (data == null) {
@@ -398,23 +400,23 @@ public class DBPlayerManager implements PlayerService {
         challenge.setName(challengeAssignment.getInstanceName() != null ? challengeAssignment.getInstanceName() : UUID.randomUUID().toString());
 
         // save in playerState
-        PlayerState state = loadState(challengeAssignment.getGameId(), challengeAssignment.getPlayerId(), true);
+        PlayerState state = loadState(gameId, playerId, true);
 
         state.getState().add(challenge);
-        persistConcepts(challengeAssignment.getGameId(), challengeAssignment.getPlayerId(), new StatePersistence(state).getConcepts());
+        persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
 
         ChallengeAssignedNotification challengeNotification = new ChallengeAssignedNotification();
         challengeNotification.setChallengeName(challenge.getName());
-        challengeNotification.setGameId(challengeAssignment.getGameId());
-        challengeNotification.setPlayerId(challengeAssignment.getPlayerId());
+        challengeNotification.setGameId(gameId);
+        challengeNotification.setPlayerId(playerId);
         challengeNotification.setStartDate(challengeAssignment.getStart());
         challengeNotification.setEndDate(challengeAssignment.getEnd());
 
         notificationSrv.notificate(challengeNotification);
-        LogHub.info(challengeAssignment.getGameId(), logger, "send notification: {}", challengeNotification.toString());
+        LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
 
-        Game game = gameSrv.loadGameDefinitionById(challengeAssignment.getGameId());
-        StatsLogger.logChallengeAssignment(game.getDomain(), challengeAssignment.getGameId(), challengeAssignment.getPlayerId(),
+        Game game = gameSrv.loadGameDefinitionById(gameId);
+        StatsLogger.logChallengeAssignment(game.getDomain(), gameId, playerId,
                 UUID.randomUUID().toString(), System.currentTimeMillis(), challenge.getName(),
                 challengeAssignment.getStart(), challengeAssignment.getEnd());
         return challenge;

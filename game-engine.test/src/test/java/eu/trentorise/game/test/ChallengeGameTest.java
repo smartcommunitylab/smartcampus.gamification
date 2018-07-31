@@ -51,7 +51,9 @@ public class ChallengeGameTest extends GameTest {
         data.put("target", 100d);
         data.put("bonusScore", 100d);
         data.put("bonusPointType", "green leaves");
-        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER_1, "score", "specialInstance", data, null, today.toDate(), today.dayOfMonth().addToCopy(1).toDate()));
+        playerSrv.assignChallenge(GAME, PLAYER_1,
+                new ChallengeAssignment("score", "specialInstance", data, null, today.toDate(),
+                        today.dayOfMonth().addToCopy(1).toDate()));
 
         // assign a challenge to PLAYER_2
         data = new HashMap<String, Object>();
@@ -59,7 +61,8 @@ public class ChallengeGameTest extends GameTest {
         data.put("target", 2);
         data.put("bonusScore", 50d);
         data.put("bonusPointType", "green leaves");
-        playerSrv.assignChallenge(new ChallengeAssignment(GAME, PLAYER_2, "zeroImpact", null, data, null, today.toDate(), today.dayOfMonth().addToCopy(1).toDate()));
+        playerSrv.assignChallenge(GAME, PLAYER_2, new ChallengeAssignment("zeroImpact", null, data,
+                null, today.toDate(), today.dayOfMonth().addToCopy(1).toDate()));
 
     }
 

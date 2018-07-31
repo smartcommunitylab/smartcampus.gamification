@@ -62,10 +62,8 @@ public class DomainPlayerController {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("gameId is not UTF-8 encoded");
         }
-        playerSrv.assignChallenge(new ChallengeAssignment(gameId, playerId,
-                challengeData.getModelName(), challengeData.getInstanceName(),
-                challengeData.getData(), challengeData.getState(), challengeData.getStart(),
-                challengeData.getEnd()));
+        ChallengeAssignment assignment = converter.convert(challengeData);
+        playerSrv.assignChallenge(gameId, playerId, assignment);
     }
 
     // Create a player

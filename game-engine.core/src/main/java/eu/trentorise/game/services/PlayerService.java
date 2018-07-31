@@ -86,5 +86,5 @@ public interface PlayerService {
 	 * CHALLENGE METHODS
 	 */
 
-    public ChallengeConcept assignChallenge(ChallengeAssignment challengeAssignment);
+    public ChallengeConcept assignChallenge(String gameId, String playerId, ChallengeAssignment challengeAssignment);
 }

@@ -398,6 +398,7 @@ public class DBPlayerManager implements PlayerService {
         // needed since v2.2.0, gameConcept name is mandatory because it is used
         // as key in persistence structure
         challenge.setName(challengeAssignment.getInstanceName() != null ? challengeAssignment.getInstanceName() : UUID.randomUUID().toString());
+        challenge.setOrigin(challengeAssignment.getOrigin());
 
         // save in playerState
         PlayerState state = loadState(gameId, playerId, true);

@@ -29,8 +29,8 @@ public class ChallengeConcept extends GameConcept {
     private Date dateCompleted;
 
     private ChallengeState state;
-
     private Map<ChallengeState, Date> stateDate = new HashMap<>();
+    private String origin;
 
     @JsonIgnore
     private Date objectCreationDate;
@@ -188,6 +188,14 @@ public class ChallengeConcept extends GameConcept {
 
     public void setClock(Clock clock) {
         this.clock = clock;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
 }

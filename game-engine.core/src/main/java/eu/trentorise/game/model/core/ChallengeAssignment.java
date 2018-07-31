@@ -8,6 +8,7 @@ public class ChallengeAssignment {
     private String instanceName;
     private Map<String, Object> data;
     private String challengeType;
+    private String origin;
     private Date start;
     private Date end;
 
@@ -73,5 +74,13 @@ public class ChallengeAssignment {
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 }

@@ -220,4 +220,37 @@ public class PlayerControllerTest {
             Assert.fail("Exception " + e.getMessage());
         }
     }
+
+    @Test
+    public void set_origin_for_challenge_assignment() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+        ChallengeAssignmentDTO assignment = new ChallengeAssignmentDTO();
+        assignment.setInstanceName("new-instance");
+        assignment.setModelName("model_1");
+        assignment.setOrigin("MY_SYSTEM");
+
+        RequestBuilder builder;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/challenges", game.getId(), "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(assignment));
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
+
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            ChallengeConcept challenge =
+                    (ChallengeConcept) player.getState().stream().findFirst().get();
+            assertThat(challenge.getOrigin(), is("MY_SYSTEM"));
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
+        }
+    }
 }

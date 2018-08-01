@@ -169,6 +169,16 @@ public class ChallengeConcept extends GameConcept {
 
     }
 
+    /**
+     * Check if challenge is active using configured {@link Clock}
+     * 
+     * @return true is challenge is active
+     */
+    @JsonIgnore
+    public boolean isActive() {
+        return isActive(clock.now());
+    }
+
     public ChallengeConcept updateState(ChallengeState state) {
         if (state == null) {
             throw new IllegalArgumentException("Cannot update to a null state");

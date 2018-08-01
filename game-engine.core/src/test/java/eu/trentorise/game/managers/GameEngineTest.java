@@ -14,13 +14,20 @@
 
 package eu.trentorise.game.managers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +36,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -248,6 +256,42 @@ public class GameEngineTest {
             Assert.fail("gameconcepts not found");
         }
     }
+
+
+    @Test
+    public void execution_in_the_past() throws InterruptedException {
+
+        Game g = new Game(GAME);
+        g.setConcepts(new HashSet<>());
+
+        PointConcept green = new PointConcept("green");
+        Date today = LocalDate.now().toDate();
+        long oneHourMillis = 3600000;
+        green.addPeriod("hourly", today, oneHourMillis);
+        g.getConcepts().add(green);
+
+        g.setActions(new HashSet<>());
+        g.getActions().add(ACTION);
+
+        gameManager.saveGameDefinition(g);
+        gameManager.addRule(new ClasspathRule(GAME, "rules/periodic/points.drl"));
+
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("bikeDistance", 8.43);
+
+        long oneHourAgo = LocalDateTime.now().minusHours(1).atZone(ZoneId.systemDefault())
+                .toInstant().toEpochMilli();
+        p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
+                oneHourAgo, null);
+        Thread.sleep(WAIT_EXEC);
+
+        PointConcept loaded = (PointConcept) p.getState().stream().findFirst().get();
+
+        assertThat(loaded.getExecutionMoment(), equalTo(oneHourAgo));
+        assertThat(loaded.getPeriodCurrentScore("hourly"), greaterThan(0d));
+    }
+
 
     @Test
     public void dbExecution() throws InterruptedException {

@@ -148,23 +148,18 @@ public class DroolsEngine implements GameEngine {
         Set<GameConcept> activeConcepts = new HashSet<>(state.getState());
         Set<GameConcept> inactiveConcepts = new HashSet<>();
 
+        activeConcepts = injectExecutionMoment(activeConcepts, executionMoment);
+
         for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
             GameConcept gc = iter.next();
             if (gc instanceof ChallengeConcept) {
                 ChallengeConcept challenge = (ChallengeConcept) gc;
-                if (challenge.isCompleted() || !challenge.isActive(executionMoment)) {
+                if (challenge.isCompleted() || !challenge.isActive()) {
                     iter.remove();
                     inactiveConcepts.add(gc);
-                } else {
-                    challenge.setClock(new ExecutionClock(executionMoment));
                 }
             }
 
-            // FIXME: inject correct executionMoment for game action, TO IMPROVE
-            if (gc instanceof PointConcept) {
-                PointConcept pointConcept = (PointConcept) gc;
-                pointConcept.setExecutionMoment(executionMoment);
-            }
         }
         
         // ATTENTION: Drools modifies objects inserted in working memory by
@@ -300,6 +295,22 @@ public class DroolsEngine implements GameEngine {
                     gameId, state.getPlayerId()));
         }
         return state;
+    }
+
+    private Set<GameConcept> injectExecutionMoment(Set<GameConcept> activeConcepts, long executionMoment) {
+        for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
+            GameConcept gc = iter.next();
+            if (gc instanceof ChallengeConcept) {
+                ChallengeConcept challenge = (ChallengeConcept) gc;
+                challenge.setClock(new ExecutionClock(executionMoment));
+            }
+            if (gc instanceof PointConcept) {
+                PointConcept pointConcept = (PointConcept) gc;
+                pointConcept.setExecutionMoment(executionMoment);
+            }
+        }
+
+        return activeConcepts;
     }
 
     private void logLevelStatus(String gameId, List<PlayerLevel> levels) {

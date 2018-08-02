@@ -137,6 +137,18 @@ public class ChallengeConcept extends GameConcept {
         return true;
     }
 
+    public ChallengeConcept activate() {
+        boolean regularCondition = state == ChallengeState.ASSIGNED && isActivable();
+        boolean playIntoThePast = stateDate.get(ChallengeState.FAILED) != null
+                && clock.now().before(stateDate.get(ChallengeState.FAILED)) && isActivable();
+        if (regularCondition || playIntoThePast) {
+            updateState(ChallengeState.ACTIVE);
+        }
+
+        return this;
+    }
+
+
     public boolean isCompleted() {
         return completed || state == ChallengeState.COMPLETED;
     }
@@ -170,13 +182,23 @@ public class ChallengeConcept extends GameConcept {
     }
 
     /**
-     * Check if challenge is active using configured {@link Clock}
+     * Check if challenge is activable using configured {@link Clock}
      * 
-     * @return true is challenge is active
+     * @return true is challenge is activable
+     */
+    @JsonIgnore
+    public boolean isActivable() {
+        return isActive(clock.now());
+    }
+
+    /**
+     * Check if challenge is in {@link ChallengeState} ACTIVE
+     * 
+     * @return true if challenge is ACTIVE
      */
     @JsonIgnore
     public boolean isActive() {
-        return isActive(clock.now());
+        return state == ChallengeState.ACTIVE;
     }
 
     public ChallengeConcept updateState(ChallengeState state) {

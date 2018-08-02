@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -145,22 +146,15 @@ public class DroolsEngine implements GameEngine {
 
         // filter state removing all ended or completed challenges for the
         // player
-        Set<GameConcept> activeConcepts = new HashSet<>(state.getState());
-        Set<GameConcept> inactiveConcepts = new HashSet<>();
+        Set<GameConcept> concepts = new HashSet<>(state.getState());
 
-        activeConcepts = injectExecutionMoment(activeConcepts, executionMoment);
+        concepts = activateConcepts(injectExecutionMoment(concepts, executionMoment));
 
-        for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
-            GameConcept gc = iter.next();
-            if (gc instanceof ChallengeConcept) {
-                ChallengeConcept challenge = (ChallengeConcept) gc;
-                if (challenge.isCompleted() || !challenge.isActive()) {
-                    iter.remove();
-                    inactiveConcepts.add(gc);
-                }
-            }
-
-        }
+        Set<GameConcept> activeConcepts = findActiveConcepts(concepts);
+        
+        Set<GameConcept> inactiveConcepts =
+                new HashSet<>(CollectionUtils.subtract(concepts, activeConcepts));
+        
         
         // ATTENTION: Drools modifies objects inserted in working memory by
         // reference
@@ -295,6 +289,34 @@ public class DroolsEngine implements GameEngine {
                     gameId, state.getPlayerId()));
         }
         return state;
+    }
+
+    private Set<GameConcept> findActiveConcepts(Set<GameConcept> concepts) {
+        Set<GameConcept> activeConcepts = new HashSet<>();
+        for (Iterator<GameConcept> iter = concepts.iterator(); iter.hasNext();) {
+            GameConcept gc = iter.next();
+            if (gc instanceof ChallengeConcept) {
+                ChallengeConcept challenge = (ChallengeConcept) gc;
+                if (!challenge.isActive()) {
+                    continue;
+                }
+            }
+            activeConcepts.add(gc);
+        }
+
+        return activeConcepts;
+    }
+
+    private Set<GameConcept> activateConcepts(Set<GameConcept> activeConcepts) {
+        for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
+            GameConcept gc = iter.next();
+            if (gc instanceof ChallengeConcept) {
+                ChallengeConcept challenge = (ChallengeConcept) gc;
+                challenge.activate();
+            }
+        }
+
+        return activeConcepts;
     }
 
     private Set<GameConcept> injectExecutionMoment(Set<GameConcept> activeConcepts, long executionMoment) {

@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.trentorise.game.core.ExecutionClock;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.LoggingRuleListener;
 import eu.trentorise.game.core.StatsLogger;
@@ -65,7 +64,6 @@ import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Propagation;
 import eu.trentorise.game.model.Team;
 import eu.trentorise.game.model.TeamState;
@@ -117,6 +115,7 @@ public class DroolsEngine implements GameEngine {
             throw new IllegalArgumentException(String.format("game %s is expired", gameId));
         }
 
+        ConceptHelper conceptHelper = new ConceptHelper();
 
         KieContainer kieContainer = kieContainerFactory.getContainer(gameId);
 
@@ -148,9 +147,10 @@ public class DroolsEngine implements GameEngine {
         // player
         Set<GameConcept> concepts = new HashSet<>(state.getState());
 
-        concepts = activateConcepts(injectExecutionMoment(concepts, executionMoment));
+        concepts = conceptHelper.injectExecutionMoment(concepts, executionMoment);
+        concepts = conceptHelper.activateConcepts(concepts);
 
-        Set<GameConcept> activeConcepts = findActiveConcepts(concepts);
+        Set<GameConcept> activeConcepts = conceptHelper.findActiveConcepts(concepts);
         
         Set<GameConcept> inactiveConcepts =
                 new HashSet<>(CollectionUtils.subtract(concepts, activeConcepts));
@@ -291,49 +291,50 @@ public class DroolsEngine implements GameEngine {
         return state;
     }
 
-    private Set<GameConcept> findActiveConcepts(Set<GameConcept> concepts) {
-        Set<GameConcept> activeConcepts = new HashSet<>();
-        for (Iterator<GameConcept> iter = concepts.iterator(); iter.hasNext();) {
-            GameConcept gc = iter.next();
-            if (gc instanceof ChallengeConcept) {
-                ChallengeConcept challenge = (ChallengeConcept) gc;
-                if (!challenge.isActive()) {
-                    continue;
-                }
-            }
-            activeConcepts.add(gc);
-        }
+    // private Set<GameConcept> findActiveConcepts(Set<GameConcept> concepts) {
+    // Set<GameConcept> activeConcepts = new HashSet<>();
+    // for (Iterator<GameConcept> iter = concepts.iterator(); iter.hasNext();) {
+    // GameConcept gc = iter.next();
+    // if (gc instanceof ChallengeConcept) {
+    // ChallengeConcept challenge = (ChallengeConcept) gc;
+    // if (!challenge.isActive()) {
+    // continue;
+    // }
+    // }
+    // activeConcepts.add(gc);
+    // }
+    //
+    // return activeConcepts;
+    // }
 
-        return activeConcepts;
-    }
+    // private Set<GameConcept> activateConcepts(Set<GameConcept> activeConcepts) {
+    // for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
+    // GameConcept gc = iter.next();
+    // if (gc instanceof ChallengeConcept) {
+    // ChallengeConcept challenge = (ChallengeConcept) gc;
+    // challenge.activate();
+    // }
+    // }
+    //
+    // return activeConcepts;
+    // }
 
-    private Set<GameConcept> activateConcepts(Set<GameConcept> activeConcepts) {
-        for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
-            GameConcept gc = iter.next();
-            if (gc instanceof ChallengeConcept) {
-                ChallengeConcept challenge = (ChallengeConcept) gc;
-                challenge.activate();
-            }
-        }
-
-        return activeConcepts;
-    }
-
-    private Set<GameConcept> injectExecutionMoment(Set<GameConcept> activeConcepts, long executionMoment) {
-        for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
-            GameConcept gc = iter.next();
-            if (gc instanceof ChallengeConcept) {
-                ChallengeConcept challenge = (ChallengeConcept) gc;
-                challenge.setClock(new ExecutionClock(executionMoment));
-            }
-            if (gc instanceof PointConcept) {
-                PointConcept pointConcept = (PointConcept) gc;
-                pointConcept.setExecutionMoment(executionMoment);
-            }
-        }
-
-        return activeConcepts;
-    }
+    // private Set<GameConcept> injectExecutionMoment(Set<GameConcept> activeConcepts, long
+    // executionMoment) {
+    // for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
+    // GameConcept gc = iter.next();
+    // if (gc instanceof ChallengeConcept) {
+    // ChallengeConcept challenge = (ChallengeConcept) gc;
+    // challenge.setClock(new ExecutionClock(executionMoment));
+    // }
+    // if (gc instanceof PointConcept) {
+    // PointConcept pointConcept = (PointConcept) gc;
+    // pointConcept.setExecutionMoment(executionMoment);
+    // }
+    // }
+    //
+    // return activeConcepts;
+    // }
 
     private void logLevelStatus(String gameId, List<PlayerLevel> levels) {
         if (levels != null && !levels.isEmpty()) {

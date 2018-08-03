@@ -109,9 +109,10 @@ public class ChallengeConcept extends GameConcept {
 
     @Override
     public String toString() {
-        return String.format("{modelName=%s, instance=%s, fields=%s, start=%s, end=%s}", modelName,
+        return String.format("{modelName=%s, instance=%s, fields=%s, start=%s, end=%s, state=%s}",
+                modelName,
                 name, fields, start != null ? dateFormatter.format(start) : null,
-                end != null ? dateFormatter.format(end) : null);
+                end != null ? dateFormatter.format(end) : null, state);
     }
 
     public ChallengeState getState() {
@@ -138,7 +139,7 @@ public class ChallengeConcept extends GameConcept {
     }
 
     public ChallengeConcept activate() {
-        boolean regularCondition = state == ChallengeState.ASSIGNED && isActivable();
+        boolean regularCondition = getState() == ChallengeState.ASSIGNED && isActivable();
         boolean playIntoThePast = stateDate.get(ChallengeState.FAILED) != null
                 && clock.now().before(stateDate.get(ChallengeState.FAILED)) && isActivable();
         if (regularCondition || playIntoThePast) {

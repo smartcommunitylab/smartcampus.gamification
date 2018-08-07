@@ -112,7 +112,7 @@ public class ChallengeConcept extends GameConcept {
         return String.format("{modelName=%s, instance=%s, fields=%s, start=%s, end=%s, state=%s}",
                 modelName,
                 name, fields, start != null ? dateFormatter.format(start) : null,
-                end != null ? dateFormatter.format(end) : null, state);
+                end != null ? dateFormatter.format(end) : null, getState());
     }
 
     public ChallengeState getState() {
@@ -135,6 +135,10 @@ public class ChallengeConcept extends GameConcept {
      */
     public boolean completed() {
         updateState(ChallengeState.COMPLETED);
+
+        // scenario when play into the past, If a complete a challenge previously failed
+        // failed state MUST be removed from history
+        resetHistory(ChallengeState.FAILED);
         return true;
     }
 
@@ -209,6 +213,18 @@ public class ChallengeConcept extends GameConcept {
         this.state = state;
         stateDate.put(state, clock.now());
         return this;
+    }
+
+    public ChallengeConcept normalizeState() {
+        if (state != ChallengeState.FAILED && stateDate.containsKey(ChallengeState.FAILED)) {
+            state = ChallengeState.FAILED;
+        }
+
+        return this;
+    }
+
+    private void resetHistory(ChallengeState state) {
+        stateDate.remove(state);
     }
 
     public Date getDate(ChallengeState state) {

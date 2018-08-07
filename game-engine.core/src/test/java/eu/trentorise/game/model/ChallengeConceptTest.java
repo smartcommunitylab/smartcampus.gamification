@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.core.ExecutionClock;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.services.PlayerService;
 
@@ -99,6 +100,19 @@ public class ChallengeConceptTest {
 
 
     @Test
+    public void complete_a_previously_failed_challenge() {
+        Date failureDate = date("2018-07-25T14:22");
+        BDDMockito.given(clock.now()).willReturn(failureDate);
+        ChallengeConcept challenge = new ChallengeConcept(clock);
+        challenge = challenge.updateState(ChallengeState.FAILED);
+
+        Date completionDate = date("2018-07-24T02:00");
+        BDDMockito.given(clock.now()).willReturn(completionDate);
+        challenge.completed();
+        assertThat(challenge.getDate(ChallengeState.FAILED), nullValue());
+    }
+
+    @Test
     public void complete_a_challenge_using_completed_method() {
         Date completionDate = date("2018-07-25T14:22");
         BDDMockito.given(clock.now()).willReturn(completionDate);
@@ -108,6 +122,50 @@ public class ChallengeConceptTest {
         assertThat(challenge.getDate(ChallengeState.COMPLETED), is(completionDate));
         assertThat(challenge.getState(), is(ChallengeState.COMPLETED));
     }
+
+
+    @Test
+    public void normalize_an_active_challenge_previously_failed_should_be_failed() {
+        ChallengeConcept challenge = new ChallengeConcept();
+        Clock execClock = new ExecutionClock(date("2018-07-06T21:11").getTime());
+        challenge.setClock(execClock);
+        challenge.updateState(ChallengeState.FAILED);
+
+        Clock newClock = new ExecutionClock(date("2018-07-05T10:00").getTime());
+        challenge.setClock(newClock);
+        challenge.activate();
+
+        assertThat(challenge.getState(), is(ChallengeState.ACTIVE));
+        challenge.normalizeState();
+        assertThat(challenge.getState(), is(ChallengeState.FAILED));
+    }
+
+    @Test
+    public void normalize_a_completed_challenge_previusly_failed_should_be_completed() {
+        ChallengeConcept challenge = new ChallengeConcept();
+        Clock execClock = new ExecutionClock(date("2018-07-06T21:11").getTime());
+        challenge.setClock(execClock);
+        challenge.updateState(ChallengeState.FAILED);
+
+        Clock newClock = new ExecutionClock(date("2018-07-05T10:00").getTime());
+        challenge.setClock(newClock);
+        challenge.completed();
+
+        assertThat(challenge.getState(), is(ChallengeState.COMPLETED));
+        challenge.normalizeState();
+        assertThat(challenge.getState(), is(ChallengeState.COMPLETED));
+    }
+
+    @Test
+    public void normalize_an_active_challenge_should_be_active() {
+        ChallengeConcept challenge = new ChallengeConcept();
+        challenge.activate();
+
+        assertThat(challenge.getState(), is(ChallengeState.ACTIVE));
+        challenge.normalizeState();
+        assertThat(challenge.getState(), is(ChallengeState.ACTIVE));
+    }
+
 
 
     @Test

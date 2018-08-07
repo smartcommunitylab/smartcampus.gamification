@@ -237,7 +237,8 @@ public class ChallengeTest {
     public void toStringNeverEndindChallenge() {
         ChallengeConcept challenge = new ChallengeConcept();
         challenge.setModelName("model1");
-        String expected = "{modelName=model1, instance=null, fields={}, start=null, end=null}";
+        String expected =
+                "{modelName=model1, instance=null, fields={}, start=null, end=null, state=ASSIGNED}";
         Assert.assertEquals(expected, challenge.toString());
     }
 
@@ -248,7 +249,7 @@ public class ChallengeTest {
         challenge.setStart(DateTime.parse("2017-03-11T00:00:00").toDate());
         challenge.setEnd(DateTime.parse("2017-05-01T00:00:00").toDate());
         String expected =
-                "{modelName=model1, instance=null, fields={}, start=11/03/2017 00:00:00, end=01/05/2017 00:00:00}";
+                "{modelName=model1, instance=null, fields={}, start=11/03/2017 00:00:00, end=01/05/2017 00:00:00, state=ASSIGNED}";
         Assert.assertEquals(expected, challenge.toString());
     }
 

@@ -189,6 +189,10 @@ public class DroolsEngine implements GameEngine {
             newState.add(stateElement);
             if (stateElement instanceof ChallengeConcept) {
                 ChallengeConcept challenge = (ChallengeConcept) stateElement;
+
+                // normalize state, useful when action come from the past
+                challenge.normalizeState();
+
                 sendChallengeCompletedNotifications(challenge, gameId, player.getId(),
                         executionMoment);
                 logCompletedChallenge(game.getDomain(), gameId, executionId, executionMoment,
@@ -291,51 +295,6 @@ public class DroolsEngine implements GameEngine {
         return state;
     }
 
-    // private Set<GameConcept> findActiveConcepts(Set<GameConcept> concepts) {
-    // Set<GameConcept> activeConcepts = new HashSet<>();
-    // for (Iterator<GameConcept> iter = concepts.iterator(); iter.hasNext();) {
-    // GameConcept gc = iter.next();
-    // if (gc instanceof ChallengeConcept) {
-    // ChallengeConcept challenge = (ChallengeConcept) gc;
-    // if (!challenge.isActive()) {
-    // continue;
-    // }
-    // }
-    // activeConcepts.add(gc);
-    // }
-    //
-    // return activeConcepts;
-    // }
-
-    // private Set<GameConcept> activateConcepts(Set<GameConcept> activeConcepts) {
-    // for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
-    // GameConcept gc = iter.next();
-    // if (gc instanceof ChallengeConcept) {
-    // ChallengeConcept challenge = (ChallengeConcept) gc;
-    // challenge.activate();
-    // }
-    // }
-    //
-    // return activeConcepts;
-    // }
-
-    // private Set<GameConcept> injectExecutionMoment(Set<GameConcept> activeConcepts, long
-    // executionMoment) {
-    // for (Iterator<GameConcept> iter = activeConcepts.iterator(); iter.hasNext();) {
-    // GameConcept gc = iter.next();
-    // if (gc instanceof ChallengeConcept) {
-    // ChallengeConcept challenge = (ChallengeConcept) gc;
-    // challenge.setClock(new ExecutionClock(executionMoment));
-    // }
-    // if (gc instanceof PointConcept) {
-    // PointConcept pointConcept = (PointConcept) gc;
-    // pointConcept.setExecutionMoment(executionMoment);
-    // }
-    // }
-    //
-    // return activeConcepts;
-    // }
-
     private void logLevelStatus(String gameId, List<PlayerLevel> levels) {
         if (levels != null && !levels.isEmpty()) {
         StringBuffer levelStatus = new StringBuffer();
@@ -358,7 +317,6 @@ public class DroolsEngine implements GameEngine {
                     executionMoment, System.currentTimeMillis(), challenge.getName());
         }
     }
-
 
     private void sendChallengeCompletedNotifications(ChallengeConcept stateElement, String gameId,
             String playerId, long executionMoment) {

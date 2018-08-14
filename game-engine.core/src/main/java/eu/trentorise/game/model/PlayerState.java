@@ -17,6 +17,7 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.model.ChallengeChoice.ChoiceState;
+import eu.trentorise.game.model.Level.Config;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.StatePersistence;
@@ -43,6 +46,8 @@ public class PlayerState {
 	private Set<GameConcept> state = new HashSet<GameConcept>();
 
 	private CustomData customData = new CustomData();
+
+    private Inventory inventory = new Inventory();
 
 	public PlayerState() {
 	}
@@ -75,6 +80,7 @@ public class PlayerState {
 			}
 
             levels.addAll(statePersistence.getLevels());
+            inventory = statePersistence.getInventory();
 		}
 	}
 
@@ -146,4 +152,48 @@ public class PlayerState {
         return levels;
     }
 
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public PlayerState updateInventory(Game game) {
+        if (game != null) {
+            if (!game.getId().equals(gameId)) {
+                throw new IllegalArgumentException(
+                        String.format("State of player not belong to game %s", game.getId()));
+            }
+
+            Map<LevelInstance, Config> configs = gameLevelConfigs(game);
+            levels.forEach(playerLevel -> {
+                LevelInstance instance =
+                        new LevelInstance(playerLevel.getLevelName(), playerLevel.getLevelValue());
+                Config levelConfig = configs.get(instance);
+                if (levelConfig != null) {
+                    for (String model : levelConfig.getAvailableModels()) {
+                        inventory.add(new ChallengeChoice(model, ChoiceState.AVAILABLE, instance));
+                    }
+                }
+            });
+        }
+        return this;
+    }
+
+    private Map<LevelInstance, Config> gameLevelConfigs(Game game) {
+        Map<LevelInstance, Config> configs = new HashMap<>();
+        game.getLevels().forEach(level -> {
+            configs.putAll(levelConfigs(level));
+        });
+        return configs;
+    }
+    private Map<LevelInstance, Config> levelConfigs(Level level) {
+        Map<LevelInstance, Config> configs = new HashMap<>();
+        level.getThresholds().forEach(threshold -> {
+            if (threshold.getConfig() != null) {
+            configs.put(new LevelInstance(level.getName(), threshold.getName()),
+                    threshold.getConfig());
+            }
+        });
+
+        return configs;
+    }
 }

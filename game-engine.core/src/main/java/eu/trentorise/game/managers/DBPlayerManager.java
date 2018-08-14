@@ -46,6 +46,7 @@ import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -115,33 +116,34 @@ public class DBPlayerManager implements PlayerService {
 
     private StatePersistence persist(StatePersistence state) {
         return persist(state.getGameId(), state.getPlayerId(), state.getConcepts(),
-                state.getLevels(), state.getCustomData(), state.getMetadata());
+                state.getLevels(), state.getInventory(), state.getCustomData(),
+                state.getMetadata());
     }
 
     private StatePersistence persistConcepts(String gameId, String playerId,
             Map<String, Map<String, GenericObjectPersistence>> concepts) {
-        return persist(gameId, playerId, concepts, null, null, null);
+        return persist(gameId, playerId, concepts, null, null, null, null);
     }
 
     private StatePersistence persistCustomData(String gameId, String playerId, CustomData data) {
-        return persist(gameId, playerId, null, null, data, null);
+        return persist(gameId, playerId, null, null, null, data, null);
     }
 
     private StatePersistence persistCustomData(String gameId, String playerId,
             Map<String, Object> customData) {
         CustomData c = new CustomData();
         c.putAll(customData);
-        return persist(gameId, playerId, null, null, c, null);
+        return persist(gameId, playerId, null, null, null, c, null);
     }
 
     private StatePersistence persistMetadata(String gameId, String playerId,
             Map<String, Object> metadata) {
-        return persist(gameId, playerId, null, null, null, metadata);
+        return persist(gameId, playerId, null, null, null, null, metadata);
     }
 
     private StatePersistence persist(String gameId, String playerId,
             Map<String, Map<String, GenericObjectPersistence>> concepts, List<PlayerLevel> levels,
-            CustomData customData, Map<String, Object> metadata) {
+            Inventory inventory, CustomData customData, Map<String, Object> metadata) {
         if (StringUtils.isBlank(gameId) || StringUtils.isBlank(playerId)) {
             throw new IllegalArgumentException(
                     "field gameId and playerId of PlayerState MUST be set");
@@ -156,6 +158,9 @@ public class DBPlayerManager implements PlayerService {
         }
         if (levels != null) {
             update.set("levels", levels);
+        }
+        if (inventory != null) {
+            update.set("inventory", inventory);
         }
         if (customData != null) {
             update.set("customData", customData);

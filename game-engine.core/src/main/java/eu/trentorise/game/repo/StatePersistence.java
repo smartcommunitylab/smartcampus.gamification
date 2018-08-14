@@ -25,6 +25,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import eu.trentorise.game.model.CustomData;
+import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.GameConcept;
@@ -44,6 +45,7 @@ public class StatePersistence {
 
     private List<PlayerLevel> levels = new ArrayList<>();
 	private CustomData customData;
+    private Inventory inventory = new Inventory();
 
 	public StatePersistence() {
 
@@ -61,8 +63,8 @@ public class StatePersistence {
 		}
 
         levels.addAll(state.getLevels());
-
 		customData = state.getCustomData();
+        inventory = state.getInventory();
 	}
 
 	private <T extends GameConcept> Map<String, GenericObjectPersistence> getConceptMap(
@@ -192,5 +194,13 @@ public class StatePersistence {
 
     public void setLevels(List<PlayerLevel> levels) {
         this.levels = levels;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 }

@@ -108,11 +108,6 @@ public class GameEngineTest {
     @Autowired
     private GameWorkflow workflow;
 
-    /*
-     * FIXME -> not the best way to do it. Better to mock behavior with a fake factory impl
-     */
-    @Autowired
-    // private KieContainerFactory kieContainerFactory;
 
     private static final String GAME = "coreGameTest";
     private static final String ACTION = "save_itinerary";
@@ -128,8 +123,6 @@ public class GameEngineTest {
         mongo.dropCollection(StatePersistence.class);
         mongo.dropCollection(GamePersistence.class);
         mongo.dropCollection(NotificationPersistence.class);
-        // purge container every test
-        // kieContainerFactory.purgeContainer(GAME);
     }
 
     private void initClasspathRuleGame() {

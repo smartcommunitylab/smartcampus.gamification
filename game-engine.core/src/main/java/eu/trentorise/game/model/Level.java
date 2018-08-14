@@ -69,10 +69,28 @@ public class Level {
         return name;
     }
 
+    public static class Config {
+        private int choices;
+        private List<String> availableModels = new ArrayList<>();
+
+        public int getChoices() {
+            return choices;
+        }
+
+        public void setChoices(int choices) {
+            this.choices = choices;
+        }
+
+        public List<String> getAvailableModels() {
+            return availableModels;
+        }
+
+    }
 
     public static class Threshold {
         private String name;
         private double value;
+        private Config config;
 
 
         public Threshold(String name, double value) {
@@ -119,6 +137,16 @@ public class Level {
         @Override
         public String toString() {
             return String.format("{name=%s, value=%s}", name, value);
+        }
+
+
+        public Config getConfig() {
+            return config;
+        }
+
+
+        public void setConfig(Config config) {
+            this.config = config;
         }
     }
 }

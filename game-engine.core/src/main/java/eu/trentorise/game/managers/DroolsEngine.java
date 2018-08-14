@@ -119,9 +119,10 @@ public class DroolsEngine implements GameEngine {
 
         KieContainer kieContainer = kieContainerFactory.getContainer(gameId);
 
+        PlayerState stateBeforePlay = state.clone();
         StatelessKieSession kSession = kieContainer.newStatelessKieSession();
         kSession.addEventListener(new LoggingRuleListener(game.getDomain(), gameId,
-                state.getPlayerId(), state.clone(), executionId, executionMoment));
+                state.getPlayerId(), stateBeforePlay, executionId, executionMoment));
 
         List<Command> cmds = new ArrayList<Command>();
 
@@ -284,6 +285,8 @@ public class DroolsEngine implements GameEngine {
         List<PlayerLevel> playerLevels = gameSrv.calculateLevels(gameId, state);
         state = state.updateLevels(playerLevels);
         logLevelStatus(gameId, playerLevels);
+
+        state.updateInventory(game);
 
         // fix for dataset prior than 0.9 version
         state.setCustomData(customData.isEmpty() ? new CustomData() : customData.get(0));

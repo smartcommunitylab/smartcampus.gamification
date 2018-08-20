@@ -298,6 +298,34 @@ public class GameManagerTest {
     }
 
     @Test
+    public void gain_level_on_threshold() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+
+        Level explorerLevel = new Level("explorer", "green");
+        explorerLevel.getThresholds().add(new Threshold("child", 0d));
+        explorerLevel.getThresholds().add(new Threshold("adept", 100d));
+        g.getLevels().add(explorerLevel);
+
+        g = gameSrv.saveGameDefinition(g);
+
+
+        PlayerState playerState = new PlayerState(gameId, "player");
+        PointConcept greenScore = new PointConcept("green");
+        greenScore.setScore(100d);
+        playerState.getState().add(greenScore);
+
+        List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
+
+        Assert.assertEquals(1, levels.size());
+        Assert.assertEquals("adept", levels.get(0).getLevelValue());
+        Assert.assertEquals(0d, levels.get(0).getToNextLevel(), 0);
+    }
+
+    @Test
     public void state_with_score_at_zero() {
         String gameId = "MY_GAME";
 

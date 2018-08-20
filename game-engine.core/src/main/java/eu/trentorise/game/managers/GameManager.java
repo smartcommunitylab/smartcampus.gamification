@@ -535,7 +535,7 @@ public class GameManager implements GameService {
                             actualLevelValue = thresholds.get(0);
                         } else {
                             actualLevelValue = thresholds.stream()
-                                    .filter(thres -> thres.getValue() < actualValue)
+                                    .filter(thres -> thres.getValue() <= actualValue)
                                     .collect(Collectors.toCollection(java.util.LinkedList::new))
                                     .getLast();
                         }

@@ -19,7 +19,9 @@ package eu.trentorise.game.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 
@@ -131,6 +133,12 @@ public class Game {
 
     public List<Level> getLevels() {
         return levels;
+    }
+
+    public List<Threshold> getLevelThresholds(String levelName) {
+        return levels.stream().filter(level -> level.getName().equals(levelName))
+                .map(level -> level.getThresholds()).flatMap(thresholds -> thresholds.stream())
+                .collect(Collectors.toList());
     }
 
 }

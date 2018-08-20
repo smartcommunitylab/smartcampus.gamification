@@ -19,4 +19,8 @@ public class Inventory {
     public int size() {
         return challengeChoices.size();
     }
+
+    public List<ChallengeChoice> getChallengeChoices() {
+        return challengeChoices;
+    }
 }

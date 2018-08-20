@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.ChallengeChoice.ChoiceState;
 import eu.trentorise.game.model.Level.Config;
+import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.StatePersistence;
@@ -165,17 +166,38 @@ public class PlayerState {
 
             Map<LevelInstance, Config> configs = gameLevelConfigs(game);
             levels.forEach(playerLevel -> {
-                LevelInstance instance =
-                        new LevelInstance(playerLevel.getLevelName(), playerLevel.getLevelValue());
-                Config levelConfig = configs.get(instance);
-                if (levelConfig != null) {
-                    for (String model : levelConfig.getAvailableModels()) {
-                        inventory.add(new ChallengeChoice(model, ChoiceState.AVAILABLE, instance));
+                List<LevelInstance> gainedLevels = gainedLevels(playerLevel, game);
+                gainedLevels.forEach(instance -> {
+                    Config levelConfig = configs.get(instance);
+                    if (levelConfig != null) {
+                        for (String model : levelConfig.getAvailableModels()) {
+                            inventory.add(
+                                    new ChallengeChoice(model, ChoiceState.AVAILABLE, instance));
+                            LogHub.info(game.getId(), logger,
+                                    String.format("Inventory: available model %s", model));
+                        }
                     }
-                }
+                });
             });
         }
         return this;
+    }
+
+    private List<LevelInstance> gainedLevels(PlayerLevel playerLevel, Game game) {
+        List<LevelInstance> instances = new ArrayList<>();
+        List<Threshold> levelThreshoolds = game.getLevelThresholds(playerLevel.getLevelName());
+        // if player has a level doesn't exist in game definition return empty instances
+        if (!levelThreshoolds.contains(new Threshold(playerLevel.getLevelValue(), 0d))) {
+            return instances;
+        }
+        for (Threshold threshold : levelThreshoolds) {
+            instances.add(
+                    new LevelInstance(playerLevel.getLevelName(), threshold.getName()));
+            if (threshold.getName().equals(playerLevel.getLevelValue())) {
+                break;
+            }
+        }
+        return instances;
     }
 
     private Map<LevelInstance, Config> gameLevelConfigs(Game game) {

@@ -1,11 +1,13 @@
 package eu.trentorise.game.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -178,6 +180,39 @@ public class PlayerStateTest {
         state.updateLevels(levels);
 
         state.updateInventory(game);
+    }
+
+    @Test
+    public void inventory_should_contains_available_items_of_two_levels_gained_in_same_action() {
+        Game game = new Game("MY_GAME");
+        Level levelDefinition = new Level("greener", "green leaves");
+        Threshold walkerLevel = new Threshold("walker", 100d);
+        Config levelConfig = new Config();
+        levelConfig.setChoices(1);
+        levelConfig.getAvailableModels().add("absoluteIncrement");
+        walkerLevel.setConfig(levelConfig);
+        levelDefinition.getThresholds().add(walkerLevel);
+
+        Threshold runnerLevel = new Threshold("runner", 200d);
+        Config runnerLevelConfig = new Config();
+        runnerLevelConfig.setChoices(1);
+        runnerLevelConfig.getAvailableModels().add("runnerChallengeType");
+        runnerLevel.setConfig(runnerLevelConfig);
+        levelDefinition.getThresholds().add(runnerLevel);
+
+        game.getLevels().add(levelDefinition);
+
+        PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
+        List<PlayerLevel> levels = new ArrayList<>();
+        levels.add(new PlayerLevel(levelDefinition, "runner", 0d));
+        state.updateLevels(levels);
+
+        state.updateInventory(game);
+
+        assertThat(state.getInventory().size(), is(2));
+        List<String> availableModelNames = state.getInventory().getChallengeChoices().stream()
+                .map(choice -> choice.getModelName()).collect(Collectors.toList()); 
+        assertThat(availableModelNames, hasItems("absoluteIncrement", "runnerChallengeType"));
     }
 
 }

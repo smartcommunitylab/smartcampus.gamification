@@ -253,4 +253,6 @@ public class PlayerControllerTest {
             Assert.fail("Exception " + e.getMessage());
         }
     }
+
+    // test reading player state data
 }

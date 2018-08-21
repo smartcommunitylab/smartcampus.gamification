@@ -46,4 +46,8 @@ public class ChallengeChoice {
     public int hashCode() {
         return new HashCodeBuilder(21, 3).append(modelName).hashCode();
     }
+
+    public ChoiceState getState() {
+        return state;
+    }
 }

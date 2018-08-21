@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eu.trentorise.game.model.CustomData;
+import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.core.GameConcept;
 
@@ -36,6 +37,8 @@ public class PlayerStateDTO {
 
 	private Map<String, Set<GameConcept>> state = new HashMap<String, Set<GameConcept>>();
     private List<PlayerLevel> levels = new ArrayList<>();
+
+    private Inventory inventory;
 
 	private CustomData customData = new CustomData();
 
@@ -77,6 +80,14 @@ public class PlayerStateDTO {
 
     public void setLevels(List<PlayerLevel> levels) {
         this.levels = levels;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 
 }

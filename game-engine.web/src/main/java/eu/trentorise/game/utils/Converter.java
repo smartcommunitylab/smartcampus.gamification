@@ -270,6 +270,8 @@ public class Converter {
 				res.getState().addAll(s);
 			}
             res.getLevels().addAll(ps.getLevels());
+
+            // inventory not set
 		}
 
 		return res;
@@ -298,6 +300,7 @@ public class Converter {
 			}
 
             res.getLevels().addAll(ps.getLevels());
+            res.setInventory(ps.getInventory());
 
 		}
 

@@ -295,7 +295,7 @@ public class GameControllerTest {
         gameSrv.upsertLevel(gameId, level);
 
         PlayerState p = playerSrv.loadState(gameId, "player", true);
-        p.getLevels().add(new PlayerLevel(level, "adept", 700));
+        p.getLevels().add(new PlayerLevel(level, 300d));
         playerSrv.saveState(p);
         
         RequestBuilder getBuilder = MockMvcRequestBuilders
@@ -307,6 +307,8 @@ public class GameControllerTest {
                     .andExpect(jsonPath("$[0].levelName", is("Eco Warrior")))
                     .andExpect(jsonPath("$[0].levelValue", is("adept")))
                     .andExpect(jsonPath("$[0].pointConcept", is("green")))
+                    .andExpect(jsonPath("$[0].startLevelScore", is(100d)))
+                    .andExpect(jsonPath("$[0].endLevelScore", is(1000d)))
                     .andExpect(jsonPath("$[0].toNextLevel", is(700d)));
         } catch (Exception e) {
             Assert.fail("exception: " + e.getMessage());

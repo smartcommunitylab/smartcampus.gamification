@@ -601,9 +601,14 @@ public class GameEngineTest {
 
         gameManager.addRule(new ClasspathRule(GAME, "rules/testLevel/rules.drl"));
 
+
+        Level levelDefinition = new Level("livello", "green");
+        levelDefinition.getThresholds().add(new Threshold("beginner", 0));
+        levelDefinition.getThresholds().add(new Threshold("explorer", 180d));
+
         PlayerState p = playerSrv.loadState(GAME, "player", true);
         p.updateLevels(
-                Arrays.asList(new PlayerLevel(new Level("livello", "green"), "explorer", 200d)));
+                Arrays.asList(new PlayerLevel(levelDefinition, 200d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         Thread.sleep(WAIT_EXEC);
@@ -625,9 +630,13 @@ public class GameEngineTest {
 
         gameManager.addRule(new ClasspathRule(GAME, "rules/testLevel/rules.drl"));
 
+        Level levelDefinition = new Level("livello", "green");
+        levelDefinition.getThresholds().add(new Threshold("beginner", 0));
+        levelDefinition.getThresholds().add(new Threshold("explorer", 180d));
+
         PlayerState p = playerSrv.loadState(GAME, "player", true);
         p.updateLevels(
-                Arrays.asList(new PlayerLevel(new Level("livello", "green"), "expert", 200d)));
+                Arrays.asList(new PlayerLevel(levelDefinition, 50d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         Thread.sleep(WAIT_EXEC);

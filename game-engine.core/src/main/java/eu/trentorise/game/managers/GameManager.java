@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -528,31 +526,7 @@ public class GameManager implements GameService {
                             .findFirst().orElse(null);
                     final double actualValue =
                             pointConceptValue != null ? pointConceptValue.getScore() : 0d;
-                    final List<Threshold> thresholds = definition.getThresholds();
-                    Threshold actualLevelValue = null;
-                    try {
-                        if (actualValue == 0 && thresholds.size() > 0) {
-                            actualLevelValue = thresholds.get(0);
-                        } else {
-                            actualLevelValue = thresholds.stream()
-                                    .filter(thres -> thres.getValue() < actualValue)
-                                    .collect(Collectors.toCollection(java.util.LinkedList::new))
-                                    .getLast();
-                        }
-                        if (actualLevelValue != null) {
-                            int idx = thresholds.indexOf(actualLevelValue);
-                            int nextLevelIdx = idx + 1;
-                            double toNextLevel = 0d;
-                            if (nextLevelIdx < thresholds.size()) {
-                                double nextLevelValue = thresholds.get(nextLevelIdx).getValue();
-                                toNextLevel = nextLevelValue - actualValue;
-                            }
-                            playerLevels.add(new PlayerLevel(definition, actualLevelValue.getName(),
-                                    toNextLevel));
-                        }
-                    } catch (NoSuchElementException e) {
-                        // do nothing
-                    }
+                    playerLevels.add(new PlayerLevel(definition, actualValue));
                 });
             }
             return playerLevels;

@@ -57,13 +57,15 @@ public class PlayerLevel {
 
     @PersistenceConstructor
     private PlayerLevel(String levelName, String pointConcept, String levelValue,
-            double toNextLevel, double startLevelScore, double endLevelScore) {
+            Double toNextLevel, Double startLevelScore, Double endLevelScore) {
         this.levelName = levelName;
         this.pointConcept = pointConcept;
         this.levelValue = levelValue;
-        this.toNextLevel = toNextLevel;
-        this.startLevelScore = startLevelScore;
-        this.endLevelScore = endLevelScore;
+
+        // check if value is persisted or give a valid one
+        this.toNextLevel = toNextLevel != null ? toNextLevel : 0;
+        this.startLevelScore = startLevelScore != null ? startLevelScore : 0;
+        this.endLevelScore = endLevelScore != null ? endLevelScore : 0;
     }
 
     public String getLevelName() {

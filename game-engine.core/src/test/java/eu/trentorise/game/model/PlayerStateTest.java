@@ -114,7 +114,7 @@ public class PlayerStateTest {
 
         PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
         List<PlayerLevel> levels = new ArrayList<>();
-        levels.add(new PlayerLevel(levelDefinition, "walker", 100d));
+        levels.add(new PlayerLevel(levelDefinition, 300d));
         state.updateLevels(levels);
         
         state.updateInventory(game);
@@ -135,7 +135,7 @@ public class PlayerStateTest {
         game.getLevels().add(levelDefinition);
         PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
         List<PlayerLevel> levels = new ArrayList<>();
-        levels.add(new PlayerLevel(levelDefinition, "walker", 100d));
+        levels.add(new PlayerLevel(levelDefinition, 300d));
         state.updateLevels(levels);
 
         state.updateInventory(game);
@@ -147,16 +147,18 @@ public class PlayerStateTest {
         Game game = new Game("MY_GAME");
         Level levelDefinition = new Level("greener", "green leaves");
         Threshold threshold = new Threshold("walker", 300d);
+        levelDefinition.getThresholds().add(threshold);
+        Threshold masterThreshold = new Threshold("master", 500d);
         Config levelConfig = new Config();
         levelConfig.setChoices(1);
         levelConfig.getAvailableModels().add("absoluteIncrement");
-        threshold.setConfig(levelConfig);
-        levelDefinition.getThresholds().add(threshold);
+        masterThreshold.setConfig(levelConfig);
+        levelDefinition.getThresholds().add(masterThreshold);
 
         game.getLevels().add(levelDefinition);
         PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
         List<PlayerLevel> levels = new ArrayList<>();
-        levels.add(new PlayerLevel(levelDefinition, "master", 100d));
+        levels.add(new PlayerLevel(levelDefinition, 320d));
         state.updateLevels(levels);
 
         state.updateInventory(game);
@@ -176,7 +178,7 @@ public class PlayerStateTest {
 
         PlayerState state = new PlayerState("ANOTHER_GAME", "PLAYER_ID");
         List<PlayerLevel> levels = new ArrayList<>();
-        levels.add(new PlayerLevel(levelDefinition, "walker", 100d));
+        levels.add(new PlayerLevel(levelDefinition, 310d));
         state.updateLevels(levels);
 
         state.updateInventory(game);
@@ -204,7 +206,7 @@ public class PlayerStateTest {
 
         PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
         List<PlayerLevel> levels = new ArrayList<>();
-        levels.add(new PlayerLevel(levelDefinition, "runner", 0d));
+        levels.add(new PlayerLevel(levelDefinition, 200d));
         state.updateLevels(levels);
 
         state.updateInventory(game);

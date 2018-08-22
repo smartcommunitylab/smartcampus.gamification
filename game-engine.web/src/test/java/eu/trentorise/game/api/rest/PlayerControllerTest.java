@@ -1,9 +1,12 @@
 package eu.trentorise.game.api.rest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 import javax.annotation.PostConstruct;
@@ -39,6 +42,10 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.Level.Config;
+import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -255,4 +262,68 @@ public class PlayerControllerTest {
     }
 
     // test reading player state data
+
+
+    @Test
+    public void read_inventory() {
+        Game game = defineGame();
+
+        Level levelDefinition = new Level("greener","green leaves");
+        Threshold beginner = new Threshold("beginner", 0);
+        Config config = new Config();
+        config.setChoices(1);
+        config.getAvailableModels().addAll(Arrays.asList("model1", "model2"));
+        beginner.setConfig(config);
+        levelDefinition.getThresholds().add(beginner);
+        
+        game.getLevels().add(levelDefinition);
+        gameSrv.saveGameDefinition(game);
+        
+        PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+        player.getLevels().add(new PlayerLevel(levelDefinition, 10d));
+        player.updateInventory(game);
+        playerSrv.saveState(player);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/inventory", game.getId(), "10001");
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.challengeChoices", hasSize(2)))
+                    .andExpect(jsonPath("$.challengeChoices[0].modelName", is("model1")))
+                    .andExpect(jsonPath("$.challengeChoices[0].state", is("AVAILABLE")));
+
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_empty_inventory() {
+        Game game = defineGame();
+
+        Level levelDefinition = new Level("greener", "green leaves");
+        Threshold beginner = new Threshold("beginner", 0);
+        levelDefinition.getThresholds().add(beginner);
+
+        game.getLevels().add(levelDefinition);
+        gameSrv.saveGameDefinition(game);
+
+        PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+        player.getLevels().add(new PlayerLevel(levelDefinition, 10d));
+        player.updateInventory(game);
+        playerSrv.saveState(player);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/inventory",
+                    game.getId(), "10001");
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.challengeChoices", hasSize(0)));
+
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
+        }
+    }
 }

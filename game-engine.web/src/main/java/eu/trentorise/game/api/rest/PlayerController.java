@@ -24,6 +24,7 @@ import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -257,6 +258,21 @@ public class PlayerController {
             return Collections.emptyList();
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/data/game/{gameId}/player/{playerId}/inventory", produces = {"application/json"})
+    @ApiOperation(value = "Get player inventory")
+    public Inventory readInventory(@PathVariable String gameId,
+            @PathVariable String playerId) {
+        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        if (state != null) {
+            return state.getInventory();
+        } else {
+            throw new IllegalArgumentException(String
+                    .format("state for player %s in game %s doesn't exist", playerId, gameId));
+        }
+    }
+
     // Read user custom data
     // GET /data/game/{id}/player/{playerId}/custom
     @RequestMapping(method = RequestMethod.GET,

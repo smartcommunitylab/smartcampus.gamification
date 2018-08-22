@@ -57,11 +57,13 @@ public class PlayerLevel {
 
     @PersistenceConstructor
     private PlayerLevel(String levelName, String pointConcept, String levelValue,
-            double toNextLevel) {
+            double toNextLevel, double startLevelScore, double endLevelScore) {
         this.levelName = levelName;
         this.pointConcept = pointConcept;
         this.levelValue = levelValue;
         this.toNextLevel = toNextLevel;
+        this.startLevelScore = startLevelScore;
+        this.endLevelScore = endLevelScore;
     }
 
     public String getLevelName() {

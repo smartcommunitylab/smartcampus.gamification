@@ -57,4 +57,9 @@ public class LevelInstance {
     public int hashCode() {
         return new HashCodeBuilder(31, 25).append(type).append(name).hashCode();
     }
+
+    @Override
+    public String toString() {
+        return String.format("{type=%s, name=%s}", type, name);
+    }
 }

@@ -25,6 +25,7 @@ import eu.trentorise.game.bean.WrapperQuery;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Inventory;
+import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -267,6 +268,24 @@ public class PlayerController {
         PlayerState state = playerSrv.loadState(gameId, playerId, false);
         if (state != null) {
             return state.getInventory();
+        } else {
+            throw new IllegalArgumentException(String
+                    .format("state for player %s in game %s doesn't exist", playerId, gameId));
+        }
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/data/game/{gameId}/player/{playerId}/inventory/activate",
+            produces = {"application/json"})
+    @ApiOperation(value = "Activate a choice")
+    public Inventory activateChoice(@PathVariable String gameId, @PathVariable String playerId,
+            @RequestBody ItemChoice choice) {
+        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        if (state != null) {
+            Inventory result = state.getInventory().activateChoice(choice);
+            playerSrv.saveState(state);
+            return result;
         } else {
             throw new IllegalArgumentException(String
                     .format("state for player %s in game %s doesn't exist", playerId, gameId));

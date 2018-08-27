@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -287,22 +288,22 @@ public class GameControllerTest {
         g.getConcepts().add(new PointConcept("green"));
         g = gameSrv.saveGameDefinition(g);
 
+
         Level level = new Level("Eco Warrior", "green");
         level.getThresholds().add(new Threshold("newbie", 0));
         level.getThresholds().add(new Threshold("adept", 100));
         level.getThresholds().add(new Threshold("master", 1000));
-
         gameSrv.upsertLevel(gameId, level);
 
         PlayerState p = playerSrv.loadState(gameId, "player", true);
-        p.getLevels().add(new PlayerLevel(level, 300d));
+        p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
         playerSrv.saveState(p);
         
         RequestBuilder getBuilder = MockMvcRequestBuilders
                 .get("/data/game/{gameId}/player/{playerId}/levels", gameId, "player");
 
         try {
-            mocker.perform(getBuilder).andExpect(status().is(200))
+            mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print())
                     .andExpect(jsonPath("$", hasSize(1)))
                     .andExpect(jsonPath("$[0].levelName", is("Eco Warrior")))
                     .andExpect(jsonPath("$[0].levelValue", is("adept")))

@@ -42,9 +42,12 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Inventory.ItemChoice;
+import eu.trentorise.game.model.Inventory.ItemChoice.ChoiceType;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Config;
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.LevelInstance;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.GameConcept;
@@ -281,7 +284,7 @@ public class PlayerControllerTest {
         
         PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
         player.getLevels().add(new PlayerLevel(levelDefinition, 10d));
-        player.updateInventory(game);
+        player.updateInventory(game, Arrays.asList(new LevelInstance("greener", "beginner")));
         playerSrv.saveState(player);
 
         RequestBuilder builder = null;
@@ -312,7 +315,7 @@ public class PlayerControllerTest {
 
         PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
         player.getLevels().add(new PlayerLevel(levelDefinition, 10d));
-        player.updateInventory(game);
+        player.updateInventory(game, null);
         playerSrv.saveState(player);
 
         RequestBuilder builder = null;
@@ -325,5 +328,100 @@ public class PlayerControllerTest {
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
         }
+    }
+
+
+    @Test
+    public void activate_a_choice() {
+        Game game = defineGame();
+        Level levelDefinition = new Level("greener", "green leaves");
+        Threshold beginner = new Threshold("beginner", 0);
+        Config config = new Config();
+        config.setChoices(1);
+        config.getAvailableModels().add("model1");
+        beginner.setConfig(config);
+        levelDefinition.getThresholds().add(beginner);
+
+        game.getLevels().add(levelDefinition);
+        gameSrv.saveGameDefinition(game);
+
+
+
+        RequestBuilder builder = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ItemChoice choice = new ItemChoice(ChoiceType.CHALLENGE_MODEL, "model1");
+
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+
+            player.updateInventory(game, Arrays.asList(new LevelInstance("greener", "beginner")));
+            playerSrv.saveState(player);
+
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/inventory/activate", game.getId(),
+                            "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(choice));
+
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.challengeActivationActions", is(0)))
+                    .andExpect(jsonPath("$.challengeChoices[0].state", is("ACTIVE")));
+
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void no_more_activation_actions() {
+
+        Game game = defineGame();
+        Level levelDefinition = new Level("greener", "green leaves");
+        Threshold beginner = new Threshold("beginner", 0);
+        Config config = new Config();
+        config.setChoices(1);
+        config.getAvailableModels().add("model1");
+        config.getAvailableModels().add("model2");
+        beginner.setConfig(config);
+        levelDefinition.getThresholds().add(beginner);
+
+        game.getLevels().add(levelDefinition);
+        gameSrv.saveGameDefinition(game);
+
+
+
+        RequestBuilder builder = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ItemChoice choice = new ItemChoice(ChoiceType.CHALLENGE_MODEL, "model1");
+
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+
+            player.updateInventory(game, Arrays.asList(new LevelInstance("greener", "beginner")));
+            playerSrv.saveState(player);
+
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/inventory/activate", game.getId(),
+                            "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(choice));
+
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.challengeActivationActions", is(0)))
+                    .andExpect(jsonPath("$.challengeChoices[0].state", is("ACTIVE")));
+
+            ItemChoice choice1 = new ItemChoice(ChoiceType.CHALLENGE_MODEL, "model1");
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/inventory/activate", game.getId(),
+                            "10001")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(choice1));
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(400));
+
+        } catch (Exception e) {
+            Assert.fail("Exception " + e.getMessage());
+        }
+
     }
 }

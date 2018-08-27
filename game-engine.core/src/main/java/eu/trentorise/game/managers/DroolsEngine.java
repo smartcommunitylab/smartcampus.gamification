@@ -50,6 +50,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.LoggingRuleListener;
 import eu.trentorise.game.core.StatsLogger;
@@ -60,6 +63,8 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.InputData;
+import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.LevelInstance;
 import eu.trentorise.game.model.Member;
 import eu.trentorise.game.model.Player;
 import eu.trentorise.game.model.PlayerLevel;
@@ -282,11 +287,17 @@ public class DroolsEngine implements GameEngine {
 
         state.setState(newState);
 
-        List<PlayerLevel> playerLevels = gameSrv.calculateLevels(gameId, state);
-        state = state.updateLevels(playerLevels);
-        logLevelStatus(gameId, playerLevels);
+        List<PlayerLevel> levelsAfterAction = gameSrv.calculateLevels(gameId, state);
 
-        state.updateInventory(game);
+        List<LevelInstance> newGainedLevels = newGainedLevels(game, state, levelsAfterAction);
+
+        state = state.updateLevels(levelsAfterAction);
+        logLevelStatus(gameId, levelsAfterAction);
+
+        if (!newGainedLevels.isEmpty()) {
+            state.updateInventory(game, newGainedLevels);
+            LogHub.info(gameId, logger, String.format("Gained new levels %s", newGainedLevels));
+        }
 
         // fix for dataset prior than 0.9 version
         state.setCustomData(customData.isEmpty() ? new CustomData() : customData.get(0));
@@ -296,6 +307,54 @@ public class DroolsEngine implements GameEngine {
                     gameId, state.getPlayerId()));
         }
         return state;
+    }
+
+    private List<LevelInstance> newGainedLevels(Game game, PlayerState state,
+            List<PlayerLevel> levels) {
+        
+        List<PlayerLevel> oldLevels = state.getLevels();
+        ListMultimap<String, String> levelProgression = ArrayListMultimap.create();
+
+        List<LevelInstance> levelsGainedInGameAction = new ArrayList<>();
+        oldLevels.forEach(
+                level -> levelProgression.put(level.getLevelName(), level.getLevelValue()));
+        levels.forEach(level -> levelProgression.put(level.getLevelName(), level.getLevelValue()));
+
+        levelProgression.keySet().forEach(levelName -> {
+            List<String> instanceProgression = levelProgression.get(levelName);
+            // same level after game action
+            if (instanceProgression.get(0).equals(instanceProgression.get(1))) {
+                // do nothing
+            } else {
+                List<LevelInstance> levelInstances = gainedLevels(
+                        new LevelInstance(levelName, instanceProgression.get(1)), game);
+                int indexOfNewLevel = levelInstances.size() - 1;
+                int indexOfPreviousLevel = levelInstances
+                        .indexOf(new LevelInstance(levelName, instanceProgression.get(0))) + 1;
+                for (int i = indexOfPreviousLevel; i <= indexOfNewLevel; i++) {
+                    levelsGainedInGameAction.add(levelInstances.get(i));
+                }
+            }
+        });
+
+        return levelsGainedInGameAction;
+    }
+
+
+    private List<LevelInstance> gainedLevels(LevelInstance levelInstance, Game game) {
+        List<LevelInstance> instances = new ArrayList<>();
+        List<Threshold> levelThreshoolds = game.getLevelThresholds(levelInstance.getType());
+        // if player has a level doesn't exist in game definition return empty instances
+        if (!levelThreshoolds.contains(new Threshold(levelInstance.getName(), 0d))) {
+            return instances;
+        }
+        for (Threshold threshold : levelThreshoolds) {
+            instances.add(new LevelInstance(levelInstance.getType(), threshold.getName()));
+            if (threshold.getName().equals(levelInstance.getName())) {
+                break;
+            }
+        }
+        return instances;
     }
 
     private void logLevelStatus(String gameId, List<PlayerLevel> levels) {

@@ -47,6 +47,8 @@ import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Inventory;
+import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -91,7 +93,7 @@ public class DBPlayerManager implements PlayerService {
                 playerRepo.findByGameIdAndPlayerId(gameId, playerId);
         PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
                 : isTeam(state) ? new TeamState(state) : new PlayerState(state);
-        return initConceptsStructure(res, gameId);
+        return initDefaultLevels(initConceptsStructure(res, gameId), gameId);
     }
 
     public PlayerState saveState(PlayerState state) {
@@ -205,7 +207,8 @@ public class DBPlayerManager implements PlayerService {
         Page<StatePersistence> states = playerRepo.findByGameId(gameId, pageable);
         List<PlayerState> result = new ArrayList<PlayerState>();
         for (StatePersistence state : states) {
-            result.add(initConceptsStructure(new PlayerState(state), gameId));
+            result.add(initDefaultLevels(initConceptsStructure(new PlayerState(state), gameId),
+                    gameId));
         }
         PageImpl<PlayerState> res =
                 new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
@@ -220,7 +223,8 @@ public class DBPlayerManager implements PlayerService {
         List<StatePersistence> states = playerRepo.findByGameId(gameId);
         List<PlayerState> result = new ArrayList<PlayerState>();
         for (StatePersistence state : states) {
-            result.add(initConceptsStructure(new PlayerState(state), gameId));
+            result.add(initDefaultLevels(initConceptsStructure(new PlayerState(state), gameId),
+                    gameId));
         }
 
         return result;
@@ -232,7 +236,8 @@ public class DBPlayerManager implements PlayerService {
                 playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId, pageable);
         List<PlayerState> result = new ArrayList<PlayerState>();
         for (StatePersistence state : states) {
-            result.add(initConceptsStructure(new PlayerState(state), gameId));
+            result.add(initDefaultLevels(initConceptsStructure(new PlayerState(state), gameId),
+                    gameId));
         }
         PageImpl<PlayerState> res =
                 new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
@@ -244,7 +249,8 @@ public class DBPlayerManager implements PlayerService {
         List<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId);
         List<PlayerState> result = new ArrayList<PlayerState>();
         for (StatePersistence state : states) {
-            result.add(initConceptsStructure(new PlayerState(state), gameId));
+            result.add(initDefaultLevels(initConceptsStructure(new PlayerState(state), gameId),
+                    gameId));
         }
 
         return result;
@@ -274,6 +280,22 @@ public class DBPlayerManager implements PlayerService {
                     }
                 }
                 ps.getState().addAll(toAppend);
+            }
+        }
+        return ps;
+    }
+
+    private PlayerState initDefaultLevels(PlayerState ps, String gameId) {
+        if (ps != null) {
+            Game g = gameSrv.loadGameDefinitionById(gameId);
+            if (g != null && ps.getLevels().isEmpty()) {
+                List<Level> levelDefinitions = g.getLevels();
+                levelDefinitions.stream().forEach(definition -> {
+                    List<Threshold> levelThresholds = g.getLevelThresholds(definition.getName());
+                    if (!levelThresholds.isEmpty() && levelThresholds.get(0).getValue() == 0) {
+                        ps.getLevels().add(new PlayerLevel(definition, 0));
+                    }
+                });
             }
         }
         return ps;

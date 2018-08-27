@@ -6,8 +6,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class ChallengeChoice {
     private String modelName;
     private ChoiceState state;
-    private LevelInstance activeAtLevel;
-
 
     public enum ChoiceState {
         AVAILABLE, ACTIVE
@@ -15,10 +13,9 @@ public class ChallengeChoice {
 
     public ChallengeChoice() {}
 
-    public ChallengeChoice(String modelName, ChoiceState choiceState, LevelInstance activeAtLevel) {
+    public ChallengeChoice(String modelName, ChoiceState choiceState) {
         this.modelName = modelName;
         this.state = choiceState;
-        this.activeAtLevel = activeAtLevel;
     }
 
     public String getModelName() {
@@ -49,5 +46,10 @@ public class ChallengeChoice {
 
     public ChoiceState getState() {
         return state;
+    }
+
+    public void update(ChoiceState newState) {
+        state = newState;
+
     }
 }

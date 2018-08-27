@@ -596,15 +596,17 @@ public class GameEngineTest {
         g.getActions().add(ACTION);
         g.setConcepts(new HashSet<>());
         g.getConcepts().add(new PointConcept("green"));
+        Level levelDefinition = new Level("livello", "green");
+        levelDefinition.getThresholds().add(new Threshold("beginner", 0));
+        levelDefinition.getThresholds().add(new Threshold("explorer", 180d));
+        g.getLevels().add(levelDefinition);
         gameManager.saveGameDefinition(g);
 
 
         gameManager.addRule(new ClasspathRule(GAME, "rules/testLevel/rules.drl"));
 
 
-        Level levelDefinition = new Level("livello", "green");
-        levelDefinition.getThresholds().add(new Threshold("beginner", 0));
-        levelDefinition.getThresholds().add(new Threshold("explorer", 180d));
+
 
         PlayerState p = playerSrv.loadState(GAME, "player", true);
         p.updateLevels(
@@ -625,14 +627,17 @@ public class GameEngineTest {
         g.getActions().add(ACTION);
         g.setConcepts(new HashSet<>());
         g.getConcepts().add(new PointConcept("green"));
+
+        Level levelDefinition = new Level("livello", "green");
+        levelDefinition.getThresholds().add(new Threshold("beginner", 0));
+        levelDefinition.getThresholds().add(new Threshold("explorer", 180d));
+        g.getLevels().add(levelDefinition);
+
         gameManager.saveGameDefinition(g);
 
 
         gameManager.addRule(new ClasspathRule(GAME, "rules/testLevel/rules.drl"));
 
-        Level levelDefinition = new Level("livello", "green");
-        levelDefinition.getThresholds().add(new Threshold("beginner", 0));
-        levelDefinition.getThresholds().add(new Threshold("explorer", 180d));
 
         PlayerState p = playerSrv.loadState(GAME, "player", true);
         p.updateLevels(

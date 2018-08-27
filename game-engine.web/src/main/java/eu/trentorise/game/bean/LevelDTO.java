@@ -6,6 +6,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import eu.trentorise.game.model.Level.Config;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LevelDTO {
     private String name;
@@ -19,6 +21,7 @@ public class LevelDTO {
     public static class ThresholdDTO {
         private String name;
         private double value;
+        private Config config;
 
         public String getName() {
             return name;
@@ -34,6 +37,14 @@ public class LevelDTO {
 
         public void setValue(double value) {
             this.value = value;
+        }
+
+        public Config getConfig() {
+            return config;
+        }
+
+        public void setConfig(Config config) {
+            this.config = config;
         }
 
     }

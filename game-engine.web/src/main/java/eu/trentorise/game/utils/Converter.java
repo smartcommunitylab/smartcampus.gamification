@@ -355,7 +355,11 @@ public class Converter {
 	        lev = new Level(level.getName(),level.getPointConceptName());
             lev.getThresholds()
                     .addAll(level.getThresholds().stream()
-                            .map(dto -> new Threshold(dto.getName(), dto.getValue())
+                            .map(dto -> {
+                                Threshold thres = new Threshold(dto.getName(), dto.getValue());
+                                thres.setConfig(dto.getConfig());
+                                return thres;
+                            }
 	        ).collect(Collectors.toList()));
 	    }
         return lev;
@@ -374,6 +378,7 @@ public class Converter {
                 ThresholdDTO dto = new ThresholdDTO();
                 dto.setName(thres.getName());
                 dto.setValue(thres.getValue());
+                dto.setConfig(thres.getConfig());
                 return dto;
             }).collect(Collectors.toList()));
         }

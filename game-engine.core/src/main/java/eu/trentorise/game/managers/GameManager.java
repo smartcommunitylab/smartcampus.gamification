@@ -286,7 +286,7 @@ public class GameManager implements GameService {
         }
     }
 
-    @Scheduled(cron = "${cron.challengeFailureCheck}")
+    @Scheduled(cron = "0 0 4 1/1 * ?")
     public void challengeFailureTask() {
         LogHub.info(null, logger, "Challenge failure checker in action");
         final int pageSize = 50;

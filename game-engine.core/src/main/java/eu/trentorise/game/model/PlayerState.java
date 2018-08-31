@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,6 +102,12 @@ public class PlayerState {
         return cloned;
     }
 
+
+    public List<ChallengeConcept> challenges() {
+        return state.stream().filter(concept -> concept instanceof ChallengeConcept)
+                .map(concept -> (ChallengeConcept) concept)
+                .collect(Collectors.toList());
+    }
     /**
      * Clear and update levels for the player
      * 

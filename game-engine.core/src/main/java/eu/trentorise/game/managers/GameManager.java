@@ -17,9 +17,11 @@ package eu.trentorise.game.managers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -29,11 +31,14 @@ import org.perf4j.log4j.Log4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Level;
@@ -53,6 +58,7 @@ import eu.trentorise.game.repo.GameRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.RuleRepo;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 
 @Component
@@ -76,6 +82,9 @@ public class GameManager implements GameService {
 
     @Autowired
     private KieContainerFactory kieContainerFactory;
+
+    @Autowired
+    private PlayerService playerSrv;
 
     @PostConstruct
     private void startup() {
@@ -275,7 +284,44 @@ public class GameManager implements GameService {
                 saveGameDefinition(game);
             }
         }
+    }
 
+    @Scheduled(fixedDelay = 60000)
+    public void challengeFailureTask() {
+        LogHub.info(null, logger, "Challenge failure checker in action");
+        final int pageSize = 50;
+        long start = System.currentTimeMillis();
+        Date now = new Date();
+        List<Game> activeGames = loadGames(true);
+        List<String> activeGameIds =
+                activeGames.stream().map(Game::getId).collect(Collectors.toList());
+        PageRequest firstPage = new PageRequest(0, pageSize);
+
+        activeGameIds.forEach(gameId -> {
+            Page<String> pagedPlayerIds = playerSrv.readPlayers(gameId, firstPage);
+            updateChallengeState(pagedPlayerIds, gameId, now);
+            for (int pageIdx = 1; pageIdx < pagedPlayerIds.getTotalPages(); pageIdx++) {
+                PageRequest pageRequest = new PageRequest(pageIdx, pageSize);
+                pagedPlayerIds = playerSrv.readPlayers(gameId, pageRequest);
+                updateChallengeState(pagedPlayerIds, gameId, now);
+            }
+        });
+        long end = System.currentTimeMillis();
+        LogHub.info(null, logger,
+                String.format("Challenge failure check finished in %s ms ", (end - start)));
+    }
+
+    private void updateChallengeState(Page<String> pagedPlayerIds, String gameId, Date deadline) {
+        pagedPlayerIds.forEach(id -> {
+            PlayerState player = playerSrv.loadState(gameId, id, false);
+            player.challenges().forEach(challenge -> {
+                if (challenge.getEnd() != null && challenge.getEnd().before(deadline)
+                        && challenge.getState() != ChallengeState.COMPLETED) {
+                    challenge.updateState(ChallengeState.FAILED);
+                }
+            });
+            playerSrv.saveState(player);
+        });
     }
 
     public Game loadGameDefinitionByAction(String actionId) {

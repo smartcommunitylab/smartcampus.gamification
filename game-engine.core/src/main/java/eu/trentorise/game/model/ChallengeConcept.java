@@ -131,6 +131,21 @@ public class ChallengeConcept extends GameConcept {
         return state;
     }
 
+    @JsonIgnore
+    // FIXME : bad method, remove it, used only to fix a issue in challenge failure schedule
+    public ChallengeState persistedState() {
+        if (state == null) {
+            if (isCompleted()) { // loaded a completed ChallengeConcept <= 2.4.0
+                state = ChallengeState.COMPLETED;
+                stateDate.put(ChallengeState.COMPLETED, dateCompleted);
+            } else {
+                state = DEFAULT_STATE;
+                stateDate.put(DEFAULT_STATE, objectCreationDate);
+            }
+        }
+        return state;
+    }
+
     /**
      * Helper method of challenge
      * 

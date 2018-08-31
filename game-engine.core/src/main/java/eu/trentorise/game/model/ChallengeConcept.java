@@ -120,6 +120,9 @@ public class ChallengeConcept extends GameConcept {
             if (isCompleted()) { // loaded a completed ChallengeConcept <= 2.4.0
                 state = ChallengeState.COMPLETED;
                 stateDate.put(ChallengeState.COMPLETED, dateCompleted);
+            } else if (isFailed()) {
+                state = ChallengeState.FAILED;
+                stateDate.put(ChallengeState.FAILED, end);
             } else {
                 state = DEFAULT_STATE;
                 stateDate.put(DEFAULT_STATE, objectCreationDate);
@@ -153,6 +156,9 @@ public class ChallengeConcept extends GameConcept {
         return this;
     }
 
+    private boolean isFailed() {
+        return end != null && end.before(clock.now());
+    }
 
     public boolean isCompleted() {
         return completed || state == ChallengeState.COMPLETED;

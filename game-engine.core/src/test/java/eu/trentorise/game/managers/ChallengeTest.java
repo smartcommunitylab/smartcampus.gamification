@@ -11,10 +11,14 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,6 +27,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
@@ -54,6 +59,9 @@ public class ChallengeTest {
     @Autowired
     private MongoTemplate mongo;
 
+    @Mock
+    private Clock clock;
+
     private static final String GAME = "challengeGameTest";
     private static final String PLAYER = "eddie brock";
     private static final String ACTION = "beatme";
@@ -63,6 +71,7 @@ public class ChallengeTest {
     public void setup() {
         // clean mongo
         mongo.getDb().dropDatabase();
+        MockitoAnnotations.initMocks(this);
 
     }
 
@@ -244,7 +253,10 @@ public class ChallengeTest {
 
     @Test
     public void toStringChallengeWithDates() {
-        ChallengeConcept challenge = new ChallengeConcept();
+        Date dateOfAssignment = date("2017-04-20T00:12:11");
+        BDDMockito.given(clock.now()).willReturn(dateOfAssignment);
+
+        ChallengeConcept challenge = new ChallengeConcept(clock);
         challenge.setModelName("model1");
         challenge.setStart(DateTime.parse("2017-03-11T00:00:00").toDate());
         challenge.setEnd(DateTime.parse("2017-05-01T00:00:00").toDate());
@@ -371,6 +383,9 @@ public class ChallengeTest {
 
         game.setTasks(new HashSet<GameTask>());
         return game;
+    }
 
+    private Date date(String isoDate) {
+        return LocalDateTime.parse(isoDate).toDate();
     }
 }

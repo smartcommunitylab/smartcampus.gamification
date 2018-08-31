@@ -1,5 +1,8 @@
 package eu.trentorise.game.core;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -53,5 +56,13 @@ public class StatsLoggerTest {
         String expectedMessage =
                 "\"DOMAIN\" \"GAME\" \"PLAYER\" EXEC_ID 10 10 type=ChallengeAssigned name=\"CHALLENGE_NAME\" startDate=1507759200000 endDate=1507845600000";
         Assert.assertThat(message, Matchers.is(expectedMessage));
+    }
+
+    @Test
+    public void challenge_failure_event() {
+        String message = StatsLogger.logChallengeFailed("", "GAME", "513", "EXEC_ID", 1000, 1200,
+                "challenge_name");
+        assertThat(message, is(
+                "\"GAME\" \"513\" EXEC_ID 1000 1200 type=ChallengeFailed name=\"challenge_name\" failed"));
     }
 }

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -37,6 +38,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
@@ -312,12 +314,17 @@ public class GameManager implements GameService {
     }
 
     private void updateChallengeState(Page<String> pagedPlayerIds, String gameId, Date deadline) {
+        Game game = loadGameDefinitionById(gameId);
+        String executionId = UUID.randomUUID().toString();
         pagedPlayerIds.forEach(id -> {
             PlayerState player = playerSrv.loadState(gameId, id, false);
             player.challenges().forEach(challenge -> {
                 if (challenge.getEnd() != null && challenge.getEnd().before(deadline)
                         && challenge.getState() != ChallengeState.COMPLETED) {
                     challenge.updateState(ChallengeState.FAILED);
+                    StatsLogger.logChallengeFailed(game.getDomain(), gameId, player.getPlayerId(),
+                            executionId, challenge.getEnd().getTime(), deadline.getTime(),
+                            challenge.getName());
                 }
             });
             playerSrv.saveState(player);

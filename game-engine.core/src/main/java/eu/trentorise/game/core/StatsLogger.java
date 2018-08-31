@@ -176,6 +176,16 @@ public class StatsLogger {
         return msg;
     }
 
+
+    public static String logChallengeFailed(String domain, String gameId, String playerId,
+            String executionId, long executionTime, long timestamp, String challengeName) {
+        String msg =
+                commonFieldsOutput(domain, gameId, playerId, executionId, executionTime, timestamp);
+        msg += " "
+                + String.format("type=%s name=\"%s\" failed", "ChallengeFailed", challengeName);
+        statsLogger.info(msg);
+        return msg;
+    }
     public static String logEndGameAction(String domain, String gameId, String playerId,
             String executionId, long executionTime, long timestamp) {
         String msg =

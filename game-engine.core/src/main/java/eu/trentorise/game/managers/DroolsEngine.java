@@ -79,6 +79,7 @@ import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.UrlRule;
 import eu.trentorise.game.notification.ChallengeCompletedNotication;
+import eu.trentorise.game.notification.LevelGainedNotification;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -297,6 +298,8 @@ public class DroolsEngine implements GameEngine {
         if (!newGainedLevels.isEmpty()) {
             state.updateInventory(game, newGainedLevels);
             LogHub.info(gameId, logger, String.format("Gained new levels %s", newGainedLevels));
+            sendLevelNotifications(game.getDomain(), gameId, state.getPlayerId(), executionId,
+                    executionMoment, System.currentTimeMillis(), newGainedLevels);
         }
 
         // fix for dataset prior than 0.9 version
@@ -308,6 +311,25 @@ public class DroolsEngine implements GameEngine {
         }
         return state;
     }
+
+
+    private void sendLevelNotifications(String domain, String gameId, String playerId,
+            String executionId, long executionTime, long timestamp,
+            List<LevelInstance> newGainedLevels) {
+        newGainedLevels.forEach(instance -> {
+            LevelGainedNotification notification = new LevelGainedNotification();
+            notification.setGameId(gameId);
+            notification.setPlayerId(playerId);
+            notification.setLevelType(instance.getType());
+            notification.setLevelName(instance.getName());
+            notificationSrv.notificate(notification);
+            LogHub.info(gameId, logger, "send notification: {}", notification.toString());
+            StatsLogger.logLevelGained(domain, gameId, playerId, instance, executionId,
+                    executionTime, timestamp);
+        });
+
+    }
+
 
     private List<LevelInstance> newGainedLevels(Game game, PlayerState state,
             List<PlayerLevel> levels) {

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.LevelInstance;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.task.Classification;
@@ -191,6 +192,16 @@ public class StatsLogger {
         String msg =
                 commonFieldsOutput(domain, gameId, playerId, executionId, timestamp, timestamp);
         msg += " " + String.format("type=%s", "EndGameAction");
+        statsLogger.info(msg);
+        return msg;
+    }
+
+    public static String logLevelGained(String domain, String gameId, String playerId,
+            LevelInstance level, String executionId, long executionTime, long timestamp) {
+        String msg =
+                commonFieldsOutput(domain, gameId, playerId, executionId, timestamp, timestamp);
+        msg += " " + String.format("type=%s levelName=\"%s\" levelType=\"%s\"", "LevelGained",
+                level.getName(), level.getType());
         statsLogger.info(msg);
         return msg;
     }

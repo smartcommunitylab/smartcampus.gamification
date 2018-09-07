@@ -108,6 +108,14 @@ public class PlayerState {
                 .map(concept -> (ChallengeConcept) concept)
                 .collect(Collectors.toList());
     }
+
+    public <T extends GameConcept> boolean removeConcept(String conceptName, Class<T> classType) {
+        return state.removeIf(
+                concept -> concept.getClass() == classType
+                        && concept.getName().equals(conceptName));
+    }
+
+
     /**
      * Clear and update levels for the player
      * 

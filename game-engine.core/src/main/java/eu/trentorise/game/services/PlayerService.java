@@ -87,4 +87,6 @@ public interface PlayerService {
 	 */
 
     public ChallengeConcept assignChallenge(String gameId, String playerId, ChallengeAssignment challengeAssignment);
+
+    public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName);
 }

@@ -250,6 +250,11 @@ public class PlayerManager implements PlayerService {
 		throw new UnsupportedOperationException("method not implemented");
 	}
 
+    @Override
+    public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName) {
+        throw new UnsupportedOperationException("method not implemented");
+    }
+
 }
 
 class ConceptPersistence {

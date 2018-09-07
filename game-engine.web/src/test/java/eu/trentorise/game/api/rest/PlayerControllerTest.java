@@ -7,7 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -50,6 +53,7 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.LevelInstance;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.services.GameService;
@@ -374,7 +378,6 @@ public class PlayerControllerTest {
 
     @Test
     public void no_more_activation_actions() {
-
         Game game = defineGame();
         Level levelDefinition = new Level("greener", "green leaves");
         Threshold beginner = new Threshold("beginner", 0);
@@ -387,8 +390,6 @@ public class PlayerControllerTest {
 
         game.getLevels().add(levelDefinition);
         gameSrv.saveGameDefinition(game);
-
-
 
         RequestBuilder builder = null;
         try {
@@ -421,6 +422,194 @@ public class PlayerControllerTest {
 
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void accept_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+        
+
+
+        RequestBuilder builder = null;
+        try {
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                    new HashMap<>(), "PROPOSED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment);
+
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept",
+                            game.getId(),
+                            "player", "instance_name");
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
+            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false);
+
+            ChallengeConcept challenge = loaded.challenges().stream()
+                    .filter(ch -> ch.getName().equals("instance_name")).findFirst()
+                    .get();
+            assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
+
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    @Test
+    public void try_to_accept_a_completed_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+
+
+        RequestBuilder builder = null;
+        try {
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                    new HashMap<>(), "COMPLETED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment);
+
+            builder = MockMvcRequestBuilders.post(
+                    "/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept",
+                    game.getId(), "player", "instance_name");
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(400));
+
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    @Test
+    public void try_to_accept_a_not_existent_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+        RequestBuilder builder = null;
+        try {
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                    new HashMap<>(), "PROPOSED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment);
+
+            builder = MockMvcRequestBuilders.post(
+                    "/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept",
+                    game.getId(), "player", "notExistentInstanceName");
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(400));
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Test
+    public void accept_challenge_and_clean_others_proposed() {
+
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+        RequestBuilder builder = null;
+        try {
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                    new HashMap<>(), "PROPOSED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment);
+            ChallengeAssignment assignment2 = new ChallengeAssignment("model_1", "instance_name_1",
+                    new HashMap<>(), "PROPOSED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment2);
+            ChallengeAssignment assignment3 = new ChallengeAssignment("model_1", "instance_name_2",
+                    new HashMap<>(), "PROPOSED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment3);
+
+            builder = MockMvcRequestBuilders.post(
+                    "/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept",
+                    game.getId(), "player", "instance_name_1");
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
+
+            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false);
+            List<ChallengeConcept> proposed = loaded.challenges().stream()
+                    .filter(ch -> ch.getState() == ChallengeState.PROPOSED)
+                    .collect(Collectors.toList());
+
+            assertThat(proposed, hasSize(0));
+
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    @Test
+    public void accept_challenge_and_clean_only_proposed() {
+
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        ChallengeModel model = new ChallengeModel();
+        model.setGameId(game.getId());
+        model.setName("model_1");
+        gameSrv.saveChallengeModel(game.getId(), model);
+
+        RequestBuilder builder = null;
+        try {
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                    new HashMap<>(), "PROPOSED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment);
+            ChallengeAssignment assignment2 = new ChallengeAssignment("model_1", "instance_name_1",
+                    new HashMap<>(), "PROPOSED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment2);
+            ChallengeAssignment assignment3 = new ChallengeAssignment("model_1", "instance_name_2",
+                    new HashMap<>(), "COMPLETED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment3);
+            ChallengeAssignment assignment4 = new ChallengeAssignment("model_2", "instance_name_3",
+                    new HashMap<>(), "ACTIVE", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment4);
+            ChallengeAssignment assignment5 = new ChallengeAssignment("model_2", "instance_name_3",
+                    new HashMap<>(), "FAILED", null, null);
+            playerSrv.assignChallenge(game.getId(), "player", assignment5);
+
+            builder = MockMvcRequestBuilders.post(
+                    "/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept",
+                    game.getId(), "player", "instance_name_1");
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200));
+
+            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false);
+            List<ChallengeConcept> proposed = loaded.challenges().stream()
+                    .filter(ch -> ch.getState() == ChallengeState.PROPOSED)
+                    .collect(Collectors.toList());
+
+            assertThat(proposed, hasSize(0));
+            assertThat(loaded.getState(), hasSize(4));
+        } catch (Exception e) {
+
         }
 
     }

@@ -557,4 +557,40 @@ public class DBPlayerManager implements PlayerService {
         return convertToPlayerState(states, pageable);
     }
 
+    @Override
+    public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName) {
+        PlayerState state = loadState(gameId, playerId, false);
+        boolean found = false;
+        ChallengeConcept accepted = null;
+        for (ChallengeConcept challenge : state.challenges()) {
+            if (challenge.getName().equals(challengeName)) {
+                if (challenge.getState() == ChallengeState.PROPOSED) {
+                    accepted = challenge.updateState(ChallengeState.ASSIGNED);
+                    found = true;
+                } else {
+                    throw new IllegalArgumentException(
+                            String.format("challenge %s is not in state proposed", challengeName));
+                }
+            }
+        }
+
+        if (found) {
+            java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
+            while (iterator.hasNext()) {
+                ChallengeConcept ch = iterator.next();
+                if (ch.getState() == ChallengeState.PROPOSED) {
+                    state.removeConcept(ch.getName(), ChallengeConcept.class);
+                }
+            }
+            saveState(state);
+        }
+
+        if (!found) {
+            throw new IllegalArgumentException(
+                    String.format("challenge %s not exist", challengeName));
+        }
+
+        return accepted;
+    }
+
 }

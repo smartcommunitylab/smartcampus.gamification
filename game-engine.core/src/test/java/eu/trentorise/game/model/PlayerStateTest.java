@@ -2,6 +2,7 @@ package eu.trentorise.game.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
@@ -262,7 +263,46 @@ public class PlayerStateTest {
 
         inventory.activateChoice(new ItemChoice(ChoiceType.CHALLENGE_MODEL, "model2"));
         inventory.activateChoice(new ItemChoice(ChoiceType.CHALLENGE_MODEL, "model1"));
+    }
 
+    @Test
+    public void delete_a_pointConcept_from_state() {
+        PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
+
+        state.getState().add(new PointConcept("prova"));
+
+        boolean isRemoved = state.removeConcept("prova", PointConcept.class);
+        assertThat(isRemoved, is(true));
+        assertThat(state.getState(), hasSize(0));
+    }
+
+    @Test
+    public void delete_a_not_existent_pointConcept_from_state() {
+        PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
+        state.getState().add(new PointConcept("prova"));
+        boolean isRemoved = state.removeConcept("prova", ChallengeConcept.class);
+        assertThat(isRemoved, is(false));
+        assertThat(state.getState(), hasSize(1));
+    }
+
+    @Test
+    public void try_delete_a_pointConcept_with_different_name_from_state() {
+        PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
+        state.getState().add(new PointConcept("prova"));
+        state.getState().add(new BadgeCollectionConcept("prova"));
+        boolean isRemoved = state.removeConcept("other_name", PointConcept.class);
+        assertThat(isRemoved, is(false));
+        assertThat(state.getState(), hasSize(2));
+    }
+
+
+    @Test
+    public void try_delete_a_pointConcept_with_same_name_of_a_badgeCollection_from_state() {
+        PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
+        state.getState().add(new BadgeCollectionConcept("prova"));
+        boolean isRemoved = state.removeConcept("prova", PointConcept.class);
+        assertThat(isRemoved, is(false));
+        assertThat(state.getState(), hasSize(1));
     }
 }
 

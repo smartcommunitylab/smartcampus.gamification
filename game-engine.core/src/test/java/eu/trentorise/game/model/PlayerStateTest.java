@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -24,81 +23,11 @@ import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.Inventory.ItemChoice.ChoiceType;
 import eu.trentorise.game.model.Level.Config;
 import eu.trentorise.game.model.Level.Threshold;
-import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
         loader = AnnotationConfigContextLoader.class)
 public class PlayerStateTest {
-
-    @Autowired
-    private PlayerService playerSrv;
-
-    // @Test
-    // public void add_to_inventory() {
-    // PlayerState state = new PlayerState();
-    // ChallengeChoice challengeChoice = new ChallengeChoice();
-    // state.getInventory().add(challengeChoice);
-    // assertThat(state.getInventory().size(), is(1));
-    // }
-
-
-    // @Test
-    // public void add_second_item_to_inventory() {
-    // PlayerState state = new PlayerState();
-    // ChallengeChoice challengeChoice = new ChallengeChoice();
-    // state.getInventory().add(challengeChoice);
-    //
-    // ChallengeChoice secondChallengeChoice =
-    // new ChallengeChoice("percentageIncrement", ChoiceState.AVAILABLE, null);
-    // state.getInventory().add(secondChallengeChoice);
-    // assertThat(state.getInventory().size(), is(2));
-    // }
-
-    // @Test
-    // public void an_already_inserted_item_should_not_be_added() {
-    // PlayerState state = new PlayerState();
-    // ChallengeChoice challengeChoice =
-    // new ChallengeChoice("absoluteIncrement", ChoiceState.AVAILABLE, null);
-    // state.getInventory().add(challengeChoice);
-    // assertThat(state.getInventory().size(), is(1));
-    // ChallengeChoice otherChallengeChoice =
-    // new ChallengeChoice("absoluteIncrement", ChoiceState.AVAILABLE, null);
-    // state.getInventory().add(otherChallengeChoice);
-    // assertThat(state.getInventory().size(), is(1));
-    // }
-
-    // active item
-
-    // @Test
-    // public void persist_state() {
-    // String gameId = "MY_GAME";
-    // String playerId = "PLAYER_ID";
-    // PlayerState state = new PlayerState(gameId, playerId);
-    // ChallengeChoice challengeChoice =
-    // new ChallengeChoice("absoluteIncrement", ChoiceState.AVAILABLE, null);
-    // state.getInventory().add(challengeChoice);
-    //
-    // PlayerState saved = playerSrv.saveState(state);
-    // assertThat(saved, notNullValue());
-    // assertThat(saved.getInventory().size(), is(1));
-    //
-    // }
-
-    // @Test
-    // public void load_persisted_state() {
-    // String gameId = "MY_GAME";
-    // String playerId = "PLAYER_ID";
-    // PlayerState state = new PlayerState(gameId, playerId);
-    // ChallengeChoice challengeChoice =
-    // new ChallengeChoice("absoluteIncrement", ChoiceState.AVAILABLE, null);
-    // state.getInventory().add(challengeChoice);
-    //
-    // playerSrv.saveState(state);
-    // PlayerState saved = playerSrv.loadState(gameId, playerId, false);
-    // assertThat(saved, notNullValue());
-    // assertThat(saved.getInventory().size(), is(1));
-    // }
 
     @Test
     public void inventory_should_be_empty_if_levels_not_exist() {

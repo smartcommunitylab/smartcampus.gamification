@@ -3,7 +3,7 @@ package eu.trentorise.game.api.rest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-class ControllerUtils {
+public class ControllerUtils {
 
     public static String decodePathVariable(String variable) {
         try {

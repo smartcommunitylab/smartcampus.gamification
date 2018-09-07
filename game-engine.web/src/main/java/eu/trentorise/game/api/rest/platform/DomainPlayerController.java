@@ -1,5 +1,7 @@
 package eu.trentorise.game.api.rest.platform;
 
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Inventory.ItemChoice;
@@ -66,6 +69,20 @@ public class DomainPlayerController {
         }
         ChallengeAssignment assignment = converter.convert(challengeData);
         playerSrv.assignChallenge(gameId, playerId, assignment);
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept")
+    @ApiOperation(value = "Accept challenge")
+    public ChallengeConcept acceptChallenge(@PathVariable String domain,
+            @PathVariable String gameId,
+            @PathVariable String playerId, @PathVariable String challengeName) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+
+        return playerSrv.acceptChallenge(gameId, playerId, challengeName);
+
     }
 
     // Create a player

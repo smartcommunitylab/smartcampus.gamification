@@ -48,7 +48,7 @@ public class ChallengeConcept extends GameConcept {
     private static final Clock DEFAULT_CLOCK = new SystemClock();
 
     public static enum ChallengeState {
-        PROPOSED, ASSIGNED, ACTIVE, COMPLETED, FAILED
+        PROPOSED, ASSIGNED, ACTIVE, COMPLETED, FAILED, REFUSED
     }
 
 

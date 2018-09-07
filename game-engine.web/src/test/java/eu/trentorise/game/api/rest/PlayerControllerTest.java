@@ -575,6 +575,10 @@ public class PlayerControllerTest {
         model.setGameId(game.getId());
         model.setName("model_1");
         gameSrv.saveChallengeModel(game.getId(), model);
+        ChallengeModel model2 = new ChallengeModel();
+        model2.setGameId(game.getId());
+        model2.setName("model_2");
+        gameSrv.saveChallengeModel(game.getId(), model2);
 
         RequestBuilder builder = null;
         try {
@@ -591,7 +595,7 @@ public class PlayerControllerTest {
             ChallengeAssignment assignment4 = new ChallengeAssignment("model_2", "instance_name_3",
                     new HashMap<>(), "ACTIVE", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment4);
-            ChallengeAssignment assignment5 = new ChallengeAssignment("model_2", "instance_name_3",
+            ChallengeAssignment assignment5 = new ChallengeAssignment("model_2", "instance_name_4",
                     new HashMap<>(), "FAILED", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment5);
 

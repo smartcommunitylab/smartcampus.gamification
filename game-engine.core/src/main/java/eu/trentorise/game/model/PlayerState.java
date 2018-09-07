@@ -17,6 +17,7 @@ package eu.trentorise.game.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,10 +110,19 @@ public class PlayerState {
                 .collect(Collectors.toList());
     }
 
-    public <T extends GameConcept> boolean removeConcept(String conceptName, Class<T> classType) {
-        return state.removeIf(
-                concept -> concept.getClass() == classType
-                        && concept.getName().equals(conceptName));
+    public <T extends GameConcept> T removeConcept(String conceptName, Class<T> classType) {
+        Iterator<GameConcept> stateIterator = state.iterator();
+        T removed = null;
+        while (stateIterator.hasNext()) {
+            GameConcept gc = stateIterator.next();
+            if (gc.getClass() == classType && gc.getName().equals(conceptName)) {
+                state.remove(gc);
+                removed = (T) gc;
+                break;
+            }
+        }
+
+        return removed;
     }
 
 

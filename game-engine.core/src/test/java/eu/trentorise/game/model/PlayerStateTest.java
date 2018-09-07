@@ -200,8 +200,7 @@ public class PlayerStateTest {
 
         state.getState().add(new PointConcept("prova"));
 
-        boolean isRemoved = state.removeConcept("prova", PointConcept.class);
-        assertThat(isRemoved, is(true));
+        state.removeConcept("prova", PointConcept.class);
         assertThat(state.getState(), hasSize(0));
     }
 
@@ -209,8 +208,7 @@ public class PlayerStateTest {
     public void delete_a_not_existent_pointConcept_from_state() {
         PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
         state.getState().add(new PointConcept("prova"));
-        boolean isRemoved = state.removeConcept("prova", ChallengeConcept.class);
-        assertThat(isRemoved, is(false));
+        state.removeConcept("prova", ChallengeConcept.class);
         assertThat(state.getState(), hasSize(1));
     }
 
@@ -219,8 +217,7 @@ public class PlayerStateTest {
         PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
         state.getState().add(new PointConcept("prova"));
         state.getState().add(new BadgeCollectionConcept("prova"));
-        boolean isRemoved = state.removeConcept("other_name", PointConcept.class);
-        assertThat(isRemoved, is(false));
+        state.removeConcept("other_name", PointConcept.class);
         assertThat(state.getState(), hasSize(2));
     }
 
@@ -229,8 +226,7 @@ public class PlayerStateTest {
     public void try_delete_a_pointConcept_with_same_name_of_a_badgeCollection_from_state() {
         PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
         state.getState().add(new BadgeCollectionConcept("prova"));
-        boolean isRemoved = state.removeConcept("prova", PointConcept.class);
-        assertThat(isRemoved, is(false));
+        state.removeConcept("prova", PointConcept.class);
         assertThat(state.getState(), hasSize(1));
     }
 }

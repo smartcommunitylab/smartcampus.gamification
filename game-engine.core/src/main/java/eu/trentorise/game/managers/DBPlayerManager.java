@@ -73,6 +73,9 @@ import eu.trentorise.game.services.PlayerService;
 public class DBPlayerManager implements PlayerService {
 
     private final static Logger logger = LoggerFactory.getLogger(DBPlayerManager.class);
+
+    private static final String CHALLENGE_ARCHIVE_COLLECTION = "challengeArchive";
+
     @Autowired
     private PlayerRepo playerRepo;
 
@@ -579,7 +582,10 @@ public class DBPlayerManager implements PlayerService {
             while (iterator.hasNext()) {
                 ChallengeConcept ch = iterator.next();
                 if (ch.getState() == ChallengeState.PROPOSED) {
-                    state.removeConcept(ch.getName(), ChallengeConcept.class);
+                    ChallengeConcept removedChallenge =
+                            state.removeConcept(ch.getName(), ChallengeConcept.class);
+                    removedChallenge.updateState(ChallengeState.REFUSED);
+                    moveToArchive(removedChallenge);
                 }
             }
             saveState(state);
@@ -593,4 +599,7 @@ public class DBPlayerManager implements PlayerService {
         return accepted;
     }
 
+    private void moveToArchive(ChallengeConcept challenge) {
+        mongoTemplate.save(challenge, CHALLENGE_ARCHIVE_COLLECTION);
+    }
 }

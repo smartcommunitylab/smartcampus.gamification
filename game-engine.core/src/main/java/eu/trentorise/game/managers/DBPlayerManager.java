@@ -587,9 +587,10 @@ public class DBPlayerManager implements PlayerService {
         }
 
         if (found) {
+            long executionTime = System.currentTimeMillis();
+            String executionId = UUID.randomUUID().toString();
             StatsLogger.logChallengeAccepted(game.getDomain(), gameId, playerId,
-                    UUID.randomUUID().toString(),
-                    System.currentTimeMillis(), System.currentTimeMillis(), challengeName);
+                    executionId, executionTime, executionTime, challengeName);
             java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
             while (iterator.hasNext()) {
                 ChallengeConcept ch = iterator.next();
@@ -598,6 +599,8 @@ public class DBPlayerManager implements PlayerService {
                             state.removeConcept(ch.getName(), ChallengeConcept.class);
                     removedChallenge.updateState(ChallengeState.REFUSED);
                     moveToArchive(removedChallenge);
+                    StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
+                            executionId, executionTime, executionTime, ch.getName());
                 }
             }
             saveState(state);

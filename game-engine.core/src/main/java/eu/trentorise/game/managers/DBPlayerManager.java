@@ -569,6 +569,7 @@ public class DBPlayerManager implements PlayerService {
 
     @Override
     public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName) {
+        Game game = gameSrv.loadGameDefinitionById(gameId);
         PlayerState state = loadState(gameId, playerId, false);
         boolean found = false;
         ChallengeConcept accepted = null;
@@ -577,6 +578,7 @@ public class DBPlayerManager implements PlayerService {
                 if (challenge.getState() == ChallengeState.PROPOSED) {
                     accepted = challenge.updateState(ChallengeState.ASSIGNED);
                     found = true;
+                    break;
                 } else {
                     throw new IllegalArgumentException(
                             String.format("challenge %s is not in state proposed", challengeName));
@@ -585,6 +587,9 @@ public class DBPlayerManager implements PlayerService {
         }
 
         if (found) {
+            StatsLogger.logChallengeAccepted(game.getDomain(), gameId, playerId,
+                    UUID.randomUUID().toString(),
+                    System.currentTimeMillis(), System.currentTimeMillis(), challengeName);
             java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
             while (iterator.hasNext()) {
                 ChallengeConcept ch = iterator.next();

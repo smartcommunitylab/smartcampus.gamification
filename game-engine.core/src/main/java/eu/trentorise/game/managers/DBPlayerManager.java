@@ -447,9 +447,16 @@ public class DBPlayerManager implements PlayerService {
         LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
 
         Game game = gameSrv.loadGameDefinitionById(gameId);
+        if (challenge.getState() == ChallengeState.ASSIGNED) {
         StatsLogger.logChallengeAssignment(game.getDomain(), gameId, playerId,
                 UUID.randomUUID().toString(), System.currentTimeMillis(), challenge.getName(),
                 challengeAssignment.getStart(), challengeAssignment.getEnd());
+        } else if (challenge.getState() == ChallengeState.PROPOSED) {
+            StatsLogger.logChallengeProposed(game.getDomain(), gameId, playerId,
+                    UUID.randomUUID().toString(), System.currentTimeMillis(),
+                    System.currentTimeMillis(), challenge.getName());
+        }
+
         return challenge;
 
     }

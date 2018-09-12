@@ -11,6 +11,7 @@ public class ChallengeAssignmentDTO {
     private String origin;
 	private Date start;
 	private Date end;
+    private int priority;
 
 	public String getModelName() {
 		return modelName;
@@ -66,6 +67,14 @@ public class ChallengeAssignmentDTO {
 
     public void setOrigin(String origin) {
         this.origin = origin;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
 }

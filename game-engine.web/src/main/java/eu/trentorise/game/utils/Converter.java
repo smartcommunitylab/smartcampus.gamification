@@ -396,6 +396,7 @@ public class Converter {
             dto.setEnd(challengeAssignment.getEnd());
             dto.setState(challengeAssignment.getChallengeType());
             dto.setOrigin(challengeAssignment.getOrigin());
+            dto.setPriority(challengeAssignment.getPriority());
         }
         return dto;
     }
@@ -411,6 +412,7 @@ public class Converter {
             challengeAssignment.setInstanceName(dto.getInstanceName());
             challengeAssignment.setModelName(dto.getModelName());
             challengeAssignment.setOrigin(dto.getOrigin());
+            challengeAssignment.setPriority(dto.getPriority());
         }
         return challengeAssignment;
     }

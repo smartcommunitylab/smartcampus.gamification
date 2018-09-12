@@ -2,6 +2,7 @@ package eu.trentorise.game.managers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -382,6 +383,124 @@ public class ChallengeTest {
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
         assertThat(forced.getName(), is("this_value"));
     }
+
+
+    @Test
+    public void try_to_force_player_without_challenges() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        PlayerState state = playerSrv.loadState(GAME, "player", true);
+        playerSrv.saveState(state);
+
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced, is(nullValue()));
+    }
+
+    @Test
+    public void try_to_force_player_without_proposed_challenges() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        ChallengeAssignment completed = new ChallengeAssignment();
+        completed.setChallengeType("COMPLETED");
+        completed.setInstanceName("completed");
+        completed.setModelName("prize");
+        playerSrv.assignChallenge(GAME, "player", completed);
+
+        ChallengeAssignment failed = new ChallengeAssignment();
+        failed.setChallengeType("FAILED");
+        failed.setInstanceName("failed");
+        failed.setModelName("prize");
+        playerSrv.assignChallenge(GAME, "player", failed);
+
+        ChallengeAssignment firstAssigned = new ChallengeAssignment();
+        firstAssigned.setChallengeType("ASSIGNED");
+        firstAssigned.setInstanceName("firstAssigned");
+        firstAssigned.setModelName("prize");
+        playerSrv.assignChallenge(GAME, "player", firstAssigned);
+
+        ChallengeAssignment secondAssigned = new ChallengeAssignment();
+        secondAssigned.setChallengeType("ASSIGNED");
+        secondAssigned.setInstanceName("secondAssigned");
+        secondAssigned.setModelName("prize");
+        playerSrv.assignChallenge(GAME, "player", secondAssigned);
+
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced, is(nullValue()));
+    }
+
+    @Test
+    public void force_player_proposed_with_same_priority() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        ChallengeAssignment firstProposed = new ChallengeAssignment();
+        firstProposed.setChallengeType("PROPOSED");
+        firstProposed.setInstanceName("firstProposed");
+        firstProposed.setModelName("prize");
+        playerSrv.assignChallenge(GAME, "player", firstProposed);
+
+        ChallengeAssignment secondProposed = new ChallengeAssignment();
+        secondProposed.setChallengeType("PROPOSED");
+        secondProposed.setInstanceName("secondProposed");
+        secondProposed.setModelName("prize");
+        playerSrv.assignChallenge(GAME, "player", secondProposed);
+
+
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced.getName(), is("firstProposed"));
+    }
+
+
+    @Test
+    public void force_player_proposed_with_different_priority() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        ChallengeAssignment firstProposed = new ChallengeAssignment();
+        firstProposed.setChallengeType("PROPOSED");
+        firstProposed.setInstanceName("firstProposed");
+        firstProposed.setModelName("prize");
+        firstProposed.setPriority(1);
+        playerSrv.assignChallenge(GAME, "player", firstProposed);
+
+        ChallengeAssignment secondProposed = new ChallengeAssignment();
+        secondProposed.setChallengeType("PROPOSED");
+        secondProposed.setInstanceName("secondProposed");
+        secondProposed.setModelName("prize");
+        secondProposed.setPriority(5);
+        playerSrv.assignChallenge(GAME, "player", secondProposed);
+
+        ChallengeAssignment thirdProposed = new ChallengeAssignment();
+        thirdProposed.setChallengeType("PROPOSED");
+        thirdProposed.setInstanceName("thirdProposed");
+        thirdProposed.setModelName("prize");
+        thirdProposed.setPriority(3);
+        playerSrv.assignChallenge(GAME, "player", thirdProposed);
+
+
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced.getName(), is("secondProposed"));
+    }
+
+
 
     private Game defineGame() {
 

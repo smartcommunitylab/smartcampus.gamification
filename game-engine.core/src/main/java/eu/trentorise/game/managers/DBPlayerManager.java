@@ -432,6 +432,7 @@ public class DBPlayerManager implements PlayerService {
         // as key in persistence structure
         challenge.setName(challengeAssignment.getInstanceName() != null ? challengeAssignment.getInstanceName() : UUID.randomUUID().toString());
         challenge.setOrigin(challengeAssignment.getOrigin());
+        challenge.setPriority(challengeAssignment.getPriority());
 
         // save in playerState
         PlayerState state = loadState(gameId, playerId, true);
@@ -651,7 +652,7 @@ public class DBPlayerManager implements PlayerService {
                     }
                 }
             }
-
+            saveState(state);
         }
         return maxPriorityChallenge.orElse(null);
     }

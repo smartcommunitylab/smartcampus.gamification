@@ -11,6 +11,7 @@ public class ChallengeAssignment {
     private String origin;
     private Date start;
     private Date end;
+    private int priority = 0;
 
     public ChallengeAssignment(String modelName,
             String instanceName, Map<String, Object> data, String challengeType, Date start,
@@ -82,5 +83,13 @@ public class ChallengeAssignment {
 
     public void setOrigin(String origin) {
         this.origin = origin;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

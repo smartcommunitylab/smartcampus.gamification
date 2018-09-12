@@ -32,6 +32,11 @@ public class ChallengeConcept extends GameConcept {
     private Map<ChallengeState, Date> stateDate = new HashMap<>();
     private String origin;
 
+    /**
+     * An higher value refers to a higher priority
+     */
+    private int priority = 0;
+
     @JsonIgnore
     private Date objectCreationDate;
 
@@ -48,7 +53,7 @@ public class ChallengeConcept extends GameConcept {
     private static final Clock DEFAULT_CLOCK = new SystemClock();
 
     public static enum ChallengeState {
-        PROPOSED, ASSIGNED, ACTIVE, COMPLETED, FAILED, REFUSED
+        PROPOSED, ASSIGNED, ACTIVE, COMPLETED, FAILED, REFUSED, AUTO_DISCARDED
     }
 
 
@@ -266,6 +271,14 @@ public class ChallengeConcept extends GameConcept {
 
     public void setOrigin(String origin) {
         this.origin = origin;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
 }

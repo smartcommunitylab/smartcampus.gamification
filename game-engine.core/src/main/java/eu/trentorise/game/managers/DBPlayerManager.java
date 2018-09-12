@@ -15,10 +15,13 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -616,5 +619,49 @@ public class DBPlayerManager implements PlayerService {
 
     private void moveToArchive(ChallengeConcept challenge) {
         mongoTemplate.save(challenge, CHALLENGE_ARCHIVE_COLLECTION);
+    }
+
+    @Override
+    public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
+        PlayerState state = loadState(gameId, playerId, false);
+       Date now = new Date();
+        Optional<ChallengeConcept> maxPriorityChallenge = Optional.empty();
+        long assignedInFutureCounter = state.challenges().stream()
+                .filter(challenge -> challenge.getState() == ChallengeState.ASSIGNED)
+                .filter(challenge -> challenge.getStart() == null
+                        || challenge.getStart().after(now))
+                .count();
+        if (assignedInFutureCounter < 1) {
+            maxPriorityChallenge = state.challenges().stream()
+                    .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
+                    .max(new PriorityComparator());
+            maxPriorityChallenge.ifPresent(challenge -> {
+                challenge.updateState(ChallengeState.ASSIGNED);
+            });
+
+            if (maxPriorityChallenge.isPresent()) {
+                java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
+                while (iterator.hasNext()) {
+                    ChallengeConcept ch = iterator.next();
+                    if (ch.getState() == ChallengeState.PROPOSED) {
+                        ChallengeConcept removedChallenge =
+                                state.removeConcept(ch.getName(), ChallengeConcept.class);
+                        removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
+                        moveToArchive(removedChallenge);
+                    }
+                }
+            }
+
+        }
+        return maxPriorityChallenge.orElse(null);
+    }
+
+    private class PriorityComparator implements Comparator<ChallengeConcept> {
+
+        @Override
+        public int compare(ChallengeConcept o1, ChallengeConcept o2) {
+            return o1.getPriority() - o2.getPriority();
+        }
+
     }
 }

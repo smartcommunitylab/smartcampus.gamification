@@ -363,6 +363,25 @@ public class ChallengeTest {
         assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
     }
 
+    @Test
+    public void force_challenge() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+
+        ChallengeAssignment priorited = new ChallengeAssignment();
+        priorited.setChallengeType("PROPOSED");
+        priorited.setInstanceName("this_value");
+        priorited.setModelName("prize");
+        playerSrv.assignChallenge(GAME, "player", priorited);
+
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced.getName(), is("this_value"));
+    }
 
     private Game defineGame() {
 

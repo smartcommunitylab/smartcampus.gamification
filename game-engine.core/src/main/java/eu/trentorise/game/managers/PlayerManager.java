@@ -255,6 +255,12 @@ public class PlayerManager implements PlayerService {
         throw new UnsupportedOperationException("method not implemented");
     }
 
+    @Override
+    public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
 
 class ConceptPersistence {

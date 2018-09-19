@@ -186,7 +186,7 @@ angular.module('gamificationEngine.services', [])
 		
 		var deleteIncrementalClassification = function (game, classification) {
 			var deferred = $q.defer();
-			$http.delete(url + `/model/game/${game.id}/incclassification/${classificatino.name}`).
+			$http.delete(url + `/model/game/${game.id}/incclassification/${classification.name}`).
 			success(function (data, status, headers, config) {
 				deferred.resolve();
 			}).

@@ -62,6 +62,7 @@ import eu.trentorise.game.repo.RuleRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
+import eu.trentorise.game.task.AutoChallengeChoiceTask;
 
 @Component
 public class GameManager implements GameService {
@@ -106,7 +107,7 @@ public class GameManager implements GameService {
         Game game = loadGameDefinitionById(gameId);
         if (game != null) {
             for (GameTask task : game.getTasks()) {
-                taskSrv.createTask(task, gameId);
+                    taskSrv.createTask(task, gameId);
             }
         }
     }
@@ -117,9 +118,17 @@ public class GameManager implements GameService {
         if (game == null) {
             throw new IllegalArgumentException("game cannot be null");
         }
+
+        boolean isChallengeChoiceTaskExistent = false;
         if (game.getId() != null) {
             pers = gameRepo.findOne(game.getId());
             if (pers != null) {
+
+                isChallengeChoiceTaskExistent = pers.getTasks() != null
+                        && 
+                        pers.getTasks().stream().anyMatch(task -> task.getType()
+                                .equals(AutoChallengeChoiceTask.class.getCanonicalName()));
+
                 pers.setName(game.getName());
                 pers.setActions(new HashSet<String>());
 
@@ -170,7 +179,24 @@ public class GameManager implements GameService {
         }
 
         pers = gameRepo.save(pers);
+
+        // check if to update the tasks AutoChallengeChoice
+        createOrUpdateChallengeChoiceTask(game, isChallengeChoiceTaskExistent);
         return pers.toGame();
+    }
+
+    private void createOrUpdateChallengeChoiceTask(Game game, final boolean isTaskExistent) {
+        if (game.getTasks() != null) {
+            game.getTasks().stream()
+                    .filter(task -> task.getClass() == AutoChallengeChoiceTask.class)
+                    .forEach(task -> {
+                        if (isTaskExistent) {
+                            taskSrv.updateTask(task, game.getId());
+                        } else {
+                            taskSrv.createTask(task, game.getId());
+                        }
+                    });
+        }
     }
 
     public Game loadGameDefinitionById(String gameId) {

@@ -17,6 +17,7 @@
 package eu.trentorise.game.bean;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,22 @@ public class GameDTO {
     private Set<ClassificationDTO> classificationTask = new HashSet<>();
     private Set<PointConcept> pointConcept = new HashSet<>();
     private Set<BadgeCollectionConcept> badgeCollectionConcept = new HashSet<>();
+
+    private ChallengeChoiceConfig challengeChoiceConfig;
+
+    public static class ChallengeChoiceConfig {
+        private Date deadline;
+
+        public Date getDeadline() {
+            return deadline;
+        }
+
+        public void setDeadline(Date deadline) {
+            this.deadline = deadline;
+        }
+
+    }
+
 
 	public String getDomain() {
 		return domain;
@@ -140,6 +157,14 @@ public class GameDTO {
 
     public void setLevels(List<LevelDTO> levels) {
         this.levels = levels;
+    }
+
+    public ChallengeChoiceConfig getChallengeChoiceConfig() {
+        return challengeChoiceConfig;
+    }
+
+    public void setChallengeChoiceConfig(ChallengeChoiceConfig challengeChoiceConfig) {
+        this.challengeChoiceConfig = challengeChoiceConfig;
     }
 
 }

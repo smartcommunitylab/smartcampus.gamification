@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.task.AutoChallengeChoiceTask;
 
 public class GameJobQuartz extends QuartzJobBean {
 
@@ -39,12 +41,23 @@ public class GameJobQuartz extends QuartzJobBean {
 	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 		try {
 			GameContext gameCtx = (GameContext) arg0.getScheduler().getContext().get(gameId + ":" + taskName);
-			GameTask task = (GameTask) arg0.getScheduler().getContext().get(taskName);
-			task.execute(gameCtx);
+            PlayerService playerSrv =
+                    (PlayerService) arg0.getScheduler().getContext().get(gameId + ":playerSrv");
+            GameTask task = (GameTask) arg0.getScheduler().getContext().get(taskName);
+            task = injectPlayerSrvIntoAutoChallengeChoiceTask(task, playerSrv);
+            task.execute(gameCtx);
 		} catch (SchedulerException e) {
 			LogHub.error(gameId, logger, "Error getting gameContext in game task execution");
 		}
 	}
+
+    private GameTask injectPlayerSrvIntoAutoChallengeChoiceTask(GameTask task,
+            PlayerService playerSrv) {
+        if (task.getClass() == AutoChallengeChoiceTask.class) {
+            ((AutoChallengeChoiceTask) task).setPlayerSrv(playerSrv);
+        }
+        return task;
+    }
 
 	public String getGameId() {
 		return gameId;

@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.bean.ChallengeAssignmentDTO;
 import eu.trentorise.game.bean.ClassificationDTO;
 import eu.trentorise.game.bean.GameDTO;
+import eu.trentorise.game.bean.GameDTO.ChallengeChoiceConfig;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.bean.LevelDTO;
@@ -56,6 +57,7 @@ import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.task.AutoChallengeChoiceTask;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
 
@@ -66,6 +68,9 @@ public class Converter {
 	private GameService gameSrv;
 
 	private static final Logger logger = LoggerFactory.getLogger(Converter.class);
+
+    private static final long ONE_WEEK_MILLIS = 604800000;
+
 
 	public GameDTO convertGame(Game game) {
 		GameDTO gDTO = null;
@@ -124,10 +129,17 @@ public class Converter {
 					ClassificationDTO c = null;
 					if (gt instanceof GeneralClassificationTask) {
 						c = convertClassificationTask((GeneralClassificationTask) gt);
-					} else {
+                    } else if (gt instanceof IncrementalClassificationTask) {
 						c = convertClassificationTask(game.getId(), (IncrementalClassificationTask) gt);
-					}
-					gDTO.getClassificationTask().add(c);
+                    } else if (gt instanceof AutoChallengeChoiceTask) {
+                        ChallengeChoiceConfig config = new ChallengeChoiceConfig();
+                        config.setDeadline(gt.getSchedule().getStart());
+                        gDTO.setChallengeChoiceConfig(config);
+                    }
+
+                    if (c != null) {
+                        gDTO.getClassificationTask().add(c);
+                    }
 				}
 			}
 		}
@@ -171,11 +183,23 @@ public class Converter {
 			for (ClassificationDTO c : game.getClassificationTask()) {
 				if (c instanceof GeneralClassificationDTO) {
 					g.getTasks().add(convertClassificationTask((GeneralClassificationDTO) c));
-				} else {
+                } else if (c instanceof IncrementalClassificationDTO) {
 					g.getTasks().add(convertClassificationTask((IncrementalClassificationDTO) c));
-
 				}
 			}
+		}
+
+		if(game.getChallengeChoiceConfig() != null) {
+            if (g.getTasks() == null) {
+                g.setTasks(new HashSet<>());
+            }
+		    AutoChallengeChoiceTask task = new AutoChallengeChoiceTask();
+		    task.setName("auto challenge choice");
+		    TaskSchedule schedule = new TaskSchedule();
+            schedule.setStart(game.getChallengeChoiceConfig().getDeadline());
+            schedule.setPeriod(ONE_WEEK_MILLIS);
+            task.setSchedule(schedule);
+            g.getTasks().add(task);
 		}
 
 		return g;

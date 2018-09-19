@@ -52,6 +52,8 @@ import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.task.AutoChallengeChoiceTask;
 
 @Component
 public class QuartzTaskManager extends TaskDataManager {
@@ -64,6 +66,9 @@ public class QuartzTaskManager extends TaskDataManager {
 
 	@Autowired
 	private AppContextProvider provider;
+
+    @Autowired
+    private PlayerService playerSrv;
 
 	private final Logger logger = LoggerFactory.getLogger(QuartzTaskManager.class);
 
@@ -121,8 +126,15 @@ public class QuartzTaskManager extends TaskDataManager {
 				LogHub.debug(gameId, logger, "Added gameCtx {} to scheduler ctx",
 						ctx.getGameRefId() + ":" + task.getName());
 			}
+
+            if (!scheduler.getContext().containsKey(ctx.getGameRefId() + ":playerSrv")
+                    && task.getClass() == AutoChallengeChoiceTask.class) {
+                scheduler.getContext().put(ctx.getGameRefId() + ":playerSrv", playerSrv);
+                LogHub.debug(gameId, logger, "Added playerSrv {} to scheduler ctx",
+                        ctx.getGameRefId() + ":playerSrv");
+            }
 			if (!scheduler.getContext().containsKey(task.getName())) {
-				scheduler.getContext().put(task.getName(), task);
+                scheduler.getContext().put(task.getName(), task);
 				LogHub.debug(gameId, logger, "Added {} task to scheduler ctx", task.getName());
 			}
 
@@ -191,15 +203,18 @@ public class QuartzTaskManager extends TaskDataManager {
 			Repeat repeat = extractRepeat((int) task.getSchedule().getPeriod());
 			LogHub.debug(gameId, logger, "extract repeat every {} unit {}", repeat.getInterval(),
 					repeat.getUnit().toString());
-			calTrigger.setRepeatInterval(repeat.getInterval());
-			calTrigger.setRepeatIntervalUnit(repeat.getUnit());
-			return calTrigger;
+            calTrigger.setRepeatInterval(repeat.getInterval());
+            calTrigger.setRepeatIntervalUnit(repeat.getUnit());
+            return calTrigger;
 
 		}
 
 	}
 
 	private Date calculateStartDate(Date initialStart, long period) {
+        if (period <= 0) {
+            return initialStart;
+        }
 		LocalDateTime start = new LocalDateTime(initialStart);
 		while (start.toDateTime().isBeforeNow()) {
 			start = start.plusMillis((int) period);

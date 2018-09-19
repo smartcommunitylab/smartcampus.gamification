@@ -58,7 +58,7 @@ angular.module('gamificationEngine.settings', [])
 					function (data) {
 						// Settings edited
 						$scope.game.name = $scope.newGame.name;
-						$scope.game.expiration = $scope.newGame.expiration;
+						$scope.game.expiration = data.expiration;
 						$scope.game.domain = $scope.newGame.domain;
 						$scope.alerts.settingsEdited = true;
 						$scope.disabled = false;

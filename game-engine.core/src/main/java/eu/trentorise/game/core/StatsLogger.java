@@ -222,7 +222,7 @@ public class StatsLogger {
             String executionId, long executionTime, long timestamp) {
         String msg =
                 commonFieldsOutput(domain, gameId, playerId, executionId, timestamp, timestamp);
-        msg += " " + String.format("type=%s", "EndGameAction");
+        msg += " " + String.format("type=%s end", "EndGameAction");
         statsLogger.info(msg);
         return msg;
     }

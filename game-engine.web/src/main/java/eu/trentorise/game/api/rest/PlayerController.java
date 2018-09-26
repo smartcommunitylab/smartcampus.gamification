@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.ChallengeAssignmentDTO;
+import eu.trentorise.game.bean.GroupChallengeDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
@@ -63,13 +64,20 @@ public class PlayerController {
             @PathVariable String gameId,
             @PathVariable String playerId) {
 
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         ChallengeAssignment assignment = converter.convert(challengeData);
         playerSrv.assignChallenge(gameId, playerId, assignment);
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/data/game/{gameId}/group-challenges",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Assign group challenge")
+    public void assignGroupChallenge(@RequestBody GroupChallengeDTO challengeData,
+            @PathVariable String gameId) {
+
+        gameId = decodePathVariable(gameId);
+
     }
 
 

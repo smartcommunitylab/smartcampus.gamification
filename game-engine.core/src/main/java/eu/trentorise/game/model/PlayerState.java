@@ -104,6 +104,17 @@ public class PlayerState {
     }
 
 
+    public PointConcept pointConcept(String name) {
+        return state.stream().filter(
+                concept -> concept instanceof PointConcept && concept.getName().equals(name))
+                .map(concept -> (PointConcept) concept).findFirst().orElse(null);
+    }
+
+    public List<PointConcept> pointConcepts() {
+        return state.stream().filter(concept -> concept instanceof PointConcept)
+                .map(concept -> (PointConcept) concept).collect(Collectors.toList());
+    }
+
     public List<ChallengeConcept> challenges() {
         return state.stream().filter(concept -> concept instanceof ChallengeConcept)
                 .map(concept -> (ChallengeConcept) concept)

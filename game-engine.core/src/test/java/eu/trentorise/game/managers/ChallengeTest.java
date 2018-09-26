@@ -73,7 +73,6 @@ public class ChallengeTest {
         // clean mongo
         mongo.getDb().dropDatabase();
         MockitoAnnotations.initMocks(this);
-
     }
 
     @Test

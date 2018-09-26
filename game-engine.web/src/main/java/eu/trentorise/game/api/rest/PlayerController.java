@@ -2,8 +2,6 @@ package eu.trentorise.game.api.rest;
 
 import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -110,11 +108,8 @@ public class PlayerController {
     @ApiOperation(value = "Create player")
     public void createPlayer(@PathVariable String gameId,
             @RequestBody PlayerStateDTO player) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+
+        gameId = decodePathVariable(gameId);
 
         // check if player already exists
         if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
@@ -142,17 +137,8 @@ public class PlayerController {
     @ApiOperation(value = "Get player state")
     public PlayerStateDTO readPlayer(@PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
 
         return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
     }
@@ -169,17 +155,8 @@ public class PlayerController {
     @ApiOperation(value = "Edit player state")
     public void updatePlayer(@PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
 
         throw new UnsupportedOperationException("Operation actually not supported");
     }
@@ -193,17 +170,8 @@ public class PlayerController {
     @ApiOperation(value = "Delete player state")
     public void deletePlayer(@PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         playerSrv.deleteState(gameId, playerId);
     }
 
@@ -217,17 +185,8 @@ public class PlayerController {
     public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
             @PathVariable String playerId) {
 
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
 
         List<TeamState> result = playerSrv.readTeams(gameId, playerId);
         List<TeamDTO> converted = new ArrayList<>();
@@ -244,21 +203,13 @@ public class PlayerController {
             value = "/data/game/{gameId}/player/{playerId}/challenges",
             produces = {"application/json"})
     @ApiOperation(value = "Get player challenges")
-    public void getPlayerChallenge(@PathVariable String gameId,
+    public List<ChallengeConcept> getPlayerChallenge(@PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
 
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
-
-        throw new UnsupportedOperationException("Operation actually not supported");
+        PlayerState state = playerSrv.loadState(gameId, playerId, true);
+        return state.challenges();
     }
 
     // Read user game state
@@ -269,6 +220,8 @@ public class PlayerController {
     @ApiOperation(value = "Get player state")
     public PlayerStateDTO readState(@PathVariable String gameId,
             @PathVariable String playerId) {
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         return readPlayer(gameId, playerId);
     }
 
@@ -279,6 +232,9 @@ public class PlayerController {
     @ApiOperation(value = "Get player levels")
     public List<PlayerLevel> readLevels(@PathVariable String gameId,
             @PathVariable String playerId) {
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+
         PlayerState state = playerSrv.loadState(gameId, playerId, false);
         if (state != null) {
             return state.getLevels();
@@ -292,6 +248,8 @@ public class PlayerController {
     @ApiOperation(value = "Get player inventory")
     public Inventory readInventory(@PathVariable String gameId,
             @PathVariable String playerId) {
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         PlayerState state = playerSrv.loadState(gameId, playerId, false);
         if (state != null) {
             return state.getInventory();
@@ -308,6 +266,8 @@ public class PlayerController {
     @ApiOperation(value = "Activate a choice")
     public Inventory activateChoice(@PathVariable String gameId, @PathVariable String playerId,
             @RequestBody ItemChoice choice) {
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         PlayerState state = playerSrv.loadState(gameId, playerId, false);
         if (state != null) {
             Inventory result = state.getInventory().activateChoice(choice);
@@ -327,17 +287,8 @@ public class PlayerController {
     @ApiOperation(value = "Get player custom data")
     public PlayerStateDTO readCustomData(@PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
 
         throw new UnsupportedOperationException("Operation actually not supported");
 
@@ -355,11 +306,7 @@ public class PlayerController {
     public Page<PlayerStateDTO> searchByQuery(
             @PathVariable String gameId, @RequestBody WrapperQuery query,
             @ApiIgnore Pageable pageable) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
 
         Page<PlayerState> page = null;
         if (query.getComplexQuery() != null) {

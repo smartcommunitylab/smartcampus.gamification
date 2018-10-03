@@ -24,8 +24,10 @@ import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.managers.ChallengeManager;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.PlayerLevel;
@@ -50,6 +52,8 @@ public class PlayerController {
     @Autowired
     private PlayerService playerSrv;
 
+    @Autowired
+    private ChallengeManager challengeSrv;
 
     @Autowired
     private GameService gameSrv;
@@ -70,12 +74,12 @@ public class PlayerController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/data/game/{gameId}/group-challenges",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Assign group challenge")
     public void assignGroupChallenge(@RequestBody GroupChallengeDTO challengeData,
             @PathVariable String gameId) {
 
         gameId = decodePathVariable(gameId);
-
+        GroupChallenge assignment = converter.convert(challengeData);
+        challengeSrv.save(assignment);
     }
 
 

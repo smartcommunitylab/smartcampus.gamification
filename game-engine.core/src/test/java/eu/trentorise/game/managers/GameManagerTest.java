@@ -1,12 +1,20 @@
 package eu.trentorise.game.managers;
 
+import static eu.trentorise.game.test_utils.Utils.date;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,13 +23,20 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
+import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
+import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
@@ -31,13 +46,23 @@ public class GameManagerTest {
     @Autowired
     private GameService gameSrv;
 
+    @Autowired
+    @InjectMocks
+    private ChallengeManager challengeManager;
 
     @Autowired
     private MongoTemplate mongo;
 
+    @Mock
+    private Clock clock;
+
+    @Autowired
+    private PlayerService playerSrv;
+
     @Before
     public void setup() {
         mongo.getDb().dropDatabase();
+        MockitoAnnotations.initMocks(this);
     }
 
 
@@ -347,7 +372,6 @@ public class GameManagerTest {
         playerState.getState().add(greenScore);
 
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
-
         Assert.assertEquals(1, levels.size());
         Assert.assertEquals("child", levels.get(0).getLevelValue());
         Assert.assertEquals(100d, levels.get(0).getToNextLevel(), 0);
@@ -373,7 +397,6 @@ public class GameManagerTest {
         g.getLevels().add(explorerLevel);
 
         g = gameSrv.saveGameDefinition(g);
-
         
         PlayerState playerState = new PlayerState(gameId, "player");
         PointConcept greenScore = new PointConcept("green");
@@ -385,7 +408,6 @@ public class GameManagerTest {
         playerState.getState().add(blackScore);
 
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
-
         Assert.assertEquals(2, levels.size());
         Assert.assertEquals("child", levels.get(0).getLevelValue());
         Assert.assertEquals(44d, levels.get(0).getToNextLevel(), 0);
@@ -412,7 +434,6 @@ public class GameManagerTest {
         PlayerState playerState = new PlayerState(gameId, "player");
 
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
-
         Assert.assertEquals(1, levels.size());
         Assert.assertEquals("child", levels.get(0).getLevelValue());
         Assert.assertEquals(100d, levels.get(0).getToNextLevel(), 0);
@@ -433,14 +454,12 @@ public class GameManagerTest {
 
         g = gameSrv.saveGameDefinition(g);
 
-
         PlayerState playerState = new PlayerState(gameId, "player");
         PointConcept greenScore = new PointConcept("green");
         greenScore.setScore(200d);
         playerState.getState().add(greenScore);
 
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
-
         Assert.assertEquals(1, levels.size());
         Assert.assertEquals("adept", levels.get(0).getLevelValue());
         Assert.assertEquals(0d, levels.get(0).getToNextLevel(), 0);
@@ -453,10 +472,7 @@ public class GameManagerTest {
         Game g = new Game(gameId);
         g.setConcepts(new HashSet<>());
         g.getConcepts().add(new PointConcept("green"));
-
-
         g = gameSrv.saveGameDefinition(g);
-
 
         PlayerState playerState = new PlayerState(gameId, "player");
         PointConcept greenScore = new PointConcept("green");
@@ -464,8 +480,60 @@ public class GameManagerTest {
         playerState.getState().add(greenScore);
 
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
-
         Assert.assertEquals(0, levels.size());
+    }
+
+    @Test
+    public void competitive_performance_completion_check_process() {
+        // save an active game
+        Game g = new Game("game");
+        gameSrv.saveGameDefinition(g);
+
+        Date startDate = date("2018-09-26T00:00:00");
+        long executionMoment = new DateTime(startDate.getTime()).plusHours(5).getMillis();
+
+        // ant-man score
+        PointConcept antManWalkKmScore = new PointConcept("Walk_Km", executionMoment);
+        long ONE_DAY_MILLIS = 86400000;
+        antManWalkKmScore.addPeriod("weekly", startDate, ONE_DAY_MILLIS);
+        antManWalkKmScore.setScore(5d);
+
+        PlayerState antManState = new PlayerState("game", "Ant-man");
+        antManState.getState().add(antManWalkKmScore);
+        playerSrv.saveState(antManState);
+
+        // wasp score
+        executionMoment = new DateTime(startDate.getTime()).plusHours(2).getMillis();
+        PointConcept waspWalkKmScore = new PointConcept("Walk_Km", executionMoment);
+        waspWalkKmScore.addPeriod("weekly", startDate, ONE_DAY_MILLIS);
+        waspWalkKmScore.setScore(7d);
+
+        PlayerState waspState = new PlayerState("game", "Wasp");
+        waspState.getState().add(waspWalkKmScore);
+        playerSrv.saveState(waspState);
+
+
+        BDDMockito.given(clock.now()).willReturn(date("2018-09-29T09:00:00"));
+
+        GroupChallenge challenge1 = new GroupChallenge();
+        challenge1.setGameId("game");
+        challenge1.setInstanceName("competitive_performance_123456");
+        challenge1.setEnd(date("2018-09-27T00:00:00"));
+        challenge1.setState(ChallengeState.ASSIGNED);
+        Attendee antMan = new Attendee();
+        antMan.setPlayerId("Ant-man");
+        antMan.setRole(Role.GUEST);
+        challenge1.getAttendees().add(antMan);
+        Attendee wasp = new Attendee();
+        wasp.setPlayerId("Wasp");
+        wasp.setRole(Role.GUEST);
+        challenge1.getAttendees().add(wasp);
+        challenge1.setChallengePointConcept(new PointConceptRef("Walk_Km", "weekly"));
+
+        challengeManager.save(challenge1);
+
+        gameSrv.conditionCheckPerformanceGroupChallengesTask();
+
     }
 
 }

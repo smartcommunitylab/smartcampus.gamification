@@ -34,6 +34,10 @@ import eu.trentorise.game.bean.ClassificationDTO;
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.GameDTO.ChallengeChoiceConfig;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
+import eu.trentorise.game.bean.GroupChallengeDTO;
+import eu.trentorise.game.bean.GroupChallengeDTO.AttendeeDTO;
+import eu.trentorise.game.bean.GroupChallengeDTO.PointConceptDTO;
+import eu.trentorise.game.bean.GroupChallengeDTO.RewardDTO;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.bean.LevelDTO;
 import eu.trentorise.game.bean.LevelDTO.ThresholdDTO;
@@ -44,11 +48,17 @@ import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.GameManager;
 import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
+import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
+import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.Reward;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.GameConcept;
@@ -440,4 +450,63 @@ public class Converter {
         }
         return challengeAssignment;
     }
+
+    public GroupChallenge convert(GroupChallengeDTO dto) {
+        GroupChallenge groupChallenge = null;
+        if (dto != null) {
+            groupChallenge = new GroupChallenge();
+            groupChallenge.setGameId(dto.getGameId());
+            groupChallenge.setInstanceName(dto.getInstanceName());
+            groupChallenge.setAttendees(
+                    dto.getAttendees().stream().map(a -> convert(a)).collect(Collectors.toList()));
+            groupChallenge.setStart(dto.getStart());
+            groupChallenge.setEnd(dto.getEnd());
+            groupChallenge.setOrigin(dto.getOrigin());
+            groupChallenge.setPriority(dto.getPriority());
+            groupChallenge.setChallengePointConcept(convert(dto.getChallengePointConcept()));
+            groupChallenge.setReward(convert(dto.getReward()));
+            try {
+                groupChallenge.setState(ChallengeState.valueOf(dto.getState()));
+            } catch (Exception e) {
+                // do nothing, state is null or not valid
+            }
+        }
+
+        return groupChallenge;
+    }
+
+    private Reward convert(RewardDTO dto) {
+        Reward reward = null;
+        if (dto != null) {
+            reward = new Reward();
+            reward.setPercentage(dto.getPercentage());
+            reward.setCalculationPointConcept(convert(dto.getCalculationPointConcept()));
+            reward.setTargetPointConcept(convert(dto.getTargetPointConcept()));
+        }
+        return reward;
+    }
+
+    private PointConceptRef convert(PointConceptDTO dto) {
+        PointConceptRef ref = null;
+        if (dto != null) {
+            ref = new PointConceptRef(dto.getName(), dto.getPeriod());
+        }
+        return ref;
+    }
+
+    private Attendee convert(AttendeeDTO dto) {
+        Attendee attendee = null;
+        if (dto != null) {
+            attendee = new Attendee();
+            attendee.setPlayerId(dto.getPlayerId());
+            try {
+                attendee.setRole(Role.valueOf(dto.getRole()));
+            } catch (Exception e) {
+                // do nothing, role is null or not valid
+            }
+        }
+        return attendee;
+    }
+
+
 }

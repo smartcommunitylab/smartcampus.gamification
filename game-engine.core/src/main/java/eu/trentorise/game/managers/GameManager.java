@@ -16,6 +16,7 @@ package eu.trentorise.game.managers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -43,6 +44,8 @@ import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
@@ -54,6 +57,8 @@ import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
+import eu.trentorise.game.notification.ChallengeCompletedNotication;
+import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
@@ -62,6 +67,7 @@ import eu.trentorise.game.repo.RuleRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
+import eu.trentorise.game.services.Workflow;
 import eu.trentorise.game.task.AutoChallengeChoiceTask;
 
 @Component
@@ -88,6 +94,15 @@ public class GameManager implements GameService {
 
     @Autowired
     private PlayerService playerSrv;
+
+    @Autowired
+    private ChallengeManager challengeSrv;
+
+    @Autowired
+    private NotificationManager notificationSrv;
+
+    @Autowired
+    private Workflow workflow;
 
     @PostConstruct
     private void startup() {
@@ -312,6 +327,55 @@ public class GameManager implements GameService {
                 saveGameDefinition(game);
             }
         }
+    }
+
+
+    public void conditionCheckPerformanceGroupChallengesTask() {
+        LogHub.info(null, logger,
+                "Condition checker for best performance group challenges in action");
+        List<Game> activeGames = loadGames(true);
+        List<String> activeGameIds =
+                activeGames.stream().map(Game::getId).collect(Collectors.toList());
+
+        activeGameIds.forEach(gameId -> {
+            List<GroupChallenge> completedChallenges =
+                    challengeSrv.completedPerformanceGroupChallenges(gameId);
+
+            completedChallenges.forEach(challenge -> {
+                List<String> winners = challengeSrv.conditionCheck(challenge);
+                sendChallengeNotification(challenge);
+
+                challenge.setState(ChallengeState.COMPLETED);
+                challengeSrv.save(challenge);
+
+                // action rewards
+                winners.stream().forEach(w -> {
+                    workflow.apply(gameId, INTERNAL_ACTION_PREFIX + "reward", w,
+                            challenge.getEnd().getTime(), null,
+                            Arrays.asList(challenge.getReward()));
+                });
+            });
+
+        });
+    }
+
+    private void sendChallengeNotification(GroupChallenge challenge) {
+        List<Attendee> attendees = challenge.getAttendees();
+        attendees.stream().forEach(a -> {
+            if (a.isWinner()) {
+                ChallengeCompletedNotication notification = new ChallengeCompletedNotication();
+                notification.setChallengeName(challenge.getInstanceName());
+                notification.setGameId(challenge.getGameId());
+                notification.setPlayerId(a.getPlayerId());
+                notificationSrv.notificate(notification);
+            } else {
+                ChallengeFailedNotication notification = new ChallengeFailedNotication();
+                notification.setChallengeName(challenge.getInstanceName());
+                notification.setGameId(challenge.getGameId());
+                notification.setPlayerId(a.getPlayerId());
+                notificationSrv.notificate(notification);
+            }
+        });
     }
 
     @Scheduled(cron = "0 0 4 1/1 * ?")

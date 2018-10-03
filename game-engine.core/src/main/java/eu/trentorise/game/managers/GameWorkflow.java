@@ -64,7 +64,9 @@ public class GameWorkflow implements Workflow {
                 gameId, actionId, userId, dateFormat.format(new Date(executionMoment)), data,
                 factObjects);
         Game g = gameSrv.loadGameDefinitionById(gameId);
-        if (g == null || g.getActions() == null || !g.getActions().contains(actionId)) {
+        if (g == null || g.getActions() == null
+                || (!actionId.startsWith(GameManager.INTERNAL_ACTION_PREFIX)
+                        && !g.getActions().contains(actionId))) {
             throw new IllegalArgumentException(String
                     .format("game %s not exist or action %s not belong to it", gameId, actionId));
         }

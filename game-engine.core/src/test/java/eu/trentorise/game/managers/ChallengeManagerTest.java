@@ -15,6 +15,10 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,6 +27,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
@@ -36,8 +42,10 @@ import eu.trentorise.game.services.PlayerService;
         loader = AnnotationConfigContextLoader.class)
 public class ChallengeManagerTest {
 
+    @InjectMocks
     @Autowired
     private ChallengeManager challengeManager;
+
 
     @Autowired
     private PlayerService playerSrv;
@@ -45,10 +53,13 @@ public class ChallengeManagerTest {
     @Autowired
     private MongoTemplate mongo;
 
+    @Mock
+    private Clock clock;
+
     @Before
     public void setup() {
-        // clean mongo
         mongo.getDb().dropDatabase();
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -57,7 +68,7 @@ public class ChallengeManagerTest {
         assertThat(challengeManager.conditionCheck(groupChallenge), is(empty()));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void players_not_exist() {
         GroupChallenge groupChallenge = new GroupChallenge();
         Attendee antMan = new Attendee();
@@ -70,7 +81,7 @@ public class ChallengeManagerTest {
         wasp.setPlayerId("Wasp");
         groupChallenge.getAttendees().add(wasp);
 
-        assertThat(challengeManager.conditionCheck(groupChallenge), is(empty()));
+        challengeManager.conditionCheck(groupChallenge);
     }
 
     @Test
@@ -167,5 +178,59 @@ public class ChallengeManagerTest {
 
         assertThat(winners, hasSize(2));
         assertThat(winners, containsInAnyOrder("Wasp", "Ant-man"));
+    }
+
+    @Test
+    public void load_completed_performance() {
+        BDDMockito.given(clock.now()).willReturn(date("2018-09-27T17:00:00"));
+
+        GroupChallenge assign = new GroupChallenge();
+        assign.setGameId("game");
+        assign.setEnd(date("2018-09-27T00:00:00"));
+        challengeManager.save(assign);
+
+        GroupChallenge assign1 = new GroupChallenge();
+        assign1.setGameId("game");
+        assign1.setEnd(date("2018-09-29T09:00:00"));
+        challengeManager.save(assign1);
+
+        List<GroupChallenge> completedGroupChallenges =
+                challengeManager.completedPerformanceGroupChallenges("game");
+        assertThat(completedGroupChallenges, hasSize(1));
+    }
+
+    @Test
+    public void load_two_perfomance_challenges() {
+        BDDMockito.given(clock.now()).willReturn(date("2018-09-29T09:00:00"));
+
+        GroupChallenge challenge1 = new GroupChallenge();
+        challenge1.setGameId("game");
+        challenge1.setEnd(date("2018-09-27T00:00:00"));
+        challenge1.setState(ChallengeState.PROPOSED);
+        challengeManager.save(challenge1);
+
+        GroupChallenge challenge2 = new GroupChallenge();
+        challenge2.setGameId("game");
+        challenge2.setEnd(date("2018-09-30T09:00:00"));
+        challengeManager.save(challenge2);
+
+        GroupChallenge challenge3 = new GroupChallenge();
+        challenge3.setGameId("other-game");
+        challenge3.setEnd(date("2018-09-17T09:00:00"));
+        challengeManager.save(challenge3);
+
+        GroupChallenge challenge4 = new GroupChallenge();
+        challenge4.setGameId("game");
+        challenge4.setEnd(date("2018-09-17T09:00:00"));
+        challengeManager.save(challenge4);
+
+        GroupChallenge challenge5 = new GroupChallenge();
+        challenge5.setGameId("game");
+        challenge5.setEnd(date("2018-09-29T08:00:00"));
+        challengeManager.save(challenge5);
+
+        List<GroupChallenge> completedGroupChallenges =
+                challengeManager.completedPerformanceGroupChallenges("game");
+        assertThat(completedGroupChallenges, hasSize(2));
     }
 }

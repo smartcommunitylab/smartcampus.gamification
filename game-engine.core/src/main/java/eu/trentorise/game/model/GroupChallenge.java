@@ -1,8 +1,14 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 
 public class GroupChallenge {
 
@@ -15,44 +21,64 @@ public class GroupChallenge {
     private PointConceptRef challengePointConcept;
     private Reward reward;
 
+    private ChallengeState state = ChallengeState.ASSIGNED;
 
-    private String state;
     private String origin;
     private Date start;
     private Date end;
     private int priority;
 
 
-    public static class Reward {
-        private double percentage;
-        private PointConceptRef calculationPointConcept;
-        private PointConceptRef targetPointConcept;
+    public GroupChallenge update(List<PlayerState> attendeeStates) {
+        attendees.forEach(attendee -> {
+            attendee.setChallengeScore(
+                    challengeScore(attendee.getPlayerId(), challengePointConcept, attendeeStates));
+        });
+        return this;
+    }
 
-        public double getPercentage() {
-            return percentage;
+    public List<Attendee> winners() {
+        List<String> winnerIds = new ArrayList<>();
+        double max = 0;
+       for(Attendee attendee : attendees){
+            if (max < attendee.getChallengeScore()) {
+                max = attendee.getChallengeScore();
+                winnerIds.clear();
+                winnerIds.add(attendee.getPlayerId());
+            } else if (max == attendee.getChallengeScore()) {
+                winnerIds.add(attendee.getPlayerId());
+            }
         }
+       
+        winnerIds.forEach(id -> {
+            attendees.stream().filter(a -> a.getPlayerId().equals(id)).findFirst()
+                    .ifPresent(a -> a.setWinner(true));
+        });
 
-        public void setPercentage(double percentage) {
-            this.percentage = percentage;
-        }
+        return attendees.stream().filter(a -> a.isWinner()).collect(Collectors.toList());
+    }
 
-        public PointConceptRef getCalculationPointConcept() {
-            return calculationPointConcept;
-        }
-
-        public void setCalculationPointConcept(PointConceptRef calculationPointConcept) {
-            this.calculationPointConcept = calculationPointConcept;
-        }
-
-        public PointConceptRef getTargetPointConcept() {
-            return targetPointConcept;
-        }
-
-        public void setTargetPointConcept(PointConceptRef targetPointConcept) {
-            this.targetPointConcept = targetPointConcept;
-        }
+    private double challengeScore(String playerId, PointConceptRef pointConcept, List<PlayerState> attendeeStates) {
+        Optional<PlayerState> playerState = attendeeStates.stream().filter(state -> state.getPlayerId().equals(playerId)).findFirst();
+        
+        return playerState.map(state -> {
+            PointConcept challengePointConceptState =
+                    state.pointConcept(pointConcept.getName());
+            return challengePointConceptState.getPeriodScore(
+                    pointConcept.getPeriod(), instantInChallenge(end));
+        }).orElseThrow(() -> new IllegalArgumentException(
+                String.format("attendeeStates doesn't contain player %s", playerId)));
 
     }
+
+    private long instantInChallenge(Date date) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.add(Calendar.MINUTE, -1);
+        return cal.getTime().getTime();
+
+    }
+
 
     public static class Attendee {
         private String playerId;
@@ -175,14 +201,6 @@ public class GroupChallenge {
         this.reward = reward;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public String getOrigin() {
         return origin;
     }
@@ -213,5 +231,13 @@ public class GroupChallenge {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public ChallengeState getState() {
+        return state;
+    }
+
+    public void setState(ChallengeState state) {
+        this.state = state;
     }
 }

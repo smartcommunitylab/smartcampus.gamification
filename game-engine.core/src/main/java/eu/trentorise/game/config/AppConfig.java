@@ -35,7 +35,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import eu.trentorise.game.core.AppContextProvider;
+import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.SystemClock;
 import eu.trentorise.game.managers.DBPlayerManager;
 import eu.trentorise.game.managers.QuartzTaskManager;
 import eu.trentorise.game.managers.QueueGameWorkflow;
@@ -110,4 +112,9 @@ public class AppConfig {
 	public Workflow workflow() {
 		return new QueueGameWorkflow();
 	}
+
+    @Bean
+    public Clock clock() {
+        return new SystemClock();
+    }
 }

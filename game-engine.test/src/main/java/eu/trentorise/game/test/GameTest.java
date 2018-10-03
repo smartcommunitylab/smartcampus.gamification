@@ -333,7 +333,8 @@ public abstract class GameTest {
         List<ExecData> execList = new ArrayList<GameTest.ExecData>();
         defineExecData(execList);
         for (ExecData ex : execList) {
-            workflow.apply(ex.gameId, ex.getActionId(), ex.getPlayerId(), ex.getData(), null);
+            workflow.apply(ex.gameId, ex.getActionId(), ex.getPlayerId(), ex.getData(),
+                    ex.getFactObjects());
         }
 
         // launch Task sequentially
@@ -404,6 +405,7 @@ public abstract class GameTest {
         private String actionId;
         private String playerId;
         private Map<String, Object> data;
+        private List<Object> factObjects;
 
         public String getActionId() {
             return actionId;
@@ -429,6 +431,15 @@ public abstract class GameTest {
             this.data = data;
         }
 
+        public ExecData(String gameId, String actionId, String playerId, Map<String, Object> data,
+                List<Object> factObjects) {
+            this.gameId = gameId;
+            this.actionId = actionId;
+            this.playerId = playerId;
+            this.data = data;
+            this.factObjects = factObjects;
+        }
+
         public ExecData(String gameId, String actionId, String playerId, Map<String, Object> data) {
             this.gameId = gameId;
             this.actionId = actionId;
@@ -442,6 +453,14 @@ public abstract class GameTest {
 
         public void setGameId(String gameId) {
             this.gameId = gameId;
+        }
+
+        public List<Object> getFactObjects() {
+            return factObjects;
+        }
+
+        public void setFactObjects(List<Object> factObjects) {
+            this.factObjects = factObjects;
         }
 
     }

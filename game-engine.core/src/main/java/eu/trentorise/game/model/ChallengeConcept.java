@@ -281,4 +281,16 @@ public class ChallengeConcept extends GameConcept {
         this.priority = priority;
     }
 
+    public void setStateDate(Map<ChallengeState, Date> stateDate) {
+        this.stateDate = stateDate;
+    }
+
+    public void setState(ChallengeState state) {
+        this.state = state;
+    }
+
+    public Map<ChallengeState, Date> getStateDate() {
+        return stateDate;
+    }
+
 }

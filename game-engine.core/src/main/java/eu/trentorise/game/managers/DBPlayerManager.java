@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -49,6 +50,7 @@ import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
@@ -66,6 +68,7 @@ import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.notification.ChallengeAssignedNotification;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
+import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.repo.PlayerRepo;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.repo.TeamPersistence;
@@ -92,6 +95,9 @@ public class DBPlayerManager implements PlayerService {
     private ChallengeModelRepo challengeModelRepo;
 
     @Autowired
+    private GroupChallengeRepo groupChallengeRepo;
+
+    @Autowired
     private NotificationManager notificationSrv;
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert) {
@@ -99,7 +105,8 @@ public class DBPlayerManager implements PlayerService {
                 playerRepo.findByGameIdAndPlayerId(gameId, playerId);
         PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
                 : isTeam(state) ? new TeamState(state) : new PlayerState(state);
-        return initDefaultLevels(initConceptsStructure(res, gameId), gameId);
+        return initDefaultLevels(mergeGroupChallenges(initConceptsStructure(res, gameId), gameId),
+                gameId);
     }
 
     public PlayerState saveState(PlayerState state) {
@@ -117,6 +124,23 @@ public class DBPlayerManager implements PlayerService {
         return saved;
     }
 
+    private PlayerState mergeGroupChallenges(PlayerState state, String gameId) {
+        if (state != null) {
+            List<GroupChallenge> groupChallenges =
+                    groupChallengeRepo.playerGroupChallenges(gameId, state.getPlayerId());
+            state.getState()
+                    .addAll(groupChallenges.stream()
+                            .map(groupChallenge -> convertToChallengeConcept(state.getPlayerId(),
+                                    groupChallenge))
+                            .collect(Collectors.toList()));
+        }
+        return state;
+    }
+
+    private ChallengeConcept convertToChallengeConcept(String playerId,
+            GroupChallenge groupChallenge) {
+        return groupChallenge != null ? groupChallenge.toChallengeConcept(playerId) : null;
+    }
     private boolean isTeam(StatePersistence state) {
         return state != null && state.getMetadata().get(TeamState.NAME_METADATA) != null
                 && state.getMetadata().get(TeamState.MEMBERS_METADATA) != null;
@@ -224,6 +248,7 @@ public class DBPlayerManager implements PlayerService {
         return res;
     }
 
+    // TODO: method use only by a test, investigate
     @Override
     public List<PlayerState> loadStates(String gameId) {
         List<StatePersistence> states = playerRepo.findByGameId(gameId);
@@ -250,6 +275,7 @@ public class DBPlayerManager implements PlayerService {
         return res;
     }
 
+    // TODO: method seems never used
     @Override
     public List<PlayerState> loadStates(String gameId, String playerId) {
         List<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId);
@@ -388,7 +414,8 @@ public class DBPlayerManager implements PlayerService {
     }
 
     @Override
-    public ChallengeConcept assignChallenge(String gameId, String playerId, ChallengeAssignment challengeAssignment) {
+    public ChallengeConcept assignChallenge(String gameId, String playerId,
+            ChallengeAssignment challengeAssignment) {
 
         Map<String, Object> data = challengeAssignment.getData();
         if (playerId == null) {
@@ -401,9 +428,8 @@ public class DBPlayerManager implements PlayerService {
         ChallengeModel model =
                 challengeModelRepo.findByGameIdAndName(gameId, challengeAssignment.getModelName());
         if (model == null) {
-            throw new IllegalArgumentException(
-                    String.format("model %s not exist in game %s",
-                            challengeAssignment.getModelName(), gameId));
+            throw new IllegalArgumentException(String.format("model %s not exist in game %s",
+                    challengeAssignment.getModelName(), gameId));
         }
 
         if (data == null) {
@@ -412,17 +438,20 @@ public class DBPlayerManager implements PlayerService {
             for (String var : data.keySet()) {
                 if (!model.getVariables().contains(var)) {
                     throw new IllegalArgumentException(
-                            String.format("field %s not present in model %s", var, challengeAssignment.getModelName()));
+                            String.format("field %s not present in model %s", var,
+                                    challengeAssignment.getModelName()));
                 }
             }
         }
 
         ChallengeConcept challenge = null;
         try {
-            challenge = new ChallengeConcept(convertToChallengeState(challengeAssignment.getChallengeType()));
+            challenge = new ChallengeConcept(
+                    convertToChallengeState(challengeAssignment.getChallengeType()));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(
-                    String.format("You cannot create a challenge with state %s", challengeAssignment.getChallengeType()));
+                    String.format("You cannot create a challenge with state %s",
+                            challengeAssignment.getChallengeType()));
         }
         challenge.setModelName(challengeAssignment.getModelName());
         challenge.setFields(data);
@@ -430,7 +459,8 @@ public class DBPlayerManager implements PlayerService {
         challenge.setEnd(challengeAssignment.getEnd());
         // needed since v2.2.0, gameConcept name is mandatory because it is used
         // as key in persistence structure
-        challenge.setName(challengeAssignment.getInstanceName() != null ? challengeAssignment.getInstanceName() : UUID.randomUUID().toString());
+        challenge.setName(challengeAssignment.getInstanceName() != null
+                ? challengeAssignment.getInstanceName() : UUID.randomUUID().toString());
         challenge.setOrigin(challengeAssignment.getOrigin());
         challenge.setPriority(challengeAssignment.getPriority());
 
@@ -452,9 +482,9 @@ public class DBPlayerManager implements PlayerService {
 
         Game game = gameSrv.loadGameDefinitionById(gameId);
         if (challenge.getState() == ChallengeState.ASSIGNED) {
-        StatsLogger.logChallengeAssignment(game.getDomain(), gameId, playerId,
-                UUID.randomUUID().toString(), System.currentTimeMillis(), challenge.getName(),
-                challengeAssignment.getStart(), challengeAssignment.getEnd());
+            StatsLogger.logChallengeAssignment(game.getDomain(), gameId, playerId,
+                    UUID.randomUUID().toString(), System.currentTimeMillis(), challenge.getName(),
+                    challengeAssignment.getStart(), challengeAssignment.getEnd());
         } else if (challenge.getState() == ChallengeState.PROPOSED) {
             StatsLogger.logChallengeProposed(game.getDomain(), gameId, playerId,
                     UUID.randomUUID().toString(), System.currentTimeMillis(),
@@ -593,8 +623,8 @@ public class DBPlayerManager implements PlayerService {
         if (found) {
             long executionTime = System.currentTimeMillis();
             String executionId = UUID.randomUUID().toString();
-            StatsLogger.logChallengeAccepted(game.getDomain(), gameId, playerId,
-                    executionId, executionTime, executionTime, challengeName);
+            StatsLogger.logChallengeAccepted(game.getDomain(), gameId, playerId, executionId,
+                    executionTime, executionTime, challengeName);
             java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
             while (iterator.hasNext()) {
                 ChallengeConcept ch = iterator.next();
@@ -603,8 +633,8 @@ public class DBPlayerManager implements PlayerService {
                             state.removeConcept(ch.getName(), ChallengeConcept.class);
                     removedChallenge.updateState(ChallengeState.REFUSED);
                     moveToArchive(removedChallenge);
-                    StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
-                            executionId, executionTime, executionTime, ch.getName());
+                    StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId, executionId,
+                            executionTime, executionTime, ch.getName());
                 }
             }
             saveState(state);
@@ -625,7 +655,7 @@ public class DBPlayerManager implements PlayerService {
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
         PlayerState state = loadState(gameId, playerId, false);
-       Date now = new Date();
+        Date now = new Date();
         Optional<ChallengeConcept> maxPriorityChallenge = Optional.empty();
         long assignedInFutureCounter = state.challenges().stream()
                 .filter(challenge -> challenge.getState() == ChallengeState.ASSIGNED)

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,10 +42,15 @@ import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.NoSecurityConfig;
+import eu.trentorise.game.managers.ChallengeManager;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
+import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
+import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.Inventory.ItemChoice.ChoiceType;
 import eu.trentorise.game.model.Level;
@@ -72,6 +78,9 @@ public class PlayerControllerTest {
 
     @Autowired
     private PlayerService playerSrv;
+
+    @Autowired
+    private ChallengeManager challengeSrv;
 
     @Autowired
     private MongoTemplate mongo;
@@ -686,6 +695,203 @@ public class PlayerControllerTest {
         } catch (Exception e) {
 
         }
+    }
 
+    @Test
+    public void read_player_state_with_only_a_group_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+        GroupChallenge challenge = new GroupChallenge();
+        challenge.setGameId(game.getId());
+        challenge.setInstanceName("instanceName");
+        challenge.setStart(new LocalDateTime().minusDays(1).toDate());
+        challenge.setEnd(new LocalDateTime().plusDays(1).toDate());
+        challenge.setOrigin("Demiurgo");
+        challenge.setPriority(11);
+        Attendee proposer = new Attendee();
+        proposer.setPlayerId("player");
+        proposer.setRole(Role.PROPOSER);
+        proposer.setChallengeScore(4.2);
+        Attendee guest = new Attendee();
+        guest.setRole(Role.GUEST);
+        guest.setPlayerId("player2");
+        guest.setChallengeScore(1.0);
+        challenge.getAttendees().add(proposer);
+        challenge.getAttendees().add(guest);
+
+        challenge.setChallengePointConcept(new PointConceptRef("Walk_Km", "weekly"));
+        challengeSrv.save(challenge);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders.get(
+                    "/data/game/{gameId}/player/{playerId}/state",
+                    game.getId(), "player");
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.state.ChallengeConcept", hasSize(1)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].name", is("instanceName")))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].modelName",
+                            is("groupCompetitivePerformance")))
+                    .andExpect(
+                            jsonPath("$.state.ChallengeConcept[0].fields.challengeScore", is(4.2)))
+                    .andExpect(
+                            jsonPath("$.state.ChallengeConcept[0].fields.otherAttendeeScores",
+                                    hasSize(1)));
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Test
+    public void read_player_state_with_a_single_challenge_and_a_group_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+        
+        ChallengeConcept singlePlayerChallenge = new ChallengeConcept();
+        singlePlayerChallenge.setModelName("absoluteIncrement");
+        singlePlayerChallenge.setName("incrementInstance");
+        singlePlayerChallenge.getFields().put("difficulty", 2.0);
+        singlePlayerChallenge.getFields().put("wi", 10);
+        singlePlayerChallenge.getFields().put("bonusScore", 200);
+        player.getState().add(singlePlayerChallenge);
+
+        playerSrv.saveState(player);
+        GroupChallenge challenge = new GroupChallenge();
+        challenge.setGameId(game.getId());
+        challenge.setInstanceName("instanceName");
+        challenge.setStart(new LocalDateTime().minusDays(1).toDate());
+        challenge.setEnd(new LocalDateTime().plusDays(1).toDate());
+        challenge.setOrigin("Demiurgo");
+        challenge.setPriority(11);
+        Attendee proposer = new Attendee();
+        proposer.setPlayerId("player");
+        proposer.setRole(Role.PROPOSER);
+        proposer.setChallengeScore(4.2);
+        Attendee guest = new Attendee();
+        guest.setRole(Role.GUEST);
+        guest.setPlayerId("player2");
+        guest.setChallengeScore(1.0);
+        challenge.getAttendees().add(proposer);
+        challenge.getAttendees().add(guest);
+
+        challenge.setChallengePointConcept(new PointConceptRef("Walk_Km", "weekly"));
+        challengeSrv.save(challenge);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/state",
+                    game.getId(), "player");
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.state.ChallengeConcept", hasSize(2)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].name", is("instanceName")))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].modelName",
+                            is("groupCompetitivePerformance")))
+                    .andExpect(
+                            jsonPath("$.state.ChallengeConcept[0].fields.challengeScore", is(4.2)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].fields.otherAttendeeScores",
+                            hasSize(1)));
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Test
+    public void read_player_state_with_group_challenge_with_multiple_participants() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+
+        GroupChallenge challenge = new GroupChallenge();
+        challenge.setGameId(game.getId());
+        challenge.setInstanceName("instanceName");
+        challenge.setStart(new LocalDateTime().minusDays(1).toDate());
+        challenge.setEnd(new LocalDateTime().plusDays(1).toDate());
+        challenge.setOrigin("Demiurgo");
+        challenge.setPriority(11);
+        Attendee proposer = new Attendee();
+        proposer.setPlayerId("player");
+        proposer.setRole(Role.PROPOSER);
+        proposer.setChallengeScore(4.2);
+        Attendee guest1 = new Attendee();
+        guest1.setRole(Role.GUEST);
+        guest1.setPlayerId("player2");
+        guest1.setChallengeScore(1.0);
+        Attendee guest2 = new Attendee();
+        guest2.setRole(Role.GUEST);
+        guest2.setPlayerId("player3");
+        guest2.setChallengeScore(2.0);
+
+        challenge.getAttendees().add(proposer);
+        challenge.getAttendees().add(guest1);
+        challenge.getAttendees().add(guest2);
+
+        challenge.setChallengePointConcept(new PointConceptRef("Walk_Km", "weekly"));
+        challengeSrv.save(challenge);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/state",
+                    game.getId(), "player");
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.state.ChallengeConcept", hasSize(1)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].name", is("instanceName")))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].modelName",
+                            is("groupCompetitivePerformance")))
+                    .andExpect(
+                            jsonPath("$.state.ChallengeConcept[0].fields.challengeScore", is(4.2)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].fields.otherAttendeeScores",
+                            hasSize(2)));
+        } catch (Exception e) {
+
+        }
+    }
+
+    // how is view of a proposed group challenge
+    @Test
+    public void read_player_state_with_a_proposed_group_challenge() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+
+        GroupChallenge challenge = new GroupChallenge(ChallengeState.PROPOSED);
+        challenge.setGameId(game.getId());
+        challenge.setInstanceName("instanceName");
+        challenge.setStart(new LocalDateTime().minusDays(1).toDate());
+        challenge.setEnd(new LocalDateTime().plusDays(1).toDate());
+        challenge.setOrigin("rs");
+        Attendee proposer = new Attendee();
+        proposer.setPlayerId("player");
+        proposer.setRole(Role.PROPOSER);
+        Attendee guest1 = new Attendee();
+        guest1.setRole(Role.GUEST);
+        guest1.setPlayerId("player2");
+
+        challenge.getAttendees().add(proposer);
+        challenge.getAttendees().add(guest1);
+
+        challenge.setChallengePointConcept(new PointConceptRef("Walk_Km", "weekly"));
+        challengeSrv.save(challenge);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/state",
+                    game.getId(), "player");
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.state.ChallengeConcept", hasSize(1)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].name", is("instanceName")))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].state", is("PROPOSED")))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].modelName",
+                            is("groupCompetitivePerformance")))
+                    .andExpect(
+                            jsonPath("$.state.ChallengeConcept[0].fields.challengeScore", is(0.0)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[0].fields.otherAttendeeScores",
+                            hasSize(1)));
+        } catch (Exception e) {
+
+        }
     }
 }

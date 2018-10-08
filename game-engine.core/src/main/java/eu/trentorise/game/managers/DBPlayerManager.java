@@ -61,9 +61,11 @@ import eu.trentorise.game.model.core.ClassificationPosition;
 import eu.trentorise.game.model.core.ClassificationType;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.notification.ChallengeAssignedNotification;
+import eu.trentorise.game.notification.ChallengeProposedNotification;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.PlayerRepo;
@@ -440,12 +442,26 @@ public class DBPlayerManager implements PlayerService {
         state.getState().add(challenge);
         persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
 
-        ChallengeAssignedNotification challengeNotification = new ChallengeAssignedNotification();
-        challengeNotification.setChallengeName(challenge.getName());
-        challengeNotification.setGameId(gameId);
-        challengeNotification.setPlayerId(playerId);
-        challengeNotification.setStartDate(challengeAssignment.getStart());
-        challengeNotification.setEndDate(challengeAssignment.getEnd());
+        Notification challengeNotification = null;
+        if (challenge.getState() == ChallengeState.ASSIGNED) {
+            ChallengeAssignedNotification challengeAssignedNotification =
+                    new ChallengeAssignedNotification();
+            challengeAssignedNotification.setChallengeName(challenge.getName());
+            challengeAssignedNotification.setGameId(gameId);
+            challengeAssignedNotification.setPlayerId(playerId);
+            challengeAssignedNotification.setStartDate(challengeAssignment.getStart());
+            challengeAssignedNotification.setEndDate(challengeAssignment.getEnd());
+            challengeNotification = challengeAssignedNotification;
+        } else {
+            ChallengeProposedNotification challengeProposedNotification =
+                    new ChallengeProposedNotification();
+            challengeProposedNotification.setChallengeName(challenge.getName());
+            challengeProposedNotification.setGameId(gameId);
+            challengeProposedNotification.setPlayerId(playerId);
+            challengeProposedNotification.setStartDate(challengeAssignment.getStart());
+            challengeProposedNotification.setEndDate(challengeAssignment.getEnd());
+            challengeNotification = challengeProposedNotification;
+        }
 
         notificationSrv.notificate(challengeNotification);
         LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());

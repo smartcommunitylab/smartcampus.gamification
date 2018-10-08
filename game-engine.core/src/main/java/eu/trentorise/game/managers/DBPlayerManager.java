@@ -55,6 +55,7 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ClassificationPosition;
@@ -618,7 +619,7 @@ public class DBPlayerManager implements PlayerService {
                     ChallengeConcept removedChallenge =
                             state.removeConcept(ch.getName(), ChallengeConcept.class);
                     removedChallenge.updateState(ChallengeState.REFUSED);
-                    moveToArchive(removedChallenge);
+                    moveToArchive(gameId, playerId, removedChallenge);
                     StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
                             executionId, executionTime, executionTime, ch.getName());
                 }
@@ -634,8 +635,12 @@ public class DBPlayerManager implements PlayerService {
         return accepted;
     }
 
-    private void moveToArchive(ChallengeConcept challenge) {
-        mongoTemplate.save(challenge, CHALLENGE_ARCHIVE_COLLECTION);
+    private void moveToArchive(String gameId, String playerId, ChallengeConcept challenge) {
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setChallenge(challenge);
+        archived.setGameId(gameId);
+        archived.setPlayerId(playerId);
+        mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
     }
 
     @Override
@@ -664,7 +669,7 @@ public class DBPlayerManager implements PlayerService {
                         ChallengeConcept removedChallenge =
                                 state.removeConcept(ch.getName(), ChallengeConcept.class);
                         removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
-                        moveToArchive(removedChallenge);
+                        moveToArchive(gameId, playerId, removedChallenge);
                     }
                 }
             }

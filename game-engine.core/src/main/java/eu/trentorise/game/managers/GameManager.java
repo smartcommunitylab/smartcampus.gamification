@@ -77,6 +77,8 @@ public class GameManager implements GameService {
 
     public static final String INTERNAL_ACTION_PREFIX = "scogei_";
 
+    private static final long ONE_MINUTE_MILLIS = 60000;
+
     @Autowired
     private TaskService taskSrv;
 
@@ -346,12 +348,15 @@ public class GameManager implements GameService {
                 sendChallengeNotification(challenge);
 
                 challenge.setState(ChallengeState.COMPLETED);
+                challenge.getStateDate().put(ChallengeState.COMPLETED, challenge.getEnd());
                 challengeSrv.save(challenge);
 
                 // action rewards
+                // fix: executionTime should be challenge end time minus some time to be sure that
+                // reward will be assigned to the correct period
                 winners.stream().forEach(w -> {
                     workflow.apply(gameId, INTERNAL_ACTION_PREFIX + "reward", w,
-                            challenge.getEnd().getTime(), null,
+                            challenge.getEnd().getTime() - ONE_MINUTE_MILLIS, null,
                             Arrays.asList(challenge.getReward()));
                 });
             });

@@ -170,7 +170,7 @@ public class ClassificationTaskTest {
         gameSrv.addRule(
                 new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, true, false);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("bikeDistance", 8.43);
         params.put("walkDistance", 3.100);
@@ -311,7 +311,7 @@ public class ClassificationTaskTest {
 
         Thread.sleep(WAIT_EXEC);
 
-        p1 = playerSrv.loadState(GAME, PLAYER_1, false);
+        p1 = playerSrv.loadState(GAME, PLAYER_1, false, false);
         for (GameConcept gc : p1.getState()) {
             if (gc instanceof BadgeCollectionConcept && gc.getName().equals("green leaves")) {
                 Assert.assertArrayEquals(new String[] {"bronze-medal-green"},
@@ -320,7 +320,7 @@ public class ClassificationTaskTest {
             }
         }
 
-        p2 = playerSrv.loadState(GAME, PLAYER_2, false);
+        p2 = playerSrv.loadState(GAME, PLAYER_2, false, false);
         for (GameConcept gc : p2.getState()) {
             if (gc instanceof BadgeCollectionConcept && gc.getName().equals("green leaves")) {
                 Assert.assertArrayEquals(new String[] {"silver-medal-green", "10-point-green"},
@@ -329,7 +329,7 @@ public class ClassificationTaskTest {
             }
         }
 
-        p3 = playerSrv.loadState(GAME, PLAYER_3, false);
+        p3 = playerSrv.loadState(GAME, PLAYER_3, false, false);
         for (GameConcept gc : p3.getState()) {
             if (gc instanceof BadgeCollectionConcept && gc.getName().equals("green leaves")) {
                 Assert.assertArrayEquals(new String[] {"gold-medal-green-1", "10-point-green"},

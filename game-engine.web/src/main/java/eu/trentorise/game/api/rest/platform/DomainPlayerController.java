@@ -107,7 +107,7 @@ public class DomainPlayerController {
         }
 
         // check if player already exists
-        if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
+        if (playerSrv.loadState(gameId, player.getPlayerId(), false, false) != null) {
             throw new IllegalArgumentException(String.format("Player %s already exists in game %s",
                     player.getPlayerId(), gameId));
         }
@@ -132,19 +132,9 @@ public class DomainPlayerController {
     @ApiOperation(value = "Get player state")
     public PlayerStateDTO readPlayer(@PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
-
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
     }
 
     // Update a player
@@ -267,7 +257,7 @@ public class DomainPlayerController {
     @ApiOperation(value = "Get player levels")
     public List<PlayerLevel> readLevels(@PathVariable String gameId,
             @PathVariable String playerId) {
-        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
         if (state != null) {
             return state.getLevels();
         } else {
@@ -281,7 +271,7 @@ public class DomainPlayerController {
     @ApiOperation(value = "Get player inventory")
     public Inventory readInventory(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId) {
-        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
         if (state != null) {
             return state.getInventory();
         } else {
@@ -297,7 +287,7 @@ public class DomainPlayerController {
     @ApiOperation(value = "Activate a choice")
     public Inventory activateChoice(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId, @RequestBody ItemChoice choice) {
-        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
         if (state != null) {
             Inventory result = state.getInventory().activateChoice(choice);
             playerSrv.saveState(state);

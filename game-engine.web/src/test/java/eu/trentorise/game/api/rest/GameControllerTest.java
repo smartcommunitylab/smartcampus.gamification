@@ -295,7 +295,7 @@ public class GameControllerTest {
         level.getThresholds().add(new Threshold("master", 1000));
         gameSrv.upsertLevel(gameId, level);
 
-        PlayerState p = playerSrv.loadState(gameId, "player", true);
+        PlayerState p = playerSrv.loadState(gameId, "player", true, false);
         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
         playerSrv.saveState(p);
         

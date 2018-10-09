@@ -171,7 +171,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
             
-            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
                     (ChallengeConcept) player.getState().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
@@ -206,7 +206,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
             
-            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
                     (ChallengeConcept) player.getState().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
@@ -241,7 +241,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
                     (ChallengeConcept) player.getState().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
@@ -306,7 +306,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
                     (ChallengeConcept) player.getState().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
@@ -339,7 +339,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState player = playerSrv.loadState(game.getId(), "10001", false);
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
                     (ChallengeConcept) player.getState().stream().findFirst().get();
             assertThat(challenge.getOrigin(), is("MY_SYSTEM"));
@@ -366,7 +366,7 @@ public class PlayerControllerTest {
         game.getLevels().add(levelDefinition);
         gameSrv.saveGameDefinition(game);
         
-        PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+        PlayerState player = playerSrv.loadState(game.getId(), "10001", true, false);
         player.getLevels().add(new PlayerLevel(levelDefinition, 10d));
         player.updateInventory(game, Arrays.asList(new LevelInstance("greener", "beginner")));
         playerSrv.saveState(player);
@@ -397,7 +397,7 @@ public class PlayerControllerTest {
         game.getLevels().add(levelDefinition);
         gameSrv.saveGameDefinition(game);
 
-        PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+        PlayerState player = playerSrv.loadState(game.getId(), "10001", true, false);
         player.getLevels().add(new PlayerLevel(levelDefinition, 10d));
         player.updateInventory(game, null);
         playerSrv.saveState(player);
@@ -436,7 +436,7 @@ public class PlayerControllerTest {
             ObjectMapper mapper = new ObjectMapper();
             ItemChoice choice = new ItemChoice(ChoiceType.CHALLENGE_MODEL, "model1");
 
-            PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", true, false);
 
             player.updateInventory(game, Arrays.asList(new LevelInstance("greener", "beginner")));
             playerSrv.saveState(player);
@@ -476,7 +476,7 @@ public class PlayerControllerTest {
             ObjectMapper mapper = new ObjectMapper();
             ItemChoice choice = new ItemChoice(ChoiceType.CHALLENGE_MODEL, "model1");
 
-            PlayerState player = playerSrv.loadState(game.getId(), "10001", true);
+            PlayerState player = playerSrv.loadState(game.getId(), "10001", true, false);
 
             player.updateInventory(game, Arrays.asList(new LevelInstance("greener", "beginner")));
             playerSrv.saveState(player);
@@ -519,7 +519,7 @@ public class PlayerControllerTest {
 
         RequestBuilder builder = null;
         try {
-            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
             ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
                     new HashMap<>(), "PROPOSED", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment);
@@ -530,7 +530,7 @@ public class PlayerControllerTest {
                             "player", "instance_name");
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
-            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false);
+            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false, false);
 
             ChallengeConcept challenge = loaded.challenges().stream()
                     .filter(ch -> ch.getName().equals("instance_name")).findFirst()
@@ -557,7 +557,7 @@ public class PlayerControllerTest {
 
         RequestBuilder builder = null;
         try {
-            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
             ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
                     new HashMap<>(), "COMPLETED", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment);
@@ -586,7 +586,7 @@ public class PlayerControllerTest {
 
         RequestBuilder builder = null;
         try {
-            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
             ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
                     new HashMap<>(), "PROPOSED", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment);
@@ -615,7 +615,7 @@ public class PlayerControllerTest {
 
         RequestBuilder builder = null;
         try {
-            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
             ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
                     new HashMap<>(), "PROPOSED", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment);
@@ -632,7 +632,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false);
+            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false, false);
             List<ChallengeConcept> proposed = loaded.challenges().stream()
                     .filter(ch -> ch.getState() == ChallengeState.PROPOSED)
                     .collect(Collectors.toList());
@@ -662,7 +662,7 @@ public class PlayerControllerTest {
 
         RequestBuilder builder = null;
         try {
-            PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+            PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
             ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
                     new HashMap<>(), "PROPOSED", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment);
@@ -685,7 +685,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false);
+            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false, false);
             List<ChallengeConcept> proposed = loaded.challenges().stream()
                     .filter(ch -> ch.getState() == ChallengeState.PROPOSED)
                     .collect(Collectors.toList());
@@ -701,7 +701,7 @@ public class PlayerControllerTest {
     public void read_player_state_with_only_a_group_challenge() {
         Game game = defineGame();
         gameSrv.saveGameDefinition(game);
-        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
         GroupChallenge challenge = new GroupChallenge();
         challenge.setGameId(game.getId());
         challenge.setInstanceName("instanceName");
@@ -749,7 +749,7 @@ public class PlayerControllerTest {
     public void read_player_state_with_a_single_challenge_and_a_group_challenge() {
         Game game = defineGame();
         gameSrv.saveGameDefinition(game);
-        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
         
         ChallengeConcept singlePlayerChallenge = new ChallengeConcept();
         singlePlayerChallenge.setModelName("absoluteIncrement");
@@ -803,7 +803,7 @@ public class PlayerControllerTest {
     public void read_player_state_with_group_challenge_with_multiple_participants() {
         Game game = defineGame();
         gameSrv.saveGameDefinition(game);
-        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
 
         GroupChallenge challenge = new GroupChallenge();
         challenge.setGameId(game.getId());
@@ -855,7 +855,7 @@ public class PlayerControllerTest {
     public void read_player_state_with_a_proposed_group_challenge() {
         Game game = defineGame();
         gameSrv.saveGameDefinition(game);
-        PlayerState player = playerSrv.loadState(game.getId(), "player", true);
+        PlayerState player = playerSrv.loadState(game.getId(), "player", true, false);
 
         GroupChallenge challenge = new GroupChallenge(ChallengeState.PROPOSED);
         challenge.setGameId(game.getId());

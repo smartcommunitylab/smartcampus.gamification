@@ -95,37 +95,37 @@ public class CustomDataTest {
         ClasspathRule rule = new ClasspathRule(game.getId(), "rules/" + GAME + "/rule1.drl");
         gameManager.addRule(rule);
 
-        PlayerState state = playerSrv.loadState(game.getId(), PLAYER, true);
+        PlayerState state = playerSrv.loadState(game.getId(), PLAYER, true, false);
         Assert.assertEquals(0, state.getCustomData().size());
         workflow.apply(game.getId(), "init-data", PLAYER, null, null);
 
         Thread.sleep(TIMEOUT);
-        state = playerSrv.loadState(game.getId(), PLAYER, false);
+        state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1000, state.getCustomData().get("counter"));
         Assert.assertEquals(0, ((List<String>) state.getCustomData().get("areas")).size());
 
         workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
         Thread.sleep(TIMEOUT);
-        state = playerSrv.loadState(game.getId(), PLAYER, false);
+        state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1010, state.getCustomData().get("counter"));
 
         workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
         Thread.sleep(TIMEOUT);
-        state = playerSrv.loadState(game.getId(), PLAYER, false);
+        state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1020, state.getCustomData().get("counter"));
 
         workflow.apply(game.getId(), "add-area", PLAYER, null, null);
         Thread.sleep(TIMEOUT);
-        state = playerSrv.loadState(game.getId(), PLAYER, false);
+        state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1, ((List<String>) state.getCustomData().get("areas")).size());
 
         workflow.apply(game.getId(), "add-area", PLAYER, null, null);
         Thread.sleep(TIMEOUT);
-        state = playerSrv.loadState(game.getId(), PLAYER, false);
+        state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(1, ((List<String>) state.getCustomData().get("areas")).size());
     }
 }

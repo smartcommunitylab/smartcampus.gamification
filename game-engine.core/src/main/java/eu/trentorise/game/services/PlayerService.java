@@ -36,13 +36,13 @@ import eu.trentorise.game.model.core.StringSearchQuery;
 @Service
 public interface PlayerService {
 
-	public PlayerState loadState(String gameId, String playerId, boolean upsert);
+	public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges);
 
-	public Page<PlayerState> loadStates(String gameId, Pageable pageable);
+	public Page<PlayerState> loadStates(String gameId, Pageable pageable, boolean mergeGroupChallenges);
 
 	public List<PlayerState> loadStates(String gameId);
 
-	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable);
+	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges);
 
 	public List<PlayerState> loadStates(String gameId, String playerId);
 

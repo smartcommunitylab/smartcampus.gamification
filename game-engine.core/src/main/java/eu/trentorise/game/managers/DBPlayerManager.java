@@ -100,13 +100,16 @@ public class DBPlayerManager implements PlayerService {
     @Autowired
     private NotificationManager notificationSrv;
 
-    public PlayerState loadState(String gameId, String playerId, boolean upsert) {
+    public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
         eu.trentorise.game.repo.StatePersistence state =
                 playerRepo.findByGameIdAndPlayerId(gameId, playerId);
         PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
                 : isTeam(state) ? new TeamState(state) : new PlayerState(state);
-        return initDefaultLevels(mergeGroupChallenges(initConceptsStructure(res, gameId), gameId),
-                gameId);
+        res = initDefaultLevels(initConceptsStructure(res, gameId), gameId);
+        if (mergeGroupChallenges) {
+            res = mergeGroupChallenges(res, gameId);
+        }
+        return res;
     }
 
     public PlayerState saveState(PlayerState state) {
@@ -227,7 +230,7 @@ public class DBPlayerManager implements PlayerService {
         return res;
     }
 
-    public Page<PlayerState> loadStates(String gameId, Pageable pageable) {
+    public Page<PlayerState> loadStates(String gameId, Pageable pageable, boolean mergeGroupChallenges) {
         StopWatch stopWatch =
                 LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
                         ? new Log4JStopWatch() : null;
@@ -237,8 +240,12 @@ public class DBPlayerManager implements PlayerService {
         Page<StatePersistence> states = playerRepo.findByGameId(gameId, pageable);
         List<PlayerState> result = new ArrayList<PlayerState>();
         for (StatePersistence state : states) {
-            result.add(initDefaultLevels(initConceptsStructure(new PlayerState(state), gameId),
-                    gameId));
+            PlayerState playerState = initDefaultLevels(
+                    initConceptsStructure(new PlayerState(state), gameId), gameId);
+            if (mergeGroupChallenges) {
+                playerState = mergeGroupChallenges(playerState, gameId);
+            }
+            result.add(playerState);
         }
         PageImpl<PlayerState> res =
                 new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
@@ -262,13 +269,17 @@ public class DBPlayerManager implements PlayerService {
     }
 
     @Override
-    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable) {
+    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges) {
         Page<StatePersistence> states =
                 playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId, pageable);
         List<PlayerState> result = new ArrayList<PlayerState>();
         for (StatePersistence state : states) {
-            result.add(initDefaultLevels(initConceptsStructure(new PlayerState(state), gameId),
-                    gameId));
+            PlayerState playerState = initDefaultLevels(
+                    initConceptsStructure(new PlayerState(state), gameId), gameId);
+            if (mergeGroupChallenges) {
+                playerState = mergeGroupChallenges(playerState, gameId);
+            }
+            result.add(playerState);
         }
         PageImpl<PlayerState> res =
                 new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
@@ -401,7 +412,7 @@ public class DBPlayerManager implements PlayerService {
 
     @Override
     public TeamState readTeam(String gameId, String teamId) {
-        return (TeamState) loadState(gameId, teamId, false);
+        return (TeamState) loadState(gameId, teamId, false, false);
     }
 
     @Override
@@ -465,7 +476,7 @@ public class DBPlayerManager implements PlayerService {
         challenge.setPriority(challengeAssignment.getPriority());
 
         // save in playerState
-        PlayerState state = loadState(gameId, playerId, true);
+        PlayerState state = loadState(gameId, playerId, true, false);
 
         state.getState().add(challenge);
         persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
@@ -604,7 +615,7 @@ public class DBPlayerManager implements PlayerService {
     @Override
     public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName) {
         Game game = gameSrv.loadGameDefinitionById(gameId);
-        PlayerState state = loadState(gameId, playerId, false);
+        PlayerState state = loadState(gameId, playerId, false, false);
         boolean found = false;
         ChallengeConcept accepted = null;
         for (ChallengeConcept challenge : state.challenges()) {
@@ -654,7 +665,7 @@ public class DBPlayerManager implements PlayerService {
 
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
-        PlayerState state = loadState(gameId, playerId, false);
+        PlayerState state = loadState(gameId, playerId, false, false);
         Date now = new Date();
         Optional<ChallengeConcept> maxPriorityChallenge = Optional.empty();
         long assignedInFutureCounter = state.challenges().stream()

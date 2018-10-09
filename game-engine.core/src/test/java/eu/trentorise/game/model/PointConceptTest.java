@@ -83,7 +83,7 @@ public class PointConceptTest {
         ps.getState().add(pc);
         ps = playerSrv.saveState(ps);
 
-        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false);
+        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false, false);
 
         PointConcept p = (PointConcept) loaded.getState().iterator().next();
 
@@ -104,7 +104,7 @@ public class PointConceptTest {
         ps.getState().add(pc);
         ps = playerSrv.saveState(ps);
 
-        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false);
+        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false, false);
 
         PointConcept p = (PointConcept) loaded.getState().iterator().next();
 
@@ -159,7 +159,7 @@ public class PointConceptTest {
         ps.getState().add(pc);
         ps = playerSrv.saveState(ps);
 
-        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false);
+        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false, false);
 
         PointConcept p = (PointConcept) loaded.getState().iterator().next();
 
@@ -329,7 +329,7 @@ public class PointConceptTest {
         ps.getState().add(pc);
         ps = playerSrv.saveState(ps);
 
-        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false);
+        PlayerState loaded = playerSrv.loadState(GAME_ID, PLAYER_ID, false, false);
 
         PointConcept p = (PointConcept) loaded.getState().iterator().next();
         p.executionMoment = pc.executionMoment;
@@ -434,7 +434,7 @@ public class PointConceptTest {
         Thread.sleep(30000);
 
         Assert.assertEquals(new Double(4), ((PointConcept) playerSrv
-                .loadState(GAME, "my player", false).getState().iterator().next()).getScore());
+                .loadState(GAME, "my player", false, false).getState().iterator().next()).getScore());
 
     }
 }

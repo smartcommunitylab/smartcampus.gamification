@@ -55,6 +55,9 @@ public class ChallengeTest {
     private PlayerService playerSrv;
 
     @Autowired
+    private ChallengeManager challengeSrv;
+
+    @Autowired
     private GameEngine engine;
 
     @Autowired
@@ -105,7 +108,7 @@ public class ChallengeTest {
                 today.toDate(), today.dayOfMonth().addToCopy(2).toDate());
         playerSrv.assignChallenge(GAME, PLAYER, assignment);
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
 
         // execution
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
@@ -147,7 +150,7 @@ public class ChallengeTest {
                         today.dayOfMonth().addToCopy(5).toDate(),
                         today.dayOfMonth().addToCopy(7).toDate()));
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
 
         // execution
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
@@ -393,7 +396,7 @@ public class ChallengeTest {
         modelPrize.setName("prize");
         gameSrv.saveChallengeModel(GAME, modelPrize);
 
-        PlayerState state = playerSrv.loadState(GAME, "player", true);
+        PlayerState state = playerSrv.loadState(GAME, "player", true, false);
         playerSrv.saveState(state);
 
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
@@ -513,7 +516,6 @@ public class ChallengeTest {
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
         assertThat(forced.getName(), is("secondProposed"));
     }
-
 
 
     private Game defineGame() {

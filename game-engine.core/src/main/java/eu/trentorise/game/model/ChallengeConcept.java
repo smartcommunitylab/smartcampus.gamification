@@ -2,8 +2,10 @@ package eu.trentorise.game.model;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -31,6 +33,9 @@ public class ChallengeConcept extends GameConcept {
     private ChallengeState state;
     private Map<ChallengeState, Date> stateDate = new HashMap<>();
     private String origin;
+
+    private final static List<String> GROUP_CHALLENGES_MODELS =
+            Arrays.asList(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
 
     /**
      * An higher value refers to a higher priority
@@ -247,6 +252,11 @@ public class ChallengeConcept extends GameConcept {
         }
 
         return this;
+    }
+
+    @JsonIgnore
+    public boolean isGroupChallenge() {
+        return GROUP_CHALLENGES_MODELS.contains(modelName);
     }
 
     private void resetHistory(ChallengeState state) {

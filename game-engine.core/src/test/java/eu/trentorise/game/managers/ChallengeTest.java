@@ -1,6 +1,7 @@
 package eu.trentorise.game.managers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -33,6 +34,9 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
+import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
@@ -517,6 +521,25 @@ public class ChallengeTest {
         assertThat(forced.getName(), is("secondProposed"));
     }
 
+
+
+    @Test
+    public void should_not_save_group_challenges_in_playerState() {
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId("game");
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        challengeSrv.save(groupChallenge);
+
+        PlayerState state = playerSrv.loadState("game", "player", true, true);
+        assertThat(state.challenges(), hasSize(1));
+        playerSrv.saveState(state);
+        state = playerSrv.loadState("game", "player", false, true);
+        assertThat(state.challenges(), hasSize(1));
+    }
 
     private Game defineGame() {
 

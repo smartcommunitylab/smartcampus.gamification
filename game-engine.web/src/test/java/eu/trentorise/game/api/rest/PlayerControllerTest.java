@@ -787,12 +787,12 @@ public class PlayerControllerTest {
                     game.getId(), "player");
             mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
                     .andExpect(jsonPath("$.state.ChallengeConcept", hasSize(2)))
-                    .andExpect(jsonPath("$.state.ChallengeConcept[0].name", is("instanceName")))
-                    .andExpect(jsonPath("$.state.ChallengeConcept[0].modelName",
+                    .andExpect(jsonPath("$.state.ChallengeConcept[1].name", is("instanceName")))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[1].modelName",
                             is("groupCompetitivePerformance")))
                     .andExpect(
-                            jsonPath("$.state.ChallengeConcept[0].fields.challengeScore", is(4.2)))
-                    .andExpect(jsonPath("$.state.ChallengeConcept[0].fields.otherAttendeeScores",
+                            jsonPath("$.state.ChallengeConcept[1].fields.challengeScore", is(4.2)))
+                    .andExpect(jsonPath("$.state.ChallengeConcept[1].fields.otherAttendeeScores",
                             hasSize(1)));
         } catch (Exception e) {
 
@@ -850,7 +850,6 @@ public class PlayerControllerTest {
         }
     }
 
-    // how is view of a proposed group challenge
     @Test
     public void read_player_state_with_a_proposed_group_challenge() {
         Game game = defineGame();

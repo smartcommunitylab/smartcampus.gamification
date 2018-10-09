@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -116,6 +117,7 @@ public class DBPlayerManager implements PlayerService {
         PlayerState saved = null;
         if (state != null) {
             StatePersistence toSave = null;
+            state = removeGroupChallenges(state);
             if (state instanceof TeamState) {
                 toSave = new TeamPersistence((TeamState) state);
                 saved = new TeamState(persist(toSave));
@@ -125,6 +127,22 @@ public class DBPlayerManager implements PlayerService {
             }
         }
         return saved;
+    }
+
+    private PlayerState removeGroupChallenges(PlayerState state) {
+        if (state != null) {
+            Iterator<GameConcept> iter = state.getState().iterator();
+            while (iter.hasNext()) {
+                GameConcept elem = iter.next();
+                if (elem.getClass() == ChallengeConcept.class
+                        && ((ChallengeConcept) elem).isGroupChallenge()) {
+                    state.getState().remove(elem);
+                }
+
+
+            }
+        }
+        return state;
     }
 
     private PlayerState mergeGroupChallenges(PlayerState state, String gameId) {

@@ -14,7 +14,7 @@ import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 
 public class GroupChallenge {
 
-    private static final String MODEL_NAME_COMPETITIVE_PERFORMANCE = "groupCompetitivePerformance";
+    public static final String MODEL_NAME_COMPETITIVE_PERFORMANCE = "groupCompetitivePerformance";
 
     private String id;
 

@@ -44,8 +44,6 @@ public interface PlayerService {
 
 	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges);
 
-	public List<PlayerState> loadStates(String gameId, String playerId);
-
 	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable);
 
 	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, Pageable pageable);

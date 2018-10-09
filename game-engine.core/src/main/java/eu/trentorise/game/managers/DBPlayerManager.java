@@ -286,19 +286,6 @@ public class DBPlayerManager implements PlayerService {
         return res;
     }
 
-    // TODO: method seems never used
-    @Override
-    public List<PlayerState> loadStates(String gameId, String playerId) {
-        List<StatePersistence> states = playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId);
-        List<PlayerState> result = new ArrayList<PlayerState>();
-        for (StatePersistence state : states) {
-            result.add(initDefaultLevels(initConceptsStructure(new PlayerState(state), gameId),
-                    gameId));
-        }
-
-        return result;
-    }
-
     private PlayerState initConceptsStructure(PlayerState ps, String gameId) {
         if (ps != null) {
             Game g = gameSrv.loadGameDefinitionById(gameId);

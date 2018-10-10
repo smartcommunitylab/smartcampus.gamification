@@ -59,15 +59,18 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ClassificationPosition;
 import eu.trentorise.game.model.core.ClassificationType;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.notification.ChallengeAssignedNotification;
+import eu.trentorise.game.notification.ChallengeProposedNotification;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.GroupChallengeRepo;
@@ -487,12 +490,26 @@ public class DBPlayerManager implements PlayerService {
         state.getState().add(challenge);
         persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
 
-        ChallengeAssignedNotification challengeNotification = new ChallengeAssignedNotification();
-        challengeNotification.setChallengeName(challenge.getName());
-        challengeNotification.setGameId(gameId);
-        challengeNotification.setPlayerId(playerId);
-        challengeNotification.setStartDate(challengeAssignment.getStart());
-        challengeNotification.setEndDate(challengeAssignment.getEnd());
+        Notification challengeNotification = null;
+        if (challenge.getState() == ChallengeState.ASSIGNED) {
+            ChallengeAssignedNotification challengeAssignedNotification =
+                    new ChallengeAssignedNotification();
+            challengeAssignedNotification.setChallengeName(challenge.getName());
+            challengeAssignedNotification.setGameId(gameId);
+            challengeAssignedNotification.setPlayerId(playerId);
+            challengeAssignedNotification.setStartDate(challengeAssignment.getStart());
+            challengeAssignedNotification.setEndDate(challengeAssignment.getEnd());
+            challengeNotification = challengeAssignedNotification;
+        } else {
+            ChallengeProposedNotification challengeProposedNotification =
+                    new ChallengeProposedNotification();
+            challengeProposedNotification.setChallengeName(challenge.getName());
+            challengeProposedNotification.setGameId(gameId);
+            challengeProposedNotification.setPlayerId(playerId);
+            challengeProposedNotification.setStartDate(challengeAssignment.getStart());
+            challengeProposedNotification.setEndDate(challengeAssignment.getEnd());
+            challengeNotification = challengeProposedNotification;
+        }
 
         notificationSrv.notificate(challengeNotification);
         LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
@@ -649,9 +666,9 @@ public class DBPlayerManager implements PlayerService {
                     ChallengeConcept removedChallenge =
                             state.removeConcept(ch.getName(), ChallengeConcept.class);
                     removedChallenge.updateState(ChallengeState.REFUSED);
-                    moveToArchive(removedChallenge);
-                    StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId, executionId,
-                            executionTime, executionTime, ch.getName());
+                    moveToArchive(gameId, playerId, removedChallenge);
+                    StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
+                            executionId, executionTime, executionTime, ch.getName());
                 }
             }
             saveState(state);
@@ -665,8 +682,12 @@ public class DBPlayerManager implements PlayerService {
         return accepted;
     }
 
-    private void moveToArchive(ChallengeConcept challenge) {
-        mongoTemplate.save(challenge, CHALLENGE_ARCHIVE_COLLECTION);
+    private void moveToArchive(String gameId, String playerId, ChallengeConcept challenge) {
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setChallenge(challenge);
+        archived.setGameId(gameId);
+        archived.setPlayerId(playerId);
+        mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
     }
 
     private void moveToArchive(GroupChallenge challenge) {
@@ -723,7 +744,7 @@ public class DBPlayerManager implements PlayerService {
                         ChallengeConcept removedChallenge =
                                 state.removeConcept(ch.getName(), ChallengeConcept.class);
                         removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
-                        moveToArchive(removedChallenge);
+                        moveToArchive(gameId, playerId, removedChallenge);
                     }
                 }
 

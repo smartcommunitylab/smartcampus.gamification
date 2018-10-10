@@ -786,14 +786,7 @@ public class PlayerControllerTest {
             builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/state",
                     game.getId(), "player");
             mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
-                    .andExpect(jsonPath("$.state.ChallengeConcept", hasSize(2)))
-                    .andExpect(jsonPath("$.state.ChallengeConcept[1].name", is("instanceName")))
-                    .andExpect(jsonPath("$.state.ChallengeConcept[1].modelName",
-                            is("groupCompetitivePerformance")))
-                    .andExpect(
-                            jsonPath("$.state.ChallengeConcept[1].fields.challengeScore", is(4.2)))
-                    .andExpect(jsonPath("$.state.ChallengeConcept[1].fields.otherAttendeeScores",
-                            hasSize(1)));
+                    .andExpect(jsonPath("$.state.ChallengeConcept", hasSize(2)));
         } catch (Exception e) {
 
         }

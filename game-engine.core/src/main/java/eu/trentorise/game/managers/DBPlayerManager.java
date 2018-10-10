@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -668,22 +669,50 @@ public class DBPlayerManager implements PlayerService {
         mongoTemplate.save(challenge, CHALLENGE_ARCHIVE_COLLECTION);
     }
 
+    private void moveToArchive(GroupChallenge challenge) {
+        mongoTemplate.save(challenge, CHALLENGE_ARCHIVE_COLLECTION);
+    }
+
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
         PlayerState state = loadState(gameId, playerId, false, false);
         Date now = new Date();
         Optional<ChallengeConcept> maxPriorityChallenge = Optional.empty();
-        long assignedInFutureCounter = state.challenges().stream()
+        List<GroupChallenge> assignedGroupChallenges =
+                groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.ASSIGNED);
+        long assignedInFutureCounter = Stream.concat(state.challenges().stream()
                 .filter(challenge -> challenge.getState() == ChallengeState.ASSIGNED)
                 .filter(challenge -> challenge.getStart() == null
-                        || challenge.getStart().after(now))
+                        || challenge.getStart().after(now)),
+                assignedGroupChallenges.stream())
                 .count();
         if (assignedInFutureCounter < 1) {
-            maxPriorityChallenge = state.challenges().stream()
-                    .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
+            List<GroupChallenge> proposedGroupChallenges = groupChallengeRepo
+                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
+            Stream<ChallengeConcept> challengeConceptsRepresentation = proposedGroupChallenges
+                    .stream().map(groupChallenge -> groupChallenge.toChallengeConcept(playerId));
+
+            maxPriorityChallenge = Stream.concat(
+                    state.challenges().stream()
+                    .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED),challengeConceptsRepresentation)
                     .max(new PriorityComparator());
             maxPriorityChallenge.ifPresent(challenge -> {
+                if (challenge.isGroupChallenge()) {
+                    proposedGroupChallenges.stream()
+                            .filter(groupChallenge -> groupChallenge.getGameId().equals(gameId)
+                                    && groupChallenge.getInstanceName()
+                                            .equals(challenge.getName())
+                                    && groupChallenge.getAttendees().stream().anyMatch(
+                                            attendee -> attendee.getPlayerId().equals(playerId)))
+                            .findFirst().ifPresent(selectedGroupChallenge -> {
+                                selectedGroupChallenge.setState(ChallengeState.ASSIGNED);
+                                selectedGroupChallenge.getStateDate().put(ChallengeState.ASSIGNED,
+                                        new Date());
+                                groupChallengeRepo.save(selectedGroupChallenge);
+                            });
+                } else {
                 challenge.updateState(ChallengeState.ASSIGNED);
+                }
             });
 
             if (maxPriorityChallenge.isPresent()) {
@@ -697,6 +726,16 @@ public class DBPlayerManager implements PlayerService {
                         moveToArchive(removedChallenge);
                     }
                 }
+
+                List<GroupChallenge> otherProposedhallenges =
+                        groupChallengeRepo.playerGroupChallenges(gameId, playerId,
+                        ChallengeState.PROPOSED);
+                groupChallengeRepo.delete(otherProposedhallenges);
+                otherProposedhallenges.forEach(challenge -> {
+                    challenge.setState(ChallengeState.AUTO_DISCARDED);
+                    challenge.getStateDate().put(ChallengeState.AUTO_DISCARDED, new Date());
+                    moveToArchive(challenge);
+                });
             }
             saveState(state);
         }

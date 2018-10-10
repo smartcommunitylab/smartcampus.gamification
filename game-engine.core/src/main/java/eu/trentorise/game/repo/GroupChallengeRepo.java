@@ -15,4 +15,5 @@ public interface GroupChallengeRepo
 
     List<GroupChallenge> findByGameIdAndStateAndEndBefore(String gameId, ChallengeState state,
             Date end);
+
 }

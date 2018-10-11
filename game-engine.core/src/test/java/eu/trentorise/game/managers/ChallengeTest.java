@@ -1,6 +1,7 @@
 package eu.trentorise.game.managers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -33,12 +34,16 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
+import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -53,6 +58,12 @@ public class ChallengeTest {
 
     @Autowired
     private PlayerService playerSrv;
+
+    @Autowired
+    private ChallengeManager challengeSrv;
+
+    @Autowired
+    private GroupChallengeRepo groupChallengeRepo;
 
     @Autowired
     private GameEngine engine;
@@ -105,7 +116,7 @@ public class ChallengeTest {
                 today.toDate(), today.dayOfMonth().addToCopy(2).toDate());
         playerSrv.assignChallenge(GAME, PLAYER, assignment);
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
 
         // execution
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
@@ -147,7 +158,7 @@ public class ChallengeTest {
                         today.dayOfMonth().addToCopy(5).toDate(),
                         today.dayOfMonth().addToCopy(7).toDate()));
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, false);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
 
         // execution
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
@@ -393,7 +404,7 @@ public class ChallengeTest {
         modelPrize.setName("prize");
         gameSrv.saveChallengeModel(GAME, modelPrize);
 
-        PlayerState state = playerSrv.loadState(GAME, "player", true);
+        PlayerState state = playerSrv.loadState(GAME, "player", true, false);
         playerSrv.saveState(state);
 
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
@@ -514,7 +525,175 @@ public class ChallengeTest {
         assertThat(forced.getName(), is("secondProposed"));
     }
 
+    @Test
+    public void force_proposed_group_challenge() {
+        gameSrv.saveGameDefinition(defineGame());
 
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        ChallengeAssignment firstProposed = new ChallengeAssignment();
+        firstProposed.setChallengeType("PROPOSED");
+        firstProposed.setInstanceName("firstProposed");
+        firstProposed.setModelName("prize");
+        firstProposed.setPriority(1);
+        playerSrv.assignChallenge(GAME, "player", firstProposed);
+
+        ChallengeAssignment secondProposed = new ChallengeAssignment();
+        secondProposed.setChallengeType("PROPOSED");
+        secondProposed.setInstanceName("secondProposed");
+        secondProposed.setModelName("prize");
+        secondProposed.setPriority(5);
+        playerSrv.assignChallenge(GAME, "player", secondProposed);
+
+        GroupChallenge groupChallenge = new GroupChallenge(ChallengeState.PROPOSED);
+        groupChallenge.setInstanceName("bestPerformance");
+        groupChallenge.setGameId(GAME);
+        groupChallenge.setPriority(1000);
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        Attendee otherPlayer = new Attendee();
+        otherPlayer.setPlayerId("otherPlayer");
+        otherPlayer.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(otherPlayer);
+        challengeSrv.save(groupChallenge);
+
+        assertThat(
+                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
+                hasSize(0));
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced.getName(), is("bestPerformance"));
+        assertThat(
+                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
+                hasSize(1));
+    }
+
+    @Test
+    public void force_choice_with_2_proposed_group_challenges() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        ChallengeAssignment firstProposed = new ChallengeAssignment();
+        firstProposed.setChallengeType("PROPOSED");
+        firstProposed.setInstanceName("firstProposed");
+        firstProposed.setModelName("prize");
+        firstProposed.setPriority(1);
+        playerSrv.assignChallenge(GAME, "player", firstProposed);
+
+        ChallengeAssignment secondProposed = new ChallengeAssignment();
+        secondProposed.setChallengeType("PROPOSED");
+        secondProposed.setInstanceName("secondProposed");
+        secondProposed.setModelName("prize");
+        secondProposed.setPriority(5);
+        playerSrv.assignChallenge(GAME, "player", secondProposed);
+
+        GroupChallenge groupChallenge = new GroupChallenge(ChallengeState.PROPOSED);
+        groupChallenge.setInstanceName("bestPerformance");
+        groupChallenge.setGameId(GAME);
+        groupChallenge.setPriority(2);
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        Attendee otherPlayer = new Attendee();
+        otherPlayer.setPlayerId("otherPlayer");
+        otherPlayer.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(otherPlayer);
+        challengeSrv.save(groupChallenge);
+
+        GroupChallenge secondGroupChallenge = new GroupChallenge(ChallengeState.PROPOSED);
+        secondGroupChallenge.setInstanceName("bestPerformance_1");
+        secondGroupChallenge.setGameId(GAME);
+        secondGroupChallenge.setPriority(1);
+        player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        secondGroupChallenge.getAttendees().add(player);
+        otherPlayer = new Attendee();
+        otherPlayer.setPlayerId("otherPlayer");
+        otherPlayer.setRole(Role.GUEST);
+        secondGroupChallenge.getAttendees().add(otherPlayer);
+        challengeSrv.save(secondGroupChallenge);
+
+        assertThat(
+                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
+                hasSize(0));
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced.getName(), is("secondProposed"));
+        assertThat(
+                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
+                hasSize(0));
+        assertThat(
+                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.PROPOSED),
+                hasSize(0));
+    }
+
+    @Test
+    public void force_choice_with_already_assigned_group_challenge() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        ChallengeAssignment firstProposed = new ChallengeAssignment();
+        firstProposed.setChallengeType("PROPOSED");
+        firstProposed.setInstanceName("firstProposed");
+        firstProposed.setModelName("prize");
+        firstProposed.setPriority(1);
+        playerSrv.assignChallenge(GAME, "player", firstProposed);
+
+        ChallengeAssignment secondProposed = new ChallengeAssignment();
+        secondProposed.setChallengeType("PROPOSED");
+        secondProposed.setInstanceName("secondProposed");
+        secondProposed.setModelName("prize");
+        secondProposed.setPriority(5);
+        playerSrv.assignChallenge(GAME, "player", secondProposed);
+
+        GroupChallenge groupChallenge = new GroupChallenge(ChallengeState.ASSIGNED);
+        groupChallenge.setInstanceName("bestPerformance");
+        groupChallenge.setGameId(GAME);
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        Attendee otherPlayer = new Attendee();
+        otherPlayer.setPlayerId("otherPlayer");
+        otherPlayer.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(otherPlayer);
+        challengeSrv.save(groupChallenge);
+
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced, is(nullValue()));
+
+    }
+
+    @Test
+    public void should_not_save_group_challenges_in_playerState() {
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId("game");
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        challengeSrv.save(groupChallenge);
+
+        PlayerState state = playerSrv.loadState("game", "player", true, true);
+        assertThat(state.challenges(), hasSize(1));
+        playerSrv.saveState(state);
+        state = playerSrv.loadState("game", "player", false, true);
+        assertThat(state.challenges(), hasSize(1));
+    }
 
     private Game defineGame() {
 

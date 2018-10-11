@@ -113,7 +113,7 @@ public class DomainMainController {
             throw new IllegalArgumentException("playerId is not UTF-8 encoded");
         }
 
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
+        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, false));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",
@@ -138,9 +138,9 @@ public class DomainMainController {
         List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
         Page<PlayerState> page = null;
         if (playerFilter == null) {
-            page = playerSrv.loadStates(gameId, pageable);
+            page = playerSrv.loadStates(gameId, pageable, true);
         } else {
-            page = playerSrv.loadStates(gameId, playerFilter, pageable);
+            page = playerSrv.loadStates(gameId, playerFilter, pageable, true);
         }
         for (PlayerState ps : page) {
             resList.add(converter.convertPlayerState(ps));

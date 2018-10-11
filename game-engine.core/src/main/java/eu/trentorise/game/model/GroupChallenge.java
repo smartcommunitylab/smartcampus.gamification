@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 
 public class GroupChallenge {
+
+    public static final String MODEL_NAME_COMPETITIVE_PERFORMANCE = "groupCompetitivePerformance";
 
     private String id;
 
@@ -21,7 +25,26 @@ public class GroupChallenge {
     private PointConceptRef challengePointConcept;
     private Reward reward;
 
-    private ChallengeState state = ChallengeState.ASSIGNED;
+    private ChallengeState state;
+    private Map<ChallengeState, Date> stateDate = new HashMap<>();
+
+    public GroupChallenge() {
+        init(null);
+    }
+    public GroupChallenge(ChallengeState initialState) {
+        init(initialState);
+    }
+
+    private void init(ChallengeState initialState) {
+        if (initialState == null) {
+            initialState = ChallengeState.ASSIGNED;
+        }
+
+        state = initialState;
+        stateDate.put(state, new Date());
+
+    }
+
 
     private String origin;
     private Date start;
@@ -79,12 +102,72 @@ public class GroupChallenge {
 
     }
 
+    public ChallengeConcept toChallengeConcept(String playerId) {
+        ChallengeConcept ch = new ChallengeConcept();
+        Optional<Attendee> player =
+                attendees.stream().filter(a -> a.getPlayerId().equals(playerId)).findFirst();
+        player.ifPresent(p -> {
+            ch.setModelName(MODEL_NAME_COMPETITIVE_PERFORMANCE);
+            ch.setName(instanceName);
+            ch.setStart(start);
+            ch.setEnd(end);
+            ch.setOrigin(origin);
+            ch.setPriority(priority);
+            setChallengeState(ch, p);
+            setFields(ch, p);
+        });
+        return ch;
+    }
+
+    private ChallengeConcept setFields(ChallengeConcept challenge, Attendee player) {
+        challenge.getFields().put("challengeScoreName",
+                challengePointConcept != null ? challengePointConcept.getName() : null);
+        challenge.getFields().put("challengeScore", player.getChallengeScore());
+        List<Map<String, Object>> otherAttendeeScores = new ArrayList<>();
+        attendees.stream().filter(a -> !a.getPlayerId().equals(player.getPlayerId())).forEach(a -> {
+            Map<String, Object> attendeeScore = new HashMap<>();
+            attendeeScore.put("playerId", a.getPlayerId());
+            attendeeScore.put("challengeScore", a.getChallengeScore());
+            otherAttendeeScores.add(attendeeScore);
+        });
+        challenge.getFields().put("otherAttendeeScores", otherAttendeeScores);
+        return challenge;
+
+    }
+    private ChallengeConcept setChallengeState(ChallengeConcept challenge, Attendee attendee) {
+        challenge.setState(state);
+        copyStateStoryIntoChallenge(ChallengeState.PROPOSED, challenge);
+        copyStateStoryIntoChallenge(ChallengeState.ASSIGNED, challenge);
+        
+        if (challenge.getState() == ChallengeState.COMPLETED) {
+            if(attendee.isWinner){
+                challenge.setState(ChallengeState.COMPLETED);
+                challenge.getStateDate().put(ChallengeState.COMPLETED,
+                        stateDate.get(ChallengeState.COMPLETED));
+            } else {
+                challenge.setState(ChallengeState.FAILED);
+                challenge.getStateDate().put(ChallengeState.FAILED,
+                        stateDate.get(ChallengeState.COMPLETED));
+            }
+        }
+
+        return challenge;
+
+    }
+
+    private void copyStateStoryIntoChallenge(ChallengeState state, ChallengeConcept challenge) {
+        final Date dateOfTheState = stateDate.get(state);
+        if (dateOfTheState != null) {
+            challenge.getStateDate().put(state, dateOfTheState);
+        }
+    }
 
     public static class Attendee {
         private String playerId;
         private Role role;
         private boolean isWinner;
         private double challengeScore;
+        private Date valuationTime;
 
         public enum Role {
             PROPOSER, GUEST
@@ -120,6 +203,14 @@ public class GroupChallenge {
 
         public void setChallengeScore(double challengeScore) {
             this.challengeScore = challengeScore;
+        }
+
+        public Date getValuationTime() {
+            return valuationTime;
+        }
+
+        public void setValuationTime(Date valuationTime) {
+            this.valuationTime = valuationTime;
         }
 
     }
@@ -239,5 +330,13 @@ public class GroupChallenge {
 
     public void setState(ChallengeState state) {
         this.state = state;
+    }
+
+    public Map<ChallengeState, Date> getStateDate() {
+        return stateDate;
+    }
+
+    public void setStateDate(Map<ChallengeState, Date> stateDate) {
+        this.stateDate = stateDate;
     }
 }

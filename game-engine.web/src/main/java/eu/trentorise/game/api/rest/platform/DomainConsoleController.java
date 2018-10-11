@@ -347,7 +347,7 @@ public class DomainConsoleController {
         }
 
         // check if player already exists
-        if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
+        if (playerSrv.loadState(gameId, player.getPlayerId(), false, false) != null) {
             throw new IllegalArgumentException(String.format("Player %s already exists in game %s",
                     player.getPlayerId(), gameId));
         }
@@ -382,7 +382,7 @@ public class DomainConsoleController {
     public PlayerStateDTO updateCustomData(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId, @RequestBody Map<String, Object> customData) {
 
-        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
 
         if (state == null) {
             throw new IllegalArgumentException(

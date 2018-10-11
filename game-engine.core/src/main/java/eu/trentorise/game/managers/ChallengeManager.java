@@ -32,7 +32,7 @@ public class ChallengeManager {
                 .collect(Collectors.toList());
         final String gameId = groupChallenge.getGameId();
         List<PlayerState> playerStates = playerIds.stream()
-                .map(id -> playerSrv.loadState(gameId, id, false))
+                .map(id -> playerSrv.loadState(gameId, id, false, false))
                 .filter(state -> state != null)
                 .collect(Collectors.toList());
 

@@ -154,7 +154,7 @@ public class RestAPITest {
         c.put("level", 21);
         player.setCustomData(c);
 
-        Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
+        Assert.assertNull(playerSrv.loadState(GAME, "play1", false, false));
 
         try {
             RequestBuilder builder = MockMvcRequestBuilders
@@ -165,7 +165,7 @@ public class RestAPITest {
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState play = playerSrv.loadState(GAME, "play1", false);
+            PlayerState play = playerSrv.loadState(GAME, "play1", false, false);
             Assert.assertNotNull(play);
             Assert.assertEquals(21, play.getCustomData().get("level"));
 
@@ -180,7 +180,7 @@ public class RestAPITest {
             Assert.fail("exception " + e.getMessage());
         }
 
-        Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
+        Assert.assertNull(playerSrv.loadState(GAME, "play1", false, false));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class RestAPITest {
             mocker.perform(builder).andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState play = playerSrv.loadState(GAME, "play1", false);
+            PlayerState play = playerSrv.loadState(GAME, "play1", false, false);
             Assert.assertNotNull(play);
             Assert.assertEquals("data", play.getCustomData().get("newData"));
 
@@ -225,7 +225,7 @@ public class RestAPITest {
         PlayerStateDTO player = new PlayerStateDTO();
         player.setPlayerId("play1");
 
-        Assert.assertNull(playerSrv.loadState(GAME, "play1", false));
+        Assert.assertNull(playerSrv.loadState(GAME, "play1", false, false));
 
         try {
             RequestBuilder builder = MockMvcRequestBuilders

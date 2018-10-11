@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.GroupChallenge;
 
 public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
@@ -19,6 +20,22 @@ public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
         Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId);
         return mongo.find(new Query(crit), GroupChallenge.class);
 
+    }
+
+    @Override
+    public List<GroupChallenge> playerGroupChallenges(String gameId, String playerId,
+            ChallengeState challengeState) {
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
+                .and("state").is(challengeState);
+        return mongo.find(new Query(crit), GroupChallenge.class);
+    }
+
+    @Override
+    public void deletePlayerGroupChallenges(String gameId, String playerId,
+            ChallengeState challengeState) {
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
+                .and("state").is(challengeState);
+        mongo.remove(new Query(crit), GroupChallenge.class);
     }
 
 }

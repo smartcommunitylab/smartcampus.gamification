@@ -71,7 +71,7 @@ public class GameWorkflow implements Workflow {
                     .format("game %s not exist or action %s not belong to it", gameId, actionId));
         }
 
-        PlayerState playerState = playerSrv.loadState(gameId, userId, true);
+        PlayerState playerState = playerSrv.loadState(gameId, userId, true, false);
 
         // Actually GameService.execute modifies playerState passed as parameter
         PlayerState oldState = playerState.clone();

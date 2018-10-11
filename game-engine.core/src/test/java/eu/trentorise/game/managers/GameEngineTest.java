@@ -220,7 +220,7 @@ public class GameEngineTest {
     @Test
     public void execution() throws InterruptedException {
         initClasspathRuleGame();
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, true, false);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("bikeDistance", 8.43);
         params.put("walkDistance", 3.100);
@@ -269,7 +269,7 @@ public class GameEngineTest {
         gameManager.saveGameDefinition(g);
         gameManager.addRule(new ClasspathRule(GAME, "rules/periodic/points.drl"));
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, true, false);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("bikeDistance", 8.43);
 
@@ -289,7 +289,7 @@ public class GameEngineTest {
     @Test
     public void dbExecution() throws InterruptedException {
         initDBRuleGame();
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, true, false);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("bikeDistance", 8.43);
         params.put("walkDistance", 3.100);
@@ -377,7 +377,7 @@ public class GameEngineTest {
     public void initPlayerState() {
         initClasspathRuleGame();
         workflow.apply(GAME, ACTION, "25", null, null);
-        PlayerState p = playerSrv.loadState(GAME, "25", true);
+        PlayerState p = playerSrv.loadState(GAME, "25", true, false);
         Assert.assertEquals(7, p.getState().size());
     }
 
@@ -410,7 +410,7 @@ public class GameEngineTest {
         rule.setName("constants");
         gameManager.addRule(rule);
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYER, true);
+        PlayerState p = playerSrv.loadState(GAME, PLAYER, true, false);
 
         p = engine.execute(GAME, p, ACTION, new HashMap<String, Object>(),
                 UUID.randomUUID().toString(), System.currentTimeMillis(), null);
@@ -472,7 +472,7 @@ public class GameEngineTest {
         inputData.put("sustainable", true);
         inputData.put("p+r", true);
         inputData.put("park", "MANIFATTURA");
-        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        PlayerState p = playerSrv.loadState(GAME, "player", true, false);
         p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
@@ -510,7 +510,7 @@ public class GameEngineTest {
         inputData.put("sustainable", true);
         inputData.put("p+r", true);
         inputData.put("park", "MANIFATTURA");
-        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        PlayerState p = playerSrv.loadState(GAME, "player", true, false);
         p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
@@ -608,7 +608,7 @@ public class GameEngineTest {
 
 
 
-        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        PlayerState p = playerSrv.loadState(GAME, "player", true, false);
         p.updateLevels(
                 Arrays.asList(new PlayerLevel(levelDefinition, 200d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
@@ -639,7 +639,7 @@ public class GameEngineTest {
         gameManager.addRule(new ClasspathRule(GAME, "rules/testLevel/rules.drl"));
 
 
-        PlayerState p = playerSrv.loadState(GAME, "player", true);
+        PlayerState p = playerSrv.loadState(GAME, "player", true, false);
         p.updateLevels(
                 Arrays.asList(new PlayerLevel(levelDefinition, 50d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),

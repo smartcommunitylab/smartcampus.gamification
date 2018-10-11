@@ -116,7 +116,7 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
 
         // check if player already exists
-        if (playerSrv.loadState(gameId, player.getPlayerId(), false) != null) {
+        if (playerSrv.loadState(gameId, player.getPlayerId(), false, false) != null) {
             throw new IllegalArgumentException(String.format("Player %s already exists in game %s",
                     player.getPlayerId(), gameId));
         }
@@ -144,7 +144,7 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true));
+        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
     }
 
     // Update a player
@@ -212,7 +212,7 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
-        PlayerState state = playerSrv.loadState(gameId, playerId, true);
+        PlayerState state = playerSrv.loadState(gameId, playerId, true, false);
         return state.challenges();
     }
 
@@ -239,7 +239,7 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
-        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
         if (state != null) {
             return state.getLevels();
         } else {
@@ -254,7 +254,7 @@ public class PlayerController {
             @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
         if (state != null) {
             return state.getInventory();
         } else {
@@ -272,7 +272,7 @@ public class PlayerController {
             @RequestBody ItemChoice choice) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        PlayerState state = playerSrv.loadState(gameId, playerId, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
         if (state != null) {
             Inventory result = state.getInventory().activateChoice(choice);
             playerSrv.saveState(state);

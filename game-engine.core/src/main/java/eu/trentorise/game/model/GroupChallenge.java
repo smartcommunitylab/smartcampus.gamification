@@ -151,13 +151,13 @@ public class GroupChallenge {
         
         if (challenge.getState() == ChallengeState.COMPLETED) {
             if(attendee.isWinner){
-                challenge.setState(ChallengeState.COMPLETED);
-                challenge.getStateDate().put(ChallengeState.COMPLETED,
-                        stateDate.get(ChallengeState.COMPLETED));
+                Date completedDate = stateDate.get(ChallengeState.COMPLETED);
+                challenge.updateState(ChallengeState.COMPLETED, completedDate);
             } else {
-                challenge.setState(ChallengeState.FAILED);
-                challenge.getStateDate().put(ChallengeState.FAILED,
-                        stateDate.get(ChallengeState.COMPLETED));
+                Date completedDate = stateDate.get(ChallengeState.COMPLETED);
+                // failure date for player is set to completed date for groupChallenge object
+                // completed date for groupChallenge is set to completionCheck of challenge
+                challenge.updateState(ChallengeState.FAILED, completedDate);
             }
         }
 

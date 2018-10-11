@@ -4,6 +4,7 @@ import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 
 public class Reward {
     private double percentage;
+    private double threshold;
     private PointConceptRef calculationPointConcept;
     private PointConceptRef targetPointConcept;
 
@@ -29,6 +30,14 @@ public class Reward {
 
     public void setTargetPointConcept(PointConceptRef targetPointConcept) {
         this.targetPointConcept = targetPointConcept;
+    }
+
+    public double getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
     }
 
 }

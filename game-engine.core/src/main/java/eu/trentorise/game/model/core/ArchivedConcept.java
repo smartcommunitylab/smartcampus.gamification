@@ -1,12 +1,14 @@
 package eu.trentorise.game.model.core;
 
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.GroupChallenge;
 
 public class ArchivedConcept {
     private String id;
     private String gameId;
     private String playerId;
     private ChallengeConcept challenge;
+    private GroupChallenge groupChallenge;
 
     public String getId() {
         return id;
@@ -38,6 +40,14 @@ public class ArchivedConcept {
 
     public void setChallenge(ChallengeConcept challenge) {
         this.challenge = challenge;
+    }
+
+    public GroupChallenge getGroupChallenge() {
+        return groupChallenge;
+    }
+
+    public void setGroupChallenge(GroupChallenge groupChallenge) {
+        this.groupChallenge = groupChallenge;
     }
 
 

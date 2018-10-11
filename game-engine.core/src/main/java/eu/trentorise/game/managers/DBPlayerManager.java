@@ -690,8 +690,11 @@ public class DBPlayerManager implements PlayerService {
         mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
     }
 
-    private void moveToArchive(GroupChallenge challenge) {
-        mongoTemplate.save(challenge, CHALLENGE_ARCHIVE_COLLECTION);
+    private void moveToArchive(String gameId, GroupChallenge challenge) {
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setGroupChallenge(challenge);
+        archived.setGameId(gameId);
+        mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
     }
 
     @Override
@@ -755,7 +758,7 @@ public class DBPlayerManager implements PlayerService {
                 otherProposedhallenges.forEach(challenge -> {
                     challenge.setState(ChallengeState.AUTO_DISCARDED);
                     challenge.getStateDate().put(ChallengeState.AUTO_DISCARDED, new Date());
-                    moveToArchive(challenge);
+                    moveToArchive(gameId, challenge);
                 });
             }
             saveState(state);

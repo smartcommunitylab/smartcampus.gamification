@@ -81,6 +81,16 @@ public class GroupChallenge {
         return attendees.stream().filter(a -> a.isWinner()).collect(Collectors.toList());
     }
 
+    public GroupChallenge updateState(ChallengeState state) {
+        return updateState(state, new Date());
+    }
+
+    public GroupChallenge updateState(ChallengeState state, Date atDate) {
+        this.state = state;
+        stateDate.put(state, atDate);
+        return this;
+    }
+
     private double challengeScore(String playerId, PointConceptRef pointConcept, List<PlayerState> attendeeStates) {
         Optional<PlayerState> playerState = attendeeStates.stream().filter(state -> state.getPlayerId().equals(playerId)).findFirst();
         

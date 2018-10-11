@@ -729,9 +729,7 @@ public class DBPlayerManager implements PlayerService {
                                     && groupChallenge.getAttendees().stream().anyMatch(
                                             attendee -> attendee.getPlayerId().equals(playerId)))
                             .findFirst().ifPresent(selectedGroupChallenge -> {
-                                selectedGroupChallenge.setState(ChallengeState.ASSIGNED);
-                                selectedGroupChallenge.getStateDate().put(ChallengeState.ASSIGNED,
-                                        new Date());
+                                selectedGroupChallenge.updateState(ChallengeState.ASSIGNED);
                                 groupChallengeRepo.save(selectedGroupChallenge);
                             });
                 } else {
@@ -756,8 +754,7 @@ public class DBPlayerManager implements PlayerService {
                         ChallengeState.PROPOSED);
                 groupChallengeRepo.delete(otherProposedhallenges);
                 otherProposedhallenges.forEach(challenge -> {
-                    challenge.setState(ChallengeState.AUTO_DISCARDED);
-                    challenge.getStateDate().put(ChallengeState.AUTO_DISCARDED, new Date());
+                    challenge.updateState(ChallengeState.AUTO_DISCARDED);
                     moveToArchive(gameId, challenge);
                 });
             }

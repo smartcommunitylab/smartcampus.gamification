@@ -347,8 +347,7 @@ public class GameManager implements GameService {
                 List<String> winners = challengeSrv.conditionCheck(challenge);
                 sendChallengeNotification(challenge);
 
-                challenge.setState(ChallengeState.COMPLETED);
-                challenge.getStateDate().put(ChallengeState.COMPLETED, challenge.getEnd());
+                challenge.updateState(ChallengeState.COMPLETED, challenge.getEnd());
                 challengeSrv.save(challenge);
 
                 // action rewards

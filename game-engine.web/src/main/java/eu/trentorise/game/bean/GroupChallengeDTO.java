@@ -21,6 +21,7 @@ public class GroupChallengeDTO {
 
     public static class RewardDTO {
         private double percentage;
+        private double threshold;
         private PointConceptDTO calculationPointConcept;
         private PointConceptDTO targetPointConcept;
 
@@ -46,6 +47,14 @@ public class GroupChallengeDTO {
 
         public void setTargetPointConcept(PointConceptDTO targetPointConcept) {
             this.targetPointConcept = targetPointConcept;
+        }
+
+        public double getThreshold() {
+            return threshold;
+        }
+
+        public void setThreshold(double threshold) {
+            this.threshold = threshold;
         }
 
 

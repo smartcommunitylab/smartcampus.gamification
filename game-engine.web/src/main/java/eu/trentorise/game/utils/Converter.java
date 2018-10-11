@@ -480,6 +480,7 @@ public class Converter {
         if (dto != null) {
             reward = new Reward();
             reward.setPercentage(dto.getPercentage());
+            reward.setThreshold(dto.getThreshold());
             reward.setCalculationPointConcept(convert(dto.getCalculationPointConcept()));
             reward.setTargetPointConcept(convert(dto.getTargetPointConcept()));
         }

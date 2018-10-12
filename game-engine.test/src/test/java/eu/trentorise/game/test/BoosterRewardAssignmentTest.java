@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,29 +31,29 @@ public class BoosterRewardAssignmentTest extends GameTest {
 
     @Override
     public void initEnv() {
-    		List<GameConcept> concepts = new ArrayList<GameConcept>();
-    		PointConcept p = new PointConcept("green leaves");
-    		PointConcept p2 = new PointConcept("points");
-    		
-    		long dayDurationInMillis = 24 * 60 * 60 * 1000;
-    	
-    		Date todayDate = new Date(); // today
-		Date tomorrowDate = new Date(); // today
-		tomorrowDate.setTime(todayDate.getTime() + dayDurationInMillis);
-		Date yesterdayDate = new Date(); // yesterday
-		yesterdayDate.setTime(todayDate.getTime() - dayDurationInMillis);
-		Date dayBeforeYesterdayDate = new Date(); // the day before yesterday
-		dayBeforeYesterdayDate.setTime(yesterdayDate.getTime() - dayDurationInMillis);
-		
-		p.addPeriod("weekly", todayDate, dayDurationInMillis*7);
-		p.increment(450d); 
-		concepts.add(p);
-		
-		p2.addPeriod("weekly", todayDate, dayDurationInMillis*7);
-		p2.increment(1000d); 
-		concepts.add(p2);
-		
-		savePlayerState(GAME, PLAYER_1, concepts);
+        List<GameConcept> concepts = new ArrayList<GameConcept>();
+        PointConcept p = new PointConcept("green leaves");
+        PointConcept p2 = new PointConcept("points");
+
+        long dayDurationInMillis = 24 * 60 * 60 * 1000;
+
+        Date todayDate = new Date(); // today
+        Date tomorrowDate = new Date(); // today
+        tomorrowDate.setTime(todayDate.getTime() + dayDurationInMillis);
+        Date yesterdayDate = new Date(); // yesterday
+        yesterdayDate.setTime(todayDate.getTime() - dayDurationInMillis);
+        Date dayBeforeYesterdayDate = new Date(); // the day before yesterday
+        dayBeforeYesterdayDate.setTime(yesterdayDate.getTime() - dayDurationInMillis);
+
+        p.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
+        p.increment(450d);
+        concepts.add(p);
+
+        p2.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
+        p2.increment(1000d);
+        concepts.add(p2);
+
+        savePlayerState(GAME, PLAYER_1, concepts);
 
     }
 

@@ -1,0 +1,26 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.core.Utility;
+global Utility utils;
+
+rule "reward a group challenge"
+when
+    $reward : Reward($calculationPointConceptRef :  calculationPointConcept) 
+    $pcCalculation: PointConcept(name == $calculationPointConceptRef.name)
+    $pcTarget : PointConcept(name == $reward.targetPointConcept.name)
+
+then
+	utils.log(String.format("Reward calculated on %s - %s", $calculationPointConceptRef.getName(), $calculationPointConceptRef.getPeriod()));
+	
+	//WARNING: here we are assuming that calculation point and target point belong 
+	//to the same point concept, and hence, there is no need for conversion
+	Double percentage = $reward.getPercentage();
+	
+	Double base = $pcCalculation.getPeriodCurrentScore($calculationPointConceptRef.getPeriod());
+	Double inc = (base * percentage / 100) <= $reward.getThreshold() ? (base * percentage / 100) : $reward.getThreshold();
+	$pcTarget.setScore($pcTarget.getScore() + inc);
+			
+	update($pcTarget);
+
+end
+

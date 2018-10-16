@@ -11,6 +11,7 @@ import eu.trentorise.game.model.Level.Threshold;
 public class PlayerLevel {
     private String levelName;
     private String levelValue;
+    private int levelIndex;
     private String pointConcept;
     private double startLevelScore;
     private double endLevelScore;
@@ -25,6 +26,7 @@ public class PlayerLevel {
 
         final List<Threshold> levelRange = levelRange(levelDefinition, actualScore);
         this.levelValue = levelRange.get(0).getName();
+        this.levelIndex = levelRange.get(0).getIndex();
         this.startLevelScore = levelRange.get(0).getValue();
         this.endLevelScore =
                 isNeverEndingLevel(levelRange) ? INFINITE_LEVEL_FLAG : levelRange.get(1).getValue();
@@ -44,11 +46,13 @@ public class PlayerLevel {
                 .collect(Collectors.toCollection(java.util.LinkedList::new)).getLast();
 
         if (actualThreshold != null) {
-            levelRange.add(actualThreshold);
             int thresholdIdx = thresholds.indexOf(actualThreshold);
+            actualThreshold.setIndex(thresholdIdx);
+            levelRange.add(actualThreshold);
             int nextThresholdIdx = thresholdIdx + 1;
             if (nextThresholdIdx < thresholds.size()) {
                 Threshold nextThreshold = thresholds.get(nextThresholdIdx);
+                nextThreshold.setIndex(nextThresholdIdx);
                 levelRange.add(nextThreshold);
             }
         }
@@ -90,5 +94,13 @@ public class PlayerLevel {
 
     public double getEndLevelScore() {
         return endLevelScore;
+    }
+
+    public int getLevelIndex() {
+        return levelIndex;
+    }
+
+    public void setLevelIndex(int levelIndex) {
+        this.levelIndex = levelIndex;
     }
 }

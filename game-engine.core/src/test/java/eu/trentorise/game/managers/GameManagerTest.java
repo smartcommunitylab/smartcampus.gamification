@@ -1,6 +1,9 @@
 package eu.trentorise.game.managers;
 
+
 import static eu.trentorise.game.test_utils.Utils.date;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -319,6 +322,7 @@ public class GameManagerTest {
 
         Assert.assertEquals(1, levels.size());
         Assert.assertEquals("child", levels.get(0).getLevelValue());
+        Assert.assertEquals(0, levels.get(0).getLevelIndex());
         Assert.assertEquals(44d, levels.get(0).getToNextLevel(), 0);
     }
 
@@ -347,6 +351,7 @@ public class GameManagerTest {
 
         Assert.assertEquals(1, levels.size());
         Assert.assertEquals("adept", levels.get(0).getLevelValue());
+        Assert.assertEquals(1, levels.get(0).getLevelIndex());
         Assert.assertEquals(0d, levels.get(0).getToNextLevel(), 0);
     }
 
@@ -410,8 +415,10 @@ public class GameManagerTest {
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
         Assert.assertEquals(2, levels.size());
         Assert.assertEquals("child", levels.get(0).getLevelValue());
+        Assert.assertEquals(0, levels.get(0).getLevelIndex());
         Assert.assertEquals(44d, levels.get(0).getToNextLevel(), 0);
         Assert.assertEquals("foot soldier", levels.get(1).getLevelValue());
+        Assert.assertEquals(0, levels.get(1).getLevelIndex());
         Assert.assertEquals(500d, levels.get(1).getToNextLevel(), 0);
     }
 
@@ -436,6 +443,7 @@ public class GameManagerTest {
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
         Assert.assertEquals(1, levels.size());
         Assert.assertEquals("child", levels.get(0).getLevelValue());
+        Assert.assertEquals(0, levels.get(0).getLevelIndex());
         Assert.assertEquals(100d, levels.get(0).getToNextLevel(), 0);
     }
 
@@ -462,7 +470,29 @@ public class GameManagerTest {
         List<PlayerLevel> levels = gameSrv.calculateLevels(gameId, playerState);
         Assert.assertEquals(1, levels.size());
         Assert.assertEquals("adept", levels.get(0).getLevelValue());
+        Assert.assertEquals(1, levels.get(0).getLevelIndex());
         Assert.assertEquals(0d, levels.get(0).getToNextLevel(), 0);
+    }
+
+    @Test
+    public void thresholds_should_be_sorted_by_value() {
+        String gameId = "MY_GAME";
+
+        Game g = new Game(gameId);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(new PointConcept("green"));
+
+        Level explorerLevel = new Level("explorer", "green");
+        explorerLevel.getThresholds().add(new Threshold("adept", 100d));
+        explorerLevel.getThresholds().add(new Threshold("child", 0d));
+        explorerLevel.getThresholds().add(new Threshold("master", 400d));
+
+        List<Threshold> thresholds = explorerLevel.getThresholds();
+
+        assertThat(thresholds, contains(new Threshold("child", 0d), new Threshold("adept", 100d),
+                new Threshold("master", 400d)));
+
+
     }
 
     @Test

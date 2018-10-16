@@ -1,6 +1,8 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +34,7 @@ public class Level {
 
 
     public List<Threshold> getThresholds() {
+        Collections.sort(thresholds, new Threshold.ValueComparator());
         return thresholds;
     }
 
@@ -90,6 +93,7 @@ public class Level {
     public static class Threshold {
         private String name;
         private double value;
+        private int index;
         private Config config;
 
 
@@ -147,6 +151,24 @@ public class Level {
 
         public void setConfig(Config config) {
             this.config = config;
+        }
+
+        static class ValueComparator implements Comparator<Threshold> {
+
+            @Override
+            public int compare(Threshold o1, Threshold o2) {
+                return Double.compare(o1.getValue(), o2.getValue());
+            }
+
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+
+        public void setIndex(int index) {
+            this.index = index;
         }
     }
 }

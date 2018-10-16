@@ -77,7 +77,7 @@ public class GameManager implements GameService {
 
     public static final String INTERNAL_ACTION_PREFIX = "scogei_";
 
-    private static final long ONE_MINUTE_MILLIS = 60000;
+    private static final long ONE_SECOND_IN_MILLIS = 1000;
 
     @Autowired
     private TaskService taskSrv;
@@ -332,9 +332,11 @@ public class GameManager implements GameService {
     }
 
 
+    @Scheduled(cron = "0 0/1 * * * *")
     public void conditionCheckPerformanceGroupChallengesTask() {
         LogHub.info(null, logger,
                 "Condition checker for best performance group challenges in action");
+        long startOperation = System.currentTimeMillis();
         List<Game> activeGames = loadGames(true);
         List<String> activeGameIds =
                 activeGames.stream().map(Game::getId).collect(Collectors.toList());
@@ -355,12 +357,14 @@ public class GameManager implements GameService {
                 // reward will be assigned to the correct period
                 winners.stream().forEach(w -> {
                     workflow.apply(gameId, INTERNAL_ACTION_PREFIX + "reward", w,
-                            challenge.getEnd().getTime() - ONE_MINUTE_MILLIS, null,
+                            challenge.getEnd().getTime() - ONE_SECOND_IN_MILLIS, null,
                             Arrays.asList(challenge.getReward()));
                 });
             });
 
         });
+        LogHub.info(null, logger, String.format("End best performance challenge action in %s ms",
+                (System.currentTimeMillis() - startOperation)));
     }
 
     private void sendChallengeNotification(GroupChallenge challenge) {

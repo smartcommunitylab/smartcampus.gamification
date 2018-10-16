@@ -40,4 +40,10 @@ public class Reward {
         this.threshold = threshold;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "{percentage=%s, threshold=%s, calculationPointConcept=%s, targetPointConcept=%s}",
+                percentage, threshold, calculationPointConcept, targetPointConcept);
+    }
 }

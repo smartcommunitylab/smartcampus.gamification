@@ -252,6 +252,10 @@ public class GroupChallenge {
             this.period = period;
         }
 
+        @Override
+        public String toString() {
+            return String.format("{name=%s, period=%s}", name, period);
+        }
     }
 
     public String getId() {

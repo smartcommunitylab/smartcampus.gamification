@@ -17,8 +17,12 @@ then
 	Double percentage = $reward.getPercentage();
 	
 	Double base = $pcCalculation.getPeriodCurrentScore($calculationPointConceptRef.getPeriod());
-	Double inc = (base * percentage / 100) <= $reward.getThreshold() ? (base * percentage / 100) : $reward.getThreshold();
-	$pcTarget.setScore($pcTarget.getScore() + inc);
+	
+	double rewardScore = base * percentage / 100;
+	if($reward.getThreshold() > 0 && rewardScore > $reward.getThreshold()) {
+		rewardScore = $reward.getThreshold(); 
+	}
+	$pcTarget.setScore($pcTarget.getScore() + rewardScore);
 			
 	update($pcTarget);
 

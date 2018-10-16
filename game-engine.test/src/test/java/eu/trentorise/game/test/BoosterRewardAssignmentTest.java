@@ -77,7 +77,7 @@ public class BoosterRewardAssignmentTest extends GameTest {
     @Override
     public void defineExecData(List<ExecData> execList) {
         List<Object> list = new ArrayList<>();
-        Reward r = new Reward();
+        Reward r = new Reward(); // with threshold, and threshold isn't applied
         
         r.setPercentage(50);
         r.setThreshold(250);
@@ -85,7 +85,7 @@ public class BoosterRewardAssignmentTest extends GameTest {
         r.setTargetPointConcept(new PointConceptRef("green leaves", "daily"));
         list.add(r);
         
-        Reward r2 = new Reward();
+        Reward r2 = new Reward(); // with threshold, and threshold is applied
         
         r2.setPercentage(50);
         r2.setThreshold(250);
@@ -93,6 +93,13 @@ public class BoosterRewardAssignmentTest extends GameTest {
         r2.setTargetPointConcept(new PointConceptRef("points", "daily"));
         list.add(r2);
         
+        Reward r3 = new Reward(); // without threshold
+
+        r3.setPercentage(50);
+        r3.setCalculationPointConcept(new PointConceptRef("points", "weekly"));
+        r3.setTargetPointConcept(new PointConceptRef("points", "daily"));
+        list.add(r3);
+
         execList.add(new ExecData(GAME, ACTION, PLAYER_1, new HashMap<>(), list));
 
     }
@@ -101,7 +108,7 @@ public class BoosterRewardAssignmentTest extends GameTest {
     public void analyzeResult() {
 	    	double newscore = 450 + (450 * 0.5); //increase current gl of the percentage
 	    	assertionPoint(GAME, newscore, PLAYER_1, "green leaves"); //+50%
-	    	assertionPoint(GAME, (1000.0 + 250), PLAYER_1, "points"); //+Threshold
+        assertionPoint(GAME, (1000.0 + 250 + 500), PLAYER_1, "points"); // +Threshold
     }
 
 }

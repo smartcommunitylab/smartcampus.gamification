@@ -96,9 +96,14 @@ public class KieContainerFactoryImpl implements KieContainerFactory {
         try {
             coreRes = ruleLoader.load("classpath://rules/core.drl");
             kfs.write(coreRes);
+
+            // load rules for group challenges rewards
+            Resource groupChallengesRewardRules =
+                    ruleLoader.load("classpath://rules/groupChallengeReward.drl");
+            kfs.write(groupChallengesRewardRules);
             LogHub.info(gameId, logger, "Core rules loaded");
         } catch (MalformedURLException e) {
-            LogHub.info(gameId, logger, "Exception loading core.drl");
+            LogHub.info(gameId, logger, "Exception loading core rules");
         }
 
         // load rules

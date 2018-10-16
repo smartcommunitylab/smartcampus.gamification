@@ -332,7 +332,7 @@ public class GameManager implements GameService {
     }
 
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0 1 * * *")
     public void conditionCheckPerformanceGroupChallengesTask() {
         LogHub.info(null, logger,
                 "Condition checker for best performance group challenges in action");

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -606,7 +607,11 @@ public class GameManager implements GameService {
                             .findFirst().orElse(null);
                     final double actualValue =
                             pointConceptValue != null ? pointConceptValue.getScore() : 0d;
-                    playerLevels.add(new PlayerLevel(definition, actualValue));
+                    try {
+                        playerLevels.add(new PlayerLevel(definition, actualValue));
+                    } catch (NoSuchElementException e) {
+                        // do nothing: no playerLevel for actualValue using given definition
+                    }
                 });
             }
             return playerLevels;

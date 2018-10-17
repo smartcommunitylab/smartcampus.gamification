@@ -4,10 +4,12 @@ package eu.trentorise.game.managers;
 import static eu.trentorise.game.test_utils.Utils.date;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -472,6 +474,27 @@ public class GameManagerTest {
         Assert.assertEquals("adept", levels.get(0).getLevelValue());
         Assert.assertEquals(1, levels.get(0).getLevelIndex());
         Assert.assertEquals(0d, levels.get(0).getToNextLevel(), 0);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void player_level_on_level_without_thresholds() {
+        Level levelDefinition = new Level("greener", "green leaves");
+        PlayerLevel level = new PlayerLevel(levelDefinition, 10);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void player_level_on_player_with_score_under_minimum_threshold() {
+        Level levelDefinition = new Level("greener", "green leaves");
+        levelDefinition.getThresholds().add(new Threshold("0", 500));
+        PlayerLevel level = new PlayerLevel(levelDefinition, 10);
+    }
+
+    @Test
+    public void player_level_on_player_with_score_equals_to_minimum_threshold() {
+        Level levelDefinition = new Level("greener", "green leaves");
+        levelDefinition.getThresholds().add(new Threshold("0", 0));
+        PlayerLevel level = new PlayerLevel(levelDefinition, 0);
+        assertThat(level.getLevelValue(), is("0"));
     }
 
     @Test

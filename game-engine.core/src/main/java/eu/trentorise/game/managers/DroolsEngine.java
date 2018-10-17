@@ -345,13 +345,20 @@ public class DroolsEngine implements GameEngine {
         levelProgression.keySet().forEach(levelName -> {
             List<String> instanceProgression = levelProgression.get(levelName);
             // same level after game action
-            if (instanceProgression.get(0).equals(instanceProgression.get(1))) {
+            if (instanceProgression.size() == 0 || (instanceProgression.size() == 2
+                    && instanceProgression.get(0).equals(instanceProgression.get(1)))) {
                 // do nothing
             } else {
+                boolean neverGainedLevelOfThisType = instanceProgression.size() == 1;
+                String levelValueGained = neverGainedLevelOfThisType
+                        ? instanceProgression.get(0) : instanceProgression.get(1);
                 List<LevelInstance> levelInstances = gainedLevels(
-                        new LevelInstance(levelName, instanceProgression.get(1)), game);
+                        new LevelInstance(levelName, levelValueGained), game);
                 int indexOfNewLevel = levelInstances.size() - 1;
-                int indexOfPreviousLevel = levelInstances
+
+                int indexOfPreviousLevel =
+                        neverGainedLevelOfThisType ? 0
+                                : levelInstances
                         .indexOf(new LevelInstance(levelName, instanceProgression.get(0))) + 1;
                 for (int i = indexOfPreviousLevel; i <= indexOfNewLevel; i++) {
                     levelsGainedInGameAction.add(levelInstances.get(i));

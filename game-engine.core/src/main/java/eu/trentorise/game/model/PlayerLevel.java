@@ -1,7 +1,9 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -25,6 +27,10 @@ public class PlayerLevel {
         this.pointConcept = levelDefinition.getPointConceptName();
 
         final List<Threshold> levelRange = levelRange(levelDefinition, actualScore);
+        if (levelRange.isEmpty()) {
+            throw new NoSuchElementException(
+                    "no level threshold found for actualScore " + actualScore);
+        }
         this.levelValue = levelRange.get(0).getName();
         this.levelIndex = levelRange.get(0).getIndex();
         this.startLevelScore = levelRange.get(0).getValue();
@@ -41,10 +47,11 @@ public class PlayerLevel {
         final List<Threshold> thresholds = levelDefinition.getThresholds();
         List<Threshold> levelRange = new ArrayList<>();
 
-        Threshold actualThreshold = thresholds.stream()
-                .filter(thres -> thres.getValue() <= actualScore)
-                .collect(Collectors.toCollection(java.util.LinkedList::new)).getLast();
+        LinkedList<Threshold> hitThresholds =
+                thresholds.stream().filter(thres -> thres.getValue() <= actualScore)
+                        .collect(Collectors.toCollection(java.util.LinkedList::new));
 
+        Threshold actualThreshold = hitThresholds.isEmpty() ? null : hitThresholds.getLast();
         if (actualThreshold != null) {
             int thresholdIdx = thresholds.indexOf(actualThreshold);
             actualThreshold.setIndex(thresholdIdx);

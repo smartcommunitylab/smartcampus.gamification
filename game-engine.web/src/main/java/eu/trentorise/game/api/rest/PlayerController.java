@@ -62,6 +62,7 @@ public class PlayerController {
             @PathVariable String playerId) {
 
         gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         ChallengeAssignment assignment = converter.convert(challengeData);
         playerSrv.assignChallenge(gameId, playerId, assignment);
     }

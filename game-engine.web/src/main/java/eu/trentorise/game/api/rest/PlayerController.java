@@ -30,6 +30,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Inventory.ItemChoice;
+import eu.trentorise.game.model.Invitation;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -80,6 +81,17 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
         GroupChallenge assignment = converter.convert(challengeData);
         challengeSrv.save(assignment);
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/data/game/{gameId}/player/{playerId}/invitation",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void inviteIntoAChallenge(@RequestBody Invitation invitation,
+            @PathVariable String gameId, @PathVariable String playerId) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+
     }
 
 

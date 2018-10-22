@@ -15,7 +15,7 @@
 				<groupId>org.drools</groupId>
 				<artifactId>drools-bom</artifactId>
 				<type>pom</type>
-				<version>6.1.0.Final</version>
+				<version>7.11.0.Final</version> <!--7.11.0.Final/6.1.0.Final-->
 				<scope>import</scope>
 			</dependency>
 		</dependencies>

@@ -152,6 +152,29 @@
 										</table>
 									</div>
 								</div>
+
+								<div class="col-md-12">
+									<div class="monitor-section-title">
+										<span ng-show="isLevelSectorVisible" ng-click="isLevelSectorVisible = !isLevelSectorVisible" class="glyphicon glyphicon-chevron-right"
+										 aria-hidden="true"></span>
+										<span ng-hide="isLevelSectorVisible" ng-click="isLevelSectorVisible = !isLevelSectorVisible" class="glyphicon glyphicon-chevron-down"
+										 aria-hidden="true"></span>
+										<div class="section-title">
+											<h5 ng-click="isLevelSectorVisible = !isLevelSectorVisible">{{'labels:lbl_levels_menu'
+												| i18next}}</h5>
+										</div>
+									</div>
+									<div uib-collapse="isLevelSectorVisible">
+										<div ng-hide="player.hasLevels" style="margin: 0 10px;">{{'messages:msg_no_level'
+											| i18next }}</div>
+										<table class="badge-box" ng-show="player.hasLevels">
+											<tr data-ng-repeat="level in player.levels">
+												<td><span>{{level.levelName}}:</span> <span class="value">{{level.levelValue}}</span></td>
+											</tr>
+										</table>
+									</div>
+								</div>
+
 								<div class="col-md-12">
 									<div class="monitor-section-title">
 										<span ng-show="isChallengeSectorVisible"
@@ -176,10 +199,8 @@
 												<span ng-attr-title="{{challenge.name}}" class="challenge-title">{{challenge.name | limitTo: challengeNameLimit}}</span>
 												<div class="challenge-date">{{challenge.modelName}}</div>
 												<div class="challenge-status">
-													<span ng-show="challenge.active"
-														class="label label-success">{{'labels:lbl_challenge_active'| i18next }}</span><span
-														ng-show="challenge.completed" class="label label-success">{{'labels:lbl_challenge_completed'| i18next }} - {{challenge.dateCompleted | date:'dd/MM/yyyy HH:mm:ss'}}</span><span
-														ng-show="challenge.failed" class="label label-danger">{{'labels:lbl_challenge_failed'| i18next }}</span>
+													<span ng-show="!challenge.failed" class="label label-success">{{challenge.state}} {{ challenge.stateDate[challenge.state] | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+													<span ng-show="challenge.failed" class="label label-danger">{{challenge.state}} {{ challenge.stateDate[challenge.state] | date:'dd/MM/yyyy HH:mm:ss' }}</span>													
 												</div>
 												<div class="challenge-date">{{challenge.start | date:
 													'dd/MM/yyyy HH:mm:ss'}} - {{challenge.end | date:

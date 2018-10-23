@@ -349,7 +349,7 @@ public class GameManager implements GameService {
                 if (challenge.getEnd() != null && challenge.getEnd().before(deadline)
                         && challenge.persistedState() != ChallengeState.COMPLETED
                         && challenge.persistedState() != ChallengeState.FAILED) {
-                    challenge.updateState(ChallengeState.FAILED);
+                    challenge.updateState(ChallengeState.FAILED, challenge.getEnd());
                     StatsLogger.logChallengeFailed(game.getDomain(), gameId, player.getPlayerId(),
                             executionId, challenge.getEnd().getTime(), deadline.getTime(),
                             challenge.getName());

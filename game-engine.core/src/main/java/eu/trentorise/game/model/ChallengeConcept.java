@@ -233,11 +233,15 @@ public class ChallengeConcept extends GameConcept {
     }
 
     public ChallengeConcept updateState(ChallengeState state) {
+        return updateState(state, clock.now());
+    }
+
+    public ChallengeConcept updateState(ChallengeState state, Date atDate) {
         if (state == null) {
             throw new IllegalArgumentException("Cannot update to a null state");
         }
         this.state = state;
-        stateDate.put(state, clock.now());
+        stateDate.put(state, atDate);
         return this;
     }
 

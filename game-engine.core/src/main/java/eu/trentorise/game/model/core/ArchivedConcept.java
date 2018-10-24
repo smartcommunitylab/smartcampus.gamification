@@ -1,5 +1,7 @@
 package eu.trentorise.game.model.core;
 
+import java.util.Date;
+
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.GroupChallenge;
 
@@ -9,6 +11,7 @@ public class ArchivedConcept {
     private String playerId;
     private ChallengeConcept challenge;
     private GroupChallenge groupChallenge;
+    private Date archivingDate = new Date();
 
     public String getId() {
         return id;
@@ -48,6 +51,14 @@ public class ArchivedConcept {
 
     public void setGroupChallenge(GroupChallenge groupChallenge) {
         this.groupChallenge = groupChallenge;
+    }
+
+    public Date getArchivingDate() {
+        return archivingDate;
+    }
+
+    public void setArchivingDate(Date archivingDate) {
+        this.archivingDate = archivingDate;
     }
 
 

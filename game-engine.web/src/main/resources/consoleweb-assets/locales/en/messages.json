@@ -18,6 +18,7 @@
   "msg_error_integer" : "Non a valid integer",
   "msg_error_exist" : "Element already exist",
   "msg_no_customdata": "No custom data for the player",
+  "msg_no_level": "No level for the player",
   "msg_invalid_time": "Insert a valid date",
   "msg_empty_fields": "All fields must be compiled",
   "msg_rule_edited" : "Operation success",

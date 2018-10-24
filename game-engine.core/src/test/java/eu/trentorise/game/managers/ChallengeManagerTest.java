@@ -33,8 +33,11 @@ import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
+import eu.trentorise.game.model.Invitation;
+import eu.trentorise.game.model.Invitation.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,6 +49,8 @@ public class ChallengeManagerTest {
     @Autowired
     private ChallengeManager challengeManager;
 
+    @Autowired
+    private GroupChallengeRepo groupChallengeRepo;
 
     @Autowired
     private PlayerService playerSrv;
@@ -232,5 +237,46 @@ public class ChallengeManagerTest {
         List<GroupChallenge> completedGroupChallenges =
                 challengeManager.completedPerformanceGroupChallenges("game");
         assertThat(completedGroupChallenges, hasSize(2));
+    }
+
+    @Test
+    public void ant_man_invites_wasp_to_challenge() {
+        Invitation invitation = new Invitation();
+        invitation.setGameId("GAME");
+        Player proposer = new Player();
+        proposer.setPlayerId("ant-man");
+        invitation.setProposer(proposer);
+        Player guest = new Player();
+        guest.setPlayerId("wasp");
+        invitation.getGuests().add(guest);
+
+        challengeManager.inviteToChallenge(invitation);
+
+        assertThat(groupChallengeRepo.proposerInvitations("GAME", "ant-man"), hasSize(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ant_man_already_invite_to_challenge() {
+        Invitation invitation = new Invitation();
+        invitation.setGameId("GAME");
+        Player proposer = new Player();
+        proposer.setPlayerId("ant-man");
+        invitation.setProposer(proposer);
+        Player guest = new Player();
+        guest.setPlayerId("wasp");
+        invitation.getGuests().add(guest);
+
+        challengeManager.inviteToChallenge(invitation);
+
+        assertThat(groupChallengeRepo.proposerInvitations("GAME", "ant-man"), hasSize(1));
+
+        Invitation otherInvitation = new Invitation();
+        otherInvitation.setGameId("GAME");
+        otherInvitation.setProposer(proposer);
+        Player guest1 = new Player();
+        guest1.setPlayerId("jessica-jones");
+        otherInvitation.getGuests().add(guest1);
+
+        challengeManager.inviteToChallenge(otherInvitation);
     }
 }

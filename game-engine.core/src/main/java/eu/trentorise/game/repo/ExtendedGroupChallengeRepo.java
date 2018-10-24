@@ -14,4 +14,8 @@ public interface ExtendedGroupChallengeRepo {
 
     void deletePlayerGroupChallenges(String gameId, String playerId,
             ChallengeState challengeState);
+
+    List<GroupChallenge> proposerInvitations(String gameId, String playerId);
+
+    List<GroupChallenge> guestInvitations(String gameId, String playerId);
 }

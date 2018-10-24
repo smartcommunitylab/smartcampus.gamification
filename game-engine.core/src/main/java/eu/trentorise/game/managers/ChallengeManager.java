@@ -23,6 +23,9 @@ public class ChallengeManager {
 
     private static final String INVITATION_CHALLENGE_ORIGIN = "player";
 
+    private static final int LIMIT_INVITATIONS_AS_PROPOSER = 1;
+    private static final int LIMIT_INVITATIONS_AS_GUEST = 3;
+
     @Autowired
     private PlayerService playerSrv;
 
@@ -58,11 +61,40 @@ public class ChallengeManager {
     }
 
     public void inviteToChallenge(Invitation invitation) {
-        // save GroupChallenge
-        GroupChallenge groupChallenge = convert(invitation);
+        if (invitation != null) {
 
-        // produce notification to other attendees
-        // stats notification
+            // check if player has sent other invitations
+            List<GroupChallenge> proposerInvitations = groupChallengeRepo.proposerInvitations(
+                    invitation.getGameId(),
+                    invitation.getProposer().getPlayerId());
+            if (proposerInvitations.size() >= LIMIT_INVITATIONS_AS_PROPOSER) {
+                throw new IllegalArgumentException(
+                        String.format("player %s already has %s pending invitations as proposer",
+                                invitation.getProposer().getPlayerId(),
+                                LIMIT_INVITATIONS_AS_PROPOSER));
+            }
+
+            // check if player has received max 3 invitations
+            invitation.getGuests().forEach(guest -> {
+                List<GroupChallenge> guestInvitations = groupChallengeRepo
+                        .guestInvitations(invitation.getGameId(), guest.getPlayerId());
+                if (guestInvitations.size() >= LIMIT_INVITATIONS_AS_GUEST) {
+                    throw new IllegalArgumentException(
+                            String.format("player %s already has %s pending invitations as guest",
+                                    guest.getPlayerId(), LIMIT_INVITATIONS_AS_GUEST));
+                }
+
+            });
+            // save GroupChallenge
+            GroupChallenge groupChallenge = convert(invitation);
+            save(groupChallenge);
+
+            // produce notification to other attendees
+            // stats notification
+        }
+
+
+
     }
 
     private GroupChallenge convert(Invitation invitation) {

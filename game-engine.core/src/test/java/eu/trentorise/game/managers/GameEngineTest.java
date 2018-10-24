@@ -682,6 +682,10 @@ public class GameEngineTest {
                     try {
                         coreRes = ruleLoader.load("classpath://rules/core.drl");
                         kfs.write(coreRes);
+                        // load rules for group challenges rewards
+                        Resource groupChallengesRewardRules =
+                                ruleLoader.load("classpath://rules/groupChallengeReward.drl");
+                        kfs.write(groupChallengesRewardRules);
                     } catch (MalformedURLException e) {
                     }
 

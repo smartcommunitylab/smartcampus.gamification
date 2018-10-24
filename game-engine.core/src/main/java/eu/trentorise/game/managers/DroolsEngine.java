@@ -299,7 +299,7 @@ public class DroolsEngine implements GameEngine {
             state.updateInventory(game, newGainedLevels);
             LogHub.info(gameId, logger, String.format("Gained new levels %s", newGainedLevels));
             sendLevelNotifications(game.getDomain(), gameId, state.getPlayerId(), executionId,
-                    executionMoment, System.currentTimeMillis(), newGainedLevels);
+                    executionMoment, System.currentTimeMillis(), newGainedLevels, game);
         }
 
         // fix for dataset prior than 0.9 version
@@ -315,13 +315,17 @@ public class DroolsEngine implements GameEngine {
 
     private void sendLevelNotifications(String domain, String gameId, String playerId,
             String executionId, long executionTime, long timestamp,
-            List<LevelInstance> newGainedLevels) {
+            List<LevelInstance> newGainedLevels, Game game) {
         newGainedLevels.forEach(instance -> {
             LevelGainedNotification notification = new LevelGainedNotification();
             notification.setGameId(gameId);
             notification.setPlayerId(playerId);
             notification.setLevelType(instance.getType());
             notification.setLevelName(instance.getName());
+            int levelIndex = game.getLevelThresholds(instance.getType())
+                    .indexOf(new Threshold(instance.getName(), -1));
+
+            notification.setLevelIndex(levelIndex);
             notificationSrv.notificate(notification);
             LogHub.info(gameId, logger, "send notification: {}", notification.toString());
             StatsLogger.logLevelGained(domain, gameId, playerId, instance, executionId,

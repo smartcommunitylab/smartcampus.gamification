@@ -5,6 +5,7 @@ import eu.trentorise.game.model.core.Notification;
 public class LevelGainedNotification extends Notification {
     private String levelName;
     private String levelType;
+    private int levelIndex;
 
 
     @Override
@@ -31,6 +32,16 @@ public class LevelGainedNotification extends Notification {
 
     public void setLevelType(String levelType) {
         this.levelType = levelType;
+    }
+
+
+    public int getLevelIndex() {
+        return levelIndex;
+    }
+
+
+    public void setLevelIndex(int levelIndex) {
+        this.levelIndex = levelIndex;
     }
 
 }

@@ -1,6 +1,7 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -10,11 +11,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 
 public class GroupChallenge {
 
+    @JsonIgnore
     public static final String MODEL_NAME_COMPETITIVE_PERFORMANCE = "groupCompetitivePerformance";
+
+    @JsonIgnore
+    public static final List<String> MODELS = Arrays.asList(MODEL_NAME_COMPETITIVE_PERFORMANCE);
 
     private String id;
 

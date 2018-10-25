@@ -9,18 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
+import eu.trentorise.game.model.ChallengeInvitation;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
-import eu.trentorise.game.model.Invitation;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.notification.ChallengeInvitationNotification;
 import eu.trentorise.game.repo.GroupChallengeRepo;
+import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
 @Service
 public class ChallengeManager {
 
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(ChallengeManager.class);
     private static final String INVITATION_CHALLENGE_ORIGIN = "player";
 
     private static final int LIMIT_INVITATIONS_AS_PROPOSER = 1;
@@ -34,6 +41,12 @@ public class ChallengeManager {
 
     @Autowired
     private Clock clock;
+
+    @Autowired
+    private GameService gameSrv;
+
+    @Autowired
+    private NotificationManager notificationSrv;
 
     public List<String> conditionCheck(GroupChallenge groupChallenge) {
         List<Attendee> attendees = groupChallenge.getAttendees();
@@ -60,9 +73,10 @@ public class ChallengeManager {
                 clock.now());
     }
 
-    public void inviteToChallenge(Invitation invitation) {
+    public void inviteToChallenge(ChallengeInvitation invitation) {
         if (invitation != null) {
 
+            invitation.validate();
             // check if player has sent other invitations
             List<GroupChallenge> proposerInvitations = groupChallengeRepo.proposerInvitations(
                     invitation.getGameId(),
@@ -90,14 +104,32 @@ public class ChallengeManager {
             save(groupChallenge);
 
             // produce notification to other attendees
-            // stats notification
+            final String proposerId = invitation.getProposer().getPlayerId();
+            final Game game = gameSrv.loadGameDefinitionById(invitation.getGameId());
+            final String inviteExecutionId = UUID.randomUUID().toString();
+            final long executionTime = clock.nowAsMillis();
+            invitation.getGuests().forEach(guest -> {
+                ChallengeInvitationNotification invitationNotification =
+                        new ChallengeInvitationNotification();
+                invitationNotification.setGameId(invitation.getGameId());
+                invitationNotification.setPlayerId(guest.getPlayerId());
+                invitationNotification.setProposerId(proposerId);
+                notificationSrv.notificate(invitationNotification);
+                LogHub.info(invitation.getGameId(), logger,
+                        String.format("Player %s invites player %s to a challenge", proposerId,
+                                guest.getPlayerId()));
+                StatsLogger.logInviteToChallenge(game.getDomain(), game.getId(), proposerId,
+                        inviteExecutionId, executionTime, executionTime, guest.getPlayerId(),
+                        groupChallenge.getInstanceName(),
+                        GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+            });
         }
 
 
 
     }
 
-    private GroupChallenge convert(Invitation invitation) {
+    private GroupChallenge convert(ChallengeInvitation invitation) {
         GroupChallenge challenge = null;
         if (invitation != null) {
             challenge = new GroupChallenge(ChallengeState.PROPOSED);
@@ -108,14 +140,14 @@ public class ChallengeManager {
             challenge.setAttendees(attendees(invitation));
             challenge.setGameId(invitation.getGameId());
             challenge.setReward(invitation.getReward());
-            challenge.setInstanceName(String.format("p%s_%s",
+            challenge.setInstanceName(String.format("p_%s_%s",
                     invitation.getProposer().getPlayerId(), UUID.randomUUID().toString()));
         }
 
         return challenge;
     }
 
-    private List<Attendee> attendees(Invitation invitation) {
+    private List<Attendee> attendees(ChallengeInvitation invitation) {
         List<Attendee> attendees = new ArrayList<GroupChallenge.Attendee>();
         if (invitation != null) {
             if (invitation.getProposer() != null) {

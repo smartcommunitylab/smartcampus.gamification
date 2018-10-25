@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,15 +30,17 @@ import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
+import eu.trentorise.game.model.ChallengeInvitation;
+import eu.trentorise.game.model.ChallengeInvitation.Player;
+import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
-import eu.trentorise.game.model.Invitation;
-import eu.trentorise.game.model.Invitation.Player;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.repo.GroupChallengeRepo;
+import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,6 +63,9 @@ public class ChallengeManagerTest {
 
     @Mock
     private Clock clock;
+
+    @Mock
+    private GameService gameSrv;
 
     @Before
     public void setup() {
@@ -241,15 +247,10 @@ public class ChallengeManagerTest {
 
     @Test
     public void ant_man_invites_wasp_to_challenge() {
-        Invitation invitation = new Invitation();
-        invitation.setGameId("GAME");
-        Player proposer = new Player();
-        proposer.setPlayerId("ant-man");
-        invitation.setProposer(proposer);
-        Player guest = new Player();
-        guest.setPlayerId("wasp");
-        invitation.getGuests().add(guest);
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
 
+        ChallengeInvitation invitation =
+                invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
         challengeManager.inviteToChallenge(invitation);
 
         assertThat(groupChallengeRepo.proposerInvitations("GAME", "ant-man"), hasSize(1));
@@ -257,26 +258,49 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ant_man_already_invite_to_challenge() {
-        Invitation invitation = new Invitation();
-        invitation.setGameId("GAME");
-        Player proposer = new Player();
-        proposer.setPlayerId("ant-man");
-        invitation.setProposer(proposer);
-        Player guest = new Player();
-        guest.setPlayerId("wasp");
-        invitation.getGuests().add(guest);
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
 
+        ChallengeInvitation invitation =
+                invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
         challengeManager.inviteToChallenge(invitation);
-
         assertThat(groupChallengeRepo.proposerInvitations("GAME", "ant-man"), hasSize(1));
 
-        Invitation otherInvitation = new Invitation();
-        otherInvitation.setGameId("GAME");
-        otherInvitation.setProposer(proposer);
-        Player guest1 = new Player();
-        guest1.setPlayerId("jessica-jones");
-        otherInvitation.getGuests().add(guest1);
-
+        ChallengeInvitation otherInvitation =
+                invitation("GAME", "ant-man", "jessica-jones", "groupCompetitivePerformance");
         challengeManager.inviteToChallenge(otherInvitation);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ant_man_invites_wasp_but_she_has_already_reach_limit_invitations() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+
+        ChallengeInvitation connorsInvitation =
+                invitation("GAME", "curt connors", "wasp", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(connorsInvitation);
+
+        ChallengeInvitation brockInvitation =
+                invitation("GAME", "eddie brock", "wasp", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(brockInvitation);
+
+        ChallengeInvitation antManInvitation =
+                invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(antManInvitation);
+        Assert.fail("ant-man invitation works and it should not");
+    }
+
+    private ChallengeInvitation invitation(String gameId, String proposerId, String guestId, String type) {
+        ChallengeInvitation invitation = new ChallengeInvitation();
+        invitation.setGameId(gameId);
+        invitation.setChallengeModelName(type);
+        Player proposer = new Player();
+        proposer.setPlayerId(proposerId);
+        invitation.setProposer(proposer);
+        Player guest = new Player();
+        guest.setPlayerId(guestId);
+        invitation.getGuests().add(guest);
+        return invitation;
     }
 }

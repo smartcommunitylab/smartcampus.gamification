@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 
-public class Invitation {
+public class ChallengeInvitation {
 
     private String gameId;
     private Player proposer;
     private List<Player> guests = new ArrayList<>();
 
+    private String challengeModelName;
     private Date challengeStart;
     private Date challengeEnd;
     private PointConceptRef challengePointConcept;
@@ -84,6 +88,35 @@ public class Invitation {
 
     public void setChallengeEnd(Date challengeEnd) {
         this.challengeEnd = challengeEnd;
+    }
+
+    public String getChallengeModelName() {
+        return challengeModelName;
+    }
+
+    public void setChallengeModelName(String challengeModelName) {
+        this.challengeModelName = challengeModelName;
+    }
+
+    public void validate() {
+        if (StringUtils.isBlank(challengeModelName)) {
+            throw new IllegalArgumentException(String.format("challengeModel cannot be blank"));
+        } else if (!GroupChallenge.MODELS.contains(challengeModelName)) {
+            throw new IllegalArgumentException(String
+                    .format("challengeModel %s not supported for invitation", challengeModelName));
+        }
+        if (StringUtils.isBlank(gameId)) {
+            throw new IllegalArgumentException(String.format("gameId cannot be blank"));
+        }
+        if (proposer == null || StringUtils.isBlank(proposer.getPlayerId())) {
+            throw new IllegalArgumentException(
+                    String.format("proposer is null or playerId is unset"));
+        }
+
+        if (CollectionUtils.isEmpty(guests)) {
+            throw new IllegalArgumentException(
+                    String.format("guests should contain at least one element"));
+        }
     }
 
 }

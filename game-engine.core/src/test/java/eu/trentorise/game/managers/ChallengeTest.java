@@ -15,6 +15,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -438,7 +439,8 @@ public class ChallengeTest {
         assertThat(forced, is(nullValue()));
     }
 
-    // @Test
+    @Ignore
+    @Test
     /**
      * ATTENTION: comparator doesn't give always the same result..
      */

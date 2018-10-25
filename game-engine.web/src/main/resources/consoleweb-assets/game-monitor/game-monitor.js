@@ -44,8 +44,7 @@ angular.module('gamificationEngine.monitor', [])
 				p.hasChallenges = challenges.length > 0;
 				var referenceTimestamp = new Date().getTime();
 				challenges.forEach(function(c) {
-					c.active = referenceTimestamp < c.end;
-					c.failed = referenceTimestamp > c.end && !c.completed;
+					c.failed = c.state === 'FAILED';
 				});
 				
 				/* patch for an explicit request of peppo

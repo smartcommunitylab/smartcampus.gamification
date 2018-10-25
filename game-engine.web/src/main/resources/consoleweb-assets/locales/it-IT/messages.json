@@ -18,7 +18,7 @@
   "msg_error_integer" : "Il valore deve essere un intero",
   "msg_error_exist" : "L'elemento esiste già",
   "msg_no_customdata": "Nessun custom data per il giocatore",
-  "msg_no_level": "Nessun levello per il giocatore",
+  "msg_no_level": "Nessun livello per il giocatore",
   "msg_invalid_time": "Inserire un'ora valida",
   "msg_empty_fields": "Tutti i campi devono essere compilati",
   "msg_rule_edited" : "Regola modificata con successo",

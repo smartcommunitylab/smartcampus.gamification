@@ -642,8 +642,9 @@ public class PlayerControllerTest {
         } catch (Exception e) {
 
         }
-
     }
+
+
 
     @Test
     public void accept_challenge_and_clean_only_proposed() {
@@ -678,6 +679,20 @@ public class PlayerControllerTest {
             ChallengeAssignment assignment5 = new ChallengeAssignment("model_2", "instance_name_4",
                     new HashMap<>(), "FAILED", null, null);
             playerSrv.assignChallenge(game.getId(), "player", assignment5);
+            
+            GroupChallenge groupChallenge = new GroupChallenge();
+            groupChallenge.setGameId(game.getId());
+            groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+            groupChallenge.setState(ChallengeState.PROPOSED);
+            Attendee proposer = new Attendee();
+            proposer.setPlayerId("player1");
+            proposer.setRole(Role.PROPOSER);
+            groupChallenge.getAttendees().add(proposer);
+            Attendee guest = new Attendee();
+            guest.setPlayerId("player");
+            guest.setRole(Role.GUEST);
+            groupChallenge.getAttendees().add(guest);
+            challengeSrv.save(groupChallenge);
 
             builder = MockMvcRequestBuilders.post(
                     "/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept",
@@ -685,7 +700,7 @@ public class PlayerControllerTest {
             mocker.perform(builder).andDo(print())
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
-            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false, false);
+            PlayerState loaded = playerSrv.loadState(game.getId(), "player", false, true);
             List<ChallengeConcept> proposed = loaded.challenges().stream()
                     .filter(ch -> ch.getState() == ChallengeState.PROPOSED)
                     .collect(Collectors.toList());

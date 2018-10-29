@@ -84,8 +84,6 @@ public class DBPlayerManager implements PlayerService {
 
     private final static Logger logger = LoggerFactory.getLogger(DBPlayerManager.class);
 
-    // private static final String CHALLENGE_ARCHIVE_COLLECTION = "challengeArchive";
-
     @Autowired
     private PlayerRepo playerRepo;
 
@@ -693,21 +691,6 @@ public class DBPlayerManager implements PlayerService {
 
         return accepted;
     }
-
-    // private void moveToArchive(String gameId, String playerId, ChallengeConcept challenge) {
-    // ArchivedConcept archived = new ArchivedConcept();
-    // archived.setChallenge(challenge);
-    // archived.setGameId(gameId);
-    // archived.setPlayerId(playerId);
-    // mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
-    // }
-    //
-    // private void moveToArchive(String gameId, GroupChallenge challenge) {
-    // ArchivedConcept archived = new ArchivedConcept();
-    // archived.setGroupChallenge(challenge);
-    // archived.setGameId(gameId);
-    // mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
-    // }
 
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {

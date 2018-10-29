@@ -674,6 +674,16 @@ public class DBPlayerManager implements PlayerService {
                 }
             }
             saveState(state);
+
+            List<GroupChallenge> otherProposedhallenges = groupChallengeRepo
+                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
+            groupChallengeRepo.delete(otherProposedhallenges);
+            otherProposedhallenges.forEach(challenge -> {
+                challenge.updateState(ChallengeState.REFUSED);
+                archiveSrv.moveToArchive(gameId, challenge);
+                StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
+                        executionId, executionTime, executionTime, challenge.getInstanceName());
+            });
         }
 
         if (!found) {

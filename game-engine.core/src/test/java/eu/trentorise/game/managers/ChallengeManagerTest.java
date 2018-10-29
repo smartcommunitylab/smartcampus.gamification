@@ -7,8 +7,10 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -20,6 +22,8 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +36,7 @@ import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeInvitation;
 import eu.trentorise.game.model.ChallengeInvitation.Player;
+import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
@@ -39,6 +44,8 @@ import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.ChallengeAssignment;
+import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -55,6 +62,7 @@ public class ChallengeManagerTest {
     @Autowired
     private GroupChallengeRepo groupChallengeRepo;
 
+    @InjectMocks
     @Autowired
     private PlayerService playerSrv;
 
@@ -66,6 +74,9 @@ public class ChallengeManagerTest {
 
     @Mock
     private GameService gameSrv;
+
+    @Mock
+    private ChallengeModelRepo challengeModelRepo;
 
     @Before
     public void setup() {
@@ -290,6 +301,75 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(antManInvitation);
         Assert.fail("ant-man invitation works and it should not");
     }
+
+
+    @Test
+    public void wasp_accept_invitation() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        GroupChallenge invitationChallenge =
+                challengeManager.inviteToChallenge(drStrangeInvitation);
+        assertThat(invitationChallenge.getState(), is(ChallengeState.PROPOSED));
+        GroupChallenge invitationAccepted = challengeManager.acceptInvitation("GAME", "wasp",
+                invitationChallenge.getInstanceName());
+        assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
+    }
+
+    @Test
+    public void wasp_accept_non_existentinvitation() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        GroupChallenge invitationChallenge =
+                challengeManager.inviteToChallenge(drStrangeInvitation);
+        assertThat(invitationChallenge.getState(), is(ChallengeState.PROPOSED));
+        GroupChallenge invitationAccepted =
+                challengeManager.acceptInvitation("GAME", "wasp", "nonExistentInvitation");
+        assertThat(invitationAccepted, is(nullValue()));
+    }
+
+    @Test
+    public void wasp_accept_invitation_having_other_proposed_challenges() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME","model_1")).will(new Answer<ChallengeModel>() {
+
+            @Override
+            public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                ChallengeModel model = new ChallengeModel();
+                model.setName("model_1");
+                return model;
+            }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "PROPOSED", null, null);
+        playerSrv.assignChallenge("GAME", "wasp", assignment);
+
+        ChallengeAssignment assignment1 = new ChallengeAssignment("model_1", "instance_name1",
+                new HashMap<>(), "PROPOSED", null, null);
+        playerSrv.assignChallenge("GAME", "wasp", assignment1);
+
+        ChallengeInvitation antManInvitation =
+                invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(antManInvitation);
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        GroupChallenge invitationChallenge =
+                challengeManager.inviteToChallenge(drStrangeInvitation);
+        assertThat(invitationChallenge.getState(), is(ChallengeState.PROPOSED));
+        GroupChallenge invitationAccepted = challengeManager.acceptInvitation("GAME", "wasp",
+                invitationChallenge.getInstanceName());
+        assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
+        PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
+        long proposedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        long assignedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
+        assertThat(assignedCount, is(1L));
+        assertThat(proposedCount, is(0L));
+    }
+
 
     private ChallengeInvitation invitation(String gameId, String proposerId, String guestId, String type) {
         ChallengeInvitation invitation = new ChallengeInvitation();

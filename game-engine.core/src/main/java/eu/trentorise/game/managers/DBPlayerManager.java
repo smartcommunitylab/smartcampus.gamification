@@ -59,7 +59,6 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
-import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ClassificationPosition;
@@ -85,7 +84,7 @@ public class DBPlayerManager implements PlayerService {
 
     private final static Logger logger = LoggerFactory.getLogger(DBPlayerManager.class);
 
-    private static final String CHALLENGE_ARCHIVE_COLLECTION = "challengeArchive";
+    // private static final String CHALLENGE_ARCHIVE_COLLECTION = "challengeArchive";
 
     @Autowired
     private PlayerRepo playerRepo;
@@ -104,6 +103,9 @@ public class DBPlayerManager implements PlayerService {
 
     @Autowired
     private NotificationManager notificationSrv;
+
+    @Autowired
+    private ArchiveManager archiveSrv;
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
         eu.trentorise.game.repo.StatePersistence state =
@@ -666,7 +668,7 @@ public class DBPlayerManager implements PlayerService {
                     ChallengeConcept removedChallenge =
                             state.removeConcept(ch.getName(), ChallengeConcept.class);
                     removedChallenge.updateState(ChallengeState.REFUSED);
-                    moveToArchive(gameId, playerId, removedChallenge);
+                    archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
                     StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
                             executionId, executionTime, executionTime, ch.getName());
                 }
@@ -682,20 +684,20 @@ public class DBPlayerManager implements PlayerService {
         return accepted;
     }
 
-    private void moveToArchive(String gameId, String playerId, ChallengeConcept challenge) {
-        ArchivedConcept archived = new ArchivedConcept();
-        archived.setChallenge(challenge);
-        archived.setGameId(gameId);
-        archived.setPlayerId(playerId);
-        mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
-    }
-
-    private void moveToArchive(String gameId, GroupChallenge challenge) {
-        ArchivedConcept archived = new ArchivedConcept();
-        archived.setGroupChallenge(challenge);
-        archived.setGameId(gameId);
-        mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
-    }
+    // private void moveToArchive(String gameId, String playerId, ChallengeConcept challenge) {
+    // ArchivedConcept archived = new ArchivedConcept();
+    // archived.setChallenge(challenge);
+    // archived.setGameId(gameId);
+    // archived.setPlayerId(playerId);
+    // mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
+    // }
+    //
+    // private void moveToArchive(String gameId, GroupChallenge challenge) {
+    // ArchivedConcept archived = new ArchivedConcept();
+    // archived.setGroupChallenge(challenge);
+    // archived.setGameId(gameId);
+    // mongoTemplate.save(archived, CHALLENGE_ARCHIVE_COLLECTION);
+    // }
 
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
@@ -745,7 +747,7 @@ public class DBPlayerManager implements PlayerService {
                         ChallengeConcept removedChallenge =
                                 state.removeConcept(ch.getName(), ChallengeConcept.class);
                         removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
-                        moveToArchive(gameId, playerId, removedChallenge);
+                        archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
                     }
                 }
 
@@ -755,7 +757,7 @@ public class DBPlayerManager implements PlayerService {
                 groupChallengeRepo.delete(otherProposedhallenges);
                 otherProposedhallenges.forEach(challenge -> {
                     challenge.updateState(ChallengeState.AUTO_DISCARDED);
-                    moveToArchive(gameId, challenge);
+                    archiveSrv.moveToArchive(gameId, challenge);
                 });
             }
             saveState(state);

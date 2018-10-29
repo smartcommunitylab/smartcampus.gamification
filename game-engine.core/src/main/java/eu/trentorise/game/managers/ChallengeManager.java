@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeInvitation;
 import eu.trentorise.game.model.Game;
@@ -18,6 +19,7 @@ import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.notification.ChallengeInvitationAcceptedNotification;
 import eu.trentorise.game.notification.ChallengeInvitationNotification;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.GameService;
@@ -48,6 +50,9 @@ public class ChallengeManager {
     @Autowired
     private NotificationManager notificationSrv;
 
+    @Autowired
+    private ArchiveManager archiveSrv;
+
     public List<String> conditionCheck(GroupChallenge groupChallenge) {
         List<Attendee> attendees = groupChallenge.getAttendees();
         List<String> playerIds = attendees.stream().map(attendee -> attendee.getPlayerId())
@@ -73,7 +78,7 @@ public class ChallengeManager {
                 clock.now());
     }
 
-    public void inviteToChallenge(ChallengeInvitation invitation) {
+    public GroupChallenge inviteToChallenge(ChallengeInvitation invitation) {
         if (invitation != null) {
 
             invitation.validate();
@@ -99,11 +104,10 @@ public class ChallengeManager {
                 }
 
             });
-            // save GroupChallenge
             GroupChallenge groupChallenge = convert(invitation);
             save(groupChallenge);
 
-            // produce notification to other attendees
+            // produce notifications
             final String proposerId = invitation.getProposer().getPlayerId();
             final Game game = gameSrv.loadGameDefinitionById(invitation.getGameId());
             final String inviteExecutionId = UUID.randomUUID().toString();
@@ -121,12 +125,11 @@ public class ChallengeManager {
                 StatsLogger.logInviteToChallenge(game.getDomain(), game.getId(), proposerId,
                         inviteExecutionId, executionTime, executionTime, guest.getPlayerId(),
                         groupChallenge.getInstanceName(),
-                        GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+                        groupChallenge.getChallengeModel());
             });
+            return groupChallenge;
         }
-
-
-
+        return null;
     }
 
     private GroupChallenge convert(ChallengeInvitation invitation) {
@@ -134,6 +137,7 @@ public class ChallengeManager {
         if (invitation != null) {
             challenge = new GroupChallenge(ChallengeState.PROPOSED);
             challenge.setChallengePointConcept(invitation.getChallengePointConcept());
+            challenge.setChallengeModel(invitation.getChallengeModelName());
             challenge.setOrigin(INVITATION_CHALLENGE_ORIGIN);
             challenge.setStart(invitation.getChallengeStart());
             challenge.setEnd(invitation.getChallengeEnd());
@@ -165,5 +169,60 @@ public class ChallengeManager {
             
         }
         return attendees;
+    }
+
+    public GroupChallenge acceptInvitation(String gameId, String playerId, String challengeName) {
+        PlayerState playerState = playerSrv.loadState(gameId, playerId, true, false);
+        List<GroupChallenge> guestInvitations =
+                groupChallengeRepo.guestInvitations(gameId, playerId);
+        GroupChallenge pendingInvitation = guestInvitations.stream()
+                .filter(invitation -> invitation.getInstanceName().equals(challengeName))
+                .findFirst().orElse(null);
+        if (pendingInvitation != null) {
+            pendingInvitation.updateState(ChallengeState.ASSIGNED);
+            save(pendingInvitation);
+            LogHub.info(gameId, logger, String.format(
+                    "Player %s has accepted invitation for challenge %s", playerId, challengeName));
+            Attendee challengeProposer = pendingInvitation.proposer();
+            if (challengeProposer != null) {
+                ChallengeInvitationAcceptedNotification acceptedNotification =
+                        new ChallengeInvitationAcceptedNotification();
+                acceptedNotification.setGameId(gameId);
+                acceptedNotification.setPlayerId(challengeProposer.getPlayerId());
+                acceptedNotification.setChallengeName(pendingInvitation.getInstanceName());
+                acceptedNotification.setGuestId(playerId);
+                notificationSrv.notificate(acceptedNotification);
+                Game game = gameSrv.loadGameDefinitionById(gameId);
+                final String executionId = UUID.randomUUID().toString();
+                final long executionTime = clock.nowAsMillis();
+                StatsLogger.logChallengeInvitationAccepted(game.getDomain(), gameId, playerId,
+                        executionId, executionTime, executionTime,
+                        pendingInvitation.getInstanceName(), pendingInvitation.getChallengeModel());
+            }
+
+            // trigger archiving of other PROPOSED challenges
+            java.util.Iterator<ChallengeConcept> iterator = playerState.challenges().iterator();
+            while (iterator.hasNext()) {
+                ChallengeConcept ch = iterator.next();
+                if (ch.getState() == ChallengeState.PROPOSED) {
+                    ChallengeConcept removedChallenge =
+                            playerState.removeConcept(ch.getName(), ChallengeConcept.class);
+                    removedChallenge.updateState(ChallengeState.REFUSED);
+                    archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
+                }
+            }
+            playerSrv.saveState(playerState);
+
+            List<GroupChallenge> otherProposedhallenges = groupChallengeRepo
+                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
+            groupChallengeRepo.delete(otherProposedhallenges);
+            otherProposedhallenges.forEach(challenge -> {
+                challenge.updateState(ChallengeState.REFUSED);
+                archiveSrv.moveToArchive(gameId, challenge);
+            });
+
+            return pendingInvitation;
+        }
+        return null;
     }
 }

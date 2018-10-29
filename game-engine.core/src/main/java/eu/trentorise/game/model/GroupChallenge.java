@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
+import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 
 public class GroupChallenge {
 
@@ -29,11 +30,16 @@ public class GroupChallenge {
     private String instanceName;
     private List<Attendee> attendees = new ArrayList<>();
 
+    private String challengeModel;
     private PointConceptRef challengePointConcept;
     private Reward reward;
 
     private ChallengeState state;
     private Map<ChallengeState, Date> stateDate = new HashMap<>();
+    private String origin;
+    private Date start;
+    private Date end;
+    private int priority;
 
     public GroupChallenge() {
         init(null);
@@ -53,10 +59,6 @@ public class GroupChallenge {
     }
 
 
-    private String origin;
-    private Date start;
-    private Date end;
-    private int priority;
 
 
     public GroupChallenge update(List<PlayerState> attendeeStates) {
@@ -134,6 +136,11 @@ public class GroupChallenge {
             setFields(ch, p);
         });
         return ch;
+    }
+
+    public Attendee proposer() {
+        return attendees.stream().filter(a -> a.getRole() == Role.PROPOSER).findFirst()
+                .orElse(null);
     }
 
     private ChallengeConcept setFields(ChallengeConcept challenge, Attendee player) {
@@ -359,5 +366,13 @@ public class GroupChallenge {
 
     public void setStateDate(Map<ChallengeState, Date> stateDate) {
         this.stateDate = stateDate;
+    }
+
+    public String getChallengeModel() {
+        return challengeModel;
+    }
+
+    public void setChallengeModel(String challengeModel) {
+        this.challengeModel = challengeModel;
     }
 }

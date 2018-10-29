@@ -15,6 +15,7 @@ public class ChallengeInvitation {
     private Player proposer;
     private List<Player> guests = new ArrayList<>();
 
+    private String challengeName;
     private String challengeModelName;
     private Date challengeStart;
     private Date challengeEnd;
@@ -117,6 +118,14 @@ public class ChallengeInvitation {
             throw new IllegalArgumentException(
                     String.format("guests should contain at least one element"));
         }
+    }
+
+    public String getChallengeName() {
+        return challengeName;
+    }
+
+    public void setChallengeName(String challengeName) {
+        this.challengeName = challengeName;
     }
 
 }

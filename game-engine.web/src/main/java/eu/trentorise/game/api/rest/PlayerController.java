@@ -26,11 +26,11 @@ import eu.trentorise.game.bean.WrapperQuery;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.managers.ChallengeManager;
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.ChallengeInvitation;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Inventory.ItemChoice;
-import eu.trentorise.game.model.Invitation;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -87,11 +87,30 @@ public class PlayerController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/data/game/{gameId}/player/{playerId}/invitation",
             consumes = {"application/json"}, produces = {"application/json"})
-    public void inviteIntoAChallenge(@RequestBody Invitation invitation,
+    public ChallengeInvitation inviteIntoAChallenge(@RequestBody ChallengeInvitation invitation,
             @PathVariable String gameId, @PathVariable String playerId) {
 
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
+
+        GroupChallenge pendingChallenge = challengeSrv.inviteToChallenge(invitation);
+        if (invitation != null) {
+            invitation.setChallengeName(pendingChallenge.getInstanceName());
+        }
+        return invitation;
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/data/game/{gameId}/player/{playerId}/invitation/accept/{challengeName}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void acceptInvitation(@PathVariable String gameId, @PathVariable String playerId,
+            @PathVariable String challengeName) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        challengeName = decodePathVariable(challengeName);
+
+        challengeSrv.acceptInvitation(gameId, playerId, challengeName);
 
     }
 

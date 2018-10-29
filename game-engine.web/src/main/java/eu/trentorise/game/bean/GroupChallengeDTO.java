@@ -10,7 +10,7 @@ public class GroupChallengeDTO {
 
     private PointConceptDTO challengePointConcept;
     private RewardDTO reward;
-
+    private String challengeModelName;
 
     private String state;
     private String origin;
@@ -185,6 +185,14 @@ public class GroupChallengeDTO {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
+    }
+
+    public String getChallengeModelName() {
+        return challengeModelName;
+    }
+
+    public void setChallengeModelName(String challengeModelName) {
+        this.challengeModelName = challengeModelName;
     }
 
 }

@@ -259,6 +259,17 @@ public class StatsLogger {
         return msg;
     }
 
+    public static String logChallengeInvitationRefused(String domain, String gameId,
+            String playerId, String executionId, long executionTime, long timestamp,
+            String instanceName, String challengeType) {
+        String msg =
+                commonFieldsOutput(domain, gameId, playerId, executionId, timestamp, timestamp);
+        msg += " " + String.format("type=%s name=\"%s\" challengeType=\"%s\"",
+                "ChallengeInvitationRefused", instanceName, challengeType);
+        statsLogger.info(msg);
+        return msg;
+    }
+
     private static String commonFieldsOutput(String domain, String gameId, String playerId,
             String executionId, long executionMoment, long timestamp) {
         if(StringUtils.isBlank(domain)){

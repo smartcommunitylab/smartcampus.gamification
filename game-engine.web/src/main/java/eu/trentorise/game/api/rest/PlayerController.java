@@ -114,6 +114,20 @@ public class PlayerController {
 
     }
 
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/data/game/{gameId}/player/{playerId}/invitation/refuse/{challengeName}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void refuseInvitation(@PathVariable String gameId, @PathVariable String playerId,
+            @PathVariable String challengeName) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        challengeName = decodePathVariable(challengeName);
+
+        challengeSrv.refuseInvitation(gameId, playerId, challengeName);
+
+    }
+
 
     @RequestMapping(method = RequestMethod.POST,
             value = "/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept")

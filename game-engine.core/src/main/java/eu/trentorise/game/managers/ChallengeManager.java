@@ -225,7 +225,7 @@ public class ChallengeManager {
 
     public GroupChallenge refuseInvitation(String gameId, String playerId, String challengeName) {
         GroupChallenge refused =
-                groupChallengeRepo.deletePlayerProposedChallenge(gameId, playerId, challengeName);
+                groupChallengeRepo.deleteProposedChallengeByGuest(gameId, playerId, challengeName);
 
         if (refused == null) {
             throw new IllegalArgumentException(String
@@ -244,6 +244,24 @@ public class ChallengeManager {
         final long executionTime = System.currentTimeMillis();
         StatsLogger.logChallengeInvitationRefused(game.getDomain(), gameId, playerId, executionId,
                 executionTime, executionTime, challengeName, refused.getChallengeModel());
+        LogHub.info(gameId, logger,
+                String.format("Invitation to challenge %s is refused by player %s", challengeName,
+                        playerId));
         return refused;
+    }
+
+    public GroupChallenge cancelInvitation(String gameId, String playerId, String challengeName) {
+        GroupChallenge canceled =
+                groupChallengeRepo.deleteProposedChallengeByProposer(gameId, playerId,
+                        challengeName);
+
+        if (canceled == null) {
+            throw new IllegalArgumentException(String
+                    .format("Challenge %s is not PROPOSED by player %s", challengeName, playerId));
+        }
+        LogHub.info(gameId, logger,
+                String.format("Invitation to challenge %s canceled by player %s", challengeName,
+                        playerId));
+        return canceled;
     }
 }

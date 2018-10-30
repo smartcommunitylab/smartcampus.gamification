@@ -128,6 +128,20 @@ public class PlayerController {
 
     }
 
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/data/game/{gameId}/player/{playerId}/invitation/cancel/{challengeName}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void cancelInvitation(@PathVariable String gameId, @PathVariable String playerId,
+            @PathVariable String challengeName) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        challengeName = decodePathVariable(challengeName);
+
+        challengeSrv.cancelInvitation(gameId, playerId, challengeName);
+
+    }
+
 
     @RequestMapping(method = RequestMethod.POST,
             value = "/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept")

@@ -54,10 +54,19 @@ public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
     }
 
     @Override
-    public GroupChallenge deletePlayerProposedChallenge(String gameId, String playerId,
+    public GroupChallenge deleteProposedChallengeByGuest(String gameId, String playerId,
             String instanceName) {
         Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
                 .and("attendees.role").is(Role.GUEST).and("state").is(ChallengeState.PROPOSED)
+                .and("instanceName").is(instanceName);
+        return mongo.findAndRemove(new Query(crit), GroupChallenge.class);
+    }
+
+    @Override
+    public GroupChallenge deleteProposedChallengeByProposer(String gameId, String playerId,
+            String instanceName) {
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
+                .and("attendees.role").is(Role.PROPOSER).and("state").is(ChallengeState.PROPOSED)
                 .and("instanceName").is(instanceName);
         return mongo.findAndRemove(new Query(crit), GroupChallenge.class);
     }

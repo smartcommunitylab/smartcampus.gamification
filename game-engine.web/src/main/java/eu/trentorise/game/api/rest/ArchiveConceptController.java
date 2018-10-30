@@ -22,9 +22,9 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @Profile({ "sec", "no-sec" })
-public class ArchiveController {
+public class ArchiveConceptController {
 
-	private static final Logger logger = LoggerFactory.getLogger(ArchiveController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ArchiveConceptController.class);
 
 	@Autowired
 	private PlayerService playerSrv;
@@ -45,7 +45,7 @@ public class ArchiveController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/archive", produces = {
 			"application/json" })
-	@ApiOperation(value = "Read archive concepts for a game")
+	@ApiOperation(value = "Read archive concepts for a game with optional filter parameters")
 	public List<ArchivedConcept> readArchivesForGame(@PathVariable String gameId,
 			@RequestParam(required = false) String playerId,
 			@RequestParam(required = false) String state,

@@ -370,6 +370,34 @@ public class ChallengeManagerTest {
         assertThat(proposedCount, is(0L));
     }
 
+    @Test
+    public void wasp_refuses_invitation() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+
+        PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
+        long proposedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        long assignedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
+        assertThat(assignedCount, is(1L));
+        assertThat(proposedCount, is(0L));
+    }
+
+
 
     private ChallengeInvitation invitation(String gameId, String proposerId, String guestId, String type) {
         ChallengeInvitation invitation = new ChallengeInvitation();

@@ -21,6 +21,7 @@ import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.notification.ChallengeInvitationAcceptedNotification;
 import eu.trentorise.game.notification.ChallengeInvitationNotification;
+import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -58,10 +59,9 @@ public class ChallengeManager {
         List<String> playerIds = attendees.stream().map(attendee -> attendee.getPlayerId())
                 .collect(Collectors.toList());
         final String gameId = groupChallenge.getGameId();
-        List<PlayerState> playerStates = playerIds.stream()
-                .map(id -> playerSrv.loadState(gameId, id, false, false))
-                .filter(state -> state != null)
-                .collect(Collectors.toList());
+        List<PlayerState> playerStates =
+                playerIds.stream().map(id -> playerSrv.loadState(gameId, id, false, false))
+                        .filter(state -> state != null).collect(Collectors.toList());
 
         groupChallenge = groupChallenge.update(playerStates);
         return groupChallenge.winners().stream().map(winner -> winner.getPlayerId())
@@ -84,13 +84,11 @@ public class ChallengeManager {
             invitation.validate();
             // check if player has sent other invitations
             List<GroupChallenge> proposerInvitations = groupChallengeRepo.proposerInvitations(
-                    invitation.getGameId(),
-                    invitation.getProposer().getPlayerId());
+                    invitation.getGameId(), invitation.getProposer().getPlayerId());
             if (proposerInvitations.size() >= LIMIT_INVITATIONS_AS_PROPOSER) {
-                throw new IllegalArgumentException(
-                        String.format("player %s already has %s pending invitations as proposer",
-                                invitation.getProposer().getPlayerId(),
-                                LIMIT_INVITATIONS_AS_PROPOSER));
+                throw new IllegalArgumentException(String.format(
+                        "player %s already has %s pending invitations as proposer",
+                        invitation.getProposer().getPlayerId(), LIMIT_INVITATIONS_AS_PROPOSER));
             }
 
             // check if player has received max 3 invitations
@@ -124,8 +122,7 @@ public class ChallengeManager {
                                 guest.getPlayerId()));
                 StatsLogger.logInviteToChallenge(game.getDomain(), game.getId(), proposerId,
                         inviteExecutionId, executionTime, executionTime, guest.getPlayerId(),
-                        groupChallenge.getInstanceName(),
-                        groupChallenge.getChallengeModel());
+                        groupChallenge.getInstanceName(), groupChallenge.getChallengeModel());
             });
             return groupChallenge;
         }
@@ -166,7 +163,7 @@ public class ChallengeManager {
                 guest.setRole(Role.GUEST);
                 return guest;
             }).collect(Collectors.toList()));
-            
+
         }
         return attendees;
     }
@@ -224,5 +221,29 @@ public class ChallengeManager {
             return pendingInvitation;
         }
         return null;
+    }
+
+    public GroupChallenge refuseInvitation(String gameId, String playerId, String challengeName) {
+        GroupChallenge refused =
+                groupChallengeRepo.deleteByGameIdAndPlayerIdAndInstanceNameAndState(gameId,
+                        playerId, challengeName, ChallengeState.PROPOSED);
+        if (refused == null) {
+            throw new IllegalArgumentException(String
+                    .format("Challenge %s is not PROPOSED for player %s", challengeName, playerId));
+        }
+        Game game = gameSrv.loadGameDefinitionById(gameId);
+        refused.updateState(ChallengeState.REFUSED);
+        archiveSrv.moveToArchive(gameId, refused);
+        ChallengeInvitationRefusedNotification notification =
+                new ChallengeInvitationRefusedNotification();
+        notification.setGameId(gameId);
+        notification.setPlayerId(playerId);
+        notification.setChallengeName(challengeName);
+        notificationSrv.notificate(notification);
+        final String executionId = UUID.randomUUID().toString();
+        final long executionTime = System.currentTimeMillis();
+        StatsLogger.logChallengeInvitationRefused(game.getDomain(), gameId, playerId, executionId,
+                executionTime, executionTime, challengeName, refused.getChallengeModel());
+        return refused;
     }
 }

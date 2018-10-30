@@ -16,4 +16,6 @@ public interface GroupChallengeRepo
     List<GroupChallenge> findByGameIdAndStateAndEndBefore(String gameId, ChallengeState state,
             Date end);
 
+    GroupChallenge deleteByGameIdAndPlayerIdAndInstanceNameAndState(String gameId, String playerId,
+            String instanceName, ChallengeState state);
 }

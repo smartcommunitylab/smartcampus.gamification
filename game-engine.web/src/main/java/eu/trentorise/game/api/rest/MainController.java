@@ -113,7 +113,7 @@ public class MainController {
             throw new IllegalArgumentException("playerId is not UTF-8 encoded");
         }
 
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, false));
+        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",

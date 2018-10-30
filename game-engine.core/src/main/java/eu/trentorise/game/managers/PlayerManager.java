@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -40,6 +41,7 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
@@ -260,6 +262,18 @@ public class PlayerManager implements PlayerService {
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public List<ArchivedConcept> readAllArchiveConcepts(Pageable page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ArchivedConcept> readArchives(String gameId, String playerId, String state, Long from, Long to) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
 

@@ -225,8 +225,8 @@ public class ChallengeManager {
 
     public GroupChallenge refuseInvitation(String gameId, String playerId, String challengeName) {
         GroupChallenge refused =
-                groupChallengeRepo.deleteByGameIdAndPlayerIdAndInstanceNameAndState(gameId,
-                        playerId, challengeName, ChallengeState.PROPOSED);
+                groupChallengeRepo.deletePlayerProposedChallenge(gameId, playerId, challengeName);
+
         if (refused == null) {
             throw new IllegalArgumentException(String
                     .format("Challenge %s is not PROPOSED for player %s", challengeName, playerId));

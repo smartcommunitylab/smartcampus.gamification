@@ -386,14 +386,23 @@ public class ChallengeManagerTest {
 
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
-        challengeManager.inviteToChallenge(drStrangeInvitation);
+        GroupChallenge invitation = challengeManager.inviteToChallenge(drStrangeInvitation);
 
-        PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
+        PlayerState waspState = playerSrv.loadState("GAME", "wasp", true, true);
         long proposedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
         long assignedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
-        assertThat(assignedCount, is(1L));
+        assertThat(assignedCount, is(0L));
+        assertThat(proposedCount, is(1L));
+
+        challengeManager.refuseInvitation("GAME", "wasp", invitation.getInstanceName());
+        waspState = playerSrv.loadState("GAME", "wasp", true, true);
+        proposedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        assignedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
+        assertThat(assignedCount, is(0L));
         assertThat(proposedCount, is(0L));
     }
 

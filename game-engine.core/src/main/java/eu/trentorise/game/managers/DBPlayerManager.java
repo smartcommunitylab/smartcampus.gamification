@@ -56,6 +56,7 @@ import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -766,4 +767,57 @@ public class DBPlayerManager implements PlayerService {
         }
 
     }
+
+	@Override
+	public void blockPlayer(String gameId, String playerId, String otherPlayerId) {
+		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
+
+		Query q = new Query();
+		q.addCriteria(criteria);
+
+		PlayerBlackList pbListObj = mongoTemplate.findOne(q, PlayerBlackList.class);
+
+		if (pbListObj != null) {
+			if (pbListObj.getBlockedPlayers().indexOf(otherPlayerId) < 0) {
+				pbListObj.getBlockedPlayers().add(otherPlayerId);	
+			}			
+		} else {
+			pbListObj = new PlayerBlackList();
+			pbListObj.setPlayerId(playerId);
+			pbListObj.setGameId(gameId);
+			pbListObj.getBlockedPlayers().add(otherPlayerId);			
+		}
+		
+		mongoTemplate.save(pbListObj);
+
+	}
+
+	@Override
+	public void unblockPlayer(String gameId, String playerId, String otherPlayerId) {
+		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
+
+		Query q = new Query();
+		q.addCriteria(criteria);
+
+		PlayerBlackList pbListObj = mongoTemplate.findOne(q, PlayerBlackList.class);
+
+		if (pbListObj != null) {
+			pbListObj.getBlockedPlayers().remove(otherPlayerId);
+		}
+
+		mongoTemplate.save(pbListObj);
+
+	}
+
+	@Override
+	public PlayerBlackList readBlackList(String gameId, String playerId) {
+		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
+
+		Query q = new Query();
+		q.addCriteria(criteria);
+
+		return mongoTemplate.findOne(q, PlayerBlackList.class);
+
+	}
+	
 }

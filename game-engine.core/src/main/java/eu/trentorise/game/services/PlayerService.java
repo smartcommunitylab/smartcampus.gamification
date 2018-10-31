@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
@@ -89,4 +90,13 @@ public interface PlayerService {
     public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName);
 
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId);
+    
+    /*
+     * BLACKLIST
+     */
+    public void blockPlayer(String gameId, String playerId, String otherPlayerId);
+    
+    public void unblockPlayer(String gameId, String playerId, String otherPlayerId);
+    
+    public PlayerBlackList readBlackList(String gameId, String playerId);
 }

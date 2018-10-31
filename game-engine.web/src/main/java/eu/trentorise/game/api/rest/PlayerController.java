@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Inventory.ItemChoice;
+import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -46,6 +49,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @Profile({"sec", "no-sec"})
 public class PlayerController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     @Autowired
     private Converter converter;
@@ -391,5 +396,58 @@ public class PlayerController {
         return res;
 
     }
+    
+	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}/block/{otherPlayerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Add another player to challenge block list")
+	public void blockPlayer(@PathVariable String gameId, @PathVariable String playerId,
+			@PathVariable String otherPlayerId) {
+
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		otherPlayerId = decodePathVariable(otherPlayerId);
+		
+		if (logger.isInfoEnabled()) {
+			logger.info(String.format("add %s to black list of %s", otherPlayerId, playerId));
+		}
+		
+		playerSrv.blockPlayer(gameId, playerId, otherPlayerId);
+
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Unblock another player from challenge block list")
+	public void unBlockPlayer(@PathVariable String gameId, @PathVariable String playerId,
+			@PathVariable String otherPlayerId) {
+
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		otherPlayerId = decodePathVariable(otherPlayerId);
+		
+		if (logger.isInfoEnabled()) {
+			logger.info(String.format("remove %s from black list of %s", otherPlayerId, playerId));
+		}
+		
+		playerSrv.unblockPlayer(gameId, playerId, otherPlayerId);
+		
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/blacklist", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player black list of other players")
+	public PlayerBlackList readPlayerBlackList(@PathVariable String gameId, @PathVariable String playerId) {
+
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		
+		if (logger.isInfoEnabled()) {
+			logger.info(String.format("read blacklist of player %s", playerId));
+		}
+
+		return playerSrv.readBlackList(gameId, playerId);
+		
+	}
+	 
 
 }

@@ -243,7 +243,8 @@ public class GroupChallenge {
         private String name;
         private String period;
 
-
+        public PointConceptRef() {
+        }
 
         public PointConceptRef(String name, String period) {
             this.name = name;

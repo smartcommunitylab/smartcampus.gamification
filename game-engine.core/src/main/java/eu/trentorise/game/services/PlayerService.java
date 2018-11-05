@@ -18,6 +18,7 @@ package eu.trentorise.game.services;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
+import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
@@ -91,4 +93,11 @@ public interface PlayerService {
     public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName);
 
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId);
+    
+    /*
+     * * ARCHIVED CHALLENGE CONCEPTS
+     */
+    public List<ArchivedConcept> readAllArchiveConcepts(Pageable page);
+    
+    public List<ArchivedConcept> readArchives(String gameId, String playerId, String state, Long from, Long to);
 }

@@ -677,6 +677,47 @@ public class DBPlayerManager implements PlayerService {
         }
         return maxPriorityChallenge.orElse(null);
     }
+    
+	@Override
+	public List<ArchivedConcept> readAllArchiveConcepts(Pageable pageable) {
+
+		Query query = new Query().with(pageable);
+
+		return mongoTemplate.find(query, ArchivedConcept.class);
+
+	}
+
+	@Override
+	public List<ArchivedConcept> readArchives(String gameId, String playerId, String state, Long from, Long to) {
+		List<ArchivedConcept> result;
+
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().where("gameId").is(gameId);
+
+		if (playerId != null) {
+			criteria = criteria.and("playerId").is(playerId);
+		}
+
+		if (state != null) {
+			criteria = criteria.and("challenge.state").is(state);
+		}
+
+		if (from != null && to != null) {
+			criteria = criteria.and("archivingDate").gte(from).lte(to);
+		} else if (from != null) {
+			criteria = criteria.and("archivingDate").gte(from);
+		} else if (to != null) {
+			criteria = criteria.and("archivingDate").lte(to);
+		}
+
+		query.addCriteria(criteria);
+
+		result = mongoTemplate.find(query, ArchivedConcept.class);
+
+		return result;
+
+	}
 
     private class PriorityComparator implements Comparator<ChallengeConcept> {
 

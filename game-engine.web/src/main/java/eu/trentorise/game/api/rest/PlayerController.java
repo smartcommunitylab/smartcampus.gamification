@@ -408,7 +408,7 @@ public class PlayerController {
 		otherPlayerId = decodePathVariable(otherPlayerId);
 		
 		if (logger.isInfoEnabled()) {
-			logger.info(String.format("add %s to black list of %s", otherPlayerId, playerId));
+			logger.info(String.format("add player %s to black list of player %s", otherPlayerId, playerId));
 		}
 		
 		playerSrv.blockPlayer(gameId, playerId, otherPlayerId);
@@ -426,7 +426,7 @@ public class PlayerController {
 		otherPlayerId = decodePathVariable(otherPlayerId);
 		
 		if (logger.isInfoEnabled()) {
-			logger.info(String.format("remove %s from black list of %s", otherPlayerId, playerId));
+			logger.info(String.format("remove player %s from black list of player %s", otherPlayerId, playerId));
 		}
 		
 		playerSrv.unblockPlayer(gameId, playerId, otherPlayerId);

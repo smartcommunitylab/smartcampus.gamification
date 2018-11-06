@@ -236,10 +236,17 @@ public class ChallengeManager {
         archiveSrv.moveToArchive(gameId, refused);
         ChallengeInvitationRefusedNotification notification =
                 new ChallengeInvitationRefusedNotification();
+        Attendee proposer = refused.proposer();
+        if (proposer != null) {
         notification.setGameId(gameId);
-        notification.setPlayerId(playerId);
+            notification.setPlayerId(proposer.getPlayerId());
         notification.setChallengeName(challengeName);
+            notification.setGuestId(playerId);
         notificationSrv.notificate(notification);
+        }else {
+            LogHub.warn(gameId, logger, String.format(
+                    "Invitation without proposer, no refuse notification will be send"));
+        }
         final String executionId = UUID.randomUUID().toString();
         final long executionTime = System.currentTimeMillis();
         StatsLogger.logChallengeInvitationRefused(game.getDomain(), gameId, playerId, executionId,

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -141,8 +142,11 @@ public class ChallengeManager {
             challenge.setAttendees(attendees(invitation));
             challenge.setGameId(invitation.getGameId());
             challenge.setReward(invitation.getReward());
+            challenge.setInstanceName(invitation.getChallengeName());
+            if (StringUtils.isBlank(challenge.getInstanceName())) {
             challenge.setInstanceName(String.format("p_%s_%s",
                     invitation.getProposer().getPlayerId(), UUID.randomUUID().toString()));
+            }
         }
 
         return challenge;

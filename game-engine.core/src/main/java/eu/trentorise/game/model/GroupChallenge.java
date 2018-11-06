@@ -155,6 +155,10 @@ public class GroupChallenge {
             otherAttendeeScores.add(attendeeScore);
         });
         challenge.getFields().put("otherAttendeeScores", otherAttendeeScores);
+        Attendee proposer = proposer();
+        if(proposer != null) {
+            challenge.getFields().put("proposer", proposer.getPlayerId());
+        }
         return challenge;
 
     }

@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 
 public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
@@ -41,23 +42,32 @@ public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
 
     @Override
     public List<GroupChallenge> proposerInvitations(String gameId, String playerId) {
-        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
-                .and("attendees.role").is(Role.PROPOSER).and("state").is(ChallengeState.PROPOSED);
+        Attendee proposer = new Attendee();
+        proposer.setPlayerId(playerId);
+        proposer.setRole(Role.PROPOSER);
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees").is(proposer)
+                .and("state").is(ChallengeState.PROPOSED);
         return mongo.find(new Query(crit), GroupChallenge.class);
     }
 
     @Override
     public List<GroupChallenge> guestInvitations(String gameId, String playerId) {
-        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
-                .and("attendees.role").is(Role.GUEST).and("state").is(ChallengeState.PROPOSED);
+        Attendee guest = new Attendee();
+        guest.setPlayerId(playerId);
+        guest.setRole(Role.GUEST);
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees").is(guest).and("state")
+                .is(ChallengeState.PROPOSED);
         return mongo.find(new Query(crit), GroupChallenge.class);
     }
 
     @Override
     public GroupChallenge deleteProposedChallengeByGuest(String gameId, String playerId,
             String instanceName) {
-        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
-                .and("attendees.role").is(Role.GUEST).and("state").is(ChallengeState.PROPOSED)
+        Attendee guest = new Attendee();
+        guest.setPlayerId(playerId);
+        guest.setRole(Role.GUEST);
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees").is(guest).and("state")
+                .is(ChallengeState.PROPOSED)
                 .and("instanceName").is(instanceName);
         return mongo.findAndRemove(new Query(crit), GroupChallenge.class);
     }
@@ -65,8 +75,11 @@ public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
     @Override
     public GroupChallenge deleteProposedChallengeByProposer(String gameId, String playerId,
             String instanceName) {
-        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
-                .and("attendees.role").is(Role.PROPOSER).and("state").is(ChallengeState.PROPOSED)
+        Attendee proposer = new Attendee();
+        proposer.setPlayerId(playerId);
+        proposer.setRole(Role.PROPOSER);
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees").is(proposer).and("state")
+                .is(ChallengeState.PROPOSED)
                 .and("instanceName").is(instanceName);
         return mongo.findAndRemove(new Query(crit), GroupChallenge.class);
     }

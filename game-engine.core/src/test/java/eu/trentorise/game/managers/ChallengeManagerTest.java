@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -316,7 +315,23 @@ public class ChallengeManagerTest {
         assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
+    public void proposer_try_to_accept_own_created_invitation() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        GroupChallenge invitationChallenge =
+                challengeManager.inviteToChallenge(drStrangeInvitation);
+        assertThat(invitationChallenge.getState(), is(ChallengeState.PROPOSED));
+        PlayerState waspState = playerSrv.loadState("GAME", "wasp", true, true);
+        long proposedWaspChallenge = waspState.challenges().stream().filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        assertThat(proposedWaspChallenge, is(1L));
+        challengeManager.acceptInvitation("GAME", "dr. stange",
+                invitationChallenge.getInstanceName());
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void wasp_accept_non_existentinvitation() {
         BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
         ChallengeInvitation drStrangeInvitation =
@@ -324,9 +339,7 @@ public class ChallengeManagerTest {
         GroupChallenge invitationChallenge =
                 challengeManager.inviteToChallenge(drStrangeInvitation);
         assertThat(invitationChallenge.getState(), is(ChallengeState.PROPOSED));
-        GroupChallenge invitationAccepted =
-                challengeManager.acceptInvitation("GAME", "wasp", "nonExistentInvitation");
-        assertThat(invitationAccepted, is(nullValue()));
+        challengeManager.acceptInvitation("GAME", "wasp", "nonExistentInvitation");
     }
 
     @Test
@@ -404,6 +417,57 @@ public class ChallengeManagerTest {
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         assertThat(assignedCount, is(0L));
         assertThat(proposedCount, is(0L));
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void proposer_try_to_refuse_own_created_invitation() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        GroupChallenge invitation = challengeManager.inviteToChallenge(drStrangeInvitation);
+
+        PlayerState waspState = playerSrv.loadState("GAME", "wasp", true, true);
+        long proposedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        long assignedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
+        assertThat(assignedCount, is(0L));
+        assertThat(proposedCount, is(1L));
+
+        challengeManager.refuseInvitation("GAME", "dr. stange", invitation.getInstanceName());
+        waspState = playerSrv.loadState("GAME", "wasp", true, true);
+        proposedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        assignedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
+        assertThat(assignedCount, is(0L));
+        assertThat(proposedCount, is(0L));
+    }
+
+    @Test
+    public void test_query() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "p1", "p2", "groupCompetitivePerformance");
+        GroupChallenge invitation = challengeManager.inviteToChallenge(drStrangeInvitation);
+        assertThat(invitation.proposer().getPlayerId(), is("p1"));
+        assertThat(groupChallengeRepo.guestInvitations("GAME", "p1"), hasSize(0));
+        assertThat(groupChallengeRepo.guestInvitations("GAME", "p2"), hasSize(1));
+        assertThat(groupChallengeRepo.proposerInvitations("GAME", "p1"), hasSize(1));
+        assertThat(groupChallengeRepo.proposerInvitations("GAME", "p2"), hasSize(0));
+
     }
 
 

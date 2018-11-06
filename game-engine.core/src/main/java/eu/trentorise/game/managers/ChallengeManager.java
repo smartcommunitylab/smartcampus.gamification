@@ -219,8 +219,10 @@ public class ChallengeManager {
             });
 
             return pendingInvitation;
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Challenge %s is not PROPOSED for guest player %s", challengeName, playerId));
         }
-        return null;
     }
 
     public GroupChallenge refuseInvitation(String gameId, String playerId, String challengeName) {
@@ -229,7 +231,8 @@ public class ChallengeManager {
 
         if (refused == null) {
             throw new IllegalArgumentException(String
-                    .format("Challenge %s is not PROPOSED for player %s", challengeName, playerId));
+                    .format("Challenge %s is not PROPOSED for guest player %s", challengeName,
+                            playerId));
         }
         Game game = gameSrv.loadGameDefinitionById(gameId);
         refused.updateState(ChallengeState.REFUSED);
@@ -264,7 +267,8 @@ public class ChallengeManager {
 
         if (canceled == null) {
             throw new IllegalArgumentException(String
-                    .format("Challenge %s is not PROPOSED by player %s", challengeName, playerId));
+                    .format("Challenge %s is not PROPOSED by proposer player %s", challengeName,
+                            playerId));
         }
         LogHub.info(gameId, logger,
                 String.format("Invitation to challenge %s canceled by player %s", challengeName,

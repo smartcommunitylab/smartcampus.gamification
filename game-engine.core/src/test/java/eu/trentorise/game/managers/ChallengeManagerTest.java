@@ -467,9 +467,15 @@ public class ChallengeManagerTest {
         assertThat(groupChallengeRepo.guestInvitations("GAME", "p2"), hasSize(1));
         assertThat(groupChallengeRepo.proposerInvitations("GAME", "p1"), hasSize(1));
         assertThat(groupChallengeRepo.proposerInvitations("GAME", "p2"), hasSize(0));
-
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void ant_man_invites_himself() {
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        ChallengeInvitation invitation =
+                invitation("GAME", "ant-man", "ant-man", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(invitation);
+    }
 
 
     private ChallengeInvitation invitation(String gameId, String proposerId, String guestId, String type) {

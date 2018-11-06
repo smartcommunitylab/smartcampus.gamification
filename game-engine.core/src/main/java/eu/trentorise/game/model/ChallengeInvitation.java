@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
 
 import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 
@@ -31,6 +32,24 @@ public class ChallengeInvitation {
 
         public void setPlayerId(String playerId) {
             this.playerId = playerId;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+
+            if (obj == this) {
+                return true;
+            }
+
+            if (obj.getClass() != getClass()) {
+                return false;
+            }
+
+            Player rhs = (Player) obj;
+            return new EqualsBuilder().append(playerId, rhs.playerId).isEquals();
         }
 
     }
@@ -117,6 +136,11 @@ public class ChallengeInvitation {
         if (CollectionUtils.isEmpty(guests)) {
             throw new IllegalArgumentException(
                     String.format("guests should contain at least one element"));
+        }
+
+        if (guests.contains(proposer)) {
+            throw new IllegalArgumentException(
+                    String.format("player cannot invite oneself to a challenge"));
         }
     }
 

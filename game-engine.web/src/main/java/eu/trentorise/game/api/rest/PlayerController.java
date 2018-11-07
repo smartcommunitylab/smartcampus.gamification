@@ -25,6 +25,7 @@ import eu.trentorise.game.bean.GroupChallengeDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.managers.ChallengeManager;
 import eu.trentorise.game.model.ChallengeConcept;
@@ -400,36 +401,34 @@ public class PlayerController {
 	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}/block/{otherPlayerId}", consumes = {
 			"application/json" }, produces = { "application/json" })
 	@ApiOperation(value = "Add another player to challenge block list")
-	public void blockPlayer(@PathVariable String gameId, @PathVariable String playerId,
+    public PlayerBlackList blockPlayer(@PathVariable String gameId, @PathVariable String playerId,
 			@PathVariable String otherPlayerId) {
 
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
 		otherPlayerId = decodePathVariable(otherPlayerId);
+
+        LogHub.info(gameId, logger,
+                String.format("add player %s to black list of player %s", otherPlayerId, playerId));
 		
-		if (logger.isInfoEnabled()) {
-			logger.info(String.format("add player %s to black list of player %s", otherPlayerId, playerId));
-		}
-		
-		playerSrv.blockPlayer(gameId, playerId, otherPlayerId);
+        return playerSrv.blockPlayer(gameId, playerId, otherPlayerId);
 
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}", consumes = {
 			"application/json" }, produces = { "application/json" })
 	@ApiOperation(value = "Unblock another player from challenge block list")
-	public void unBlockPlayer(@PathVariable String gameId, @PathVariable String playerId,
+    public PlayerBlackList unBlockPlayer(@PathVariable String gameId, @PathVariable String playerId,
 			@PathVariable String otherPlayerId) {
 
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
 		otherPlayerId = decodePathVariable(otherPlayerId);
 		
-		if (logger.isInfoEnabled()) {
-			logger.info(String.format("remove player %s from black list of player %s", otherPlayerId, playerId));
-		}
+        LogHub.info(gameId, logger, String.format("remove player %s from black list of player %s",
+                otherPlayerId, playerId));
 		
-		playerSrv.unblockPlayer(gameId, playerId, otherPlayerId);
+        return playerSrv.unblockPlayer(gameId, playerId, otherPlayerId);
 		
 	}
 
@@ -441,10 +440,6 @@ public class PlayerController {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
 		
-		if (logger.isInfoEnabled()) {
-			logger.info(String.format("read blacklist of player %s", playerId));
-		}
-
 		return playerSrv.readBlackList(gameId, playerId);
 		
 	}

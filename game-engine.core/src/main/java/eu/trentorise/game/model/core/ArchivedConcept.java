@@ -2,9 +2,12 @@ package eu.trentorise.game.model.core;
 
 import java.util.Date;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.GroupChallenge;
 
+@Document(collection="challengeArchive")
 public class ArchivedConcept {
     private String id;
     private String gameId;

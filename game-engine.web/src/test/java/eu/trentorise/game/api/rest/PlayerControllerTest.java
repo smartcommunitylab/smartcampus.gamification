@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +62,7 @@ import eu.trentorise.game.model.LevelInstance;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -1059,5 +1061,233 @@ public class PlayerControllerTest {
         } catch (Exception e) {
             fail("exception thrown: " + e.getMessage());
         }
+    }
+
+    public void read_empty_archive() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        RequestBuilder builder = null;
+        try {
+
+            builder = MockMvcRequestBuilders.get(
+                    "/data/game/{gameId}/archive",
+                    game.getId());
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$", hasSize(0)));
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_archive() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        ChallengeConcept challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        mongo.save(archived);
+
+        RequestBuilder builder = null;
+        try {
+
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/archive", game.getId());
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$", hasSize(1)));
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_archive_given_a_state() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        ChallengeConcept challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        mongo.save(archived);
+
+        RequestBuilder builder = null;
+        try {
+
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/archive", game.getId())
+                    .param("state", "AUTO_DISCARDED");
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$", hasSize(0)));
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_archive_given_a_player() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        ChallengeConcept challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        mongo.save(archived);
+
+        archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_2");
+        challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        mongo.save(archived);
+
+        RequestBuilder builder = null;
+        try {
+
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/archive", game.getId())
+                    .param("playerId", "player_1");
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$", hasSize(1)));
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_archive_from_a_date() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        ChallengeConcept challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        archived.setArchivingDate(date("2018-11-06T05:00:00"));
+        mongo.save(archived);
+
+        archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        archived.setArchivingDate(date("2018-11-07T10:00:00"));
+        mongo.save(archived);
+
+        RequestBuilder builder = null;
+        try {
+
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/archive", game.getId())
+                    .param("playerId", "player_1")
+                    .param("from", "" + date("2018-11-07T02:00:00").getTime());
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$", hasSize(1)));
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void read_archive_to_a_date() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        ChallengeConcept challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        archived.setArchivingDate(date("2018-11-06T05:00:00"));
+        mongo.save(archived);
+
+        archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        archived.setArchivingDate(date("2018-11-07T10:00:00"));
+        mongo.save(archived);
+
+        RequestBuilder builder = null;
+        try {
+
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/archive", game.getId())
+                    .param("playerId", "player_1")
+                    .param("to", "" + date("2018-11-07T02:00:00").getTime());
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$", hasSize(1)));
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_archive_between_a_date() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        ArchivedConcept archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        ChallengeConcept challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        archived.setArchivingDate(date("2018-11-06T05:00:00"));
+        mongo.save(archived);
+
+        archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        archived.setArchivingDate(date("2018-11-07T10:00:00"));
+
+        archived = new ArchivedConcept();
+        archived.setGameId(game.getId());
+        archived.setPlayerId("player_1");
+        challenge = new ChallengeConcept();
+        challenge.setModelName("model1");
+        challenge.updateState(ChallengeState.REFUSED);
+        archived.setChallenge(challenge);
+        archived.setArchivingDate(date("2018-11-07T11:00:00"));
+        mongo.save(archived);
+
+        RequestBuilder builder = null;
+        try {
+
+            builder = MockMvcRequestBuilders.get("/data/game/{gameId}/archive", game.getId())
+                    .param("playerId", "player_1")
+                    .param("from", "" + date("2018-11-07T01:00:00").getTime())
+                    .param("to", "" + date("2018-11-07T12:00:00").getTime());
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$", hasSize(1)));
+        } catch (Exception e) {
+            fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+
+    private Date date(String isoDate) {
+        return LocalDateTime.parse(isoDate).toDate();
     }
 }

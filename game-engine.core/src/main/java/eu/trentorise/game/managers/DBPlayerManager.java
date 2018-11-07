@@ -769,7 +769,7 @@ public class DBPlayerManager implements PlayerService {
     }
 
 	@Override
-	public void blockPlayer(String gameId, String playerId, String otherPlayerId) {
+    public PlayerBlackList blockPlayer(String gameId, String playerId, String otherPlayerId) {
 		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
 
 		Query q = new Query();
@@ -789,11 +789,12 @@ public class DBPlayerManager implements PlayerService {
 		}
 		
 		mongoTemplate.save(pbListObj);
+        return pbListObj;
 
 	}
 
 	@Override
-	public void unblockPlayer(String gameId, String playerId, String otherPlayerId) {
+    public PlayerBlackList unblockPlayer(String gameId, String playerId, String otherPlayerId) {
 		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
 
 		Query q = new Query();
@@ -801,12 +802,13 @@ public class DBPlayerManager implements PlayerService {
 
 		PlayerBlackList pbListObj = mongoTemplate.findOne(q, PlayerBlackList.class);
 
-		if (pbListObj != null) {
-			pbListObj.getBlockedPlayers().remove(otherPlayerId);
-		}
+        if (pbListObj == null) {
+            pbListObj = new PlayerBlackList();
+        }
 
+        pbListObj.getBlockedPlayers().remove(otherPlayerId);
 		mongoTemplate.save(pbListObj);
-
+        return pbListObj;
 	}
 
 	@Override
@@ -816,8 +818,8 @@ public class DBPlayerManager implements PlayerService {
 		Query q = new Query();
 		q.addCriteria(criteria);
 
-		return mongoTemplate.findOne(q, PlayerBlackList.class);
-
+        PlayerBlackList response = mongoTemplate.findOne(q, PlayerBlackList.class);
+        return response != null ? response : new PlayerBlackList();
 	}
 	
 }

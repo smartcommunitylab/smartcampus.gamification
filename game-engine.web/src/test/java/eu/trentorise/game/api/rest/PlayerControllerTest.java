@@ -3,6 +3,7 @@ package eu.trentorise.game.api.rest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -57,6 +58,7 @@ import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Config;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.LevelInstance;
+import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
@@ -899,6 +901,163 @@ public class PlayerControllerTest {
                             hasSize(1)));
         } catch (Exception e) {
 
+        }
+    }
+
+    @Test
+    public void add_player_to_blacklist() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders.post(
+                    "/data/game/{gameId}/player/{playerId}/block/{otherPlayerId}", game.getId(),
+                    "ant-man", "wasp").contentType(MediaType.APPLICATION_JSON);
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.blockedPlayers", hasSize(1)));
+
+        } catch (Exception e) {
+            fail("exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void remove_player_from_blacklist_when_not_already_existent() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}",
+                            game.getId(), "ant-man", "wasp")
+                    .contentType(MediaType.APPLICATION_JSON);
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.blockedPlayers", hasSize(0)));
+
+        } catch (Exception e) {
+            fail("exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void remove_player_from_blacklist() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        PlayerBlackList blacklist = new PlayerBlackList();
+        blacklist.setPlayerId("ant-man");
+        blacklist.setGameId(game.getId());
+        blacklist.getBlockedPlayers().add("wasp");
+        blacklist.getBlockedPlayers().add("dr. strange");
+        mongo.save(blacklist);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}",
+                            game.getId(), "ant-man", "wasp")
+                    .contentType(MediaType.APPLICATION_JSON);
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.blockedPlayers", hasSize(1)));
+
+        } catch (Exception e) {
+            fail("exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void remove_player_from_blacklist_not_present_player() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        PlayerBlackList blacklist = new PlayerBlackList();
+        blacklist.setPlayerId("ant-man");
+        blacklist.setGameId(game.getId());
+        blacklist.getBlockedPlayers().add("wasp");
+        blacklist.getBlockedPlayers().add("dr. strange");
+        mongo.save(blacklist);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}",
+                            game.getId(), "ant-man", "eddie brock")
+                    .contentType(MediaType.APPLICATION_JSON);
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.blockedPlayers", hasSize(2)));
+
+        } catch (Exception e) {
+            fail("exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void remove_player_from_blacklist_when_it_is_empty() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        PlayerBlackList blacklist = new PlayerBlackList();
+        blacklist.setPlayerId("ant-man");
+        blacklist.setGameId(game.getId());
+        mongo.save(blacklist);
+
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders
+                    .post("/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}",
+                            game.getId(), "ant-man", "wasp")
+                    .contentType(MediaType.APPLICATION_JSON);
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.blockedPlayers", hasSize(0)));
+
+        } catch (Exception e) {
+            fail("exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_player_blacklist_when_not_already_existent() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+        RequestBuilder builder = null;
+        try {
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/blacklist", game.getId(), "ant-man")
+                    .contentType(MediaType.APPLICATION_JSON);
+            mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.blockedPlayers", hasSize(0)));
+
+        } catch (Exception e) {
+            fail("exception thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void read_player_blacklist() {
+        Game game = defineGame();
+        gameSrv.saveGameDefinition(game);
+
+        PlayerBlackList blacklist = new PlayerBlackList();
+        blacklist.setPlayerId("ant-man");
+        blacklist.setGameId(game.getId());
+        blacklist.getBlockedPlayers().add("dr .strange");
+        blacklist.getBlockedPlayers().add("wasp");
+        mongo.save(blacklist);
+
+        RequestBuilder builder = null;
+        try {
+            builder =
+                    MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/blacklist",
+                            game.getId(), "ant-man").contentType(MediaType.APPLICATION_JSON);
+            mocker.perform(builder).andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().is(200))
+                    .andExpect(jsonPath("$.blockedPlayers", hasSize(2)));
+
+        } catch (Exception e) {
+            fail("exception thrown: " + e.getMessage());
         }
     }
 }

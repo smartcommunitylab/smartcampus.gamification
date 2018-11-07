@@ -94,9 +94,9 @@ public interface PlayerService {
     /*
      * BLACKLIST
      */
-    public void blockPlayer(String gameId, String playerId, String otherPlayerId);
+    public PlayerBlackList blockPlayer(String gameId, String playerId, String otherPlayerId);
     
-    public void unblockPlayer(String gameId, String playerId, String otherPlayerId);
+    public PlayerBlackList unblockPlayer(String gameId, String playerId, String otherPlayerId);
     
     public PlayerBlackList readBlackList(String gameId, String playerId);
 }

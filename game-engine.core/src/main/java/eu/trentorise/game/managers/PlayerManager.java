@@ -264,12 +264,6 @@ public class PlayerManager implements PlayerService {
     }
 
 	@Override
-	public List<ArchivedConcept> readAllArchiveConcepts(Pageable page) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
     public List<ArchivedConcept> readArchives(String gameId, String playerId, String state,
             Date from, Date to) {
 		// TODO Auto-generated method stub

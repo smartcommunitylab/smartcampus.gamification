@@ -97,7 +97,6 @@ public interface PlayerService {
     /*
      * * ARCHIVED CHALLENGE CONCEPTS
      */
-    public List<ArchivedConcept> readAllArchiveConcepts(Pageable page);
     
     public List<ArchivedConcept> readArchives(String gameId, String playerId, String state,
             Date from, Date to);

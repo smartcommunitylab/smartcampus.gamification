@@ -679,15 +679,6 @@ public class DBPlayerManager implements PlayerService {
     }
     
 	@Override
-	public List<ArchivedConcept> readAllArchiveConcepts(Pageable pageable) {
-
-		Query query = new Query().with(pageable);
-
-		return mongoTemplate.find(query, ArchivedConcept.class);
-
-	}
-
-	@Override
     public List<ArchivedConcept> readArchives(String gameId, String playerId, String state,
             Date from, Date to) {
 		List<ArchivedConcept> result;

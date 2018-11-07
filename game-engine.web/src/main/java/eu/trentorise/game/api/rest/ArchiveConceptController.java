@@ -2,6 +2,7 @@ package eu.trentorise.game.api.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -49,8 +50,7 @@ public class ArchiveConceptController {
 	public List<ArchivedConcept> readArchivesForGame(@PathVariable String gameId,
 			@RequestParam(required = false) String playerId,
 			@RequestParam(required = false) String state,
-			@RequestParam(required = false) Long from,
-			@RequestParam(required = false) Long to) {
+            @RequestParam(required = false) Long from, @RequestParam(required = false) Long to) {
 
 		try {
 			gameId = URLDecoder.decode(gameId, "UTF-8");
@@ -58,7 +58,17 @@ public class ArchiveConceptController {
 			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
 		}
 
-		List<ArchivedConcept> result = playerSrv.readArchives(gameId, playerId, state, from, to);
+        Date fromDate = null;
+        Date toDate = null;
+        if (from != null) {
+            fromDate = new Date(from);
+        }
+
+        if (to != null) {
+            toDate = new Date(to);
+        }
+        List<ArchivedConcept> result =
+                playerSrv.readArchives(gameId, playerId, state, fromDate, toDate);
 
 		if (logger.isInfoEnabled()) {
 			logger.info(String.format("readArchivesForGame: %s", result.size()));

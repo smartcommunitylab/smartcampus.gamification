@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.trentorise.game.managers.ArchiveManager;
 import eu.trentorise.game.model.core.ArchivedConcept;
-import eu.trentorise.game.services.PlayerService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiOperation;
 public class ArchiveConceptController {
 
 	@Autowired
-	private PlayerService playerSrv;
+    private ArchiveManager archiveSrv;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/archive", produces = {
 			"application/json" })
@@ -48,7 +48,7 @@ public class ArchiveConceptController {
             toDate = new Date(to);
         }
         List<ArchivedConcept> result =
-                playerSrv.readArchives(gameId, playerId, state, fromDate, toDate);
+                archiveSrv.readArchives(gameId, playerId, state, fromDate, toDate);
 
 		return result;
 

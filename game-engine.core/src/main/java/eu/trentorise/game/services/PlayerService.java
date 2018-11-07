@@ -16,7 +16,6 @@
 
 package eu.trentorise.game.services;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
-import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
 import eu.trentorise.game.model.core.ComplexSearchQuery;
@@ -102,10 +100,4 @@ public interface PlayerService {
     
     public PlayerBlackList readBlackList(String gameId, String playerId);
 
-    /*
-     * ARCHIVED CHALLENGE CONCEPTS
-     */
-    
-    public List<ArchivedConcept> readArchives(String gameId, String playerId, String state,
-            Date from, Date to);
 }

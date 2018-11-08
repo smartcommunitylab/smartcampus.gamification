@@ -62,6 +62,7 @@ import eu.trentorise.game.model.LevelInstance;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.GameConcept;
@@ -1286,7 +1287,49 @@ public class PlayerControllerTest {
         }
     }
 
+    @Test
+    public void read_system_playersState() {
+    	 final String gameId = "PST_GAME";
+         Game g = new Game(gameId);
+         g.setConcepts(new HashSet<>());
+         g.getConcepts().add(new PointConcept("green"));
+         g = gameSrv.saveGameDefinition(g);
 
+
+         Level level = new Level("Eco Warrior", "green");
+         level.getThresholds().add(new Threshold("newbie", 0));
+         level.getThresholds().add(new Threshold("adept", 100));
+         level.getThresholds().add(new Threshold("master", 1000));
+         gameSrv.upsertLevel(gameId, level);
+
+         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+         playerSrv.saveState(p);
+         
+         PlayerState available = new PlayerState(gameId, "av1");
+         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+         playerSrv.saveState(available);
+         
+         PlayerState available2 = new PlayerState(gameId, "av2");
+         available2.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+         playerSrv.saveState(available2);
+         
+         RequestBuilder builder = null;
+         try {
+             builder =
+                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
+                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
+             mocker.perform(builder).andDo(print())
+                     .andExpect(MockMvcResultMatchers.status().is(200))
+                     .andExpect(jsonPath("$", hasSize(2)));
+
+         } catch (Exception e) {
+             fail("exception thrown: " + e.getMessage());
+         }
+         
+    }
+    
+    
     private Date date(String isoDate) {
         return LocalDateTime.parse(isoDate).toDate();
     }

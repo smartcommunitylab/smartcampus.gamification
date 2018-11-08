@@ -46,6 +46,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.ResourceNotFoundException;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
@@ -59,6 +60,7 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.SystemPlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
@@ -105,6 +107,8 @@ public class DBPlayerManager implements PlayerService {
 
     @Autowired
     private ArchiveManager archiveSrv;
+    
+    private static final int PROPOSER_RANGE = 2;
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
         eu.trentorise.game.repo.StatePersistence state =
@@ -822,6 +826,90 @@ public class DBPlayerManager implements PlayerService {
 
         PlayerBlackList response = mongoTemplate.findOne(q, PlayerBlackList.class);
         return response != null ? response : new PlayerBlackList();
+	}
+	
+	@Override
+	public List<SystemPlayerState> readSystemPlayerState(String gameId, String playerId, String conceptName) {
+
+		List<SystemPlayerState> sps = new ArrayList<SystemPlayerState>();
+
+		// 1. Read the level of proposed player.
+		StatePersistence callerState = playerRepo.findByGameIdAndPlayerId(gameId, playerId);
+
+		if (callerState != null && !callerState.getLevels().isEmpty()) {
+
+			PlayerLevel referenceLevel = null;
+
+			if (conceptName != null && !conceptName.isEmpty()) {
+				for (PlayerLevel pLevel : callerState.getLevels()) {
+					if (pLevel.getPointConcept().equalsIgnoreCase(conceptName)) {
+						referenceLevel = pLevel;
+						break;
+					}
+				}
+			} else {
+				referenceLevel = callerState.getLevels().get(0);
+			}
+
+			if (referenceLevel != null) {
+
+				// 2.level is in the range proposer +-2
+				int levelMax = referenceLevel.getLevelIndex() + PROPOSER_RANGE;
+				int levelMin = referenceLevel.getLevelIndex() - PROPOSER_RANGE;
+
+				Criteria criteria = new Criteria().where("playerId").ne(playerId).and("gameId").is(gameId);
+
+//				Query q1 = new Query();
+//				q1.addCriteria(criteria);
+
+				if (conceptName != null && !conceptName.isEmpty()) {
+					criteria = criteria.and("levels").elemMatch(Criteria.where("levelIndex").gte(levelMin).lte(levelMax)
+							.and("pointConcept").is(conceptName));
+				} else {
+					criteria = criteria.and("levels.0").exists(true).and("levels.0.levelIndex").gte(levelMin)
+							.lte(levelMax);
+				}
+
+				// 3.player is not in proposer blacklist
+				PlayerBlackList pbList = readBlackList(gameId, playerId);
+				if (pbList != null && !pbList.getBlockedPlayers().isEmpty()) {
+					Criteria blistCriteria = new Criteria().where("playerId").nin(pbList.getBlockedPlayers());
+					criteria = criteria.andOperator(blistCriteria);
+				}
+
+				Query q2 = new Query();
+				q2.addCriteria(criteria);
+				List<PlayerState> filerList = mongoTemplate.find(q2, PlayerState.class);
+				List<PlayerState> tempList = new ArrayList(filerList);
+
+				for (PlayerState ps : filerList) {
+					// 4. player has received less than 3 invitations to challenge
+					if (groupChallengeRepo.guestInvitations(gameId, ps.getPlayerId()).size() < 3) {
+						sps.add(new SystemPlayerState(ps.getPlayerId(), true));
+						tempList.remove(ps);
+					}
+				}
+				// append unavailable player.
+				for (PlayerState unavailablePS : tempList) {
+					sps.add(new SystemPlayerState(unavailablePS.getPlayerId(), false));
+				}
+				
+			} else {
+				LogHub.error(gameId, logger, "readSystemPlayerState: no levels found for player %s for this game %s",
+						playerId, gameId);
+				throw new ResourceNotFoundException(
+						"readSystemPlayerState: no levels found for player " + playerId + " for game " + gameId);
+			}
+
+		} else {
+			LogHub.error(gameId, logger, "readSystemPlayerState: no player state found for player %s for this game %s",
+					playerId, gameId);
+			throw new ResourceNotFoundException(
+					"readSystemPlayerState: no player state found for player " + playerId + " for game " + gameId);
+		}
+
+		return sps;
+
 	}
 	
 }

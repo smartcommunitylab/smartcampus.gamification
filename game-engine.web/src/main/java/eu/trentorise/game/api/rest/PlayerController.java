@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.ChallengeAssignmentDTO;
@@ -37,6 +38,7 @@ import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.SystemPlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.services.GameService;
@@ -442,6 +444,25 @@ public class PlayerController {
 		
 		return playerSrv.readBlackList(gameId, playerId);
 		
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/systemList", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get system player list for proposed player")
+	public List<SystemPlayerState> readSystemPlayerState(@PathVariable String gameId, @PathVariable String playerId,
+			@RequestParam(required = false) String conceptName) throws Exception {
+
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		
+		if (conceptName != null) {
+			conceptName = decodePathVariable(conceptName);
+		}	
+
+		LogHub.info(gameId, logger, String.format("read all system player state for player %s", playerId));
+		
+		return playerSrv.readSystemPlayerState(gameId, playerId, conceptName);
+
 	}
 	 
 

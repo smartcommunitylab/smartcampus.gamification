@@ -154,6 +154,17 @@ public class GroupChallenge {
             attendeeScore.put("challengeScore", a.getChallengeScore());
             otherAttendeeScores.add(attendeeScore);
         });
+        if (reward != null) {
+            challenge.getFields().put("rewardPercentage", reward.getPercentage());
+            challenge.getFields().put("rewardThreshold", reward.getThreshold());
+        }
+
+        if (challengePointConcept != null) {
+            challenge.getFields().put("challengePointConceptName", challengePointConcept.getName());
+            challenge.getFields().put("challengePointConceptPeriod",
+                    challengePointConcept.getPeriod());
+        }
+
         challenge.getFields().put("otherAttendeeScores", otherAttendeeScores);
         Attendee proposer = proposer();
         if(proposer != null) {

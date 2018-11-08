@@ -38,7 +38,6 @@ import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.SystemPlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.services.GameService;
@@ -449,7 +448,7 @@ public class PlayerController {
 	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/systemList", produces = {
 			"application/json" })
 	@ApiOperation(value = "Get system player list for proposed player")
-	public List<SystemPlayerState> readSystemPlayerState(@PathVariable String gameId, @PathVariable String playerId,
+	public List<String> readSystemPlayerState(@PathVariable String gameId, @PathVariable String playerId,
 			@RequestParam(required = false) String conceptName) throws Exception {
 
 		gameId = decodePathVariable(gameId);

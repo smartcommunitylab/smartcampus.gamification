@@ -1329,6 +1329,54 @@ public class PlayerControllerTest {
          
     }
     
+    @Test
+    public void read_system_playersState_with_blacklist() {
+    	 final String gameId = "PST_GAME";
+         Game g = new Game(gameId);
+         g.setConcepts(new HashSet<>());
+         g.getConcepts().add(new PointConcept("green"));
+         g = gameSrv.saveGameDefinition(g);
+
+
+         Level level = new Level("Eco Warrior", "green");
+         level.getThresholds().add(new Threshold("newbie", 0));
+         level.getThresholds().add(new Threshold("adept", 100));
+         level.getThresholds().add(new Threshold("master", 1000));
+         gameSrv.upsertLevel(gameId, level);
+
+         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+         playerSrv.saveState(p);
+         
+         PlayerState available = new PlayerState(gameId, "av1");
+         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+         playerSrv.saveState(available);
+         
+         PlayerState unavailable = new PlayerState(gameId, "unAvailable");
+         unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+         playerSrv.saveState(unavailable);
+         
+         PlayerBlackList blacklist = new PlayerBlackList();
+         blacklist.setPlayerId("proposer");
+         blacklist.setGameId(gameId);
+         blacklist.getBlockedPlayers().add("unAvailable");
+         mongo.save(blacklist);
+         
+         RequestBuilder builder = null;
+         try {
+             builder =
+                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
+                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
+             mocker.perform(builder).andDo(print())
+                     .andExpect(MockMvcResultMatchers.status().is(200))
+                     .andExpect(jsonPath("$", hasSize(1)));
+
+         } catch (Exception e) {
+             fail("exception thrown: " + e.getMessage());
+         }
+         
+    }
+    
     
     private Date date(String isoDate) {
         return LocalDateTime.parse(isoDate).toDate();

@@ -27,7 +27,6 @@ import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.SystemPlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
@@ -104,6 +103,6 @@ public interface PlayerService {
     /*
      * SYSTEM PLAYERS LIST FOR PLAYER
      */
-    public List<SystemPlayerState> readSystemPlayerState(String gameId, String playerId, String conceptName);
+    public List<String> readSystemPlayerState(String gameId, String playerId, String conceptName);
 
 }

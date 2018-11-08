@@ -60,7 +60,6 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.SystemPlayerState;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
@@ -829,9 +828,9 @@ public class DBPlayerManager implements PlayerService {
 	}
 	
 	@Override
-	public List<SystemPlayerState> readSystemPlayerState(String gameId, String playerId, String conceptName) {
+	public List<String> readSystemPlayerState(String gameId, String playerId, String conceptName) {
 
-		List<SystemPlayerState> sps = new ArrayList<SystemPlayerState>();
+		List<String> sps = new ArrayList<String>();
 
 		// 1. Read the level of proposed player.
 		StatePersistence callerState = playerRepo.findByGameIdAndPlayerId(gameId, playerId);
@@ -859,9 +858,6 @@ public class DBPlayerManager implements PlayerService {
 
 				Criteria criteria = new Criteria().where("playerId").ne(playerId).and("gameId").is(gameId);
 
-//				Query q1 = new Query();
-//				q1.addCriteria(criteria);
-
 				if (conceptName != null && !conceptName.isEmpty()) {
 					criteria = criteria.and("levels").elemMatch(Criteria.where("levelIndex").gte(levelMin).lte(levelMax)
 							.and("pointConcept").is(conceptName));
@@ -880,18 +876,34 @@ public class DBPlayerManager implements PlayerService {
 				Query q2 = new Query();
 				q2.addCriteria(criteria);
 				List<PlayerState> filerList = mongoTemplate.find(q2, PlayerState.class);
-				List<PlayerState> tempList = new ArrayList(filerList);
 
+				Date now = new Date();
 				for (PlayerState ps : filerList) {
 					// 4. player has received less than 3 invitations to challenge
 					if (groupChallengeRepo.guestInvitations(gameId, ps.getPlayerId()).size() < 3) {
-						sps.add(new SystemPlayerState(ps.getPlayerId(), true));
-						tempList.remove(ps);
+
+						// 5.1 check for group challenge assignment.
+						Criteria groupChallengeCheck = new Criteria().where("gameId").is(gameId).and("state").is(ChallengeState.ASSIGNED.toString())
+								.and("start").gt(now).and("attendees.playerId").is(ps.getPlayerId());
+						Query q4 = new Query();
+						q4.addCriteria(groupChallengeCheck);
+						
+						if (mongoTemplate.find(q4, GroupChallenge.class).size() > 0) {
+							continue;
+						}
+						
+						// 5.2 check for single challenge assignment.
+						boolean isChallengeAssignedInFuture = false;
+						for (ChallengeConcept cp: loadState(gameId, ps.getPlayerId(), false, false).challenges()) {
+							if (cp.getState().equals(ChallengeState.ASSIGNED) && cp.getStart().after(now)) {
+								isChallengeAssignedInFuture = true;
+								break;
+							}
+						}						
+						if (!isChallengeAssignedInFuture) {
+							sps.add(ps.getPlayerId());	
+						}					
 					}
-				}
-				// append unavailable player.
-				for (PlayerState unavailablePS : tempList) {
-					sps.add(new SystemPlayerState(unavailablePS.getPlayerId(), false));
 				}
 				
 			} else {

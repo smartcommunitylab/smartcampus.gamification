@@ -908,7 +908,7 @@ public class DBPlayerManager implements PlayerService {
 				
 			} else {
 				LogHub.error(gameId, logger,
-						"readSystemPlayerState: no reference level found for player %s for this game %s for conceptName ",
+						"readSystemPlayerState: no reference level found for player {} for this game {} for conceptName {}",
 						playerId, gameId, conceptName);
 				throw new ResourceNotFoundException("readSystemPlayerState: no reference level found for player " + playerId
 						+ " for game " + gameId + " for conceptName " + conceptName);
@@ -916,7 +916,7 @@ public class DBPlayerManager implements PlayerService {
 
 		} else {
 			LogHub.error(gameId, logger,
-					"readSystemPlayerState: no player state | empty level found for player %s for this game %s",
+					"readSystemPlayerState: no player state | empty level found for player {} for this game {}",
 					playerId, gameId);
 			throw new ResourceNotFoundException("readSystemPlayerState: no player state | empty level found for player "
 					+ playerId + " for game " + gameId);

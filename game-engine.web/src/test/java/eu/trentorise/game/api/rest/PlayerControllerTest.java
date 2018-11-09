@@ -1288,321 +1288,303 @@ public class PlayerControllerTest {
         }
     }
 
-    @Test
-    public void read_system_playersState() {
-    	 final String gameId = "PST_GAME";
-         Game g = new Game(gameId);
-         g.setConcepts(new HashSet<>());
-         g.getConcepts().add(new PointConcept("green"));
-         g = gameSrv.saveGameDefinition(g);
+	@Test
+	public void read_system_playersState() {
+		final String gameId = "PST_GAME";
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		g.getConcepts().add(new PointConcept("green"));
+		g = gameSrv.saveGameDefinition(g);
 
+		Level level = new Level("Eco Warrior", "green");
+		level.getThresholds().add(new Threshold("newbie", 0));
+		level.getThresholds().add(new Threshold("adept", 100));
+		level.getThresholds().add(new Threshold("master", 1000));
+		gameSrv.upsertLevel(gameId, level);
 
-         Level level = new Level("Eco Warrior", "green");
-         level.getThresholds().add(new Threshold("newbie", 0));
-         level.getThresholds().add(new Threshold("adept", 100));
-         level.getThresholds().add(new Threshold("master", 1000));
-         gameSrv.upsertLevel(gameId, level);
+		PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+		p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+		playerSrv.saveState(p);
 
-         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
-         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
-         playerSrv.saveState(p);
-         
-         PlayerState available = new PlayerState(gameId, "av1");
-         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
-         playerSrv.saveState(available);
-         
-         PlayerState available2 = new PlayerState(gameId, "av2");
-         available2.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
-         playerSrv.saveState(available2);
-         
-         RequestBuilder builder = null;
-         try {
-             builder =
-                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
-                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
-             mocker.perform(builder).andDo(print())
-                     .andExpect(MockMvcResultMatchers.status().is(200))
-                     .andExpect(jsonPath("$", hasSize(2)));
+		PlayerState available = new PlayerState(gameId, "av1");
+		available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+		playerSrv.saveState(available);
 
-         } catch (Exception e) {
-             fail("exception thrown: " + e.getMessage());
-         }
-         
-    }
-    
-    @Test
-    public void read_system_playersState_with_blacklist() {
-    	 final String gameId = "PST_GAME";
-         Game g = new Game(gameId);
-         g.setConcepts(new HashSet<>());
-         g.getConcepts().add(new PointConcept("green"));
-         g = gameSrv.saveGameDefinition(g);
+		PlayerState available2 = new PlayerState(gameId, "av2");
+		available2.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+		playerSrv.saveState(available2);
 
+		RequestBuilder builder = null;
+		try {
+			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+					.contentType(MediaType.APPLICATION_JSON);
+			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(jsonPath("$", hasSize(2)));
 
-         Level level = new Level("Eco Warrior", "green");
-         level.getThresholds().add(new Threshold("newbie", 0));
-         level.getThresholds().add(new Threshold("adept", 100));
-         level.getThresholds().add(new Threshold("master", 1000));
-         gameSrv.upsertLevel(gameId, level);
+		} catch (Exception e) {
+			fail("exception thrown: " + e.getMessage());
+		}
 
-         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
-         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
-         playerSrv.saveState(p);
-         
-         PlayerState available = new PlayerState(gameId, "av1");
-         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
-         playerSrv.saveState(available);
-         
-         PlayerState unavailable = new PlayerState(gameId, "unAvailable");
-         unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
-         playerSrv.saveState(unavailable);
-         
-         PlayerBlackList blacklist = new PlayerBlackList();
-         blacklist.setPlayerId("proposer");
-         blacklist.setGameId(gameId);
-         blacklist.getBlockedPlayers().add("unAvailable");
-         mongo.save(blacklist);
-         
-         RequestBuilder builder = null;
-         try {
-             builder =
-                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
-                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
-             mocker.perform(builder).andDo(print())
-                     .andExpect(MockMvcResultMatchers.status().is(200))
-                     .andExpect(jsonPath("$", hasSize(1)));
+	}
 
-         } catch (Exception e) {
-             fail("exception thrown: " + e.getMessage());
-         }
-         
-    }
-    
-    @Test
-    public void read_system_playersState_range_test() {
-    	 final String gameId = "PST_GAME";
-         Game g = new Game(gameId);
-         g.setConcepts(new HashSet<>());
-         g.getConcepts().add(new PointConcept("green"));
-         g = gameSrv.saveGameDefinition(g);
+	@Test
+	public void read_system_playersState_with_blacklist() {
+		final String gameId = "PST_GAME";
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		g.getConcepts().add(new PointConcept("green"));
+		g = gameSrv.saveGameDefinition(g);
 
+		Level level = new Level("Eco Warrior", "green");
+		level.getThresholds().add(new Threshold("newbie", 0));
+		level.getThresholds().add(new Threshold("adept", 100));
+		level.getThresholds().add(new Threshold("master", 1000));
+		gameSrv.upsertLevel(gameId, level);
 
-         Level level = new Level("Eco Warrior", "green");
-         level.getThresholds().add(new Threshold("newbie", 0));
-         level.getThresholds().add(new Threshold("adept", 100));
-         level.getThresholds().add(new Threshold("master", 1000));
-         gameSrv.upsertLevel(gameId, level);
+		PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+		p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+		playerSrv.saveState(p);
 
-         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
-         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
-         playerSrv.saveState(p);
-         
-         PlayerState available = new PlayerState(gameId, "av1");
-         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
-         playerSrv.saveState(available);
-         
-         PlayerState unavailable = new PlayerState(gameId, "unAvailable");
-         unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
-         // set higher level index.
-         unavailable.getLevels().get(0).setLevelIndex(5);
-         playerSrv.saveState(unavailable);
-         
-         RequestBuilder builder = null;
-         try {
-             builder =
-                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
-                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
-             mocker.perform(builder).andDo(print())
-                     .andExpect(MockMvcResultMatchers.status().is(200))
-                     .andExpect(jsonPath("$", hasSize(1)));
+		PlayerState available = new PlayerState(gameId, "av1");
+		available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+		playerSrv.saveState(available);
 
-         } catch (Exception e) {
-             fail("exception thrown: " + e.getMessage());
-         }
-         
-    }
-    
-    @Test
-    public void read_system_playersState_three_invitations_test() {
-    	 final String gameId = "PST_GAME";
-         Game g = new Game(gameId);
-         g.setConcepts(new HashSet<>());
-         g.getConcepts().add(new PointConcept("green"));
-         g = gameSrv.saveGameDefinition(g);
+		PlayerState unavailable = new PlayerState(gameId, "unAvailable");
+		unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+		playerSrv.saveState(unavailable);
 
+		PlayerBlackList blacklist = new PlayerBlackList();
+		blacklist.setPlayerId("proposer");
+		blacklist.setGameId(gameId);
+		blacklist.getBlockedPlayers().add("unAvailable");
+		mongo.save(blacklist);
 
-         Level level = new Level("Eco Warrior", "green");
-         level.getThresholds().add(new Threshold("newbie", 0));
-         level.getThresholds().add(new Threshold("adept", 100));
-         level.getThresholds().add(new Threshold("master", 1000));
-         gameSrv.upsertLevel(gameId, level);
+		RequestBuilder builder = null;
+		try {
+			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+					.contentType(MediaType.APPLICATION_JSON);
+			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(jsonPath("$", hasSize(1)));
 
-         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
-         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
-         playerSrv.saveState(p);
-         
-         PlayerState available = new PlayerState(gameId, "av1");
-         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
-         playerSrv.saveState(available);
-         
-         PlayerState unavailable = new PlayerState(gameId, "unAvailable");
-         unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
-         // add three invitations in group challenge for user.
-         GroupChallenge gc1 = new GroupChallenge();
-         Attendee guest = new Attendee();
-         guest.setPlayerId("unAvailable");
-         guest.setRole(Role.GUEST);
-         gc1.getAttendees().add(guest);
-         gc1.setState(ChallengeState.PROPOSED);
-         gc1.setGameId(gameId);
-         mongo.save(gc1);
-         
-         GroupChallenge gc2 = new GroupChallenge();
-         gc2.getAttendees().add(guest);
-         gc2.setState(ChallengeState.PROPOSED);
-         gc2.setGameId(gameId);
-         mongo.save(gc2);
-         
-         GroupChallenge gc3 = new GroupChallenge();
-         gc3.getAttendees().add(guest);
-         gc3.setState(ChallengeState.PROPOSED);
-         gc3.setGameId(gameId);
-         mongo.save(gc3);
-         
-         playerSrv.saveState(unavailable);
-         
-         RequestBuilder builder = null;
-         try {
-             builder =
-                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
-                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
-             mocker.perform(builder).andDo(print())
-                     .andExpect(MockMvcResultMatchers.status().is(200))
-                     .andExpect(jsonPath("$", hasSize(1)));
+		} catch (Exception e) {
+			fail("exception thrown: " + e.getMessage());
+		}
 
-         } catch (Exception e) {
-             fail("exception thrown: " + e.getMessage());
-         }
-         
-    }
-    
-    @Test
-    public void read_system_playersState_groupchallenge_assigned_test() {
-    	 final String gameId = "PST_GAME";
-         Game g = new Game(gameId);
-         g.setConcepts(new HashSet<>());
-         g.getConcepts().add(new PointConcept("green"));
-         g = gameSrv.saveGameDefinition(g);
+	}
 
+	@Test
+	public void read_system_playersState_range_test() {
+		final String gameId = "PST_GAME";
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		g.getConcepts().add(new PointConcept("green"));
+		g = gameSrv.saveGameDefinition(g);
 
-         Level level = new Level("Eco Warrior", "green");
-         level.getThresholds().add(new Threshold("newbie", 0));
-         level.getThresholds().add(new Threshold("adept", 100));
-         level.getThresholds().add(new Threshold("master", 1000));
-         gameSrv.upsertLevel(gameId, level);
+		Level level = new Level("Eco Warrior", "green");
+		level.getThresholds().add(new Threshold("newbie", 0));
+		level.getThresholds().add(new Threshold("adept", 100));
+		level.getThresholds().add(new Threshold("master", 1000));
+		gameSrv.upsertLevel(gameId, level);
 
-         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
-         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
-         playerSrv.saveState(p);
-         
-         PlayerState available = new PlayerState(gameId, "av1");
-         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
-         playerSrv.saveState(available);
-         
-         PlayerState unavailable = new PlayerState(gameId, "unAvailable");
-         unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
-         // assign group challenge in future.
-         GroupChallenge gc1 = new GroupChallenge();
-         Attendee guest = new Attendee();
-         guest.setPlayerId("unAvailable");
-         guest.setRole(Role.GUEST);
-         gc1.getAttendees().add(guest);
-         // set date in future.
-         Calendar cal = Calendar.getInstance();
-         cal.add(Calendar.DATE, 1);
-         gc1.setStart(cal.getTime());
-         gc1.setState(ChallengeState.ASSIGNED);
-         gc1.setGameId(gameId);
-         mongo.save(gc1);
-         
-         playerSrv.saveState(unavailable);
-         
-         RequestBuilder builder = null;
-         try {
-             builder =
-                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
-                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
-             mocker.perform(builder).andDo(print())
-                     .andExpect(MockMvcResultMatchers.status().is(200))
-                     .andExpect(jsonPath("$", hasSize(1)));
+		PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+		p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+		playerSrv.saveState(p);
 
-         } catch (Exception e) {
-             fail("exception thrown: " + e.getMessage());
-         }
-         
-    }
-    
-    @Test
-    public void read_system_playersState_singlechallenge_assigned_test() {
-    	 final String gameId = "PST_GAME";
-         Game g = new Game(gameId);
-         g.setConcepts(new HashSet<>());
-         g.getConcepts().add(new PointConcept("green"));
-         g = gameSrv.saveGameDefinition(g);
+		PlayerState available = new PlayerState(gameId, "av1");
+		available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+		playerSrv.saveState(available);
 
-         Level level = new Level("Eco Warrior", "green");
-         level.getThresholds().add(new Threshold("newbie", 0));
-         level.getThresholds().add(new Threshold("adept", 100));
-         level.getThresholds().add(new Threshold("master", 1000));
-         gameSrv.upsertLevel(gameId, level);
+		PlayerState unavailable = new PlayerState(gameId, "unAvailable");
+		unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+		// set higher level index.
+		unavailable.getLevels().get(0).setLevelIndex(5);
+		playerSrv.saveState(unavailable);
 
-         PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
-         p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
-         playerSrv.saveState(p);
-         
-         PlayerState available = new PlayerState(gameId, "av1");
-         available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
-         playerSrv.saveState(available);
-         
-         PlayerState unavailable = new PlayerState(gameId, "unAvailable");
-         unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
-         // assign single challenge in future.
-         ChallengeConcept singlePlayerChallenge = new ChallengeConcept();
-         singlePlayerChallenge.setModelName("absoluteIncrement");
-         singlePlayerChallenge.setName("incrementInstance");
-         singlePlayerChallenge.getFields().put("difficulty", 2.0);
-         singlePlayerChallenge.getFields().put("wi", 10);
-         singlePlayerChallenge.getFields().put("bonusScore", 200);
-         singlePlayerChallenge.setState(ChallengeState.ASSIGNED);
-         // set date in future.
-         Calendar cal = Calendar.getInstance();
-         cal.add(Calendar.DATE, 1);
-         singlePlayerChallenge.setStart(cal.getTime());
-         unavailable.getState().add(singlePlayerChallenge);
-         
-        		 
-         playerSrv.saveState(unavailable);
-         
-         RequestBuilder builder = null;
-         try {
-             builder =
-                     MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList",
-                    		 gameId, "proposer").contentType(MediaType.APPLICATION_JSON);
-             mocker.perform(builder).andDo(print())
-                     .andExpect(MockMvcResultMatchers.status().is(200))
-                     .andExpect(jsonPath("$", hasSize(1)));
+		RequestBuilder builder = null;
+		try {
+			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+					.contentType(MediaType.APPLICATION_JSON);
+			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(jsonPath("$", hasSize(1)));
 
-         } catch (Exception e) {
-             fail("exception thrown: " + e.getMessage());
-         }
-         
-    }
-    
+		} catch (Exception e) {
+			fail("exception thrown: " + e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void read_system_playersState_three_invitations_test() {
+		final String gameId = "PST_GAME";
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		g.getConcepts().add(new PointConcept("green"));
+		g = gameSrv.saveGameDefinition(g);
+
+		Level level = new Level("Eco Warrior", "green");
+		level.getThresholds().add(new Threshold("newbie", 0));
+		level.getThresholds().add(new Threshold("adept", 100));
+		level.getThresholds().add(new Threshold("master", 1000));
+		gameSrv.upsertLevel(gameId, level);
+
+		PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+		p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+		playerSrv.saveState(p);
+
+		PlayerState available = new PlayerState(gameId, "av1");
+		available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+		playerSrv.saveState(available);
+
+		PlayerState unavailable = new PlayerState(gameId, "unAvailable");
+		unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+		// add three invitations in group challenge for user.
+		GroupChallenge gc1 = new GroupChallenge();
+		Attendee guest = new Attendee();
+		guest.setPlayerId("unAvailable");
+		guest.setRole(Role.GUEST);
+		gc1.getAttendees().add(guest);
+		gc1.setState(ChallengeState.PROPOSED);
+		gc1.setGameId(gameId);
+		mongo.save(gc1);
+
+		GroupChallenge gc2 = new GroupChallenge();
+		gc2.getAttendees().add(guest);
+		gc2.setState(ChallengeState.PROPOSED);
+		gc2.setGameId(gameId);
+		mongo.save(gc2);
+
+		GroupChallenge gc3 = new GroupChallenge();
+		gc3.getAttendees().add(guest);
+		gc3.setState(ChallengeState.PROPOSED);
+		gc3.setGameId(gameId);
+		mongo.save(gc3);
+
+		playerSrv.saveState(unavailable);
+
+		RequestBuilder builder = null;
+		try {
+			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+					.contentType(MediaType.APPLICATION_JSON);
+			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(jsonPath("$", hasSize(1)));
+
+		} catch (Exception e) {
+			fail("exception thrown: " + e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void read_system_playersState_groupchallenge_assigned_test() {
+		final String gameId = "PST_GAME";
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		g.getConcepts().add(new PointConcept("green"));
+		g = gameSrv.saveGameDefinition(g);
+
+		Level level = new Level("Eco Warrior", "green");
+		level.getThresholds().add(new Threshold("newbie", 0));
+		level.getThresholds().add(new Threshold("adept", 100));
+		level.getThresholds().add(new Threshold("master", 1000));
+		gameSrv.upsertLevel(gameId, level);
+
+		PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+		p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+		playerSrv.saveState(p);
+
+		PlayerState available = new PlayerState(gameId, "av1");
+		available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+		playerSrv.saveState(available);
+
+		PlayerState unavailable = new PlayerState(gameId, "unAvailable");
+		unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+		// assign group challenge in future.
+		GroupChallenge gc1 = new GroupChallenge();
+		Attendee guest = new Attendee();
+		guest.setPlayerId("unAvailable");
+		guest.setRole(Role.GUEST);
+		gc1.getAttendees().add(guest);
+		// set date in future.
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		gc1.setStart(cal.getTime());
+		gc1.setState(ChallengeState.ASSIGNED);
+		gc1.setGameId(gameId);
+		mongo.save(gc1);
+
+		playerSrv.saveState(unavailable);
+
+		RequestBuilder builder = null;
+		try {
+			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+					.contentType(MediaType.APPLICATION_JSON);
+			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(jsonPath("$", hasSize(1)));
+
+		} catch (Exception e) {
+			fail("exception thrown: " + e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void read_system_playersState_singlechallenge_assigned_test() {
+		final String gameId = "PST_GAME";
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		g.getConcepts().add(new PointConcept("green"));
+		g = gameSrv.saveGameDefinition(g);
+
+		Level level = new Level("Eco Warrior", "green");
+		level.getThresholds().add(new Threshold("newbie", 0));
+		level.getThresholds().add(new Threshold("adept", 100));
+		level.getThresholds().add(new Threshold("master", 1000));
+		gameSrv.upsertLevel(gameId, level);
+
+		PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+		p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+		playerSrv.saveState(p);
+
+		PlayerState available = new PlayerState(gameId, "av1");
+		available.updateLevels(Arrays.asList(new PlayerLevel(level, 400d)));
+		playerSrv.saveState(available);
+
+		PlayerState unavailable = new PlayerState(gameId, "unAvailable");
+		unavailable.updateLevels(Arrays.asList(new PlayerLevel(level, 500d)));
+		// assign single challenge in future.
+		ChallengeConcept singlePlayerChallenge = new ChallengeConcept();
+		singlePlayerChallenge.setModelName("absoluteIncrement");
+		singlePlayerChallenge.setName("incrementInstance");
+		singlePlayerChallenge.getFields().put("difficulty", 2.0);
+		singlePlayerChallenge.getFields().put("wi", 10);
+		singlePlayerChallenge.getFields().put("bonusScore", 200);
+		singlePlayerChallenge.setState(ChallengeState.ASSIGNED);
+		// set date in future.
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		singlePlayerChallenge.setStart(cal.getTime());
+		unavailable.getState().add(singlePlayerChallenge);
+
+		playerSrv.saveState(unavailable);
+
+		RequestBuilder builder = null;
+		try {
+			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+					.contentType(MediaType.APPLICATION_JSON);
+			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
+					.andExpect(jsonPath("$", hasSize(1)));
+
+		} catch (Exception e) {
+			fail("exception thrown: " + e.getMessage());
+		}
+
+	}
+
 	@Test
 	public void read_system_playersState_invalid_input() {
 		String expectedErrorMsg1 = "readSystemPlayerState: no player state | empty level found for player no-existing-player for game non-existing-game";
 		String expectedErrorMsg2 = "readSystemPlayerState: no reference level found for player proposer for game PST_GAME for conceptName test";
-		
+
 		RequestBuilder builder = MockMvcRequestBuilders
 				.get("/data/game/{gameId}/player/{playerId}/systemList", "non-existing-game", "no-existing-player")
 				.contentType(MediaType.APPLICATION_JSON);
@@ -1610,31 +1592,31 @@ public class PlayerControllerTest {
 			String errorMsg = mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(404))
 					.andReturn().getResolvedException().getMessage();
 			Assert.assertEquals(errorMsg, expectedErrorMsg1);
-			
+
 			final String gameId = "PST_GAME";
-	        
+
 			Game g = new Game(gameId);
-	        g.setConcepts(new HashSet<>());
-	        g.getConcepts().add(new PointConcept("green"));
-	        gameSrv.saveGameDefinition(g);
-	        
-	        Level level = new Level("Eco Warrior", "green");
-	        level.getThresholds().add(new Threshold("newbie", 0));
-	        level.getThresholds().add(new Threshold("adept", 100));
-	        level.getThresholds().add(new Threshold("master", 1000));
-	        gameSrv.upsertLevel(gameId, level);
-	        	        
-	        PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
-	        p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
-	        playerSrv.saveState(p);
-	        
+			g.setConcepts(new HashSet<>());
+			g.getConcepts().add(new PointConcept("green"));
+			gameSrv.saveGameDefinition(g);
+
+			Level level = new Level("Eco Warrior", "green");
+			level.getThresholds().add(new Threshold("newbie", 0));
+			level.getThresholds().add(new Threshold("adept", 100));
+			level.getThresholds().add(new Threshold("master", 1000));
+			gameSrv.upsertLevel(gameId, level);
+
+			PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+			p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+			playerSrv.saveState(p);
+
 			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
 					.param("conceptName", "test").contentType(MediaType.APPLICATION_JSON);
 
-	        String errorMsg2 = mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(404))
-						.andReturn().getResolvedException().getMessage();
-			Assert.assertEquals(errorMsg2, expectedErrorMsg2);	 
-	         
+			String errorMsg2 = mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(404))
+					.andReturn().getResolvedException().getMessage();
+			Assert.assertEquals(errorMsg2, expectedErrorMsg2);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

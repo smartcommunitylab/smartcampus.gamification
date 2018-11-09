@@ -907,17 +907,19 @@ public class DBPlayerManager implements PlayerService {
 				}
 				
 			} else {
-				LogHub.error(gameId, logger, "readSystemPlayerState: no levels found for player %s for this game %s",
-						playerId, gameId);
-				throw new ResourceNotFoundException(
-						"readSystemPlayerState: no levels found for player " + playerId + " for game " + gameId);
+				LogHub.error(gameId, logger,
+						"readSystemPlayerState: no reference level found for player %s for this game %s for conceptName ",
+						playerId, gameId, conceptName);
+				throw new ResourceNotFoundException("readSystemPlayerState: no reference level found for player " + playerId
+						+ " for game " + gameId + " for conceptName " + conceptName);
 			}
 
 		} else {
-			LogHub.error(gameId, logger, "readSystemPlayerState: no player state found for player %s for this game %s",
+			LogHub.error(gameId, logger,
+					"readSystemPlayerState: no player state | empty level found for player %s for this game %s",
 					playerId, gameId);
-			throw new ResourceNotFoundException(
-					"readSystemPlayerState: no player state found for player " + playerId + " for game " + gameId);
+			throw new ResourceNotFoundException("readSystemPlayerState: no player state | empty level found for player "
+					+ playerId + " for game " + gameId);
 		}
 
 		return sps;

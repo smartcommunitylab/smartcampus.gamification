@@ -1600,14 +1600,41 @@ public class PlayerControllerTest {
     
 	@Test
 	public void read_system_playersState_invalid_input() {
-		String expectedErrorMsg = "readSystemPlayerState: no player state found for player no-existing-player for game non-existing-game";
+		String expectedErrorMsg1 = "readSystemPlayerState: no player state | empty level found for player no-existing-player for game non-existing-game";
+		String expectedErrorMsg2 = "readSystemPlayerState: no reference level found for player proposer for game PST_GAME for conceptName test";
+		
 		RequestBuilder builder = MockMvcRequestBuilders
 				.get("/data/game/{gameId}/player/{playerId}/systemList", "non-existing-game", "no-existing-player")
 				.contentType(MediaType.APPLICATION_JSON);
 		try {
 			String errorMsg = mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(404))
 					.andReturn().getResolvedException().getMessage();
-			Assert.assertEquals(errorMsg, expectedErrorMsg);
+			Assert.assertEquals(errorMsg, expectedErrorMsg1);
+			
+			final String gameId = "PST_GAME";
+	        
+			Game g = new Game(gameId);
+	        g.setConcepts(new HashSet<>());
+	        g.getConcepts().add(new PointConcept("green"));
+	        gameSrv.saveGameDefinition(g);
+	        
+	        Level level = new Level("Eco Warrior", "green");
+	        level.getThresholds().add(new Threshold("newbie", 0));
+	        level.getThresholds().add(new Threshold("adept", 100));
+	        level.getThresholds().add(new Threshold("master", 1000));
+	        gameSrv.upsertLevel(gameId, level);
+	        	        
+	        PlayerState p = playerSrv.loadState(gameId, "proposer", true, false);
+	        p.updateLevels(Arrays.asList(new PlayerLevel(level, 300d)));
+	        playerSrv.saveState(p);
+	        
+			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+					.param("conceptName", "test").contentType(MediaType.APPLICATION_JSON);
+
+	        String errorMsg2 = mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(404))
+						.andReturn().getResolvedException().getMessage();
+			Assert.assertEquals(errorMsg2, expectedErrorMsg2);	 
+	         
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

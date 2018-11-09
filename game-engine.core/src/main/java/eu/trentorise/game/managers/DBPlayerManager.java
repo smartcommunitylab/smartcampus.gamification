@@ -775,7 +775,7 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
     public PlayerBlackList blockPlayer(String gameId, String playerId, String otherPlayerId) {
-		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
+		Criteria criteria = new Criteria("gameId").is(gameId).and("playerId").is(playerId);
 
 		Query q = new Query();
 		q.addCriteria(criteria);
@@ -800,7 +800,7 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
     public PlayerBlackList unblockPlayer(String gameId, String playerId, String otherPlayerId) {
-		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
+		Criteria criteria = new Criteria("gameId").is(gameId).and("playerId").is(playerId);
 
 		Query q = new Query();
 		q.addCriteria(criteria);
@@ -818,7 +818,7 @@ public class DBPlayerManager implements PlayerService {
 
 	@Override
 	public PlayerBlackList readBlackList(String gameId, String playerId) {
-		Criteria criteria = new Criteria().where("gameId").is(gameId).and("playerId").is(playerId);
+		Criteria criteria = new Criteria("gameId").is(gameId).and("playerId").is(playerId);
 
 		Query q = new Query();
 		q.addCriteria(criteria);
@@ -856,7 +856,7 @@ public class DBPlayerManager implements PlayerService {
 				int levelMax = referenceLevel.getLevelIndex() + PROPOSER_RANGE;
 				int levelMin = referenceLevel.getLevelIndex() - PROPOSER_RANGE;
 
-				Criteria criteria = new Criteria().where("playerId").ne(playerId).and("gameId").is(gameId);
+				Criteria criteria = new Criteria("playerId").ne(playerId).and("gameId").is(gameId);
 
 				if (conceptName != null && !conceptName.isEmpty()) {
 					criteria = criteria.and("levels").elemMatch(Criteria.where("levelIndex").gte(levelMin).lte(levelMax)
@@ -869,7 +869,7 @@ public class DBPlayerManager implements PlayerService {
 				// 3.player is not in proposer blacklist
 				PlayerBlackList pbList = readBlackList(gameId, playerId);
 				if (pbList != null && !pbList.getBlockedPlayers().isEmpty()) {
-					Criteria blistCriteria = new Criteria().where("playerId").nin(pbList.getBlockedPlayers());
+					Criteria blistCriteria = new Criteria("playerId").nin(pbList.getBlockedPlayers());
 					criteria = criteria.andOperator(blistCriteria);
 				}
 
@@ -883,7 +883,7 @@ public class DBPlayerManager implements PlayerService {
 					if (groupChallengeRepo.guestInvitations(gameId, ps.getPlayerId()).size() < 3) {
 
 						// 5.1 check for group challenge assignment.
-						Criteria groupChallengeCheck = new Criteria().where("gameId").is(gameId).and("state").is(ChallengeState.ASSIGNED.toString())
+						Criteria groupChallengeCheck = new Criteria("gameId").is(gameId).and("state").is(ChallengeState.ASSIGNED.toString())
 								.and("start").gt(now).and("attendees.playerId").is(ps.getPlayerId());
 						Query q4 = new Query();
 						q4.addCriteria(groupChallengeCheck);

@@ -832,7 +832,7 @@ public class DBPlayerManager implements PlayerService {
 
 		List<String> sps = new ArrayList<String>();
 
-		// 1. Read the level of proposed player.
+		// 1. Read the level of proposer player.
 		StatePersistence callerState = playerRepo.findByGameIdAndPlayerId(gameId, playerId);
 
 		if (callerState != null && !callerState.getLevels().isEmpty()) {
@@ -852,7 +852,7 @@ public class DBPlayerManager implements PlayerService {
 
 			if (referenceLevel != null) {
 
-				// 2.level is in the range proposer +-2
+				// 2.level is in the proposer's range +-2
 				int levelMax = referenceLevel.getLevelIndex() + PROPOSER_RANGE;
 				int levelMin = referenceLevel.getLevelIndex() - PROPOSER_RANGE;
 
@@ -866,7 +866,7 @@ public class DBPlayerManager implements PlayerService {
 							.lte(levelMax);
 				}
 
-				// 3.player is not in proposer blacklist
+				// 3.player is not in proposer's blacklist
 				PlayerBlackList pbList = readBlackList(gameId, playerId);
 				if (pbList != null && !pbList.getBlockedPlayers().isEmpty()) {
 					Criteria blistCriteria = new Criteria("playerId").nin(pbList.getBlockedPlayers());

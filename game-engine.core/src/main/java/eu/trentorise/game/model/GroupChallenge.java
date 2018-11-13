@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
@@ -164,6 +166,21 @@ public class GroupChallenge {
         return attendees.stream().filter(a -> a.getRole() == Role.GUEST)
                 .collect(Collectors.toList());
 
+    }
+
+    public void validate() {
+        if (StringUtils.isBlank(challengeModel)) {
+            throw new IllegalArgumentException(String.format("challengeModel cannot be blank"));
+        } else if (!GroupChallenge.MODELS.contains(challengeModel)) {
+            throw new IllegalArgumentException(String
+                    .format("challengeModel %s not supported for invitation", challengeModel));
+        }
+        if (StringUtils.isBlank(gameId)) {
+            throw new IllegalArgumentException(String.format("gameId cannot be blank"));
+        }
+        if (attendees.isEmpty()) {
+            throw new IllegalArgumentException(String.format("attendees couldn't be empty"));
+        }
     }
 
     private ChallengeConcept setFields(ChallengeConcept challenge, Attendee player) {

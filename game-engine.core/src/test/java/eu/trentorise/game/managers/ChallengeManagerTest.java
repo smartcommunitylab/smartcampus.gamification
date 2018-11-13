@@ -210,12 +210,22 @@ public class ChallengeManagerTest {
 
         GroupChallenge assign = new GroupChallenge();
         assign.setGameId("game");
+        assign.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         assign.setEnd(date("2018-09-27T00:00:00"));
+        Attendee attendee = new Attendee();
+        attendee.setPlayerId("player");
+        attendee.setRole(Role.GUEST);
+        assign.getAttendees().add(attendee);
         challengeManager.save(assign);
 
         GroupChallenge assign1 = new GroupChallenge();
+        assign1.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);;
         assign1.setGameId("game");
         assign1.setEnd(date("2018-09-29T09:00:00"));
+        attendee = new Attendee();
+        attendee.setPlayerId("player");
+        attendee.setRole(Role.GUEST);
+        assign1.getAttendees().add(attendee);
         challengeManager.save(assign1);
 
         List<GroupChallenge> completedGroupChallenges =
@@ -231,26 +241,51 @@ public class ChallengeManagerTest {
         challenge1.setGameId("game");
         challenge1.setEnd(date("2018-09-27T00:00:00"));
         challenge1.setState(ChallengeState.PROPOSED);
+        challenge1.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+        Attendee attendee = new Attendee();
+        attendee.setPlayerId("player");
+        attendee.setRole(Role.GUEST);
+        challenge1.getAttendees().add(attendee);
         challengeManager.save(challenge1);
 
         GroupChallenge challenge2 = new GroupChallenge();
         challenge2.setGameId("game");
         challenge2.setEnd(date("2018-09-30T09:00:00"));
+        challenge2.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);;
+        attendee = new Attendee();
+        attendee.setPlayerId("player");
+        attendee.setRole(Role.GUEST);
+        challenge2.getAttendees().add(attendee);
         challengeManager.save(challenge2);
 
         GroupChallenge challenge3 = new GroupChallenge();
         challenge3.setGameId("other-game");
         challenge3.setEnd(date("2018-09-17T09:00:00"));
+        challenge3.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);;
+        attendee = new Attendee();
+        attendee.setPlayerId("player");
+        attendee.setRole(Role.GUEST);
+        challenge3.getAttendees().add(attendee);
         challengeManager.save(challenge3);
 
         GroupChallenge challenge4 = new GroupChallenge();
         challenge4.setGameId("game");
         challenge4.setEnd(date("2018-09-17T09:00:00"));
+        challenge4.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);;
+        attendee = new Attendee();
+        attendee.setPlayerId("player");
+        attendee.setRole(Role.GUEST);
+        challenge4.getAttendees().add(attendee);
         challengeManager.save(challenge4);
 
         GroupChallenge challenge5 = new GroupChallenge();
         challenge5.setGameId("game");
         challenge5.setEnd(date("2018-09-29T08:00:00"));
+        challenge5.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);;
+        attendee = new Attendee();
+        attendee.setPlayerId("player");
+        attendee.setRole(Role.GUEST);
+        challenge5.getAttendees().add(attendee);
         challengeManager.save(challenge5);
 
         List<GroupChallenge> completedGroupChallenges =

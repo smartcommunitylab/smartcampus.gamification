@@ -799,6 +799,7 @@ public class PlayerControllerTest {
         challenge.getAttendees().add(guest);
 
         challenge.setChallengePointConcept(new PointConceptRef("Walk_Km", "weekly"));
+        challenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         challengeSrv.save(challenge);
 
         RequestBuilder builder = null;

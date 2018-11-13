@@ -552,6 +552,7 @@ public class ChallengeTest {
 
         GroupChallenge groupChallenge = new GroupChallenge(ChallengeState.PROPOSED);
         groupChallenge.setInstanceName("bestPerformance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         groupChallenge.setGameId(GAME);
         groupChallenge.setPriority(1000);
         Attendee player = new Attendee();
@@ -684,6 +685,7 @@ public class ChallengeTest {
         GroupChallenge groupChallenge = new GroupChallenge();
         groupChallenge.setGameId("game");
         groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         Attendee player = new Attendee();
         player.setPlayerId("player");
         player.setRole(Role.GUEST);

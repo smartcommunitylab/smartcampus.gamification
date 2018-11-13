@@ -15,10 +15,12 @@
 package eu.trentorise.game.managers;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,13 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.notification.ChallengeCompletedNotication;
+import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -53,15 +60,23 @@ public class GameWorkflow implements Workflow {
     private TraceService traceSrv;
 
     @Autowired
+    private ChallengeManager challengeSrv;
+
+    @Autowired
     private Environment env;
+
+    @Autowired
+    private NotificationManager notificationSrv;
+
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     protected void workflowExec(String gameId, String actionId, String userId, String executionId,
             long executionMoment, Map<String, Object> data, List<Object> factObjects) {
+        final Date executionDate = new Date(executionMoment);
         LogHub.info(gameId, logger,
                 "gameId:{}, actionId: {}, playerId: {}, executionMoment: {}, data: {}, factObjs: {}",
-                gameId, actionId, userId, dateFormat.format(new Date(executionMoment)), data,
+                gameId, actionId, userId, dateFormat.format(executionDate), data,
                 factObjects);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g == null || g.getActions() == null
@@ -88,6 +103,35 @@ public class GameWorkflow implements Workflow {
 
         boolean result = playerSrv.saveState(newState) != null;
 
+        // update score of all player active groupChallenges
+
+        List<GroupChallenge> playerActiveGroupChallenges =
+                challengeSrv.activeGroupChallengesByDate(gameId, userId, executionDate);
+        playerActiveGroupChallenges.forEach(groupChallenge -> {
+            List<PlayerState> guestStates = groupChallenge.guests().stream()
+                    .map(guest -> playerSrv.loadState(gameId, guest.getPlayerId(), false, false))
+                    .collect(Collectors.toList());
+            guestStates.add(newState);
+            groupChallenge.update(guestStates);
+            challengeSrv.save(groupChallenge);
+            if (groupChallenge.getChallengeModel()
+                    .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)) {
+                List<String> winners = challengeSrv.conditionCheck(groupChallenge);
+                if (!winners.isEmpty()) {
+                    sendChallengeNotification(groupChallenge);
+
+                    groupChallenge.updateState(ChallengeState.COMPLETED, executionDate);
+                    challengeSrv.save(groupChallenge);
+
+                    winners.stream().forEach(w -> {
+                        apply(gameId, GameManager.INTERNAL_ACTION_PREFIX + "reward", w,
+                                executionMoment, null, Arrays.asList(groupChallenge.getReward()));
+                    });
+                }
+            }
+        });
+
+
         if (env.getProperty("trace.playerMove", Boolean.class, false)) {
             traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
             LogHub.info(gameId, logger, "Traced player {} move", userId);
@@ -99,6 +143,25 @@ public class GameWorkflow implements Workflow {
 
     private boolean isClassificationAction(String actionId) {
         return actionId != null && "scogei_classification".equals(actionId);
+    }
+
+    private void sendChallengeNotification(GroupChallenge challenge) {
+        List<Attendee> attendees = challenge.getAttendees();
+        attendees.stream().forEach(a -> {
+            if (a.isWinner()) {
+                ChallengeCompletedNotication notification = new ChallengeCompletedNotication();
+                notification.setChallengeName(challenge.getInstanceName());
+                notification.setGameId(challenge.getGameId());
+                notification.setPlayerId(a.getPlayerId());
+                notificationSrv.notificate(notification);
+            } else {
+                ChallengeFailedNotication notification = new ChallengeFailedNotication();
+                notification.setChallengeName(challenge.getInstanceName());
+                notification.setGameId(challenge.getGameId());
+                notification.setPlayerId(a.getPlayerId());
+                notificationSrv.notificate(notification);
+            }
+        });
     }
 
     public void apply(String gameId, String actionId, String userId, Map<String, Object> data,

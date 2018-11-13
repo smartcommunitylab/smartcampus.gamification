@@ -86,6 +86,7 @@ public class ChallengeManagerTest {
     @Test
     public void no_winners() {
         GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         assertThat(challengeManager.conditionCheck(groupChallenge), is(empty()));
     }
 
@@ -131,6 +132,7 @@ public class ChallengeManagerTest {
 
         GroupChallenge groupChallenge = new GroupChallenge();
         groupChallenge.setGameId("game");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         Attendee antMan = new Attendee();
         antMan.setRole(Role.GUEST);
         antMan.setPlayerId("Ant-man");
@@ -179,6 +181,7 @@ public class ChallengeManagerTest {
 
         GroupChallenge groupChallenge = new GroupChallenge();
         groupChallenge.setGameId("game");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         Attendee antMan = new Attendee();
         antMan.setRole(Role.GUEST);
         antMan.setPlayerId("Ant-man");

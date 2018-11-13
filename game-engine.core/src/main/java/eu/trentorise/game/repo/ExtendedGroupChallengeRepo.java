@@ -1,5 +1,6 @@
 package eu.trentorise.game.repo;
 
+import java.util.Date;
 import java.util.List;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
@@ -11,6 +12,8 @@ public interface ExtendedGroupChallengeRepo {
 
     List<GroupChallenge> playerGroupChallenges(String gameId, String playerId,
             ChallengeState challengeState);
+
+    List<GroupChallenge> activeGroupChallenges(String gameId, String playerId, Date atDate);
 
     void deletePlayerGroupChallenges(String gameId, String playerId,
             ChallengeState challengeState);

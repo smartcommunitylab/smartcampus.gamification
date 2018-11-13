@@ -22,7 +22,11 @@ public class GroupChallenge {
     public static final String MODEL_NAME_COMPETITIVE_PERFORMANCE = "groupCompetitivePerformance";
 
     @JsonIgnore
-    public static final List<String> MODELS = Arrays.asList(MODEL_NAME_COMPETITIVE_PERFORMANCE);
+    public static final String MODEL_NAME_COMPETITIVE_TIME = "groupCompetitiveTime";
+
+    @JsonIgnore
+    public static final List<String> MODELS =
+            Arrays.asList(MODEL_NAME_COMPETITIVE_PERFORMANCE, MODEL_NAME_COMPETITIVE_TIME);
 
     private String id;
 
@@ -32,6 +36,7 @@ public class GroupChallenge {
 
     private String challengeModel;
     private PointConceptRef challengePointConcept;
+    private double challengeTarget = -1;
     private Reward reward;
 
     private ChallengeState state;
@@ -71,22 +76,34 @@ public class GroupChallenge {
 
     public List<Attendee> winners() {
         List<String> winnerIds = new ArrayList<>();
-        double max = 0;
-       for(Attendee attendee : attendees){
-            if (max < attendee.getChallengeScore()) {
-                max = attendee.getChallengeScore();
-                winnerIds.clear();
-                winnerIds.add(attendee.getPlayerId());
-            } else if (max == attendee.getChallengeScore()) {
-                winnerIds.add(attendee.getPlayerId());
-            }
+        switch (challengeModel) {
+            case MODEL_NAME_COMPETITIVE_PERFORMANCE:
+                double max = 0;
+                for (Attendee attendee : attendees) {
+                    if (max < attendee.getChallengeScore()) {
+                        max = attendee.getChallengeScore();
+                        winnerIds.clear();
+                        winnerIds.add(attendee.getPlayerId());
+                    } else if (max == attendee.getChallengeScore()) {
+                        winnerIds.add(attendee.getPlayerId());
+                    }
+                }
+                break;
+            case MODEL_NAME_COMPETITIVE_TIME:
+                for (Attendee attendee : attendees) {
+                    if (attendee.getChallengeScore() >= challengeTarget) {
+                        winnerIds.add(attendee.getPlayerId());
+                    }
+                }
+                break;
+            default:
+                break;
         }
-       
+
         winnerIds.forEach(id -> {
             attendees.stream().filter(a -> a.getPlayerId().equals(id)).findFirst()
                     .ifPresent(a -> a.setWinner(true));
         });
-
         return attendees.stream().filter(a -> a.isWinner()).collect(Collectors.toList());
     }
 
@@ -141,6 +158,12 @@ public class GroupChallenge {
     public Attendee proposer() {
         return attendees.stream().filter(a -> a.getRole() == Role.PROPOSER).findFirst()
                 .orElse(null);
+    }
+
+    public List<Attendee> guests() {
+        return attendees.stream().filter(a -> a.getRole() == Role.GUEST)
+                .collect(Collectors.toList());
+
     }
 
     private ChallengeConcept setFields(ChallengeConcept challenge, Attendee player) {
@@ -390,5 +413,13 @@ public class GroupChallenge {
 
     public void setChallengeModel(String challengeModel) {
         this.challengeModel = challengeModel;
+    }
+
+    public double getChallengeTarget() {
+        return challengeTarget;
+    }
+
+    public void setChallengeTarget(double challengeTarget) {
+        this.challengeTarget = challengeTarget;
     }
 }

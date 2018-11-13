@@ -569,6 +569,7 @@ public class GameManagerTest {
         BDDMockito.given(clock.now()).willReturn(date("2018-09-29T09:00:00"));
 
         GroupChallenge challenge1 = new GroupChallenge();
+        challenge1.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         challenge1.setGameId("game");
         challenge1.setInstanceName("competitive_performance_123456");
         challenge1.setEnd(date("2018-09-27T00:00:00"));

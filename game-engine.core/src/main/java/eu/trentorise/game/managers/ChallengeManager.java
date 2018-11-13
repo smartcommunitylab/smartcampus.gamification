@@ -1,6 +1,7 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -77,6 +78,11 @@ public class ChallengeManager {
     public List<GroupChallenge> completedPerformanceGroupChallenges(String gameId) {
         return groupChallengeRepo.findByGameIdAndStateAndEndBefore(gameId, ChallengeState.ASSIGNED,
                 clock.now());
+    }
+
+    public List<GroupChallenge> activeGroupChallengesByDate(String gameId, String playerId,
+            Date atDate) {
+        return groupChallengeRepo.activeGroupChallenges(gameId, playerId, atDate);
     }
 
     public GroupChallenge inviteToChallenge(ChallengeInvitation invitation) {

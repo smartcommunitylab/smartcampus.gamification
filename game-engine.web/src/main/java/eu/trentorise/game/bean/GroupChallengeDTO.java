@@ -9,6 +9,7 @@ public class GroupChallengeDTO {
     private List<AttendeeDTO> attendees;
 
     private PointConceptDTO challengePointConcept;
+    private double challengeTarget = -1;
     private RewardDTO reward;
     private String challengeModelName;
 
@@ -193,6 +194,14 @@ public class GroupChallengeDTO {
 
     public void setChallengeModelName(String challengeModelName) {
         this.challengeModelName = challengeModelName;
+    }
+
+    public double getChallengeTarget() {
+        return challengeTarget;
+    }
+
+    public void setChallengeTarget(double challengeTarget) {
+        this.challengeTarget = challengeTarget;
     }
 
 }

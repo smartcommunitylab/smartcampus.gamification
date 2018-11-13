@@ -71,6 +71,12 @@ public class ChallengeManager {
     }
 
     public GroupChallenge save(GroupChallenge challenge) {
+        if (StringUtils.isBlank(challenge.getInstanceName())) {
+            Attendee proposer = challenge.proposer();
+            challenge.setInstanceName(
+                    String.format("p_%s_%s", proposer != null ? proposer.getPlayerId() : null,
+                    UUID.randomUUID().toString()));
+        }
         return groupChallengeRepo.save(challenge);
     }
 
@@ -150,8 +156,8 @@ public class ChallengeManager {
             challenge.setReward(invitation.getReward());
             challenge.setInstanceName(invitation.getChallengeName());
             if (StringUtils.isBlank(challenge.getInstanceName())) {
-            challenge.setInstanceName(String.format("p_%s_%s",
-                    invitation.getProposer().getPlayerId(), UUID.randomUUID().toString()));
+                challenge.setInstanceName(String.format("p_%s_%s",
+                        invitation.getProposer().getPlayerId(), UUID.randomUUID().toString()));
             }
         }
 

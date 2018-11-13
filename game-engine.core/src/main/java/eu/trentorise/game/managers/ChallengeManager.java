@@ -87,8 +87,9 @@ public class ChallengeManager {
 
 
     public List<GroupChallenge> completedPerformanceGroupChallenges(String gameId) {
-        return groupChallengeRepo.findByGameIdAndStateAndEndBefore(gameId, ChallengeState.ASSIGNED,
-                clock.now());
+        return groupChallengeRepo.findByGameIdAndStateAndEndBeforeAndChallengeModel(gameId,
+                ChallengeState.ASSIGNED, clock.now(),
+                GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
     }
 
     public List<GroupChallenge> activeGroupChallengesByDate(String gameId, String playerId,

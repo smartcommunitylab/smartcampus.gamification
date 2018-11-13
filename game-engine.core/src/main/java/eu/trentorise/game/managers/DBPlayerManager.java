@@ -883,7 +883,7 @@ public class DBPlayerManager implements PlayerService {
 					if (groupChallengeRepo.guestInvitations(gameId, ps.getPlayerId()).size() < 3) {
 
 						// 5.1 check for group challenge assignment.
-						Criteria groupChallengeCheck = new Criteria("gameId").is(gameId).and("state").is(ChallengeState.ASSIGNED.toString())
+						Criteria groupChallengeCheck = new Criteria("gameId").is(gameId).and("state").is(ChallengeState.ASSIGNED)
 								.and("start").gt(now).and("attendees.playerId").is(ps.getPlayerId());
 						Query q4 = new Query();
 						q4.addCriteria(groupChallengeCheck);

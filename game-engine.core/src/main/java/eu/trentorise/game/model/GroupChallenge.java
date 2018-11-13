@@ -143,7 +143,7 @@ public class GroupChallenge {
         Optional<Attendee> player =
                 attendees.stream().filter(a -> a.getPlayerId().equals(playerId)).findFirst();
         player.ifPresent(p -> {
-            ch.setModelName(MODEL_NAME_COMPETITIVE_PERFORMANCE);
+            ch.setModelName(challengeModel);
             ch.setName(instanceName);
             ch.setStart(start);
             ch.setEnd(end);
@@ -187,7 +187,7 @@ public class GroupChallenge {
             challenge.getFields().put("challengePointConceptPeriod",
                     challengePointConcept.getPeriod());
         }
-
+        challenge.getFields().put("challengeTarget", challengeTarget);
         challenge.getFields().put("otherAttendeeScores", otherAttendeeScores);
         Attendee proposer = proposer();
         if(proposer != null) {

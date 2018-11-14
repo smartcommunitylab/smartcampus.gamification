@@ -483,6 +483,7 @@ public class Converter {
             reward = new Reward();
             reward.setPercentage(dto.getPercentage());
             reward.setThreshold(dto.getThreshold());
+            reward.getBonusScore().putAll(dto.getBonusScore());
             reward.setCalculationPointConcept(convert(dto.getCalculationPointConcept()));
             reward.setTargetPointConcept(convert(dto.getTargetPointConcept()));
         }

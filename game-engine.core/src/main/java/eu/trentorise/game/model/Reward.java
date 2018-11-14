@@ -1,10 +1,14 @@
 package eu.trentorise.game.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 
 public class Reward {
     private double percentage;
     private double threshold;
+    private Map<String, Double> bonusScore = new HashMap<>();
     private PointConceptRef calculationPointConcept;
     private PointConceptRef targetPointConcept;
 
@@ -43,7 +47,12 @@ public class Reward {
     @Override
     public String toString() {
         return String.format(
-                "{percentage=%s, threshold=%s, calculationPointConcept=%s, targetPointConcept=%s}",
+                "{bonusScore=%s, percentage=%s, threshold=%s, calculationPointConcept=%s, targetPointConcept=%s}",
+                bonusScore,
                 percentage, threshold, calculationPointConcept, targetPointConcept);
+    }
+
+    public Map<String, Double> getBonusScore() {
+        return bonusScore;
     }
 }

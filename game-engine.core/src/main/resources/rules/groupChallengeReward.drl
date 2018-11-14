@@ -8,6 +8,7 @@ when
     $reward : Reward($calculationPointConceptRef :  calculationPointConcept) 
     $pcCalculation: PointConcept(name == $calculationPointConceptRef.name)
     $pcTarget : PointConcept(name == $reward.targetPointConcept.name)
+    Player($player: id)
 
 then
 	utils.log(String.format("Reward calculated on %s - %s", $calculationPointConceptRef.getName(), $calculationPointConceptRef.getPeriod()));
@@ -22,6 +23,16 @@ then
 	if($reward.getThreshold() > 0 && rewardScore > $reward.getThreshold()) {
 		rewardScore = $reward.getThreshold(); 
 	}
+	
+	// not a percentage bonus, try to use the fixed one
+	if(rewardScore <= 0) {
+		Map<String,Double> playerBonus = $reward.getBonusScore();
+		Double bonus = playerBonus.get($player);
+		if(bonus != null) {
+			rewardScore = bonus;
+		}
+	}
+	
 	$pcTarget.setScore($pcTarget.getScore() + rewardScore);
 			
 	update($pcTarget);

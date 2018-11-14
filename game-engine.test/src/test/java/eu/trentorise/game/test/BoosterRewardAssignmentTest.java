@@ -32,8 +32,9 @@ public class BoosterRewardAssignmentTest extends GameTest {
     @Override
     public void initEnv() {
         List<GameConcept> concepts = new ArrayList<GameConcept>();
-        PointConcept p = new PointConcept("green leaves");
-        PointConcept p2 = new PointConcept("points");
+        PointConcept greenLeaves = new PointConcept("green leaves");
+        PointConcept points = new PointConcept("points");
+        PointConcept bikeTrips = new PointConcept("bikeTrips");
 
         long dayDurationInMillis = 24 * 60 * 60 * 1000;
 
@@ -45,13 +46,17 @@ public class BoosterRewardAssignmentTest extends GameTest {
         Date dayBeforeYesterdayDate = new Date(); // the day before yesterday
         dayBeforeYesterdayDate.setTime(yesterdayDate.getTime() - dayDurationInMillis);
 
-        p.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
-        p.increment(450d);
-        concepts.add(p);
+        greenLeaves.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
+        greenLeaves.increment(450d);
+        concepts.add(greenLeaves);
 
-        p2.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
-        p2.increment(1000d);
-        concepts.add(p2);
+        points.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
+        points.increment(1000d);
+        concepts.add(points);
+
+        bikeTrips.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
+        bikeTrips.increment(10d);
+        concepts.add(bikeTrips);
 
         savePlayerState(GAME, PLAYER_1, concepts);
 
@@ -100,15 +105,23 @@ public class BoosterRewardAssignmentTest extends GameTest {
         r3.setTargetPointConcept(new PointConceptRef("points", "daily"));
         list.add(r3);
 
+        Reward r4 = new Reward(); // fixed reward
+
+        r4.getBonusScore().put("Alice", 15d);
+        r4.setCalculationPointConcept(new PointConceptRef("bikeTrips", "weekly"));
+        r4.setTargetPointConcept(new PointConceptRef("bikeTrips", "daily"));
+        list.add(r4);
+
         execList.add(new ExecData(GAME, ACTION, PLAYER_1, new HashMap<>(), list));
 
     }
 
     @Override
     public void analyzeResult() {
-	    	double newscore = 450 + (450 * 0.5); //increase current gl of the percentage
-	    	assertionPoint(GAME, newscore, PLAYER_1, "green leaves"); //+50%
-        assertionPoint(GAME, (1000.0 + 250 + 500), PLAYER_1, "points"); // +Threshold
+        double newscore = 450 + (450 * 0.5); // increase current gl of the percentage
+        assertionPoint(GAME, newscore, PLAYER_1, "green leaves"); // +50%
+        assertionPoint(GAME, (1000.0 + 250 + 625), PLAYER_1, "points"); // +Threshold
+        assertionPoint(GAME, (10D + 15D), PLAYER_1, "bikeTrips"); // fixed score
     }
 
 }

@@ -32,10 +32,7 @@ import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
-import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.notification.ChallengeCompletedNotication;
-import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -107,6 +104,13 @@ public class GameWorkflow implements Workflow {
 
         List<GroupChallenge> playerActiveGroupChallenges =
                 challengeSrv.activeGroupChallengesByDate(gameId, userId, executionDate);
+        if (playerActiveGroupChallenges.size() > 0) {
+            LogHub.info(gameId, logger, String.format("Player %s has %s active group challenges",
+                    userId, playerActiveGroupChallenges.size()));
+        } else {
+            LogHub.info(gameId, logger, String.format("Player %s has no active group challenges",
+                    userId, playerActiveGroupChallenges.size()));
+        }
         playerActiveGroupChallenges.forEach(groupChallenge -> {
             List<PlayerState> guestStates = groupChallenge.guests().stream()
                     .map(guest -> playerSrv.loadState(gameId, guest.getPlayerId(), false, false))
@@ -118,11 +122,15 @@ public class GameWorkflow implements Workflow {
                     .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)) {
                 List<String> winners = challengeSrv.conditionCheck(groupChallenge);
                 if (!winners.isEmpty()) {
-                    sendChallengeNotification(groupChallenge);
-
                     groupChallenge.updateState(ChallengeState.COMPLETED, executionDate);
                     challengeSrv.save(groupChallenge);
-
+                    challengeSrv.sendChallengeNotification(groupChallenge);
+                    challengeSrv.logStatsEvents(g, groupChallenge);
+                    LogHub.info(gameId, logger,
+                            String.format(
+                                    "Player %s wins group challenge %s of type %s, he will be rewarded",
+                                    userId, groupChallenge.getInstanceName(),
+                                    groupChallenge.getChallengeModel()));
                     winners.stream().forEach(w -> {
                         apply(gameId, GameManager.INTERNAL_ACTION_PREFIX + "reward", w,
                                 executionMoment, null, Arrays.asList(groupChallenge.getReward()));
@@ -143,25 +151,6 @@ public class GameWorkflow implements Workflow {
 
     private boolean isClassificationAction(String actionId) {
         return actionId != null && "scogei_classification".equals(actionId);
-    }
-
-    private void sendChallengeNotification(GroupChallenge challenge) {
-        List<Attendee> attendees = challenge.getAttendees();
-        attendees.stream().forEach(a -> {
-            if (a.isWinner()) {
-                ChallengeCompletedNotication notification = new ChallengeCompletedNotication();
-                notification.setChallengeName(challenge.getInstanceName());
-                notification.setGameId(challenge.getGameId());
-                notification.setPlayerId(a.getPlayerId());
-                notificationSrv.notificate(notification);
-            } else {
-                ChallengeFailedNotication notification = new ChallengeFailedNotication();
-                notification.setChallengeName(challenge.getInstanceName());
-                notification.setGameId(challenge.getGameId());
-                notification.setPlayerId(a.getPlayerId());
-                notificationSrv.notificate(notification);
-            }
-        });
     }
 
     public void apply(String gameId, String actionId, String userId, Map<String, Object> data,

@@ -21,6 +21,8 @@ import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.notification.ChallengeCompletedNotication;
+import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.notification.ChallengeInvitationAcceptedNotification;
 import eu.trentorise.game.notification.ChallengeInvitationNotification;
 import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
@@ -82,6 +84,46 @@ public class ChallengeManager {
             return groupChallengeRepo.save(challenge);
         } else {
             return null;
+        }
+    }
+
+    public void logStatsEvents(Game game, GroupChallenge challenge) {
+        if (challenge != null && game != null) {
+            List<Attendee> attendees = challenge.getAttendees();
+            long timestamp = System.currentTimeMillis();
+            String executionId = UUID.randomUUID().toString();
+            attendees.forEach(a -> {
+                if (a.isWinner()) {
+                    StatsLogger.logChallengeCompleted(game.getDomain(), game.getId(),
+                            a.getPlayerId(), executionId, challenge.getEnd().getTime(), timestamp,
+                            challenge.getInstanceName());
+                } else {
+                    StatsLogger.logChallengeFailed(game.getDomain(), game.getId(), a.getPlayerId(),
+                            executionId, challenge.getEnd().getTime(), timestamp,
+                            challenge.getInstanceName());
+                }
+            });
+        }
+    }
+
+    public void sendChallengeNotification(GroupChallenge challenge) {
+        if (challenge != null) {
+            List<Attendee> attendees = challenge.getAttendees();
+            attendees.stream().forEach(a -> {
+                if (a.isWinner()) {
+                    ChallengeCompletedNotication notification = new ChallengeCompletedNotication();
+                    notification.setChallengeName(challenge.getInstanceName());
+                    notification.setGameId(challenge.getGameId());
+                    notification.setPlayerId(a.getPlayerId());
+                    notificationSrv.notificate(notification);
+                } else {
+                    ChallengeFailedNotication notification = new ChallengeFailedNotication();
+                    notification.setChallengeName(challenge.getInstanceName());
+                    notification.setGameId(challenge.getGameId());
+                    notification.setPlayerId(a.getPlayerId());
+                    notificationSrv.notificate(notification);
+                }
+            });
         }
     }
 

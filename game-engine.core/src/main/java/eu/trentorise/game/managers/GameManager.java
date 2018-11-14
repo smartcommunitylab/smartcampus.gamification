@@ -46,7 +46,6 @@ import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
-import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
@@ -58,8 +57,6 @@ import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
-import eu.trentorise.game.notification.ChallengeCompletedNotication;
-import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
@@ -339,20 +336,18 @@ public class GameManager implements GameService {
                 "Condition checker for best performance group challenges in action");
         long startOperation = System.currentTimeMillis();
         List<Game> activeGames = loadGames(true);
-        List<String> activeGameIds =
-                activeGames.stream().map(Game::getId).collect(Collectors.toList());
-
-        activeGameIds.forEach(gameId -> {
+        activeGames.forEach(game -> {
+            String gameId = game.getId();
             List<GroupChallenge> completedChallenges =
                     challengeSrv.completedPerformanceGroupChallenges(gameId);
 
             completedChallenges.forEach(challenge -> {
                 List<String> winners = challengeSrv.conditionCheck(challenge);
-                sendChallengeNotification(challenge);
 
                 challenge.updateState(ChallengeState.COMPLETED, challenge.getEnd());
                 challengeSrv.save(challenge);
-
+                challengeSrv.sendChallengeNotification(challenge);
+                challengeSrv.logStatsEvents(game, challenge);
                 // action rewards
                 // fix: executionTime should be challenge end time minus some time to be sure that
                 // reward will be assigned to the correct period
@@ -366,25 +361,6 @@ public class GameManager implements GameService {
         });
         LogHub.info(null, logger, String.format("End best performance challenge action in %s ms",
                 (System.currentTimeMillis() - startOperation)));
-    }
-
-    private void sendChallengeNotification(GroupChallenge challenge) {
-        List<Attendee> attendees = challenge.getAttendees();
-        attendees.stream().forEach(a -> {
-            if (a.isWinner()) {
-                ChallengeCompletedNotication notification = new ChallengeCompletedNotication();
-                notification.setChallengeName(challenge.getInstanceName());
-                notification.setGameId(challenge.getGameId());
-                notification.setPlayerId(a.getPlayerId());
-                notificationSrv.notificate(notification);
-            } else {
-                ChallengeFailedNotication notification = new ChallengeFailedNotication();
-                notification.setChallengeName(challenge.getInstanceName());
-                notification.setGameId(challenge.getGameId());
-                notification.setPlayerId(a.getPlayerId());
-                notificationSrv.notificate(notification);
-            }
-        });
     }
 
     @Scheduled(cron = "0 0 4 1/1 * ?")

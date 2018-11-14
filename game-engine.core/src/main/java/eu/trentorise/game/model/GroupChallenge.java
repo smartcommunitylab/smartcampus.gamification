@@ -197,6 +197,20 @@ public class GroupChallenge {
         if (reward != null) {
             challenge.getFields().put("rewardPercentage", reward.getPercentage());
             challenge.getFields().put("rewardThreshold", reward.getThreshold());
+            Double attendeeReward = reward.getBonusScore().get(player.getPlayerId());
+            challenge.getFields().put("rewardBonusScore",
+                    attendeeReward != null ? attendeeReward : 0d);
+            List<Map<String, Object>> othersBonusScore = new ArrayList<>();
+            attendees.stream().filter(a -> !a.getPlayerId().equals(player.getPlayerId()))
+                    .forEach(a -> {
+                Map<String, Object> attendeeBonus = new HashMap<>();
+                Double bonusScore = reward.getBonusScore().get(a.getPlayerId());
+                if (bonusScore != null) {
+                    attendeeBonus.put(a.getPlayerId(), bonusScore);
+                    othersBonusScore.add(attendeeBonus);
+                }
+            });
+            challenge.getFields().put("othersBonusScore", othersBonusScore);
         }
 
         if (challengePointConcept != null) {

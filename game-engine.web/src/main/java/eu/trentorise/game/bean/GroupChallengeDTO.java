@@ -1,7 +1,9 @@
 package eu.trentorise.game.bean;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GroupChallengeDTO {
     private String gameId;
@@ -9,6 +11,7 @@ public class GroupChallengeDTO {
     private List<AttendeeDTO> attendees;
 
     private PointConceptDTO challengePointConcept;
+    private double challengeTarget = -1;
     private RewardDTO reward;
     private String challengeModelName;
 
@@ -22,6 +25,7 @@ public class GroupChallengeDTO {
     public static class RewardDTO {
         private double percentage;
         private double threshold;
+        private Map<String, Double> bonusScore = new HashMap<>();
         private PointConceptDTO calculationPointConcept;
         private PointConceptDTO targetPointConcept;
 
@@ -55,6 +59,14 @@ public class GroupChallengeDTO {
 
         public void setThreshold(double threshold) {
             this.threshold = threshold;
+        }
+
+        public Map<String, Double> getBonusScore() {
+            return bonusScore;
+        }
+
+        public void setBonusScore(Map<String, Double> bonusScore) {
+            this.bonusScore = bonusScore;
         }
 
 
@@ -193,6 +205,14 @@ public class GroupChallengeDTO {
 
     public void setChallengeModelName(String challengeModelName) {
         this.challengeModelName = challengeModelName;
+    }
+
+    public double getChallengeTarget() {
+        return challengeTarget;
+    }
+
+    public void setChallengeTarget(double challengeTarget) {
+        this.challengeTarget = challengeTarget;
     }
 
 }

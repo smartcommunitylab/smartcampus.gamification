@@ -13,7 +13,7 @@ import eu.trentorise.game.model.GroupChallenge;
 public interface GroupChallengeRepo
         extends MongoRepository<GroupChallenge, String>, ExtendedGroupChallengeRepo {
 
-    List<GroupChallenge> findByGameIdAndStateAndEndBefore(String gameId, ChallengeState state,
-            Date end);
+    List<GroupChallenge> findByGameIdAndStateAndEndBeforeAndChallengeModel(String gameId,
+            ChallengeState state, Date end, String type);
 
 }

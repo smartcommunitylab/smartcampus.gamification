@@ -1,5 +1,6 @@
 package eu.trentorise.game.repo;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,14 @@ public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
                 .is(ChallengeState.PROPOSED)
                 .and("instanceName").is(instanceName);
         return mongo.findAndRemove(new Query(crit), GroupChallenge.class);
+    }
+
+    @Override
+    public List<GroupChallenge> activeGroupChallenges(String gameId, String playerId, Date atDate) {
+        Criteria crit = new Criteria("gameId").is(gameId).and("attendees.playerId").is(playerId)
+                .and("start").lte(atDate).and("end").gt(atDate).and("state")
+                .in("ASSIGNED", "ACTIVE");
+        return mongo.find(new Query(crit), GroupChallenge.class);
     }
 
 }

@@ -463,6 +463,8 @@ public class Converter {
             groupChallenge.setEnd(dto.getEnd());
             groupChallenge.setOrigin(dto.getOrigin());
             groupChallenge.setPriority(dto.getPriority());
+            groupChallenge.setChallengeModel(dto.getChallengeModelName());
+            groupChallenge.setChallengeTarget(dto.getChallengeTarget());
             groupChallenge.setChallengePointConcept(convert(dto.getChallengePointConcept()));
             groupChallenge.setReward(convert(dto.getReward()));
             try {
@@ -481,6 +483,7 @@ public class Converter {
             reward = new Reward();
             reward.setPercentage(dto.getPercentage());
             reward.setThreshold(dto.getThreshold());
+            reward.getBonusScore().putAll(dto.getBonusScore());
             reward.setCalculationPointConcept(convert(dto.getCalculationPointConcept()));
             reward.setTargetPointConcept(convert(dto.getTargetPointConcept()));
         }

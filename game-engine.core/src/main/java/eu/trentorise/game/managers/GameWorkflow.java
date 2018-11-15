@@ -15,10 +15,12 @@
 package eu.trentorise.game.managers;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,9 @@ import org.springframework.stereotype.Component;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
@@ -53,15 +57,23 @@ public class GameWorkflow implements Workflow {
     private TraceService traceSrv;
 
     @Autowired
+    private ChallengeManager challengeSrv;
+
+    @Autowired
     private Environment env;
+
+    @Autowired
+    private NotificationManager notificationSrv;
+
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     protected void workflowExec(String gameId, String actionId, String userId, String executionId,
             long executionMoment, Map<String, Object> data, List<Object> factObjects) {
+        final Date executionDate = new Date(executionMoment);
         LogHub.info(gameId, logger,
                 "gameId:{}, actionId: {}, playerId: {}, executionMoment: {}, data: {}, factObjs: {}",
-                gameId, actionId, userId, dateFormat.format(new Date(executionMoment)), data,
+                gameId, actionId, userId, dateFormat.format(executionDate), data,
                 factObjects);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g == null || g.getActions() == null
@@ -87,6 +99,46 @@ public class GameWorkflow implements Workflow {
                 executionMoment, factObjects);
 
         boolean result = playerSrv.saveState(newState) != null;
+
+        // update score of all player active groupChallenges
+
+        List<GroupChallenge> playerActiveGroupChallenges =
+                challengeSrv.activeGroupChallengesByDate(gameId, userId, executionDate);
+        if (playerActiveGroupChallenges.size() > 0) {
+            LogHub.info(gameId, logger, String.format("Player %s has %s active group challenges",
+                    userId, playerActiveGroupChallenges.size()));
+        } else {
+            LogHub.info(gameId, logger, String.format("Player %s has no active group challenges",
+                    userId, playerActiveGroupChallenges.size()));
+        }
+        playerActiveGroupChallenges.forEach(groupChallenge -> {
+            List<PlayerState> guestStates = groupChallenge.guests().stream()
+                    .map(guest -> playerSrv.loadState(gameId, guest.getPlayerId(), false, false))
+                    .collect(Collectors.toList());
+            guestStates.add(newState);
+            groupChallenge.update(guestStates);
+            challengeSrv.save(groupChallenge);
+            if (groupChallenge.getChallengeModel()
+                    .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)) {
+                List<String> winners = challengeSrv.conditionCheck(groupChallenge);
+                if (!winners.isEmpty()) {
+                    groupChallenge.updateState(ChallengeState.COMPLETED, executionDate);
+                    challengeSrv.save(groupChallenge);
+                    challengeSrv.sendChallengeNotification(groupChallenge);
+                    challengeSrv.logStatsEvents(g, groupChallenge);
+                    LogHub.info(gameId, logger,
+                            String.format(
+                                    "Player %s wins group challenge %s of type %s, he will be rewarded",
+                                    userId, groupChallenge.getInstanceName(),
+                                    groupChallenge.getChallengeModel()));
+                    winners.stream().forEach(w -> {
+                        apply(gameId, GameManager.INTERNAL_ACTION_PREFIX + "reward", w,
+                                executionMoment, null, Arrays.asList(groupChallenge.getReward()));
+                    });
+                }
+            }
+        });
+
 
         if (env.getProperty("trace.playerMove", Boolean.class, false)) {
             traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);

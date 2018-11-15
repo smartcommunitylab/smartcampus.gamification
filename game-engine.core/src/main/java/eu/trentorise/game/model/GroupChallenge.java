@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
@@ -22,7 +24,11 @@ public class GroupChallenge {
     public static final String MODEL_NAME_COMPETITIVE_PERFORMANCE = "groupCompetitivePerformance";
 
     @JsonIgnore
-    public static final List<String> MODELS = Arrays.asList(MODEL_NAME_COMPETITIVE_PERFORMANCE);
+    public static final String MODEL_NAME_COMPETITIVE_TIME = "groupCompetitiveTime";
+
+    @JsonIgnore
+    public static final List<String> MODELS =
+            Arrays.asList(MODEL_NAME_COMPETITIVE_PERFORMANCE, MODEL_NAME_COMPETITIVE_TIME);
 
     private String id;
 
@@ -32,6 +38,7 @@ public class GroupChallenge {
 
     private String challengeModel;
     private PointConceptRef challengePointConcept;
+    private double challengeTarget = -1;
     private Reward reward;
 
     private ChallengeState state;
@@ -71,22 +78,34 @@ public class GroupChallenge {
 
     public List<Attendee> winners() {
         List<String> winnerIds = new ArrayList<>();
-        double max = 0;
-       for(Attendee attendee : attendees){
-            if (max < attendee.getChallengeScore()) {
-                max = attendee.getChallengeScore();
-                winnerIds.clear();
-                winnerIds.add(attendee.getPlayerId());
-            } else if (max == attendee.getChallengeScore()) {
-                winnerIds.add(attendee.getPlayerId());
-            }
+        switch (challengeModel) {
+            case MODEL_NAME_COMPETITIVE_PERFORMANCE:
+                double max = 0;
+                for (Attendee attendee : attendees) {
+                    if (max < attendee.getChallengeScore()) {
+                        max = attendee.getChallengeScore();
+                        winnerIds.clear();
+                        winnerIds.add(attendee.getPlayerId());
+                    } else if (max == attendee.getChallengeScore()) {
+                        winnerIds.add(attendee.getPlayerId());
+                    }
+                }
+                break;
+            case MODEL_NAME_COMPETITIVE_TIME:
+                for (Attendee attendee : attendees) {
+                    if (attendee.getChallengeScore() >= challengeTarget) {
+                        winnerIds.add(attendee.getPlayerId());
+                    }
+                }
+                break;
+            default:
+                break;
         }
-       
+
         winnerIds.forEach(id -> {
             attendees.stream().filter(a -> a.getPlayerId().equals(id)).findFirst()
                     .ifPresent(a -> a.setWinner(true));
         });
-
         return attendees.stream().filter(a -> a.isWinner()).collect(Collectors.toList());
     }
 
@@ -126,7 +145,7 @@ public class GroupChallenge {
         Optional<Attendee> player =
                 attendees.stream().filter(a -> a.getPlayerId().equals(playerId)).findFirst();
         player.ifPresent(p -> {
-            ch.setModelName(MODEL_NAME_COMPETITIVE_PERFORMANCE);
+            ch.setModelName(challengeModel);
             ch.setName(instanceName);
             ch.setStart(start);
             ch.setEnd(end);
@@ -143,6 +162,27 @@ public class GroupChallenge {
                 .orElse(null);
     }
 
+    public List<Attendee> guests() {
+        return attendees.stream().filter(a -> a.getRole() == Role.GUEST)
+                .collect(Collectors.toList());
+
+    }
+
+    public void validate() {
+        if (StringUtils.isBlank(challengeModel)) {
+            throw new IllegalArgumentException(String.format("challengeModel cannot be blank"));
+        } else if (!GroupChallenge.MODELS.contains(challengeModel)) {
+            throw new IllegalArgumentException(String
+                    .format("challengeModel %s not supported for invitation", challengeModel));
+        }
+        if (StringUtils.isBlank(gameId)) {
+            throw new IllegalArgumentException(String.format("gameId cannot be blank"));
+        }
+        if (attendees.isEmpty()) {
+            throw new IllegalArgumentException(String.format("attendees couldn't be empty"));
+        }
+    }
+
     private ChallengeConcept setFields(ChallengeConcept challenge, Attendee player) {
         challenge.getFields().put("challengeScoreName",
                 challengePointConcept != null ? challengePointConcept.getName() : null);
@@ -157,6 +197,20 @@ public class GroupChallenge {
         if (reward != null) {
             challenge.getFields().put("rewardPercentage", reward.getPercentage());
             challenge.getFields().put("rewardThreshold", reward.getThreshold());
+            Double attendeeReward = reward.getBonusScore().get(player.getPlayerId());
+            challenge.getFields().put("rewardBonusScore",
+                    attendeeReward != null ? attendeeReward : 0d);
+            List<Map<String, Object>> othersBonusScore = new ArrayList<>();
+            attendees.stream().filter(a -> !a.getPlayerId().equals(player.getPlayerId()))
+                    .forEach(a -> {
+                Map<String, Object> attendeeBonus = new HashMap<>();
+                Double bonusScore = reward.getBonusScore().get(a.getPlayerId());
+                if (bonusScore != null) {
+                    attendeeBonus.put(a.getPlayerId(), bonusScore);
+                    othersBonusScore.add(attendeeBonus);
+                }
+            });
+            challenge.getFields().put("othersBonusScore", othersBonusScore);
         }
 
         if (challengePointConcept != null) {
@@ -164,7 +218,7 @@ public class GroupChallenge {
             challenge.getFields().put("challengePointConceptPeriod",
                     challengePointConcept.getPeriod());
         }
-
+        challenge.getFields().put("challengeTarget", challengeTarget);
         challenge.getFields().put("otherAttendeeScores", otherAttendeeScores);
         Attendee proposer = proposer();
         if(proposer != null) {
@@ -390,5 +444,13 @@ public class GroupChallenge {
 
     public void setChallengeModel(String challengeModel) {
         this.challengeModel = challengeModel;
+    }
+
+    public double getChallengeTarget() {
+        return challengeTarget;
+    }
+
+    public void setChallengeTarget(double challengeTarget) {
+        this.challengeTarget = challengeTarget;
     }
 }

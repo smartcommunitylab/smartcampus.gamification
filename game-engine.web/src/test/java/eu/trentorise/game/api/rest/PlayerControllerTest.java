@@ -726,6 +726,7 @@ public class PlayerControllerTest {
         GroupChallenge challenge = new GroupChallenge();
         challenge.setGameId(game.getId());
         challenge.setInstanceName("instanceName");
+        challenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         challenge.setStart(new LocalDateTime().minusDays(1).toDate());
         challenge.setEnd(new LocalDateTime().plusDays(1).toDate());
         challenge.setOrigin("Demiurgo");
@@ -800,6 +801,7 @@ public class PlayerControllerTest {
         challenge.getAttendees().add(guest);
 
         challenge.setChallengePointConcept(new PointConceptRef("Walk_Km", "weekly"));
+        challenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         challengeSrv.save(challenge);
 
         RequestBuilder builder = null;
@@ -822,6 +824,7 @@ public class PlayerControllerTest {
         GroupChallenge challenge = new GroupChallenge();
         challenge.setGameId(game.getId());
         challenge.setInstanceName("instanceName");
+        challenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         challenge.setStart(new LocalDateTime().minusDays(1).toDate());
         challenge.setEnd(new LocalDateTime().plusDays(1).toDate());
         challenge.setOrigin("Demiurgo");
@@ -873,6 +876,7 @@ public class PlayerControllerTest {
         GroupChallenge challenge = new GroupChallenge(ChallengeState.PROPOSED);
         challenge.setGameId(game.getId());
         challenge.setInstanceName("instanceName");
+        challenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         challenge.setStart(new LocalDateTime().minusDays(1).toDate());
         challenge.setEnd(new LocalDateTime().plusDays(1).toDate());
         challenge.setOrigin("rs");

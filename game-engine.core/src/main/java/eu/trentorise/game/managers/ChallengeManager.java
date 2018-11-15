@@ -1,6 +1,7 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,6 +21,8 @@ import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.notification.ChallengeCompletedNotication;
+import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.notification.ChallengeInvitationAcceptedNotification;
 import eu.trentorise.game.notification.ChallengeInvitationNotification;
 import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
@@ -70,13 +73,70 @@ public class ChallengeManager {
     }
 
     public GroupChallenge save(GroupChallenge challenge) {
-        return groupChallengeRepo.save(challenge);
+        if (challenge != null) {
+            challenge.validate();
+            if (StringUtils.isBlank(challenge.getInstanceName())) {
+                Attendee proposer = challenge.proposer();
+                challenge.setInstanceName(
+                        String.format("p_%s_%s", proposer != null ? proposer.getPlayerId() : null,
+                                UUID.randomUUID().toString()));
+            }
+            return groupChallengeRepo.save(challenge);
+        } else {
+            return null;
+        }
+    }
+
+    public void logStatsEvents(Game game, GroupChallenge challenge) {
+        if (challenge != null && game != null) {
+            List<Attendee> attendees = challenge.getAttendees();
+            long timestamp = System.currentTimeMillis();
+            String executionId = UUID.randomUUID().toString();
+            attendees.forEach(a -> {
+                if (a.isWinner()) {
+                    StatsLogger.logChallengeCompleted(game.getDomain(), game.getId(),
+                            a.getPlayerId(), executionId, challenge.getEnd().getTime(), timestamp,
+                            challenge.getInstanceName());
+                } else {
+                    StatsLogger.logChallengeFailed(game.getDomain(), game.getId(), a.getPlayerId(),
+                            executionId, challenge.getEnd().getTime(), timestamp,
+                            challenge.getInstanceName());
+                }
+            });
+        }
+    }
+
+    public void sendChallengeNotification(GroupChallenge challenge) {
+        if (challenge != null) {
+            List<Attendee> attendees = challenge.getAttendees();
+            attendees.stream().forEach(a -> {
+                if (a.isWinner()) {
+                    ChallengeCompletedNotication notification = new ChallengeCompletedNotication();
+                    notification.setChallengeName(challenge.getInstanceName());
+                    notification.setGameId(challenge.getGameId());
+                    notification.setPlayerId(a.getPlayerId());
+                    notificationSrv.notificate(notification);
+                } else {
+                    ChallengeFailedNotication notification = new ChallengeFailedNotication();
+                    notification.setChallengeName(challenge.getInstanceName());
+                    notification.setGameId(challenge.getGameId());
+                    notification.setPlayerId(a.getPlayerId());
+                    notificationSrv.notificate(notification);
+                }
+            });
+        }
     }
 
 
     public List<GroupChallenge> completedPerformanceGroupChallenges(String gameId) {
-        return groupChallengeRepo.findByGameIdAndStateAndEndBefore(gameId, ChallengeState.ASSIGNED,
-                clock.now());
+        return groupChallengeRepo.findByGameIdAndStateAndEndBeforeAndChallengeModel(gameId,
+                ChallengeState.ASSIGNED, clock.now(),
+                GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+    }
+
+    public List<GroupChallenge> activeGroupChallengesByDate(String gameId, String playerId,
+            Date atDate) {
+        return groupChallengeRepo.activeGroupChallenges(gameId, playerId, atDate);
     }
 
     public GroupChallenge inviteToChallenge(ChallengeInvitation invitation) {
@@ -144,8 +204,8 @@ public class ChallengeManager {
             challenge.setReward(invitation.getReward());
             challenge.setInstanceName(invitation.getChallengeName());
             if (StringUtils.isBlank(challenge.getInstanceName())) {
-            challenge.setInstanceName(String.format("p_%s_%s",
-                    invitation.getProposer().getPlayerId(), UUID.randomUUID().toString()));
+                challenge.setInstanceName(String.format("p_%s_%s",
+                        invitation.getProposer().getPlayerId(), UUID.randomUUID().toString()));
             }
         }
 
@@ -234,9 +294,8 @@ public class ChallengeManager {
                 groupChallengeRepo.deleteProposedChallengeByGuest(gameId, playerId, challengeName);
 
         if (refused == null) {
-            throw new IllegalArgumentException(String
-                    .format("Challenge %s is not PROPOSED for guest player %s", challengeName,
-                            playerId));
+            throw new IllegalArgumentException(String.format(
+                    "Challenge %s is not PROPOSED for guest player %s", challengeName, playerId));
         }
         Game game = gameSrv.loadGameDefinitionById(gameId);
         refused.updateState(ChallengeState.REFUSED);
@@ -245,38 +304,34 @@ public class ChallengeManager {
                 new ChallengeInvitationRefusedNotification();
         Attendee proposer = refused.proposer();
         if (proposer != null) {
-        notification.setGameId(gameId);
+            notification.setGameId(gameId);
             notification.setPlayerId(proposer.getPlayerId());
-        notification.setChallengeName(challengeName);
+            notification.setChallengeName(challengeName);
             notification.setGuestId(playerId);
-        notificationSrv.notificate(notification);
-        }else {
-            LogHub.warn(gameId, logger, String.format(
-                    "Invitation without proposer, no refuse notification will be send"));
+            notificationSrv.notificate(notification);
+        } else {
+            LogHub.warn(gameId, logger, String
+                    .format("Invitation without proposer, no refuse notification will be send"));
         }
         final String executionId = UUID.randomUUID().toString();
         final long executionTime = System.currentTimeMillis();
         StatsLogger.logChallengeInvitationRefused(game.getDomain(), gameId, playerId, executionId,
                 executionTime, executionTime, challengeName, refused.getChallengeModel());
-        LogHub.info(gameId, logger,
-                String.format("Invitation to challenge %s is refused by player %s", challengeName,
-                        playerId));
+        LogHub.info(gameId, logger, String.format(
+                "Invitation to challenge %s is refused by player %s", challengeName, playerId));
         return refused;
     }
 
     public GroupChallenge cancelInvitation(String gameId, String playerId, String challengeName) {
-        GroupChallenge canceled =
-                groupChallengeRepo.deleteProposedChallengeByProposer(gameId, playerId,
-                        challengeName);
+        GroupChallenge canceled = groupChallengeRepo.deleteProposedChallengeByProposer(gameId,
+                playerId, challengeName);
 
         if (canceled == null) {
-            throw new IllegalArgumentException(String
-                    .format("Challenge %s is not PROPOSED by proposer player %s", challengeName,
-                            playerId));
+            throw new IllegalArgumentException(String.format(
+                    "Challenge %s is not PROPOSED by proposer player %s", challengeName, playerId));
         }
-        LogHub.info(gameId, logger,
-                String.format("Invitation to challenge %s canceled by player %s", challengeName,
-                        playerId));
+        LogHub.info(gameId, logger, String.format(
+                "Invitation to challenge %s canceled by player %s", challengeName, playerId));
         return canceled;
     }
 }

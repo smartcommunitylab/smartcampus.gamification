@@ -772,7 +772,7 @@ public class GameManager implements GameService {
 					gameStatistics.setPeriodName(periodName);
 					gameStatistics.setPeriodIndex(key);
 					gameStatistics.setStartDate(periodInstance.getStart());
-					gameStatistics.setStartDate(periodInstance.getEnd());
+					gameStatistics.setEndDate(periodInstance.getEnd());
 					gameStatistics.setAverage(average);
 					gameStatistics.setVariance(variance);
 					gameStatistics.setQuantiles(q);

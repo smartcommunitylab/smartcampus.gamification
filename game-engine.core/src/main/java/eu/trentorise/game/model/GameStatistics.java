@@ -13,7 +13,7 @@ public class GameStatistics {
 	private double average;
 	private double variance;
 	private Map<Integer, Double> quantiles;
-	private double lastUpdated;
+	private Long lastUpdated;
 
 	public GameStatistics() {
 	}
@@ -90,11 +90,11 @@ public class GameStatistics {
 		this.quantiles = quantiles;
 	}
 
-	public double getLastUpdated() {
+	public Long getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(double lastUpdated) {
+	public void setLastUpdated(Long lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 

@@ -745,11 +745,11 @@ public class GameManager implements GameService {
 					data[i] = pStates.get(i).getIncrementalScore(pointConceptName, periodName, key);
 				}
 
-				// calculate average.
+				// average.
 				double average = Arrays.stream(data).average().getAsDouble();
-				// calculate variance.
+				// variance.
 				double variance = ClassificationUtils.calculateVariance(data);
-				// calculate quantiles.
+				// 10 quantiles.
 				Map<Integer, Double> q = Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).compute(data);
 
 				Query qGameStats = new Query();

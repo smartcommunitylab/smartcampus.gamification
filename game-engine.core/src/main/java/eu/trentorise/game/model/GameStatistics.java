@@ -2,8 +2,14 @@ package eu.trentorise.game.model;
 
 import java.util.Map;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
 public class GameStatistics {
 
+	@Id
+	private String id;
 	private String gameId;
 	private String pointConceptName;
 	private String periodName;
@@ -14,6 +20,14 @@ public class GameStatistics {
 	private double variance;
 	private Map<Integer, Double> quantiles;
 	private Long lastUpdated;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public GameStatistics() {
 	}

@@ -17,10 +17,12 @@ package eu.trentorise.game.managers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
@@ -36,8 +38,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.google.common.math.Quantiles;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
@@ -45,12 +52,14 @@ import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameStatistics;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.FSRule;
@@ -62,6 +71,7 @@ import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.RuleRepo;
+import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
@@ -103,6 +113,9 @@ public class GameManager implements GameService {
 
     @Autowired
     private Workflow workflow;
+    
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @PostConstruct
     private void startup() {
@@ -668,6 +681,107 @@ public class GameManager implements GameService {
             throw new IllegalArgumentException(String.format("game %s not exist", gameId));
         }
     }
+    
+	// @PostConstruct
+	// @Scheduled(cron = "0 0 1 * * *")
+	public void taskGameStats() {
+		/**
+		 * For every activeGame take settings -> statistics ( array of
+		 * PointConcept name and periodName)
+		 * 
+		 * For every PointConcept in statistic calculate 10 quantiles, average
+		 * and variance
+		 * 
+		 * Run this in a scheduled task every night
+		 * 
+		 * Save in a collection:
+		 * 
+		 * gameId, pointconceptName periodName, start date period, end date
+		 * period, periodIndex -> Statistic { 10quantiles[], average, }
+		 * 
+		 * Example
+		 * 
+		 * game1, Walk_Km, weekly, period1Start, period1End, 1 {data}
+		 * 
+		 * game1, Walk_Km, weekly, period2Start, period2End, 2 {data}
+		 * 
+		 * game1, Bus_Km, weekly, period1Start, period1End, 1 {data}
+		 * 
+		 * 
+		 */
+
+		LogHub.info(null, logger, "task game statistics.");
+
+		Calendar cal = Calendar.getInstance();
+		// cal.set(Calendar.MONTH, 9);
+		// cal.set(Calendar.DAY_OF_MONTH, 21);
+		long moment = cal.getTimeInMillis();
+
+		// 1 read active games.
+		for (Game activeG : loadGames(true)) {
+			// 1.1 read settings about stats.
+			String pointConceptName = "green leaves";
+			String periodName = "weekly";
+
+			// 1.2 arrange statistics data array.
+			PeriodInstance periodInstance = ClassificationUtils.retrieveWindow(activeG, periodName, pointConceptName,
+					moment, -1);
+
+			if (periodInstance != null) {
+				String key = ClassificationUtils.generateKey(periodInstance);
+				// 1.3 query player stats and prepare data array for this key.
+				Query query = new Query();
+
+				Criteria criteria = new Criteria("gameId").is(activeG.getId());
+
+				query.addCriteria(criteria);
+				query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
+						+ ".instances." + key + ".score");
+
+				List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
+
+				double[] data = new double[pStates.size()];
+				for (int i = 0; i < pStates.size(); i++) {
+					data[i] = pStates.get(i).getIncrementalScore(pointConceptName, periodName, key);
+				}
+
+				// calculate average.
+				double average = Arrays.stream(data).average().getAsDouble();
+				// calculate variance.
+				double variance = ClassificationUtils.calculateVariance(data);
+				// calculate quantiles.
+				Map<Integer, Double> q = Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).compute(data);
+
+				Query qGameStats = new Query();
+				Criteria cGameStats = new Criteria("gameId").is(activeG.getId()).and("pointConceptName")
+						.is(pointConceptName).and("periodName").is(periodName).and("periodIndex").is(key);
+				qGameStats.addCriteria(cGameStats);
+
+				GameStatistics gameStatistics = mongoTemplate.findOne(qGameStats, GameStatistics.class);
+
+				if (gameStatistics != null) {
+					gameStatistics.setAverage(average);
+					gameStatistics.setVariance(variance);
+					gameStatistics.setQuantiles(q);
+					gameStatistics.setLastUpdated(moment);
+					mongoTemplate.save(gameStatistics);
+				} else {
+					gameStatistics = new GameStatistics();
+					gameStatistics.setGameId(activeG.getId());
+					gameStatistics.setPointConceptName(pointConceptName);
+					gameStatistics.setPeriodName(periodName);
+					gameStatistics.setPeriodIndex(key);
+					gameStatistics.setStartDate(periodInstance.getStart());
+					gameStatistics.setStartDate(periodInstance.getEnd());
+					gameStatistics.setAverage(average);
+					gameStatistics.setVariance(variance);
+					gameStatistics.setQuantiles(q);
+					gameStatistics.setLastUpdated(moment);
+					mongoTemplate.save(gameStatistics);
+				}
+			}
+		}
+	}
 
 
 }

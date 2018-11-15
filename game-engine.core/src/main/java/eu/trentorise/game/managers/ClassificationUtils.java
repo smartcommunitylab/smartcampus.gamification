@@ -48,4 +48,23 @@ public class ClassificationUtils {
 		return key;
 	}
 
+	public static double calculateVariance(double[] numArray) {
+		{
+			double sum = 0.0, variance = 0.0;
+			int length = numArray.length;
+
+			for (double num : numArray) {
+				sum += num;
+			}
+
+			double mean = sum / length;
+
+			for (double num : numArray) {
+				variance += Math.pow(num - mean, 2);
+			}
+
+			return (variance / length);
+		}
+	}
+
 }

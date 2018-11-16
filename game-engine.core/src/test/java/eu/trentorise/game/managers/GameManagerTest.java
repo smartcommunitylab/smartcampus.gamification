@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameStatistics;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
@@ -589,5 +591,59 @@ public class GameManagerTest {
         gameSrv.conditionCheckPerformanceGroupChallengesTask();
 
     }
+    
+	@Test
+	public void generate_game_statistics() {
+		// create game with settings.
+		final String gameId = "STATS_GAME";
+		final String POINT_CONCEPT = "green leaves";
+		final String PERIOD_NAME = "weekly";
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_WEEK, -(cal.get(Calendar.DAY_OF_WEEK)));
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		System.out.println(cal.get(Calendar.DATE));
+
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		PointConcept green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+
+		g.getConcepts().add(green);
+		gameSrv.saveGameDefinition(g);
+
+		// create 10 players with 'weekly' and 'green leaves'.
+		for (int p = 1; p <= 10; p++) {
+
+			PointConcept testGreen = new PointConcept(POINT_CONCEPT);
+			testGreen.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+			if (p % 2 == 0) {
+				testGreen.setScore(2d);
+			} else {
+				testGreen.setScore(1d);
+			}
+
+			PlayerState player = new PlayerState(gameId, "player-" + p);
+			player.getState().add(testGreen);
+			playerSrv.saveState(player);
+		}
+
+		// generate and verify statistics (average, variance etc).
+		gameSrv.taskGameStats();
+
+		// verify result.
+		List<GameStatistics> gameStats = gameSrv.loadGameStats(gameId, POINT_CONCEPT, PERIOD_NAME,
+				cal.getTimeInMillis(), null, null);
+
+		Assert.assertEquals(1, gameStats.size());
+		Assert.assertTrue(gameStats.get(0).getAverage() == 1.5);
+		Assert.assertTrue(gameStats.get(0).getVariance() == 0.25);
+		Assert.assertTrue(gameStats.get(0).getQuantiles().get(9) == 2.0);
+
+	}
+    
 
 }

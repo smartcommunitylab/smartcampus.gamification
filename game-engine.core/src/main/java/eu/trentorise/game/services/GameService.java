@@ -17,10 +17,12 @@ package eu.trentorise.game.services;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameStatistics;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerLevel;
@@ -85,5 +87,10 @@ public interface GameService {
     List<PlayerLevel> calculateLevels(String gameId, PlayerState playerState);
 
     void conditionCheckPerformanceGroupChallengesTask();
+    
+    void taskGameStats();
+    
+	public List<GameStatistics> loadGameStats(String gameId, String pointConceptName, String periodName, Long timestamp,
+			String periodIndex, Pageable pageable);
 
 }

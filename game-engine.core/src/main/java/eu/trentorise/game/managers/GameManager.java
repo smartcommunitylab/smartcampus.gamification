@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -682,6 +683,7 @@ public class GameManager implements GameService {
         }
     }
     
+    
 	// @PostConstruct
 	// @Scheduled(cron = "0 0 1 * * *")
 	public void taskGameStats() {
@@ -719,7 +721,7 @@ public class GameManager implements GameService {
 
 		// 1 read active games.
 		for (Game activeG : loadGames(true)) {
-			// 1.1 read settings about stats.
+			// 1.1 read settings about statistics.(to do)
 			String pointConceptName = "green leaves";
 			String periodName = "weekly";
 
@@ -729,11 +731,9 @@ public class GameManager implements GameService {
 
 			if (periodInstance != null) {
 				String key = ClassificationUtils.generateKey(periodInstance);
-				// 1.3 query player stats and prepare data array for this key.
+				// 1.3 query player statistics and prepare data array for this key.
 				Query query = new Query();
-
 				Criteria criteria = new Criteria("gameId").is(activeG.getId());
-
 				query.addCriteria(criteria);
 				query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
 						+ ".instances." + key + ".score");
@@ -782,6 +782,35 @@ public class GameManager implements GameService {
 			}
 		}
 	}
+
+	@Override
+	public List<GameStatistics> loadGameStats(String gameId, String pointConceptName, String periodName, Long timestamp,
+			String periodIndex, Pageable pageable) {
+		
+		Query q = new Query();
+		Criteria c = new Criteria("gameId").is(gameId);
+		
+		if (pointConceptName != null && !pointConceptName.isEmpty()) {
+			c.and("pointConceptName").is(pointConceptName);
+		}
+		if (periodName != null && !periodName.isEmpty()) {
+			c.and("periodName").is(periodName);
+		}
+		if (periodIndex != null && !periodIndex.isEmpty()) {
+			c.and("periodIndex").is(periodIndex);
+		}
+		
+		q.addCriteria(c);
+		
+		if (pageable != null) {
+			q.with(pageable);
+		}
+		
+		return mongoTemplate.find(q, GameStatistics.class);
+		
+	}
+	
+	
 
 
 }

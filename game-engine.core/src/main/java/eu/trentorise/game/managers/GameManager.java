@@ -799,6 +799,9 @@ public class GameManager implements GameService {
 		if (periodIndex != null && !periodIndex.isEmpty()) {
 			c.and("periodIndex").is(periodIndex);
 		}
+		if (timestamp != null) {
+			c.and("startDate").lte(timestamp).and("endDate").gte(timestamp);
+		}
 		
 		q.addCriteria(c);
 		

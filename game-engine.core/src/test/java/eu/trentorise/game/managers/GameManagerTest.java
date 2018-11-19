@@ -605,8 +605,7 @@ public class GameManagerTest {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-		System.out.println(cal.get(Calendar.DATE));
-
+		
 		Game g = new Game(gameId);
 		g.setConcepts(new HashSet<>());
 		PointConcept green = new PointConcept(POINT_CONCEPT);
@@ -617,7 +616,6 @@ public class GameManagerTest {
 
 		// create 10 players with 'weekly' and 'green leaves'.
 		for (int p = 1; p <= 10; p++) {
-
 			PointConcept testGreen = new PointConcept(POINT_CONCEPT);
 			testGreen.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
 			if (p % 2 == 0) {

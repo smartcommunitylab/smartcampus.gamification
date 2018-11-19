@@ -8,7 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +31,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -41,9 +44,12 @@ import eu.trentorise.game.bean.LevelDTO.ThresholdDTO;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.NoSecurityConfig;
+import eu.trentorise.game.managers.ClassificationUtils;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameStatistics;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
@@ -316,7 +322,176 @@ public class GameControllerTest {
         }
 
     }
+    
+	@Test
+	public void read_game_statistics_with_timestamp() {
+		// create game with settings.
+		final String gameId = "STATS_GAME";
+		final String POINT_CONCEPT = "green leaves";
+		final String PERIOD_NAME = "weekly";
 
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_WEEK, -(cal.get(Calendar.DAY_OF_WEEK)));
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		PointConcept green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+
+		g.getConcepts().add(green);
+		gameSrv.saveGameDefinition(g);
+
+		// create 10 players with 'weekly' and 'green leaves'.
+		for (int p = 1; p <= 10; p++) {
+			PointConcept testGreen = new PointConcept(POINT_CONCEPT);
+			testGreen.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+			if (p % 2 == 0) {
+				testGreen.setScore(2d);
+			} else {
+				testGreen.setScore(1d);
+			}
+
+			PlayerState player = new PlayerState(gameId, "player-" + p);
+			player.getState().add(testGreen);
+			playerSrv.saveState(player);
+		}
+
+		// generate and verify statistics (average, variance etc).
+		gameSrv.taskGameStats();
+
+		RequestBuilder getBuilder = MockMvcRequestBuilders.get("/data/game/{gameId}/statistics", gameId, gameId)
+				.param("pointConceptName", POINT_CONCEPT).param("periodName", PERIOD_NAME)
+				.param("timestamp", String.valueOf(cal.getTimeInMillis()));
+
+		try {
+			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
+					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
+					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+		} catch (Exception e) {
+			Assert.fail("exception: " + e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void read_game_statistics_with_periodIndex() {
+		// create game with settings.
+		final String gameId = "STATS_GAME";
+		final String POINT_CONCEPT = "green leaves";
+		final String PERIOD_NAME = "weekly";
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_WEEK, -(cal.get(Calendar.DAY_OF_WEEK)));
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		PointConcept green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+
+		g.getConcepts().add(green);
+		gameSrv.saveGameDefinition(g);
+
+		// create 10 players with 'weekly' and 'green leaves'.
+		for (int p = 1; p <= 10; p++) {
+			PointConcept testGreen = new PointConcept(POINT_CONCEPT);
+			testGreen.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+			if (p % 2 == 0) {
+				testGreen.setScore(2d);
+			} else {
+				testGreen.setScore(1d);
+			}
+
+			PlayerState player = new PlayerState(gameId, "player-" + p);
+			player.getState().add(testGreen);
+			playerSrv.saveState(player);
+		}
+
+		// generate and verify statistics (average, variance etc).
+		gameSrv.taskGameStats();
+
+		PeriodInstance periodInstance = ClassificationUtils.retrieveWindow(g, PERIOD_NAME, POINT_CONCEPT,
+				cal.getTimeInMillis(), -1);
+
+		RequestBuilder getBuilder = MockMvcRequestBuilders.get("/data/game/{gameId}/statistics", gameId, gameId)
+				.param("pointConceptName", POINT_CONCEPT).param("periodName", PERIOD_NAME)
+				.param("periodIndex", ClassificationUtils.generateKey(periodInstance));
+
+		try {
+			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
+					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
+					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+		} catch (Exception e) {
+			Assert.fail("exception: " + e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void read_game_statistics() {
+		// create game with settings.
+		final String gameId = "STATS_GAME";
+		final String POINT_CONCEPT = "green leaves";
+		final String PERIOD_NAME = "weekly";
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_WEEK, -(cal.get(Calendar.DAY_OF_WEEK)));
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		Game g = new Game(gameId);
+		g.setConcepts(new HashSet<>());
+		PointConcept green = new PointConcept(POINT_CONCEPT);
+		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+
+		g.getConcepts().add(green);
+		gameSrv.saveGameDefinition(g);
+
+		// create 10 players with 'weekly' and 'green leaves'.
+		for (int p = 1; p <= 10; p++) {
+			PointConcept testGreen = new PointConcept(POINT_CONCEPT);
+			testGreen.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+			if (p % 2 == 0) {
+				testGreen.setScore(2d);
+			} else {
+				testGreen.setScore(1d);
+			}
+
+			PlayerState player = new PlayerState(gameId, "player-" + p);
+			player.getState().add(testGreen);
+			playerSrv.saveState(player);
+		}
+
+		// generate and verify statistics (average, variance etc).
+		gameSrv.taskGameStats();
+
+		PeriodInstance periodInstance = ClassificationUtils.retrieveWindow(g, PERIOD_NAME, POINT_CONCEPT,
+				cal.getTimeInMillis(), -1);
+
+		RequestBuilder getBuilder = MockMvcRequestBuilders.get("/data/game/{gameId}/statistics", gameId, gameId)
+				.param("pointConceptName", POINT_CONCEPT).param("periodName", PERIOD_NAME)
+				.param("timestamp", String.valueOf(cal.getTimeInMillis()))
+				.param("periodIndex", ClassificationUtils.generateKey(periodInstance));
+
+		try {
+			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
+					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
+					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+		} catch (Exception e) {
+			Assert.fail("exception: " + e.getMessage());
+		}
+
+	}
+    
 
     private ThresholdDTO threshold(String name, double value) {
         ThresholdDTO thres = new ThresholdDTO();

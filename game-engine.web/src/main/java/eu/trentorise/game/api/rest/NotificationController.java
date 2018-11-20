@@ -2,7 +2,9 @@ package eu.trentorise.game.api.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.core.Notification;
@@ -59,6 +64,45 @@ public class NotificationController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/notification/game/{gameId}/player/{playerId}/grouped",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get player notifications")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve "),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page."),})
+    public Map<String, Collection<Notification>> readPlayerNotificationGrouped(
+            @PathVariable String gameId, @PathVariable String playerId,
+            @ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
+            @RequestParam(defaultValue = "-1") long toTs,
+            @RequestParam(required = false) List<String> includeTypes,
+            @RequestParam(required = false) List<String> excludeTypes) {
+
+        try {
+            gameId = URLDecoder.decode(gameId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
+        }
+
+        try {
+            playerId = URLDecoder.decode(playerId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
+        }
+        List<Notification> notifications = notificationSrv.readNotifications(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, pageable);
+        
+        Multimap<String, Notification> notificationsMap = ArrayListMultimap.create();
+        
+        notifications.forEach(x -> {
+        	notificationsMap.put(x.getClass().getSimpleName(), x);
+        });
+        
+        return notificationsMap.asMap();
+    }    
+    
+    
     @RequestMapping(method = RequestMethod.GET,
             value = "/notification/game/{gameId}/team/{teamId}",
             produces = {"application/json"})

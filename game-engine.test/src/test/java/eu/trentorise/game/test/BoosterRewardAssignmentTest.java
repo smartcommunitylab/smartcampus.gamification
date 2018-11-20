@@ -47,7 +47,7 @@ public class BoosterRewardAssignmentTest extends GameTest {
         dayBeforeYesterdayDate.setTime(yesterdayDate.getTime() - dayDurationInMillis);
 
         greenLeaves.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
-        greenLeaves.increment(450d);
+        greenLeaves.increment(21d);
         concepts.add(greenLeaves);
 
         points.addPeriod("weekly", todayDate, dayDurationInMillis * 7);
@@ -118,7 +118,7 @@ public class BoosterRewardAssignmentTest extends GameTest {
 
     @Override
     public void analyzeResult() {
-        double newscore = 450 + (450 * 0.5); // increase current gl of the percentage
+        double newscore = 21 + 11; // increase current gl of the percentage
         assertionPoint(GAME, newscore, PLAYER_1, "green leaves"); // +50%
         assertionPoint(GAME, (1000.0 + 250 + 625), PLAYER_1, "points"); // +Threshold
         assertionPoint(GAME, (10D + 15D), PLAYER_1, "bikeTrips"); // fixed score

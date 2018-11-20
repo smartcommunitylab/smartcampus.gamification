@@ -19,7 +19,7 @@ then
 	
 	Double base = $pcCalculation.getPeriodCurrentScore($calculationPointConceptRef.getPeriod());
 	
-	double rewardScore = base * percentage / 100;
+	double rewardScore = (double) Math.round(base * percentage / 100);
 	if($reward.getThreshold() > 0 && rewardScore > $reward.getThreshold()) {
 		rewardScore = $reward.getThreshold(); 
 	}

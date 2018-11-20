@@ -62,10 +62,6 @@ public class GameWorkflow implements Workflow {
     @Autowired
     private Environment env;
 
-    @Autowired
-    private NotificationManager notificationSrv;
-
-
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     protected void workflowExec(String gameId, String actionId, String userId, String executionId,
@@ -119,7 +115,9 @@ public class GameWorkflow implements Workflow {
             groupChallenge.update(guestStates);
             challengeSrv.save(groupChallenge);
             if (groupChallenge.getChallengeModel()
-                    .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)) {
+                    .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)
+                    || groupChallenge.getChallengeModel()
+                            .equals(GroupChallenge.MODEL_NAME_COOPERATIVE)) {
                 List<String> winners = challengeSrv.conditionCheck(groupChallenge);
                 if (!winners.isEmpty()) {
                     groupChallenge.updateState(ChallengeState.COMPLETED, executionDate);

@@ -27,8 +27,12 @@ public class GroupChallenge {
     public static final String MODEL_NAME_COMPETITIVE_TIME = "groupCompetitiveTime";
 
     @JsonIgnore
+    public static final String MODEL_NAME_COOPERATIVE = "groupCooperative";
+
+    @JsonIgnore
     public static final List<String> MODELS =
-            Arrays.asList(MODEL_NAME_COMPETITIVE_PERFORMANCE, MODEL_NAME_COMPETITIVE_TIME);
+            Arrays.asList(MODEL_NAME_COMPETITIVE_PERFORMANCE, MODEL_NAME_COMPETITIVE_TIME,
+                    MODEL_NAME_COOPERATIVE);
 
     private String id;
 
@@ -96,6 +100,14 @@ public class GroupChallenge {
                     if (attendee.getChallengeScore() >= challengeTarget) {
                         winnerIds.add(attendee.getPlayerId());
                     }
+                }
+                break;
+            case MODEL_NAME_COOPERATIVE:
+                double teamScore =
+                        attendees.stream().map(a -> a.getChallengeScore()).reduce(0D, Double::sum);
+                if (teamScore >= challengeTarget) {
+                    winnerIds = attendees.stream().map(Attendee::getPlayerId)
+                            .collect(Collectors.toList());
                 }
                 break;
             default:

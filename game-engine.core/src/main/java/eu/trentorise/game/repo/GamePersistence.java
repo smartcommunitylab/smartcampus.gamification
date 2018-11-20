@@ -17,8 +17,10 @@
 package eu.trentorise.game.repo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -66,6 +68,8 @@ public class GamePersistence {
 
 	private long expiration;
 	private boolean terminated;
+	
+	private Map<String, String> settings = new HashMap<String, String>();
 
 	public GamePersistence() {
 
@@ -89,10 +93,12 @@ public class GamePersistence {
 				concepts.add(new GenericObjectPersistence(gc));
 			}
 		}
-
-        game.getLevels().forEach(level -> levels.add(level));
+		
+		game.getLevels().forEach(level -> levels.add(level));
 		expiration = game.getExpiration();
 		terminated = game.isTerminated();
+		settings = game.getSettings();
+		
 	}
 
 	public Game toGame() {
@@ -141,6 +147,7 @@ public class GamePersistence {
 
 		game.setExpiration(expiration);
 		game.setTerminated(terminated);
+		game.setSettings(settings);
 		return game;
 	}
 
@@ -232,4 +239,12 @@ public class GamePersistence {
         this.levels = levels;
     }
 
+	public Map<String, String> getSettings() {
+		return settings;
+	}
+
+	public void setSettings(Map<String, String> settings) {
+		this.settings = settings;
+	}
+	
 }

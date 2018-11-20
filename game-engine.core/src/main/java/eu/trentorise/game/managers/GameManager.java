@@ -200,6 +200,8 @@ public class GameManager implements GameService {
 
                 pers.getLevels().clear();
                 pers.getLevels().addAll(game.getLevels());
+                pers.setSettings(game.getSettings());
+                
             } else {
                 pers = new GamePersistence(game);
             }
@@ -684,8 +686,7 @@ public class GameManager implements GameService {
     }
     
     
-	// @PostConstruct
-	// @Scheduled(cron = "0 0 1 * * *")
+	@Scheduled(cron = "0 0 1 * * *")
 	public void taskGameStats() {
 		/**
 		 * For every activeGame take settings -> statistics ( array of
@@ -721,66 +722,72 @@ public class GameManager implements GameService {
 
 		// 1 read active games.
 		for (Game activeG : loadGames(true)) {
-			// 1.1 read settings about statistics.(to do)
-			String pointConceptName = "green leaves";
-			String periodName = "weekly";
+			// 1.1 read settings about statistics.
+			if (!activeG.getSettings().isEmpty()) {
+				for (String pointConceptName : activeG.getSettings().keySet()) {
+					String periodName = activeG.getSettings().get(pointConceptName);
+					// 1.2 arrange statistics data array.
+					PeriodInstance periodInstance = ClassificationUtils.retrieveWindow(activeG, periodName,
+							pointConceptName, moment, -1);
 
-			// 1.2 arrange statistics data array.
-			PeriodInstance periodInstance = ClassificationUtils.retrieveWindow(activeG, periodName, pointConceptName,
-					moment, -1);
+					if (periodInstance != null) {
+						String key = ClassificationUtils.generateKey(periodInstance);
+						// 1.3 query player states and prepare data array.
+						Query query = new Query();
+						Criteria criteria = new Criteria("gameId").is(activeG.getId());
+						query.addCriteria(criteria);
+						query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods."
+								+ periodName + ".instances." + key + ".score");
 
-			if (periodInstance != null) {
-				String key = ClassificationUtils.generateKey(periodInstance);
-				// 1.3 query player statistics and prepare data array for this key.
-				Query query = new Query();
-				Criteria criteria = new Criteria("gameId").is(activeG.getId());
-				query.addCriteria(criteria);
-				query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + periodName
-						+ ".instances." + key + ".score");
+						List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
 
-				List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
+						double[] data = new double[pStates.size()];
+						for (int i = 0; i < pStates.size(); i++) {
+							data[i] = pStates.get(i).getIncrementalScore(pointConceptName, periodName, key);
+						}
+						
+						// average.
+						double average = Arrays.stream(data).average().getAsDouble();
+						// variance.
+						double variance = ClassificationUtils.calculateVariance(data);
+						// 10 quantiles.
+						Map<Integer, Double> q = Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+								.compute(data);
 
-				double[] data = new double[pStates.size()];
-				for (int i = 0; i < pStates.size(); i++) {
-					data[i] = pStates.get(i).getIncrementalScore(pointConceptName, periodName, key);
-				}
+						Query qGameStats = new Query();
+						Criteria cGameStats = new Criteria("gameId").is(activeG.getId()).and("pointConceptName")
+								.is(pointConceptName).and("periodName").is(periodName).and("periodIndex").is(key);
+						qGameStats.addCriteria(cGameStats);
 
-				// average.
-				double average = Arrays.stream(data).average().getAsDouble();
-				// variance.
-				double variance = ClassificationUtils.calculateVariance(data);
-				// 10 quantiles.
-				Map<Integer, Double> q = Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).compute(data);
+						GameStatistics gameStatistics = mongoTemplate.findOne(qGameStats, GameStatistics.class);
 
-				Query qGameStats = new Query();
-				Criteria cGameStats = new Criteria("gameId").is(activeG.getId()).and("pointConceptName")
-						.is(pointConceptName).and("periodName").is(periodName).and("periodIndex").is(key);
-				qGameStats.addCriteria(cGameStats);
-
-				GameStatistics gameStatistics = mongoTemplate.findOne(qGameStats, GameStatistics.class);
-
-				if (gameStatistics != null) {
-					gameStatistics.setAverage(average);
-					gameStatistics.setVariance(variance);
-					gameStatistics.setQuantiles(q);
-					gameStatistics.setLastUpdated(moment);
-					mongoTemplate.save(gameStatistics);
-				} else {
-					gameStatistics = new GameStatistics();
-					gameStatistics.setGameId(activeG.getId());
-					gameStatistics.setPointConceptName(pointConceptName);
-					gameStatistics.setPeriodName(periodName);
-					gameStatistics.setPeriodIndex(key);
-					gameStatistics.setStartDate(periodInstance.getStart());
-					gameStatistics.setEndDate(periodInstance.getEnd());
-					gameStatistics.setAverage(average);
-					gameStatistics.setVariance(variance);
-					gameStatistics.setQuantiles(q);
-					gameStatistics.setLastUpdated(moment);
-					mongoTemplate.save(gameStatistics);
+						if (gameStatistics != null) {
+							gameStatistics.setAverage(average);
+							gameStatistics.setVariance(variance);
+							gameStatistics.setQuantiles(q);
+							gameStatistics.setLastUpdated(moment);
+							mongoTemplate.save(gameStatistics);
+						} else {
+							gameStatistics = new GameStatistics();
+							gameStatistics.setGameId(activeG.getId());
+							gameStatistics.setPointConceptName(pointConceptName);
+							gameStatistics.setPeriodName(periodName);
+							gameStatistics.setPeriodIndex(key);
+							gameStatistics.setStartDate(periodInstance.getStart());
+							gameStatistics.setEndDate(periodInstance.getEnd());
+							gameStatistics.setAverage(average);
+							gameStatistics.setVariance(variance);
+							gameStatistics.setQuantiles(q);
+							gameStatistics.setLastUpdated(moment);
+							mongoTemplate.save(gameStatistics);
+						}
+						
+						LogHub.info(null, logger, "gameStatistics[{}] updated", gameStatistics.getId());
+					}
 				}
 			}
 		}
+		
 	}
 
 	@Override

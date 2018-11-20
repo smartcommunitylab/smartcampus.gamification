@@ -610,6 +610,7 @@ public class GameManagerTest {
 		g.setConcepts(new HashSet<>());
 		PointConcept green = new PointConcept(POINT_CONCEPT);
 		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+		g.getSettings().put(POINT_CONCEPT, PERIOD_NAME);
 
 		g.getConcepts().add(green);
 		gameSrv.saveGameDefinition(g);

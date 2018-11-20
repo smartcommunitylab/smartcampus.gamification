@@ -341,8 +341,8 @@ public class GameControllerTest {
 		g.setConcepts(new HashSet<>());
 		PointConcept green = new PointConcept(POINT_CONCEPT);
 		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
-
 		g.getConcepts().add(green);
+		g.getSettings().put(POINT_CONCEPT, PERIOD_NAME);
 		gameSrv.saveGameDefinition(g);
 
 		// create 10 players with 'weekly' and 'green leaves'.
@@ -395,8 +395,8 @@ public class GameControllerTest {
 		g.setConcepts(new HashSet<>());
 		PointConcept green = new PointConcept(POINT_CONCEPT);
 		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
-
 		g.getConcepts().add(green);
+		g.getSettings().put(POINT_CONCEPT, PERIOD_NAME);
 		gameSrv.saveGameDefinition(g);
 
 		// create 10 players with 'weekly' and 'green leaves'.
@@ -452,8 +452,8 @@ public class GameControllerTest {
 		g.setConcepts(new HashSet<>());
 		PointConcept green = new PointConcept(POINT_CONCEPT);
 		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
-
 		g.getConcepts().add(green);
+		g.getSettings().put(POINT_CONCEPT, PERIOD_NAME);
 		gameSrv.saveGameDefinition(g);
 
 		// create 10 players with 'weekly' and 'green leaves'.

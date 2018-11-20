@@ -17,7 +17,9 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,8 @@ public class Game {
 	private Set<GameTask> tasks;
 	private Set<String> rules;
 	private Set<GameConcept> concepts;
-    private List<Level> levels = new ArrayList<>();
+	private List<Level> levels = new ArrayList<>();
+	private Map<String, String> settings = new HashMap<String, String>();
 
 	/**
 	 * game expiration time. If game must live forever set a negative value
@@ -131,14 +134,21 @@ public class Game {
 		this.domain = domain;
 	}
 
-    public List<Level> getLevels() {
-        return levels;
-    }
+	public List<Level> getLevels() {
+		return levels;
+	}
 
-    public List<Threshold> getLevelThresholds(String levelName) {
-        return levels.stream().filter(level -> level.getName().equals(levelName))
-                .map(level -> level.getThresholds()).flatMap(thresholds -> thresholds.stream())
-                .collect(Collectors.toList());
-    }
+	public List<Threshold> getLevelThresholds(String levelName) {
+		return levels.stream().filter(level -> level.getName().equals(levelName)).map(level -> level.getThresholds())
+				.flatMap(thresholds -> thresholds.stream()).collect(Collectors.toList());
+	}
+
+	public Map<String, String> getSettings() {
+		return settings;
+	}
+
+	public void setSettings(Map<String, String> settings) {
+		this.settings = settings;
+	}
 
 }

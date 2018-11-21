@@ -35,7 +35,7 @@ public class Game {
 	private Set<String> rules;
 	private Set<GameConcept> concepts;
 	private List<Level> levels = new ArrayList<>();
-	private Settings settings;
+	private Settings settings = new Settings();
 
 	public void setLevels(List<Level> levels) {
 		this.levels = levels;

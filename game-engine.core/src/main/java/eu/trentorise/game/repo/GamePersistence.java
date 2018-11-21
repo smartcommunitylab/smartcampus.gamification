@@ -17,10 +17,8 @@
 package eu.trentorise.game.repo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -36,6 +34,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.Settings;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.task.ClassificationTask;
@@ -64,12 +63,12 @@ public class GamePersistence {
 
 	private Set<GenericObjectPersistence> concepts = new HashSet<GenericObjectPersistence>();
 
-    private List<Level> levels = new ArrayList<>();
+	private List<Level> levels = new ArrayList<>();
 
 	private long expiration;
 	private boolean terminated;
-	
-	private Map<String, String> settings = new HashMap<String, String>();
+
+	private Settings settings;
 
 	public GamePersistence() {
 
@@ -93,12 +92,12 @@ public class GamePersistence {
 				concepts.add(new GenericObjectPersistence(gc));
 			}
 		}
-		
+
 		game.getLevels().forEach(level -> levels.add(level));
 		expiration = game.getExpiration();
 		terminated = game.isTerminated();
 		settings = game.getSettings();
-		
+
 	}
 
 	public Game toGame() {
@@ -141,9 +140,9 @@ public class GamePersistence {
 		}
 		game.setConcepts(gc);
 
-        if (levels != null) {
-        levels.stream().forEach(level -> game.getLevels().add(level));
-        }
+		if (levels != null) {
+			levels.stream().forEach(level -> game.getLevels().add(level));
+		}
 
 		game.setExpiration(expiration);
 		game.setTerminated(terminated);
@@ -231,20 +230,20 @@ public class GamePersistence {
 		this.domain = domain;
 	}
 
-    public List<Level> getLevels() {
-        return levels;
-    }
+	public List<Level> getLevels() {
+		return levels;
+	}
 
-    public void setLevels(List<Level> levels) {
-        this.levels = levels;
-    }
+	public void setLevels(List<Level> levels) {
+		this.levels = levels;
+	}
 
-	public Map<String, String> getSettings() {
+	public Settings getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<String, String> settings) {
+	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
-	
+
 }

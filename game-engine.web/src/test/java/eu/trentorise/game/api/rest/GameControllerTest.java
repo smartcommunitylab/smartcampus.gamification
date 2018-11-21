@@ -53,6 +53,7 @@ import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.Settings;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
@@ -342,7 +343,9 @@ public class GameControllerTest {
 		PointConcept green = new PointConcept(POINT_CONCEPT);
 		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
 		g.getConcepts().add(green);
-		g.getSettings().put(POINT_CONCEPT, PERIOD_NAME);
+		Settings settings = new Settings();
+		settings.getStatisticsConfig().put(POINT_CONCEPT, PERIOD_NAME);
+		g.setSettings(settings);
 		gameSrv.saveGameDefinition(g);
 
 		// create 10 players with 'weekly' and 'green leaves'.
@@ -396,7 +399,9 @@ public class GameControllerTest {
 		PointConcept green = new PointConcept(POINT_CONCEPT);
 		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
 		g.getConcepts().add(green);
-		g.getSettings().put(POINT_CONCEPT, PERIOD_NAME);
+		Settings settings = new Settings();
+		settings.getStatisticsConfig().put(POINT_CONCEPT, PERIOD_NAME);
+		g.setSettings(settings);
 		gameSrv.saveGameDefinition(g);
 
 		// create 10 players with 'weekly' and 'green leaves'.
@@ -453,7 +458,9 @@ public class GameControllerTest {
 		PointConcept green = new PointConcept(POINT_CONCEPT);
 		green.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
 		g.getConcepts().add(green);
-		g.getSettings().put(POINT_CONCEPT, PERIOD_NAME);
+		Settings settings = new Settings();
+		settings.getStatisticsConfig().put(POINT_CONCEPT, PERIOD_NAME);
+		g.setSettings(settings);
 		gameSrv.saveGameDefinition(g);
 
 		// create 10 players with 'weekly' and 'green leaves'.

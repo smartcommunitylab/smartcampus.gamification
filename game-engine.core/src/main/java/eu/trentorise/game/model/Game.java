@@ -17,9 +17,7 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +35,11 @@ public class Game {
 	private Set<String> rules;
 	private Set<GameConcept> concepts;
 	private List<Level> levels = new ArrayList<>();
-	private Map<String, String> settings = new HashMap<String, String>();
+	private Settings settings;
+
+	public void setLevels(List<Level> levels) {
+		this.levels = levels;
+	}
 
 	/**
 	 * game expiration time. If game must live forever set a negative value
@@ -143,11 +145,11 @@ public class Game {
 				.flatMap(thresholds -> thresholds.stream()).collect(Collectors.toList());
 	}
 
-	public Map<String, String> getSettings() {
+	public Settings getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<String, String> settings) {
+	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
 

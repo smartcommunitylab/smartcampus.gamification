@@ -723,9 +723,9 @@ public class GameManager implements GameService {
 		// 1 read active games.
 		for (Game activeG : loadGames(true)) {
 			// 1.1 read settings about statistics.
-			if (!activeG.getSettings().isEmpty()) {
-				for (String pointConceptName : activeG.getSettings().keySet()) {
-					String periodName = activeG.getSettings().get(pointConceptName);
+			if (activeG.getSettings() != null && !activeG.getSettings().getStatisticsConfig().isEmpty()) {
+				for (String pointConceptName : activeG.getSettings().getStatisticsConfig().keySet()) {
+					String periodName = activeG.getSettings().getStatisticsConfig().get(pointConceptName);
 					// 1.2 arrange statistics data array.
 					PeriodInstance periodInstance = ClassificationUtils.retrieveWindow(activeG, periodName,
 							pointConceptName, moment, -1);

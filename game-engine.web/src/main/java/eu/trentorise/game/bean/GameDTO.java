@@ -18,14 +18,13 @@ package eu.trentorise.game.bean;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.Settings;
 
 public class GameDTO {
 	private String id;
@@ -33,34 +32,33 @@ public class GameDTO {
 	private String owner;
 	private String domain;
 
-    private Set<String> actions = new HashSet<>();
-    private Set<RuleDTO> rules = new HashSet<>();
-    private List<LevelDTO> levels = new ArrayList<>();
+	private Set<String> actions = new HashSet<>();
+	private Set<RuleDTO> rules = new HashSet<>();
+	private List<LevelDTO> levels = new ArrayList<>();
 
-    private long expiration;
-    private boolean terminated;
+	private long expiration;
+	private boolean terminated;
 
-    private Set<ClassificationDTO> classificationTask = new HashSet<>();
-    private Set<PointConcept> pointConcept = new HashSet<>();
-    private Set<BadgeCollectionConcept> badgeCollectionConcept = new HashSet<>();
+	private Set<ClassificationDTO> classificationTask = new HashSet<>();
+	private Set<PointConcept> pointConcept = new HashSet<>();
+	private Set<BadgeCollectionConcept> badgeCollectionConcept = new HashSet<>();
 
-    private ChallengeChoiceConfig challengeChoiceConfig;
-    
-    private Map<String, String> settings = new HashMap<String, String>();
+	private ChallengeChoiceConfig challengeChoiceConfig;
 
-    public static class ChallengeChoiceConfig {
-        private Date deadline;
+	private Settings settings;
 
-        public Date getDeadline() {
-            return deadline;
-        }
+	public static class ChallengeChoiceConfig {
+		private Date deadline;
 
-        public void setDeadline(Date deadline) {
-            this.deadline = deadline;
-        }
+		public Date getDeadline() {
+			return deadline;
+		}
 
-    }
+		public void setDeadline(Date deadline) {
+			this.deadline = deadline;
+		}
 
+	}
 
 	public String getDomain() {
 		return domain;
@@ -69,7 +67,6 @@ public class GameDTO {
 	public void setDomain(String domain) {
 		this.domain = domain;
 	}
-
 
 	public String getId() {
 		return id;
@@ -155,28 +152,28 @@ public class GameDTO {
 
 	}
 
-    public List<LevelDTO> getLevels() {
-        return levels;
-    }
+	public List<LevelDTO> getLevels() {
+		return levels;
+	}
 
-    public void setLevels(List<LevelDTO> levels) {
-        this.levels = levels;
-    }
+	public void setLevels(List<LevelDTO> levels) {
+		this.levels = levels;
+	}
 
-    public ChallengeChoiceConfig getChallengeChoiceConfig() {
-        return challengeChoiceConfig;
-    }
+	public ChallengeChoiceConfig getChallengeChoiceConfig() {
+		return challengeChoiceConfig;
+	}
 
-    public void setChallengeChoiceConfig(ChallengeChoiceConfig challengeChoiceConfig) {
-        this.challengeChoiceConfig = challengeChoiceConfig;
-    }
-    
-    public Map<String, String> getSettings() {
+	public void setChallengeChoiceConfig(ChallengeChoiceConfig challengeChoiceConfig) {
+		this.challengeChoiceConfig = challengeChoiceConfig;
+	}
+
+	public Settings getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<String, String> settings) {
+	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
-	
+
 }

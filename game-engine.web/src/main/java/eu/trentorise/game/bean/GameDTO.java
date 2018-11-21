@@ -18,8 +18,10 @@ package eu.trentorise.game.bean;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.trentorise.game.model.BadgeCollectionConcept;
@@ -43,6 +45,8 @@ public class GameDTO {
     private Set<BadgeCollectionConcept> badgeCollectionConcept = new HashSet<>();
 
     private ChallengeChoiceConfig challengeChoiceConfig;
+    
+    private Map<String, String> settings = new HashMap<String, String>();
 
     public static class ChallengeChoiceConfig {
         private Date deadline;
@@ -166,5 +170,13 @@ public class GameDTO {
     public void setChallengeChoiceConfig(ChallengeChoiceConfig challengeChoiceConfig) {
         this.challengeChoiceConfig = challengeChoiceConfig;
     }
+    
+    public Map<String, String> getSettings() {
+		return settings;
+	}
 
+	public void setSettings(Map<String, String> settings) {
+		this.settings = settings;
+	}
+	
 }

@@ -211,6 +211,8 @@ public class Converter {
             task.setSchedule(schedule);
             g.getTasks().add(task);
 		}
+		
+		g.setSettings(game.getSettings());
 
 		return g;
 	}

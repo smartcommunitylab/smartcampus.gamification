@@ -97,5 +97,6 @@
   "lbl_game_domain" : "Dominio",
   "lbl_levels_menu" : "Livelli",
   "lbl_pointConcept" : "Pointconcept di riferimento",
-  "lbl_add_level" : "Crea livello"
+  "lbl_add_level" : "Crea livello",
+  "lbl_inventory_section" : "Inventari"
 }

@@ -156,6 +156,25 @@ public class StatsLogger {
         return msg;
     }
 
+    public static String logBlacklist(String domain, String gameId, String playerId,
+            String executionId, long timestamp, String blockedPlayerId) {
+        String msg =
+                commonFieldsOutput(domain, gameId, playerId, executionId, timestamp, timestamp);
+        msg += " " + String.format("type=%s blockedPlayer=\"%s\"", "Blacklist", blockedPlayerId);
+        statsLogger.info(msg);
+        return msg;
+    }
+
+    public static String logUnblacklist(String domain, String gameId, String playerId,
+            String executionId, long timestamp, String unblockedPlayerId) {
+        String msg =
+                commonFieldsOutput(domain, gameId, playerId, executionId, timestamp, timestamp);
+        msg += " "
+                + String.format("type=%s blockedPlayer=\"%s\"", "Unblacklist", unblockedPlayerId);
+        statsLogger.info(msg);
+        return msg;
+    }
+
     public static String logChallengeAssignment(String domain, String gameId, String playerId,
             String executionId, long timestamp, String challengeName, Date start, Date end) {
         String msg =

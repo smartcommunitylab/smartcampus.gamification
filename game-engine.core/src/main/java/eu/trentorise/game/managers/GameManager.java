@@ -718,8 +718,6 @@ public class GameManager implements GameService {
 		LogHub.info(null, logger, "task game statistics.");
 
 		Calendar cal = Calendar.getInstance();
-//		cal.set(Calendar.MONTH, 1);
-//		cal.set(Calendar.DAY_OF_MONTH, 18);
 		long moment = cal.getTimeInMillis();
 
 		// 1 read active games.

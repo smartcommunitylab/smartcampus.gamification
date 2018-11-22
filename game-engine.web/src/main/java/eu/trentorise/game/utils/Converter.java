@@ -95,6 +95,8 @@ public class Converter {
             gDTO.setLevels(game.getLevels().stream().map(level -> convert(level))
                     .collect(Collectors.toList()));
 
+            gDTO.setSettings(game.getSettings());
+
 			// remove internal actions
 			Iterator<String> iter = gDTO.getActions() != null ? gDTO.getActions().iterator() : null;
 

@@ -45,7 +45,7 @@ public class GameDTO {
 
 	private ChallengeChoiceConfig challengeChoiceConfig;
 
-	private Settings settings;
+    private Settings settings = new Settings();
 
 	public static class ChallengeChoiceConfig {
 		private Date deadline;

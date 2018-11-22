@@ -688,7 +688,7 @@ public class GameManager implements GameService {
     }
     
     
-    @Scheduled(cron = "0 0/10 * * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
 	public void taskGameStats() {
 		/**
 		 * For every activeGame take settings -> statistics ( array of
@@ -715,7 +715,7 @@ public class GameManager implements GameService {
 		 * 
 		 */
 
-		LogHub.info(null, logger, "task game statistics.");
+        LogHub.info(null, logger, "task game statistics");
 
 		Calendar cal = Calendar.getInstance();
 		long moment = cal.getTimeInMillis();
@@ -724,7 +724,8 @@ public class GameManager implements GameService {
 		for (Game activeG : loadGames(true)) {
 			// 1.1 read settings about statistics.
 			if (activeG.getSettings() != null && !activeG.getSettings().getStatisticsConfig().isEmpty()) {
-				for (String pointConceptName : activeG.getSettings().getStatisticsConfig().keySet()) {
+                final Set<String> scoreNames = activeG.getSettings().getStatisticsConfig().keySet();
+                for (String pointConceptName : scoreNames) {
 					String periodName = activeG.getSettings().getStatisticsConfig().get(pointConceptName);
 					// 1.2 arrange statistics data array.
 					PeriodInstance periodInstance = ClassificationUtils.retrieveWindow(activeG, periodName,
@@ -775,12 +776,12 @@ public class GameManager implements GameService {
 						options.upsert(true);
 						options.returnNew(true);
 
-						GameStatistics gameStatistics = mongoTemplate.findAndModify(qGameStats, update, options,
+                        mongoTemplate.findAndModify(qGameStats, update, options,
 								GameStatistics.class);
-
-						LogHub.info(null, logger, "gameStatistics[{}] updated", gameStatistics.getId());
 					}
 				}
+                LogHub.info(activeG.getId(), logger,
+                        String.format("Calculated statistics on scores %s", scoreNames));
 			}
 		}
 		

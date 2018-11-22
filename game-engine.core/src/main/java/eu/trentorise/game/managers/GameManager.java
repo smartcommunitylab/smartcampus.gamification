@@ -39,9 +39,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -745,7 +747,7 @@ public class GameManager implements GameService {
 						for (int i = 0; i < pStates.size(); i++) {
 							data[i] = pStates.get(i).getIncrementalScore(pointConceptName, periodName, key);
 						}
-						
+
 						// average.
 						double average = Arrays.stream(data).average().getAsDouble();
 						// variance.
@@ -759,29 +761,25 @@ public class GameManager implements GameService {
 								.is(pointConceptName).and("periodName").is(periodName).and("periodIndex").is(key);
 						qGameStats.addCriteria(cGameStats);
 
-						GameStatistics gameStatistics = mongoTemplate.findOne(qGameStats, GameStatistics.class);
+						Update update = new Update();
+						update.set("gameId", activeG.getId());
+						update.set("pointConceptName", pointConceptName);
+						update.set("periodName", periodName);
+						update.set("periodIndex", key);
+						update.set("startDate", periodInstance.getStart());
+						update.set("endDate", periodInstance.getEnd());
+						update.set("average", average);
+						update.set("variance", variance);
+						update.set("quantiles", q);
+						update.set("lastUpdated", moment);
 
-						if (gameStatistics != null) {
-							gameStatistics.setAverage(average);
-							gameStatistics.setVariance(variance);
-							gameStatistics.setQuantiles(q);
-							gameStatistics.setLastUpdated(moment);
-							mongoTemplate.save(gameStatistics);
-						} else {
-							gameStatistics = new GameStatistics();
-							gameStatistics.setGameId(activeG.getId());
-							gameStatistics.setPointConceptName(pointConceptName);
-							gameStatistics.setPeriodName(periodName);
-							gameStatistics.setPeriodIndex(key);
-							gameStatistics.setStartDate(periodInstance.getStart());
-							gameStatistics.setEndDate(periodInstance.getEnd());
-							gameStatistics.setAverage(average);
-							gameStatistics.setVariance(variance);
-							gameStatistics.setQuantiles(q);
-							gameStatistics.setLastUpdated(moment);
-							mongoTemplate.save(gameStatistics);
-						}
-						
+						FindAndModifyOptions options = new FindAndModifyOptions();
+						options.upsert(true);
+						options.returnNew(true);
+
+						GameStatistics gameStatistics = mongoTemplate.findAndModify(query, update, options,
+								GameStatistics.class);
+
 						LogHub.info(null, logger, "gameStatistics[{}] updated", gameStatistics.getId());
 						LogHub.info(null, logger, "Data {}", Arrays.toString(data));
 					}

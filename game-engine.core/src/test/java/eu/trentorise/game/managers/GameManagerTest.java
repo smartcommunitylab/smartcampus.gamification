@@ -644,6 +644,26 @@ public class GameManagerTest {
 		Assert.assertTrue(gameStats.get(0).getAverage() == 1.5);
 		Assert.assertTrue(gameStats.get(0).getVariance() == 0.25);
 		Assert.assertTrue(gameStats.get(0).getQuantiles().get(9) == 2.0);
+		
+		// upsert test
+		for (int p = 11; p <= 20; p++) {
+			PointConcept testGreen = new PointConcept(POINT_CONCEPT);
+			testGreen.addPeriod(PERIOD_NAME, cal.getTime(), 7 * 24 * 60 * 60000);
+			testGreen.setScore(1d);
+
+			PlayerState player = new PlayerState(gameId, "player-" + p);
+			player.getState().add(testGreen);
+			playerSrv.saveState(player);
+		}
+
+		gameSrv.taskGameStats();
+
+		gameStats = gameSrv.loadGameStats(gameId, POINT_CONCEPT, PERIOD_NAME, cal.getTimeInMillis(), null, null);
+
+		Assert.assertEquals(1, gameStats.size());
+		Assert.assertTrue(gameStats.get(0).getAverage() == 1.25);
+		Assert.assertTrue(gameStats.get(0).getVariance() == 0.1875);
+		Assert.assertTrue(gameStats.get(0).getQuantiles().get(9) == 2.0);
 
 	}
     

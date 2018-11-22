@@ -688,7 +688,7 @@ public class GameManager implements GameService {
     }
     
     
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
 	public void taskGameStats() {
 		/**
 		 * For every activeGame take settings -> statistics ( array of

@@ -37,5 +37,6 @@
   "msg_level_pointConcept" : "PointConcept already used by another level",
   "msg_threshold_name" : "Threshold name already used",
   "msg_threshold_value" : "Threshold value already used",
-  "msg_threshold_valid_value" :"Should be a positive float number"
+  "msg_threshold_valid_value" :"Should be a positive float number",
+  "msg_no_inventory" : "No inventory"
 }

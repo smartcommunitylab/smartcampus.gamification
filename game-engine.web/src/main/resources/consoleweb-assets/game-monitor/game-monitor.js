@@ -42,6 +42,7 @@ angular.module('gamificationEngine.monitor', [])
 				p.hasCustomData = Object.keys(p.customData).length > 0;
 				p.hasLevels = Object.keys(p.levels).length > 0;
 				p.hasChallenges = challenges.length > 0;
+				p.hasInventories = Object.keys(p.inventory.challengeChoices).length > 0;
 				var referenceTimestamp = new Date().getTime();
 				challenges.forEach(function(c) {
 					c.failed = c.state === 'FAILED';

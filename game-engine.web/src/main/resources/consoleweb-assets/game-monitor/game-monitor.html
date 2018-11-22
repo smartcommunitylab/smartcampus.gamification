@@ -177,6 +177,29 @@
 
 								<div class="col-md-12">
 									<div class="monitor-section-title">
+										<span ng-show="isInventorySectorVisible" ng-click="isInventorySectorVisible = !isInventorySectorVisible" class="glyphicon glyphicon-chevron-right"
+										 aria-hidden="true"></span>
+										<span ng-hide="isInventorySectorVisible" ng-click="isInventorySectorVisible = !isInventorySectorVisible" class="glyphicon glyphicon-chevron-down"
+										 aria-hidden="true"></span>
+										<div class="section-title">
+											<h5 ng-click="isInventorySectorVisible = !isInventorySectorVisible">{{'labels:lbl_inventory_section'
+												| i18next}}</h5>
+										</div>
+									</div>
+									<div uib-collapse="isInventorySectorVisible">
+										<div ng-hide="player.hasInventories" style="margin: 0 10px;">{{'messages:msg_no_inventory'
+											| i18next }}</div>
+										<table class="badge-box" ng-show="player.hasInventories">
+											<tr data-ng-repeat="inventory in player.inventory.challengeChoices">
+												<td><span>{{inventory.modelName}}:</span> <span class="value">{{inventory.state}}</span></td>
+											</tr>
+											<td><span>challengeActivationActions:</span> <span class="value">{{player.inventory.challengeActivationActions}}</span></td>
+										</table>
+									</div>
+								</div>
+
+								<div class="col-md-12">
+									<div class="monitor-section-title">
 										<span ng-show="isChallengeSectorVisible"
 											ng-click="isChallengeSectorVisible = !isChallengeSectorVisible"
 											class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>

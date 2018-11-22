@@ -37,5 +37,6 @@
   "msg_level_pointConcept" : "PointConcept utilizzato da un altro livello",
   "msg_threshold_name" : "Il valore usato per la soglia è già presente",
   "msg_threshold_value" : "Il valore usato per la soglia è già presente",
-  "msg_threshold_valid_value" :"La soglia deve essere un numero positivo"
+  "msg_threshold_valid_value" :"La soglia deve essere un numero positivo",
+  "msg_no_inventory" : "Nessun inventario"
 }

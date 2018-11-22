@@ -775,7 +775,7 @@ public class GameManager implements GameService {
 						options.upsert(true);
 						options.returnNew(true);
 
-						GameStatistics gameStatistics = mongoTemplate.findAndModify(query, update, options,
+						GameStatistics gameStatistics = mongoTemplate.findAndModify(qGameStats, update, options,
 								GameStatistics.class);
 
 						LogHub.info(null, logger, "gameStatistics[{}] updated", gameStatistics.getId());

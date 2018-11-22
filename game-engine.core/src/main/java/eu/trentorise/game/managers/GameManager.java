@@ -688,7 +688,7 @@ public class GameManager implements GameService {
     }
     
     
-	@Scheduled(cron = "0 0 1 * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
 	public void taskGameStats() {
 		/**
 		 * For every activeGame take settings -> statistics ( array of
@@ -779,7 +779,6 @@ public class GameManager implements GameService {
 								GameStatistics.class);
 
 						LogHub.info(null, logger, "gameStatistics[{}] updated", gameStatistics.getId());
-						LogHub.info(null, logger, "Data {}", Arrays.toString(data));
 					}
 				}
 			}

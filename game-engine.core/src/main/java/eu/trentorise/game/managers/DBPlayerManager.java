@@ -794,6 +794,11 @@ public class DBPlayerManager implements PlayerService {
 		}
 		
 		mongoTemplate.save(pbListObj);
+        final String executionId = UUID.randomUUID().toString();
+        final long timestamp = System.currentTimeMillis();
+        Game game = gameSrv.loadGameDefinitionById(gameId);
+        StatsLogger.logBlacklist(game.getDomain(), gameId, playerId, executionId, timestamp,
+                otherPlayerId);
         return pbListObj;
 
 	}
@@ -813,6 +818,11 @@ public class DBPlayerManager implements PlayerService {
 
         pbListObj.getBlockedPlayers().remove(otherPlayerId);
 		mongoTemplate.save(pbListObj);
+        final String executionId = UUID.randomUUID().toString();
+        final long timestamp = System.currentTimeMillis();
+        Game game = gameSrv.loadGameDefinitionById(gameId);
+        StatsLogger.logUnblacklist(game.getDomain(), gameId, playerId, executionId, timestamp,
+                otherPlayerId);
         return pbListObj;
 	}
 

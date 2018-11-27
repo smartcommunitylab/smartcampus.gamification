@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest.platform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +29,7 @@ public class DomainChallengeModelController {
     @ApiOperation(value = "Add challenge model")
     public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel,
             @PathVariable String domain, @PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         return gameSrv.saveChallengeModel(gameId, challengeModel);
     }
 
@@ -45,11 +39,7 @@ public class DomainChallengeModelController {
     @ApiOperation(value = "Get challenge models")
     public Set<ChallengeModel> readChallengeModels(@PathVariable String domain,
             @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         return gameSrv.readChallengeModels(gameId);
     }
 
@@ -59,12 +49,8 @@ public class DomainChallengeModelController {
     @ApiOperation(value = "Delete challenge model")
     public void deleteChallengeModels(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String modelId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-            gameSrv.deleteChallengeModel(gameId, modelId);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        gameSrv.deleteChallengeModel(gameId, modelId);
     }
 
 }

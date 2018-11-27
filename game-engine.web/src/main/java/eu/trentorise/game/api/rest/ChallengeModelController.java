@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +29,7 @@ public class ChallengeModelController {
     public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel,
             @PathVariable String gameId) {
 
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         return gameSrv.saveChallengeModel(gameId, challengeModel);
     }
 
@@ -43,11 +38,7 @@ public class ChallengeModelController {
     @ApiOperation(value = "Get challenge models")
     public Set<ChallengeModel> readChallengeModels(
             @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         return gameSrv.readChallengeModels(gameId);
     }
 
@@ -57,12 +48,8 @@ public class ChallengeModelController {
     @ApiOperation(value = "Delete challenge model")
     public void deleteChallengeModels(@PathVariable String gameId,
             @PathVariable String modelId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-            gameSrv.deleteChallengeModel(gameId, modelId);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        gameSrv.deleteChallengeModel(gameId, modelId);
     }
 
 }

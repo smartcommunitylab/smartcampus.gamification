@@ -2,7 +2,6 @@ package eu.trentorise.game.api.rest;
 
 import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,13 +75,7 @@ public class GameController {
             produces = {"application/json"})
     @ApiOperation(value = "Read game definition")
     public GameDTO readGame(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         return g == null ? null : converter.convertGame(g);
     }
@@ -109,13 +102,7 @@ public class GameController {
             produces = {"application/json"})
     @ApiOperation(value = "Delete game")
     public void deleteGame(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         gameSrv.deleteGame(gameId);
     }
 
@@ -126,12 +113,7 @@ public class GameController {
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Start game", notes = "The game is able to accept action executions")
     public void startGame(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
@@ -143,13 +125,7 @@ public class GameController {
     @ApiOperation(value = "Stop a game",
             notes = "The game will not accept action execution anymore")
     public void stopGame(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
@@ -168,12 +144,7 @@ public class GameController {
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Add action")
     public void addAction(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
@@ -185,12 +156,7 @@ public class GameController {
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Edit action")
     public void editAction(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
@@ -201,12 +167,7 @@ public class GameController {
             produces = {"application/json"})
     @ApiOperation(value = "Get actions")
     public Set<String> readAllAction(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         return g != null ? g.getActions() : Collections.<String>emptySet();
 
@@ -220,12 +181,7 @@ public class GameController {
             produces = {"application/json"})
     @ApiOperation(value = "Get action")
     public void readAction(@PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
@@ -237,18 +193,8 @@ public class GameController {
     @ApiOperation(value = "Delete action")
     public void deleteAction(@PathVariable String gameId,
             @PathVariable String actionId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            actionId = URLDecoder.decode(actionId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("actionId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        actionId = decodePathVariable(actionId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
 
         if (g != null) {

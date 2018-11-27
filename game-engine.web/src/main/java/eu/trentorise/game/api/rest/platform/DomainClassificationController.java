@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest.platform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,13 +67,7 @@ public class DomainClassificationController {
     @ApiOperation(value = "Add general classification definition")
     public GeneralClassificationDTO addClassificationTask(@PathVariable String domain,
             @PathVariable String gameId, @RequestBody GeneralClassificationDTO task) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             if (g.getTasks() == null) {
@@ -104,17 +98,8 @@ public class DomainClassificationController {
     @ApiOperation(value = "Edit general classification definition")
     public void editClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId, @RequestBody GeneralClassificationDTO task) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            classificationId = URLDecoder.decode(classificationId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        classificationId = decodePathVariable(classificationId);
 
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
@@ -147,11 +132,7 @@ public class DomainClassificationController {
     @ApiOperation(value = "Get general classification definitions")
     public List<GeneralClassificationDTO> readAllGeneralClassifications(@PathVariable String domain,
             @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
 
         Game g = gameSrv.loadGameDefinitionById(gameId);
         List<GeneralClassificationDTO> result = new ArrayList<>();
@@ -180,18 +161,8 @@ public class DomainClassificationController {
     @ApiOperation(value = "Get general classification definition")
     public GeneralClassificationDTO readGeneralClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            classificationId = URLDecoder.decode(classificationId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
+        classificationId = decodePathVariable(classificationId);
         List<GeneralClassificationDTO> result = readAllGeneralClassifications(domain, gameId);
         for (GeneralClassificationDTO r : result) {
             if (r.getName().equals(classificationId)) {
@@ -212,17 +183,8 @@ public class DomainClassificationController {
     @ApiOperation(value = "Delete general classification definition")
     public void deleteClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            classificationId = URLDecoder.decode(classificationId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        classificationId = decodePathVariable(classificationId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             if (g.getTasks() != null) {
@@ -247,11 +209,7 @@ public class DomainClassificationController {
     @ApiOperation(value = "Add incremental classification definition")
     public IncrementalClassificationDTO createIncremental(@PathVariable String domain,
             @PathVariable String gameId, @RequestBody IncrementalClassificationDTO classification) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             classification.setGameId(gameId);
@@ -281,12 +239,7 @@ public class DomainClassificationController {
     public void updateIncrementalClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestBody IncrementalClassificationDTO classification) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             classification.setGameId(gameId);
@@ -336,12 +289,7 @@ public class DomainClassificationController {
     @ApiOperation(value = "Get incremental classification defintions")
     public List<IncrementalClassificationDTO> readAllIncremental(@PathVariable String domain,
             @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         List<IncrementalClassificationDTO> result = new ArrayList<>();
         if (g != null) {
@@ -362,11 +310,7 @@ public class DomainClassificationController {
     @ApiOperation(value = "Get incremental classification defition")
     public IncrementalClassificationDTO readIncremental(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         IncrementalClassificationDTO result = null;
         if (g != null) {
@@ -387,12 +331,7 @@ public class DomainClassificationController {
     @ApiOperation(value = "Delete incremental classification definition")
     public void deleteIncremental(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             if (g.getTasks() != null) {
@@ -427,18 +366,8 @@ public class DomainClassificationController {
             @RequestParam(required = false, defaultValue = "-1") int size) {
 
         PeriodInstance instance = null;
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            classificationId = URLDecoder.decode(classificationId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
+        classificationId = decodePathVariable(classificationId);
         if (timestamp != -1 && periodInstanceIndex != -1) {
             throw new IllegalArgumentException(
                     "Cannot use both timestamp and periodIndex parameters in the same request");
@@ -533,18 +462,8 @@ public class DomainClassificationController {
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestParam(required = false, defaultValue = "-1") int page,
             @RequestParam(required = false, defaultValue = "-1") int size) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            classificationId = URLDecoder.decode(classificationId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("classificationId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
+        classificationId = decodePathVariable(classificationId);
         // put this to maintain same behavior of pageable config ( start page
         // from index 1)
         if (page == 0) {

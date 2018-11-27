@@ -14,9 +14,9 @@
 
 package eu.trentorise.game.api.rest;
 
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,18 +101,8 @@ public class MainController {
     @ApiOperation(value = "Get player state", notes = "Get the state of a player in a game")
     public PlayerStateDTO readPlayerState(@PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
     }
 
@@ -128,13 +118,7 @@ public class MainController {
     public Page<PlayerStateDTO> readPlayerState(
             @PathVariable String gameId, @ApiIgnore Pageable pageable,
             @RequestParam(required = false) String playerFilter) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
         Page<PlayerState> page = null;
         if (playerFilter == null) {
@@ -158,11 +142,7 @@ public class MainController {
     @Deprecated
     public List<Notification> readNotification(
             @PathVariable String gameId, @RequestParam(required = false) Long timestamp) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
 
         if (timestamp != null) {
             return notificationSrv.readNotifications(gameId, timestamp, -1);
@@ -180,17 +160,8 @@ public class MainController {
             @PathVariable String gameId, @PathVariable String playerId,
             @RequestParam(required = false) Long timestamp) {
 
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         if (timestamp != null) {
             return notificationSrv.readNotifications(gameId, playerId, timestamp, -1);
         } else {

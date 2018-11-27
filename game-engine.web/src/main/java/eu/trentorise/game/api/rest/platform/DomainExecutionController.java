@@ -1,8 +1,8 @@
 package eu.trentorise.game.api.rest.platform;
 
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -44,17 +44,8 @@ public class DomainExecutionController {
     public void executeAction(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String actionId, @RequestBody ExecutionDataDTO data,
             HttpServletResponse res) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            actionId = URLDecoder.decode(actionId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        actionId = decodePathVariable(actionId);
 
         Game game = gameSrv.loadGameDefinitionByAction(actionId);
         if (game != null && game.isTerminated()) {

@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest.platform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,18 +42,8 @@ public class DomainNotificationController {
             @RequestParam(defaultValue = "-1") long toTs,
             @RequestParam(required = false) List<String> includeTypes,
             @RequestParam(required = false) List<String> excludeTypes) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         return notificationSrv.readNotifications(gameId, playerId, fromTs, toTs, includeTypes,
                 excludeTypes, pageable);
 
@@ -92,12 +82,7 @@ public class DomainNotificationController {
             @RequestParam(defaultValue = "-1") long toTs,
             @RequestParam(required = false) List<String> includeTypes,
             @RequestParam(required = false) List<String> excludeTypes) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         return notificationSrv.readNotifications(gameId, fromTs, toTs, includeTypes, excludeTypes,
                 pageable);
     }

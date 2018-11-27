@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest.platform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,12 +46,7 @@ public class DomainBadgeCollectionConceptController {
             notes = "Add a badge collection to the game definition")
     public void addBadge(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody BadgeCollectionConcept badge) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         gameSrv.addConceptInstance(gameId, badge);
     }
 
@@ -63,12 +58,7 @@ public class DomainBadgeCollectionConceptController {
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Update a badge collection")
     public void updateBadgeCollection(@PathVariable String domain, @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
@@ -80,12 +70,7 @@ public class DomainBadgeCollectionConceptController {
     @ApiOperation(value = "Get the badge collections", notes = "Get badge collections in a game")
     public List<BadgeCollectionConcept> readBadgeCollections(@PathVariable String domain,
             @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
         List<BadgeCollectionConcept> badgeColl = new ArrayList<BadgeCollectionConcept>();
         if (concepts != null) {
@@ -108,19 +93,8 @@ public class DomainBadgeCollectionConceptController {
             notes = "Get the definition of a badge collection in a game")
     public BadgeCollectionConcept readBadgeCollection(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String collectionId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            collectionId = URLDecoder.decode(collectionId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("pointId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
+        collectionId = decodePathVariable(collectionId);
         List<BadgeCollectionConcept> collection = readBadgeCollections(domain, gameId);
 
         for (BadgeCollectionConcept c : collection) {
@@ -141,17 +115,8 @@ public class DomainBadgeCollectionConceptController {
     @ApiOperation(value = "Delete a badge collection")
     public void deleteBadgeCollection(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String collectionId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            collectionId = URLDecoder.decode(collectionId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("collectionId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        collectionId = decodePathVariable(collectionId);
 
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {

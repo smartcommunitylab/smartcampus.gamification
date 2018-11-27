@@ -14,8 +14,8 @@
 
 package eu.trentorise.game.api.rest.platform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -90,13 +90,7 @@ public class DomainConsoleController {
     @RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}",
             produces = {"application/json"})
     public GameDTO readGame(@PathVariable String domain, @PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         return g == null ? null : converter.convertGame(g);
     }
@@ -104,13 +98,7 @@ public class DomainConsoleController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/game/{gameId}",
             produces = {"application/json"})
     public void deleteGame(@PathVariable String domain, @PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         gameSrv.deleteGame(gameId);
     }
 
@@ -129,25 +117,14 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public void addPoint(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody PointConcept point) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         gameSrv.addConceptInstance(gameId, point);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/point",
             produces = {"application/json"})
     public List<PointConcept> readPoints(@PathVariable String domain, @PathVariable String gameId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
         List<PointConcept> points = new ArrayList<PointConcept>();
         if (concepts != null) {
@@ -165,12 +142,7 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public void addBadge(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody BadgeCollectionConcept badge) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         gameSrv.addConceptInstance(gameId, badge);
     }
 
@@ -178,12 +150,7 @@ public class DomainConsoleController {
             produces = {"application/json"})
     public List<BadgeCollectionConcept> readBadgeCollections(@PathVariable String domain,
             @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
         List<BadgeCollectionConcept> badgeColl = new ArrayList<BadgeCollectionConcept>();
         if (concepts != null) {
@@ -200,12 +167,7 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public RuleDTO addRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleDTO rule) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         DBRule r = new DBRule(gameId, rule.getContent());
         r.setName(rule.getName());
         r.setId(rule.getId());
@@ -219,12 +181,7 @@ public class DomainConsoleController {
             value = "/game/{gameId}/rule/db/{ruleUrl}", produces = {"application/json"})
     public boolean deleteDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleUrl) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
         return gameSrv.deleteRule(gameId, ruleUrl);
     }
@@ -233,12 +190,7 @@ public class DomainConsoleController {
             produces = {"application/json"})
     public RuleDTO readDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleUrl) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         ruleUrl = DBRule.URL_PROTOCOL + ruleUrl;
         DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleUrl);
         RuleDTO res = new RuleDTO();
@@ -252,13 +204,7 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public GeneralClassificationDTO addClassificationTask(@PathVariable String domain,
             @PathVariable String gameId, @RequestBody GeneralClassificationDTO task) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             if (g.getTasks() == null) {
@@ -284,12 +230,7 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public void deleteClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody GeneralClassificationDTO task) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             if (g.getTasks() != null) {
@@ -308,12 +249,7 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public void editClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody GeneralClassificationDTO task) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {
             if (g.getTasks() != null) {
@@ -340,12 +276,7 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public void createPlayer(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody PlayerStateDTO player) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         // check if player already exists
         if (playerSrv.loadState(gameId, player.getPlayerId(), false, false) != null) {
             throw new IllegalArgumentException(String.format("Player %s already exists in game %s",
@@ -363,17 +294,8 @@ public class DomainConsoleController {
             value = "/game/{gameId}/player/{playerId}", produces = {"application/json"})
     public void deletePlayer(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         playerSrv.deleteState(gameId, playerId);
     }
 
@@ -398,12 +320,7 @@ public class DomainConsoleController {
             consumes = {"application/json"}, produces = {"application/json"})
     public void createTeam(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody TeamDTO team) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         // check if player already exists
         if (playerSrv.readTeam(gameId, team.getPlayerId()) != null) {
             throw new IllegalArgumentException(
@@ -419,17 +336,8 @@ public class DomainConsoleController {
             produces = {"application/json"})
     public void deleteTeam(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String teamId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            teamId = URLDecoder.decode(teamId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        teamId = decodePathVariable(teamId);
         deletePlayer(domain, gameId, teamId);
     }
 
@@ -438,19 +346,8 @@ public class DomainConsoleController {
             produces = {"application/json"})
     public List<TeamDTO> readTeamsByMember(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId) {
-
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            playerId = URLDecoder.decode(playerId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
         List<TeamState> result = playerSrv.readTeams(gameId, playerId);
         List<TeamDTO> converted = new ArrayList<>();
         for (TeamState r : result) {
@@ -465,17 +362,8 @@ public class DomainConsoleController {
     public void updateTeamMembers(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String teamId, @RequestBody List<String> members) {
 
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            teamId = URLDecoder.decode(teamId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("playerId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        teamId = decodePathVariable(teamId);
         TeamState team = playerSrv.readTeam(gameId, teamId);
         if (team != null) {
             team.setMembers(members);

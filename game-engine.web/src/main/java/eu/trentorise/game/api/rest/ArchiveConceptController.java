@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.Date;
 import java.util.List;
 
@@ -32,11 +32,7 @@ public class ArchiveConceptController {
 			@RequestParam(required = false) String state,
             @RequestParam(required = false) Long from, @RequestParam(required = false) Long to) {
 
-		try {
-			gameId = URLDecoder.decode(gameId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-		}
+        gameId = decodePathVariable(gameId);
 
         Date fromDate = null;
         Date toDate = null;

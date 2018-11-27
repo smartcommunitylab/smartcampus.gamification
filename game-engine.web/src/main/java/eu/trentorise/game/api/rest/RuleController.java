@@ -1,5 +1,7 @@
 package eu.trentorise.game.api.rest;
 
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -108,12 +110,7 @@ public class RuleController {
     @ApiOperation(value = "Get rule")
     public RuleDTO readDbRule(@PathVariable String gameId,
             @PathVariable String ruleId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         ruleId = DBRule.URL_PROTOCOL + ruleId;
         DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleId);
         RuleDTO res = new RuleDTO();
@@ -131,12 +128,7 @@ public class RuleController {
     @ApiOperation(value = "Delete rule")
     public boolean deleteDbRule(@PathVariable String gameId,
             @PathVariable String ruleId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         ruleId = DBRule.URL_PROTOCOL + ruleId;
         return gameSrv.deleteRule(gameId, ruleId);
     }

@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,14 +44,8 @@ public class PointConceptController {
     @ApiOperation(value = "Add point")
     public PointConcept addPoint(@PathVariable String gameId,
             @RequestBody PointConcept point) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         point.setId(UUID.randomUUID().toString());
-
         gameSrv.addConceptInstance(gameId, point);
         return point;
     }
@@ -66,12 +60,7 @@ public class PointConceptController {
     @ApiOperation(value = "Edit point")
     public void updatePoint(@PathVariable String gameId,
             @RequestBody PointConcept point) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
     }
 
@@ -83,12 +72,7 @@ public class PointConceptController {
     @ApiOperation(value = "Get points")
     public List<PointConcept> readPoints(@PathVariable String gameId) {
 
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
         List<PointConcept> points = new ArrayList<PointConcept>();
         if (concepts != null) {
@@ -112,17 +96,8 @@ public class PointConceptController {
     public PointConcept readPoint(@PathVariable String gameId,
             @PathVariable String pointId) {
 
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            pointId = URLDecoder.decode(pointId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("pointId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        pointId = decodePathVariable(pointId);
 
         List<PointConcept> points = readPoints(gameId);
 
@@ -144,17 +119,8 @@ public class PointConceptController {
     @ApiOperation(value = "Delete point")
     public void deletePoint(@PathVariable String gameId,
             @PathVariable String pointId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
-        try {
-            pointId = URLDecoder.decode(pointId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("pointId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
+        pointId = decodePathVariable(pointId);
 
         Game g = gameSrv.loadGameDefinitionById(gameId);
         if (g != null) {

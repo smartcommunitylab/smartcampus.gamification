@@ -1,7 +1,7 @@
 package eu.trentorise.game.api.rest.platform;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,12 +39,7 @@ public class DomainRuleController {
     @ApiOperation(value = "Add rule")
     public RuleDTO addRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleDTO rule) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         DBRule r = new DBRule(gameId, rule.getContent());
         r.setName(rule.getName());
         r.setId(rule.getId());
@@ -62,12 +57,7 @@ public class DomainRuleController {
     @ApiOperation(value = "Edit rule")
     public RuleDTO editRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleDTO rule) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         DBRule r = new DBRule(gameId, rule.getContent());
         r.setName(rule.getName());
         r.setId(rule.getId());
@@ -82,11 +72,7 @@ public class DomainRuleController {
             produces = {"application/json"})
     @ApiOperation(value = "Get rules")
     public List<RuleDTO> readAllRules(@PathVariable String domain, @PathVariable String gameId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
+        gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
         List<RuleDTO> rules = new ArrayList<>();
         if (g != null) {
@@ -110,12 +96,7 @@ public class DomainRuleController {
     @ApiOperation(value = "Get rule")
     public RuleDTO readDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         ruleId = DBRule.URL_PROTOCOL + ruleId;
         DBRule r = (DBRule) gameSrv.loadRule(gameId, ruleId);
         RuleDTO res = new RuleDTO();
@@ -134,12 +115,7 @@ public class DomainRuleController {
     @ApiOperation(value = "Delete rule")
     public boolean deleteDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
-        try {
-            gameId = URLDecoder.decode(gameId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("gameId is not UTF-8 encoded");
-        }
-
+        gameId = decodePathVariable(gameId);
         ruleId = DBRule.URL_PROTOCOL + ruleId;
         return gameSrv.deleteRule(gameId, ruleId);
     }

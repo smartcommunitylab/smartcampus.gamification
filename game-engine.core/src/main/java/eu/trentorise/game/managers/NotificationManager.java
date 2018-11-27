@@ -33,9 +33,15 @@ public class NotificationManager {
 
 	@Autowired
 	NotificationRepo repo;
+	
+	@Autowired
+	private RabbitMQManager rabbitMQManager;
 
 	public void notificate(Notification n) {
-		repo.save(new NotificationPersistence(n));
+		NotificationPersistence np = new NotificationPersistence(n); 
+		repo.save(np);
+		
+		rabbitMQManager.sendMessage(np);
 	}
 
 	public List<Notification> readNotifications(String gameId) {

@@ -1,5 +1,8 @@
 package eu.trentorise.game.managers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +40,7 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.IncrementalClassificationTask;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
@@ -321,19 +325,21 @@ public class ClassificationTaskTest {
         }
 
         p2 = playerSrv.loadState(GAME, PLAYER_2, false);
-        for (GameConcept gc : p2.getState()) {
-            if (gc instanceof BadgeCollectionConcept && gc.getName().equals("green leaves")) {
-                Assert.assertArrayEquals(new String[] {"silver-medal-green", "10-point-green"},
-                        ((BadgeCollectionConcept) gc).getBadgeEarned().toArray(new String[1]));
-                break;
-            }
-        }
+		for (GameConcept gc : p2.getState()) {
+			if (gc instanceof BadgeCollectionConcept && gc.getName().equals("green leaves")) {
+//				Assert.assertArrayEquals(new String[] { "silver-medal-green", "10-point-green" },
+//						((BadgeCollectionConcept) gc).getBadgeEarned().toArray(new String[1]));
+				assertThat(((BadgeCollectionConcept) gc).getBadgeEarned(), containsInAnyOrder("silver-medal-green", "10-point-green"));
+				break;
+			}
+		}
 
         p3 = playerSrv.loadState(GAME, PLAYER_3, false);
         for (GameConcept gc : p3.getState()) {
             if (gc instanceof BadgeCollectionConcept && gc.getName().equals("green leaves")) {
-                Assert.assertArrayEquals(new String[] {"gold-medal-green-1", "10-point-green"},
-                        ((BadgeCollectionConcept) gc).getBadgeEarned().toArray(new String[1]));
+//                Assert.assertArrayEquals(new String[] {"gold-medal-green-1", "10-point-green"},
+//                        ((BadgeCollectionConcept) gc).getBadgeEarned().toArray(new String[1]));
+                assertThat(((BadgeCollectionConcept) gc).getBadgeEarned(), containsInAnyOrder("gold-medal-green-1", "10-point-green"));
                 break;
             }
         }

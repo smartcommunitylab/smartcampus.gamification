@@ -20,10 +20,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -264,13 +264,8 @@ public class PlayerManager implements PlayerService {
     }
 
 	@Override
-	public List<ArchivedConcept> readAllArchiveConcepts(Pageable page) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ArchivedConcept> readArchives(String gameId, String playerId, String state, Long from, Long to) {
+    public List<ArchivedConcept> readArchives(String gameId, String playerId, String state,
+            Date from, Date to) {
 		// TODO Auto-generated method stub
 		return null;
 	}

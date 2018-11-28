@@ -679,21 +679,13 @@ public class DBPlayerManager implements PlayerService {
     }
     
 	@Override
-	public List<ArchivedConcept> readAllArchiveConcepts(Pageable pageable) {
-
-		Query query = new Query().with(pageable);
-
-		return mongoTemplate.find(query, ArchivedConcept.class);
-
-	}
-
-	@Override
-	public List<ArchivedConcept> readArchives(String gameId, String playerId, String state, Long from, Long to) {
+    public List<ArchivedConcept> readArchives(String gameId, String playerId, String state,
+            Date from, Date to) {
 		List<ArchivedConcept> result;
 
 		Query query = new Query();
 
-		Criteria criteria = new Criteria().where("gameId").is(gameId);
+        Criteria criteria = Criteria.where("gameId").is(gameId);
 
 		if (playerId != null) {
 			criteria = criteria.and("playerId").is(playerId);
@@ -706,7 +698,7 @@ public class DBPlayerManager implements PlayerService {
 		if (from != null && to != null) {
 			criteria = criteria.and("archivingDate").gte(from).lte(to);
 		} else if (from != null) {
-			criteria = criteria.and("archivingDate").gte(from);
+            criteria = criteria.and("archivingDate").gte(from);
 		} else if (to != null) {
 			criteria = criteria.and("archivingDate").lte(to);
 		}

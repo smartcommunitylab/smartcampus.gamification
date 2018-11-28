@@ -16,9 +16,9 @@
 
 package eu.trentorise.game.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -97,7 +97,7 @@ public interface PlayerService {
     /*
      * * ARCHIVED CHALLENGE CONCEPTS
      */
-    public List<ArchivedConcept> readAllArchiveConcepts(Pageable page);
     
-    public List<ArchivedConcept> readArchives(String gameId, String playerId, String state, Long from, Long to);
+    public List<ArchivedConcept> readArchives(String gameId, String playerId, String state,
+            Date from, Date to);
 }

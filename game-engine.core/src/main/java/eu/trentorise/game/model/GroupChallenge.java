@@ -256,6 +256,7 @@ public class GroupChallenge {
                 if (bonusScore != null) {
                     attendeeBonus.put(a.getPlayerId(), bonusScore);
                     othersBonusScore.add(attendeeBonus);
+                            challenge.getFields().put("challengerBonusScore", bonusScore);
                 }
             });
             challenge.getFields().put("othersBonusScore", othersBonusScore);

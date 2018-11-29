@@ -445,9 +445,11 @@ public class PlayerController {
 		
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/player/{playerId}/systemList", produces = {
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/data/game/{gameId}/player/{playerId}/challengers",
+            produces = {
 			"application/json" })
-	@ApiOperation(value = "Get system player list for proposed player")
+    @ApiOperation(value = "Get availabe challengers for the player")
 	public List<String> readSystemPlayerState(@PathVariable String gameId, @PathVariable String playerId,
 			@RequestParam(required = false) String conceptName) throws Exception {
 
@@ -458,8 +460,6 @@ public class PlayerController {
 			conceptName = decodePathVariable(conceptName);
 		}	
 
-		LogHub.info(gameId, logger, String.format("read all system player state for player %s", playerId));
-		
 		return playerSrv.readSystemPlayerState(gameId, playerId, conceptName);
 
 	}

@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -207,7 +208,6 @@ public class ChallengeManagerTest {
     @Test
     public void load_completed_performance() {
         BDDMockito.given(clock.now()).willReturn(date("2018-09-27T17:00:00"));
-
         GroupChallenge assign = new GroupChallenge();
         assign.setGameId("game");
         assign.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
@@ -216,6 +216,7 @@ public class ChallengeManagerTest {
         attendee.setPlayerId("player");
         attendee.setRole(Role.GUEST);
         assign.getAttendees().add(attendee);
+        assign.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeManager.save(assign);
 
         GroupChallenge assign1 = new GroupChallenge();
@@ -226,6 +227,7 @@ public class ChallengeManagerTest {
         attendee.setPlayerId("player");
         attendee.setRole(Role.GUEST);
         assign1.getAttendees().add(attendee);
+        assign1.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeManager.save(assign1);
 
         List<GroupChallenge> completedGroupChallenges =
@@ -295,7 +297,7 @@ public class ChallengeManagerTest {
 
     @Test
     public void ant_man_invites_wasp_to_challenge() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
 
         ChallengeInvitation invitation =
                 invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
@@ -306,7 +308,7 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ant_man_already_invite_to_challenge() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
 
         ChallengeInvitation invitation =
                 invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
@@ -320,7 +322,7 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ant_man_invites_wasp_but_she_has_already_reach_limit_invitations() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
         challengeManager.inviteToChallenge(drStrangeInvitation);
@@ -342,7 +344,7 @@ public class ChallengeManagerTest {
 
     @Test
     public void wasp_accept_invitation() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
         GroupChallenge invitationChallenge =
@@ -355,7 +357,7 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void proposer_try_to_accept_own_created_invitation() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
         GroupChallenge invitationChallenge =
@@ -371,7 +373,7 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void wasp_accept_non_existentinvitation() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
         GroupChallenge invitationChallenge =
@@ -382,7 +384,7 @@ public class ChallengeManagerTest {
 
     @Test
     public void wasp_accept_invitation_having_other_proposed_challenges() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME","model_1")).will(new Answer<ChallengeModel>() {
 
             @Override
@@ -423,7 +425,7 @@ public class ChallengeManagerTest {
 
     @Test
     public void wasp_refuses_invitation() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
                 .will(new Answer<ChallengeModel>() {
 
@@ -457,10 +459,19 @@ public class ChallengeManagerTest {
         assertThat(proposedCount, is(0L));
     }
 
+    private Game defineGame() {
+        Game g = new Game("GAME");
+        g.setConcepts(new HashSet<>());
+        PointConcept greenLeaves = new PointConcept("green leaves");
+        greenLeaves.addPeriod("weekly", new Date(), 60000);
+        g.getConcepts().add(greenLeaves);
+        return g;
+    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void proposer_try_to_refuse_own_created_invitation() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
                 .will(new Answer<ChallengeModel>() {
 
@@ -496,7 +507,7 @@ public class ChallengeManagerTest {
 
     @Test
     public void test_query() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "p1", "p2", "groupCompetitivePerformance");
         GroupChallenge invitation = challengeManager.inviteToChallenge(drStrangeInvitation);
@@ -509,7 +520,7 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ant_man_invites_himself() {
-        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(new Game("GAME"));
+        BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         ChallengeInvitation invitation =
                 invitation("GAME", "ant-man", "ant-man", "groupCompetitivePerformance");
         challengeManager.inviteToChallenge(invitation);
@@ -526,6 +537,7 @@ public class ChallengeManagerTest {
         Player guest = new Player();
         guest.setPlayerId(guestId);
         invitation.getGuests().add(guest);
+        invitation.setChallengePointConcept(new PointConceptRef("green leaves", null));
         return invitation;
     }
 }

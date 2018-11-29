@@ -543,6 +543,10 @@ public class GameManagerTest {
     public void competitive_performance_completion_check_process() {
         // save an active game
         Game g = new Game("game");
+        PointConcept walkKm = new PointConcept("Walk_Km");
+        walkKm.addPeriod("weekly", new Date(), 60000);
+        g.setConcepts(new HashSet<>());
+        g.getConcepts().add(walkKm);
         gameSrv.saveGameDefinition(g);
 
         Date startDate = date("2018-09-26T00:00:00");

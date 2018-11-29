@@ -6,12 +6,14 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.junit.Test;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
+import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.test_utils.Utils;
 
 public class GroupChallengeTest {
@@ -109,5 +111,43 @@ public class GroupChallengeTest {
         assertThat(result.getDate(ChallengeState.COMPLETED), nullValue());
     }
 
+    @Test
+    public void validateReward() {
+        Reward reward = new Reward();
+        reward.setCalculationPointConcept(new PointConceptRef("green leaves", "weekly"));
+        reward.setTargetPointConcept(new PointConceptRef("green leaves", null));
+        Game game = new Game("game");
+        PointConcept greenLeaves = new PointConcept("green leaves");
+        greenLeaves.addPeriod("weekly", new Date(), 60000);
+        game.setConcepts(new HashSet<>());
+        game.getConcepts().add(greenLeaves);
+        reward.validate(game);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rewardIsInvalidIfPointConceptNotExistInGame() {
+        Reward reward = new Reward();
+        reward.setCalculationPointConcept(new PointConceptRef("green leaves", "weekly"));
+        reward.setTargetPointConcept(new PointConceptRef("green leaves", null));
+        Game game = new Game("game");
+        PointConcept greenLeaves = new PointConcept("Walk_Km");
+        greenLeaves.addPeriod("weekly", new Date(), 60000);
+        game.setConcepts(new HashSet<>());
+        game.getConcepts().add(greenLeaves);
+        reward.validate(game);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rewardIsInvalidIfPointConceptPeriodNotExist() {
+        Reward reward = new Reward();
+        reward.setCalculationPointConcept(new PointConceptRef("green leaves", "weekly"));
+        reward.setTargetPointConcept(new PointConceptRef("green leaves", null));
+        Game game = new Game("game");
+        PointConcept greenLeaves = new PointConcept("green leaves");
+        greenLeaves.addPeriod("daily", new Date(), 60000);
+        game.setConcepts(new HashSet<>());
+        game.getConcepts().add(greenLeaves);
+        reward.validate(game);
+    }
 
 }

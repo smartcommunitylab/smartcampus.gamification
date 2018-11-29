@@ -38,6 +38,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
+import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
@@ -563,6 +564,7 @@ public class ChallengeTest {
         otherPlayer.setPlayerId("otherPlayer");
         otherPlayer.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(otherPlayer);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
         assertThat(
@@ -611,6 +613,7 @@ public class ChallengeTest {
         otherPlayer.setPlayerId("otherPlayer");
         otherPlayer.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(otherPlayer);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
         GroupChallenge secondGroupChallenge = new GroupChallenge(ChallengeState.PROPOSED);
@@ -626,6 +629,7 @@ public class ChallengeTest {
         otherPlayer.setPlayerId("otherPlayer");
         otherPlayer.setRole(Role.GUEST);
         secondGroupChallenge.getAttendees().add(otherPlayer);
+        secondGroupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(secondGroupChallenge);
 
         assertThat(
@@ -676,6 +680,7 @@ public class ChallengeTest {
         otherPlayer.setPlayerId("otherPlayer");
         otherPlayer.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(otherPlayer);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
@@ -685,20 +690,23 @@ public class ChallengeTest {
 
     @Test
     public void should_not_save_group_challenges_in_playerState() {
+        Game game = defineGame();
+        game = gameSrv.saveGameDefinition(game);
         GroupChallenge groupChallenge = new GroupChallenge();
-        groupChallenge.setGameId("game");
+        groupChallenge.setGameId(game.getId());
         groupChallenge.setInstanceName("groupChallengeInstance");
         groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         Attendee player = new Attendee();
         player.setPlayerId("player");
         player.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(player);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        PlayerState state = playerSrv.loadState("game", "player", true, true);
+        PlayerState state = playerSrv.loadState(game.getId(), "player", true, true);
         assertThat(state.challenges(), hasSize(1));
         playerSrv.saveState(state);
-        state = playerSrv.loadState("game", "player", false, true);
+        state = playerSrv.loadState(game.getId(), "player", false, true);
         assertThat(state.challenges(), hasSize(1));
     }
 

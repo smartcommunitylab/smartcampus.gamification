@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.Predicate;
 
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
+import eu.trentorise.game.model.core.GameConcept;
 
 public class GroupChallenge {
 
@@ -180,7 +182,7 @@ public class GroupChallenge {
 
     }
 
-    public void validate() {
+    public void validate(Game game) {
         if (StringUtils.isBlank(challengeModel)) {
             throw new IllegalArgumentException(String.format("challengeModel cannot be blank"));
         } else if (!GroupChallenge.MODELS.contains(challengeModel)) {
@@ -193,6 +195,40 @@ public class GroupChallenge {
         if (attendees.isEmpty()) {
             throw new IllegalArgumentException(String.format("attendees couldn't be empty"));
         }
+
+        validateChallengePointConcept(game, challengePointConcept);
+
+        if (reward != null) {
+            reward.validate(game);
+        }
+    }
+
+    private static void validateChallengePointConcept(Game game,
+            PointConceptRef challengePointConcept) {
+        if (challengePointConcept == null) {
+            throw new IllegalArgumentException("challengePointConcept is required");
+        }
+        validatePointConcept(game, challengePointConcept);
+    }
+
+    private static void validatePointConcept(Game game, PointConceptRef pointConceptRef) {
+        PointConcept pointConcept = (PointConcept) game.getConcepts().stream()
+                .filter(foundPointConcept(pointConceptRef.getName())).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("pointconcept %s not defined in game %s",
+                                pointConceptRef.getName(), game.getId())));
+
+        if (pointConceptRef.getPeriod() != null
+                && pointConcept.getPeriod(pointConceptRef.getPeriod()) == null) {
+            throw new IllegalArgumentException(
+                    String.format("period %s not existent in pointConcept %s",
+                            pointConceptRef.getPeriod(), pointConceptRef.getName()));
+        }
+    }
+
+    private static Predicate<GameConcept> foundPointConcept(String name) {
+        return concept -> concept.getClass() == PointConcept.class
+                && concept.getName().equals(name);
     }
 
     private ChallengeConcept setFields(ChallengeConcept challenge, Attendee player) {

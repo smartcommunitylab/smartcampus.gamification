@@ -20,6 +20,7 @@ then
 end
 
 rule 'zero_impact_ch_check'
+lock-on-active
 when
 	$challenge : ChallengeConcept( modelName == "zeroImpact", (Integer) fields["counter"] == (Integer) fields["target"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"] )
 	$pc : PointConcept(name == (String) $bonusPointType)

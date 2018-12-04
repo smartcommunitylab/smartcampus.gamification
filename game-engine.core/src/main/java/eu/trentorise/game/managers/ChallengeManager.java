@@ -24,6 +24,7 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.notification.ChallengeCompletedNotication;
 import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.notification.ChallengeInvitationAcceptedNotification;
+import eu.trentorise.game.notification.ChallengeInvitationCanceledNotification;
 import eu.trentorise.game.notification.ChallengeInvitationNotification;
 import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
 import eu.trentorise.game.repo.GroupChallengeRepo;
@@ -332,6 +333,18 @@ public class ChallengeManager {
             throw new IllegalArgumentException(String.format(
                     "Challenge %s is not PROPOSED by proposer player %s", challengeName, playerId));
         }
+        final Attendee proposer = canceled.proposer();
+        canceled.guests().forEach(guest -> {
+            ChallengeInvitationCanceledNotification notification =
+                    new ChallengeInvitationCanceledNotification();
+            notification.setGameId(gameId);
+            notification.setPlayerId(guest.getPlayerId());
+            notification.setChallengeName(challengeName);
+            if (proposer != null) {
+                notification.setProposerId(proposer.getPlayerId());
+            }
+            notificationSrv.notificate(notification);
+        });
         LogHub.info(gameId, logger, String.format(
                 "Invitation to challenge %s canceled by player %s", challengeName, playerId));
         return canceled;

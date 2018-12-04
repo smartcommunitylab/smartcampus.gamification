@@ -11,14 +11,14 @@ when
     Player($player: id)
 
 then
-	utils.log(String.format("Reward calculated on %s - %s", $calculationPointConceptRef.getName(), $calculationPointConceptRef.getPeriod()));
 	
 	//WARNING: here we are assuming that calculation point and target point belong 
 	//to the same point concept, and hence, there is no need for conversion
 	Double percentage = $reward.getPercentage();
 	
 	Double base = $pcCalculation.getPeriodCurrentScore($calculationPointConceptRef.getPeriod());
-	
+	utils.log(String.format("Reward calculated on %s - %s: %s", $calculationPointConceptRef.getName(), $calculationPointConceptRef.getPeriod(),base));
+
 	double rewardScore = (double) Math.round(base * percentage / 100);
 	if($reward.getThreshold() > 0 && rewardScore > $reward.getThreshold()) {
 		rewardScore = $reward.getThreshold(); 

@@ -75,8 +75,8 @@ public class ChallengeManager {
     public GroupChallenge save(GroupChallenge challenge) {
         if (challenge != null) {
             // ATTENTION: some issues with tests
-            // Game game = gameSrv.loadGameDefinitionById(challenge.getGameId());
-            // challenge.validate(game);
+            Game game = gameSrv.loadGameDefinitionById(challenge.getGameId());
+            challenge.validate(game);
             if (StringUtils.isBlank(challenge.getInstanceName())) {
                 Attendee proposer = challenge.proposer();
                 challenge.setInstanceName(

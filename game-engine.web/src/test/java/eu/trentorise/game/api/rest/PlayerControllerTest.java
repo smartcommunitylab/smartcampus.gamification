@@ -123,7 +123,10 @@ public class PlayerControllerTest {
         game.getActions().add(ACTION);
         game.getActions().add("classification");
 
+        PointConcept walkKm = new PointConcept("Walk_Km");
+        walkKm.addPeriod("weekly", new Date(), 60000);
         game.setConcepts(new HashSet<GameConcept>());
+        game.getConcepts().add(walkKm);
 
         game.setTasks(new HashSet<GameTask>());
 
@@ -179,7 +182,7 @@ public class PlayerControllerTest {
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.getState().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -214,7 +217,7 @@ public class PlayerControllerTest {
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.getState().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -249,7 +252,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.getState().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
             assertThat(challenge.getPriority(), is(5));
         } catch (Exception e) {
@@ -314,7 +317,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.getState().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().get();
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -347,7 +350,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.getState().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().get();
             assertThat(challenge.getOrigin(), is("MY_SYSTEM"));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -1320,7 +1323,8 @@ public class PlayerControllerTest {
 
 		RequestBuilder builder = null;
 		try {
-			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/challengers", gameId, "proposer")
 					.contentType(MediaType.APPLICATION_JSON);
 			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
 					.andExpect(jsonPath("$", hasSize(2)));
@@ -1365,7 +1369,8 @@ public class PlayerControllerTest {
 
 		RequestBuilder builder = null;
 		try {
-			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/challengers", gameId, "proposer")
 					.contentType(MediaType.APPLICATION_JSON);
 			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
 					.andExpect(jsonPath("$", hasSize(1)));
@@ -1406,7 +1411,8 @@ public class PlayerControllerTest {
 
 		RequestBuilder builder = null;
 		try {
-			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/challengers", gameId, "proposer")
 					.contentType(MediaType.APPLICATION_JSON);
 			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
 					.andExpect(jsonPath("$", hasSize(1)));
@@ -1467,7 +1473,8 @@ public class PlayerControllerTest {
 
 		RequestBuilder builder = null;
 		try {
-			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/challengers", gameId, "proposer")
 					.contentType(MediaType.APPLICATION_JSON);
 			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
 					.andExpect(jsonPath("$", hasSize(1)));
@@ -1520,7 +1527,8 @@ public class PlayerControllerTest {
 
 		RequestBuilder builder = null;
 		try {
-			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/challengers", gameId, "proposer")
 					.contentType(MediaType.APPLICATION_JSON);
 			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
 					.andExpect(jsonPath("$", hasSize(1)));
@@ -1573,7 +1581,8 @@ public class PlayerControllerTest {
 
 		RequestBuilder builder = null;
 		try {
-			builder = MockMvcRequestBuilders.get("/data/game/{gameId}/player/{playerId}/systemList", gameId, "proposer")
+            builder = MockMvcRequestBuilders
+                    .get("/data/game/{gameId}/player/{playerId}/challengers", gameId, "proposer")
 					.contentType(MediaType.APPLICATION_JSON);
 			mocker.perform(builder).andDo(print()).andExpect(MockMvcResultMatchers.status().is(200))
 					.andExpect(jsonPath("$", hasSize(1)));

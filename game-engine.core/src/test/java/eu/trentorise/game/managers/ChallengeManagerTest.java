@@ -437,6 +437,65 @@ public class ChallengeManagerTest {
         assertThat(proposedCount, is(0L));
     }
 
+
+    @Test
+    public void wasp_accept_invitation_and_ant_man_has_pending() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "PROPOSED", null, null);
+        playerSrv.assignChallenge("GAME", "wasp", assignment);
+
+        ChallengeAssignment assignment1 = new ChallengeAssignment("model_1", "instance_name1",
+                new HashMap<>(), "PROPOSED", null, null);
+        playerSrv.assignChallenge("GAME", "wasp", assignment1);
+
+        ChallengeAssignment antManAssignment = new ChallengeAssignment("model_1", "instance_name11",
+                new HashMap<>(), "PROPOSED", null, null);
+        playerSrv.assignChallenge("GAME", "ant-man", antManAssignment);
+
+        ChallengeInvitation capAmericaInvitation =
+                invitation("GAME", "cap", "ant-man", GroupChallenge.MODEL_NAME_COOPERATIVE);
+        challengeManager.inviteToChallenge(capAmericaInvitation);
+
+
+        ChallengeInvitation antManInvitation =
+                invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
+        GroupChallenge challengeWithAntMan = challengeManager.inviteToChallenge(antManInvitation);
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
+        GroupChallenge invitationChallenge =
+                challengeManager.inviteToChallenge(drStrangeInvitation);
+        assertThat(invitationChallenge.getState(), is(ChallengeState.PROPOSED));
+        GroupChallenge invitationAccepted = challengeManager.acceptInvitation("GAME", "wasp",
+                challengeWithAntMan.getInstanceName());
+        assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
+        PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
+        long proposedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        long assignedCount = waspState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
+        assertThat(assignedCount, is(1L));
+        assertThat(proposedCount, is(0L));
+        PlayerState antManState = playerSrv.loadState("GAME", "ant-man", false, true);
+        long antManAssignedCounter = antManState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
+        long antManProposedCounter = antManState.challenges().stream()
+                .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
+        assertThat(antManAssignedCounter, is(1L));
+        assertThat(antManProposedCounter, is(0L));
+    }
+
     @Test
     public void wasp_refuses_invitation() {
         gameSrv.saveGameDefinition(defineGame());

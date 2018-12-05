@@ -241,7 +241,7 @@ public class ChallengeManager {
     }
 
     public GroupChallenge acceptInvitation(String gameId, String playerId, String challengeName) {
-        PlayerState playerState = playerSrv.loadState(gameId, playerId, true, false);
+        PlayerState guestState = playerSrv.loadState(gameId, playerId, true, false);
         List<GroupChallenge> guestInvitations =
                 groupChallengeRepo.guestInvitations(gameId, playerId);
         GroupChallenge pendingInvitation = guestInvitations.stream()
@@ -269,32 +269,43 @@ public class ChallengeManager {
                         pendingInvitation.getInstanceName(), pendingInvitation.getChallengeModel());
             }
 
-            // trigger archiving of other PROPOSED challenges
-            java.util.Iterator<ChallengeConcept> iterator = playerState.challenges().iterator();
-            while (iterator.hasNext()) {
-                ChallengeConcept ch = iterator.next();
-                if (ch.getState() == ChallengeState.PROPOSED) {
-                    ChallengeConcept removedChallenge =
-                            playerState.removeConcept(ch.getName(), ChallengeConcept.class);
-                    removedChallenge.updateState(ChallengeState.REFUSED);
-                    archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
-                }
+            triggerOnProposedChallenges(guestState);
+            if (challengeProposer != null) {
+                PlayerState proposerState =
+                        playerSrv.loadState(gameId, challengeProposer.getPlayerId(), true, false);
+                triggerOnProposedChallenges(proposerState);
             }
-            playerSrv.saveState(playerState);
-
-            List<GroupChallenge> otherProposedhallenges = groupChallengeRepo
-                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-            groupChallengeRepo.delete(otherProposedhallenges);
-            otherProposedhallenges.forEach(challenge -> {
-                challenge.updateState(ChallengeState.REFUSED);
-                archiveSrv.moveToArchive(gameId, challenge);
-            });
 
             return pendingInvitation;
         } else {
             throw new IllegalArgumentException(String.format(
                     "Challenge %s is not PROPOSED for guest player %s", challengeName, playerId));
         }
+    }
+
+    private void triggerOnProposedChallenges(PlayerState playerState) {
+        final String gameId = playerState.getGameId();
+        final String playerId = playerState.getPlayerId();
+        // trigger archiving of other PROPOSED challenges
+        java.util.Iterator<ChallengeConcept> iterator = playerState.challenges().iterator();
+        while (iterator.hasNext()) {
+            ChallengeConcept ch = iterator.next();
+            if (ch.getState() == ChallengeState.PROPOSED) {
+                ChallengeConcept removedChallenge =
+                        playerState.removeConcept(ch.getName(), ChallengeConcept.class);
+                removedChallenge.updateState(ChallengeState.REFUSED);
+                archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
+            }
+        }
+        playerSrv.saveState(playerState);
+
+        List<GroupChallenge> otherProposedhallenges =
+                groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
+        groupChallengeRepo.delete(otherProposedhallenges);
+        otherProposedhallenges.forEach(challenge -> {
+            challenge.updateState(ChallengeState.REFUSED);
+            archiveSrv.moveToArchive(gameId, challenge);
+        });
     }
 
     public GroupChallenge refuseInvitation(String gameId, String playerId, String challengeName) {

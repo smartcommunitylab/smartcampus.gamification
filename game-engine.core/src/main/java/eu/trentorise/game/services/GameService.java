@@ -90,6 +90,8 @@ public interface GameService {
     
     void taskGameStats();
     
+    void challengeFailureTask();
+
 	public List<GameStatistics> loadGameStats(String gameId, String pointConceptName, String periodName, Long timestamp,
 			String periodIndex, Pageable pageable);
 

@@ -93,4 +93,11 @@ public class GroupChallengeRepoImpl implements ExtendedGroupChallengeRepo {
         return mongo.find(new Query(crit), GroupChallenge.class);
     }
 
+    @Override
+    public List<GroupChallenge> groupChallengesToFail(String gameId, Date atDate) {
+        Criteria crit = new Criteria("gameId").is(gameId).and("end").lte(atDate).and("state")
+                .in("ASSIGNED", "ACTIVE");
+        return mongo.find(new Query(crit), GroupChallenge.class);
+    }
+
 }

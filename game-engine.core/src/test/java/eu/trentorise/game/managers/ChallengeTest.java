@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -709,6 +710,118 @@ public class ChallengeTest {
         state = playerSrv.loadState(game.getId(), "player", false, true);
         assertThat(state.challenges(), hasSize(1));
     }
+
+    @Test
+    public void challenge_failure_one_group_challenge() {
+        Game game = defineGame();
+        game = gameSrv.saveGameDefinition(game);
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId(game.getId());
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        groupChallenge.setEnd(LocalDate.now().minusDays(1).toDate());
+        groupChallenge.setState(ChallengeState.ASSIGNED);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
+        challengeSrv.save(groupChallenge);
+
+        gameSrv.challengeFailureTask();
+        assertThat(groupChallengeRepo.findAll().get(0).getState(), is(ChallengeState.FAILED));
+    }
+
+    @Test
+    public void challenge_failure_two_group_challenge() {
+        Game game = defineGame();
+        game = gameSrv.saveGameDefinition(game);
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId(game.getId());
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        groupChallenge.setEnd(LocalDate.now().minusDays(1).toDate());
+        groupChallenge.setState(ChallengeState.ASSIGNED);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
+        challengeSrv.save(groupChallenge);
+
+        groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId(game.getId());
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME);
+        player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        groupChallenge.setEnd(LocalDateTime.now().minusHours(5).toDate());
+        groupChallenge.setState(ChallengeState.ASSIGNED);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
+        challengeSrv.save(groupChallenge);
+
+        gameSrv.challengeFailureTask();
+        List<GroupChallenge> groupChallenges = groupChallengeRepo.findAll();
+        long failedCounter = groupChallenges.stream()
+                .filter(challenge -> challenge.getState() == ChallengeState.FAILED).count();
+        assertThat(groupChallenges, hasSize(2));
+        assertThat(failedCounter, is(2L));
+    }
+
+    @Test
+    public void challenge_failure_three_challenges_two_failure() {
+        Game game = defineGame();
+        game = gameSrv.saveGameDefinition(game);
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId(game.getId());
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        groupChallenge.setEnd(LocalDate.now().minusDays(1).toDate());
+        groupChallenge.setState(ChallengeState.ASSIGNED);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
+        challengeSrv.save(groupChallenge);
+
+        groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId(game.getId());
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME);
+        player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        groupChallenge.setEnd(LocalDateTime.now().minusHours(5).toDate());
+        groupChallenge.setState(ChallengeState.ASSIGNED);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
+        challengeSrv.save(groupChallenge);
+
+        groupChallenge = new GroupChallenge();
+        groupChallenge.setGameId(game.getId());
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COOPERATIVE);
+        player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        groupChallenge.setEnd(LocalDateTime.now().plusDays(5).toDate());
+        groupChallenge.setState(ChallengeState.ASSIGNED);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
+        challengeSrv.save(groupChallenge);
+
+        gameSrv.challengeFailureTask();
+        List<GroupChallenge> groupChallenges = groupChallengeRepo.findAll();
+        long failedCounter = groupChallenges.stream()
+                .filter(challenge -> challenge.getState() == ChallengeState.FAILED).count();
+        assertThat(groupChallenges, hasSize(3));
+        assertThat(failedCounter, is(2L));
+    }
+
+
 
     private Game defineGame() {
 

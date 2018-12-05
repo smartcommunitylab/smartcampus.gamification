@@ -668,7 +668,6 @@ public class GameManagerTest {
 		Assert.assertTrue(gameStats.get(0).getAverage() == 1.25);
 		Assert.assertTrue(gameStats.get(0).getVariance() == 0.1875);
 		Assert.assertTrue(gameStats.get(0).getQuantiles().get(9) == 2.0);
-
 	}
     
 

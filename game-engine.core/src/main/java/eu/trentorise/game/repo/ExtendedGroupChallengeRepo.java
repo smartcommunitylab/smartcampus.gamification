@@ -15,6 +15,8 @@ public interface ExtendedGroupChallengeRepo {
 
     List<GroupChallenge> activeGroupChallenges(String gameId, String playerId, Date atDate);
 
+    List<GroupChallenge> groupChallengesToFail(String gameId, Date atDate);
+
     void deletePlayerGroupChallenges(String gameId, String playerId,
             ChallengeState challengeState);
 

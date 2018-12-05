@@ -142,6 +142,10 @@ public class ChallengeManager {
         return groupChallengeRepo.activeGroupChallenges(gameId, playerId, atDate);
     }
 
+    public List<GroupChallenge> groupChallengeToFail(String gameId, Date atDate) {
+        return groupChallengeRepo.groupChallengesToFail(gameId, atDate);
+    }
+
     public GroupChallenge inviteToChallenge(ChallengeInvitation invitation) {
         if (invitation != null) {
 

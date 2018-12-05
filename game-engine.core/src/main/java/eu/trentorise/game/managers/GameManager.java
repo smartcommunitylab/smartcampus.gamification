@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -69,6 +68,7 @@ import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
+import eu.trentorise.game.notification.ChallengeFailedNotication;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.GameRepo;
@@ -388,27 +388,36 @@ public class GameManager implements GameService {
         long start = System.currentTimeMillis();
         Date now = new Date();
         List<Game> activeGames = loadGames(true);
-        List<String> activeGameIds =
-                activeGames.stream().map(Game::getId).collect(Collectors.toList());
         PageRequest firstPage = new PageRequest(0, pageSize);
 
-        activeGameIds.forEach(gameId -> {
+        activeGames.forEach(game -> {
+            final String gameId = game.getId();
             Page<String> pagedPlayerIds = playerSrv.readPlayers(gameId, firstPage);
-            updateChallengeState(pagedPlayerIds, gameId, now);
+            updateChallengeState(pagedPlayerIds, game, now);
             for (int pageIdx = 1; pageIdx < pagedPlayerIds.getTotalPages(); pageIdx++) {
                 PageRequest pageRequest = new PageRequest(pageIdx, pageSize);
                 pagedPlayerIds = playerSrv.readPlayers(gameId, pageRequest);
-                updateChallengeState(pagedPlayerIds, gameId, now);
+                updateChallengeState(pagedPlayerIds, game, now);
             }
+            List<GroupChallenge> groupChallengesToFail =
+                    challengeSrv.groupChallengeToFail(gameId, now);
+            groupChallengesToFail.forEach(groupChallenge -> {
+                groupChallenge.updateState(ChallengeState.FAILED, groupChallenge.getEnd());
+                groupChallenge = challengeSrv.save(groupChallenge);
+                challengeSrv.sendChallengeNotification(groupChallenge);
+                challengeSrv.logStatsEvents(game, groupChallenge);
+            });
         });
+
+
         long end = System.currentTimeMillis();
         LogHub.info(null, logger,
                 String.format("Challenge failure check finished in %s ms ", (end - start)));
     }
 
-    private void updateChallengeState(Page<String> pagedPlayerIds, String gameId, Date deadline) {
-        Game game = loadGameDefinitionById(gameId);
+    private void updateChallengeState(Page<String> pagedPlayerIds, Game game, Date deadline) {
         String executionId = UUID.randomUUID().toString();
+        final String gameId = game.getId();
         pagedPlayerIds.forEach(id -> {
             PlayerState player = playerSrv.loadState(gameId, id, false, false);
             player.challenges().forEach(challenge -> {
@@ -419,6 +428,11 @@ public class GameManager implements GameService {
                     StatsLogger.logChallengeFailed(game.getDomain(), gameId, player.getPlayerId(),
                             executionId, challenge.getEnd().getTime(), deadline.getTime(),
                             challenge.getName());
+                    ChallengeFailedNotication notification = new ChallengeFailedNotication();
+                    notification.setChallengeName(challenge.getName());
+                    notification.setGameId(game.getId());
+                    notification.setPlayerId(player.getPlayerId());
+                    notificationSrv.notificate(notification);
                 }
             });
             playerSrv.saveState(player);

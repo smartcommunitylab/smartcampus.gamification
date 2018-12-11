@@ -46,7 +46,7 @@ class ConceptHelper {
             GameConcept gc = iter.next();
             if (gc instanceof ChallengeConcept) {
                 ChallengeConcept challenge = (ChallengeConcept) gc;
-                if (!challenge.isActive()) {
+                if (!challenge.isActive() || !challenge.isActivable()) {
                     continue;
                 }
             }

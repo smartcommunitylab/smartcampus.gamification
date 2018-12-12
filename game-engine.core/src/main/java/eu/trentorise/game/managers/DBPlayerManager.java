@@ -658,7 +658,7 @@ public class DBPlayerManager implements PlayerService {
                     .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
                     .max(new PriorityComparator());
             maxPriorityChallenge.ifPresent(challenge -> {
-                challenge.updateState(ChallengeState.ASSIGNED);
+                challenge.updateState(ChallengeState.ASSIGNED).forced();
             });
 
             if (maxPriorityChallenge.isPresent()) {

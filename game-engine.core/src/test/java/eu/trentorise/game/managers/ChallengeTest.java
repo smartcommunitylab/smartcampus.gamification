@@ -383,6 +383,7 @@ public class ChallengeTest {
 
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
         assertThat(forced.getName(), is("this_value"));
+        assertThat(forced.isForced(), is(true));
     }
 
 

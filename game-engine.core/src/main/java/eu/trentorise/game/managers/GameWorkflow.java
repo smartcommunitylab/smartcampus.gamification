@@ -108,11 +108,12 @@ public class GameWorkflow implements Workflow {
                     userId, playerActiveGroupChallenges.size()));
         }
         playerActiveGroupChallenges.forEach(groupChallenge -> {
-            List<PlayerState> guestStates = groupChallenge.guests().stream()
-                    .map(guest -> playerSrv.loadState(gameId, guest.getPlayerId(), false, false))
+            List<PlayerState> participantStates = groupChallenge.getAttendees().stream()
+                    .filter(a -> !a.getPlayerId().equals(userId)).map(participant -> playerSrv
+                            .loadState(gameId, participant.getPlayerId(), false, false))
                     .collect(Collectors.toList());
-            guestStates.add(newState);
-            groupChallenge.update(guestStates);
+            participantStates.add(newState);
+            groupChallenge.update(participantStates);
             challengeSrv.save(groupChallenge);
             if (groupChallenge.getChallengeModel()
                     .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)

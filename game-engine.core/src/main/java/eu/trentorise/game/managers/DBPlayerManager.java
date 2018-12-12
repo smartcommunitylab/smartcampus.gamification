@@ -720,6 +720,7 @@ public class DBPlayerManager implements PlayerService {
                     .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED),challengeConceptsRepresentation)
                     .max(new PriorityComparator());
             maxPriorityChallenge.ifPresent(challenge -> {
+
                 if (challenge.isGroupChallenge()) {
                     proposedGroupChallenges.stream()
                             .filter(groupChallenge -> groupChallenge.getGameId().equals(gameId)
@@ -732,7 +733,7 @@ public class DBPlayerManager implements PlayerService {
                                 groupChallengeRepo.save(selectedGroupChallenge);
                             });
                 } else {
-                challenge.updateState(ChallengeState.ASSIGNED);
+                    challenge.updateState(ChallengeState.ASSIGNED).forced();
                 }
             });
 

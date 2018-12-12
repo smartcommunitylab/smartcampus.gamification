@@ -42,6 +42,8 @@ public class ChallengeConcept extends GameConcept {
      */
     private int priority = 0;
 
+    private boolean forced;
+
     @JsonIgnore
     private Date objectCreationDate;
 
@@ -263,6 +265,11 @@ public class ChallengeConcept extends GameConcept {
         return GROUP_CHALLENGES_MODELS.contains(modelName);
     }
 
+    public ChallengeConcept forced() {
+        this.forced = true;
+        return this;
+    }
+
     private void resetHistory(ChallengeState state) {
         stateDate.remove(state);
     }
@@ -305,6 +312,10 @@ public class ChallengeConcept extends GameConcept {
 
     public Map<ChallengeState, Date> getStateDate() {
         return stateDate;
+    }
+
+    public boolean isForced() {
+        return forced;
     }
 
 }

@@ -54,6 +54,7 @@ import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
@@ -71,6 +72,8 @@ import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.RawSearchQuery;
 import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.notification.ChallengeAssignedNotification;
+import eu.trentorise.game.notification.ChallengeInvitationCanceledNotification;
+import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
 import eu.trentorise.game.notification.ChallengeProposedNotification;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
@@ -685,6 +688,15 @@ public class DBPlayerManager implements PlayerService {
                 archiveSrv.moveToArchive(gameId, challenge);
                 StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
                         executionId, executionTime, executionTime, challenge.getInstanceName());
+
+                // send notifications to other participants
+                challenge.guests().stream().filter(g -> g.getPlayerId().equals(playerId))
+                        .findFirst().ifPresent(
+                                guest -> sendRefusedNotification(guest.getPlayerId(), challenge));
+                final Attendee proposer = challenge.proposer();
+                if (proposer != null && proposer.getPlayerId().equals(playerId)) {
+                    sendCanceledNotifications(challenge);
+                }
             });
         }
 
@@ -694,6 +706,44 @@ public class DBPlayerManager implements PlayerService {
         }
 
         return accepted;
+    }
+
+    private ChallengeInvitationRefusedNotification sendRefusedNotification(String guestId,
+            GroupChallenge refused) {
+        ChallengeInvitationRefusedNotification notification =
+                new ChallengeInvitationRefusedNotification();
+        Attendee proposer = refused.proposer();
+        final String gameId = refused.getGameId();
+        final String challengeName = refused.getInstanceName();
+
+        if (proposer != null) {
+            notification.setGameId(gameId);
+            notification.setPlayerId(proposer.getPlayerId());
+            notification.setChallengeName(challengeName);
+            notification.setGuestId(guestId);
+            notificationSrv.notificate(notification);
+        } else {
+            LogHub.warn(gameId, logger, String
+                    .format("Invitation without proposer, no refuse notification will be send"));
+        }
+        return notification;
+    }
+
+    private void sendCanceledNotifications(GroupChallenge canceled) {
+        final Attendee proposer = canceled.proposer();
+        final String gameId = canceled.getGameId();
+        final String challengeName = canceled.getInstanceName();
+        canceled.guests().forEach(guest -> {
+            ChallengeInvitationCanceledNotification notification =
+                    new ChallengeInvitationCanceledNotification();
+            notification.setGameId(gameId);
+            notification.setPlayerId(guest.getPlayerId());
+            notification.setChallengeName(challengeName);
+            if (proposer != null) {
+                notification.setProposerId(proposer.getPlayerId());
+            }
+            notificationSrv.notificate(notification);
+        });
     }
 
     @Override

@@ -306,7 +306,6 @@ public class ChallengeManagerTest {
     @Test
     public void ant_man_invites_wasp_to_challenge() {
         gameSrv.saveGameDefinition(defineGame());
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
 
         ChallengeInvitation invitation =
                 invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
@@ -317,7 +316,6 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ant_man_already_invite_to_challenge() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         ChallengeInvitation invitation =
                 invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
@@ -331,7 +329,6 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ant_man_invites_wasp_but_she_has_already_reach_limit_invitations() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
@@ -354,7 +351,6 @@ public class ChallengeManagerTest {
 
     @Test
     public void wasp_accept_invitation() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
@@ -368,7 +364,6 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void proposer_try_to_accept_own_created_invitation() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
@@ -385,7 +380,6 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void wasp_accept_non_existentinvitation() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "dr. strange", "wasp", "groupCompetitivePerformance");
@@ -397,7 +391,6 @@ public class ChallengeManagerTest {
 
     @Test
     public void wasp_accept_invitation_having_other_proposed_challenges() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME","model_1")).will(new Answer<ChallengeModel>() {
 
@@ -496,10 +489,56 @@ public class ChallengeManagerTest {
         assertThat(antManProposedCounter, is(0L));
     }
 
+
+    @Test
+    public void notifications_on_invitations_accept_invitation() {
+        gameSrv.saveGameDefinition(defineGame());
+
+        ChallengeInvitation waspInviteCap =
+                invitation("GAME", "wasp", "cap", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(waspInviteCap);
+        ChallengeInvitation antManInviteWasp =
+                invitation("GAME", "ant-man", "wasp", "groupCompetitivePerformance");
+        GroupChallenge acceptInvitation = challengeManager.inviteToChallenge(antManInviteWasp);
+        ChallengeInvitation strangeInviteAntMan =
+                invitation("GAME", "dr.strange", "ant-man", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(strangeInviteAntMan);
+
+        challengeManager.acceptInvitation("GAME", "wasp", acceptInvitation.getInstanceName());
+
+    }
+
+    @Test
+    public void notifications_on_invitations_accept_single_challenge() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "PROPOSED", null, null);
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation strangeInviteAntMan =
+                invitation("GAME", "dr.strange", "ant-man", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(strangeInviteAntMan);
+
+        ChallengeInvitation antManInviteCap =
+                invitation("GAME", "ant-man", "cap", "groupCompetitivePerformance");
+        challengeManager.inviteToChallenge(antManInviteCap);
+
+        playerSrv.acceptChallenge("GAME", "ant-man", assignment.getInstanceName());
+    }
+
     @Test
     public void wasp_refuses_invitation() {
         gameSrv.saveGameDefinition(defineGame());
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
                 .will(new Answer<ChallengeModel>() {
 
@@ -550,7 +589,6 @@ public class ChallengeManagerTest {
     @Test(expected = IllegalArgumentException.class)
     public void proposer_try_to_refuse_own_created_invitation() {
         gameSrv.saveGameDefinition(defineGame());
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
                 .will(new Answer<ChallengeModel>() {
 
@@ -586,7 +624,6 @@ public class ChallengeManagerTest {
 
     @Test
     public void test_query() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         ChallengeInvitation drStrangeInvitation =
                 invitation("GAME", "p1", "p2", "groupCompetitivePerformance");
@@ -600,7 +637,6 @@ public class ChallengeManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ant_man_invites_himself() {
-        // BDDMockito.given(gameSrv.loadGameDefinitionById("GAME")).willReturn(defineGame());
         gameSrv.saveGameDefinition(defineGame());
         ChallengeInvitation invitation =
                 invitation("GAME", "ant-man", "ant-man", "groupCompetitivePerformance");

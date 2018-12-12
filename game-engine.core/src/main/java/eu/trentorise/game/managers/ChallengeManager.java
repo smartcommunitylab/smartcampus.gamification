@@ -299,12 +299,21 @@ public class ChallengeManager {
         }
         playerSrv.saveState(playerState);
 
-        List<GroupChallenge> otherProposedhallenges =
+        List<GroupChallenge> otherProposedchallenges =
                 groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-        groupChallengeRepo.delete(otherProposedhallenges);
-        otherProposedhallenges.forEach(challenge -> {
+        groupChallengeRepo.delete(otherProposedchallenges);
+        otherProposedchallenges.forEach(challenge -> {
             challenge.updateState(ChallengeState.REFUSED);
             archiveSrv.moveToArchive(gameId, challenge);
+
+            // send notifications to other participants
+            challenge.guests().stream()
+                    .filter(g -> g.getPlayerId().equals(playerId)).findFirst()
+                    .ifPresent(guest -> sendRefusedNotification(guest.getPlayerId(), challenge));
+            final Attendee proposer = challenge.proposer();
+            if (proposer != null && proposer.getPlayerId().equals(playerId)) {
+                sendCanceledNotifications(challenge);
+            }
         });
     }
 
@@ -319,19 +328,7 @@ public class ChallengeManager {
         Game game = gameSrv.loadGameDefinitionById(gameId);
         refused.updateState(ChallengeState.REFUSED);
         archiveSrv.moveToArchive(gameId, refused);
-        ChallengeInvitationRefusedNotification notification =
-                new ChallengeInvitationRefusedNotification();
-        Attendee proposer = refused.proposer();
-        if (proposer != null) {
-            notification.setGameId(gameId);
-            notification.setPlayerId(proposer.getPlayerId());
-            notification.setChallengeName(challengeName);
-            notification.setGuestId(playerId);
-            notificationSrv.notificate(notification);
-        } else {
-            LogHub.warn(gameId, logger, String
-                    .format("Invitation without proposer, no refuse notification will be send"));
-        }
+        sendRefusedNotification(playerId, refused);
         final String executionId = UUID.randomUUID().toString();
         final long executionTime = System.currentTimeMillis();
         StatsLogger.logChallengeInvitationRefused(game.getDomain(), gameId, playerId, executionId,
@@ -339,6 +336,27 @@ public class ChallengeManager {
         LogHub.info(gameId, logger, String.format(
                 "Invitation to challenge %s is refused by player %s", challengeName, playerId));
         return refused;
+    }
+
+    private ChallengeInvitationRefusedNotification sendRefusedNotification(String guestId,
+            GroupChallenge refused) {
+        ChallengeInvitationRefusedNotification notification =
+                new ChallengeInvitationRefusedNotification();
+        Attendee proposer = refused.proposer();
+        final String gameId = refused.getGameId();
+        final String challengeName = refused.getInstanceName();
+
+        if (proposer != null) {
+            notification.setGameId(gameId);
+            notification.setPlayerId(proposer.getPlayerId());
+            notification.setChallengeName(challengeName);
+            notification.setGuestId(guestId);
+            notificationSrv.notificate(notification);
+        } else {
+            LogHub.warn(gameId, logger, String
+                    .format("Invitation without proposer, no refuse notification will be send"));
+        }
+        return notification;
     }
 
     public GroupChallenge cancelInvitation(String gameId, String playerId, String challengeName) {
@@ -349,7 +367,16 @@ public class ChallengeManager {
             throw new IllegalArgumentException(String.format(
                     "Challenge %s is not PROPOSED by proposer player %s", challengeName, playerId));
         }
+        sendCanceledNotifications(canceled);
+        LogHub.info(gameId, logger, String.format(
+                "Invitation to challenge %s canceled by player %s", challengeName, playerId));
+        return canceled;
+    }
+
+    private void sendCanceledNotifications(GroupChallenge canceled) {
         final Attendee proposer = canceled.proposer();
+        final String gameId = canceled.getGameId();
+        final String challengeName = canceled.getInstanceName();
         canceled.guests().forEach(guest -> {
             ChallengeInvitationCanceledNotification notification =
                     new ChallengeInvitationCanceledNotification();
@@ -361,8 +388,5 @@ public class ChallengeManager {
             }
             notificationSrv.notificate(notification);
         });
-        LogHub.info(gameId, logger, String.format(
-                "Invitation to challenge %s canceled by player %s", challengeName, playerId));
-        return canceled;
     }
 }

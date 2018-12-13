@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -168,8 +169,20 @@ public class ChallengeManager {
                             String.format("player %s already has %s pending invitations as guest",
                                     guest.getPlayerId(), LIMIT_INVITATIONS_AS_GUEST));
                 }
-
+                PlayerState state = playerSrv.loadState(invitation.getGameId(), guest.getPlayerId(),
+                        true, false);
+                long assignedCounter =
+                        state.challenges().stream()
+                                .filter(c -> c.getState() == ChallengeState.ASSIGNED
+                                        && insideChallengeTime(invitation.getChallengeStart(), c))
+                                .count();
+                if (assignedCounter > 0) {
+                    throw new IllegalArgumentException(String.format(
+                            "player %s already has ASSIGNED challenge in the invitation period",
+                            guest.getPlayerId()));
+                }
             });
+
             GroupChallenge groupChallenge = convert(invitation);
             save(groupChallenge);
 
@@ -195,6 +208,21 @@ public class ChallengeManager {
             return groupChallenge;
         }
         return null;
+    }
+
+    private boolean insideChallengeTime(Date startInvitationChallenge, ChallengeConcept assigned) {
+        final Date start = assigned.getStart();
+        final Date end = assigned.getEnd();
+
+        if (start != null && end != null) {
+            Interval validityTimeChallenge = new Interval(start.getTime(), end.getTime());
+            return validityTimeChallenge.contains(startInvitationChallenge.getTime());
+        } else if (start == null) {
+            return startInvitationChallenge.before(end);
+        } else if (end == null) {
+            return startInvitationChallenge.after(start);
+        }
+        return false;
     }
 
     private GroupChallenge convert(ChallengeInvitation invitation) {

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -642,6 +643,177 @@ public class ChallengeManagerTest {
         ChallengeInvitation invitation =
                 invitation("GAME", "ant-man", "ant-man", "groupCompetitivePerformance");
         challengeManager.inviteToChallenge(invitation);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invitation_ant_man_with_an_assigned_challenge_in_period() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "ASSIGNED", LocalDateTime.now().plusDays(5).toDate(),
+                LocalDateTime.now().plusDays(7).toDate());
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "ant-man", "groupCompetitivePerformance");
+        drStrangeInvitation.setChallengeStart(LocalDateTime.now().plusDays(6).toDate());
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+    }
+
+    @Test
+    public void invitation_ant_man_with_an_assigned_challenge_in_period_3() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "ASSIGNED", LocalDateTime.now().plusDays(5).toDate(),
+                LocalDateTime.now().plusDays(7).toDate());
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "ant-man", "groupCompetitivePerformance");
+        drStrangeInvitation.setChallengeStart(LocalDateTime.now().plusDays(9).toDate());
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+    }
+
+    @Test
+    public void invitation_ant_man_with_an_assigned_challenge_in_period_4() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "ASSIGNED", LocalDateTime.now().plusDays(5).toDate(),
+                LocalDateTime.now().plusDays(7).toDate());
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "ant-man", "groupCompetitivePerformance");
+        drStrangeInvitation.setChallengeStart(LocalDateTime.now().plusDays(2).toDate());
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invitation_ant_man_with_an_assigned_challenge_in_period_1() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "ASSIGNED", null, LocalDateTime.now().plusDays(7).toDate());
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "ant-man", "groupCompetitivePerformance");
+        drStrangeInvitation.setChallengeStart(LocalDateTime.now().plusDays(6).toDate());
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+    }
+
+    @Test
+    public void invitation_ant_man_with_an_assigned_challenge_in_period_2() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "ASSIGNED", null, LocalDateTime.now().plusDays(7).toDate());
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "ant-man", "groupCompetitivePerformance");
+        drStrangeInvitation.setChallengeStart(LocalDateTime.now().plusDays(8).toDate());
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invitation_ant_man_with_an_assigned_never_ending_challenge_in_period() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "ASSIGNED", LocalDateTime.now().plusDays(4).toDate(), null);
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "ant-man", "groupCompetitivePerformance");
+        drStrangeInvitation.setChallengeStart(LocalDateTime.now().plusDays(8).toDate());
+        challengeManager.inviteToChallenge(drStrangeInvitation);
+    }
+
+    @Test
+    public void invitation_ant_man_with_an_assigned_never_ending_challenge_in_period_2() {
+        gameSrv.saveGameDefinition(defineGame());
+        BDDMockito.given(challengeModelRepo.findByGameIdAndName("GAME", "model_1"))
+                .will(new Answer<ChallengeModel>() {
+
+                    @Override
+                    public ChallengeModel answer(InvocationOnMock arg0) throws Throwable {
+                        ChallengeModel model = new ChallengeModel();
+                        model.setName("model_1");
+                        return model;
+                    }
+                });
+
+        ChallengeAssignment assignment = new ChallengeAssignment("model_1", "instance_name",
+                new HashMap<>(), "ASSIGNED", LocalDateTime.now().plusDays(4).toDate(), null);
+        playerSrv.assignChallenge("GAME", "ant-man", assignment);
+
+        ChallengeInvitation drStrangeInvitation =
+                invitation("GAME", "dr. strange", "ant-man", "groupCompetitivePerformance");
+        drStrangeInvitation.setChallengeStart(LocalDateTime.now().plusDays(2).toDate());
+        challengeManager.inviteToChallenge(drStrangeInvitation);
     }
 
 

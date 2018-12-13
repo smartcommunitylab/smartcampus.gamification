@@ -103,6 +103,7 @@ public class ChallengeManagerTest {
         wasp.setRole(Role.GUEST);
         wasp.setPlayerId("Wasp");
         groupChallenge.getAttendees().add(wasp);
+        groupChallenge.setEnd(new Date());
 
         challengeManager.conditionCheck(groupChallenge);
     }

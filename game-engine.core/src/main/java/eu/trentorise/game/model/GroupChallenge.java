@@ -74,10 +74,19 @@ public class GroupChallenge {
 
 
 
-    public GroupChallenge update(List<PlayerState> attendeeStates) {
+    public GroupChallenge update(List<PlayerState> attendeeStates, long executionMoment) {
         attendees.forEach(attendee -> {
             attendee.setChallengeScore(
-                    challengeScore(attendee.getPlayerId(), challengePointConcept, attendeeStates));
+                    challengeScore(attendee.getPlayerId(), challengePointConcept, attendeeStates,
+                            executionMoment));
+        });
+        return this;
+    }
+
+    public GroupChallenge update(List<PlayerState> attendeeStates) {
+        attendees.forEach(attendee -> {
+            attendee.setChallengeScore(challengeScore(attendee.getPlayerId(), challengePointConcept,
+                    attendeeStates, instantInChallenge(end)));
         });
         return this;
     }
@@ -133,14 +142,15 @@ public class GroupChallenge {
         return this;
     }
 
-    private double challengeScore(String playerId, PointConceptRef pointConcept, List<PlayerState> attendeeStates) {
+    private double challengeScore(String playerId, PointConceptRef pointConcept,
+            List<PlayerState> attendeeStates, long executionMoment) {
         Optional<PlayerState> playerState = attendeeStates.stream().filter(state -> state.getPlayerId().equals(playerId)).findFirst();
         
         return playerState.map(state -> {
             PointConcept challengePointConceptState =
                     state.pointConcept(pointConcept.getName());
             return challengePointConceptState.getPeriodScore(
-                    pointConcept.getPeriod(), instantInChallenge(end));
+                    pointConcept.getPeriod(), executionMoment);
         }).orElseThrow(() -> new IllegalArgumentException(
                 String.format("attendeeStates doesn't contain player %s", playerId)));
 

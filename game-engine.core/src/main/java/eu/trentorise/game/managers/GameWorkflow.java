@@ -113,7 +113,7 @@ public class GameWorkflow implements Workflow {
                             .loadState(gameId, participant.getPlayerId(), false, false))
                     .collect(Collectors.toList());
             participantStates.add(newState);
-            groupChallenge.update(participantStates);
+            groupChallenge.update(participantStates, executionMoment);
             challengeSrv.save(groupChallenge);
             if (groupChallenge.getChallengeModel()
                     .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)

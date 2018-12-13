@@ -892,6 +892,9 @@ public class DBPlayerManager implements PlayerService {
 	public List<String> readSystemPlayerState(String gameId, String playerId, String conceptName) {
 
 		List<String> sps = new ArrayList<String>();
+		List<String> filterPlayerList = new ArrayList<String>();
+		
+		filterPlayerList.add(playerId);
 
 		// 1. Read the level of proposer player.
 		StatePersistence callerState = playerRepo.findByGameIdAndPlayerId(gameId, playerId);
@@ -917,7 +920,7 @@ public class DBPlayerManager implements PlayerService {
 				int levelMax = referenceLevel.getLevelIndex() + PROPOSER_RANGE;
 				int levelMin = referenceLevel.getLevelIndex() - PROPOSER_RANGE;
 
-				Criteria criteria = new Criteria("playerId").ne(playerId).and("gameId").is(gameId);
+				Criteria criteria = new Criteria("playerId").nin(filterPlayerList).and("gameId").is(gameId);
 
 				if (conceptName != null && !conceptName.isEmpty()) {
 					criteria = criteria.and("levels").elemMatch(Criteria.where("levelIndex").gte(levelMin).lte(levelMax)
@@ -933,7 +936,16 @@ public class DBPlayerManager implements PlayerService {
 					Criteria blistCriteria = new Criteria("playerId").nin(pbList.getBlockedPlayers());
 					criteria = criteria.andOperator(blistCriteria);
 				}
-
+				
+				// 4.read players who have blocked proposer(NEW!!)
+				Criteria criteria2 = new Criteria("blockedPlayers").in(playerId);
+				Query q1 = new Query();
+				q1.addCriteria(criteria2);
+				q1.fields().include("playerId");
+				for (PlayerBlackList blocker : mongoTemplate.find(q1, PlayerBlackList.class)) {
+					filterPlayerList.add(blocker.getPlayerId());
+				}
+				
 				Query q2 = new Query();
 				q2.addCriteria(criteria);
 				List<PlayerState> filerList = mongoTemplate.find(q2, PlayerState.class);

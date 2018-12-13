@@ -70,11 +70,10 @@ public class PlayerControllerApiTest {
     @Before
     public void init() {
     	 apiClient = new ApiClient(baseUrl);
-//    	 apiClient.addDefaultHeader("Authorization", "Basic bG9uZy1yb3ZlcmV0bzpsb25nX1JvVmdAbWU=");
     	
     	 // Configure OAuth2 access token for authorization: oauth2
-//         OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
-//         oauth2.setAccessToken("YOUR_ACCESS_TOKEN");
+    	 // OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 // oauth2.setAccessToken("YOUR_ACCESS_TOKEN");
     	 
     	 // Configure basic auth. 
     	 HttpBasicAuth basic = (HttpBasicAuth) apiClient.getAuthentication("basic");

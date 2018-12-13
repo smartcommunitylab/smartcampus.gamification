@@ -1,0 +1,16 @@
+/target
+.settings/
+.classpath
+.project
+*.log
+.swagger-codegen-ignore
+.swagger-codegen/VERSION
+gradle.properties
+gradle/*
+gradlew
+*.gradle
+*.sbt
+.travis.yml
+.tern-project
+gradlew.bat
+git_push.sh

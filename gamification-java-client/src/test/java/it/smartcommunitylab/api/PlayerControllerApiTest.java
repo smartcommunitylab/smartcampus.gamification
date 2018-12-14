@@ -91,7 +91,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void acceptChallengeUsingPOSTTest() throws ApiException {
         String challengeName = null;
         ChallengeConcept response = api.acceptChallengeUsingPOST(gameId, playerId, challengeName);
@@ -107,7 +107,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void acceptInvitationUsingPOSTTest() throws ApiException {
         String challengeName = null;
         api.acceptInvitationUsingPOST(gameId, playerId, challengeName);
@@ -123,7 +123,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void activateChoiceUsingPOSTTest() throws ApiException {
         ItemChoice choice = null;
         Inventory response = api.activateChoiceUsingPOST(gameId, playerId, choice);
@@ -139,7 +139,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void assignChallengeUsingPOSTTest() throws ApiException {
         ChallengeAssignmentDTO challengeData = null;
         api.assignChallengeUsingPOST(challengeData, gameId, playerId);
@@ -155,7 +155,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void assignGroupChallengeUsingPOSTTest() throws ApiException {
         GroupChallengeDTO challengeData = null;
         api.assignGroupChallengeUsingPOST(challengeData, gameId);
@@ -171,7 +171,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void blockPlayerUsingPOSTTest() throws ApiException {
         String otherPlayerId = null;
         PlayerBlackList response = api.blockPlayerUsingPOST(gameId, playerId, otherPlayerId);
@@ -187,7 +187,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void cancelInvitationUsingPOSTTest() throws ApiException {
         String challengeName = null;
         api.cancelInvitationUsingPOST(gameId, playerId, challengeName);
@@ -203,7 +203,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void createPlayerUsingPOST1Test() throws ApiException {
         PlayerStateDTO player = null;
         api.createPlayerUsingPOST1(gameId, player);
@@ -219,7 +219,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void deletePlayerUsingDELETE1Test() throws ApiException {
         api.deletePlayerUsingDELETE1(gameId, playerId);
 
@@ -249,7 +249,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void inviteIntoAChallengeUsingPOSTTest() throws ApiException {
         ChallengeInvitation invitation = null;
         ChallengeInvitation response = api.inviteIntoAChallengeUsingPOST(invitation, gameId, playerId);
@@ -370,7 +370,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void refuseInvitationUsingPOSTTest() throws ApiException {
         String gameId = null;
         String playerId = null;
@@ -388,7 +388,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void searchByQueryUsingPOSTTest() throws ApiException {
         String gameId = null;
         WrapperQuery query = null;
@@ -407,7 +407,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-//    @Test
+    @Test
     public void unBlockPlayerUsingPOSTTest() throws ApiException {
         String gameId = null;
         String playerId = null;

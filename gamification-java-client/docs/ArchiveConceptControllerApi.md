@@ -1,6 +1,6 @@
 # ArchiveConceptControllerApi
 
-All URIs are relative to *https://dev.smartcommunitylab.it/gamification*
+All URIs are relative to *https://localhost/gamification*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

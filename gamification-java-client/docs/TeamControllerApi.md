@@ -21,10 +21,10 @@ Add team member
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.TeamControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -78,10 +78,10 @@ Create team
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.TeamControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -131,10 +131,10 @@ Delte team
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.TeamControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -184,10 +184,10 @@ Get team members
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.TeamControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -238,10 +238,10 @@ Delete team member
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.TeamControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -295,10 +295,10 @@ Edit team
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.TeamControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();

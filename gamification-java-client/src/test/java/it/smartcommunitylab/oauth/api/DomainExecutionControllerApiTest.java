@@ -28,29 +28,40 @@
  */
 
 
-package it.smartcommunitylab.basic;
+package it.smartcommunitylab.oauth.api;
 
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class Configuration {
-    private static ApiClient defaultApiClient = new ApiClient();
+import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.model.ExecutionDataDTO;
 
+/**
+ * API tests for DomainExecutionControllerApi
+ */
+@Ignore
+public class DomainExecutionControllerApiTest {
+
+    private final DomainExecutionControllerApi api = new DomainExecutionControllerApi();
+
+    
     /**
-     * Get the default API client, which would be used when creating API
-     * instances without providing an API client.
+     * Execute an action
      *
-     * @return Default API client
+     * 
+     *
+     * @throws ApiException
+     *          if the Api call fails
      */
-    public static ApiClient getDefaultApiClient() {
-        return defaultApiClient;
-    }
+    @Test
+    public void executeActionUsingPOSTTest() throws ApiException {
+        String domain = null;
+        String gameId = null;
+        String actionId = null;
+        ExecutionDataDTO data = null;
+        api.executeActionUsingPOST(domain, gameId, actionId, data);
 
-    /**
-     * Set the default API client, which would be used when creating API
-     * instances without providing an API client.
-     *
-     * @param apiClient API client
-     */
-    public static void setDefaultApiClient(ApiClient apiClient) {
-        defaultApiClient = apiClient;
+        // TODO: test validations
     }
+    
 }

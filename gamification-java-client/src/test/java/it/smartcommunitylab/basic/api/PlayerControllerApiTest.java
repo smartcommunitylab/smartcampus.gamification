@@ -36,9 +36,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import it.smartcommunitylab.basic.ApiClient;
-import it.smartcommunitylab.basic.ApiException;
-import it.smartcommunitylab.basic.auth.HttpBasicAuth;
+import it.smartcommunitylab.ApiClient;
+import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.auth.HttpBasicAuth;
 import it.smartcommunitylab.model.ChallengeAssignmentDTO;
 import it.smartcommunitylab.model.ChallengeConcept;
 import it.smartcommunitylab.model.ChallengeInvitation;

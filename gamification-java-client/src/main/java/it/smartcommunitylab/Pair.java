@@ -28,19 +28,42 @@
  */
 
 
-package it.smartcommunitylab.basic.auth;
+package it.smartcommunitylab;
 
-import java.util.List;
-import java.util.Map;
 
-import it.smartcommunitylab.basic.Pair;
+public class Pair {
+    private String name = "";
+    private String value = "";
 
-public interface Authentication {
-    /**
-     * Apply authentication settings to header and query params.
-     *
-     * @param queryParams List of query parameters
-     * @param headerParams Map of header parameters
-     */
-    void applyToParams(List<Pair> queryParams, Map<String, String> headerParams);
+    public Pair (String name, String value) {
+        setName(name);
+        setValue(value);
+    }
+
+    private void setName(String name) {
+        if (!isValidString(name)) return;
+
+        this.name = name;
+    }
+
+    private void setValue(String value) {
+        if (!isValidString(value)) return;
+
+        this.value = value;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    private boolean isValidString(String arg) {
+        if (arg == null) return false;
+        if (arg.trim().isEmpty()) return false;
+
+        return true;
+    }
 }

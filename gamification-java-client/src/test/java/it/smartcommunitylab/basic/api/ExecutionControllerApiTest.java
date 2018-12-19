@@ -33,7 +33,7 @@ package it.smartcommunitylab.basic.api;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import it.smartcommunitylab.basic.ApiException;
+import it.smartcommunitylab.ApiException;
 import it.smartcommunitylab.model.ExecutionDataDTO;
 
 /**

@@ -28,7 +28,7 @@
  */
 
 
-package it.smartcommunitylab.basic;
+package it.smartcommunitylab;
 
 import java.util.List;
 import java.util.Map;

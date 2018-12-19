@@ -32,9 +32,9 @@ import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
-import it.smartcommunitylab.basic.ApiClient;
-import it.smartcommunitylab.basic.ApiException;
-import it.smartcommunitylab.basic.Configuration;
+import it.smartcommunitylab.ApiClient;
+import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.basic.api.ChallengeModelControllerApi;
 import it.smartcommunitylab.model.ChallengeModel;
 

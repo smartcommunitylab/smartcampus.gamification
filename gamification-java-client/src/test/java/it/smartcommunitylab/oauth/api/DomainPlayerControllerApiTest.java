@@ -62,7 +62,8 @@ public class DomainPlayerControllerApiTest {
     private String gameId = "5b7a885149c95d50c5f9d442";
     private String playerId = "8";
     private String conceptName = "green leaves";
-
+    private String domain = "demo-domain";
+    
     @Before
     public void init() {
     	 apiClient = new ApiClient(baseUrl);
@@ -210,9 +211,6 @@ public class DomainPlayerControllerApiTest {
      */
     @Test
     public void readInventoryUsingGETTest() throws ApiException {
-        String domain = null;
-        String gameId = null;
-        String playerId = null;
         Inventory response = api.readInventoryUsingGET(domain, gameId, playerId);
 
         // TODO: test validations

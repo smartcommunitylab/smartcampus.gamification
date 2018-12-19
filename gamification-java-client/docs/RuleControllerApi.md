@@ -21,11 +21,11 @@ Add rule
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.RuleControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.RuleControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -75,11 +75,11 @@ Delete rule
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.RuleControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.RuleControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -129,11 +129,11 @@ Edit rule
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.RuleControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.RuleControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -185,11 +185,11 @@ Get rules
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.RuleControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.RuleControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -237,11 +237,11 @@ Get rule
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.RuleControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.RuleControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -291,11 +291,11 @@ Validate rule
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.RuleControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.RuleControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 

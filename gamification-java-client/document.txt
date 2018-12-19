@@ -1,7 +1,15 @@
 ## Getting Started
 
-In order to add or modify API, it is required to edit the api-docs.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
+### Basic Auth
+In order to add or modify API, it is required to edit the api-docs-basic.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
 
 ```shell
-java -jar lib/swagger-codegen-cli.jar generate -DhideGenerationTimestamp=true -i api-docs.json -l java --api-package it.smartcommunitylab.api --artifact-id gamification-java-client --model-package it.smartcommunitylab.model --invoker-package it.smartcommunitylab 
+java -jar lib/swagger-codegen-cli.jar generate -DhideGenerationTimestamp=true -i api-docs-basic.json -l java --api-package it.smartcommunitylab.basic.api --artifact-id gamification-java-client --model-package it.smartcommunitylab.model --invoker-package it.smartcommunitylab.basic 
+```
+
+### OAuth
+In order to add or modify API, it is required to edit the api-docs-oauth.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
+
+```shell
+java -jar lib/swagger-codegen-cli.jar generate -DhideGenerationTimestamp=true -i api-docs-oauth.json -l java --api-package it.smartcommunitylab.oauth.api --artifact-id gamification-java-client --model-package it.smartcommunitylab.model --invoker-package it.smartcommunitylab.oauth 
 ```

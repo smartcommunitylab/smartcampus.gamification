@@ -29,11 +29,11 @@ Add action
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -80,11 +80,11 @@ Delete action
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -133,11 +133,11 @@ Delete game
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -184,11 +184,11 @@ Delete a level
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -238,11 +238,11 @@ Edit action
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -289,11 +289,11 @@ Get action
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -340,11 +340,11 @@ Get actions
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -392,11 +392,11 @@ Get game statistics
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -456,11 +456,11 @@ Read game definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -510,11 +510,11 @@ Get all the game definitions of a user
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -558,11 +558,11 @@ Save a game
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -610,11 +610,11 @@ Save a level
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -666,11 +666,11 @@ The game is able to accept action executions
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -719,11 +719,11 @@ The game will not accept action execution anymore
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.ApiClient;
-//import it.smartcommunitylab.ApiException;
-//import it.smartcommunitylab.Configuration;
-//import it.smartcommunitylab.auth.*;
-//import it.smartcommunitylab.api.GameControllerApi;
+//import it.smartcommunitylab.basic.ApiClient;
+//import it.smartcommunitylab.basic.ApiException;
+//import it.smartcommunitylab.basic.Configuration;
+//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.basic.api.GameControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 

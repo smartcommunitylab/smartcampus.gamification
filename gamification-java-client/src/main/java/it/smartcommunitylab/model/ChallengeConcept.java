@@ -62,6 +62,9 @@ public class ChallengeConcept {
   @SerializedName("fields")
   private Object fields = null;
 
+  @SerializedName("forced")
+  private Boolean forced = null;
+
   @SerializedName("id")
   private String id = null;
 
@@ -213,6 +216,24 @@ public class ChallengeConcept {
 
   public void setFields(Object fields) {
     this.fields = fields;
+  }
+
+  public ChallengeConcept forced(Boolean forced) {
+    this.forced = forced;
+    return this;
+  }
+
+   /**
+   * Get forced
+   * @return forced
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isForced() {
+    return forced;
+  }
+
+  public void setForced(Boolean forced) {
+    this.forced = forced;
   }
 
   public ChallengeConcept id(String id) {
@@ -381,6 +402,7 @@ public class ChallengeConcept {
         Objects.equals(this.dateCompleted, challengeConcept.dateCompleted) &&
         Objects.equals(this.end, challengeConcept.end) &&
         Objects.equals(this.fields, challengeConcept.fields) &&
+        Objects.equals(this.forced, challengeConcept.forced) &&
         Objects.equals(this.id, challengeConcept.id) &&
         Objects.equals(this.modelName, challengeConcept.modelName) &&
         Objects.equals(this.name, challengeConcept.name) &&
@@ -393,7 +415,7 @@ public class ChallengeConcept {
 
   @Override
   public int hashCode() {
-    return Objects.hash(completed, dateCompleted, end, fields, id, modelName, name, origin, priority, start, state, stateDate);
+    return Objects.hash(completed, dateCompleted, end, fields, forced, id, modelName, name, origin, priority, start, state, stateDate);
   }
 
 
@@ -406,6 +428,7 @@ public class ChallengeConcept {
     sb.append("    dateCompleted: ").append(toIndentedString(dateCompleted)).append("\n");
     sb.append("    end: ").append(toIndentedString(end)).append("\n");
     sb.append("    fields: ").append(toIndentedString(fields)).append("\n");
+    sb.append("    forced: ").append(toIndentedString(forced)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    modelName: ").append(toIndentedString(modelName)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");

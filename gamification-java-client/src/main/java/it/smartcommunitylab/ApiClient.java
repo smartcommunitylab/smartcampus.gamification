@@ -92,7 +92,7 @@ import okio.Okio;
 
 public class ApiClient {
 
-    private String basePath = "https://dev.smartcommunitylab.it/gamification";
+    private String basePath;
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
@@ -130,7 +130,7 @@ public class ApiClient {
         // Setup authentications (key: authentication name, value: authentication).
         authentications = new HashMap<String, Authentication>();
         authentications.put("basic", new HttpBasicAuth());
-        authentications.put("oauth2", new HttpBasicAuth());
+        authentications.put("oauth2", new OAuth());
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
     }
@@ -152,10 +152,11 @@ public class ApiClient {
         // Setup authentications (key: authentication name, value: authentication).
         authentications = new HashMap<String, Authentication>();
         authentications.put("basic", new HttpBasicAuth());
-        authentications.put("oauth2", new HttpBasicAuth());
+        authentications.put("oauth2", new OAuth());
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
     }
+
 
     /**
      * Get base path
@@ -169,7 +170,7 @@ public class ApiClient {
     /**
      * Set base path
      *
-     * @param basePath Base path of the URL (e.g https://dev.smartcommunitylab.it/gamification
+     * @param basePath Base path of the URL (e.g https://localhost:6060/gamification
      * @return An instance of OkHttpClient
      */
     public ApiClient setBasePath(String basePath) {

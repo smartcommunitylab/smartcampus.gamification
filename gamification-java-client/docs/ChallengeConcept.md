@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **dateCompleted** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
 **end** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
 **fields** | **Object** |  |  [optional]
+**forced** | **Boolean** |  |  [optional]
 **id** | **String** |  |  [optional]
 **modelName** | **String** |  |  [optional]
 **name** | **String** |  |  [optional]

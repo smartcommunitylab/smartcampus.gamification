@@ -12,17 +12,16 @@
 			"url": "http://www.apache.org/licenses/LICENSE-2.0"
 		}
 	},
-	"host": "localhost:6060",
 	"basePath": "/gamification",
 	"securityDefinitions": {
-		"bearerAuth": {
-			"type": "http",
+		"oauth2": {
+			"type": "oauth2",
 			"description": "Bearer Authentication"
 		}
 	},
 	"security": [
 		{
-			"bearerAuth": []
+			"oauth2": []
 		}
 	],
 	"tags": [

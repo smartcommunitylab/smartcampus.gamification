@@ -21,9 +21,17 @@ Add team member
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainTeamControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainTeamControllerApi apiInstance = new DomainTeamControllerApi();
 String domain = "domain_example"; // String | domain
@@ -55,7 +63,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -71,9 +79,17 @@ Create team
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainTeamControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainTeamControllerApi apiInstance = new DomainTeamControllerApi();
 String domain = "domain_example"; // String | domain
@@ -101,7 +117,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -117,9 +133,17 @@ Delte team
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainTeamControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainTeamControllerApi apiInstance = new DomainTeamControllerApi();
 String domain = "domain_example"; // String | domain
@@ -147,7 +171,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -163,9 +187,17 @@ Get team members
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainTeamControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainTeamControllerApi apiInstance = new DomainTeamControllerApi();
 String domain = "domain_example"; // String | domain
@@ -194,7 +226,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -210,9 +242,17 @@ Delete team member
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainTeamControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainTeamControllerApi apiInstance = new DomainTeamControllerApi();
 String domain = "domain_example"; // String | domain
@@ -244,7 +284,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -260,9 +300,17 @@ Edit team
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainTeamControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainTeamControllerApi apiInstance = new DomainTeamControllerApi();
 String domain = "domain_example"; // String | domain
@@ -292,7 +340,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 

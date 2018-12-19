@@ -14,14 +14,15 @@
 	},
 	"basePath": "/gamification",
 	"securityDefinitions": {
-		"oauth": {
-			"type": "oauth",
-			"description": "Bearer Authentication"
+		"oauth2": {
+			"type": "oauth2",
+			"description": "Bearer Authentication",
+			"flow": "application"
 		}
 	},
 	"security": [
 		{
-			"oauth": []
+			"oauth2": []
 		}
 	],
 	"tags": [

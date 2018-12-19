@@ -18,9 +18,17 @@ Delete challenge model
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainChallengeModelControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainChallengeModelControllerApi apiInstance = new DomainChallengeModelControllerApi();
 String domain = "domain_example"; // String | domain
@@ -48,7 +56,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -64,9 +72,17 @@ Get challenge models
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainChallengeModelControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainChallengeModelControllerApi apiInstance = new DomainChallengeModelControllerApi();
 String domain = "domain_example"; // String | domain
@@ -93,7 +109,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -109,9 +125,17 @@ Add challenge model
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainChallengeModelControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainChallengeModelControllerApi apiInstance = new DomainChallengeModelControllerApi();
 ChallengeModel challengeModel = new ChallengeModel(); // ChallengeModel | challengeModel
@@ -140,7 +164,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 

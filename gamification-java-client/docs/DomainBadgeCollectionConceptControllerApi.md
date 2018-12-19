@@ -22,9 +22,17 @@ Add a badge collection to the game definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainBadgeCollectionConceptControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainBadgeCollectionConceptControllerApi apiInstance = new DomainBadgeCollectionConceptControllerApi();
 String domain = "domain_example"; // String | domain
@@ -52,7 +60,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -68,9 +76,17 @@ Delete a badge collection
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainBadgeCollectionConceptControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainBadgeCollectionConceptControllerApi apiInstance = new DomainBadgeCollectionConceptControllerApi();
 String domain = "domain_example"; // String | domain
@@ -98,7 +114,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -116,9 +132,17 @@ Get the definition of a badge collection in a game
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainBadgeCollectionConceptControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainBadgeCollectionConceptControllerApi apiInstance = new DomainBadgeCollectionConceptControllerApi();
 String domain = "domain_example"; // String | domain
@@ -147,7 +171,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -165,9 +189,17 @@ Get badge collections in a game
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainBadgeCollectionConceptControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainBadgeCollectionConceptControllerApi apiInstance = new DomainBadgeCollectionConceptControllerApi();
 String domain = "domain_example"; // String | domain
@@ -194,7 +226,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -210,9 +242,17 @@ Update a badge collection
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainBadgeCollectionConceptControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainBadgeCollectionConceptControllerApi apiInstance = new DomainBadgeCollectionConceptControllerApi();
 String domain = "domain_example"; // String | domain
@@ -238,7 +278,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 

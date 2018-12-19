@@ -122,7 +122,7 @@ Name | Type | Description  | Notes
 
 <a name="editRuleUsingPUT"></a>
 # **editRuleUsingPUT**
-> RuleDTO editRuleUsingPUT(gameId, rule)
+> RuleDTO editRuleUsingPUT(gameId, ruleId, rule)
 
 Edit rule
 
@@ -144,9 +144,10 @@ basic.setPassword("YOUR PASSWORD");
 
 RuleControllerApi apiInstance = new RuleControllerApi();
 String gameId = "gameId_example"; // String | gameId
+String ruleId = "ruleId_example"; // String | ruleId
 RuleDTO rule = new RuleDTO(); // RuleDTO | rule
 try {
-    RuleDTO result = apiInstance.editRuleUsingPUT(gameId, rule);
+    RuleDTO result = apiInstance.editRuleUsingPUT(gameId, ruleId, rule);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling RuleControllerApi#editRuleUsingPUT");
@@ -159,6 +160,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **gameId** | **String**| gameId |
+ **ruleId** | **String**| ruleId |
  **rule** | [**RuleDTO**](RuleDTO.md)| rule |
 
 ### Return type

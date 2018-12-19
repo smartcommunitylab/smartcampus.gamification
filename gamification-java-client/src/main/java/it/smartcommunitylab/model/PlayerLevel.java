@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * PlayerLevel
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-12-12T17:12:54.525+01:00")
+
 public class PlayerLevel {
   @SerializedName("endLevelScore")
   private Double endLevelScore = null;

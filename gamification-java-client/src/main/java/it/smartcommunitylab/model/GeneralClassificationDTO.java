@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * GeneralClassificationDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-12-12T17:12:54.525+01:00")
+
 public class GeneralClassificationDTO {
   @SerializedName("classificationName")
   private String classificationName = null;

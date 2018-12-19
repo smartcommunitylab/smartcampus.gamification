@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * GameStatistics
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-12-12T17:12:54.525+01:00")
+
 public class GameStatistics {
   @SerializedName("average")
   private Double average = null;

@@ -320,18 +320,20 @@ public class RuleControllerApi {
     /**
      * Build call for editRuleUsingPUT
      * @param gameId gameId (required)
+     * @param ruleId ruleId (required)
      * @param rule rule (required)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call editRuleUsingPUTCall(String gameId, RuleDTO rule, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call editRuleUsingPUTCall(String gameId, String ruleId, RuleDTO rule, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = rule;
 
         // create path and map variables
         String localVarPath = "/model/game/{gameId}/rule/{ruleId}"
-            .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()));
+            .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
+            .replaceAll("\\{" + "ruleId" + "\\}", apiClient.escapeString(ruleId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -369,11 +371,16 @@ public class RuleControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call editRuleUsingPUTValidateBeforeCall(String gameId, RuleDTO rule, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call editRuleUsingPUTValidateBeforeCall(String gameId, String ruleId, RuleDTO rule, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
             throw new ApiException("Missing the required parameter 'gameId' when calling editRuleUsingPUT(Async)");
+        }
+        
+        // verify the required parameter 'ruleId' is set
+        if (ruleId == null) {
+            throw new ApiException("Missing the required parameter 'ruleId' when calling editRuleUsingPUT(Async)");
         }
         
         // verify the required parameter 'rule' is set
@@ -382,7 +389,7 @@ public class RuleControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = editRuleUsingPUTCall(gameId, rule, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = editRuleUsingPUTCall(gameId, ruleId, rule, progressListener, progressRequestListener);
         return call;
 
     }
@@ -391,12 +398,13 @@ public class RuleControllerApi {
      * Edit rule
      * 
      * @param gameId gameId (required)
+     * @param ruleId ruleId (required)
      * @param rule rule (required)
      * @return RuleDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public RuleDTO editRuleUsingPUT(String gameId, RuleDTO rule) throws ApiException {
-        ApiResponse<RuleDTO> resp = editRuleUsingPUTWithHttpInfo(gameId, rule);
+    public RuleDTO editRuleUsingPUT(String gameId, String ruleId, RuleDTO rule) throws ApiException {
+        ApiResponse<RuleDTO> resp = editRuleUsingPUTWithHttpInfo(gameId, ruleId, rule);
         return resp.getData();
     }
 
@@ -404,12 +412,13 @@ public class RuleControllerApi {
      * Edit rule
      * 
      * @param gameId gameId (required)
+     * @param ruleId ruleId (required)
      * @param rule rule (required)
      * @return ApiResponse&lt;RuleDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<RuleDTO> editRuleUsingPUTWithHttpInfo(String gameId, RuleDTO rule) throws ApiException {
-        com.squareup.okhttp.Call call = editRuleUsingPUTValidateBeforeCall(gameId, rule, null, null);
+    public ApiResponse<RuleDTO> editRuleUsingPUTWithHttpInfo(String gameId, String ruleId, RuleDTO rule) throws ApiException {
+        com.squareup.okhttp.Call call = editRuleUsingPUTValidateBeforeCall(gameId, ruleId, rule, null, null);
         Type localVarReturnType = new TypeToken<RuleDTO>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -418,12 +427,13 @@ public class RuleControllerApi {
      * Edit rule (asynchronously)
      * 
      * @param gameId gameId (required)
+     * @param ruleId ruleId (required)
      * @param rule rule (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call editRuleUsingPUTAsync(String gameId, RuleDTO rule, final ApiCallback<RuleDTO> callback) throws ApiException {
+    public com.squareup.okhttp.Call editRuleUsingPUTAsync(String gameId, String ruleId, RuleDTO rule, final ApiCallback<RuleDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -444,7 +454,7 @@ public class RuleControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = editRuleUsingPUTValidateBeforeCall(gameId, rule, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = editRuleUsingPUTValidateBeforeCall(gameId, ruleId, rule, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<RuleDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

@@ -313,6 +313,7 @@ public class PlayerControllerApiTest {
     @Test
     public void readPlayerUsingGETTest() throws ApiException {
         PlayerStateDTO response = api.readPlayerUsingGET(gameId, playerId);
+        System.out.println(response.getPlayerId());
 
         // TODO: test validations
     }

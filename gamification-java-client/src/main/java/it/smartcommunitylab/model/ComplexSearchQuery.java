@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * ComplexSearchQuery
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-12-12T17:12:54.525+01:00")
+
 public class ComplexSearchQuery {
   @SerializedName("query")
   private Map<String, List> query = new HashMap<String, List>();

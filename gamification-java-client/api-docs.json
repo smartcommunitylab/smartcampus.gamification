@@ -3617,6 +3617,13 @@
 						"type": "string"
 					},
 					{
+						"name": "ruleId",
+						"in": "path",
+						"description": "ruleId",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"in": "body",
 						"name": "rule",
 						"description": "rule",

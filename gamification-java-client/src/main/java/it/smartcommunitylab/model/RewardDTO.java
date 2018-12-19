@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * RewardDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-12-12T17:12:54.525+01:00")
+
 public class RewardDTO {
   @SerializedName("bonusScore")
   private Map<String, Double> bonusScore = null;

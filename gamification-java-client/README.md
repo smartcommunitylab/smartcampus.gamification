@@ -72,9 +72,8 @@ Then manually install the following JARs:
 In order to add or modify API, it is required to edit the api-docs.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
 
 ```shell
-java -jar lib/swagger-codegen-cli.jar generate -i api-docs.json -l java --api-package it.smartcommunitylab.api --artifact-id gamification-java-client --model-package it.smartcommunitylab.model --invoker-package it.smartcommunitylab 
+java -jar lib/swagger-codegen-cli.jar generate -DhideGenerationTimestamp=true -i api-docs.json -l java --api-package it.smartcommunitylab.api --artifact-id gamification-java-client --model-package it.smartcommunitylab.model --invoker-package it.smartcommunitylab 
 ```
-
 
 Please follow the [installation](#installation) instruction and execute the following Java code:
 

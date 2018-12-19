@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * StructuredProjection
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-12-12T17:12:54.525+01:00")
+
 public class StructuredProjection {
   @SerializedName("include")
   private List<StructuredElement> include = new ArrayList<StructuredElement>();

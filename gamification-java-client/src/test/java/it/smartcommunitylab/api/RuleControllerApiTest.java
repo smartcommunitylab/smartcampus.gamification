@@ -77,7 +77,8 @@ public class RuleControllerApiTest {
     public void editRuleUsingPUTTest() throws ApiException {
         String gameId = null;
         RuleDTO rule = null;
-        RuleDTO response = api.editRuleUsingPUT(gameId, rule);
+        String ruleId = null;
+        RuleDTO response = api.editRuleUsingPUT(gameId, ruleId, rule);
 
         // TODO: test validations
     }

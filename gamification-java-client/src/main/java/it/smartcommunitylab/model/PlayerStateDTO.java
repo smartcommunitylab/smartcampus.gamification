@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -27,7 +26,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * PlayerStateDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-12-12T17:12:54.525+01:00")
+
 public class PlayerStateDTO {
   @SerializedName("customData")
   private Map<String, Object> customData = null;
@@ -45,7 +44,7 @@ public class PlayerStateDTO {
   private String playerId = null;
 
   @SerializedName("state")
-  private Map<String, Set<GameConcept>> state = null;
+  private Map<String, java.util.Set<GameConcept>> state = null;
 
   public PlayerStateDTO customData(Map<String, Object> customData) {
     this.customData = customData;
@@ -153,14 +152,14 @@ public class PlayerStateDTO {
     this.playerId = playerId;
   }
 
-  public PlayerStateDTO state(Map<String, Set<GameConcept>> state) {
+  public PlayerStateDTO state(Map<String, java.util. Set<GameConcept>> state) {
     this.state = state;
     return this;
   }
 
-  public PlayerStateDTO putStateItem(String key, Set<GameConcept> stateItem) {
+  public PlayerStateDTO putStateItem(String key, java.util.Set<GameConcept> stateItem) {
     if (this.state == null) {
-      this.state = new HashMap<String, Set<GameConcept>>();
+      this.state = new HashMap<String, java.util. Set<GameConcept>>();
     }
     this.state.put(key, stateItem);
     return this;
@@ -171,11 +170,11 @@ public class PlayerStateDTO {
    * @return state
   **/
   @ApiModelProperty(value = "")
-  public Map<String, Set<GameConcept>> getState() {
+  public Map<String, java.util. Set<GameConcept>> getState() {
     return state;
   }
 
-  public void setState(Map<String, Set<GameConcept>> state) {
+  public void setState(Map<String, java.util. Set<GameConcept>> state) {
     this.state = state;
   }
 
@@ -220,7 +219,7 @@ public class PlayerStateDTO {
 
   /**
    * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   .Set<GameConcept>> (except the first line).
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {

@@ -16,10 +16,10 @@ Execute an action
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ExecutionControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();

@@ -12,7 +12,6 @@
 			"url": "http://www.apache.org/licenses/LICENSE-2.0"
 		}
 	},
-	"host": "dev.smartcommunitylab.it",
 	"basePath": "/gamification",
 	"securityDefinitions": {
 		"basic": {

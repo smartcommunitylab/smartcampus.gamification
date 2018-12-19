@@ -28,7 +28,7 @@
  */
 
 
-package it.smartcommunitylab.basic;
+package it.smartcommunitylab;
 
 import java.io.IOException;
 

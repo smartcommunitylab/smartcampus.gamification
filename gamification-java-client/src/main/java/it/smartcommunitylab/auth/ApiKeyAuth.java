@@ -28,12 +28,12 @@
  */
 
 
-package it.smartcommunitylab.basic.auth;
+package it.smartcommunitylab.auth;
 
 import java.util.List;
 import java.util.Map;
 
-import it.smartcommunitylab.basic.Pair;
+import it.smartcommunitylab.Pair;
 
 
 public class ApiKeyAuth implements Authentication {

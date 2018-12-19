@@ -19,10 +19,10 @@ Get game notifications
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.NotificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -83,10 +83,10 @@ Get player notifications
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.NotificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -149,10 +149,10 @@ Get player notifications
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.NotificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -215,10 +215,10 @@ Get team notifications
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.NotificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();

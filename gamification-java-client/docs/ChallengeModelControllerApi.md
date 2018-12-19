@@ -18,10 +18,10 @@ Delete challenge model
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ChallengeModelControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -71,10 +71,10 @@ Get challenge models
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ChallengeModelControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -123,10 +123,10 @@ Add challenge model
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ChallengeModelControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();

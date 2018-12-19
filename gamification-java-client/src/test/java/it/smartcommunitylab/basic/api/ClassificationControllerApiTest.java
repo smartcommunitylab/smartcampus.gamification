@@ -35,7 +35,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import it.smartcommunitylab.basic.ApiException;
+import it.smartcommunitylab.ApiException;
 import it.smartcommunitylab.model.ClassificationBoard;
 import it.smartcommunitylab.model.GeneralClassificationDTO;
 import it.smartcommunitylab.model.IncrementalClassificationDTO;

@@ -36,14 +36,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.smartcommunitylab.basic.ApiCallback;
-import it.smartcommunitylab.basic.ApiClient;
-import it.smartcommunitylab.basic.ApiException;
-import it.smartcommunitylab.basic.ApiResponse;
-import it.smartcommunitylab.basic.Configuration;
-import it.smartcommunitylab.basic.Pair;
-import it.smartcommunitylab.basic.ProgressRequestBody;
-import it.smartcommunitylab.basic.ProgressResponseBody;
+import it.smartcommunitylab.ApiCallback;
+import it.smartcommunitylab.ApiClient;
+import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.ApiResponse;
+import it.smartcommunitylab.Configuration;
+import it.smartcommunitylab.Pair;
+import it.smartcommunitylab.ProgressRequestBody;
+import it.smartcommunitylab.ProgressResponseBody;
 import it.smartcommunitylab.model.ExecutionDataDTO;
 
 public class ExecutionControllerApi {

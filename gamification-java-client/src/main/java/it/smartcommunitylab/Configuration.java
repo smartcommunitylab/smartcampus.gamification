@@ -28,29 +28,29 @@
  */
 
 
-package it.smartcommunitylab.basic.auth;
-
-import java.util.List;
-import java.util.Map;
-
-import it.smartcommunitylab.basic.Pair;
+package it.smartcommunitylab;
 
 
-public class OAuth implements Authentication {
-  private String accessToken;
+public class Configuration {
+    private static ApiClient defaultApiClient = new ApiClient();
 
-  public String getAccessToken() {
-    return accessToken;
-  }
-
-  public void setAccessToken(String accessToken) {
-    this.accessToken = accessToken;
-  }
-
-  @Override
-  public void applyToParams(List<Pair> queryParams, Map<String, String> headerParams) {
-    if (accessToken != null) {
-      headerParams.put("Authorization", "Bearer " + accessToken);
+    /**
+     * Get the default API client, which would be used when creating API
+     * instances without providing an API client.
+     *
+     * @return Default API client
+     */
+    public static ApiClient getDefaultApiClient() {
+        return defaultApiClient;
     }
-  }
+
+    /**
+     * Set the default API client, which would be used when creating API
+     * instances without providing an API client.
+     *
+     * @param apiClient API client
+     */
+    public static void setDefaultApiClient(ApiClient apiClient) {
+        defaultApiClient = apiClient;
+    }
 }

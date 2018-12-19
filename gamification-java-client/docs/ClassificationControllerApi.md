@@ -27,10 +27,10 @@ Add general classification definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -81,10 +81,10 @@ Add incremental classification definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -135,10 +135,10 @@ Delete general classification definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -188,10 +188,10 @@ Delete incremental classification definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -241,10 +241,10 @@ Edit general classification definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -296,10 +296,10 @@ Read general classification board
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -354,10 +354,10 @@ Read incremental classification board
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -416,10 +416,10 @@ Get general classification definitions
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -468,10 +468,10 @@ Get incremental classification defintions
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -520,10 +520,10 @@ Get general classification definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -574,10 +574,10 @@ Get incremental classification defition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -628,10 +628,10 @@ Edit general classification definition
 ### Example
 ```java
 // Import classes:
-//import it.smartcommunitylab.basic.ApiClient;
-//import it.smartcommunitylab.basic.ApiException;
-//import it.smartcommunitylab.basic.Configuration;
-//import it.smartcommunitylab.basic.auth.*;
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.basic.api.ClassificationControllerApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();

@@ -28,7 +28,7 @@
  */
 
 
-package it.smartcommunitylab.basic;
+package it.smartcommunitylab;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,16 +83,16 @@ import com.squareup.okhttp.internal.http.HttpMethod;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor.Level;
 
-import it.smartcommunitylab.basic.auth.ApiKeyAuth;
-import it.smartcommunitylab.basic.auth.Authentication;
-import it.smartcommunitylab.basic.auth.HttpBasicAuth;
-import it.smartcommunitylab.basic.auth.OAuth;
+import it.smartcommunitylab.auth.ApiKeyAuth;
+import it.smartcommunitylab.auth.Authentication;
+import it.smartcommunitylab.auth.HttpBasicAuth;
+import it.smartcommunitylab.auth.OAuth;
 import okio.BufferedSink;
 import okio.Okio;
 
 public class ApiClient {
 
-    private String basePath = "https://dev.smartcommunitylab.it/gamification";
+    private String basePath;
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
@@ -116,11 +116,7 @@ public class ApiClient {
     /*
      * Constructor for ApiClient
      */
-    /*
-     * Constructor for ApiClient
-     */
     public ApiClient() {
-    	
         httpClient = new OkHttpClient();
 
 
@@ -134,13 +130,13 @@ public class ApiClient {
         // Setup authentications (key: authentication name, value: authentication).
         authentications = new HashMap<String, Authentication>();
         authentications.put("basic", new HttpBasicAuth());
+        authentications.put("oauth2", new OAuth());
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
     }
     
-
     public ApiClient(String hostUrl) {
-	    
+    	
     	basePath = hostUrl;
     	
         httpClient = new OkHttpClient();
@@ -156,9 +152,11 @@ public class ApiClient {
         // Setup authentications (key: authentication name, value: authentication).
         authentications = new HashMap<String, Authentication>();
         authentications.put("basic", new HttpBasicAuth());
+        authentications.put("oauth2", new OAuth());
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
     }
+
 
     /**
      * Get base path
@@ -172,7 +170,7 @@ public class ApiClient {
     /**
      * Set base path
      *
-     * @param basePath Base path of the URL (e.g https://dev.smartcommunitylab.it/gamification
+     * @param basePath Base path of the URL (e.g https://localhost:6060/gamification
      * @return An instance of OkHttpClient
      */
     public ApiClient setBasePath(String basePath) {

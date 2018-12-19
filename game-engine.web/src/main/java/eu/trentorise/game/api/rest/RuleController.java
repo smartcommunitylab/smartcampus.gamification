@@ -61,8 +61,7 @@ public class RuleController {
             value = "/model/game/{gameId}/rule/{ruleId}", consumes = {"application/json"},
             produces = {"application/json"})
     @ApiOperation(value = "Edit rule")
-    public RuleDTO editRule(@PathVariable String gameId,
-            @RequestBody RuleDTO rule) {
+	public RuleDTO editRule(@PathVariable String gameId, @PathVariable String ruleId, @RequestBody RuleDTO rule) {
         try {
             gameId = URLDecoder.decode(gameId, "UTF-8");
         } catch (UnsupportedEncodingException e) {

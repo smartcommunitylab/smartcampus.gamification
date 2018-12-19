@@ -70,7 +70,7 @@ public class DomainTeamController {
             @PathVariable String teamId) {
         gameId = decodePathVariable(gameId);
         teamId = decodePathVariable(teamId);
-        playerController.deletePlayer(gameId, teamId);
+        playerController.deletePlayer(domain, gameId, teamId);
     }
 
     // Read team members

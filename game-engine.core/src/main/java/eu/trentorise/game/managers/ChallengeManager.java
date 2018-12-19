@@ -314,6 +314,7 @@ public class ChallengeManager {
     private void triggerOnProposedChallenges(PlayerState playerState) {
         final String gameId = playerState.getGameId();
         final String playerId = playerState.getPlayerId();
+        final Game game = gameSrv.loadGameDefinitionById(gameId);
         // trigger archiving of other PROPOSED challenges
         java.util.Iterator<ChallengeConcept> iterator = playerState.challenges().iterator();
         while (iterator.hasNext()) {
@@ -335,9 +336,16 @@ public class ChallengeManager {
             archiveSrv.moveToArchive(gameId, challenge);
 
             // send notifications to other participants
+            final String executionId = UUID.randomUUID().toString();
+            final long executionTime = System.currentTimeMillis();
             challenge.guests().stream()
                     .filter(g -> g.getPlayerId().equals(playerId)).findFirst()
-                    .ifPresent(guest -> sendRefusedNotification(guest.getPlayerId(), challenge));
+                    .ifPresent(guest -> {
+                        sendRefusedNotification(guest.getPlayerId(), challenge);
+                        StatsLogger.logChallengeInvitationRefused(game.getDomain(), gameId,
+                                playerId, executionId, executionTime, executionTime,
+                                challenge.getInstanceName(), challenge.getChallengeModel());
+                    });
             final Attendee proposer = challenge.proposer();
             if (proposer != null && proposer.getPlayerId().equals(playerId)) {
                 sendCanceledNotifications(challenge);

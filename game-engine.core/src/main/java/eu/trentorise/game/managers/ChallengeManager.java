@@ -332,7 +332,13 @@ public class ChallengeManager {
                 groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
         groupChallengeRepo.delete(otherProposedchallenges);
         otherProposedchallenges.forEach(challenge -> {
-            challenge.updateState(ChallengeState.REFUSED);
+            final Attendee proposer = challenge.proposer();
+            if (proposer != null && proposer.getPlayerId().equals(playerId)) {
+                challenge.updateState(ChallengeState.CANCELED);
+                sendCanceledNotifications(challenge);
+            } else {
+                challenge.updateState(ChallengeState.REFUSED);
+            }
             archiveSrv.moveToArchive(gameId, challenge);
 
             // send notifications to other participants
@@ -346,10 +352,7 @@ public class ChallengeManager {
                                 playerId, executionId, executionTime, executionTime,
                                 challenge.getInstanceName(), challenge.getChallengeModel());
                     });
-            final Attendee proposer = challenge.proposer();
-            if (proposer != null && proposer.getPlayerId().equals(playerId)) {
-                sendCanceledNotifications(challenge);
-            }
+
         });
     }
 
@@ -404,6 +407,8 @@ public class ChallengeManager {
                     "Challenge %s is not PROPOSED by proposer player %s", challengeName, playerId));
         }
         sendCanceledNotifications(canceled);
+        canceled.updateState(ChallengeState.CANCELED);
+        archiveSrv.moveToArchive(gameId, canceled);
         LogHub.info(gameId, logger, String.format(
                 "Invitation to challenge %s canceled by player %s", challengeName, playerId));
         return canceled;

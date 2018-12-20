@@ -54,11 +54,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .setViewName("forward:index.html");
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor).addPathPatterns("/gengine/**",
-                "/console/**", "/model/**", "/data/**", "/exec/**", "/notification/**");
-    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {

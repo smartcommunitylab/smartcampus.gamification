@@ -19,9 +19,7 @@ import eu.trentorise.game.core.ResourceNotFoundException;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
-import eu.trentorise.game.utils.Converter;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -30,12 +28,6 @@ public class DomainBadgeCollectionConceptController {
 
     @Autowired
     private GameService gameSrv;
-
-    @Autowired
-    private Converter converter;
-
-    @Autowired
-    private IdentityLookupService identityLookup;
 
     // Create badge collection concept
     // POST /model/game/{id}/badges

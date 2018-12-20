@@ -43,16 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UsersProvider usersProvider;
 
-    @Bean
-    public IdentityLookupService identityLookup() {
-        return new SpringSecurityIdentityLookup();
-    }
-
-    @Bean
-    public HandlerInterceptor authInterceptor() {
-        return new AuthorizationInterceptor();
-    }
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 

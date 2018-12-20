@@ -1,4 +1,4 @@
 users:
- - username: sco_master
-   password: GenGine.ADMIN
+ - username: long-rovereto
+   password: rov
    role: ADMIN

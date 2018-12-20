@@ -1,6 +1,6 @@
 # DomainClassificationControllerApi
 
-All URIs are relative to *https://localhost:6060/gamification*
+All URIs are relative to *https://localhost/gamification*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -27,9 +27,17 @@ Add general classification definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -58,7 +66,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -74,9 +82,17 @@ Add incremental classification definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -105,7 +121,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -121,9 +137,17 @@ Delete general classification definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -151,7 +175,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -167,9 +191,17 @@ Delete incremental classification definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -197,7 +229,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -213,9 +245,17 @@ Edit general classification definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -245,7 +285,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -261,9 +301,17 @@ Read general classification board
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -296,7 +344,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -312,9 +360,17 @@ Read incremental classification board
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -351,7 +407,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -367,9 +423,17 @@ Get general classification definitions
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -396,7 +460,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -412,9 +476,17 @@ Get incremental classification defintions
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -441,7 +513,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -457,9 +529,17 @@ Get general classification definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -488,7 +568,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -504,9 +584,17 @@ Get incremental classification defition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -535,7 +623,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -551,9 +639,17 @@ Edit general classification definition
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainClassificationControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainClassificationControllerApi apiInstance = new DomainClassificationControllerApi();
 String domain = "domain_example"; // String | domain
@@ -583,7 +679,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 

@@ -1,6 +1,6 @@
 # DomainRuleControllerApi
 
-All URIs are relative to *https://localhost:6060/gamification*
+All URIs are relative to *https://localhost/gamification*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -21,9 +21,17 @@ Add rule
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainRuleControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainRuleControllerApi apiInstance = new DomainRuleControllerApi();
 String domain = "domain_example"; // String | domain
@@ -52,7 +60,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -68,9 +76,17 @@ Delete rule
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainRuleControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainRuleControllerApi apiInstance = new DomainRuleControllerApi();
 String domain = "domain_example"; // String | domain
@@ -99,7 +115,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -115,9 +131,17 @@ Edit rule
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainRuleControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainRuleControllerApi apiInstance = new DomainRuleControllerApi();
 String domain = "domain_example"; // String | domain
@@ -146,7 +170,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -162,9 +186,17 @@ Get rules
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainRuleControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainRuleControllerApi apiInstance = new DomainRuleControllerApi();
 String domain = "domain_example"; // String | domain
@@ -191,7 +223,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -207,9 +239,17 @@ Get rule
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainRuleControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainRuleControllerApi apiInstance = new DomainRuleControllerApi();
 String domain = "domain_example"; // String | domain
@@ -238,7 +278,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 
@@ -254,9 +294,17 @@ Validate rule
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainRuleControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainRuleControllerApi apiInstance = new DomainRuleControllerApi();
 String gameId = "gameId_example"; // String | gameId
@@ -283,7 +331,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 

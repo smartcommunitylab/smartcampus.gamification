@@ -1,6 +1,6 @@
 # DomainExecutionControllerApi
 
-All URIs are relative to *https://localhost:6060/gamification*
+All URIs are relative to *https://localhost/gamification*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -16,9 +16,17 @@ Execute an action
 ### Example
 ```java
 // Import classes:
+//import it.smartcommunitylab.ApiClient;
 //import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
 //import it.smartcommunitylab.oauth.api.DomainExecutionControllerApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure OAuth2 access token for authorization: oauth2
+OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainExecutionControllerApi apiInstance = new DomainExecutionControllerApi();
 String domain = "domain_example"; // String | domain
@@ -48,7 +56,7 @@ null (empty response body)
 
 ### Authorization
 
-No authorization required
+[oauth2](../README.md#oauth2)
 
 ### HTTP request headers
 

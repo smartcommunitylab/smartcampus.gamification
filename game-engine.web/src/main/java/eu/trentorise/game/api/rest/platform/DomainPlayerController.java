@@ -40,256 +40,233 @@ import io.swagger.annotations.ApiOperation;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@Profile({"platform"})
+@Profile({ "platform" })
 public class DomainPlayerController {
 
-    @Autowired
-    private Converter converter;
+	@Autowired
+	private Converter converter;
 
-    @Autowired
-    private PlayerService playerSrv;
+	@Autowired
+	private PlayerService playerSrv;
 
-    @Autowired
-    private GameService gameSrv;
+	@Autowired
+	private GameService gameSrv;
 
-    @RequestMapping(method = RequestMethod.POST,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges",
-            consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Assign challenge")
-    public void assignChallenge(@RequestBody ChallengeAssignmentDTO challengeData,
-            @PathVariable String gameId,
-            @PathVariable String playerId) {
-        gameId = decodePathVariable(gameId);
-        ChallengeAssignment assignment = converter.convert(challengeData);
-        playerSrv.assignChallenge(gameId, playerId, assignment);
-    }
+	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Assign challenge")
+	public void assignChallenge(@PathVariable String domain, @RequestBody ChallengeAssignmentDTO challengeData,
+			@PathVariable String gameId, @PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		ChallengeAssignment assignment = converter.convert(challengeData);
+		playerSrv.assignChallenge(gameId, playerId, assignment);
+	}
 
-    @RequestMapping(method = RequestMethod.POST,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept")
-    @ApiOperation(value = "Accept challenge")
-    public ChallengeConcept acceptChallenge(@PathVariable String domain,
-            @PathVariable String gameId,
-            @PathVariable String playerId, @PathVariable String challengeName) {
-        gameId = decodePathVariable(gameId);
-        playerId = decodePathVariable(playerId);
-        return playerSrv.acceptChallenge(gameId, playerId, challengeName);
+	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept")
+	@ApiOperation(value = "Accept challenge")
+	public ChallengeConcept acceptChallenge(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId, @PathVariable String challengeName) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		return playerSrv.acceptChallenge(gameId, playerId, challengeName);
 
-    }
+	}
 
-    // Create a player
-    // POST /data/game/{id}/player/{playerId}
-    // ­ Error if the player ID already exists
-    // ­ In body specify alias (optional, e.g., email, nick or something else),
-    // customData
-    // (optional)
-    // ­ No implicit fields (e.g., game) in input
-    // ­ No concept fields in input
+	// Create a player
+	// POST /data/game/{id}/player/{playerId}
+	// ­ Error if the player ID already exists
+	// ­ In body specify alias (optional, e.g., email, nick or something else),
+	// customData
+	// (optional)
+	// ­ No implicit fields (e.g., game) in input
+	// ­ No concept fields in input
 
-    @RequestMapping(method = RequestMethod.POST,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}",
-            consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Create player")
-    public void createPlayer(@PathVariable String gameId,
-            @RequestBody PlayerStateDTO player) {
-        gameId = decodePathVariable(gameId);
-        // check if player already exists
-        if (playerSrv.loadState(gameId, player.getPlayerId(), false, false) != null) {
-            throw new IllegalArgumentException(String.format("Player %s already exists in game %s",
-                    player.getPlayerId(), gameId));
-        }
+	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Create player")
+	public void createPlayer(@PathVariable String domain, @PathVariable String gameId,
+			@RequestBody PlayerStateDTO player) {
+		gameId = decodePathVariable(gameId);
+		// check if player already exists
+		if (playerSrv.loadState(gameId, player.getPlayerId(), false, false) != null) {
+			throw new IllegalArgumentException(
+					String.format("Player %s already exists in game %s", player.getPlayerId(), gameId));
+		}
 
-        Game game = gameSrv.loadGameDefinitionById(gameId);
+		Game game = gameSrv.loadGameDefinitionById(gameId);
 
-        player.setGameId(gameId);
-        PlayerState p = converter.convertPlayerState(player);
-        playerSrv.saveState(p);
-        StatsLogger.logUserCreation(game.getDomain(), gameId, player.getPlayerId(),
-                UUID.randomUUID().toString(), System.currentTimeMillis());
-    }
+		player.setGameId(gameId);
+		PlayerState p = converter.convertPlayerState(player);
+		playerSrv.saveState(p);
+		StatsLogger.logUserCreation(game.getDomain(), gameId, player.getPlayerId(), UUID.randomUUID().toString(),
+				System.currentTimeMillis());
+	}
 
-    // Read a player
-    // GET /data/game/{id}/player/{playerId}
-    // ­ Return everything: playerId, alias, customData, state (concept fields),
-    // teams, challenges
+	// Read a player
+	// GET /data/game/{id}/player/{playerId}
+	// ­ Return everything: playerId, alias, customData, state (concept fields),
+	// teams, challenges
 
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}",
-            produces = {"application/json"})
-    @ApiOperation(value = "Get player state")
-    public PlayerStateDTO readPlayer(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        gameId = decodePathVariable(gameId);
-        playerId = decodePathVariable(playerId);
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player state")
+	public PlayerStateDTO readPlayer(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
+	}
 
-    // Update a player
-    // PUT /data/game/{id}/player/{playerId}
-    // ­ Do not update the concept fields
-    // ­ Error if the player ID does not exist
-    // ­ If alias not present, do not update it; if customdata not present do
-    // not update it.
-    @RequestMapping(method = RequestMethod.PUT,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}",
-            consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Edit player state")
-    public void updatePlayer(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        gameId = decodePathVariable(gameId);
-        playerId = decodePathVariable(playerId);
-        throw new UnsupportedOperationException("Operation actually not supported");
-    }
+	// Update a player
+	// PUT /data/game/{id}/player/{playerId}
+	// ­ Do not update the concept fields
+	// ­ Error if the player ID does not exist
+	// ­ If alias not present, do not update it; if customdata not present do
+	// not update it.
+	@RequestMapping(method = RequestMethod.PUT, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Edit player state")
+	public void updatePlayer(@PathVariable String domain, @PathVariable String gameId, @PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		throw new UnsupportedOperationException("Operation actually not supported");
+	}
 
-    // Delete a player
-    // DELETE /data/game/{id}/player/{playerId}
+	// Delete a player
+	// DELETE /data/game/{id}/player/{playerId}
 
-    @RequestMapping(method = RequestMethod.DELETE,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}",
-            produces = {"application/json"})
-    @ApiOperation(value = "Delete player state")
-    public void deletePlayer(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        gameId = decodePathVariable(gameId);
-        playerId = decodePathVariable(playerId);
-        playerSrv.deleteState(gameId, playerId);
-    }
+	@RequestMapping(method = RequestMethod.DELETE, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", produces = {
+			"application/json" })
+	@ApiOperation(value = "Delete player state")
+	public void deletePlayer(@PathVariable String domain, @PathVariable String gameId, @PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		playerSrv.deleteState(gameId, playerId);
+	}
 
-    // Read player’s teams
-    // GET /data/game/{id}/player/{playerId}/teams
+	// Read player’s teams
+	// GET /data/game/{id}/player/{playerId}/teams
 
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/teams",
-            produces = {"application/json"})
-    @ApiOperation(value = "Get player teams")
-    public List<TeamDTO> readTeamsByMember(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        gameId = decodePathVariable(gameId);
-        playerId = decodePathVariable(playerId);
-        List<TeamState> result = playerSrv.readTeams(gameId, playerId);
-        List<TeamDTO> converted = new ArrayList<>();
-        for (TeamState r : result) {
-            converted.add(converter.convertTeam(r));
-        }
-        return converted;
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/teams", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player teams")
+	public List<TeamDTO> readTeamsByMember(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		List<TeamState> result = playerSrv.readTeams(gameId, playerId);
+		List<TeamDTO> converted = new ArrayList<>();
+		for (TeamState r : result) {
+			converted.add(converter.convertTeam(r));
+		}
+		return converted;
+	}
 
-    // Read user challenges
-    // GET /data/game/{id}/player/{playerId}/challenges
+	// Read user challenges
+	// GET /data/game/{id}/player/{playerId}/challenges
 
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges",
-            produces = {"application/json"})
-    @ApiOperation(value = "Get player challenges")
-    public void getPlayerChallenge(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        gameId = decodePathVariable(gameId);
-        playerId = decodePathVariable(playerId);
-        throw new UnsupportedOperationException("Operation actually not supported");
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player challenges")
+	public void getPlayerChallenge(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		throw new UnsupportedOperationException("Operation actually not supported");
+	}
 
-    // Read user game state
-    // GET /data/game/{id}/player/{playerId}/state
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/state",
-            produces = {"application/json"})
-    @ApiOperation(value = "Get player state")
-    public PlayerStateDTO readState(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        return readPlayer(gameId, playerId);
-    }
+	// Read user game state
+	// GET /data/game/{id}/player/{playerId}/state
+	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/state", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player state")
+	public PlayerStateDTO readState(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId) {
+		return readPlayer(domain, gameId, playerId);
+	}
 
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/levels", produces = {"application/json"})
-    @ApiOperation(value = "Get player levels")
-    public List<PlayerLevel> readLevels(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
-        if (state != null) {
-            return state.getLevels();
-        } else {
-            return Collections.emptyList();
-        }
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/levels", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player levels")
+	public List<PlayerLevel> readLevels(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId) {
+		PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+		if (state != null) {
+			return state.getLevels();
+		} else {
+			return Collections.emptyList();
+		}
+	}
 
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/inventory",
-            produces = {"application/json"})
-    @ApiOperation(value = "Get player inventory")
-    public Inventory readInventory(@PathVariable String domain, @PathVariable String gameId,
-            @PathVariable String playerId) {
-        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
-        if (state != null) {
-            return state.getInventory();
-        } else {
-            throw new IllegalArgumentException(String
-                    .format("state for player %s in game %s doesn't exist", playerId, gameId));
-        }
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/inventory", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player inventory")
+	public Inventory readInventory(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId) {
+		PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+		if (state != null) {
+			return state.getInventory();
+		} else {
+			throw new IllegalArgumentException(
+					String.format("state for player %s in game %s doesn't exist", playerId, gameId));
+		}
+	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/inventory/activate", produces = {
+			"application/json" })
+	@ApiOperation(value = "Activate a choice")
+	public Inventory activateChoice(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId, @RequestBody ItemChoice choice) {
+		PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+		if (state != null) {
+			Inventory result = state.getInventory().activateChoice(choice);
+			playerSrv.saveState(state);
+			return result;
+		} else {
+			throw new IllegalArgumentException(
+					String.format("state for player %s in game %s doesn't exist", playerId, gameId));
+		}
+	}
 
-    @RequestMapping(method = RequestMethod.POST,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/inventory/activate",
-            produces = {"application/json"})
-    @ApiOperation(value = "Activate a choice")
-    public Inventory activateChoice(@PathVariable String domain, @PathVariable String gameId,
-            @PathVariable String playerId, @RequestBody ItemChoice choice) {
-        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
-        if (state != null) {
-            Inventory result = state.getInventory().activateChoice(choice);
-            playerSrv.saveState(state);
-            return result;
-        } else {
-            throw new IllegalArgumentException(String
-                    .format("state for player %s in game %s doesn't exist", playerId, gameId));
-        }
-    }
+	// Read user custom data
+	// GET /data/game/{id}/player/{playerId}/custom
+	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/custom", produces = {
+			"application/json" })
+	@ApiOperation(value = "Get player custom data")
+	public PlayerStateDTO readCustomData(@PathVariable String domain, @PathVariable String gameId,
+			@PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		throw new UnsupportedOperationException("Operation actually not supported");
 
-    // Read user custom data
-    // GET /data/game/{id}/player/{playerId}/custom
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/custom",
-            produces = {"application/json"})
-    @ApiOperation(value = "Get player custom data")
-    public PlayerStateDTO readCustomData(@PathVariable String gameId,
-            @PathVariable String playerId) {
-        gameId = decodePathVariable(gameId);
-        playerId = decodePathVariable(playerId);
-        throw new UnsupportedOperationException("Operation actually not supported");
+	}
 
-    }
+	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/search", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@ApiOperation(value = "Search player states")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
+	public Page<PlayerStateDTO> searchByQuery(@PathVariable String domain, @PathVariable String gameId,
+			@RequestBody WrapperQuery query, @ApiIgnore Pageable pageable) {
+		gameId = decodePathVariable(gameId);
+		Page<PlayerState> page = null;
+		if (query.getComplexQuery() != null) {
+			page = playerSrv.search(gameId, query.getComplexQuery(), pageable);
+		} else {
+			page = playerSrv.search(gameId, query.getRawQuery(), pageable);
+		}
 
-    @RequestMapping(method = RequestMethod.POST,
-            value = "/api/{domain}/data/game/{gameId}/player/search",
-            consumes = {"application/json"},
-            produces = {"application/json"})
-    @ApiOperation(value = "Search player states")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve "),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page."),})
-    public Page<PlayerStateDTO> searchByQuery(
-            @PathVariable String gameId, @RequestBody WrapperQuery query,
-            @ApiIgnore Pageable pageable) {
-        gameId = decodePathVariable(gameId);
-        Page<PlayerState> page = null;
-        if (query.getComplexQuery() != null) {
-            page = playerSrv.search(gameId, query.getComplexQuery(), pageable);
-        } else {
-            page = playerSrv.search(gameId, query.getRawQuery(), pageable);
-        }
+		List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
 
-        List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
+		for (PlayerState ps : page) {
+			resList.add(converter.convertPlayerState(ps));
+		}
 
-        for (PlayerState ps : page) {
-            resList.add(converter.convertPlayerState(ps));
-        }
+		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList, pageable, page.getTotalElements());
 
-        PageImpl<PlayerStateDTO> res =
-                new PageImpl<PlayerStateDTO>(resList, pageable, page.getTotalElements());
+		return res;
 
-        return res;
-
-    }
+	}
 
 }

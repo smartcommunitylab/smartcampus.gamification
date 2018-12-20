@@ -33,7 +33,6 @@ package it.smartcommunitylab.oauth.api;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import it.smartcommunitylab.ApiClient;
@@ -52,7 +51,7 @@ import it.smartcommunitylab.model.WrapperQuery;
 /**
  * API tests for DomainPlayerControllerApi
  */
-@Ignore
+//@Ignore
 public class DomainPlayerControllerApiTest {
 
     private final DomainPlayerControllerApi api = new DomainPlayerControllerApi();

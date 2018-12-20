@@ -128,7 +128,7 @@ public class DomainRuleController {
             value = "/api/{domain}/model/game/{gameId}/rule/validate",
             consumes = {"application/json"}, produces = {"application/json"})
     @ApiOperation(value = "Validate rule")
-    public List<String> validateRule(@PathVariable String gameId,
+    public List<String> validateRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleValidateWrapper wrapper) {
         return gameEngine.validateRule(gameId, wrapper.getRuleContent());
     }

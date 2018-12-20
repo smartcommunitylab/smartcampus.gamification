@@ -65,4 +65,12 @@ public class StatsLoggerTest {
         assertThat(message, is(
                 "\"GAME\" \"513\" EXEC_ID 1000 1200 type=ChallengeFailed name=\"challenge_name\" failed"));
     }
+
+    @Test
+    public void null_domain() {
+        String message = StatsLogger.logChallengeFailed(null, "GAME", "513", "EXEC_ID", 1000, 1200,
+                "challenge_name");
+        assertThat(message, is(
+                "\"GAME\" \"513\" EXEC_ID 1000 1200 type=ChallengeFailed name=\"challenge_name\" failed"));
+    }
 }

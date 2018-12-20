@@ -3,6 +3,7 @@ package eu.trentorise.game.platform;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -25,6 +26,10 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.smartcommunitylab.aac.AACException;
+import it.smartcommunitylab.aac.AACRoleService;
+import it.smartcommunitylab.aac.model.Role;
+
 @Component
 @PropertySource("classpath:engine.web.properties")
 public class AacRolesClient implements PlatformRolesClient {
@@ -32,17 +37,23 @@ public class AacRolesClient implements PlatformRolesClient {
     @Resource
     private Environment env;
 
-    private static String endpoint;
+    private static String aacURL;
+    
+    // tuple
     private static String context;
-    private static String domainPrefix;
-    private static int domainPrefixLength;
+    private static String rolePrefix;
+    private AACRoleService aacRoleService;
+    
 
     @PostConstruct
     private void init() {
-        endpoint = env.getProperty("aac.roles.endpoint");
-        context = env.getProperty("aac.roles.context");
-        domainPrefix = env.getProperty("aac.roles.domainPrefix");
-        domainPrefixLength = domainPrefix.length();
+       
+    	context = env.getProperty("aac.roles.context");
+        rolePrefix = env.getProperty("aac.roles.role");
+//        rolePrefixLength = rolePrefix.length();
+        
+        aacURL = env.getProperty("aac.url");
+        aacRoleService = new AACRoleService(aacURL); 
 
     }
 
@@ -53,17 +64,23 @@ public class AacRolesClient implements PlatformRolesClient {
         restTemplate.getMessageConverters().add(new RolesConverter());
         List<String> domains = new ArrayList<String>();
         try{
-        AacRole[] roles = restTemplate.getForObject(endpoint,
-                AacRole[].class);
-        for (AacRole role : roles) {
-            if (context.equalsIgnoreCase(role.context)
-                    && role.role.startsWith(domainPrefix)) {
-                domains.add(role.role.substring(domainPrefixLength));
+//      Set<Role> roles =  aacRoleService.getRoles(token);
+        Set<Role> roles = aacRoleService.getClientRoles(token);
+        for (Role role : roles) {
+            if (context.equalsIgnoreCase(role.getContext())
+                    && role.getRole().startsWith(rolePrefix)) {
+                domains.add(role.getSpace());
             }
         }
         }catch (RestClientException e) {
             throw new IllegalArgumentException("the token seems invalid");
-        }
+        } catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AACException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
         
         return domains;

@@ -51,7 +51,7 @@ import it.smartcommunitylab.model.WrapperQuery;
 /**
  * API tests for DomainPlayerControllerApi
  */
-//@Ignore
+@org.junit.Ignore
 public class DomainPlayerControllerApiTest {
 
     private final DomainPlayerControllerApi api = new DomainPlayerControllerApi();
@@ -69,7 +69,7 @@ public class DomainPlayerControllerApiTest {
     	
     	 // Configure OAuth2 access token for authorization: oauth2
     	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
-    	 oauth2.setAccessToken("82bda41d-6eb9-45ed-a6ec-ac4cae36ec98");
+    	 oauth2.setAccessToken("b8dc3ff8-898f-494a-8a6d-e33f1309e61e");
     	 
     	 // Configure basic auth. 
     	 api.setApiClient(apiClient);

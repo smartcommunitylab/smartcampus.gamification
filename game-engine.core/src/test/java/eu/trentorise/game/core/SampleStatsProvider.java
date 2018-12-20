@@ -10,6 +10,7 @@ import static eu.trentorise.game.core.StatsLogger.logChallengeInvitationAccepted
 import static eu.trentorise.game.core.StatsLogger.logChallengeInvitationRefused;
 import static eu.trentorise.game.core.StatsLogger.logChallengeProposed;
 import static eu.trentorise.game.core.StatsLogger.logChallengeRefused;
+import static eu.trentorise.game.core.StatsLogger.logChoiceActived;
 import static eu.trentorise.game.core.StatsLogger.logClassification;
 import static eu.trentorise.game.core.StatsLogger.logEndGameAction;
 import static eu.trentorise.game.core.StatsLogger.logInviteToChallenge;
@@ -81,6 +82,8 @@ public class SampleStatsProvider {
                 new LevelInstance("Green Warrior", "Adept"), uuid(), timestamp,
                 timestamp);
         logUserCreation(domain, gameId, "222", uuid(), timestamp);
+
+        logChoiceActived(domain, gameId, "45666", uuid(), timestamp, timestamp, "myActivatedModel");
     }
 
 

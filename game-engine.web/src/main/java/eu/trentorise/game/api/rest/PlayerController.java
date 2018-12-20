@@ -339,15 +339,7 @@ public class PlayerController {
             @RequestBody ItemChoice choice) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
-        if (state != null) {
-            Inventory result = state.getInventory().activateChoice(choice);
-            playerSrv.saveState(state);
-            return result;
-        } else {
-            throw new IllegalArgumentException(String
-                    .format("state for player %s in game %s doesn't exist", playerId, gameId));
-        }
+        return playerSrv.choiceActivation(gameId, playerId, choice);
     }
 
     // Read user custom data

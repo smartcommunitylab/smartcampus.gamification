@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.Inventory;
+import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -64,6 +66,8 @@ public interface PlayerService {
 	public Page<PlayerState> search(String gameId, ComplexSearchQuery query, Pageable pageable);
 
 	public Page<PlayerState> search(String gameId, StringSearchQuery query, Pageable pageable);
+
+    public Inventory choiceActivation(String gameId, String playerId, ItemChoice choice);
 
 	/*
 	 * TEAM METHODS

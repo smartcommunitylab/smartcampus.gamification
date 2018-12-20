@@ -56,6 +56,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
 import eu.trentorise.game.model.Inventory;
+import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerBlackList;
@@ -998,5 +999,23 @@ public class DBPlayerManager implements PlayerService {
 		return sps;
 
 	}
+
+    @Override
+    public Inventory choiceActivation(String gameId, String playerId, ItemChoice choice) {
+        PlayerState state = loadState(gameId, playerId, false, false);
+        Game game = gameSrv.loadGameDefinitionById(gameId);
+        final String executionId = UUID.randomUUID().toString();
+        final long executionTime = System.currentTimeMillis();
+        if (state != null) {
+            Inventory result = state.getInventory().activateChoice(choice);
+            saveState(state);
+            StatsLogger.logChoiceActived(game.getId(), gameId, playerId, executionId, executionTime,
+                    executionTime, choice.getName());
+            return result;
+        } else {
+            throw new IllegalArgumentException(String
+                    .format("state for player %s in game %s doesn't exist", playerId, gameId));
+        }
+    }
 	
 }

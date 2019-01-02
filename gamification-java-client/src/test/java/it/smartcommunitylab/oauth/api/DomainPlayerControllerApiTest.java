@@ -51,7 +51,7 @@ import it.smartcommunitylab.model.WrapperQuery;
 /**
  * API tests for DomainPlayerControllerApi
  */
-@org.junit.Ignore
+//@org.junit.Ignore
 public class DomainPlayerControllerApiTest {
 
     private final DomainPlayerControllerApi api = new DomainPlayerControllerApi();
@@ -59,7 +59,7 @@ public class DomainPlayerControllerApiTest {
     private ApiClient apiClient;
     private String baseUrl = "http://localhost:6060/gamification";
     private String gameId = "5b7a885149c95d50c5f9d442";
-    private String playerId = "8";
+    private String playerId = "101";
     private String conceptName = "green leaves";
     private String domain = "demo-domain";
     
@@ -69,7 +69,7 @@ public class DomainPlayerControllerApiTest {
     	
     	 // Configure OAuth2 access token for authorization: oauth2
     	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
-    	 oauth2.setAccessToken("b8dc3ff8-898f-494a-8a6d-e33f1309e61e");
+    	 oauth2.setAccessToken("e2e09c27-f33a-44f4-92b4-667a12239c71");
     	 
     	 // Configure basic auth. 
     	 api.setApiClient(apiClient);

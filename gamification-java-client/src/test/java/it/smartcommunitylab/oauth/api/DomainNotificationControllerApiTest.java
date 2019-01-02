@@ -30,12 +30,19 @@
 
 package it.smartcommunitylab.oauth.api;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.auth.OAuth;
 import it.smartcommunitylab.model.Notification;
 
 /**
@@ -45,8 +52,26 @@ import it.smartcommunitylab.model.Notification;
 public class DomainNotificationControllerApiTest {
 
     private final DomainNotificationControllerApi api = new DomainNotificationControllerApi();
-
+    private ApiClient apiClient;
+    private String baseUrl = "http://localhost:6060/gamification";
+    private String gameId = "5b7a885149c95d50c5f9d442";
+    private String playerId = "101";
+    private String conceptName = "green leaves";
+    private String domain = "demo-domain";
     
+    
+    @Before
+    public void init() {
+    	 apiClient = new ApiClient(baseUrl);
+    	
+    	 // Configure OAuth2 access token for authorization: oauth2
+    	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 oauth2.setAccessToken("e2e09c27-f33a-44f4-92b4-667a12239c71");
+    	 
+    	 // Configure basic auth. 
+    	 api.setApiClient(apiClient);
+    }
+
     /**
      * Get game notifications
      *
@@ -54,20 +79,23 @@ public class DomainNotificationControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readNotificationUsingGET2Test() throws ApiException {
-        String domain = null;
-        String gameId = null;
+    public void readNotificationUsingGET2Test() throws ApiException, JsonParseException, JsonMappingException, IllegalArgumentException, ClassNotFoundException, IOException {
         Long fromTs = null;
         Long toTs = null;
         List<String> includeTypes = null;
         List<String> excludeTypes = null;
-        String page = null;
-        String size = null;
+        String page = "1";
+		String size = "15";
         List<Notification> response = api.readNotificationUsingGET2(domain, gameId, fromTs, toTs, includeTypes, excludeTypes, page, size);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**
@@ -77,21 +105,23 @@ public class DomainNotificationControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readPlayerNotificationUsingGETTest() throws ApiException {
-        String domain = null;
-        String gameId = null;
-        String playerId = null;
+    public void readPlayerNotificationUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IllegalArgumentException, ClassNotFoundException, IOException {
         Long fromTs = null;
         Long toTs = null;
         List<String> includeTypes = null;
         List<String> excludeTypes = null;
-        String page = null;
-        String size = null;
+        String page = "1";
+		String size = "15";
         List<Notification> response = api.readPlayerNotificationUsingGET(domain, gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**
@@ -101,21 +131,24 @@ public class DomainNotificationControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readTeamNotificationUsingGETTest() throws ApiException {
-        String domain = null;
-        String gameId = null;
-        String teamId = null;
+    public void readTeamNotificationUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IllegalArgumentException, ClassNotFoundException, IOException {
+        String teamId = playerId;
         Long fromTs = null;
         Long toTs = null;
         List<String> includeTypes = null;
         List<String> excludeTypes = null;
-        String page = null;
-        String size = null;
+        String page = "1";
+		String size = "15";
         List<Notification> response = api.readTeamNotificationUsingGET(domain, gameId, teamId, fromTs, toTs, includeTypes, excludeTypes, page, size);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
 }

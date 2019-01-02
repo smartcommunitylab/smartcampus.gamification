@@ -51,7 +51,7 @@ import it.smartcommunitylab.model.WrapperQuery;
 /**
  * API tests for DomainPlayerControllerApi
  */
-//@org.junit.Ignore
+@org.junit.Ignore
 public class DomainPlayerControllerApiTest {
 
     private final DomainPlayerControllerApi api = new DomainPlayerControllerApi();

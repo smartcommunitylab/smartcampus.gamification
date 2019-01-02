@@ -27,117 +27,165 @@
  * Do not edit the class manually.
  */
 
-
 package it.smartcommunitylab.basic.api;
 
+import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
-import it.smartcommunitylab.model.CollectionNotification;
+import it.smartcommunitylab.auth.HttpBasicAuth;
 import it.smartcommunitylab.model.Notification;
 
 /**
  * API tests for NotificationControllerApi
  */
-@Ignore
+// @Ignore
 public class NotificationControllerApiTest {
 
-    private final NotificationControllerApi api = new NotificationControllerApi();
+	private final NotificationControllerApi api = new NotificationControllerApi();
+	private ApiClient apiClient;
+	private final String userName = "long-rovereto";
+	private final String password = "rov";
+	private String baseUrl = "http://localhost:6060/gamification";
+	private String gameId = "5b7a885149c95d50c5f9d442";
+	private String playerId = "8";
 
-    
-    /**
-     * Get game notifications
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void readNotificationUsingGET2Test() throws ApiException {
-        String gameId = null;
-        Long fromTs = null;
-        Long toTs = null;
-        List<String> includeTypes = null;
-        List<String> excludeTypes = null;
-        String page = null;
-        String size = null;
-        List<Notification> response = api.readNotificationUsingGET2(gameId, fromTs, toTs, includeTypes, excludeTypes, page, size);
+	@Before
+	public void init() {
+		apiClient = new ApiClient(baseUrl);
 
-        // TODO: test validations
-    }
-    
-    /**
-     * Get player notifications
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void readPlayerNotificationGroupedUsingGETTest() throws ApiException {
-        String gameId = null;
-        String playerId = null;
-        Long fromTs = null;
-        Long toTs = null;
-        List<String> includeTypes = null;
-        List<String> excludeTypes = null;
-        String page = null;
-        String size = null;
-        Map<String, CollectionNotification> response = api.readPlayerNotificationGroupedUsingGET(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size);
+		// Configure OAuth2 access token for authorization: oauth2
+		// OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+		// oauth2.setAccessToken("YOUR_ACCESS_TOKEN");
 
-        // TODO: test validations
-    }
-    
-    /**
-     * Get player notifications
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void readPlayerNotificationUsingGETTest() throws ApiException {
-        String gameId = null;
-        String playerId = null;
-        Long fromTs = null;
-        Long toTs = null;
-        List<String> includeTypes = null;
-        List<String> excludeTypes = null;
-        String page = null;
-        String size = null;
-        List<Notification> response = api.readPlayerNotificationUsingGET(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size);
+		// Configure basic auth.
+		HttpBasicAuth basic = (HttpBasicAuth) apiClient.getAuthentication("basic");
+		basic.setUsername(userName);
+		basic.setPassword(password);
 
-        // TODO: test validations
-    }
-    
-    /**
-     * Get team notifications
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void readTeamNotificationUsingGETTest() throws ApiException {
-        String gameId = null;
-        String teamId = null;
-        Long fromTs = null;
-        Long toTs = null;
-        List<String> includeTypes = null;
-        List<String> excludeTypes = null;
-        String page = null;
-        String size = null;
-        List<Notification> response = api.readTeamNotificationUsingGET(gameId, teamId, fromTs, toTs, includeTypes, excludeTypes, page, size);
+		api.setApiClient(apiClient);
+	}
 
-        // TODO: test validations
-    }
-    
+	/**
+	 * Get game notifications
+	 *
+	 * 
+	 *
+	 * @throws ApiException
+	 *             if the Api call fails
+	 * @throws ClassNotFoundException
+	 * @throws IllegalArgumentException
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	@Test
+	public void readNotificationUsingGET2Test() throws ApiException, IllegalArgumentException, ClassNotFoundException,
+			JsonParseException, JsonMappingException, IOException {
+		Long fromTs = null;
+		Long toTs = null;
+		List<String> includeTypes = null;
+		List<String> excludeTypes = null;
+		String page = "1";
+		String size = "15";
+		List<Notification> response = api.readNotificationUsingGET2(gameId, fromTs, toTs, includeTypes, excludeTypes,
+				page, size);
+
+		System.out.println(response.size());
+
+		// TODO: test validations
+	}
+
+	/**
+	 * Get player notifications
+	 *
+	 * 
+	 *
+	 * @throws ApiException
+	 *             if the Api call fails
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalArgumentException 
+	 */
+	@Test
+	public void readPlayerNotificationGroupedUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException, IllegalArgumentException, ClassNotFoundException {
+		Long fromTs = null;
+		Long toTs = null;
+		List<String> includeTypes = null;
+		List<String> excludeTypes = null;
+		String page = "1";
+		String size = "15";
+		Map<String, Collection<Notification>> response = api.readPlayerNotificationGroupedUsingGET(gameId, playerId,
+				fromTs, toTs, includeTypes, excludeTypes, page, size);
+
+		System.out.println(response.size());
+	}
+
+	/**
+	 * Get player notifications
+	 *
+	 * 
+	 *
+	 * @throws ApiException
+	 *             if the Api call fails
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws IllegalArgumentException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	@Test
+	public void readPlayerNotificationUsingGETTest() throws ApiException, JsonParseException, JsonMappingException,
+			IllegalArgumentException, ClassNotFoundException, IOException {
+		Long fromTs = null;
+		Long toTs = null;
+		List<String> includeTypes = null;
+		List<String> excludeTypes = null;
+		String page = "1";
+		String size = "15";
+		List<Notification> response = api.readPlayerNotificationUsingGET(gameId, playerId, fromTs, toTs, includeTypes,
+				excludeTypes, page, size);
+
+		System.out.println(response.size());
+	}
+
+	/**
+	 * Get team notifications
+	 *
+	 * 
+	 *
+	 * @throws ApiException
+	 *             if the Api call fails
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalArgumentException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */
+	@Test
+	public void readTeamNotificationUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IllegalArgumentException, ClassNotFoundException, IOException {
+		String teamId = "testTeam";
+		Long fromTs = null;
+		Long toTs = null;
+		List<String> includeTypes = null;
+		List<String> excludeTypes = null;
+		String page = "1";
+		String size = "15";
+		List<Notification> response = api.readTeamNotificationUsingGET(gameId, playerId, fromTs, toTs, includeTypes,
+				excludeTypes, page, size);
+
+		System.out.println(response.size());
+	}
+
 }

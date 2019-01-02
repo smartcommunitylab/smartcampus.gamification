@@ -33,24 +33,32 @@ package it.smartcommunitylab.basic.api;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Response;
 
 import it.smartcommunitylab.ApiCallback;
 import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
-import it.smartcommunitylab.ApiResponse;
 import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.Pair;
 import it.smartcommunitylab.ProgressRequestBody;
 import it.smartcommunitylab.ProgressResponseBody;
 import it.smartcommunitylab.model.CollectionNotification;
 import it.smartcommunitylab.model.Notification;
+import it.smartcommunitylab.model.ext.NotificationControllerUtils;
 
 public class NotificationControllerApi {
+	
+	ObjectMapper mapper = new ObjectMapper();
+	NotificationControllerUtils notificationControllerUtils = new NotificationControllerUtils();
     private ApiClient apiClient;
 
     public NotificationControllerApi() {
@@ -163,11 +171,18 @@ public class NotificationControllerApi {
      * @param size Number of records per page. (optional)
      * @return List&lt;Notification&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
-    public List<Notification> readNotificationUsingGET2(String gameId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
-        ApiResponse<List<Notification>> resp = readNotificationUsingGET2WithHttpInfo(gameId, fromTs, toTs, includeTypes, excludeTypes, page, size);
-        return resp.getData();
+    public List<Notification> readNotificationUsingGET2(String gameId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException, IllegalArgumentException, ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
+        Response response = readNotificationUsingGET2WithHttpInfo(gameId, fromTs, toTs, includeTypes, excludeTypes, page, size);
+        Map[] myObjects = mapper.readValue(response.body().byteStream(), Map[].class);
+        return notificationControllerUtils.convertToSpecificNotificationType(myObjects);
     }
+
 
     /**
      * Get game notifications
@@ -182,10 +197,10 @@ public class NotificationControllerApi {
      * @return ApiResponse&lt;List&lt;Notification&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<Notification>> readNotificationUsingGET2WithHttpInfo(String gameId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
+    public Response readNotificationUsingGET2WithHttpInfo(String gameId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
         com.squareup.okhttp.Call call = readNotificationUsingGET2ValidateBeforeCall(gameId, fromTs, toTs, includeTypes, excludeTypes, page, size, null, null);
         Type localVarReturnType = new TypeToken<List<Notification>>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**
@@ -330,10 +345,16 @@ public class NotificationControllerApi {
      * @param size Number of records per page. (optional)
      * @return Map&lt;String, CollectionNotification&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
      */
-    public Map<String, CollectionNotification> readPlayerNotificationGroupedUsingGET(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
-        ApiResponse<Map<String, CollectionNotification>> resp = readPlayerNotificationGroupedUsingGETWithHttpInfo(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size);
-        return resp.getData();
+    public Map<String, Collection<Notification>> readPlayerNotificationGroupedUsingGET(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException, JsonParseException, JsonMappingException, IOException, IllegalArgumentException, ClassNotFoundException {
+    	Response response = readPlayerNotificationGroupedUsingGETWithHttpInfo(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size);
+    	Map myObjects = mapper.readValue(response.body().byteStream(), Map.class);
+        return notificationControllerUtils.convertToSpecificGroupNotification(myObjects);
     }
 
     /**
@@ -350,10 +371,10 @@ public class NotificationControllerApi {
      * @return ApiResponse&lt;Map&lt;String, CollectionNotification&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Map<String, CollectionNotification>> readPlayerNotificationGroupedUsingGETWithHttpInfo(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
+    public Response readPlayerNotificationGroupedUsingGETWithHttpInfo(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
         com.squareup.okhttp.Call call = readPlayerNotificationGroupedUsingGETValidateBeforeCall(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size, null, null);
         Type localVarReturnType = new TypeToken<Map<String, CollectionNotification>>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**
@@ -499,11 +520,19 @@ public class NotificationControllerApi {
      * @param size Number of records per page. (optional)
      * @return List&lt;Notification&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
      */
-    public List<Notification> readPlayerNotificationUsingGET(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
-        ApiResponse<List<Notification>> resp = readPlayerNotificationUsingGETWithHttpInfo(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size);
-        return resp.getData();
+    public List<Notification> readPlayerNotificationUsingGET(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException, JsonParseException, JsonMappingException, IOException, IllegalArgumentException, ClassNotFoundException {
+    	   Response response = readPlayerNotificationUsingGETWithHttpInfo(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size);
+           Map[] myObjects = mapper.readValue(response.body().byteStream(), Map[].class);
+           return notificationControllerUtils.convertToSpecificNotificationType(myObjects);
     }
+    
+    
 
     /**
      * Get player notifications
@@ -519,10 +548,10 @@ public class NotificationControllerApi {
      * @return ApiResponse&lt;List&lt;Notification&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<Notification>> readPlayerNotificationUsingGETWithHttpInfo(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
+    public Response readPlayerNotificationUsingGETWithHttpInfo(String gameId, String playerId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
         com.squareup.okhttp.Call call = readPlayerNotificationUsingGETValidateBeforeCall(gameId, playerId, fromTs, toTs, includeTypes, excludeTypes, page, size, null, null);
         Type localVarReturnType = new TypeToken<List<Notification>>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**
@@ -668,11 +697,20 @@ public class NotificationControllerApi {
      * @param size Number of records per page. (optional)
      * @return List&lt;Notification&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
-    public List<Notification> readTeamNotificationUsingGET(String gameId, String teamId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
-        ApiResponse<List<Notification>> resp = readTeamNotificationUsingGETWithHttpInfo(gameId, teamId, fromTs, toTs, includeTypes, excludeTypes, page, size);
-        return resp.getData();
-    }
+	public List<Notification> readTeamNotificationUsingGET(String gameId, String teamId, Long fromTs, Long toTs,
+			List<String> includeTypes, List<String> excludeTypes, String page, String size)
+			throws ApiException, IllegalArgumentException, ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
+		Response response = readTeamNotificationUsingGETWithHttpInfo(gameId, teamId, fromTs, toTs, includeTypes,
+				excludeTypes, page, size);
+		Map[] myObjects = mapper.readValue(response.body().byteStream(), Map[].class);
+		return notificationControllerUtils.convertToSpecificNotificationType(myObjects);
+	}
 
     /**
      * Get team notifications
@@ -688,10 +726,10 @@ public class NotificationControllerApi {
      * @return ApiResponse&lt;List&lt;Notification&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<Notification>> readTeamNotificationUsingGETWithHttpInfo(String gameId, String teamId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
+    public Response readTeamNotificationUsingGETWithHttpInfo(String gameId, String teamId, Long fromTs, Long toTs, List<String> includeTypes, List<String> excludeTypes, String page, String size) throws ApiException {
         com.squareup.okhttp.Call call = readTeamNotificationUsingGETValidateBeforeCall(gameId, teamId, fromTs, toTs, includeTypes, excludeTypes, page, size, null, null);
         Type localVarReturnType = new TypeToken<List<Notification>>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**

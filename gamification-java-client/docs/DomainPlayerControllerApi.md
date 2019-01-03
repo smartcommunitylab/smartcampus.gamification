@@ -294,7 +294,7 @@ null (empty response body)
 
 <a name="getPlayerChallengeUsingGET"></a>
 # **getPlayerChallengeUsingGET**
-> getPlayerChallengeUsingGET(gameId, playerId)
+> List&lt;ChallengeConcept&gt; getPlayerChallengeUsingGET(domain, gameId, playerId)
 
 Get player challenges
 
@@ -314,10 +314,12 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    apiInstance.getPlayerChallengeUsingGET(gameId, playerId);
+    List<ChallengeConcept> result = apiInstance.getPlayerChallengeUsingGET(domain, gameId, playerId);
+    System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#getPlayerChallengeUsingGET");
     e.printStackTrace();
@@ -328,12 +330,13 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
 ### Return type
 
-null (empty response body)
+[**List&lt;ChallengeConcept&gt;**](ChallengeConcept.md)
 
 ### Authorization
 

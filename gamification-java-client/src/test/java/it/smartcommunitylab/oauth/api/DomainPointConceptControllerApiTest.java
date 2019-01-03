@@ -32,10 +32,18 @@ package it.smartcommunitylab.oauth.api;
 
 import java.util.List;
 
+import javax.sound.midi.Instrument;
+
+import org.joda.time.Interval;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.auth.OAuth;
+import it.smartcommunitylab.model.PeriodInstanceImpl;
+import it.smartcommunitylab.model.PeriodInternal;
 import it.smartcommunitylab.model.PointConcept;
 
 /**
@@ -45,7 +53,25 @@ import it.smartcommunitylab.model.PointConcept;
 public class DomainPointConceptControllerApiTest {
 
     private final DomainPointConceptControllerApi api = new DomainPointConceptControllerApi();
-
+    private ApiClient apiClient;
+    private String baseUrl = "http://localhost:6060/gamification";
+    private String gameId = "5b7a885149c95d50c5f9d442";
+    private String playerId = "101";
+    private String conceptName = "green leaves";
+    private String domain = "demo-domain";
+    
+    
+    @Before
+    public void init() {
+    	 apiClient = new ApiClient(baseUrl);
+    	
+    	 // Configure OAuth2 access token for authorization: oauth2
+    	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 oauth2.setAccessToken("f2f6ed19-cedf-4065-9dd9-262bfebbc0df");
+    	 
+    	 // Configure basic auth. 
+    	 api.setApiClient(apiClient);
+    }
     
     /**
      * Add point
@@ -55,15 +81,25 @@ public class DomainPointConceptControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
-    public void addPointUsingPOST1Test() throws ApiException {
-        String domain = null;
-        String gameId = null;
-        PointConcept point = null;
-        PointConcept response = api.addPointUsingPOST1(domain, gameId, point);
-
-        // TODO: test validations
-    }
+//    @Test
+//    public void addPointUsingPOST1Test() throws ApiException {
+//        PointConcept point = new PointConcept();
+//        Long time = System.currentTimeMillis();
+//        PeriodInternal intr = new PeriodInternal();
+//        PeriodInstanceImpl instance = new PeriodInstanceImpl();
+//        instance.setEnd(time);
+//        instance.setStart(time);
+//        instance.setIndex(1);
+//        instance.setScore(2.0);
+//        Interval interval = new Interval(lowerBoundDate.toDateTime(),
+//				lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime())
+//        intr.getInstances().put(time, instance);
+//        point.getPeriods().put("weekly", intr);
+//        
+//        PointConcept response = api.addPointUsingPOST1(domain, gameId, point);
+//
+//        System.out.println(response.getId());
+//    }
     
     /**
      * Delete point
@@ -93,12 +129,10 @@ public class DomainPointConceptControllerApiTest {
      */
     @Test
     public void readPointUsingGETTest() throws ApiException {
-        String domain = null;
-        String gameId = null;
-        String pointId = null;
+        String pointId = "1";
         PointConcept response = api.readPointUsingGET(domain, gameId, pointId);
 
-        // TODO: test validations
+        System.out.println(response);
     }
     
     /**
@@ -110,13 +144,11 @@ public class DomainPointConceptControllerApiTest {
      *          if the Api call fails
      */
     @Test
-    public void readPointsUsingGET1Test() throws ApiException {
-        String domain = null;
-        String gameId = null;
-        List<PointConcept> response = api.readPointsUsingGET1(domain, gameId);
+	public void readPointsUsingGET1Test() throws ApiException {
+		List<PointConcept> response = api.readPointsUsingGET1(domain, gameId);
 
-        // TODO: test validations
-    }
+		System.out.println(response.size());
+	}
     
     /**
      * Edit point

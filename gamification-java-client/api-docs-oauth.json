@@ -499,6 +499,13 @@
 				],
 				"parameters": [
 					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"name": "gameId",
 						"in": "path",
 						"description": "gameId",
@@ -515,7 +522,13 @@
 				],
 				"responses": {
 					"200": {
-						"description": "OK"
+						"description": "OK",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ChallengeConcept"
+							}
+						}
 					},
 					"401": {
 						"description": "Unauthorized"

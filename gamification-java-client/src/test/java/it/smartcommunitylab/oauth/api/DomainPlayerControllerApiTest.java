@@ -58,8 +58,8 @@ public class DomainPlayerControllerApiTest {
     
     private ApiClient apiClient;
     private String baseUrl = "http://localhost:6060/gamification";
-    private String gameId = "5b7a885149c95d50c5f9d442";
-    private String playerId = "101";
+    private String gameId = "57ac710fd4c6ac7872b0e7a1";
+    private String playerId = "24153";
     private String conceptName = "green leaves";
     private String domain = "demo-domain";
     
@@ -69,7 +69,7 @@ public class DomainPlayerControllerApiTest {
     	
     	 // Configure OAuth2 access token for authorization: oauth2
     	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
-    	 oauth2.setAccessToken("e2e09c27-f33a-44f4-92b4-667a12239c71");
+    	 oauth2.setAccessToken("f2f6ed19-cedf-4065-9dd9-262bfebbc0df");
     	 
     	 // Configure basic auth. 
     	 api.setApiClient(apiClient);
@@ -176,11 +176,11 @@ public class DomainPlayerControllerApiTest {
      */
     @Test
     public void getPlayerChallengeUsingGETTest() throws ApiException {
-        String gameId = null;
-        String playerId = null;
-        api.getPlayerChallengeUsingGET(gameId, playerId);
+       
+    	List<ChallengeConcept> response = api.getPlayerChallengeUsingGET(domain, gameId, playerId);
 
-        // TODO: test validations
+    	System.out.println(response.size());
+   
     }
     
     /**

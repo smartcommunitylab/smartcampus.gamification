@@ -168,11 +168,13 @@ public class DomainPlayerController {
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges", produces = {
 			"application/json" })
 	@ApiOperation(value = "Get player challenges")
-	public void getPlayerChallenge(@PathVariable String domain, @PathVariable String gameId,
+	public List<ChallengeConcept> getPlayerChallenge(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
-		throw new UnsupportedOperationException("Operation actually not supported");
+
+		PlayerState state = playerSrv.loadState(gameId, playerId, true, false);
+		return state.challenges();
 	}
 
 	// Read user game state

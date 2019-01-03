@@ -27,9 +27,9 @@
  * Do not edit the class manually.
  */
 
-
 package it.smartcommunitylab.model;
 
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.gson.annotations.SerializedName;
@@ -41,89 +41,97 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class GameConcept {
-  @SerializedName("id")
-  private String id = null;
+	@SerializedName("id")
+	protected String id = null;
 
-  @SerializedName("name")
-  private String name = null;
+	@SerializedName("name")
+	protected String name = null;
 
-  public GameConcept id(String id) {
-    this.id = id;
-    return this;
-  }
+	public GameConcept(String name) {
+		this.name = name;
+	}
 
-   /**
-   * Get id
-   * @return id
-  **/
-  @ApiModelProperty(value = "")
-  public String getId() {
-    return id;
-  }
+	public GameConcept() {
+	}
 
-  public void setId(String id) {
-    this.id = id;
-  }
+	public GameConcept(Map<String, Object> jsonProps) {
+		if (jsonProps != null) {
+			Object idField = jsonProps.get("id");
+			id = (idField != null) ? String.valueOf(idField) : null;
+			name = (String) jsonProps.get("name");
+		}
+	}
 
-  public GameConcept name(String name) {
-    this.name = name;
-    return this;
-  }
+	/**
+	 * Get id
+	 * 
+	 * @return id
+	 **/
+	@ApiModelProperty(value = "")
+	public String getId() {
+		return id;
+	}
 
-   /**
-   * Get name
-   * @return name
-  **/
-  @ApiModelProperty(value = "")
-  public String getName() {
-    return name;
-  }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public GameConcept name(String name) {
+		this.name = name;
+		return this;
+	}
 
+	/**
+	 * Get name
+	 * 
+	 * @return name
+	 **/
+	@ApiModelProperty(value = "")
+	public String getName() {
+		return name;
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    GameConcept gameConcept = (GameConcept) o;
-    return Objects.equals(this.id, gameConcept.id) &&
-        Objects.equals(this.name, gameConcept.name);
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name);
-  }
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		GameConcept gameConcept = (GameConcept) o;
+		return Objects.equals(this.id, gameConcept.id) && Objects.equals(this.name, gameConcept.name);
+	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class GameConcept {\n");
-    
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class GameConcept {\n");
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+		sb.append("    id: ").append(toIndentedString(id)).append("\n");
+		sb.append("    name: ").append(toIndentedString(name)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 
 }
-

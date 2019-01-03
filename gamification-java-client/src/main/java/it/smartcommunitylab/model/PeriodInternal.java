@@ -30,6 +30,7 @@
 
 package it.smartcommunitylab.model;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -58,7 +59,7 @@ public class PeriodInternal {
   private Long period = null;
 
   @SerializedName("start")
-  private OffsetDateTime start = null;
+  private Date start = null;
 
   public PeriodInternal capacity(Integer capacity) {
     this.capacity = capacity;
@@ -140,7 +141,7 @@ public class PeriodInternal {
     this.period = period;
   }
 
-  public PeriodInternal start(OffsetDateTime start) {
+  public PeriodInternal start(Date start) {
     this.start = start;
     return this;
   }
@@ -150,11 +151,11 @@ public class PeriodInternal {
    * @return start
   **/
   @ApiModelProperty(value = "")
-  public OffsetDateTime getStart() {
+  public Date getStart() {
     return start;
   }
 
-  public void setStart(OffsetDateTime start) {
+  public void setStart(Date start) {
     this.start = start;
   }
 

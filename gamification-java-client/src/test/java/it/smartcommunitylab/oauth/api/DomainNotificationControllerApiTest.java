@@ -31,7 +31,9 @@
 package it.smartcommunitylab.oauth.api;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -66,7 +68,7 @@ public class DomainNotificationControllerApiTest {
     	
     	 // Configure OAuth2 access token for authorization: oauth2
     	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
-    	 oauth2.setAccessToken("e2e09c27-f33a-44f4-92b4-667a12239c71");
+    	 oauth2.setAccessToken("f2f6ed19-cedf-4065-9dd9-262bfebbc0df");
     	 
     	 // Configure basic auth. 
     	 api.setApiClient(apiClient);
@@ -98,6 +100,34 @@ public class DomainNotificationControllerApiTest {
         System.out.println(response.size());
     }
     
+    
+	/**
+	 * Get player notifications
+	 *
+	 * 
+	 *
+	 * @throws ApiException
+	 *             if the Api call fails
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalArgumentException 
+	 */
+	@Test
+	public void readPlayerNotificationGroupedUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException, IllegalArgumentException, ClassNotFoundException {
+		Long fromTs = null;
+		Long toTs = null;
+		List<String> includeTypes = null;
+		List<String> excludeTypes = null;
+		String page = "1";
+		String size = "15";
+		Map<String, Collection<Notification>> response = api.readPlayerNotificationGroupedUsingGET(domain, gameId, playerId,
+				fromTs, toTs, includeTypes, excludeTypes, page, size);
+
+		System.out.println(response.size());
+	}
+	
     /**
      * Get player notifications
      *

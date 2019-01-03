@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -42,6 +43,7 @@ import it.smartcommunitylab.basic.api.NotificationControllerApi;
 import it.smartcommunitylab.model.CollectionNotification;
 import it.smartcommunitylab.model.Notification;
 
+@Ignore
 public class NotificationControllerTest {
 
 	private static final int PORT = 8089;

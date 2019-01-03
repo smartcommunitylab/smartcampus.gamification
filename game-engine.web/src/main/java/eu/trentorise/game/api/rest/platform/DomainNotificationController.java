@@ -60,9 +60,10 @@ public class DomainNotificationController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
-	public Map<String, Collection<Notification>> readPlayerNotificationGrouped(@PathVariable String gameId,
-			@PathVariable String playerId, @ApiIgnore Pageable pageable, @RequestParam(defaultValue = "-1") long fromTs,
-			@RequestParam(defaultValue = "-1") long toTs, @RequestParam(required = false) List<String> includeTypes,
+	public Map<String, Collection<Notification>> readPlayerNotificationGrouped(@PathVariable String domain,
+			@PathVariable String gameId, @PathVariable String playerId, @ApiIgnore Pageable pageable,
+			@RequestParam(defaultValue = "-1") long fromTs, @RequestParam(defaultValue = "-1") long toTs,
+			@RequestParam(required = false) List<String> includeTypes,
 			@RequestParam(required = false) List<String> excludeTypes) {
 
 		gameId = decodePathVariable(gameId);

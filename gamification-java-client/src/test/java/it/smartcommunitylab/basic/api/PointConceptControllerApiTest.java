@@ -30,12 +30,18 @@
 
 package it.smartcommunitylab.basic.api;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.auth.HttpBasicAuth;
+import it.smartcommunitylab.model.PeriodInternal;
 import it.smartcommunitylab.model.PointConcept;
 
 /**
@@ -45,7 +51,29 @@ import it.smartcommunitylab.model.PointConcept;
 public class PointConceptControllerApiTest {
 
     private final PointConceptControllerApi api = new PointConceptControllerApi();
+    private ApiClient apiClient;
+    private final String userName = "long-rovereto";
+    private final String password = "rov";
+    private String baseUrl = "http://localhost:6060/gamification";
+    private String gameId = "57ac710fd4c6ac7872b0e7a1";
+    private String playerId = "24153";
+    private String conceptName = "green leaves";
 
+    @Before
+    public void init() {
+    	 apiClient = new ApiClient(baseUrl);
+    	
+    	 // Configure OAuth2 access token for authorization: oauth2
+    	 // OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 // oauth2.setAccessToken("YOUR_ACCESS_TOKEN");
+    	 
+    	 // Configure basic auth. 
+    	 HttpBasicAuth basic = (HttpBasicAuth) apiClient.getAuthentication("basic");
+    	 basic.setUsername(userName);
+    	 basic.setPassword(password);
+
+    	 api.setApiClient(apiClient);
+    }
     
     /**
      * Add point
@@ -55,13 +83,17 @@ public class PointConceptControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
+//    @Test
     public void addPointUsingPOST1Test() throws ApiException {
-        String gameId = null;
-        PointConcept point = null;
+        PointConcept point = new PointConcept();
+        point.setId("04012019");
+        point.setName("testPoint");
+        point.setScore(2.0);
+        Map<String, PeriodInternal> periods = new HashMap<>();
+		point.setPeriods(periods );
         PointConcept response = api.addPointUsingPOST1(gameId, point);
 
-        // TODO: test validations
+        System.out.println(response.getId());
     }
     
     /**
@@ -91,11 +123,10 @@ public class PointConceptControllerApiTest {
      */
     @Test
     public void readPointUsingGETTest() throws ApiException {
-        String gameId = null;
-        String pointId = null;
+        String pointId = "1";
         PointConcept response = api.readPointUsingGET(gameId, pointId);
 
-        // TODO: test validations
+        System.out.println(response);
     }
     
     /**
@@ -108,10 +139,9 @@ public class PointConceptControllerApiTest {
      */
     @Test
     public void readPointsUsingGET1Test() throws ApiException {
-        String gameId = null;
         List<PointConcept> response = api.readPointsUsingGET1(gameId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**
@@ -122,13 +152,16 @@ public class PointConceptControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
-    public void updatePointUsingPUTTest() throws ApiException {
-        String gameId = null;
-        PointConcept point = null;
-        api.updatePointUsingPUT(gameId, point);
-
-        // TODO: test validations
-    }
+//	@Test
+	public void updatePointUsingPUTTest() throws ApiException {
+		PointConcept point = new PointConcept();
+		point.setId("3f1addae-52ca-4c60-83cc-d08a36cc13f8");
+		point.setName("testPoint");
+		point.setScore(1.0);
+		Map<String, PeriodInternal> periods = new HashMap<>();
+		point.setPeriods(periods);
+		api.updatePointUsingPUT(gameId, point);
+		
+	}
     
 }

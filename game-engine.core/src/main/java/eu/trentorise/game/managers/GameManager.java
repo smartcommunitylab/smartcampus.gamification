@@ -152,7 +152,7 @@ public class GameManager implements GameService {
 
         boolean isChallengeChoiceTaskExistent = false;
         if (game.getId() != null) {
-            pers = gameRepo.findOne(game.getId());
+            pers = gameRepo.findById(game.getId()).get();
             if (pers != null) {
 
                 isChallengeChoiceTaskExistent = pers.getTasks() != null
@@ -233,7 +233,7 @@ public class GameManager implements GameService {
     }
 
     public Game loadGameDefinitionById(String gameId) {
-        GamePersistence gp = gameRepo.findOne(gameId);
+        GamePersistence gp = gameRepo.findById(gameId).get();
         return gp == null ? null : gp.toGame();
     }
 
@@ -310,7 +310,7 @@ public class GameManager implements GameService {
         if (url != null) {
             if (url.startsWith(DBRule.URL_PROTOCOL)) {
                 url = url.substring(DBRule.URL_PROTOCOL.length());
-                return ruleRepo.findOne(url);
+                return ruleRepo.findById(url).get();
             } else if (url.startsWith(ClasspathRule.URL_PROTOCOL)) {
                 url = url.substring(ClasspathRule.URL_PROTOCOL.length());
                 if (Thread.currentThread().getContextClassLoader().getResource(url) != null) {
@@ -473,7 +473,7 @@ public class GameManager implements GameService {
         boolean res = false;
         if (g != null && url != null && url.indexOf(DBRule.URL_PROTOCOL) != -1) {
             String id = url.substring(5);
-            ruleRepo.delete(id);
+            ruleRepo.deleteById(id);
             res = g.getRules().remove(url);
             saveGameDefinition(g);
             kieContainerFactory.purgeContainer(gameId);
@@ -486,7 +486,7 @@ public class GameManager implements GameService {
     public boolean deleteGame(String gameId) {
         boolean res = false;
         if (gameId != null) {
-            gameRepo.delete(gameId);
+            gameRepo.deleteById(gameId);
             res = true;
         }
         return res;
@@ -510,7 +510,7 @@ public class GameManager implements GameService {
 
     @Override
     public boolean deleteChallengeModel(String gameId, String modelId) {
-        challengeModelRepo.delete(modelId);
+        challengeModelRepo.deleteById(modelId);
         return true;
     }
 

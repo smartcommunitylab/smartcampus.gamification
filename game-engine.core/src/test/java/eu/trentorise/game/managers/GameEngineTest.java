@@ -126,7 +126,7 @@ public class GameEngineTest {
     }
 
     private void initClasspathRuleGame() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         gameManager.saveGameDefinition(defineGame().toGame());
 
         // add rules
@@ -147,7 +147,7 @@ public class GameEngineTest {
     }
 
     private void initDBRuleGame() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         gameManager.saveGameDefinition(defineGame().toGame());
 
         // add rules
@@ -321,7 +321,7 @@ public class GameEngineTest {
 
     @Test
     public void mongoRule() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         Game game = new Game();
 
         game.setId(GAME);

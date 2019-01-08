@@ -683,7 +683,7 @@ public class DBPlayerManager implements PlayerService {
 
             List<GroupChallenge> otherProposedhallenges = groupChallengeRepo
                     .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-            groupChallengeRepo.delete(otherProposedhallenges);
+            groupChallengeRepo.deleteAll(otherProposedhallenges);
             otherProposedhallenges.forEach(challenge -> {
                 challenge.updateState(ChallengeState.REFUSED);
                 archiveSrv.moveToArchive(gameId, challenge);
@@ -803,7 +803,7 @@ public class DBPlayerManager implements PlayerService {
                 List<GroupChallenge> otherProposedhallenges =
                         groupChallengeRepo.playerGroupChallenges(gameId, playerId,
                         ChallengeState.PROPOSED);
-                groupChallengeRepo.delete(otherProposedhallenges);
+                groupChallengeRepo.deleteAll(otherProposedhallenges);
                 otherProposedhallenges.forEach(challenge -> {
                     challenge.updateState(ChallengeState.AUTO_DISCARDED);
                     archiveSrv.moveToArchive(gameId, challenge);

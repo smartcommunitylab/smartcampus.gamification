@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.bson.Document;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
@@ -59,7 +60,7 @@ public class PlayerRepoTest {
     @Before
     public void cleanDB() {
         // clean mongo
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
     }
 
     private static final String GAME = "repo-game";
@@ -870,9 +871,9 @@ public class PlayerRepoTest {
                 + "        \"final_survey_complete\" : true\n" + "    },\n"
                 + "    \"metadata\" : {}\n" + "}\n" + "";
 
-        mongo.getCollection("playerState").insert((DBObject) JSON.parse(state1));
-        mongo.getCollection("playerState").insert((DBObject) JSON.parse(state2));
-        mongo.getCollection("playerState").insert((DBObject) JSON.parse(state3));
+        mongo.getCollection("playerState").insertOne((Document) JSON.parse(state1));
+        mongo.getCollection("playerState").insertOne((Document) JSON.parse(state2));
+        mongo.getCollection("playerState").insertOne((Document) JSON.parse(state3));
     }
 
 }

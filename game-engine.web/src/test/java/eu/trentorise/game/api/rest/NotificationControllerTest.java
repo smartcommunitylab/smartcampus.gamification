@@ -59,7 +59,7 @@ public class NotificationControllerTest {
 
     @Before
     public void cleanDB() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
     }
 
     @Autowired

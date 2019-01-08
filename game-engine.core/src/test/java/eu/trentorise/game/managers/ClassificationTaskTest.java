@@ -68,7 +68,7 @@ public class ClassificationTaskTest {
     @Before
     public void cleanDB() {
         // clean mongo
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
     }
 
     @After

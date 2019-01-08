@@ -88,7 +88,7 @@ public class GameControllerTest {
 
     @Before
     public void cleanDB() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
     }
 
 

@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpInputMessage;
@@ -31,30 +33,26 @@ import it.smartcommunitylab.aac.AACRoleService;
 import it.smartcommunitylab.aac.model.Role;
 
 @Component
-@PropertySource("classpath:engine.web.properties")
 public class AacRolesClient implements PlatformRolesClient {
 
-    @Resource
-    private Environment env;
-
-    private static String aacURL;
+	@Autowired
+	@Value("${oauth.serverUrl}")
+	private String aacURL;
     
     // tuple
-    private static String context;
-    private static String rolePrefix;
+	@Autowired
+	@Value("${oauth.context}")
+    private String context;
+	@Autowired
+	@Value("${oauth.role}")
+	private String rolePrefix;
+	
     private AACRoleService aacRoleService;
     
 
     @PostConstruct
     private void init() {
-       
-    	context = env.getProperty("aac.roles.context");
-        rolePrefix = env.getProperty("aac.roles.role");
-//        rolePrefixLength = rolePrefix.length();
-        
-        aacURL = env.getProperty("aac.url");
         aacRoleService = new AACRoleService(aacURL); 
-
     }
 
     @Override

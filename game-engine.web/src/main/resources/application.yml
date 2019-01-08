@@ -1,0 +1,32 @@
+security:
+  oauth2:
+    resource:
+      preferTokenInfo: false
+      userInfoUri: http://localhost:8080/aac
+    client:
+      clientId: 8f5d78cf-56b6-4217-b3f0-bdc126a99258
+      clientSecret: 2bb738cc-718b-44d4-aace-5d62680971f2
+      userAuthorizationUri: http://localhost:8080/aac/eauth/authorize
+      authenticationScheme: header
+      tokenName: oauth_token
+      accessTokenUri: http://localhost:8080/aac/oauth/token
+      clientAuthenticationScheme: form  
+      preEstablishedRedirectUri: http://localhost:8080/aac
+      useCurrentUri: false   
+
+oauth:
+  serverUrl: http://localhost:8080/aac/
+  context: COMPONENTS/GAMIFICATION
+  role: ROLE_PROVIDER
+    
+rememberMe:
+  key: rememberme
+  
+management:
+  context-path: /manage
+  port: 9000
+  security.enabled: false
+  
+server:
+    port: 6060
+    contextPath: /gamification

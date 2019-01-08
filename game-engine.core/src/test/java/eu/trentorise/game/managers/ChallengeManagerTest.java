@@ -81,7 +81,7 @@ public class ChallengeManagerTest {
 
     @Before
     public void setup() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         MockitoAnnotations.initMocks(this);
     }
 

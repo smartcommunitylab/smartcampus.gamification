@@ -110,7 +110,7 @@ public class PlayerControllerTest {
     @Before
     public void cleanDB() {
         // clean mongo
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
     }
 
     private Game defineGame() {

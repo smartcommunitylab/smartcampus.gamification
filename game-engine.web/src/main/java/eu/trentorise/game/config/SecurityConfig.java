@@ -16,7 +16,6 @@ package eu.trentorise.game.config;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,18 +23,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import eu.trentorise.game.api.rest.AuthorizationInterceptor;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.AuthUser;
 import eu.trentorise.game.sec.UsersProvider;
-import eu.trentorise.game.service.IdentityLookupService;
-import eu.trentorise.game.service.SpringSecurityIdentityLookup;
 
 @Configuration
 @EnableWebSecurity
-@Profile({"sec", "platform"})
+@Profile({"sec"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
@@ -46,8 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-        for (AuthUser user : usersProvider.getUsers()) {
-            auth.inMemoryAuthentication().withUser(user.getUsername()).password(user.getPassword())
+    	for (AuthUser user : usersProvider.getUsers()) {
+            auth.inMemoryAuthentication().withUser(user.getUsername()).password("{noop}"+user.getPassword())
                     .roles(user.getRole());
             LogHub.info(null, logger, "Loaded auth user {}", user.getUsername());
         }

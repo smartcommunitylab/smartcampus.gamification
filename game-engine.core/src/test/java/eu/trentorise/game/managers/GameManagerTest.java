@@ -69,7 +69,7 @@ public class GameManagerTest {
 
     @Before
     public void setup() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         MockitoAnnotations.initMocks(this);
     }
 

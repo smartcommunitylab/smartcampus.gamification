@@ -330,7 +330,7 @@ public class ChallengeManager {
 
         List<GroupChallenge> otherProposedchallenges =
                 groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-        groupChallengeRepo.delete(otherProposedchallenges);
+        groupChallengeRepo.deleteAll(otherProposedchallenges);
         otherProposedchallenges.forEach(challenge -> {
             final Attendee proposer = challenge.proposer();
             if (proposer != null && proposer.getPlayerId().equals(playerId)) {

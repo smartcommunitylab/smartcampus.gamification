@@ -2,16 +2,17 @@ security:
   oauth2:
     resource:
       preferTokenInfo: false
-      userInfoUri: http://localhost:8080/aac
+      userInfoUri: http://localhost:8080/aac/basicprofile/me
     client:
       clientId: 8f5d78cf-56b6-4217-b3f0-bdc126a99258
       clientSecret: 2bb738cc-718b-44d4-aace-5d62680971f2
       userAuthorizationUri: http://localhost:8080/aac/eauth/authorize
       authenticationScheme: header
       tokenName: oauth_token
+      scope: profile.basicprofile.me
       accessTokenUri: http://localhost:8080/aac/oauth/token
       clientAuthenticationScheme: form  
-      preEstablishedRedirectUri: http://localhost:8080/aac
+      preEstablishedRedirectUri: http://localhost:6060/gamification/login/aac
       useCurrentUri: false   
 
 oauth:

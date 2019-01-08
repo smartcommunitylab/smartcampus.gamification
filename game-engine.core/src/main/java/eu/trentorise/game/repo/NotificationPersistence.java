@@ -22,6 +22,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.core.LogHub;
@@ -49,6 +50,7 @@ public class NotificationPersistence extends GenericObjectPersistence {
 
 	public Notification toNotification() {
 		ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			return mapper.convertValue(getObj(), (Class<? extends Notification>) Thread.currentThread()
 					.getContextClassLoader().loadClass(getType()));

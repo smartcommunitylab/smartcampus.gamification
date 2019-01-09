@@ -34,6 +34,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -54,6 +57,9 @@ public class PointConcept {
 
   @SerializedName("score")
   private Double score = null;
+  
+  public static final DateTimeFormatter PERIOD_KEY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+
 
   public PointConcept id(String id) {
     this.id = id;

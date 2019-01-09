@@ -63,8 +63,8 @@ public class PlayerControllerApiTest {
     private final String userName = "long-rovereto";
     private final String password = "rov";
     private String baseUrl = "http://localhost:6060/gamification";
-    private String gameId = "5b7a885149c95d50c5f9d442";
-    private String playerId = "8";
+    private String gameId = "57ac710fd4c6ac7872b0e7a1";
+    private String playerId = "24153";
     private String conceptName = "green leaves";
 
     @Before
@@ -238,7 +238,7 @@ public class PlayerControllerApiTest {
     public void getPlayerChallengeUsingGETTest() throws ApiException {
         List<ChallengeConcept> response = api.getPlayerChallengeUsingGET(gameId, playerId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**

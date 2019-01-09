@@ -687,7 +687,59 @@ public class ChallengeTest {
 
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
         assertThat(forced, is(nullValue()));
+    }
 
+    @Test
+    public void force_choice_with_an_active_group_challenge() {
+        gameSrv.saveGameDefinition(defineGame());
+
+
+        // define challenge Model
+        ChallengeModel modelPrize = new ChallengeModel();
+        modelPrize.setName("prize");
+        gameSrv.saveChallengeModel(GAME, modelPrize);
+
+        ChallengeAssignment firstProposed = new ChallengeAssignment();
+        firstProposed.setChallengeType("PROPOSED");
+        firstProposed.setInstanceName("firstProposed");
+        firstProposed.setModelName("prize");
+        firstProposed.setPriority(1);
+        firstProposed.setStart(LocalDateTime.now().plusDays(2).toDate());
+        firstProposed.setEnd(LocalDateTime.now().plusDays(5).toDate());
+        playerSrv.assignChallenge(GAME, "player", firstProposed);
+
+        ChallengeAssignment secondProposed = new ChallengeAssignment();
+        secondProposed.setChallengeType("PROPOSED");
+        secondProposed.setInstanceName("secondProposed");
+        secondProposed.setModelName("prize");
+        secondProposed.setPriority(5);
+        secondProposed.setStart(LocalDateTime.now().plusDays(2).toDate());
+        secondProposed.setEnd(LocalDateTime.now().plusDays(5).toDate());
+        playerSrv.assignChallenge(GAME, "player", secondProposed);
+
+        GroupChallenge groupChallenge = new GroupChallenge(ChallengeState.ASSIGNED);
+        groupChallenge.setInstanceName("bestPerformance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+        groupChallenge.setGameId(GAME);
+        groupChallenge.setPriority(1000);
+        Attendee player = new Attendee();
+        player.setPlayerId("player");
+        player.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(player);
+        Attendee otherPlayer = new Attendee();
+        otherPlayer.setPlayerId("otherPlayer");
+        otherPlayer.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(otherPlayer);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
+        groupChallenge.setStart(LocalDateTime.now().minusDays(5).toDate());
+        groupChallenge.setEnd(LocalDateTime.now().plusDays(1).toDate());
+        challengeSrv.save(groupChallenge);
+
+        ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
+        assertThat(forced.getName(), is("secondProposed"));
+        assertThat(
+                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
+                hasSize(1));
     }
 
     @Test

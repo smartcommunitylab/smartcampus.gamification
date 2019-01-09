@@ -92,7 +92,7 @@ public class PlayerControllerTest {
 		String gameId = "mockGameId";
 		String playerId = "mockPlayerId";
 
-		String mResponse = "{\"completed\": true,\"dateCompleted\":\"2018-12-13T07:29:19.523Z\",\"end\":\"2018-12-13T07:29:19.523Z\",\"fields\": {},\"forced\":true,\"id\":\"string\",\"modelName\":\"string\",\"name\":\"string\",\"origin\":\"string\",\"priority\": 0,\"start\":\"2018-12-13T07:29:19.523Z\",\"state\": \"PROPOSED\", \"stateDate\":{}}";
+		String mResponse = "{\"completed\": true,\"dateCompleted\":\"1474129837683\",\"end\":\"1474129837683\",\"fields\": {},\"forced\":true,\"id\":\"string\",\"modelName\":\"string\",\"name\":\"string\",\"origin\":\"string\",\"priority\": 0,\"start\":\"1474129837683\",\"state\": \"PROPOSED\", \"stateDate\":{}}";
 
 		stubFor(post(
 				urlEqualTo("/data/game/" + gameId + "/player/" + playerId + "/challenges/" + challengeName + "/accept"))
@@ -184,7 +184,7 @@ public class PlayerControllerTest {
 
 		PlayerControllerApi api = new PlayerControllerApi();
 
-		String mResponse = "[{\"completed\": true,\"dateCompleted\":\"2018-12-13T07:29:19.523Z\",\"end\":\"2018-12-13T07:29:19.523Z\",\"fields\": {},\"forced\":true,\"id\":\"string\",\"modelName\":\"string\",\"name\":\"string\",\"origin\":\"string\",\"priority\": 0,\"start\":\"2018-12-13T07:29:19.523Z\",\"state\": \"PROPOSED\", \"stateDate\":{}}]";
+		String mResponse = "[{\"completed\": true,\"dateCompleted\":\"1474129837683\",\"end\":\"1474129837683\",\"fields\": {},\"forced\":true,\"id\":\"string\",\"modelName\":\"string\",\"name\":\"string\",\"origin\":\"string\",\"priority\": 0,\"start\":\"1474129837683\",\"state\": \"PROPOSED\", \"stateDate\":{}}]";
 
 		stubFor(get(urlEqualTo("/data/game/" + gameId + "/player/" + playerId + "/challenges"))
 				.willReturn(aResponse().withHeader("Content-Type", "application/json").withBody(mResponse)));

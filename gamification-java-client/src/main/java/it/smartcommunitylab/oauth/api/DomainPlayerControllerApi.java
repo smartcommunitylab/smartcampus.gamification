@@ -778,6 +778,7 @@ public class DomainPlayerControllerApi {
     }
     /**
      * Build call for getPlayerChallengeUsingGET
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -785,11 +786,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getPlayerChallengeUsingGETCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getPlayerChallengeUsingGETCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -829,7 +831,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getPlayerChallengeUsingGETValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getPlayerChallengeUsingGETValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling getPlayerChallengeUsingGET(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -842,7 +849,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = getPlayerChallengeUsingGETCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getPlayerChallengeUsingGETCall(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -850,37 +857,43 @@ public class DomainPlayerControllerApi {
     /**
      * Get player challenges
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
+     * @return List&lt;ChallengeConcept&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void getPlayerChallengeUsingGET(String gameId, String playerId) throws ApiException {
-        getPlayerChallengeUsingGETWithHttpInfo(gameId, playerId);
+    public List<ChallengeConcept> getPlayerChallengeUsingGET(String domain, String gameId, String playerId) throws ApiException {
+        ApiResponse<List<ChallengeConcept>> resp = getPlayerChallengeUsingGETWithHttpInfo(domain, gameId, playerId);
+        return resp.getData();
     }
 
     /**
      * Get player challenges
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
-     * @return ApiResponse&lt;Void&gt;
+     * @return ApiResponse&lt;List&lt;ChallengeConcept&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> getPlayerChallengeUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = getPlayerChallengeUsingGETValidateBeforeCall(gameId, playerId, null, null);
-        return apiClient.execute(call);
+    public ApiResponse<List<ChallengeConcept>> getPlayerChallengeUsingGETWithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = getPlayerChallengeUsingGETValidateBeforeCall(domain, gameId, playerId, null, null);
+        Type localVarReturnType = new TypeToken<List<ChallengeConcept>>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
     }
 
     /**
      * Get player challenges (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getPlayerChallengeUsingGETAsync(String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call getPlayerChallengeUsingGETAsync(String domain, String gameId, String playerId, final ApiCallback<List<ChallengeConcept>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -901,8 +914,9 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getPlayerChallengeUsingGETValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
-        apiClient.executeAsync(call, callback);
+        com.squareup.okhttp.Call call = getPlayerChallengeUsingGETValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<List<ChallengeConcept>>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**

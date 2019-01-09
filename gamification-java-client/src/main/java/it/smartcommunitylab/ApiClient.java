@@ -909,6 +909,14 @@ public class ApiClient {
             throw new ApiException(e);
         }
     }
+    
+    public Response executeSimple(Call call, Type returnType) throws ApiException {
+        try {
+            return call.execute();
+        } catch (IOException e) {
+            throw new ApiException(e);
+        }
+    }
 
     /**
      * {@link #executeAsync(Call, Type, ApiCallback)}

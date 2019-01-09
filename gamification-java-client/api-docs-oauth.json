@@ -499,6 +499,13 @@
 				],
 				"parameters": [
 					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"name": "gameId",
 						"in": "path",
 						"description": "gameId",
@@ -515,7 +522,13 @@
 				],
 				"responses": {
 					"200": {
-						"description": "OK"
+						"description": "OK",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ChallengeConcept"
+							}
+						}
 					},
 					"401": {
 						"description": "Unauthorized"
@@ -3806,6 +3819,118 @@
 							"type": "array",
 							"items": {
 								"$ref": "#/definitions/Notification"
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/api/{domain}/notification/game/{gameId}/player/{playerId}/grouped": {
+			"get": {
+				"tags": [
+					"domain-notification-controller"
+				],
+				"summary": "Get player notifications",
+				"operationId": "readPlayerNotificationGroupedUsingGET",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "gameId",
+						"in": "path",
+						"description": "gameId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "playerId",
+						"in": "path",
+						"description": "playerId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "fromTs",
+						"in": "query",
+						"description": "fromTs",
+						"required": false,
+						"type": "integer",
+						"default": -1,
+						"format": "int64"
+					},
+					{
+						"name": "toTs",
+						"in": "query",
+						"description": "toTs",
+						"required": false,
+						"type": "integer",
+						"default": -1,
+						"format": "int64"
+					},
+					{
+						"name": "includeTypes",
+						"in": "query",
+						"description": "includeTypes",
+						"required": false,
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"collectionFormat": "multi"
+					},
+					{
+						"name": "excludeTypes",
+						"in": "query",
+						"description": "excludeTypes",
+						"required": false,
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"collectionFormat": "multi"
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"description": "Results page you want to retrieve ",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "size",
+						"in": "query",
+						"description": "Number of records per page.",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"type": "object",
+							"additionalProperties": {
+								"$ref": "#/definitions/Collection«Notification»"
 							}
 						}
 					},

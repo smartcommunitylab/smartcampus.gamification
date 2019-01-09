@@ -32,10 +32,13 @@ package it.smartcommunitylab.oauth.api;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.auth.OAuth;
 import it.smartcommunitylab.model.BadgeCollectionConcept;
 
 /**
@@ -45,7 +48,25 @@ import it.smartcommunitylab.model.BadgeCollectionConcept;
 public class DomainBadgeCollectionConceptControllerApiTest {
 
     private final DomainBadgeCollectionConceptControllerApi api = new DomainBadgeCollectionConceptControllerApi();
-
+    private ApiClient apiClient;
+    private String baseUrl = "http://localhost:6060/gamification";
+    private String gameId = "5b7a885149c95d50c5f9d442";
+    private String playerId = "101";
+    private String conceptName = "green leaves";
+    private String domain = "demo-domain";
+    
+    
+    @Before
+    public void init() {
+    	 apiClient = new ApiClient(baseUrl);
+    	
+    	 // Configure OAuth2 access token for authorization: oauth2
+    	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 oauth2.setAccessToken("f2f6ed19-cedf-4065-9dd9-262bfebbc0df");
+    	 
+    	 // Configure basic auth. 
+    	 api.setApiClient(apiClient);
+    }
     
     /**
      * Add a badge collection
@@ -93,8 +114,6 @@ public class DomainBadgeCollectionConceptControllerApiTest {
      */
     @Test
     public void readBadgeCollectionUsingGETTest() throws ApiException {
-        String domain = null;
-        String gameId = null;
         String collectionId = null;
         BadgeCollectionConcept response = api.readBadgeCollectionUsingGET(domain, gameId, collectionId);
 
@@ -111,11 +130,8 @@ public class DomainBadgeCollectionConceptControllerApiTest {
      */
     @Test
     public void readBadgeCollectionsUsingGETTest() throws ApiException {
-        String domain = null;
-        String gameId = null;
         List<BadgeCollectionConcept> response = api.readBadgeCollectionsUsingGET(domain, gameId);
-
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**

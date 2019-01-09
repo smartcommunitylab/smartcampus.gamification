@@ -32,10 +32,13 @@ package it.smartcommunitylab.basic.api;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
+import it.smartcommunitylab.auth.HttpBasicAuth;
 import it.smartcommunitylab.model.BadgeCollectionConcept;
 
 /**
@@ -45,7 +48,29 @@ import it.smartcommunitylab.model.BadgeCollectionConcept;
 public class BadgeCollectionConceptControllerApiTest {
 
     private final BadgeCollectionConceptControllerApi api = new BadgeCollectionConceptControllerApi();
+    private ApiClient apiClient;
+    private final String userName = "long-rovereto";
+    private final String password = "rov";
+    private String baseUrl = "http://localhost:6060/gamification";
+    private String gameId = "57ac710fd4c6ac7872b0e7a1";
+    private String playerId = "24153";
+    private String conceptName = "green leaves";
 
+    @Before
+    public void init() {
+    	 apiClient = new ApiClient(baseUrl);
+    	
+    	 // Configure OAuth2 access token for authorization: oauth2
+    	 // OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 // oauth2.setAccessToken("YOUR_ACCESS_TOKEN");
+    	 
+    	 // Configure basic auth. 
+    	 HttpBasicAuth basic = (HttpBasicAuth) apiClient.getAuthentication("basic");
+    	 basic.setUsername(userName);
+    	 basic.setPassword(password);
+
+    	 api.setApiClient(apiClient);
+    }
     
     /**
      * Add a badge collection
@@ -108,10 +133,9 @@ public class BadgeCollectionConceptControllerApiTest {
      */
     @Test
     public void readBadgeCollectionsUsingGETTest() throws ApiException {
-        String gameId = null;
         List<BadgeCollectionConcept> response = api.readBadgeCollectionsUsingGET(gameId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**

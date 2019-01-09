@@ -21,7 +21,11 @@ public abstract class Notification {
 	private String gameId;
 	private String playerId;
 	private long timestamp;
-
+	
+	public String getType() {
+		return this.getClass().getSimpleName();
+	}
+	
 	public Notification(String gameId, String playerId) {
 		this.gameId = gameId;
 		this.playerId = playerId;

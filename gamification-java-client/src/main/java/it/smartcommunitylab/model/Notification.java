@@ -27,7 +27,6 @@
  * Do not edit the class manually.
  */
 
-
 package it.smartcommunitylab.model;
 
 import java.util.Objects;
@@ -41,112 +40,132 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class Notification {
-  @SerializedName("gameId")
-  private String gameId = null;
+	@SerializedName("gameId")
+	private String gameId = null;
 
-  @SerializedName("playerId")
-  private String playerId = null;
+	@SerializedName("playerId")
+	private String playerId = null;
 
-  @SerializedName("timestamp")
-  private Long timestamp = null;
+	@SerializedName("timestamp")
+	private Long timestamp = null;
 
-  public Notification gameId(String gameId) {
-    this.gameId = gameId;
-    return this;
-  }
+	@SerializedName("type")
+	private String type = null;
 
-   /**
-   * Get gameId
-   * @return gameId
-  **/
-  @ApiModelProperty(value = "")
-  public String getGameId() {
-    return gameId;
-  }
+	public String getType() {
+		return type;
+	}
 
-  public void setGameId(String gameId) {
-    this.gameId = gameId;
-  }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-  public Notification playerId(String playerId) {
-    this.playerId = playerId;
-    return this;
-  }
+	public Notification(String gameId, String playerId) {
+		this.gameId = gameId;
+		this.playerId = playerId;
+		timestamp = System.currentTimeMillis();
+	}
 
-   /**
-   * Get playerId
-   * @return playerId
-  **/
-  @ApiModelProperty(value = "")
-  public String getPlayerId() {
-    return playerId;
-  }
+	public Notification() {
+		// TODO Auto-generated constructor stub
+	}
 
-  public void setPlayerId(String playerId) {
-    this.playerId = playerId;
-  }
+	public Notification gameId(String gameId) {
+		this.gameId = gameId;
+		return this;
+	}
 
-  public Notification timestamp(Long timestamp) {
-    this.timestamp = timestamp;
-    return this;
-  }
+	/**
+	 * Get gameId
+	 * 
+	 * @return gameId
+	 **/
+	@ApiModelProperty(value = "")
+	public String getGameId() {
+		return gameId;
+	}
 
-   /**
-   * Get timestamp
-   * @return timestamp
-  **/
-  @ApiModelProperty(value = "")
-  public Long getTimestamp() {
-    return timestamp;
-  }
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
+	}
 
-  public void setTimestamp(Long timestamp) {
-    this.timestamp = timestamp;
-  }
+	public Notification playerId(String playerId) {
+		this.playerId = playerId;
+		return this;
+	}
 
+	/**
+	 * Get playerId
+	 * 
+	 * @return playerId
+	 **/
+	@ApiModelProperty(value = "")
+	public String getPlayerId() {
+		return playerId;
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Notification notification = (Notification) o;
-    return Objects.equals(this.gameId, notification.gameId) &&
-        Objects.equals(this.playerId, notification.playerId) &&
-        Objects.equals(this.timestamp, notification.timestamp);
-  }
+	public void setPlayerId(String playerId) {
+		this.playerId = playerId;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(gameId, playerId, timestamp);
-  }
+	public Notification timestamp(Long timestamp) {
+		this.timestamp = timestamp;
+		return this;
+	}
 
+	/**
+	 * Get timestamp
+	 * 
+	 * @return timestamp
+	 **/
+	@ApiModelProperty(value = "")
+	public Long getTimestamp() {
+		return timestamp;
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class Notification {\n");
-    
-    sb.append("    gameId: ").append(toIndentedString(gameId)).append("\n");
-    sb.append("    playerId: ").append(toIndentedString(playerId)).append("\n");
-    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
+	}
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Notification notification = (Notification) o;
+		return Objects.equals(this.gameId, notification.gameId) && Objects.equals(this.playerId, notification.playerId)
+				&& Objects.equals(this.timestamp, notification.timestamp);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(gameId, playerId, timestamp);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class Notification {\n");
+
+		sb.append("    gameId: ").append(toIndentedString(gameId)).append("\n");
+		sb.append("    playerId: ").append(toIndentedString(playerId)).append("\n");
+		sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 
 }
-

@@ -31,11 +31,10 @@
 package it.smartcommunitylab.model;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.threeten.bp.OffsetDateTime;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
@@ -54,10 +53,10 @@ public class ChallengeConcept {
   private Boolean completed = null;
 
   @SerializedName("dateCompleted")
-  private OffsetDateTime dateCompleted = null;
+  private Date dateCompleted = null;
 
   @SerializedName("end")
-  private OffsetDateTime end = null;
+  private Date end = null;
 
   @SerializedName("fields")
   private Object fields = null;
@@ -81,7 +80,7 @@ public class ChallengeConcept {
   private Integer priority = null;
 
   @SerializedName("start")
-  private OffsetDateTime start = null;
+  private Date start = null;
 
   /**
    * Gets or Sets state
@@ -144,7 +143,7 @@ public class ChallengeConcept {
   private StateEnum state = null;
 
   @SerializedName("stateDate")
-  private Map<String, OffsetDateTime> stateDate = null;
+  private Map<String, Date> stateDate = null;
 
   public ChallengeConcept completed(Boolean completed) {
     this.completed = completed;
@@ -164,7 +163,7 @@ public class ChallengeConcept {
     this.completed = completed;
   }
 
-  public ChallengeConcept dateCompleted(OffsetDateTime dateCompleted) {
+  public ChallengeConcept dateCompleted(Date dateCompleted) {
     this.dateCompleted = dateCompleted;
     return this;
   }
@@ -174,15 +173,15 @@ public class ChallengeConcept {
    * @return dateCompleted
   **/
   @ApiModelProperty(value = "")
-  public OffsetDateTime getDateCompleted() {
+  public Date getDateCompleted() {
     return dateCompleted;
   }
 
-  public void setDateCompleted(OffsetDateTime dateCompleted) {
+  public void setDateCompleted(Date dateCompleted) {
     this.dateCompleted = dateCompleted;
   }
 
-  public ChallengeConcept end(OffsetDateTime end) {
+  public ChallengeConcept end(Date end) {
     this.end = end;
     return this;
   }
@@ -192,11 +191,11 @@ public class ChallengeConcept {
    * @return end
   **/
   @ApiModelProperty(value = "")
-  public OffsetDateTime getEnd() {
+  public Date getEnd() {
     return end;
   }
 
-  public void setEnd(OffsetDateTime end) {
+  public void setEnd(Date end) {
     this.end = end;
   }
 
@@ -326,7 +325,7 @@ public class ChallengeConcept {
     this.priority = priority;
   }
 
-  public ChallengeConcept start(OffsetDateTime start) {
+  public ChallengeConcept start(Date start) {
     this.start = start;
     return this;
   }
@@ -336,11 +335,11 @@ public class ChallengeConcept {
    * @return start
   **/
   @ApiModelProperty(value = "")
-  public OffsetDateTime getStart() {
+  public Date getStart() {
     return start;
   }
 
-  public void setStart(OffsetDateTime start) {
+  public void setStart(Date start) {
     this.start = start;
   }
 
@@ -362,14 +361,14 @@ public class ChallengeConcept {
     this.state = state;
   }
 
-  public ChallengeConcept stateDate(Map<String, OffsetDateTime> stateDate) {
+  public ChallengeConcept stateDate(Map<String, Date> stateDate) {
     this.stateDate = stateDate;
     return this;
   }
 
-  public ChallengeConcept putStateDateItem(String key, OffsetDateTime stateDateItem) {
+  public ChallengeConcept putStateDateItem(String key, Date stateDateItem) {
     if (this.stateDate == null) {
-      this.stateDate = new HashMap<String, OffsetDateTime>();
+      this.stateDate = new HashMap<String, Date>();
     }
     this.stateDate.put(key, stateDateItem);
     return this;
@@ -380,11 +379,11 @@ public class ChallengeConcept {
    * @return stateDate
   **/
   @ApiModelProperty(value = "")
-  public Map<String, OffsetDateTime> getStateDate() {
+  public Map<String, Date> getStateDate() {
     return stateDate;
   }
 
-  public void setStateDate(Map<String, OffsetDateTime> stateDate) {
+  public void setStateDate(Map<String, Date> stateDate) {
     this.stateDate = stateDate;
   }
 

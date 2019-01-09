@@ -9,7 +9,7 @@ security:
       userAuthorizationUri: http://localhost:8080/aac/eauth/authorize
       authenticationScheme: header
       tokenName: oauth_token
-      scope: profile.basicprofile.me
+      scope: profile.basicprofile.me, user.roles.me
       accessTokenUri: http://localhost:8080/aac/oauth/token
       clientAuthenticationScheme: form  
       preEstablishedRedirectUri: http://localhost:6060/gamification/login/aac

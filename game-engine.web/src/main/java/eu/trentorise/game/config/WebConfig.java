@@ -17,13 +17,11 @@ package eu.trentorise.game.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import eu.trentorise.game.api.rest.AACAuthenticationInterceptor;
 import eu.trentorise.game.platform.PlatformAuthorizationInterceptor;
 
 /*
@@ -31,31 +29,29 @@ import eu.trentorise.game.platform.PlatformAuthorizationInterceptor;
  * resources publishing and restController functionalities
  */
 @Configuration
-//@EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
-    /**
-     * If this mapping change, remember to align angular file app.js i18nextProvider if not angular
-     * internationalization will be broken
-     */
-    private static final String CONSOLE_URL_MAPPING = "consoleweb";
-    
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(String.format("/%s/**", CONSOLE_URL_MAPPING))
-                .addResourceLocations("classpath:/consoleweb-assets/");
-    }
-    
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController(String.format("/%s/", CONSOLE_URL_MAPPING))
-                .setViewName("forward:index.html");
-    }
-    
-	@Bean
-	public HandlerInterceptor platformTokenInterceptor() {
-		return new AACAuthenticationInterceptor();
+	/**
+	 * If this mapping change, remember to align angular file app.js
+	 * i18nextProvider if not angular internationalization will be broken
+	 */
+	private static final String CONSOLE_URL_MAPPING = "consoleweb";
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler(String.format("/%s/**", CONSOLE_URL_MAPPING))
+				.addResourceLocations("classpath:/consoleweb-assets/");
 	}
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController(String.format("/%s/", CONSOLE_URL_MAPPING)).setViewName("forward:index.html");
+	}
+
+	// @Bean
+	// public HandlerInterceptor platformTokenInterceptor() {
+	// return new AACAuthenticationInterceptor();
+	// }
 
 	@Bean
 	public HandlerInterceptor platformAuthInterceptor() {
@@ -63,9 +59,9 @@ public class WebConfig implements WebMvcConfigurer {
 	}
 
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(platformTokenInterceptor()).addPathPatterns("/api/**");
+		// registry.addInterceptor(platformTokenInterceptor()).addPathPatterns("/api/**");
 		registry.addInterceptor(platformAuthInterceptor()).addPathPatterns("/api/**");
 
 	}
-    
+
 }

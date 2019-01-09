@@ -23,8 +23,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.AuthUser;
@@ -61,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/notification/**")
                 .access("hasRole('ROLE_ADMIN')").and().httpBasic();
 
-        http.authorizeRequests().antMatchers("/api/**").anonymous();
+//        http.authorizeRequests().antMatchers("/api/**").anonymous();
 
 
         // disable csrf permits POST http call to DomainConsoleController

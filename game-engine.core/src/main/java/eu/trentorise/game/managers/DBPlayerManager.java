@@ -758,7 +758,8 @@ public class DBPlayerManager implements PlayerService {
                 .filter(challenge -> challenge.getState() == ChallengeState.ASSIGNED)
                 .filter(challenge -> challenge.getStart() == null
                         || challenge.getStart().after(now)),
-                assignedGroupChallenges.stream())
+                assignedGroupChallenges.stream().filter(challenge -> challenge.getStart() == null
+                        || challenge.getStart().after(now)))
                 .count();
         if (assignedInFutureCounter < 1) {
             List<GroupChallenge> proposedGroupChallenges = groupChallengeRepo

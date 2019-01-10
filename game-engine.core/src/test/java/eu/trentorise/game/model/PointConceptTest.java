@@ -432,7 +432,6 @@ public class PointConceptTest {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("walkDistance", 2d);
         workflow.apply(GAME, ACTION, "my player", data, null);
-        // Thread.sleep(30000);
 
         Assert.assertEquals(new Double(4), ((PointConcept) playerSrv
                 .loadState(GAME, "my player", false, false).getState().iterator().next()).getScore());

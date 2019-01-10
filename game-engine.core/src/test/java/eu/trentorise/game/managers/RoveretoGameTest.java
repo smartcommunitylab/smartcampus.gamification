@@ -58,8 +58,6 @@ public class RoveretoGameTest {
     private static final String ACTION = "save_itinerary";
     private static final String DOMAIN = "my-domain";
 
-    // private static final long WAIT_EXEC = 15 * 1000;
-
     @Autowired
     private GameManager gameManager;
 
@@ -84,7 +82,6 @@ public class RoveretoGameTest {
     public void simpleScenario() throws InterruptedException {
         simpleEnv();
         launchTaskExecution();
-        // Thread.sleep(WAIT_EXEC);
         analyzeSimple();
 
     }
@@ -93,7 +90,6 @@ public class RoveretoGameTest {
     public void sameResultScenario() throws InterruptedException {
         sameResultEnv();
         launchTaskExecution();
-        // Thread.sleep(WAIT_EXEC);
         analyzeSameResult();
     }
 
@@ -101,7 +97,6 @@ public class RoveretoGameTest {
     public void sameResultLastElementScenario() throws InterruptedException {
         sameResultLastElementEnv();
         launchTaskExecution();
-        // Thread.sleep(WAIT_EXEC);
         analyzeSameResultLastResult();
     }
 

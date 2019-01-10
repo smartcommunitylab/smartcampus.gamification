@@ -62,8 +62,6 @@ public class ClassificationTaskTest {
     @Autowired
     private AppContextProvider provider;
 
-    // private static final long WAIT_EXEC = 15 * 1000;
-
     private static final String DOMAIN = "my-domain";
 
     @Before
@@ -181,7 +179,7 @@ public class ClassificationTaskTest {
         params.put("park", "MANIFATTURA");
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        // Thread.sleep(WAIT_EXEC);
+
         // expected 60 greenPoints and earned 10-point 50-point green badges
         boolean found = false;
         for (GameConcept gc : p.getState()) {
@@ -303,14 +301,6 @@ public class ClassificationTaskTest {
         playerSrv.saveState(p3);
 
         task.execute((GameContext) provider.getApplicationContext().getBean("gameCtx", GAME, task));
-
-        // task.execute((GameContext) provider.getApplicationContext().getBean(
-        // "gameCtx", GAME, task));
-
-        // task.execute((GameContext) provider.getApplicationContext().getBean(
-        // "gameCtx", GAME, task));
-
-        // Thread.sleep(WAIT_EXEC);
 
         p1 = playerSrv.loadState(GAME, PLAYER_1, false, false);
         for (GameConcept gc : p1.getState()) {

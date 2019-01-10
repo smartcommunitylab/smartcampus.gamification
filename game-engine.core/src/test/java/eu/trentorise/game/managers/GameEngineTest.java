@@ -77,11 +77,12 @@ import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.Workflow;
 import eu.trentorise.game.task.GeneralClassificationTask;
 
 /**
  * 
- * Actually execution tests use Thread.sleep to wait QueueGameWorkflow async conclusion. This MUST
+ * Actually execution tests use //Thread.sleep to wait QueueGameWorkflow async conclusion. This MUST
  * to be fixed, because test result can be machine dependent.
  * 
  * 
@@ -230,7 +231,7 @@ public class GameEngineTest {
         params.put("park", "MANIFATTURA");
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
         // expected 70 greenPoints and earned 10-point 50-point green badges
         boolean found = false;
         for (GameConcept gc : p.getState()) {
@@ -277,7 +278,7 @@ public class GameEngineTest {
                 .toInstant().toEpochMilli();
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 oneHourAgo, null);
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
 
         PointConcept loaded = (PointConcept) p.getState().stream().findFirst().get();
 
@@ -300,7 +301,7 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         // expected 60 greenPoints and earned 10-point 50-point green badges
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
         boolean found = false;
         for (GameConcept gc : p.getState()) {
             if (gc instanceof PointConcept && gc.getName().equals("green leaves")) {
@@ -476,7 +477,7 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
 
         Assert.assertEquals(1, p.getLevels().size());
         Assert.assertEquals("adept", p.getLevels().get(0).getLevelValue());
@@ -514,7 +515,7 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
 
         Assert.assertEquals(2, p.getLevels().size());
         Assert.assertEquals("adept", p.getLevels().get(0).getLevelValue());
@@ -613,7 +614,7 @@ public class GameEngineTest {
                 Arrays.asList(new PlayerLevel(levelDefinition, 200d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
         PointConcept green = (PointConcept) p.getState().stream()
                 .filter(gc -> gc.getName().equals("green")).findFirst().get();
         Assert.assertEquals(10d, green.getScore(), 0);
@@ -644,7 +645,7 @@ public class GameEngineTest {
                 Arrays.asList(new PlayerLevel(levelDefinition, 50d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
         PointConcept green = (PointConcept) p.getState().stream()
                 .filter(gc -> gc.getName().equals("green")).findFirst().get();
         Assert.assertEquals(0d, green.getScore(), 0);
@@ -655,6 +656,11 @@ public class GameEngineTest {
     @Configuration
     static class TestConfiguration {
 
+        @Bean
+        @Primary
+        public Workflow workflow() {
+            return new GameWorkflow();
+        }
         @Bean
         @Primary
         public KieContainerFactory kieContainerFactory() {

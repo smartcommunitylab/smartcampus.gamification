@@ -19,6 +19,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.managers.GameWorkflow;
 import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClasspathRule;
@@ -27,7 +28,7 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class PointConceptTest {
 
@@ -431,7 +432,7 @@ public class PointConceptTest {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("walkDistance", 2d);
         workflow.apply(GAME, ACTION, "my player", data, null);
-        Thread.sleep(30000);
+        // Thread.sleep(30000);
 
         Assert.assertEquals(new Double(4), ((PointConcept) playerSrv
                 .loadState(GAME, "my player", false, false).getState().iterator().next()).getScore());

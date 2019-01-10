@@ -23,6 +23,7 @@ import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
@@ -39,7 +40,7 @@ import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.IncrementalClassificationTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class ClassificationTaskTest {
 
@@ -61,7 +62,7 @@ public class ClassificationTaskTest {
     @Autowired
     private AppContextProvider provider;
 
-    private static final long WAIT_EXEC = 15 * 1000;
+    // private static final long WAIT_EXEC = 15 * 1000;
 
     private static final String DOMAIN = "my-domain";
 
@@ -180,7 +181,7 @@ public class ClassificationTaskTest {
         params.put("park", "MANIFATTURA");
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
         // expected 60 greenPoints and earned 10-point 50-point green badges
         boolean found = false;
         for (GameConcept gc : p.getState()) {
@@ -309,7 +310,7 @@ public class ClassificationTaskTest {
         // task.execute((GameContext) provider.getApplicationContext().getBean(
         // "gameCtx", GAME, task));
 
-        Thread.sleep(WAIT_EXEC);
+        // Thread.sleep(WAIT_EXEC);
 
         p1 = playerSrv.loadState(GAME, PLAYER_1, false, false);
         for (GameConcept gc : p1.getState()) {

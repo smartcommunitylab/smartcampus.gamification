@@ -29,6 +29,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.core.ClasspathRule;
@@ -40,7 +41,7 @@ import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class CustomDataTest {
 
@@ -99,32 +100,32 @@ public class CustomDataTest {
         Assert.assertEquals(0, state.getCustomData().size());
         workflow.apply(game.getId(), "init-data", PLAYER, null, null);
 
-        Thread.sleep(TIMEOUT);
+        // Thread.sleep(TIMEOUT);
         state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1000, state.getCustomData().get("counter"));
         Assert.assertEquals(0, ((List<String>) state.getCustomData().get("areas")).size());
 
         workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
-        Thread.sleep(TIMEOUT);
+        // Thread.sleep(TIMEOUT);
         state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1010, state.getCustomData().get("counter"));
 
         workflow.apply(game.getId(), "edit-data", PLAYER, null, null);
-        Thread.sleep(TIMEOUT);
+        // Thread.sleep(TIMEOUT);
         state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1020, state.getCustomData().get("counter"));
 
         workflow.apply(game.getId(), "add-area", PLAYER, null, null);
-        Thread.sleep(TIMEOUT);
+        // Thread.sleep(TIMEOUT);
         state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(2, state.getCustomData().size());
         Assert.assertEquals(1, ((List<String>) state.getCustomData().get("areas")).size());
 
         workflow.apply(game.getId(), "add-area", PLAYER, null, null);
-        Thread.sleep(TIMEOUT);
+        // Thread.sleep(TIMEOUT);
         state = playerSrv.loadState(game.getId(), PLAYER, false, false);
         Assert.assertEquals(1, ((List<String>) state.getCustomData().get("areas")).size());
     }

@@ -7,9 +7,15 @@ import org.springframework.context.annotation.Primary;
 import eu.trentorise.game.managers.GameWorkflow;
 import eu.trentorise.game.services.Workflow;
 
-@Configuration
-public class TestConfig {
 
+@Configuration
+class TestConfiguration {
+
+    /**
+     * Use simple gameWorkflow for test purpose, without execution queue and ExecutorService
+     * 
+     * @return GameWorkflow
+     */
     @Bean
     @Primary
     public Workflow workflow() {

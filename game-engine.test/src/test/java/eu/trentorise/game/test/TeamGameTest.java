@@ -9,12 +9,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import eu.trentorise.game.managers.QueueGameWorkflow;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.Workflow;
 
+@ContextConfiguration(classes = {TeamGameTestConfiguration.class},
+        loader = AnnotationConfigContextLoader.class)
 public class TeamGameTest extends GameTest {
 
     @Autowired
@@ -90,6 +99,23 @@ public class TeamGameTest extends GameTest {
         assertionBadge(GAME, Arrays.asList("poi_1", "poi_3", "team_1", "poi_2", "team_bump_1"),
                 "fuorilegge", "itinerary");
 
+    }
+
+}
+
+
+/**
+ * TODO: not good. Override GameTest configuration using the QueueGameWorkflow. Some issues with
+ * propagation without using execution queue..to investigate
+ *
+ */
+@Configuration
+class TeamGameTestConfiguration {
+
+    @Bean
+    @Primary
+    public Workflow workflow() {
+        return new QueueGameWorkflow();
     }
 
 }

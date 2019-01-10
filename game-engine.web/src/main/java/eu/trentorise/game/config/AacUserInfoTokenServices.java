@@ -147,14 +147,21 @@ public class AacUserInfoTokenServices implements ResourceServerTokenServices {
 			}
 			OAuth2AccessToken existingToken = restTemplate.getOAuth2ClientContext()
 					.getAccessToken();
+			
+			String tokenValue = null;
+			
 			if (existingToken == null || !accessToken.equals(existingToken.getValue())) {
 				DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(
 						accessToken);
 				token.setTokenType(this.tokenType);
 				restTemplate.getOAuth2ClientContext().setAccessToken(token);
+				tokenValue = token.getValue();
+			} else {
+				tokenValue = existingToken.getValue();
 			}
+			
 			Map<String, Object> map = restTemplate.getForEntity(path, Map.class).getBody();
-			map.put("token", existingToken.getValue());
+			map.put("token", tokenValue);
 			
 			return map;
 		}

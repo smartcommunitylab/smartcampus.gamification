@@ -84,8 +84,7 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/gengine/**", "/console/**", "/model/**", "/data/**", "/exec/**", "/notification/**",
-						"/api/**")
+				.antMatchers("/gengine/**", "/consoleweb/**", "/model/**", "/data/**", "/exec/**", "/notification/**") //"/api/**"
 				.fullyAuthenticated().and().exceptionHandling()
 				.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login/aac")).and()
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
@@ -110,7 +109,7 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 
 					@Override
 					public Object extractPrincipal(Map<String, Object> map) {
-						return map;
+						return (String) map.get("name");
 					}
 
 				});

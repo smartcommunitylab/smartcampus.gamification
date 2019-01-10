@@ -148,7 +148,7 @@ public class DBPlayerManager implements PlayerService {
                 GameConcept elem = iter.next();
                 if (elem.getClass() == ChallengeConcept.class
                         && ((ChallengeConcept) elem).isGroupChallenge()) {
-                    state.getState().remove(elem);
+                    iter.remove();
                 }
 
 

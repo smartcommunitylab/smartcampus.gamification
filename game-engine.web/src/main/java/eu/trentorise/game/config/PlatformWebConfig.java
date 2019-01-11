@@ -87,7 +87,7 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/gengine/**", "/consoleweb/**", "/model/**", "/data/**", "/exec/**", "/notification/**", "/userProfile/**", "/api/**/console/**")
+				.antMatchers("/gengine/**", "/consoleweb/**", "/model/**", "/data/**", "/exec/**", "/notification/**", "/userProfile/**", "/consoleapi/**")
 				.fullyAuthenticated().and().exceptionHandling()
 				.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login/aac")).and()
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
@@ -120,11 +120,11 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 			}
 
 			public void configure(HttpSecurity http) throws Exception {
-				http.antMatcher("/*api/**").authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/*api/**").permitAll()
-						.antMatchers("/api/**").fullyAuthenticated().and().csrf().disable();
+				http.antMatcher("/api/**").authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+						.and().csrf().disable();
 			}
 		}));
-		resource.setOrder(Ordered.LOWEST_PRECEDENCE);
+		resource.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		return resource;
 	}
 

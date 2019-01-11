@@ -9,27 +9,15 @@ angular.module('gamificationEngine.home', [])
 			'error': false
 		};
 
-		// Load user profile.
-		gamesFactory.userProfile().then(function (profile) {
-			$rootScope.userProfile = profile;
-
-			if (profile.domains[0] != 'ROLE_ADMIN') {
-				$rootScope.domain = profile.domains[0];
-				gamesFactory.setUrl('../api/' + $rootScope.domain);
-			}	
-
-			// Load games
-			gamesFactory.getGames().then(function () {
-				$rootScope.games.forEach(function (g) {
-					g.terminated = g.expiration && g.expiration <= new Date().getTime();
-				});
-			}, function () {
-				// Reject: show error alert
-				$scope.alerts.loadGameError = true;
+		// Load games
+		gamesFactory.getGames().then(function () {
+			$rootScope.games.forEach(function (g) {
+				g.terminated = g.expiration && g.expiration <= new Date().getTime();
 			});
-		})
-
-
+		}, function () {
+			// Reject: show error alert
+			$scope.alerts.loadGameError = true;
+		});
 
 		$scope.deleteGame = function (game) {
 			// Delete a game

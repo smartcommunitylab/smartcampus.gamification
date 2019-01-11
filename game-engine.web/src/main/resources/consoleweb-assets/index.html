@@ -40,13 +40,15 @@
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="row">
-				<a class="navbar-brand navbar-brand-bigger" data-ng-click="goHome()"
-					href="#/home">Gamification engine</a>
-				<div class="navbar-brand navbar-brand-small pull-right">
-					<div>
-						<select id="userDomain" ng-model="domain"
-							ng-options="domain for domain in userProfile.domains"></select>
-					    <label>{{userProfile.username}}</label>
+				<a class="col-md-6 navbar-brand navbar-brand-bigger" data-ng-click="goHome()" href="#/home">Gamification engine</a>
+				<div class="col-md-6 navbar-brand navbar-brand-small">
+					<div class="col-md-4"></div>
+					<div class="col-md-4" class="form-group">
+						<select  id="userDomain" ng-model="domain" ng-options="domain for domain in userProfile.domains"></select>
+					</div>
+					<div class="col-md-4 pull-right form-group">
+						<label>{{userProfile.username}}</label>
+						&nbsp;
 						<a class="glyphicon glyphicon-log-out"></a>
 					</div>
 				</div>

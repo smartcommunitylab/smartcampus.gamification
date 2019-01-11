@@ -8,6 +8,7 @@ import javax.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -33,7 +35,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import eu.trentorise.game.platform.PlatformRolesClient;
 
 @Configuration
-@EnableOAuth2Client
+//@EnableOAuth2Client
+@EnableOAuth2Sso
 @Profile("platform")
 public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 
@@ -73,7 +76,7 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 
 			@Override
 			public Object extractPrincipal(Map<String, Object> map) {
-				return map;
+				return (String) map.get("name");
 			}
 
 		});
@@ -84,7 +87,7 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/gengine/**", "/consoleweb/**", "/model/**", "/data/**", "/exec/**", "/notification/**") //"/api/**"
+				.antMatchers("/gengine/**", "/consoleweb/**", "/model/**", "/data/**", "/exec/**", "/notification/**", "/userProfile/**", "/api/**/console/**")
 				.fullyAuthenticated().and().exceptionHandling()
 				.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login/aac")).and()
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
@@ -121,7 +124,7 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 						.antMatchers("/api/**").fullyAuthenticated().and().csrf().disable();
 			}
 		}));
-		resource.setOrder(4);
+		resource.setOrder(Ordered.LOWEST_PRECEDENCE);
 		return resource;
 	}
 

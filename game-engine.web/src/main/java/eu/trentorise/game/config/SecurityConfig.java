@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/gengine/**", "/console/**", "/model/**", "/data/**", "/exec/**",
-                        "/notification/**")
+                        "/notification/**", "/userProfile/**")
                 .access("hasRole('ROLE_ADMIN')").and().httpBasic();
 
 //        http.authorizeRequests().antMatchers("/api/**").anonymous();

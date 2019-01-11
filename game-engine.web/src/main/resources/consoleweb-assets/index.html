@@ -40,7 +40,16 @@
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="row">
-				<a class="navbar-brand navbar-brand-bigger" data-ng-click="goHome()" href="#/home">Gamification engine</a>
+				<a class="navbar-brand navbar-brand-bigger" data-ng-click="goHome()"
+					href="#/home">Gamification engine</a>
+				<div class="navbar-brand navbar-brand-small pull-right">
+					<div>
+						<select id="userDomain" ng-model="domain"
+							ng-options="domain for domain in userProfile.domains"></select>
+					    <label>{{userProfile.username}}</label>
+						<a class="glyphicon glyphicon-log-out"></a>
+					</div>
+				</div>
 			</div>
 			<!--<div class="row">
 				<h4 style="display: block" data-ng-show="page === 'game'">{{'lbl_game_menu' | i18next}}</h4>

@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import eu.trentorise.game.core.ResourceNotFoundException;
@@ -28,14 +29,17 @@ import eu.trentorise.game.core.ResourceNotFoundException;
 public class ExceptionHandler {
 
 	@org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
-	public void handleIllegalArgument(HttpServletResponse res, Exception e)
-			throws IOException {
+	public void handleIllegalArgument(HttpServletResponse res, Exception e) throws IOException {
 		res.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 	}
 
 	@org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
-	public void handleResourceNotFound(HttpServletResponse res, Exception e)
-			throws IOException {
+	public void handleResourceNotFound(HttpServletResponse res, Exception e) throws IOException {
 		res.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+	}
+
+	@org.springframework.web.bind.annotation.ExceptionHandler(UnauthorizedUserException.class)
+	public void handleUnAuthorizedException(HttpServletResponse res, Exception e) throws IOException {
+		res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
 	}
 }

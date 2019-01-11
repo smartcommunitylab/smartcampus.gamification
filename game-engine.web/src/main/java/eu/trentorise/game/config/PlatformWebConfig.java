@@ -90,7 +90,8 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/gengine/**", "/consoleweb/**", "/model/**", "/data/**", "/exec/**", "/notification/**", "/userProfile/**", "/consoleapi/**")
 				.fullyAuthenticated().and().exceptionHandling()
 				.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login/aac")).and()
-				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class).csrf().disable();
+				
 	}
 
 	@Bean

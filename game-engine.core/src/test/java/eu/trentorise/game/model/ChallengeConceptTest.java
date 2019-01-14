@@ -181,7 +181,7 @@ public class ChallengeConceptTest {
 
         PlayerState saved = playerSrv.saveState(player);
         assertThat(saved.getState(), hasSize(1));
-        ChallengeConcept loaded = (ChallengeConcept) saved.getState().stream().findFirst().get();
+        ChallengeConcept loaded = (ChallengeConcept) saved.getState().stream().findFirst().orElse(null);
         assertThat(loaded.getState(), is(ChallengeState.ACTIVE));
         assertThat(loaded.getDate(ChallengeState.ACTIVE), is(activateDate));
 

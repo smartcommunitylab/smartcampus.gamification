@@ -31,7 +31,7 @@ public class ConceptHelperTest {
         Set<GameConcept> concepts = new HashSet<>();
         concepts.add(new PointConcept("green"));
         concepts = helper.injectExecutionMoment(concepts, moment);
-        PointConcept injected = (PointConcept) concepts.stream().findFirst().get();
+        PointConcept injected = (PointConcept) concepts.stream().findFirst().orElse(null);
         assertThat(injected.getExecutionMoment(), equalTo(moment));
     }
 
@@ -46,7 +46,7 @@ public class ConceptHelperTest {
         concepts.add(new ChallengeConcept());
         
         concepts = helper.injectExecutionMoment(concepts, twoHoursAgoAsMillis);
-        ChallengeConcept injected = (ChallengeConcept) concepts.stream().findFirst().get();
+        ChallengeConcept injected = (ChallengeConcept) concepts.stream().findFirst().orElse(null);
         assertThat(injected.getClock().nowAsMillis(), equalTo(twoHoursAgoAsMillis));
     }
 
@@ -74,7 +74,7 @@ public class ConceptHelperTest {
         concepts.add(challenge);
 
         concepts = helper.activateConcepts(concepts);
-        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().get();
+        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().orElse(null);
         assertThat(activated.isActive(), equalTo(true));
     }
 
@@ -87,7 +87,7 @@ public class ConceptHelperTest {
         concepts.add(challenge);
 
         concepts = helper.activateConcepts(concepts);
-        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().get();
+        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().orElse(null);
         assertThat(activated.isActive(), equalTo(false));
     }
 
@@ -106,7 +106,7 @@ public class ConceptHelperTest {
                 LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         challenge.setClock(new ExecutionClock(todayAsMillis));
         concepts = helper.activateConcepts(concepts);
-        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().get();
+        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().orElse(null);
         assertThat(activated.isActive(), equalTo(false));
     }
 
@@ -124,7 +124,7 @@ public class ConceptHelperTest {
                 .toInstant().toEpochMilli();
         challenge.setClock(new ExecutionClock(twoDaysAgoAsMills));
         concepts = helper.activateConcepts(concepts);
-        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().get();
+        ChallengeConcept activated = (ChallengeConcept) concepts.stream().findFirst().orElse(null);
         assertThat(activated.isActive(), equalTo(true));
     }
 

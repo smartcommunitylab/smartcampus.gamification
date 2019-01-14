@@ -182,7 +182,7 @@ public class PlayerControllerTest {
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -217,7 +217,7 @@ public class PlayerControllerTest {
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -252,7 +252,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
             assertThat(challenge.getPriority(), is(5));
         } catch (Exception e) {
@@ -317,7 +317,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -350,7 +350,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getOrigin(), is("MY_SYSTEM"));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -543,7 +543,7 @@ public class PlayerControllerTest {
 
             ChallengeConcept challenge = loaded.challenges().stream()
                     .filter(ch -> ch.getName().equals("instance_name")).findFirst()
-                    .get();
+                    .orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
 
         } catch (Exception e) {

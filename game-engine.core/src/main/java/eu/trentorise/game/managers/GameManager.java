@@ -152,7 +152,7 @@ public class GameManager implements GameService {
 
         boolean isChallengeChoiceTaskExistent = false;
         if (game.getId() != null) {
-            pers = gameRepo.findById(game.getId()).get();
+            pers = gameRepo.findById(game.getId()).orElse(null);
             if (pers != null) {
 
                 isChallengeChoiceTaskExistent = pers.getTasks() != null
@@ -233,7 +233,7 @@ public class GameManager implements GameService {
     }
 
     public Game loadGameDefinitionById(String gameId) {
-        GamePersistence gp = gameRepo.findById(gameId).get();
+        GamePersistence gp = gameRepo.findById(gameId).orElse(null);
         return gp == null ? null : gp.toGame();
     }
 
@@ -310,7 +310,7 @@ public class GameManager implements GameService {
         if (url != null) {
             if (url.startsWith(DBRule.URL_PROTOCOL)) {
                 url = url.substring(DBRule.URL_PROTOCOL.length());
-                return ruleRepo.findById(url).get();
+                return ruleRepo.findById(url).orElse(null);
             } else if (url.startsWith(ClasspathRule.URL_PROTOCOL)) {
                 url = url.substring(ClasspathRule.URL_PROTOCOL.length());
                 if (Thread.currentThread().getContextClassLoader().getResource(url) != null) {

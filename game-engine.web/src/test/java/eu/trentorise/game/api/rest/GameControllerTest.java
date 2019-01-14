@@ -373,7 +373,7 @@ public class GameControllerTest {
 		try {
 			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
 					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
-					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+					.andExpect(jsonPath("$[0].quantiles.9", is(2.0d)));
 		} catch (Exception e) {
 			Assert.fail("exception: " + e.getMessage());
 		}
@@ -432,7 +432,7 @@ public class GameControllerTest {
 		try {
 			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
 					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
-					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+					.andExpect(jsonPath("$[0].quantiles.9", is(2.0d)));
 		} catch (Exception e) {
 			Assert.fail("exception: " + e.getMessage());
 		}
@@ -492,7 +492,7 @@ public class GameControllerTest {
 		try {
 			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
 					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
-					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+					.andExpect(jsonPath("$[0].quantiles.9", is(2.0d)));
 		} catch (Exception e) {
 			Assert.fail("exception: " + e.getMessage());
 		}

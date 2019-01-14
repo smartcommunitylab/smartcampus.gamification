@@ -279,7 +279,7 @@ public class GameEngineTest {
                 oneHourAgo, null);
         Thread.sleep(WAIT_EXEC);
 
-        PointConcept loaded = (PointConcept) p.getState().stream().findFirst().get();
+        PointConcept loaded = (PointConcept) p.getState().stream().findFirst().orElse(null);
 
         assertThat(loaded.getExecutionMoment(), equalTo(oneHourAgo));
         assertThat(loaded.getPeriodCurrentScore("hourly"), greaterThan(0d));
@@ -615,7 +615,7 @@ public class GameEngineTest {
                 System.currentTimeMillis(), null);
         Thread.sleep(WAIT_EXEC);
         PointConcept green = (PointConcept) p.getState().stream()
-                .filter(gc -> gc.getName().equals("green")).findFirst().get();
+                .filter(gc -> gc.getName().equals("green")).findFirst().orElse(null);
         Assert.assertEquals(10d, green.getScore(), 0);
     }
 
@@ -646,7 +646,7 @@ public class GameEngineTest {
                 System.currentTimeMillis(), null);
         Thread.sleep(WAIT_EXEC);
         PointConcept green = (PointConcept) p.getState().stream()
-                .filter(gc -> gc.getName().equals("green")).findFirst().get();
+                .filter(gc -> gc.getName().equals("green")).findFirst().orElse(null);
         Assert.assertEquals(0d, green.getScore(), 0);
     }
 

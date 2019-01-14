@@ -36,16 +36,20 @@ public class WebConfig implements WebMvcConfigurer {
 	 * i18nextProvider if not angular internationalization will be broken
 	 */
 	private static final String CONSOLE_URL_MAPPING = "consoleweb";
+	private static final String CONSOLE_LOGIN_URL_MAPPING = "login";
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler(String.format("/%s/**", CONSOLE_URL_MAPPING))
+				.addResourceLocations("classpath:/consoleweb-assets/");
+		registry.addResourceHandler(String.format("/%s/**", CONSOLE_LOGIN_URL_MAPPING))
 				.addResourceLocations("classpath:/consoleweb-assets/");
 	}
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController(String.format("/%s/", CONSOLE_URL_MAPPING)).setViewName("forward:index.html");
+		registry.addViewController(String.format("/%s/", CONSOLE_LOGIN_URL_MAPPING)).setViewName("forward:login.html");
 	}
 
 	// @Bean

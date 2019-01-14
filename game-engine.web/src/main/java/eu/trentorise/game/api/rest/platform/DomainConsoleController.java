@@ -151,7 +151,7 @@ public class DomainConsoleController {
 		gameSrv.addConceptInstance(gameId, badge);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}/badgecoll", produces = { "application/json" })
+	@RequestMapping(method = RequestMethod.GET, value = "/console/game/{gameId}/badgecoll", produces = { "application/json" })
 	public List<BadgeCollectionConcept> readBadgeCollections(@PathVariable String domain, @PathVariable String gameId) {
 		gameId = decodePathVariable(gameId);
 		Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);

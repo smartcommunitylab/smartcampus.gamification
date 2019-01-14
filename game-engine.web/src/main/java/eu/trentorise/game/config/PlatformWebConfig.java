@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -24,7 +23,6 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfiguration;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -45,10 +43,9 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private PlatformRolesClient platformRoles;
-
+	
 	@Autowired
-	@Value("${rememberMe.key}")
-	private String rememberMeKey;
+	CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
 	@Bean
 	@ConfigurationProperties("security.oauth2.client")
@@ -91,6 +88,8 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 				.fullyAuthenticated().and().exceptionHandling()
 				.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login/aac")).and()
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class).csrf().disable();
+		
+		http.logout().clearAuthentication(true).invalidateHttpSession(true).logoutSuccessHandler(customLogoutSuccessHandler);
 				
 	}
 
@@ -104,6 +103,7 @@ public class PlatformWebConfig extends WebSecurityConfigurerAdapter {
 		resource.setConfigurers(Arrays.<ResourceServerConfigurer> asList(new ResourceServerConfigurerAdapter() {
 			public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 				resources.resourceId(null);
+
 				OAuth2RestTemplate aacTemplate = new OAuth2RestTemplate(aac(), oauth2ClientContext);
 				AacUserInfoTokenServices tokenServices = new AacUserInfoTokenServices(aacResource().getUserInfoUri(),
 						aac().getClientId());

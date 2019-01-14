@@ -44,12 +44,12 @@
 				<div class="col-md-6 navbar-brand navbar-brand-small">
 					<div class="col-md-4"></div>
 					<div class="col-md-4" class="form-group">
-						<select  id="userDomain" ng-model="domain" ng-options="domain for domain in userProfile.domains"></select>
+						<select  id="userDomain" ng-model="domain" ng-options="domain for domain in userProfile.domains" ng-change="update()"></select>
 					</div>
 					<div class="col-md-4 pull-right form-group">
 						<label>{{userProfile.username}}</label>
 						&nbsp;
-						<a class="glyphicon glyphicon-log-out"></a>
+						<a class="glyphicon glyphicon-log-out" onclick="window.location.href='../logout';"></a>
 					</div>
 				</div>
 			</div>

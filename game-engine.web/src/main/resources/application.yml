@@ -16,7 +16,7 @@ security:
       useCurrentUri: false   
 
 oauth:
-  serverUrl: http://localhost:8080/aac/
+  serverUrl: http://localhost:8080/aac
   context: COMPONENTS/GAMIFICATION
   role: ROLE_PROVIDER
     
@@ -31,3 +31,4 @@ management:
 server:
     port: 6060
     contextPath: /gamification
+    singeLogoutUrl: http://localhost:6060/gamification/singleLogout

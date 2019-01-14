@@ -16,4 +16,21 @@ angular.module('gamificationEngine.main', [])
 		$scope.goHome = function () {
 			$rootScope.page = 'home';
 		}
+
+		$scope.update = function () {
+			$rootScope.domain = $scope.domain;
+			gamesFactory.setUrl('../consoleapi/' + $rootScope.domain);
+		}
+
+		this.$onInit = function () {
+			gamesFactory.userProfile().then(function (profile) {
+				// profile.domains[1] = "test";
+				$rootScope.userProfile = profile;
+				$rootScope.domain = profile.domains[0];
+				if ($rootScope.domain != 'ROLE_ADMIN') {
+					gamesFactory.setUrl('../consoleapi/' + $rootScope.domain);
+				}
+			});
+		  }
+		
 	});

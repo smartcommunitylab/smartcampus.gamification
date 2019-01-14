@@ -37,6 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UsersProvider usersProvider;
+    
+    @Autowired
+	CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -59,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/notification/**", "/userProfile/**")
                 .access("hasRole('ROLE_ADMIN')").and().httpBasic();
 
-//        http.authorizeRequests().antMatchers("/api/**").anonymous();
+        http.logout().clearAuthentication(true).invalidateHttpSession(true).logoutSuccessHandler(customLogoutSuccessHandler);
 
 
         // disable csrf permits POST http call to DomainConsoleController

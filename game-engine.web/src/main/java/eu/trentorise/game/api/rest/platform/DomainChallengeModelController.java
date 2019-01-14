@@ -44,7 +44,7 @@ public class DomainChallengeModelController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/api/{domain}/model/game/{domain}/challenge/{modelId}",
+            value = "/api/{domain}/model/game/{gameId}/challenge/{modelId}",
             produces = {"application/json"})
     @ApiOperation(value = "Delete challenge model")
     public void deleteChallengeModels(@PathVariable String domain, @PathVariable String gameId,

@@ -20,9 +20,6 @@ oauth:
   context: COMPONENTS/GAMIFICATION
   role: ROLE_PROVIDER
     
-rememberMe:
-  key: rememberme
-  
 management:
   context-path: /manage
   port: 9000

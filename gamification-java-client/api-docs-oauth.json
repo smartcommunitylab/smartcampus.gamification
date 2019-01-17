@@ -247,6 +247,13 @@
 				],
 				"parameters": [
 					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"name": "gameId",
 						"in": "path",
 						"description": "gameId",
@@ -314,6 +321,13 @@
 				],
 				"parameters": [
 					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"name": "gameId",
 						"in": "path",
 						"description": "gameId",
@@ -359,6 +373,13 @@
 					"application/json"
 				],
 				"parameters": [
+					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
 					{
 						"name": "gameId",
 						"in": "path",
@@ -408,6 +429,13 @@
 				],
 				"parameters": [
 					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"name": "gameId",
 						"in": "path",
 						"description": "gameId",
@@ -453,6 +481,13 @@
 					"application/json"
 				],
 				"parameters": [
+					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
 					{
 						"name": "gameId",
 						"in": "path",
@@ -554,6 +589,13 @@
 					"application/json"
 				],
 				"parameters": [
+					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
 					{
 						"in": "body",
 						"name": "challengeData",
@@ -676,6 +718,13 @@
 					"application/json"
 				],
 				"parameters": [
+					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
 					{
 						"name": "gameId",
 						"in": "path",
@@ -847,6 +896,13 @@
 				],
 				"parameters": [
 					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"name": "gameId",
 						"in": "path",
 						"description": "gameId",
@@ -898,6 +954,13 @@
 				],
 				"parameters": [
 					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
+					{
 						"name": "gameId",
 						"in": "path",
 						"description": "gameId",
@@ -945,6 +1008,13 @@
 					"application/json"
 				],
 				"parameters": [
+					{
+						"name": "domain",
+						"in": "path",
+						"description": "domain",
+						"required": true,
+						"type": "string"
+					},
 					{
 						"name": "gameId",
 						"in": "path",

@@ -37,7 +37,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Response;
 
 import it.smartcommunitylab.ApiCallback;
 import it.smartcommunitylab.ApiClient;
@@ -56,9 +60,12 @@ import it.smartcommunitylab.model.PlayerLevel;
 import it.smartcommunitylab.model.PlayerStateDTO;
 import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
+import it.smartcommunitylab.model.ext.PlayerControllerUtils;
 
 public class DomainPlayerControllerApi {
     private ApiClient apiClient;
+    ObjectMapper mapper = new ObjectMapper();
+    PlayerControllerUtils playerControllerUtils = new PlayerControllerUtils();
 
     public DomainPlayerControllerApi() {
         this(Configuration.getDefaultApiClient());
@@ -383,6 +390,7 @@ public class DomainPlayerControllerApi {
     }
     /**
      * Build call for assignChallengeUsingPOST
+     * @param domain domain (required)
      * @param challengeData challengeData (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
@@ -391,11 +399,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call assignChallengeUsingPOSTCall(ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call assignChallengeUsingPOSTCall(String domain, ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = challengeData;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -435,7 +444,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call assignChallengeUsingPOSTValidateBeforeCall(ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call assignChallengeUsingPOSTValidateBeforeCall(String domain, ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling assignChallengeUsingPOST(Async)");
+        }
         
         // verify the required parameter 'challengeData' is set
         if (challengeData == null) {
@@ -453,7 +467,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = assignChallengeUsingPOSTCall(challengeData, gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = assignChallengeUsingPOSTCall(domain, challengeData, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -461,32 +475,35 @@ public class DomainPlayerControllerApi {
     /**
      * Assign challenge
      * 
+     * @param domain domain (required)
      * @param challengeData challengeData (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void assignChallengeUsingPOST(ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
-        assignChallengeUsingPOSTWithHttpInfo(challengeData, gameId, playerId);
+    public void assignChallengeUsingPOST(String domain, ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
+        assignChallengeUsingPOSTWithHttpInfo(domain, challengeData, gameId, playerId);
     }
 
     /**
      * Assign challenge
      * 
+     * @param domain domain (required)
      * @param challengeData challengeData (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> assignChallengeUsingPOSTWithHttpInfo(ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = assignChallengeUsingPOSTValidateBeforeCall(challengeData, gameId, playerId, null, null);
+    public ApiResponse<Void> assignChallengeUsingPOSTWithHttpInfo(String domain, ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = assignChallengeUsingPOSTValidateBeforeCall(domain, challengeData, gameId, playerId, null, null);
         return apiClient.execute(call);
     }
 
     /**
      * Assign challenge (asynchronously)
      * 
+     * @param domain domain (required)
      * @param challengeData challengeData (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
@@ -494,7 +511,7 @@ public class DomainPlayerControllerApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call assignChallengeUsingPOSTAsync(ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call assignChallengeUsingPOSTAsync(String domain, ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -515,12 +532,13 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = assignChallengeUsingPOSTValidateBeforeCall(challengeData, gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = assignChallengeUsingPOSTValidateBeforeCall(domain, challengeData, gameId, playerId, progressListener, progressRequestListener);
         apiClient.executeAsync(call, callback);
         return call;
     }
     /**
      * Build call for createPlayerUsingPOST1
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param player player (required)
      * @param progressListener Progress listener
@@ -528,11 +546,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call createPlayerUsingPOST1Call(String gameId, PlayerStateDTO player, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call createPlayerUsingPOST1Call(String domain, String gameId, PlayerStateDTO player, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = player;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -571,7 +590,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call createPlayerUsingPOST1ValidateBeforeCall(String gameId, PlayerStateDTO player, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call createPlayerUsingPOST1ValidateBeforeCall(String domain, String gameId, PlayerStateDTO player, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling createPlayerUsingPOST1(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -584,7 +608,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = createPlayerUsingPOST1Call(gameId, player, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = createPlayerUsingPOST1Call(domain, gameId, player, progressListener, progressRequestListener);
         return call;
 
     }
@@ -592,37 +616,40 @@ public class DomainPlayerControllerApi {
     /**
      * Create player
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param player player (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void createPlayerUsingPOST1(String gameId, PlayerStateDTO player) throws ApiException {
-        createPlayerUsingPOST1WithHttpInfo(gameId, player);
+    public void createPlayerUsingPOST1(String domain, String gameId, PlayerStateDTO player) throws ApiException {
+        createPlayerUsingPOST1WithHttpInfo(domain, gameId, player);
     }
 
     /**
      * Create player
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param player player (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> createPlayerUsingPOST1WithHttpInfo(String gameId, PlayerStateDTO player) throws ApiException {
-        com.squareup.okhttp.Call call = createPlayerUsingPOST1ValidateBeforeCall(gameId, player, null, null);
+    public ApiResponse<Void> createPlayerUsingPOST1WithHttpInfo(String domain, String gameId, PlayerStateDTO player) throws ApiException {
+        com.squareup.okhttp.Call call = createPlayerUsingPOST1ValidateBeforeCall(domain, gameId, player, null, null);
         return apiClient.execute(call);
     }
 
     /**
      * Create player (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param player player (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call createPlayerUsingPOST1Async(String gameId, PlayerStateDTO player, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call createPlayerUsingPOST1Async(String domain, String gameId, PlayerStateDTO player, final ApiCallback<Void> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -643,12 +670,13 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = createPlayerUsingPOST1ValidateBeforeCall(gameId, player, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = createPlayerUsingPOST1ValidateBeforeCall(domain, gameId, player, progressListener, progressRequestListener);
         apiClient.executeAsync(call, callback);
         return call;
     }
     /**
      * Build call for deletePlayerUsingDELETE1
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -656,11 +684,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deletePlayerUsingDELETE1Call(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call deletePlayerUsingDELETE1Call(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -700,7 +729,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deletePlayerUsingDELETE1ValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call deletePlayerUsingDELETE1ValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling deletePlayerUsingDELETE1(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -713,7 +747,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = deletePlayerUsingDELETE1Call(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = deletePlayerUsingDELETE1Call(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -721,37 +755,40 @@ public class DomainPlayerControllerApi {
     /**
      * Delete player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void deletePlayerUsingDELETE1(String gameId, String playerId) throws ApiException {
-        deletePlayerUsingDELETE1WithHttpInfo(gameId, playerId);
+    public void deletePlayerUsingDELETE1(String domain, String gameId, String playerId) throws ApiException {
+        deletePlayerUsingDELETE1WithHttpInfo(domain, gameId, playerId);
     }
 
     /**
      * Delete player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> deletePlayerUsingDELETE1WithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = deletePlayerUsingDELETE1ValidateBeforeCall(gameId, playerId, null, null);
+    public ApiResponse<Void> deletePlayerUsingDELETE1WithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = deletePlayerUsingDELETE1ValidateBeforeCall(domain, gameId, playerId, null, null);
         return apiClient.execute(call);
     }
 
     /**
      * Delete player state (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deletePlayerUsingDELETE1Async(String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call deletePlayerUsingDELETE1Async(String domain, String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -772,7 +809,7 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = deletePlayerUsingDELETE1ValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = deletePlayerUsingDELETE1ValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
         apiClient.executeAsync(call, callback);
         return call;
     }
@@ -921,6 +958,7 @@ public class DomainPlayerControllerApi {
     }
     /**
      * Build call for readCustomDataUsingGET
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -928,11 +966,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readCustomDataUsingGETCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call readCustomDataUsingGETCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}/custom"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -972,7 +1011,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readCustomDataUsingGETValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call readCustomDataUsingGETValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling readCustomDataUsingGET(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -985,7 +1029,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = readCustomDataUsingGETCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readCustomDataUsingGETCall(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -993,26 +1037,28 @@ public class DomainPlayerControllerApi {
     /**
      * Get player custom data
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return PlayerStateDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public PlayerStateDTO readCustomDataUsingGET(String gameId, String playerId) throws ApiException {
-        ApiResponse<PlayerStateDTO> resp = readCustomDataUsingGETWithHttpInfo(gameId, playerId);
+    public PlayerStateDTO readCustomDataUsingGET(String domain, String gameId, String playerId) throws ApiException {
+        ApiResponse<PlayerStateDTO> resp = readCustomDataUsingGETWithHttpInfo(domain, gameId, playerId);
         return resp.getData();
     }
 
     /**
      * Get player custom data
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;PlayerStateDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<PlayerStateDTO> readCustomDataUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = readCustomDataUsingGETValidateBeforeCall(gameId, playerId, null, null);
+    public ApiResponse<PlayerStateDTO> readCustomDataUsingGETWithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = readCustomDataUsingGETValidateBeforeCall(domain, gameId, playerId, null, null);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1020,13 +1066,14 @@ public class DomainPlayerControllerApi {
     /**
      * Get player custom data (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readCustomDataUsingGETAsync(String gameId, String playerId, final ApiCallback<PlayerStateDTO> callback) throws ApiException {
+    public com.squareup.okhttp.Call readCustomDataUsingGETAsync(String domain, String gameId, String playerId, final ApiCallback<PlayerStateDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1047,7 +1094,7 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = readCustomDataUsingGETValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readCustomDataUsingGETValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1197,6 +1244,7 @@ public class DomainPlayerControllerApi {
     }
     /**
      * Build call for readLevelsUsingGET
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -1204,11 +1252,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readLevelsUsingGETCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call readLevelsUsingGETCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}/levels"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -1248,7 +1297,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readLevelsUsingGETValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call readLevelsUsingGETValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling readLevelsUsingGET(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -1261,7 +1315,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = readLevelsUsingGETCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readLevelsUsingGETCall(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1269,26 +1323,28 @@ public class DomainPlayerControllerApi {
     /**
      * Get player levels
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return List&lt;PlayerLevel&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<PlayerLevel> readLevelsUsingGET(String gameId, String playerId) throws ApiException {
-        ApiResponse<List<PlayerLevel>> resp = readLevelsUsingGETWithHttpInfo(gameId, playerId);
+    public List<PlayerLevel> readLevelsUsingGET(String domain, String gameId, String playerId) throws ApiException {
+        ApiResponse<List<PlayerLevel>> resp = readLevelsUsingGETWithHttpInfo(domain, gameId, playerId);
         return resp.getData();
     }
 
     /**
      * Get player levels
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;List&lt;PlayerLevel&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<PlayerLevel>> readLevelsUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = readLevelsUsingGETValidateBeforeCall(gameId, playerId, null, null);
+    public ApiResponse<List<PlayerLevel>> readLevelsUsingGETWithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = readLevelsUsingGETValidateBeforeCall(domain, gameId, playerId, null, null);
         Type localVarReturnType = new TypeToken<List<PlayerLevel>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1296,13 +1352,14 @@ public class DomainPlayerControllerApi {
     /**
      * Get player levels (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readLevelsUsingGETAsync(String gameId, String playerId, final ApiCallback<List<PlayerLevel>> callback) throws ApiException {
+    public com.squareup.okhttp.Call readLevelsUsingGETAsync(String domain, String gameId, String playerId, final ApiCallback<List<PlayerLevel>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1323,13 +1380,14 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = readLevelsUsingGETValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readLevelsUsingGETValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<PlayerLevel>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
      * Build call for readPlayerUsingGET
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -1337,11 +1395,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readPlayerUsingGETCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call readPlayerUsingGETCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -1381,7 +1440,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readPlayerUsingGETValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call readPlayerUsingGETValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling readPlayerUsingGET(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -1394,7 +1458,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = readPlayerUsingGETCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readPlayerUsingGETCall(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1402,26 +1466,28 @@ public class DomainPlayerControllerApi {
     /**
      * Get player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return PlayerStateDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public PlayerStateDTO readPlayerUsingGET(String gameId, String playerId) throws ApiException {
-        ApiResponse<PlayerStateDTO> resp = readPlayerUsingGETWithHttpInfo(gameId, playerId);
+    public PlayerStateDTO readPlayerUsingGET(String domain, String gameId, String playerId) throws ApiException {
+        ApiResponse<PlayerStateDTO> resp = readPlayerUsingGETWithHttpInfo(domain, gameId, playerId);
         return resp.getData();
     }
 
     /**
      * Get player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;PlayerStateDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<PlayerStateDTO> readPlayerUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = readPlayerUsingGETValidateBeforeCall(gameId, playerId, null, null);
+    public ApiResponse<PlayerStateDTO> readPlayerUsingGETWithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = readPlayerUsingGETValidateBeforeCall(domain, gameId, playerId, null, null);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1429,13 +1495,14 @@ public class DomainPlayerControllerApi {
     /**
      * Get player state (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readPlayerUsingGETAsync(String gameId, String playerId, final ApiCallback<PlayerStateDTO> callback) throws ApiException {
+    public com.squareup.okhttp.Call readPlayerUsingGETAsync(String domain, String gameId, String playerId, final ApiCallback<PlayerStateDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1456,13 +1523,14 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = readPlayerUsingGETValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readPlayerUsingGETValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
      * Build call for readStateUsingGET
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -1470,11 +1538,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readStateUsingGETCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call readStateUsingGETCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}/state"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -1514,7 +1583,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readStateUsingGETValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call readStateUsingGETValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling readStateUsingGET(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -1527,7 +1601,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = readStateUsingGETCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readStateUsingGETCall(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1535,40 +1609,46 @@ public class DomainPlayerControllerApi {
     /**
      * Get player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return PlayerStateDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
-    public PlayerStateDTO readStateUsingGET(String gameId, String playerId) throws ApiException {
-        ApiResponse<PlayerStateDTO> resp = readStateUsingGETWithHttpInfo(gameId, playerId);
-        return resp.getData();
+    public PlayerStateDTO readStateUsingGET(String domain, String gameId, String playerId) throws ApiException, JsonParseException, JsonMappingException, IOException {
+        Response response = readStateUsingGETWithHttpInfo(domain, gameId, playerId);
+        return playerControllerUtils.convertPlayerState(mapper.readValue(response.body().byteStream(), Map.class));
     }
 
     /**
      * Get player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;PlayerStateDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<PlayerStateDTO> readStateUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = readStateUsingGETValidateBeforeCall(gameId, playerId, null, null);
+    public Response readStateUsingGETWithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = readStateUsingGETValidateBeforeCall(domain, gameId, playerId, null, null);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**
      * Get player state (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readStateUsingGETAsync(String gameId, String playerId, final ApiCallback<PlayerStateDTO> callback) throws ApiException {
+    public com.squareup.okhttp.Call readStateUsingGETAsync(String domain, String gameId, String playerId, final ApiCallback<PlayerStateDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1589,13 +1669,14 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = readStateUsingGETValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readStateUsingGETValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
      * Build call for readTeamsByMemberUsingGET1
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -1603,11 +1684,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call readTeamsByMemberUsingGET1Call(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call readTeamsByMemberUsingGET1Call(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}/teams"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -1647,7 +1729,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call readTeamsByMemberUsingGET1ValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call readTeamsByMemberUsingGET1ValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling readTeamsByMemberUsingGET1(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -1660,7 +1747,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = readTeamsByMemberUsingGET1Call(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readTeamsByMemberUsingGET1Call(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1668,26 +1755,28 @@ public class DomainPlayerControllerApi {
     /**
      * Get player teams
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return List&lt;TeamDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<TeamDTO> readTeamsByMemberUsingGET1(String gameId, String playerId) throws ApiException {
-        ApiResponse<List<TeamDTO>> resp = readTeamsByMemberUsingGET1WithHttpInfo(gameId, playerId);
+    public List<TeamDTO> readTeamsByMemberUsingGET1(String domain, String gameId, String playerId) throws ApiException {
+        ApiResponse<List<TeamDTO>> resp = readTeamsByMemberUsingGET1WithHttpInfo(domain, gameId, playerId);
         return resp.getData();
     }
 
     /**
      * Get player teams
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;List&lt;TeamDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<TeamDTO>> readTeamsByMemberUsingGET1WithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = readTeamsByMemberUsingGET1ValidateBeforeCall(gameId, playerId, null, null);
+    public ApiResponse<List<TeamDTO>> readTeamsByMemberUsingGET1WithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = readTeamsByMemberUsingGET1ValidateBeforeCall(domain, gameId, playerId, null, null);
         Type localVarReturnType = new TypeToken<List<TeamDTO>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1695,13 +1784,14 @@ public class DomainPlayerControllerApi {
     /**
      * Get player teams (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call readTeamsByMemberUsingGET1Async(String gameId, String playerId, final ApiCallback<List<TeamDTO>> callback) throws ApiException {
+    public com.squareup.okhttp.Call readTeamsByMemberUsingGET1Async(String domain, String gameId, String playerId, final ApiCallback<List<TeamDTO>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1722,13 +1812,14 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = readTeamsByMemberUsingGET1ValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = readTeamsByMemberUsingGET1ValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<TeamDTO>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
      * Build call for searchByQueryUsingPOST
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param query query (required)
      * @param page Results page you want to retrieve  (optional)
@@ -1738,11 +1829,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call searchByQueryUsingPOSTCall(String gameId, WrapperQuery query, String page, String size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call searchByQueryUsingPOSTCall(String domain, String gameId, WrapperQuery query, String page, String size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = query;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/search"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1785,7 +1877,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call searchByQueryUsingPOSTValidateBeforeCall(String gameId, WrapperQuery query, String page, String size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call searchByQueryUsingPOSTValidateBeforeCall(String domain, String gameId, WrapperQuery query, String page, String size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling searchByQueryUsingPOST(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -1798,7 +1895,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = searchByQueryUsingPOSTCall(gameId, query, page, size, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = searchByQueryUsingPOSTCall(domain, gameId, query, page, size, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1806,6 +1903,7 @@ public class DomainPlayerControllerApi {
     /**
      * Search player states
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param query query (required)
      * @param page Results page you want to retrieve  (optional)
@@ -1813,14 +1911,15 @@ public class DomainPlayerControllerApi {
      * @return PagePlayerStateDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public PagePlayerStateDTO searchByQueryUsingPOST(String gameId, WrapperQuery query, String page, String size) throws ApiException {
-        ApiResponse<PagePlayerStateDTO> resp = searchByQueryUsingPOSTWithHttpInfo(gameId, query, page, size);
+    public PagePlayerStateDTO searchByQueryUsingPOST(String domain, String gameId, WrapperQuery query, String page, String size) throws ApiException {
+        ApiResponse<PagePlayerStateDTO> resp = searchByQueryUsingPOSTWithHttpInfo(domain, gameId, query, page, size);
         return resp.getData();
     }
 
     /**
      * Search player states
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param query query (required)
      * @param page Results page you want to retrieve  (optional)
@@ -1828,8 +1927,8 @@ public class DomainPlayerControllerApi {
      * @return ApiResponse&lt;PagePlayerStateDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<PagePlayerStateDTO> searchByQueryUsingPOSTWithHttpInfo(String gameId, WrapperQuery query, String page, String size) throws ApiException {
-        com.squareup.okhttp.Call call = searchByQueryUsingPOSTValidateBeforeCall(gameId, query, page, size, null, null);
+    public ApiResponse<PagePlayerStateDTO> searchByQueryUsingPOSTWithHttpInfo(String domain, String gameId, WrapperQuery query, String page, String size) throws ApiException {
+        com.squareup.okhttp.Call call = searchByQueryUsingPOSTValidateBeforeCall(domain, gameId, query, page, size, null, null);
         Type localVarReturnType = new TypeToken<PagePlayerStateDTO>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1837,6 +1936,7 @@ public class DomainPlayerControllerApi {
     /**
      * Search player states (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param query query (required)
      * @param page Results page you want to retrieve  (optional)
@@ -1845,7 +1945,7 @@ public class DomainPlayerControllerApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call searchByQueryUsingPOSTAsync(String gameId, WrapperQuery query, String page, String size, final ApiCallback<PagePlayerStateDTO> callback) throws ApiException {
+    public com.squareup.okhttp.Call searchByQueryUsingPOSTAsync(String domain, String gameId, WrapperQuery query, String page, String size, final ApiCallback<PagePlayerStateDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1866,13 +1966,14 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = searchByQueryUsingPOSTValidateBeforeCall(gameId, query, page, size, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = searchByQueryUsingPOSTValidateBeforeCall(domain, gameId, query, page, size, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<PagePlayerStateDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
      * Build call for updatePlayerUsingPUT
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param progressListener Progress listener
@@ -1880,11 +1981,12 @@ public class DomainPlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call updatePlayerUsingPUTCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call updatePlayerUsingPUTCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
         String localVarPath = "/api/{domain}/data/game/{gameId}/player/{playerId}"
+            .replaceAll("\\{" + "domain" + "\\}", apiClient.escapeString(domain.toString()))
             .replaceAll("\\{" + "gameId" + "\\}", apiClient.escapeString(gameId.toString()))
             .replaceAll("\\{" + "playerId" + "\\}", apiClient.escapeString(playerId.toString()));
 
@@ -1924,7 +2026,12 @@ public class DomainPlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call updatePlayerUsingPUTValidateBeforeCall(String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call updatePlayerUsingPUTValidateBeforeCall(String domain, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'domain' is set
+        if (domain == null) {
+            throw new ApiException("Missing the required parameter 'domain' when calling updatePlayerUsingPUT(Async)");
+        }
         
         // verify the required parameter 'gameId' is set
         if (gameId == null) {
@@ -1937,7 +2044,7 @@ public class DomainPlayerControllerApi {
         }
         
 
-        com.squareup.okhttp.Call call = updatePlayerUsingPUTCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = updatePlayerUsingPUTCall(domain, gameId, playerId, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1945,37 +2052,40 @@ public class DomainPlayerControllerApi {
     /**
      * Edit player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void updatePlayerUsingPUT(String gameId, String playerId) throws ApiException {
-        updatePlayerUsingPUTWithHttpInfo(gameId, playerId);
+    public void updatePlayerUsingPUT(String domain, String gameId, String playerId) throws ApiException {
+        updatePlayerUsingPUTWithHttpInfo(domain, gameId, playerId);
     }
 
     /**
      * Edit player state
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> updatePlayerUsingPUTWithHttpInfo(String gameId, String playerId) throws ApiException {
-        com.squareup.okhttp.Call call = updatePlayerUsingPUTValidateBeforeCall(gameId, playerId, null, null);
+    public ApiResponse<Void> updatePlayerUsingPUTWithHttpInfo(String domain, String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = updatePlayerUsingPUTValidateBeforeCall(domain, gameId, playerId, null, null);
         return apiClient.execute(call);
     }
 
     /**
      * Edit player state (asynchronously)
      * 
+     * @param domain domain (required)
      * @param gameId gameId (required)
      * @param playerId playerId (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call updatePlayerUsingPUTAsync(String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call updatePlayerUsingPUTAsync(String domain, String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1996,7 +2106,7 @@ public class DomainPlayerControllerApi {
             };
         }
 
-        com.squareup.okhttp.Call call = updatePlayerUsingPUTValidateBeforeCall(gameId, playerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = updatePlayerUsingPUTValidateBeforeCall(domain, gameId, playerId, progressListener, progressRequestListener);
         apiClient.executeAsync(call, callback);
         return call;
     }

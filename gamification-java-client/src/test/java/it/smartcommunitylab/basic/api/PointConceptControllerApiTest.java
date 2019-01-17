@@ -30,6 +30,7 @@
 
 package it.smartcommunitylab.basic.api;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +39,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
 import it.smartcommunitylab.auth.HttpBasicAuth;
 import it.smartcommunitylab.model.PeriodInternal;
-import it.smartcommunitylab.model.PointConcept;
+import it.smartcommunitylab.model.ext.PointConcept;
 
 /**
  * API tests for PointConceptControllerApi
@@ -85,11 +89,10 @@ public class PointConceptControllerApiTest {
      */
 //    @Test
     public void addPointUsingPOST1Test() throws ApiException {
-        PointConcept point = new PointConcept();
-        point.setId("04012019");
+        PointConcept point = new PointConcept("04012019");
         point.setName("testPoint");
         point.setScore(2.0);
-        Map<String, PeriodInternal> periods = new HashMap<>();
+        Map<String, PointConcept.PeriodInternal> periods = new HashMap<>();
 		point.setPeriods(periods );
         PointConcept response = api.addPointUsingPOST1(gameId, point);
 
@@ -120,9 +123,12 @@ public class PointConceptControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws IllegalArgumentException 
+     * @throws ClassNotFoundException 
      */
     @Test
-    public void readPointUsingGETTest() throws ApiException {
+    public void readPointUsingGETTest() throws ApiException, IllegalArgumentException, IOException, ClassNotFoundException {
         String pointId = "1";
         PointConcept response = api.readPointUsingGET(gameId, pointId);
 
@@ -136,9 +142,14 @@ public class PointConceptControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readPointsUsingGET1Test() throws ApiException {
+    public void readPointsUsingGET1Test() throws ApiException, JsonParseException, JsonMappingException, IllegalArgumentException, ClassNotFoundException, IOException {
         List<PointConcept> response = api.readPointsUsingGET1(gameId);
 
         System.out.println(response.size());
@@ -154,11 +165,10 @@ public class PointConceptControllerApiTest {
      */
 //	@Test
 	public void updatePointUsingPUTTest() throws ApiException {
-		PointConcept point = new PointConcept();
-		point.setId("3f1addae-52ca-4c60-83cc-d08a36cc13f8");
+		PointConcept point = new PointConcept("3f1addae-52ca-4c60-83cc-d08a36cc13f8");
 		point.setName("testPoint");
 		point.setScore(1.0);
-		Map<String, PeriodInternal> periods = new HashMap<>();
+		Map<String, PointConcept.PeriodInternal> periods = new HashMap<>();
 		point.setPeriods(periods);
 		api.updatePointUsingPUT(gameId, point);
 		

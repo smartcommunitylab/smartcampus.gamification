@@ -39,6 +39,7 @@ import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
 
 import io.swagger.annotations.ApiModelProperty;
+import it.smartcommunitylab.model.ext.GameConcept;
 
 /**
  * PlayerStateDTO

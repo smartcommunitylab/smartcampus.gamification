@@ -30,11 +30,16 @@
 
 package it.smartcommunitylab.basic.api;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
@@ -51,6 +56,8 @@ import it.smartcommunitylab.model.PlayerLevel;
 import it.smartcommunitylab.model.PlayerStateDTO;
 import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
+import it.smartcommunitylab.model.ext.GameConcept;
+import it.smartcommunitylab.model.ext.PointConcept;
 
 /**
  * API tests for PlayerControllerApi
@@ -325,12 +332,20 @@ public class PlayerControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readStateUsingGETTest() throws ApiException {
+    public void readStateUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
         PlayerStateDTO response = api.readStateUsingGET(gameId, playerId);
-
-        // TODO: test validations
+        System.out.println(response.getGameId());
+       
+        Set<GameConcept> scores = response.getState().get("PointConcept");
+        scores.stream().filter(score -> "green leaves".equals(score.getName())).findFirst()
+        .map(concept -> (PointConcept) concept)
+        .ifPresent(score -> System.out.println(score.getScore()));
+       
     }
     
     /**

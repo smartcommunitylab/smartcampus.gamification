@@ -40,6 +40,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.swagger.annotations.ApiModelProperty;
 import it.smartcommunitylab.model.ext.GameConcept;
+import it.smartcommunitylab.model.ext.PlayerLevel;
 
 /**
  * PlayerStateDTO

@@ -48,11 +48,11 @@ import it.smartcommunitylab.model.ChallengeConcept;
 import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
-import it.smartcommunitylab.model.PlayerLevel;
 import it.smartcommunitylab.model.PlayerStateDTO;
 import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
 import it.smartcommunitylab.model.ext.GameConcept;
+import it.smartcommunitylab.model.ext.PlayerLevel;
 import it.smartcommunitylab.model.ext.PointConcept;
 
 /**
@@ -66,7 +66,7 @@ public class DomainPlayerControllerApiTest {
     private ApiClient apiClient;
     private String baseUrl = "http://localhost:6060/gamification";
     private String gameId = "57ac710fd4c6ac7872b0e7a1";
-    private String playerId = "24153";
+    private String playerId = "341";
     private String conceptName = "green leaves";
     private String domain = "demo-domain";
     
@@ -76,7 +76,7 @@ public class DomainPlayerControllerApiTest {
     	
     	 // Configure OAuth2 access token for authorization: oauth2
     	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
-    	 oauth2.setAccessToken("043b57e8-56d9-432f-91e3-b4dfd39d1841");
+    	 oauth2.setAccessToken("ef11debc-19cc-4477-84c4-15ce540075f7");
     	 
     	 // Configure basic auth. 
     	 api.setApiClient(apiClient);
@@ -286,11 +286,11 @@ public class DomainPlayerControllerApiTest {
      */
     @Test
     public void readTeamsByMemberUsingGET1Test() throws ApiException {
-        String gameId = null;
-        String playerId = null;
+    	gameId = "5719e700e4b0bc2cc4677cb3";
+    	playerId = "dff57c45-b3b0-419c-8435-3d8b488c45b8";
         List<TeamDTO> response = api.readTeamsByMemberUsingGET1(domain, gameId, playerId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**

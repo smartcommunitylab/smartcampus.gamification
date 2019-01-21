@@ -59,11 +59,11 @@ import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
 import it.smartcommunitylab.model.PlayerBlackList;
-import it.smartcommunitylab.model.PlayerLevel;
 import it.smartcommunitylab.model.PlayerStateDTO;
 import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
 import it.smartcommunitylab.model.ext.PlayerControllerUtils;
+import it.smartcommunitylab.model.ext.PlayerLevel;
 
 public class PlayerControllerApi {
     private ApiClient apiClient;

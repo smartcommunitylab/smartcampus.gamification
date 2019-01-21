@@ -910,13 +910,40 @@ public class ApiClient {
         }
     }
     
-    public Response executeSimple(Call call, Type returnType) throws ApiException {
-        try {
-            return call.execute();
-        } catch (IOException e) {
-            throw new ApiException(e);
-        }
-    }
+	public Response executeSimple(Call call, Type returnType) throws ApiException {
+		try {
+			Response response = call.execute();
+			if (response.isSuccessful()) {
+				if (returnType == null || response.code() == 204) {
+					// returning null if the returnType is not defined,
+					// or the status code is 204 (No Content)
+					if (response.body() != null) {
+						try {
+							response.body().close();
+						} catch (IOException e) {
+							throw new ApiException(response.message(), e, response.code(),
+									response.headers().toMultimap());
+						}
+					}
+					return null;
+				} else {
+					return response;
+				}
+			} else {
+				String respBody = null;
+				if (response.body() != null) {
+					try {
+						respBody = response.body().string();
+					} catch (IOException e) {
+						throw new ApiException(response.message(), e, response.code(), response.headers().toMultimap());
+					}
+				}
+				throw new ApiException(response.message(), response.code(), response.headers().toMultimap(), respBody);
+			}
+		} catch (IOException e) {
+			throw new ApiException(e);
+		}
+	}
 
     /**
      * {@link #executeAsync(Call, Type, ApiCallback)}

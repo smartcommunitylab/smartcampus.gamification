@@ -17,8 +17,11 @@ public class PlayerLevel {
     private double endLevelScore;
     private double toNextLevel;
 
+    
 
-    private static final double INFINITE_LEVEL_FLAG = -1;
+    public PlayerLevel() {}
+
+	private static final double INFINITE_LEVEL_FLAG = -1;
 
     public PlayerLevel(Level levelDefinition, double actualScore) {
         this.levelName = levelDefinition.getName();

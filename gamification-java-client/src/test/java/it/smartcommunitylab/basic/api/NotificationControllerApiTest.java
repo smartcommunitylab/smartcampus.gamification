@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -48,7 +49,7 @@ import it.smartcommunitylab.model.Notification;
 /**
  * API tests for NotificationControllerApi
  */
-// @Ignore
+ @Ignore
 public class NotificationControllerApiTest {
 
 	private final NotificationControllerApi api = new NotificationControllerApi();

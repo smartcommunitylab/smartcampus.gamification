@@ -53,11 +53,11 @@ import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
 import it.smartcommunitylab.model.PlayerBlackList;
 import it.smartcommunitylab.model.PlayerStateDTO;
-import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
 import it.smartcommunitylab.model.ext.GameConcept;
 import it.smartcommunitylab.model.ext.PlayerLevel;
 import it.smartcommunitylab.model.ext.PointConcept;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 /**
  * API tests for PlayerControllerApi
@@ -373,9 +373,11 @@ public class PlayerControllerApiTest {
      */
     @Test
     public void readTeamsByMemberUsingGET1Test() throws ApiException {
+    	gameId = "5719e700e4b0bc2cc4677cb3";
+    	playerId = "dff57c45-b3b0-419c-8435-3d8b488c45b8";
         List<TeamDTO> response = api.readTeamsByMemberUsingGET1(gameId, playerId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**

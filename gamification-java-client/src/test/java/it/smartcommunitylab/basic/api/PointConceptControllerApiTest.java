@@ -45,7 +45,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
 import it.smartcommunitylab.auth.HttpBasicAuth;
-import it.smartcommunitylab.model.PeriodInternal;
 import it.smartcommunitylab.model.ext.PointConcept;
 
 /**

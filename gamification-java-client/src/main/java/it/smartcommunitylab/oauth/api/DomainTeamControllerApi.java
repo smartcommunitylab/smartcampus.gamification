@@ -37,7 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Response;
 
 import it.smartcommunitylab.ApiCallback;
 import it.smartcommunitylab.ApiClient;
@@ -48,10 +51,12 @@ import it.smartcommunitylab.Pair;
 import it.smartcommunitylab.ProgressRequestBody;
 import it.smartcommunitylab.ProgressResponseBody;
 import it.smartcommunitylab.model.Collectionstring;
-import it.smartcommunitylab.model.TeamDTO;
+import it.smartcommunitylab.model.ext.PlayerLevel;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 public class DomainTeamControllerApi {
     private ApiClient apiClient;
+    ObjectMapper mapper = new ObjectMapper();
 
     public DomainTeamControllerApi() {
         this(Configuration.getDefaultApiClient());
@@ -590,10 +595,12 @@ public class DomainTeamControllerApi {
      * @param teamId teamId (required)
      * @return Collectionstring
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws IOException 
+     * @throws IllegalArgumentException 
      */
-    public Collectionstring readTeamMembersUsingGET(String domain, String gameId, String teamId) throws ApiException {
-        ApiResponse<Collectionstring> resp = readTeamMembersUsingGETWithHttpInfo(domain, gameId, teamId);
-        return resp.getData();
+    public List<String> readTeamMembersUsingGET(String domain, String gameId, String teamId) throws ApiException, IllegalArgumentException, IOException {
+        Response resp = readTeamMembersUsingGETWithHttpInfo(domain, gameId, teamId);
+        return mapper.readValue(resp.body().byteStream(), new TypeReference<List<String>>(){});
     }
 
     /**
@@ -605,10 +612,10 @@ public class DomainTeamControllerApi {
      * @return ApiResponse&lt;Collectionstring&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Collectionstring> readTeamMembersUsingGETWithHttpInfo(String domain, String gameId, String teamId) throws ApiException {
+    public Response readTeamMembersUsingGETWithHttpInfo(String domain, String gameId, String teamId) throws ApiException {
         com.squareup.okhttp.Call call = readTeamMembersUsingGETValidateBeforeCall(domain, gameId, teamId, null, null);
         Type localVarReturnType = new TypeToken<Collectionstring>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**

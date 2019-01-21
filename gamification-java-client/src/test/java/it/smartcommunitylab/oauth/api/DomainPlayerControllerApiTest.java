@@ -49,16 +49,16 @@ import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
 import it.smartcommunitylab.model.PlayerStateDTO;
-import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
 import it.smartcommunitylab.model.ext.GameConcept;
 import it.smartcommunitylab.model.ext.PlayerLevel;
 import it.smartcommunitylab.model.ext.PointConcept;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 /**
  * API tests for DomainPlayerControllerApi
  */
-//@org.junit.Ignore
+@org.junit.Ignore
 public class DomainPlayerControllerApiTest {
 
     private final DomainPlayerControllerApi api = new DomainPlayerControllerApi();

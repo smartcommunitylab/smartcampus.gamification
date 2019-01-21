@@ -37,7 +37,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Response;
 
 import it.smartcommunitylab.ApiCallback;
 import it.smartcommunitylab.ApiClient;
@@ -48,10 +53,11 @@ import it.smartcommunitylab.Pair;
 import it.smartcommunitylab.ProgressRequestBody;
 import it.smartcommunitylab.ProgressResponseBody;
 import it.smartcommunitylab.model.Collectionstring;
-import it.smartcommunitylab.model.TeamDTO;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 public class TeamControllerApi {
     private ApiClient apiClient;
+    ObjectMapper mapper = new ObjectMapper();
 
     public TeamControllerApi() {
         this(Configuration.getDefaultApiClient());
@@ -552,10 +558,13 @@ public class TeamControllerApi {
      * @param teamId teamId (required)
      * @return Collectionstring
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
-    public Collectionstring readTeamMembersUsingGET(String gameId, String teamId) throws ApiException {
-        ApiResponse<Collectionstring> resp = readTeamMembersUsingGETWithHttpInfo(gameId, teamId);
-        return resp.getData();
+    public List<String> readTeamMembersUsingGET(String gameId, String teamId) throws ApiException, JsonParseException, JsonMappingException, IOException {
+        Response resp = readTeamMembersUsingGETWithHttpInfo(gameId, teamId);
+        return mapper.readValue(resp.body().byteStream(), new TypeReference<List<String>>(){});
     }
 
     /**
@@ -566,10 +575,10 @@ public class TeamControllerApi {
      * @return ApiResponse&lt;Collectionstring&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Collectionstring> readTeamMembersUsingGETWithHttpInfo(String gameId, String teamId) throws ApiException {
+    public Response readTeamMembersUsingGETWithHttpInfo(String gameId, String teamId) throws ApiException {
         com.squareup.okhttp.Call call = readTeamMembersUsingGETValidateBeforeCall(gameId, teamId, null, null);
         Type localVarReturnType = new TypeToken<Collectionstring>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**

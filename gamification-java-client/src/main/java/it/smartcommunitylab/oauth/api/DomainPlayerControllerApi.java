@@ -57,10 +57,10 @@ import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
 import it.smartcommunitylab.model.PlayerStateDTO;
-import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
 import it.smartcommunitylab.model.ext.PlayerControllerUtils;
 import it.smartcommunitylab.model.ext.PlayerLevel;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 public class DomainPlayerControllerApi {
     private ApiClient apiClient;

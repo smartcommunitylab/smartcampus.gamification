@@ -17,7 +17,6 @@
 package it.smartcommunitylab.model.ext;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +37,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 
 public class PointConcept extends GameConcept {
 
@@ -62,7 +60,7 @@ public class PointConcept extends GameConcept {
 	}
 
 	@JsonCreator
-	public PointConcept(Map<String, Object> jsonProps) throws ParseException {
+	public PointConcept(Map<String, Object> jsonProps) {
 		super(jsonProps);
 		if (jsonProps != null) {
 			Object scoreField = jsonProps.get("score");
@@ -247,8 +245,6 @@ public class PointConcept extends GameConcept {
 		private String identifier;
 		private int capacity;
 
-		private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss.SSSZ");
-		
 		/*
 		 * JsonDeserialize is used by convertValue method of ObjectMapper field
 		 * of PlayerState. In constructor of playerState the StatePersistence
@@ -276,11 +272,11 @@ public class PointConcept extends GameConcept {
 			this.capacity = capacity;
 		}
 
-		public PeriodInternal(Map<String, Object> jsonProps) throws ParseException {
+		public PeriodInternal(Map<String, Object> jsonProps) {
 			if (jsonProps != null) {
 				Object startField = jsonProps.get("start");
 				if (startField != null) {
-					start = dateFormat.parse(String.valueOf(startField));
+					start = new Date((long) startField);
 				}
 				Object periodField = jsonProps.get("period");
 				if (periodField != null) {

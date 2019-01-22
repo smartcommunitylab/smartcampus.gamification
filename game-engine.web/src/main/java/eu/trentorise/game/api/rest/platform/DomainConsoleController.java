@@ -119,6 +119,16 @@ public class DomainConsoleController {
 		return r;
 	}
 
+    @RequestMapping(method = RequestMethod.GET, value = "/console/game-by-domain",
+            produces = {"application/json"})
+    public List<GameDTO> readGamesByDomain(@PathVariable String domain) {
+        List<GameDTO> r = new ArrayList<GameDTO>();
+        for (Game g : gameSrv.loadGameByDomain(domain)) {
+            r.add(converter.convertGame(g));
+        }
+        return r;
+    }
+
 	@RequestMapping(method = RequestMethod.POST, value = "/console/game/{gameId}/point", consumes = {
 			"application/json" }, produces = { "application/json" })
 	public void addPoint(@PathVariable String domain, @PathVariable String gameId, @RequestBody PointConcept point) {

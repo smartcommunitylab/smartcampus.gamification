@@ -10,7 +10,7 @@ angular.module('gamificationEngine.home', [])
 		};
 
 		// Load games
-		gamesFactory.getGames().then(function () {
+		gamesFactory.getGamesByDomain().then(function () {
 			$rootScope.games.forEach(function (g) {
 				g.terminated = g.expiration && g.expiration <= new Date().getTime();
 			});

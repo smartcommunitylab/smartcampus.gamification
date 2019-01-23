@@ -33,7 +33,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import eu.trentorise.game.platform.PlatformRolesClient;
 
 @Configuration
-//@EnableOAuth2Client
 @EnableOAuth2Sso
 @Profile("platform")
 public class PlatformWebConfig extends WebSecurityConfigurerAdapter {

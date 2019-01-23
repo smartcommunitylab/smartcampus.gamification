@@ -43,6 +43,25 @@ angular.module('gamificationEngine.services', [])
 			}
 			return deferred.promise;
 		};
+		
+		var getGamesByDomain = function () {
+			
+			var deferred = $q.defer();
+
+			// If games haven't been already loaded
+			if (!$rootScope.games || $rootScope.games.length === 0) {
+				// Load games
+				$http.get(url + `/console/game-by-domain`).success(function (data) {
+					$rootScope.games = data;
+					deferred.resolve();
+				}).error(function () {
+					deferred.reject();
+				});
+			} else {
+				deferred.resolve();
+			}
+			return deferred.promise;
+		};
 
 		// Get game by ID
 		var getGameById = function (id) {
@@ -471,6 +490,7 @@ angular.module('gamificationEngine.services', [])
 		};
 		
 		return {
+			getGamesByDomain,
 			'getGames': getGames,
 			'getGameById': getGameById,
 			'getGameByName': getGameByName,
@@ -498,7 +518,7 @@ angular.module('gamificationEngine.services', [])
 			'saveLevel' : saveLevel,
 			'deleteLevel': deleteLevel,
 			'userProfile': userProfile,
-			'setUrl': setUrl
+			'setUrl': setUrl,
 		};
 	})
 	.factory('utilsFactory', function () {

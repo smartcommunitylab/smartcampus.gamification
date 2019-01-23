@@ -16,7 +16,6 @@ package eu.trentorise.game.service;
 
 import org.springframework.security.core.Authentication;
 
-//@Service
 public interface IdentityLookupService {
 
     String getName();

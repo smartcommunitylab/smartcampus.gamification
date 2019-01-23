@@ -25,18 +25,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import eu.trentorise.game.api.rest.AuthorizationInterceptor;
-import eu.trentorise.game.service.DefaultIdentityLookup;
-import eu.trentorise.game.service.IdentityLookupService;
 
 @Configuration
 @EnableWebSecurity
 @Profile({"no-sec", "default"})
 public class NoSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Bean
-    public IdentityLookupService identityLookup() {
-        return new DefaultIdentityLookup();
-    }
 
     @Bean
     public HandlerInterceptor authInterceptor() {

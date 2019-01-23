@@ -16,6 +16,7 @@ package eu.trentorise.game.config;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,7 +24,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.servlet.HandlerInterceptor;
 
+import eu.trentorise.game.api.rest.AuthorizationInterceptor;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.AuthUser;
 import eu.trentorise.game.sec.UsersProvider;
@@ -39,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UsersProvider usersProvider;
     
     @Autowired
-	CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -49,6 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .roles(user.getRole());
             LogHub.info(null, logger, "Loaded auth user {}", user.getUsername());
         }
+    }
+
+    @Bean
+    public HandlerInterceptor authInterceptor() {
+        return new AuthorizationInterceptor();
     }
 
     @Override

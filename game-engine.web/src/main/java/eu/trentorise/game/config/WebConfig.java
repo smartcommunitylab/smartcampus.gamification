@@ -14,8 +14,12 @@
 
 package eu.trentorise.game.config;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -38,6 +42,12 @@ public class WebConfig implements WebMvcConfigurer {
 	private static final String CONSOLE_URL_MAPPING = "consoleweb";
 	private static final String CONSOLE_LOGIN_URL_MAPPING = "login";
 
+    @Autowired
+    private HandlerInterceptor authInterceptor;
+
+    @Autowired
+    private Environment env;
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler(String.format("/%s/**", CONSOLE_URL_MAPPING))
@@ -52,20 +62,21 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addViewController(String.format("/%s/", CONSOLE_LOGIN_URL_MAPPING)).setViewName("forward:login.html");
 	}
 
-	// @Bean
-	// public HandlerInterceptor platformTokenInterceptor() {
-	// return new AACAuthenticationInterceptor();
-	// }
-
-	@Bean
-	public HandlerInterceptor platformAuthInterceptor() {
-		return new PlatformAuthorizationInterceptor();
-	}
-
+	 @Bean
+     public HandlerInterceptor platformInterceptor() {
+     return new PlatformAuthorizationInterceptor();
+     }
+	
 	public void addInterceptors(InterceptorRegistry registry) {
-		// registry.addInterceptor(platformTokenInterceptor()).addPathPatterns("/api/**");
-		registry.addInterceptor(platformAuthInterceptor()).addPathPatterns("/api/**");
-
-	}
+        String[] paths = null;
+        if (Arrays.stream(env.getActiveProfiles())
+                .anyMatch(profile -> profile.equals("platform"))) {
+            paths = new String[] {"/api/**"};
+        } else {
+            paths = new String[] {"/gengine/**", "/console/**", "/model/**", "/data/**", "/exec/**",
+                    "/notification/**"};
+        }
+        registry.addInterceptor(authInterceptor).addPathPatterns(paths);
+    }
 
 }

@@ -78,7 +78,7 @@ public class MainController {
     @ApiOperation(value = "Execute an action", notes = "Execute an action in a game")
     public void executeAction(@RequestBody ExecutionDataDTO data,
             HttpServletResponse res) {
-        Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
+        Game game = gameSrv.loadGameDefinitionById(data.getGameId());
         if (game != null && game.isTerminated()) {
             try {
                 res.sendError(403, String.format("game %s is expired", game.getId()));

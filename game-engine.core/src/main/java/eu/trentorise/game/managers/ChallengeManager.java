@@ -61,6 +61,10 @@ public class ChallengeManager {
     private ArchiveManager archiveSrv;
 
     public List<String> conditionCheck(GroupChallenge groupChallenge) {
+        if (groupChallenge.getChallengeModel()
+                .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE)) { // check if I need
+                                                                              // this behavior in
+                                                                              // best performance
         List<Attendee> attendees = groupChallenge.getAttendees();
         List<String> playerIds = attendees.stream().map(attendee -> attendee.getPlayerId())
                 .collect(Collectors.toList());
@@ -70,6 +74,7 @@ public class ChallengeManager {
                         .filter(state -> state != null).collect(Collectors.toList());
 
         groupChallenge = groupChallenge.update(playerStates);
+        }
         return groupChallenge.winners().stream().map(winner -> winner.getPlayerId())
                 .collect(Collectors.toList());
     }

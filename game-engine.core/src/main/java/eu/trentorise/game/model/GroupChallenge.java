@@ -72,7 +72,28 @@ public class GroupChallenge {
     }
 
 
+    public GroupChallenge update(PlayerState attendeeState, long executionMoment) {
+        double score = challengeScore(attendeeState, challengePointConcept, executionMoment);
+        double totalOld = attendees.stream().mapToDouble(a -> a.getChallengeScore()).sum();
+        double howMuchToWin = challengeTarget - totalOld;
+        Optional<Attendee> player = attendees.stream()
+                .filter(a -> attendeeState.getPlayerId().equals(a.getPlayerId())).findFirst();
 
+        player.ifPresent(a -> {
+            double playerOldScore = a.getChallengeScore();
+            System.out.println(String.format("MY OLD SCORE %s", playerOldScore));
+            double lastGainedScore = score - playerOldScore;
+            System.out.println(String.format("LAST GAINED SCORE %s", lastGainedScore));
+            System.out.println(String.format("HOW MUCH TO WIN %s", howMuchToWin));
+            if (lastGainedScore > howMuchToWin) {
+                lastGainedScore = howMuchToWin;
+                System.out.println(String.format("TO MUCH %s", lastGainedScore));
+            }
+            a.setChallengeScore(playerOldScore + lastGainedScore);
+        });
+
+        return this;
+    }
 
     public GroupChallenge update(List<PlayerState> attendeeStates, long executionMoment) {
         attendees.forEach(attendee -> {
@@ -146,14 +167,16 @@ public class GroupChallenge {
             List<PlayerState> attendeeStates, long executionMoment) {
         Optional<PlayerState> playerState = attendeeStates.stream().filter(state -> state.getPlayerId().equals(playerId)).findFirst();
         
-        return playerState.map(state -> {
-            PointConcept challengePointConceptState =
-                    state.pointConcept(pointConcept.getName());
-            return challengePointConceptState.getPeriodScore(
-                    pointConcept.getPeriod(), executionMoment);
-        }).orElseThrow(() -> new IllegalArgumentException(
+        return playerState.map(state -> challengeScore(state, pointConcept, executionMoment))
+                .orElseThrow(() -> new IllegalArgumentException(
                 String.format("attendeeStates doesn't contain player %s", playerId)));
 
+    }
+
+    private double challengeScore(PlayerState state, PointConceptRef pointConcept,
+            long executionMoment) {
+        PointConcept challengePointConceptState = state.pointConcept(pointConcept.getName());
+        return challengePointConceptState.getPeriodScore(pointConcept.getPeriod(), executionMoment);
     }
 
     private long instantInChallenge(Date date) {

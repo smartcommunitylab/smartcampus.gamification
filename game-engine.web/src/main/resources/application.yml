@@ -4,15 +4,15 @@ security:
       preferTokenInfo: false
       userInfoUri: http://localhost:8080/aac/basicprofile/me
     client:
-      clientId: 8f5d78cf-56b6-4217-b3f0-bdc126a99258
-      clientSecret: 2bb738cc-718b-44d4-aace-5d62680971f2
+      clientId: 
+      clientSecret: 
       userAuthorizationUri: http://localhost:8080/aac/eauth/authorize
       authenticationScheme: header
       tokenName: oauth_token
       scope: profile.basicprofile.me, user.roles.me
       accessTokenUri: http://localhost:8080/aac/oauth/token
       clientAuthenticationScheme: form  
-      preEstablishedRedirectUri: http://localhost:6060/gamification/login/aac
+      preEstablishedRedirectUri: http://localhost:18000/gamification/login/aac
       useCurrentUri: false   
 
 oauth:
@@ -26,6 +26,10 @@ management:
   security.enabled: false
   
 server:
-    port: 6060
+    port: 18000
     contextPath: /gamification
-    singeLogoutUrl: http://localhost:6060/gamification/singleLogout
+    singeLogoutUrl: http://localhost:18000/gamification/singleLogout
+    
+spring:
+  main:
+    allow-bean-definition-overriding: true

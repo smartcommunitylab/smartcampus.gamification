@@ -35,6 +35,7 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PlayerState;
@@ -49,15 +50,13 @@ import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class RoveretoGameTest {
 
     private static final String GAME = "coreGameTest";
     private static final String ACTION = "save_itinerary";
     private static final String DOMAIN = "my-domain";
-
-    private static final long WAIT_EXEC = 15 * 1000;
 
     @Autowired
     private GameManager gameManager;
@@ -83,7 +82,6 @@ public class RoveretoGameTest {
     public void simpleScenario() throws InterruptedException {
         simpleEnv();
         launchTaskExecution();
-        Thread.sleep(WAIT_EXEC);
         analyzeSimple();
 
     }
@@ -92,7 +90,6 @@ public class RoveretoGameTest {
     public void sameResultScenario() throws InterruptedException {
         sameResultEnv();
         launchTaskExecution();
-        Thread.sleep(WAIT_EXEC);
         analyzeSameResult();
     }
 
@@ -100,7 +97,6 @@ public class RoveretoGameTest {
     public void sameResultLastElementScenario() throws InterruptedException {
         sameResultLastElementEnv();
         launchTaskExecution();
-        Thread.sleep(WAIT_EXEC);
         analyzeSameResultLastResult();
     }
 

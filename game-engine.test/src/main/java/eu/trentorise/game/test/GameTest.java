@@ -63,7 +63,7 @@ import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.Workflow;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public abstract class GameTest {
 

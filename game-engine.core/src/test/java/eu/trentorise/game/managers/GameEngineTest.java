@@ -20,8 +20,6 @@ import static org.hamcrest.Matchers.greaterThan;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -41,14 +39,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieContainer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -57,8 +48,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.TaskSchedule;
-import eu.trentorise.game.managers.GameEngineTest.TestConfiguration;
-import eu.trentorise.game.managers.drools.KieContainerFactory;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.Level;
@@ -68,10 +58,8 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
-import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
-import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
@@ -79,17 +67,8 @@ import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 
-/**
- * 
- * Actually execution tests use Thread.sleep to wait QueueGameWorkflow async conclusion. This MUST
- * to be fixed, because test result can be machine dependent.
- * 
- * 
- * @author mirko perillo
- * 
- */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, TestConfiguration.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class GameEngineTest {
 
@@ -115,7 +94,6 @@ public class GameEngineTest {
     private static final String OWNER = "chewbecca";
     private static final String DOMAIN = "my-domain";
 
-    private static final long WAIT_EXEC = 15 * 1000;
 
     @Before
     public void cleanDB() {
@@ -230,7 +208,6 @@ public class GameEngineTest {
         params.put("park", "MANIFATTURA");
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        Thread.sleep(WAIT_EXEC);
         // expected 70 greenPoints and earned 10-point 50-point green badges
         boolean found = false;
         for (GameConcept gc : p.getState()) {
@@ -277,7 +254,6 @@ public class GameEngineTest {
                 .toInstant().toEpochMilli();
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 oneHourAgo, null);
-        Thread.sleep(WAIT_EXEC);
 
         PointConcept loaded = (PointConcept) p.getState().stream().findFirst().get();
 
@@ -300,7 +276,6 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         // expected 60 greenPoints and earned 10-point 50-point green badges
-        Thread.sleep(WAIT_EXEC);
         boolean found = false;
         for (GameConcept gc : p.getState()) {
             if (gc instanceof PointConcept && gc.getName().equals("green leaves")) {
@@ -476,8 +451,6 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
-        Thread.sleep(WAIT_EXEC);
-
         Assert.assertEquals(1, p.getLevels().size());
         Assert.assertEquals("adept", p.getLevels().get(0).getLevelValue());
 
@@ -513,8 +486,6 @@ public class GameEngineTest {
         PlayerState p = playerSrv.loadState(GAME, "player", true, false);
         p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-
-        Thread.sleep(WAIT_EXEC);
 
         Assert.assertEquals(2, p.getLevels().size());
         Assert.assertEquals("adept", p.getLevels().get(0).getLevelValue());
@@ -613,7 +584,6 @@ public class GameEngineTest {
                 Arrays.asList(new PlayerLevel(levelDefinition, 200d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        Thread.sleep(WAIT_EXEC);
         PointConcept green = (PointConcept) p.getState().stream()
                 .filter(gc -> gc.getName().equals("green")).findFirst().get();
         Assert.assertEquals(10d, green.getScore(), 0);
@@ -644,125 +614,8 @@ public class GameEngineTest {
                 Arrays.asList(new PlayerLevel(levelDefinition, 50d)));
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
-        Thread.sleep(WAIT_EXEC);
         PointConcept green = (PointConcept) p.getState().stream()
                 .filter(gc -> gc.getName().equals("green")).findFirst().get();
         Assert.assertEquals(0d, green.getScore(), 0);
-    }
-
-
-
-    @Configuration
-    static class TestConfiguration {
-
-        @Bean
-        @Primary
-        public KieContainerFactory kieContainerFactory() {
-            return new KieContainerFactory() {
-
-                private KieServices kieServices = KieServices.Factory.get();
-
-                @Autowired
-                private GameManager gameSrv;
-
-                @Override
-                public KieContainer purgeContainer(String gameId) {
-                    return null;
-                }
-
-                // don't cache anything
-                @Override
-                public KieContainer getContainer(String gameId) {
-
-                    KieFileSystem kfs = kieServices.newKieFileSystem();
-                    RuleLoader ruleLoader = new RuleLoader(gameId);
-                    // load core.drl
-
-                    Resource coreRes;
-                    try {
-                        coreRes = ruleLoader.load("classpath://rules/core.drl");
-                        kfs.write(coreRes);
-                        // load rules for group challenges rewards
-                        Resource groupChallengesRewardRules =
-                                ruleLoader.load("classpath://rules/groupChallengeReward.drl");
-                        kfs.write(groupChallengesRewardRules);
-                    } catch (MalformedURLException e) {
-                    }
-
-                    // load rules
-
-                    Game game = gameSrv.loadGameDefinitionById(gameId);
-
-                    if (game != null && game.getRules() != null) {
-                        for (String rule : game.getRules()) {
-                            Resource r1;
-                            try {
-                                r1 = ruleLoader.load(rule);
-                                // fix to not load constant file
-                                if (r1 != null) {
-                                    kfs.write(r1);
-                                }
-                            } catch (MalformedURLException e) {
-                            } catch (RuntimeException e) {
-                            }
-                        }
-                    }
-                    kieServices.newKieBuilder(kfs).buildAll();
-                    return kieServices
-                            .newKieContainer(kieServices.getRepository().getDefaultReleaseId());
-                }
-
-                class RuleLoader {
-                    private String gameId;
-
-                    public RuleLoader(String gameId) {
-                        this.gameId = gameId;
-                    }
-
-                    public boolean isConstantsRule(String ruleUrl) {
-                        boolean classpathCheck = ruleUrl.startsWith(ClasspathRule.URL_PROTOCOL)
-                                && ruleUrl.contains("/constants");
-                        boolean fsCheck = ruleUrl.startsWith(FSRule.URL_PROTOCOL)
-                                && ruleUrl.contains("/constants");
-                        boolean dbCheck = ruleUrl.startsWith(DBRule.URL_PROTOCOL);
-                        if (dbCheck) {
-                            Rule r = gameSrv.loadRule(gameId, ruleUrl);
-                            dbCheck = r != null && r.getName() != null
-                                    && r.getName().equals("constants");
-                        }
-
-                        return classpathCheck || fsCheck || dbCheck;
-                    }
-
-                    public Resource load(String ruleUrl) throws MalformedURLException {
-                        Resource res = null;
-                        String url = null;
-                        if (isConstantsRule(ruleUrl)) {
-                            return null;
-                        }
-                        if (ruleUrl.startsWith(ClasspathRule.URL_PROTOCOL)) {
-                            url = ruleUrl.substring(ClasspathRule.URL_PROTOCOL.length());
-                            res = kieServices.getResources().newClassPathResource(url);
-                        } else if (ruleUrl.startsWith(FSRule.URL_PROTOCOL)) {
-                            url = ruleUrl.substring(FSRule.URL_PROTOCOL.length());
-                            res = kieServices.getResources().newFileSystemResource(url);
-                        } else if (ruleUrl.startsWith(DBRule.URL_PROTOCOL)) {
-                            Rule r = gameSrv.loadRule(gameId, ruleUrl);
-                            if (r != null) {
-                                res = kieServices.getResources().newReaderResource(
-                                        new StringReader(((DBRule) r).getContent()));
-                                res.setSourcePath("rules/" + r.getGameId() + "/"
-                                        + ((DBRule) r).getId() + ".drl");
-                            } else {
-                            }
-                        } else {
-                            throw new MalformedURLException("resource URL not supported");
-                        }
-                        return res;
-                    }
-                }
-            };
-        }
-
     }
 }

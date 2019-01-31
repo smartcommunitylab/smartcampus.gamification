@@ -73,25 +73,24 @@ public class GroupChallenge {
 
 
     public GroupChallenge update(PlayerState attendeeState, long executionMoment) {
-        double score = challengeScore(attendeeState, challengePointConcept, executionMoment);
-        double totalOld = attendees.stream().mapToDouble(a -> a.getChallengeScore()).sum();
-        double howMuchToWin = challengeTarget - totalOld;
         Optional<Attendee> player = attendees.stream()
                 .filter(a -> attendeeState.getPlayerId().equals(a.getPlayerId())).findFirst();
-
         player.ifPresent(a -> {
-            double playerOldScore = a.getChallengeScore();
-            System.out.println(String.format("MY OLD SCORE %s", playerOldScore));
-            double lastGainedScore = score - playerOldScore;
-            System.out.println(String.format("LAST GAINED SCORE %s", lastGainedScore));
-            System.out.println(String.format("HOW MUCH TO WIN %s", howMuchToWin));
-            if (lastGainedScore > howMuchToWin) {
-                lastGainedScore = howMuchToWin;
-                System.out.println(String.format("TO MUCH %s", lastGainedScore));
+            double score = challengeScore(attendeeState, challengePointConcept, executionMoment);
+            double scoreToAssign = score;
+            double howMuchToWin = challengeTarget;
+            if (MODEL_NAME_COOPERATIVE.equalsIgnoreCase(challengeModel)) {
+                double othersScore = attendees.stream().filter(
+                        attendee -> !attendee.getPlayerId().equals(attendeeState.getPlayerId()))
+                        .mapToDouble(attendee -> attendee.getChallengeScore()).sum();
+                howMuchToWin = challengeTarget - othersScore;
             }
-            a.setChallengeScore(playerOldScore + lastGainedScore);
-        });
+            if (scoreToAssign > howMuchToWin) {
+                scoreToAssign = howMuchToWin;
+            }
+            a.setChallengeScore(scoreToAssign);
 
+        });
         return this;
     }
 

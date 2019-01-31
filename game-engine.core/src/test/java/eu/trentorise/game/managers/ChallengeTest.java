@@ -875,6 +875,200 @@ public class ChallengeTest {
     }
 
 
+    @Test
+    public void update_score_in_competitive_time() {
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME);
+        Attendee player = new Attendee();
+        player.setPlayerId("proposer");
+        player.setRole(Role.PROPOSER);
+        groupChallenge.getAttendees().add(player);
+        Attendee guest = new Attendee();
+        guest.setPlayerId("guest");
+        guest.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(guest);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", "weekly"));
+        groupChallenge.setChallengeTarget(22d);
+        
+        PointConcept proposerGreenLeaves = new PointConcept("green leaves");
+        proposerGreenLeaves.addPeriod("weekly", LocalDate.now().minusDays(2).toDate(), 604800000);
+        proposerGreenLeaves.setScore(5d);
+        PlayerState proposer = new PlayerState();
+        proposer.setPlayerId("proposer");
+        proposer.getState().add(proposerGreenLeaves);
+
+        groupChallenge = groupChallenge.update(proposer, System.currentTimeMillis());
+        Attendee prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(5d));
+        
+        proposerGreenLeaves.setScore(25d);
+        groupChallenge = groupChallenge.update(proposer, System.currentTimeMillis());
+        prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(22d));
+    }
+
+    @Test
+    public void update_score_in_competitive_time_2_players_scenario() {
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME);
+        Attendee player = new Attendee();
+        player.setPlayerId("proposer");
+        player.setRole(Role.PROPOSER);
+        groupChallenge.getAttendees().add(player);
+        Attendee guest = new Attendee();
+        guest.setPlayerId("guest");
+        guest.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(guest);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", "weekly"));
+        groupChallenge.setChallengeTarget(22d);
+
+        PointConcept proposerGreenLeaves = new PointConcept("green leaves");
+        proposerGreenLeaves.addPeriod("weekly", LocalDate.now().minusDays(2).toDate(), 604800000);
+        proposerGreenLeaves.setScore(5d);
+        PlayerState proposerState = new PlayerState();
+        proposerState.setPlayerId("proposer");
+        proposerState.getState().add(proposerGreenLeaves);
+
+        groupChallenge = groupChallenge.update(proposerState, System.currentTimeMillis());
+        Attendee prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(5d));
+
+
+
+        PointConcept guestGreenLeaves = new PointConcept("green leaves");
+        guestGreenLeaves.addPeriod("weekly", LocalDate.now().minusDays(2).toDate(), 604800000);
+        guestGreenLeaves.setScore(10d);
+        PlayerState guestState = new PlayerState();
+        guestState.setPlayerId("guest");
+        guestState.getState().add(guestGreenLeaves);
+
+        groupChallenge = groupChallenge.update(guestState, System.currentTimeMillis());
+        Attendee g = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("guest")).findFirst().get();
+        assertThat(g.getChallengeScore(), is(10d));
+
+        proposerGreenLeaves.setScore(25d);
+        groupChallenge = groupChallenge.update(proposerState, System.currentTimeMillis());
+        prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(22d));
+    }
+
+
+    @Test
+    public void update_score_in_cooperative() {
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COOPERATIVE);
+        Attendee player = new Attendee();
+        player.setPlayerId("proposer");
+        player.setRole(Role.PROPOSER);
+        groupChallenge.getAttendees().add(player);
+        Attendee guest = new Attendee();
+        guest.setPlayerId("guest");
+        guest.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(guest);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", "weekly"));
+        groupChallenge.setChallengeTarget(22d);
+
+        PointConcept proposerGreenLeaves = new PointConcept("green leaves");
+        proposerGreenLeaves.addPeriod("weekly", LocalDate.now().minusDays(2).toDate(), 604800000);
+        proposerGreenLeaves.setScore(22d);
+        PlayerState proposerState = new PlayerState();
+        proposerState.setPlayerId("proposer");
+        proposerState.getState().add(proposerGreenLeaves);
+
+        groupChallenge = groupChallenge.update(proposerState, System.currentTimeMillis());
+        Attendee prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(22d));
+    }
+
+    @Test
+    public void update_score_in_cooperative_with_score_higher_of_challenge_score() {
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COOPERATIVE);
+        Attendee player = new Attendee();
+        player.setPlayerId("proposer");
+        player.setRole(Role.PROPOSER);
+        groupChallenge.getAttendees().add(player);
+        Attendee guest = new Attendee();
+        guest.setPlayerId("guest");
+        guest.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(guest);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", "weekly"));
+        groupChallenge.setChallengeTarget(22d);
+
+        PointConcept proposerGreenLeaves = new PointConcept("green leaves");
+        proposerGreenLeaves.addPeriod("weekly", LocalDate.now().minusDays(2).toDate(), 604800000);
+        proposerGreenLeaves.setScore(25d);
+        PlayerState proposerState = new PlayerState();
+        proposerState.setPlayerId("proposer");
+        proposerState.getState().add(proposerGreenLeaves);
+
+        groupChallenge = groupChallenge.update(proposerState, System.currentTimeMillis());
+        Attendee prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(22d));
+    }
+
+
+    @Test
+    public void update_score_in_cooperative_2_players_scenario() {
+        GroupChallenge groupChallenge = new GroupChallenge();
+        groupChallenge.setInstanceName("groupChallengeInstance");
+        groupChallenge.setChallengeModel(GroupChallenge.MODEL_NAME_COOPERATIVE);
+        Attendee player = new Attendee();
+        player.setPlayerId("proposer");
+        player.setRole(Role.PROPOSER);
+        groupChallenge.getAttendees().add(player);
+        Attendee guest = new Attendee();
+        guest.setPlayerId("guest");
+        guest.setRole(Role.GUEST);
+        groupChallenge.getAttendees().add(guest);
+        groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", "weekly"));
+        groupChallenge.setChallengeTarget(22d);
+
+        PointConcept proposerGreenLeaves = new PointConcept("green leaves");
+        proposerGreenLeaves.addPeriod("weekly", LocalDate.now().minusDays(2).toDate(), 604800000);
+        proposerGreenLeaves.setScore(5d);
+        PlayerState proposerState = new PlayerState();
+        proposerState.setPlayerId("proposer");
+        proposerState.getState().add(proposerGreenLeaves);
+
+        groupChallenge = groupChallenge.update(proposerState, System.currentTimeMillis());
+        Attendee prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(5d));
+
+
+
+        PointConcept guestGreenLeaves = new PointConcept("green leaves");
+        guestGreenLeaves.addPeriod("weekly", LocalDate.now().minusDays(2).toDate(), 604800000);
+        guestGreenLeaves.setScore(10d);
+        PlayerState guestState = new PlayerState();
+        guestState.setPlayerId("guest");
+        guestState.getState().add(guestGreenLeaves);
+
+        groupChallenge = groupChallenge.update(guestState, System.currentTimeMillis());
+        Attendee g = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("guest")).findFirst().get();
+        assertThat(g.getChallengeScore(), is(10d));
+
+        proposerGreenLeaves.setScore(25d);
+        groupChallenge = groupChallenge.update(proposerState, System.currentTimeMillis());
+        prop = groupChallenge.getAttendees().stream()
+                .filter(a -> a.getPlayerId().equals("proposer")).findFirst().get();
+        assertThat(prop.getChallengeScore(), is(12d));
+    }
+
+
 
     private Game defineGame() {
 

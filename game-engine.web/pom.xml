@@ -16,7 +16,13 @@
 	</parent>
 
 	<dependencies>
-
+<!-- 
+  #######
+  #	
+  #	DON'T INTRODUCE spring-boot-devtools DEPENDENCY. IT BREAKS HOW DROOLS WORKS 
+  #
+  #######
+ -->
 		<dependency>
 			<groupId>it.smartcommunitylab.gamification</groupId>
 			<artifactId>game-engine.core</artifactId>
@@ -89,11 +95,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

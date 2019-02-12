@@ -414,8 +414,13 @@ public class ChallengeManager {
         sendCanceledNotifications(canceled);
         canceled.updateState(ChallengeState.CANCELED);
         archiveSrv.moveToArchive(gameId, canceled);
+        final Game game = gameSrv.loadGameDefinitionById(gameId);
         LogHub.info(gameId, logger, String.format(
                 "Invitation to challenge %s canceled by player %s", challengeName, playerId));
+        final String executionId = UUID.randomUUID().toString();
+        final long executionTime = System.currentTimeMillis();
+        StatsLogger.logChallengeInvitationCanceled(game.getDomain(), gameId, playerId, executionId,
+                executionTime, executionTime, challengeName, canceled.getChallengeModel());
         return canceled;
     }
 

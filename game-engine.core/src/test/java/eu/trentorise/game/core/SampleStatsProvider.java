@@ -7,6 +7,7 @@ import static eu.trentorise.game.core.StatsLogger.logChallengeAssignment;
 import static eu.trentorise.game.core.StatsLogger.logChallengeCompleted;
 import static eu.trentorise.game.core.StatsLogger.logChallengeFailed;
 import static eu.trentorise.game.core.StatsLogger.logChallengeInvitationAccepted;
+import static eu.trentorise.game.core.StatsLogger.logChallengeInvitationCanceled;
 import static eu.trentorise.game.core.StatsLogger.logChallengeInvitationRefused;
 import static eu.trentorise.game.core.StatsLogger.logChallengeProposed;
 import static eu.trentorise.game.core.StatsLogger.logChallengeRefused;
@@ -31,6 +32,12 @@ import eu.trentorise.game.model.PointConcept;
 public class SampleStatsProvider {
 
     public static void main(String[] args) {
+        /*
+         * To produce log data change OFF to INFO level configuration log4j.logger.stats in
+         * src/test/resources/log4j.properties
+         * 
+         */
+
         final String domain = null;
         final String gameId = "GAME";
         long executionMoment = dateAsMillis("2018-11-22T11:00:22");
@@ -84,6 +91,9 @@ public class SampleStatsProvider {
         logUserCreation(domain, gameId, "222", uuid(), timestamp);
 
         logChoiceActived(domain, gameId, "45666", uuid(), timestamp, timestamp, "myActivatedModel");
+        
+        logChallengeInvitationCanceled(domain, gameId, "100", uuid(), timestamp, timestamp,
+                "challenge name", "groupCompetitiveTime");
     }
 
 

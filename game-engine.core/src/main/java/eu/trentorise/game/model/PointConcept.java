@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -136,16 +137,23 @@ public class PointConcept extends GameConcept {
 
 	public void addPeriod(String identifier, Date start, long period) {
 		PeriodInternal p = new PeriodInternal(identifier, start, period);
-		if (!periods.containsKey(identifier)) {
-			periods.put(identifier, p);
-		}
+		storePeriod(identifier, p);
 	}
+
+    private void storePeriod(String identifier, PeriodInternal period) {
+        if (!periods.containsKey(identifier)) {
+			periods.put(identifier, period);
+		}
+    }
+
+    public void addPeriod(String identifier, Date start, Date end, long period) {
+        PeriodInternal p = new PeriodInternal(identifier, start, end, period);
+        storePeriod(identifier, p);
+    }
 
 	public void addPeriod(String identifier, Date start, long period, int capacity) {
 		PeriodInternal p = new PeriodInternal(identifier, start, period, capacity);
-		if (!periods.containsKey(identifier)) {
-			periods.put(identifier, p);
-		}
+		storePeriod(identifier, p);
 	}
 
 	public void deletePeriod(String identifier) {
@@ -247,6 +255,7 @@ public class PointConcept extends GameConcept {
 
 	private class PeriodInternal implements Period {
 		private Date start;
+        private Optional<Date> end;
 		private long period;
 		private String identifier;
 		private int capacity;
@@ -267,16 +276,27 @@ public class PointConcept extends GameConcept {
 
 		public PeriodInternal(String identifier, Date start, long period) {
 			this.start = start;
+            this.end = Optional.empty();
 			this.period = period;
 			this.identifier = identifier;
 		}
 
 		public PeriodInternal(String identifier, Date start, long period, int capacity) {
-			this.start = start;
-			this.period = period;
-			this.identifier = identifier;
+            this(identifier, start, period);
 			this.capacity = capacity;
 		}
+
+        public PeriodInternal(String identifier, Date start, Date end, long period) {
+            this.start = start;
+            this.end = Optional.ofNullable(end);
+            this.period = period;
+            this.identifier = identifier;
+        }
+
+        public PeriodInternal(String identifier, Date start, Date end, long period, int capacity) {
+            this(identifier, start, end, period);
+            this.capacity = capacity;
+        }
 
 		public PeriodInternal(Map<String, Object> jsonProps) {
 			if (jsonProps != null) {
@@ -284,6 +304,10 @@ public class PointConcept extends GameConcept {
 				if (startField != null) {
 					start = new Date((long) startField);
 				}
+
+                Object endField = jsonProps.get("end");
+                end = Optional.ofNullable(endField == null ? null : new Date((long) endField));
+
 				Object periodField = jsonProps.get("period");
 				if (periodField != null) {
 					if (periodField instanceof Long) {
@@ -345,8 +369,13 @@ public class PointConcept extends GameConcept {
 			if (start.after(momentDate.toDate())) {
 				throw new IllegalArgumentException("moment is previous than startDate of period");
 			}
-
 			PeriodInstanceImpl instance = null;
+
+            if (end.isPresent() && end.get().before(momentDate.toDate())) {
+                instance =
+                        new PeriodInstanceImpl(end.get().getTime(), -1);
+                instance.setIndex(-1);
+            } else {
 			LocalDateTime key = null;
 			LocalDateTime lowerBoundDate = instances.floorKey(momentDate);
 			if (lowerBoundDate == null) {
@@ -355,8 +384,9 @@ public class PointConcept extends GameConcept {
 			org.joda.time.Period jodaPeriod = new org.joda.time.Period(period);
 			Interval interval = null;
 			do {
+                DateTime endInterval = lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime();
 				interval = new Interval(lowerBoundDate.toDateTime(),
-						lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime());
+                                endInterval);
 				lowerBoundDate = interval.getEnd().toLocalDateTime();
 			} while (!interval.contains(moment));
 
@@ -370,7 +400,7 @@ public class PointConcept extends GameConcept {
 					instances.pollFirstEntry();
 				}
 			}
-
+            }
 			return instance;
 		}
 
@@ -428,6 +458,14 @@ public class PointConcept extends GameConcept {
 		public int setCapacity(int capacity) {
 			return this.capacity = capacity;
 		}
+
+        public Optional<Date> getEnd() {
+            return end;
+        }
+
+        public void setEnd(Optional<Date> end) {
+            this.end = end;
+        }
 
 	}
 

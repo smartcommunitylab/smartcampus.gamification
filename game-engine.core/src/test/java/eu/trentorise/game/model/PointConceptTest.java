@@ -1,5 +1,8 @@
 package eu.trentorise.game.model;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,6 +70,90 @@ public class PointConceptTest {
         pc.setScore(25d);
 
         Assert.assertEquals(new Double(25), pc.getPeriodCurrentScore(0));
+    }
+
+    @Test
+    public void retrieve_first_instance_score_in_a_finite_period() {
+        PointConcept pc = new PointConcept("testPoint");
+        org.joda.time.LocalDateTime start1 = org.joda.time.LocalDateTime.now();
+        org.joda.time.LocalDateTime end = start1.plusDays(2);
+        pc.addPeriod("period1", start1.toDate(), end.toDate(), DAY_MILLISEC);
+
+        long firstHourFromStart = start1.plusHours(1).toDate().getTime();
+        pc.setExecutionMoment(firstHourFromStart);
+        pc.setScore(2.0);
+        assertThat(pc.getPeriodScore("period1", 0), is(2.0));
+    }
+
+
+    @Test
+    public void retrieve_second_instance_score_in_a_finite_period() {
+        PointConcept pc = new PointConcept("testPoint");
+        org.joda.time.LocalDateTime start1 = org.joda.time.LocalDateTime.now().withTime(0, 0, 0, 0);
+        org.joda.time.LocalDateTime end = start1.plusDays(2);
+        pc.addPeriod("period1", start1.toDate(), end.toDate(), DAY_MILLISEC);
+
+        long firstHourFromStart = start1.plusHours(1).toDate().getTime();
+        pc.setExecutionMoment(firstHourFromStart);
+        pc.setScore(2.0);
+        
+        long tomorrowAt8 = start1.plusDays(1).plusHours(8).toDate().getTime();
+        pc.setExecutionMoment(tomorrowAt8);
+        pc.setScore(5.0);
+
+        assertThat(pc.getPeriodScore("period1", 0), is(2.0));
+        assertThat(pc.getPeriodScore("period1", 1), is(3.0));
+    }
+
+    @Test
+    public void try_a_period_after_the_end() {
+        PointConcept pc = new PointConcept("testPoint");
+        org.joda.time.LocalDateTime startToday = org.joda.time.LocalDateTime.now().withTime(0, 0, 0, 0);
+        org.joda.time.LocalDateTime endTomorrow = startToday.plusDays(1);
+        pc.addPeriod("period1", startToday.toDate(), endTomorrow.toDate(), DAY_MILLISEC);
+
+        long dayAfterTomorrowAt2 = startToday.plusDays(2).plusHours(2).toDate().getTime();
+        pc.setExecutionMoment(dayAfterTomorrowAt2);
+        pc.setScore(2.0);
+
+        assertThat(pc.getPeriodScore("period1", 0), is(0.0));
+        assertThat(pc.getPeriodScore("period1", 1), is(0.0));
+        assertThat(pc.getPeriodScore("period1", 2), is(0.0));
+    }
+
+    @Test
+    public void period_duration_not_cover_exactly_period_range() {
+        PointConcept pc = new PointConcept("testPoint");
+        org.joda.time.LocalDateTime startToday =
+                org.joda.time.LocalDateTime.now().withTime(0, 0, 0, 0);
+        org.joda.time.LocalDateTime endDayAfterTomorrow = startToday.plusDays(2).minusHours(5);
+        pc.addPeriod("period1", startToday.toDate(), endDayAfterTomorrow.toDate(), DAY_MILLISEC);
+
+        long todayAt1 = startToday.plusHours(1).toDate().getTime();
+        pc.setExecutionMoment(todayAt1);
+        pc.setScore(1.0);
+        long todayAt8 = startToday.plusHours(8).toDate().getTime();
+        pc.setExecutionMoment(todayAt8);
+        pc.setScore(4.0);
+        long tomorrowAt7 = startToday.plusDays(1).plusHours(7).toDate().getTime();
+        pc.setExecutionMoment(tomorrowAt7);
+        pc.setScore(10.0);
+        
+        long dayAfterTomorrowAt10 = startToday.plusDays(2).plusHours(10).toDate().getTime();
+        pc.setExecutionMoment(dayAfterTomorrowAt10);
+        pc.setScore(12.0);
+        
+        long dayAfterTomorrowAt23 = startToday.plusDays(2).plusHours(23).toDate().getTime();
+        pc.setExecutionMoment(dayAfterTomorrowAt23);
+        pc.setScore(15.0);
+        
+        assertThat(pc.getPeriodScore("period1", 0), is(4.0));
+        assertThat(pc.getPeriodScore("period1", 1), is(6.0));
+        assertThat(pc.getPeriodScore("period1", 2), is(2.0));
+        assertThat(pc.getPeriodScore("period1", 3), is(0.0));
+        
+
+
     }
 
     @Test

@@ -126,7 +126,7 @@ public class PointConceptTest {
         PointConcept pc = new PointConcept("testPoint");
         org.joda.time.LocalDateTime startToday =
                 org.joda.time.LocalDateTime.now().withTime(0, 0, 0, 0);
-        org.joda.time.LocalDateTime endDayAfterTomorrow = startToday.plusDays(2).minusHours(5);
+        org.joda.time.LocalDateTime endDayAfterTomorrow = startToday.plusDays(3).minusHours(5);
         pc.addPeriod("period1", startToday.toDate(), endDayAfterTomorrow.toDate(), DAY_MILLISEC);
 
         long todayAt1 = startToday.plusHours(1).toDate().getTime();
@@ -152,6 +152,12 @@ public class PointConceptTest {
         assertThat(pc.getPeriodScore("period1", 2), is(2.0));
         assertThat(pc.getPeriodScore("period1", 3), is(0.0));
         
+        PeriodInstance instance0 = pc.getPeriodInstance("period1", 0);
+        PeriodInstance instance1 = pc.getPeriodInstance("period1", 1);
+        PeriodInstance instance2 = pc.getPeriodInstance("period1", 2);
+        PeriodInstance instance3 = pc.getPeriodInstance("period1", 3);
+        assertThat(new Date(instance2.getEnd()), is(pc.getPeriod("period1").getEnd().get()));
+
 
 
     }

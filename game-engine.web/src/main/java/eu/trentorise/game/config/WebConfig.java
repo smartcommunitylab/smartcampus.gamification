@@ -26,6 +26,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+
 /*
  * extend WebMvcConfigurerAdapter and not use annotation @EnableMvc to permit correct static
  * resources publishing and restController functionalities
@@ -69,6 +72,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
         argumentResolvers.add(pageResolver);
         super.addArgumentResolvers(argumentResolvers);
+    }
+
+    @Autowired
+    public void configureJackson(ObjectMapper jackson2ObjectMapper) {
+        jackson2ObjectMapper.registerModule(new Jdk8Module());
     }
 
 }

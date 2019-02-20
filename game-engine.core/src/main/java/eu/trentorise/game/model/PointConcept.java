@@ -236,6 +236,8 @@ public class PointConcept extends GameConcept {
 	public interface Period {
 		public Date getStart();
 
+        public Optional<Date> getEnd();
+
 		public long getPeriod();
 
 		public String getIdentifier();
@@ -383,12 +385,17 @@ public class PointConcept extends GameConcept {
 			}
 			org.joda.time.Period jodaPeriod = new org.joda.time.Period(period);
 			Interval interval = null;
+                boolean breakIteration = false;
 			do {
                 DateTime endInterval = lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime();
+                    if (end.isPresent() && endInterval.isAfter(end.get().getTime())) {
+                        endInterval = new DateTime(end.get().getTime());
+                        breakIteration = true;
+                    }
 				interval = new Interval(lowerBoundDate.toDateTime(),
                                 endInterval);
 				lowerBoundDate = interval.getEnd().toLocalDateTime();
-			} while (!interval.contains(moment));
+                } while (!interval.contains(moment) && !breakIteration);
 
 			instance = instances.get(interval.getStart().toLocalDateTime());
 			if (instance == null) {
@@ -555,7 +562,7 @@ public class PointConcept extends GameConcept {
 		public String toString() {
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			return String.format("[start: %s, end: %s, score: %s, index: %s]", formatter.format(new Date(start)),
-					formatter.format(new Date(end)), score, index);
+                    end > -1 ? formatter.format(new Date(end)) : "-", score, index);
 		}
 
 		public int getIndex() {

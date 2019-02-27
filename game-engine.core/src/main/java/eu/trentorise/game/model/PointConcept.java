@@ -378,13 +378,15 @@ public class PointConcept extends GameConcept {
                         new PeriodInstanceImpl(end.get().getTime(), -1);
                 instance.setIndex(-1);
             } else {
-			LocalDateTime key = null;
+                LocalDateTime key = null;
+                Interval interval = null;
+                org.joda.time.Period jodaPeriod = null;
+                if (period > 0) {
 			LocalDateTime lowerBoundDate = instances.floorKey(momentDate);
 			if (lowerBoundDate == null) {
 				lowerBoundDate = new LocalDateTime(start.getTime());
 			}
-			org.joda.time.Period jodaPeriod = new org.joda.time.Period(period);
-			Interval interval = null;
+                    jodaPeriod = new org.joda.time.Period(period);
                 boolean breakIteration = false;
 			do {
                 DateTime endInterval = lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime();
@@ -396,11 +398,15 @@ public class PointConcept extends GameConcept {
                                 endInterval);
 				lowerBoundDate = interval.getEnd().toLocalDateTime();
                 } while (!interval.contains(moment) && !breakIteration);
-
+                } else {
+                    interval = new Interval(new DateTime(start.getTime()),
+                            new DateTime(end.get().getTime()));
+                }
 			instance = instances.get(interval.getStart().toLocalDateTime());
 			if (instance == null) {
 				instance = new PeriodInstanceImpl(interval.getStartMillis(), interval.getEndMillis());
-				instance.setIndex(getInstanceIndex(new LocalDateTime(start.getTime()), jodaPeriod, momentDate));
+                    instance.setIndex(period > 0 ? getInstanceIndex(
+                            new LocalDateTime(start.getTime()), jodaPeriod, momentDate) : 0);
 				key = interval.getStart().toLocalDateTime();
 				instances.put(key, instance);
 				if (capacity > 0 && instances.size() > capacity) {

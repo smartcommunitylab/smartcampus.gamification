@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +30,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -46,13 +44,12 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.config.NoSecurityConfig;
 import eu.trentorise.game.managers.ClassificationUtils;
 import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GameStatistics;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Threshold;
-import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.Settings;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;

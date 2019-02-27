@@ -31,6 +31,7 @@
 package it.smartcommunitylab.basic.api;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -59,6 +60,7 @@ public class TeamControllerApiTest {
     private String gameId = "5719e700e4b0bc2cc4677cb3";
     private String domain = "demo-domain";
     private String teamId = "1A";
+    private String playerId = "1A";
     
     @Before
     public void init() {
@@ -87,10 +89,9 @@ public class TeamControllerApiTest {
      */
     @Test
     public void addTeamMemberUsingPUTTest() throws ApiException {
-        String gameId = null;
-        String teamId = null;
-        String playerId = null;
-        List<String> members = null;
+       
+        List<String> members = new ArrayList<String>();
+        members.add("M1");
         api.addTeamMemberUsingPUT(gameId, teamId, playerId, members);
 
         // TODO: test validations

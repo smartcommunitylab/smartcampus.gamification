@@ -129,6 +129,25 @@ public class PointConceptTest {
     }
 
     @Test
+    public void neverending_single_period() {
+        PointConcept pc = new PointConcept("testPoint");
+        org.joda.time.LocalDateTime start1 = org.joda.time.LocalDateTime.now().withTime(0, 0, 0, 0);
+        pc.addPeriod("period1", start1.toDate(), null, -1);
+
+
+        long firstHourFromStart = start1.plusHours(1).toDate().getTime();
+        pc.setExecutionMoment(firstHourFromStart);
+        pc.setScore(2.0);
+
+        long tomorrowAt8 = start1.plusDays(1).plusHours(8).toDate().getTime();
+        pc.setExecutionMoment(tomorrowAt8);
+        pc.setScore(5.0);
+
+        assertThat(pc.getPeriodScore("period1", 0), is(5.0));
+        assertThat(pc.getPeriodScore("period1", 1), is(0.0));
+    }
+
+    @Test
     public void try_a_period_after_the_end() {
         PointConcept pc = new PointConcept("testPoint");
         org.joda.time.LocalDateTime startToday = org.joda.time.LocalDateTime.now().withTime(0, 0, 0, 0);

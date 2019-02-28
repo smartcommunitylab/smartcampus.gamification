@@ -222,15 +222,20 @@ public class PointConcept extends GameConcept {
 	 *         PeriodInstance at that index
 	 */
 	public PeriodInstance getPeriodInstance(String periodIdentifier, int instanceIndex) {
-		PeriodInstance result = null;
-		PeriodInternal p = periods.get(periodIdentifier);
-		if (p != null) {
-			LocalDateTime dateCursor = new LocalDateTime(p.start);
-			dateCursor = dateCursor.withPeriodAdded(new org.joda.time.Period(p.period), instanceIndex);
-			result = getPeriodInstance(periodIdentifier, dateCursor.toDate().getTime());
-		}
+        PeriodInstance result = null;
+        PeriodInternal p = periods.get(periodIdentifier);
+        if (p != null) {
+            if (p.period == -1 && instanceIndex > 0) {
+                result = new PeriodInstanceImpl(p.getEnd().map(e -> e.getTime()).orElse(-1L), -1L);
+            } else {
+                LocalDateTime dateCursor = new LocalDateTime(p.start);
+                dateCursor = dateCursor.withPeriodAdded(new org.joda.time.Period(p.period),
+                        instanceIndex);
+                result = getPeriodInstance(periodIdentifier, dateCursor.toDate().getTime());
+            }
+        }
 
-		return result;
+        return result;
 	}
 
 	public interface Period {
@@ -366,56 +371,58 @@ public class PointConcept extends GameConcept {
 			}
 		}
 
-		private PeriodInstanceImpl retrieveInstance(long moment) {
-			LocalDateTime momentDate = new LocalDateTime(moment);
-			if (start.after(momentDate.toDate())) {
-				throw new IllegalArgumentException("moment is previous than startDate of period");
-			}
-			PeriodInstanceImpl instance = null;
+        private PeriodInstanceImpl retrieveInstance(long moment) {
+            LocalDateTime momentDate = new LocalDateTime(moment);
+            if (start.after(momentDate.toDate())) {
+                throw new IllegalArgumentException("moment is previous than startDate of period");
+            }
+            PeriodInstanceImpl instance = null;
 
             if (end.isPresent() && end.get().before(momentDate.toDate())) {
-                instance =
-                        new PeriodInstanceImpl(end.get().getTime(), -1);
+                instance = new PeriodInstanceImpl(end.get().getTime(), -1);
                 instance.setIndex(-1);
             } else {
                 LocalDateTime key = null;
                 Interval interval = null;
                 org.joda.time.Period jodaPeriod = null;
+                long startAsMillis = start.getTime();
+                long endAsMillis = -1;
                 if (period > 0) {
-			LocalDateTime lowerBoundDate = instances.floorKey(momentDate);
-			if (lowerBoundDate == null) {
-				lowerBoundDate = new LocalDateTime(start.getTime());
-			}
-                    jodaPeriod = new org.joda.time.Period(period);
-                boolean breakIteration = false;
-			do {
-                DateTime endInterval = lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime();
-                    if (end.isPresent() && endInterval.isAfter(end.get().getTime())) {
-                        endInterval = new DateTime(end.get().getTime());
-                        breakIteration = true;
+                    LocalDateTime lowerBoundDate = instances.floorKey(momentDate);
+                    if (lowerBoundDate == null) {
+                        lowerBoundDate = new LocalDateTime(start.getTime());
                     }
-				interval = new Interval(lowerBoundDate.toDateTime(),
-                                endInterval);
-				lowerBoundDate = interval.getEnd().toLocalDateTime();
-                } while (!interval.contains(moment) && !breakIteration);
+                    jodaPeriod = new org.joda.time.Period(period);
+                    boolean breakIteration = false;
+                    do {
+                        DateTime endInterval =
+                                lowerBoundDate.withPeriodAdded(jodaPeriod, 1).toDateTime();
+                        if (end.isPresent() && endInterval.isAfter(end.get().getTime())) {
+                            endInterval = new DateTime(end.get().getTime());
+                            breakIteration = true;
+                        }
+                        interval = new Interval(lowerBoundDate.toDateTime(), endInterval);
+                        lowerBoundDate = interval.getEnd().toLocalDateTime();
+                    } while (!interval.contains(moment) && !breakIteration);
+                    startAsMillis = interval.getStartMillis();
+                    endAsMillis = interval.getEndMillis();
                 } else {
-                    interval = new Interval(new DateTime(start.getTime()),
-                            new DateTime(end.get().getTime()));
+                    endAsMillis = end.map(e -> e.getTime()).orElse(-1L);
                 }
-			instance = instances.get(interval.getStart().toLocalDateTime());
-			if (instance == null) {
-				instance = new PeriodInstanceImpl(interval.getStartMillis(), interval.getEndMillis());
+                instance = instances.get(new LocalDateTime(startAsMillis));
+                if (instance == null) {
+                    instance = new PeriodInstanceImpl(startAsMillis, endAsMillis);
                     instance.setIndex(period > 0 ? getInstanceIndex(
                             new LocalDateTime(start.getTime()), jodaPeriod, momentDate) : 0);
-				key = interval.getStart().toLocalDateTime();
-				instances.put(key, instance);
-				if (capacity > 0 && instances.size() > capacity) {
-					instances.pollFirstEntry();
-				}
-			}
+                    key = new LocalDateTime(startAsMillis);
+                    instances.put(key, instance);
+                    if (capacity > 0 && instances.size() > capacity) {
+                        instances.pollFirstEntry();
+                    }
+                }
             }
-			return instance;
-		}
+            return instance;
+        }
 
 		private int getInstanceIndex(LocalDateTime start, org.joda.time.Period period, LocalDateTime momentDate) {
 			int index = -1;

@@ -6,6 +6,7 @@ global Utility utils;
 
 
 rule "update green points"
+no-loop
 when
     InputData( $bike : data["bikeDistance"], $walk : data["walkDistance"], $bus : data["busDistance"],$train : data["trainDistance"])
     $pc : PointConcept(name == "green leaves")

@@ -255,7 +255,7 @@ public class PointConcept extends GameConcept {
 		public int getIndex();
 	}
 
-	private class PeriodInternal implements Period {
+	public class PeriodInternal implements Period {
 		private Date start;
         private Optional<Date> end;
 		private long period;

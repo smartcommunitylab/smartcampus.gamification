@@ -1,0 +1,25 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.core.Utility;
+global Utility utils;
+
+rule "reward completing first group challenge"
+when
+	$challenge : ChallengeConcept(modelName == "incentiveGroupChallengeReward", 
+								$bonusScore: fields["bonusScore"], 
+								$bonusPointType : fields["bonusPointType"],
+								isCompleted() != true)
+    $reward : Reward() 
+    $pcBonus : PointConcept(name == (String) $bonusPointType)
+
+then
+
+	utils.log('incentiveGroupChallengeReward COMPLETED');
+	$challenge.completed();
+	$pcBonus.setScore($pcBonus.getScore() + (Double) $bonusScore);	
+	
+	update($pcBonus);
+	update($challenge);
+
+end
+

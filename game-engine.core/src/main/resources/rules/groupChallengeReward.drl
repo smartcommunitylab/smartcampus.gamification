@@ -4,6 +4,7 @@ import eu.trentorise.game.core.Utility;
 global Utility utils;
 
 rule "reward a group challenge"
+lock-on-active
 when
     $reward : Reward($calculationPointConceptRef :  calculationPointConcept) 
     $pcCalculation: PointConcept(name == $calculationPointConceptRef.name)

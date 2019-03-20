@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -333,8 +334,14 @@ public abstract class GameTest {
         List<ExecData> execList = new ArrayList<GameTest.ExecData>();
         defineExecData(execList);
         for (ExecData ex : execList) {
+            if (ex.getExecutionMoment() != null) {
+                workflow.apply(ex.gameId, ex.getActionId(), ex.getPlayerId(),
+                        ex.getExecutionMoment().getTime(), ex.getData(),
+                        ex.getFactObjects());
+            } else {
             workflow.apply(ex.gameId, ex.getActionId(), ex.getPlayerId(), ex.getData(),
                     ex.getFactObjects());
+            }
         }
 
         // launch Task sequentially
@@ -406,6 +413,7 @@ public abstract class GameTest {
         private String playerId;
         private Map<String, Object> data;
         private List<Object> factObjects;
+        private Date executionMoment;
 
         public String getActionId() {
             return actionId;
@@ -447,6 +455,25 @@ public abstract class GameTest {
             this.data = data;
         }
 
+        public ExecData(String gameId, String actionId, String playerId, Map<String, Object> data,
+                Date executionMoment, List<Object> factObjects) {
+            this.gameId = gameId;
+            this.actionId = actionId;
+            this.playerId = playerId;
+            this.data = data;
+            this.factObjects = factObjects;
+            this.executionMoment = executionMoment;
+        }
+
+        public ExecData(String gameId, String actionId, String playerId, Map<String, Object> data,
+                Date executionMoment) {
+            this.gameId = gameId;
+            this.actionId = actionId;
+            this.playerId = playerId;
+            this.data = data;
+            this.executionMoment = executionMoment;
+        }
+
         public String getGameId() {
             return gameId;
         }
@@ -461,6 +488,14 @@ public abstract class GameTest {
 
         public void setFactObjects(List<Object> factObjects) {
             this.factObjects = factObjects;
+        }
+
+        public Date getExecutionMoment() {
+            return executionMoment;
+        }
+
+        public void setExecutionMoment(Date executionMoment) {
+            this.executionMoment = executionMoment;
         }
 
     }

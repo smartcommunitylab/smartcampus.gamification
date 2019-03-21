@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -16,17 +18,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.bean.ChallengeAssignmentDTO;
+import eu.trentorise.game.bean.GroupChallengeDTO;
 import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.bean.WrapperQuery;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.managers.ChallengeManager;
 import eu.trentorise.game.model.ChallengeConcept;
+import eu.trentorise.game.model.ChallengeInvitation;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.Inventory.ItemChoice;
+import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.TeamState;
@@ -43,6 +52,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @Profile({ "platform" })
 public class DomainPlayerController {
 
+    private static final Logger logger = LoggerFactory.getLogger(DomainPlayerController.class);
+
 	@Autowired
 	private Converter converter;
 
@@ -51,6 +62,9 @@ public class DomainPlayerController {
 
 	@Autowired
 	private GameService gameSrv;
+
+    @Autowired
+    private ChallengeManager challengeSrv;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges", consumes = {
 			"application/json" }, produces = { "application/json" })
@@ -61,6 +75,80 @@ public class DomainPlayerController {
 		ChallengeAssignment assignment = converter.convert(challengeData);
 		playerSrv.assignChallenge(gameId, playerId, assignment);
 	}
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/group-challenges",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void assignGroupChallenge(@PathVariable String domain,
+            @RequestBody GroupChallengeDTO challengeData,
+            @PathVariable String gameId) {
+
+        gameId = decodePathVariable(gameId);
+        GroupChallenge assignment = converter.convert(challengeData);
+        challengeSrv.save(assignment);
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/invitation",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public ChallengeInvitation inviteIntoAChallenge(@PathVariable String domain,
+            @RequestBody ChallengeInvitation invitation,
+            @PathVariable String gameId, @PathVariable String playerId) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+
+        GroupChallenge pendingChallenge = challengeSrv.inviteToChallenge(invitation);
+        if (invitation != null) {
+            invitation.setChallengeName(pendingChallenge.getInstanceName());
+        }
+        return invitation;
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/invitation/accept/{challengeName}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void acceptInvitation(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String playerId,
+            @PathVariable String challengeName) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        challengeName = decodePathVariable(challengeName);
+
+        challengeSrv.acceptInvitation(gameId, playerId, challengeName);
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/invitation/refuse/{challengeName}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void refuseInvitation(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String playerId,
+            @PathVariable String challengeName) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        challengeName = decodePathVariable(challengeName);
+
+        challengeSrv.refuseInvitation(gameId, playerId, challengeName);
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/invitation/cancel/{challengeName}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public void cancelInvitation(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String playerId,
+            @PathVariable String challengeName) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        challengeName = decodePathVariable(challengeName);
+
+        challengeSrv.cancelInvitation(gameId, playerId, challengeName);
+
+    }
 
 	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept")
 	@ApiOperation(value = "Accept challenge")
@@ -219,15 +307,9 @@ public class DomainPlayerController {
 	@ApiOperation(value = "Activate a choice")
 	public Inventory activateChoice(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId, @RequestBody ItemChoice choice) {
-		PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
-		if (state != null) {
-			Inventory result = state.getInventory().activateChoice(choice);
-			playerSrv.saveState(state);
-			return result;
-		} else {
-			throw new IllegalArgumentException(
-					String.format("state for player %s in game %s doesn't exist", playerId, gameId));
-		}
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        return playerSrv.choiceActivation(gameId, playerId, choice);
 	}
 
 	// Read user custom data
@@ -268,7 +350,79 @@ public class DomainPlayerController {
 		PageImpl<PlayerStateDTO> res = new PageImpl<PlayerStateDTO>(resList, pageable, page.getTotalElements());
 
 		return res;
-
 	}
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/block/{otherPlayerId}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Add another player to challenge block list")
+    public PlayerBlackList blockPlayer(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String playerId,
+            @PathVariable String otherPlayerId) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        otherPlayerId = decodePathVariable(otherPlayerId);
+
+        LogHub.info(gameId, logger,
+                String.format("add player %s to black list of player %s", otherPlayerId, playerId));
+
+        return playerSrv.blockPlayer(gameId, playerId, otherPlayerId);
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}",
+            consumes = {"application/json"}, produces = {"application/json"})
+    @ApiOperation(value = "Unblock another player from challenge block list")
+    public PlayerBlackList unBlockPlayer(@PathVariable String domain, @PathVariable String gameId,
+            @PathVariable String playerId,
+            @PathVariable String otherPlayerId) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+        otherPlayerId = decodePathVariable(otherPlayerId);
+
+        LogHub.info(gameId, logger, String.format("remove player %s from black list of player %s",
+                otherPlayerId, playerId));
+
+        return playerSrv.unblockPlayer(gameId, playerId, otherPlayerId);
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/blacklist",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get player black list of other players")
+    public PlayerBlackList readPlayerBlackList(@PathVariable String domain,
+            @PathVariable String gameId,
+            @PathVariable String playerId) {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+
+        return playerSrv.readBlackList(gameId, playerId);
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challengers",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get availabe challengers for the player")
+    public List<String> readSystemPlayerState(@PathVariable String domain,
+            @PathVariable String gameId,
+            @PathVariable String playerId, @RequestParam(required = false) String conceptName)
+            throws Exception {
+
+        gameId = decodePathVariable(gameId);
+        playerId = decodePathVariable(playerId);
+
+        if (conceptName != null) {
+            conceptName = decodePathVariable(conceptName);
+        }
+
+        return playerSrv.readSystemPlayerState(gameId, playerId, conceptName);
+
+    }
 
 }

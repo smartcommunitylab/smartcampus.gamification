@@ -227,10 +227,12 @@ public class DomainGameController  {
         return true;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/statistics",
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/api/{domain}/data/game/{gameId}/statistics",
             produces = {"application/json"})
     @ApiOperation(value = "Get game statistics")
-    public List<GameStatistics> readGameStatistics(@PathVariable String gameId,
+    public List<GameStatistics> readGameStatistics(@PathVariable String domain,
+            @PathVariable String gameId,
             @RequestParam(required = false) String pointConceptName,
             @RequestParam(required = false) String periodName,
             @RequestParam(required = false) Long timestamp,

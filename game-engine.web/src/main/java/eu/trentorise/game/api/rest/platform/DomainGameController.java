@@ -2,22 +2,30 @@ package eu.trentorise.game.api.rest.platform;
 
 import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.trentorise.game.api.rest.GameController;
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.LevelDTO;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GameStatistics;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
@@ -27,6 +35,8 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Profile("platform")
 public class DomainGameController  {
+
+    private static final Logger logger = LoggerFactory.getLogger(GameController.class);
 
     @Autowired
     private GameService gameSrv;
@@ -215,8 +225,55 @@ public class DomainGameController  {
     public boolean deleteLevel(@PathVariable String gameId, @PathVariable String levelName) {
         gameSrv.deleteLevel(gameId, levelName);
         return true;
+    }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/data/game/{gameId}/statistics",
+            produces = {"application/json"})
+    @ApiOperation(value = "Get game statistics")
+    public List<GameStatistics> readGameStatistics(@PathVariable String gameId,
+            @RequestParam(required = false) String pointConceptName,
+            @RequestParam(required = false) String periodName,
+            @RequestParam(required = false) Long timestamp,
+            @RequestParam(required = false) String periodIndex,
+            @RequestParam(required = false, defaultValue = "-1") int page,
+            @RequestParam(required = false, defaultValue = "-1") int size) throws Exception {
 
+        gameId = URLDecoder.decode(gameId, "UTF-8");
+
+        if (pointConceptName != null) {
+            pointConceptName = decodePathVariable(pointConceptName);
+        }
+        if (periodName != null) {
+            periodName = decodePathVariable(periodName);
+        }
+        if (periodIndex != null) {
+            periodIndex = decodePathVariable(periodIndex);
+        }
+        // put this to maintain same behavior of pageable config (start page
+        // from index 1)
+        if (page == 0) {
+            throw new IllegalArgumentException("Page index must not be less than zero!");
+        }
+
+        LogHub.info(gameId, logger,
+                String.format(
+                        "read statistics for game [%s], pointConceptName [%s], period [%s], timestamp [%s], periodIndex[%s]",
+                        gameId, pointConceptName, periodName, timestamp, periodIndex));
+
+        return gameSrv.loadGameStats(gameId, pointConceptName, periodName, timestamp, periodIndex,
+                createPageRequest(page, size));
+
+    }
+
+    private PageRequest createPageRequest(int page, int size) {
+        PageRequest pageRequest = null;
+        if (page != -1 && size != -1) {
+            // put page-1 to maintain same behavior of pageable config ( start
+            // page
+            // from index 1)
+            pageRequest = new PageRequest(page - 1, size);
+        }
+        return pageRequest;
     }
 
 }

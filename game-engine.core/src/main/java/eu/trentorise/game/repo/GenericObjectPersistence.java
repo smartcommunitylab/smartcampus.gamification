@@ -19,6 +19,7 @@ package eu.trentorise.game.repo;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 public class GenericObjectPersistence {
 	private Map<String, Object> obj;
@@ -26,7 +27,7 @@ public class GenericObjectPersistence {
 
 	public GenericObjectPersistence(Object obj) {
 		ObjectMapper mapper = new ObjectMapper();
-
+        mapper.registerModule(new Jdk8Module());
 		this.obj = mapper.convertValue(obj, Map.class);
 		this.type = obj.getClass().getCanonicalName();
 	}

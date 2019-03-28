@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +60,10 @@ public class ChallengeManager {
     private ArchiveManager archiveSrv;
 
     public List<String> conditionCheck(GroupChallenge groupChallenge) {
+        if (groupChallenge.getChallengeModel()
+                .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE)) { // check if I need
+                                                                              // this behavior in
+                                                                              // best performance
         List<Attendee> attendees = groupChallenge.getAttendees();
         List<String> playerIds = attendees.stream().map(attendee -> attendee.getPlayerId())
                 .collect(Collectors.toList());
@@ -70,6 +73,7 @@ public class ChallengeManager {
                         .filter(state -> state != null).collect(Collectors.toList());
 
         groupChallenge = groupChallenge.update(playerStates);
+        }
         return groupChallenge.winners().stream().map(winner -> winner.getPlayerId())
                 .collect(Collectors.toList());
     }
@@ -169,12 +173,14 @@ public class ChallengeManager {
                             String.format("player %s already has %s pending invitations as guest",
                                     guest.getPlayerId(), LIMIT_INVITATIONS_AS_GUEST));
                 }
+                // check if player hasn't already ASSIGNED challenge starting in future
                 PlayerState state = playerSrv.loadState(invitation.getGameId(), guest.getPlayerId(),
                         true, false);
+                Date now = new Date();
                 long assignedCounter =
                         state.challenges().stream()
                                 .filter(c -> c.getState() == ChallengeState.ASSIGNED
-                                        && insideChallengeTime(invitation.getChallengeStart(), c))
+                                        && c.getStart() != null && c.getStart().after(now))
                                 .count();
                 if (assignedCounter > 0) {
                     throw new IllegalArgumentException(String.format(
@@ -210,20 +216,21 @@ public class ChallengeManager {
         return null;
     }
 
-    private boolean insideChallengeTime(Date startInvitationChallenge, ChallengeConcept assigned) {
-        final Date start = assigned.getStart();
-        final Date end = assigned.getEnd();
-
-        if (start != null && end != null) {
-            Interval validityTimeChallenge = new Interval(start.getTime(), end.getTime());
-            return validityTimeChallenge.contains(startInvitationChallenge.getTime());
-        } else if (start == null) {
-            return startInvitationChallenge.before(end);
-        } else if (end == null) {
-            return startInvitationChallenge.after(start);
-        }
-        return false;
-    }
+    // private boolean insideChallengeTime(Date startInvitationChallenge, ChallengeConcept assigned)
+    // {
+    // final Date start = assigned.getStart();
+    // final Date end = assigned.getEnd();
+    //
+    // if (start != null && end != null) {
+    // Interval validityTimeChallenge = new Interval(start.getTime(), end.getTime());
+    // return validityTimeChallenge.contains(startInvitationChallenge.getTime());
+    // } else if (start == null) {
+    // return startInvitationChallenge.before(end);
+    // } else if (end == null) {
+    // return startInvitationChallenge.after(start);
+    // }
+    // return false;
+    // }
 
     private GroupChallenge convert(ChallengeInvitation invitation) {
         GroupChallenge challenge = null;
@@ -409,8 +416,13 @@ public class ChallengeManager {
         sendCanceledNotifications(canceled);
         canceled.updateState(ChallengeState.CANCELED);
         archiveSrv.moveToArchive(gameId, canceled);
+        final Game game = gameSrv.loadGameDefinitionById(gameId);
         LogHub.info(gameId, logger, String.format(
                 "Invitation to challenge %s canceled by player %s", challengeName, playerId));
+        final String executionId = UUID.randomUUID().toString();
+        final long executionTime = System.currentTimeMillis();
+        StatsLogger.logChallengeInvitationCanceled(game.getDomain(), gameId, playerId, executionId,
+                executionTime, executionTime, challengeName, canceled.getChallengeModel());
         return canceled;
     }
 

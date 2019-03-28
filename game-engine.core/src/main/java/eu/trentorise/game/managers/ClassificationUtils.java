@@ -1,5 +1,7 @@
 package eu.trentorise.game.managers;
 
+import java.util.List;
+
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -48,10 +50,10 @@ public class ClassificationUtils {
 		return key;
 	}
 
-	public static double calculateVariance(double[] numArray) {
+    public static double calculateVariance(List<Double> numArray) {
 		{
 			double sum = 0.0, variance = 0.0;
-			int length = numArray.length;
+            int length = numArray.size();
 
 			for (double num : numArray) {
 				sum += num;

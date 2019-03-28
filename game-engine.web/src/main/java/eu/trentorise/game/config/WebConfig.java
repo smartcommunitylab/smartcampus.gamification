@@ -31,6 +31,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import eu.trentorise.game.platform.PlatformAuthorizationInterceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+
 /*
  * extend WebMvcConfigurerAdapter and not use annotation @EnableMvc to permit correct static
  * resources publishing and restController functionalities
@@ -90,6 +93,11 @@ public class WebConfig implements WebMvcConfigurer {
         pageResolver.setOneIndexedParameters(true);
 
         argumentResolvers.add(pageResolver);
+    }
+
+    @Autowired
+    public void configureJackson(ObjectMapper jackson2ObjectMapper) {
+        jackson2ObjectMapper.registerModule(new Jdk8Module());
     }
 
 }

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -756,18 +757,32 @@ public class GameManager implements GameService {
 
 						List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
 
-						double[] data = new double[pStates.size()];
-						for (int i = 0; i < pStates.size(); i++) {
-							data[i] = pStates.get(i).getIncrementalScore(pointConceptName, periodName, key);
-						}
+                        List<Double> data = new ArrayList<>();
+                        for (StatePersistence state : pStates) {
+                            double value =
+                                    state.getIncrementalScore(pointConceptName, periodName, key);
+                            if (value > 0) {
+                                data.add(value);
+                            }
 
-						// average.
-						double average = Arrays.stream(data).average().getAsDouble();
-						// variance.
-						double variance = ClassificationUtils.calculateVariance(data);
-						// 10 quantiles.
-						Map<Integer, Double> q = Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-								.compute(data);
+                        }
+
+                        double average = data.stream().mapToDouble(a -> a).average().orElse(0d);
+
+                        // variance.
+                        double variance = 0d;
+                        // 10 quantiles.
+                        Map<Integer, Double> q = null;
+                        if (data.size() > 0) {
+                            variance = ClassificationUtils.calculateVariance(data);
+                            q = Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+                                    .compute(data);
+                        } else {
+                            q = new HashMap<>();
+                            for (int i = 0; i < 10; i++) {
+                                q.put(i, 0d);
+                            }
+                        }
 
 						Query qGameStats = new Query();
 						Criteria cGameStats = new Criteria("gameId").is(activeG.getId()).and("pointConceptName")

@@ -113,7 +113,14 @@ public class GameWorkflow implements Workflow {
                             .loadState(gameId, participant.getPlayerId(), false, false))
                     .collect(Collectors.toList());
             participantStates.add(newState);
-            groupChallenge.update(participantStates, executionMoment);
+            if (groupChallenge.getChallengeModel()
+                    .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)
+                    || groupChallenge.getChallengeModel()
+                            .equals(GroupChallenge.MODEL_NAME_COOPERATIVE)) {
+                groupChallenge.update(newState, executionMoment);
+            } else { // maybe different behavior for best performance challenge is not needed
+                groupChallenge.update(participantStates, executionMoment);
+            }
             challengeSrv.save(groupChallenge);
             if (groupChallenge.getChallengeModel()
                     .equals(GroupChallenge.MODEL_NAME_COMPETITIVE_TIME)

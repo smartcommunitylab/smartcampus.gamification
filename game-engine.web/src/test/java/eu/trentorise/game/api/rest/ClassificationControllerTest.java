@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.config.AppConfig;
@@ -425,4 +427,16 @@ public class ClassificationControllerTest {
 @EnableWebMvc
 class TestMVCConfiguration extends WebConfig {
 
+    /*
+     * PAY ATTENTION : I define a objectMapper to fix issue with MockMVC and
+     * configureJackson(ObjectMapper jackson2ObjectMapper) defined in WebConfig. It seems that in
+     * test modality no objectMapper is created by default by Spring. The mapper behind not
+     * reproduce the one created by Spring in runtime
+     */
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new Jdk8Module());
+        return mapper;
+    }
 }

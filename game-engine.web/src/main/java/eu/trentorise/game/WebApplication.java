@@ -22,7 +22,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan("eu.trentorise.game")
-@EnableAutoConfiguration
+@EnableAutoConfiguration(
+        exclude = {org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration.class})
 @SpringBootApplication
 public class WebApplication {
 

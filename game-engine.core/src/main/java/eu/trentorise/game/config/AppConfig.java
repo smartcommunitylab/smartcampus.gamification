@@ -84,6 +84,30 @@ public class AppConfig {
 						env.getProperty("org.quartz.jobStore.collectionPrefix", "quartz"));
 				propsMap.put("org.quartz.threadPool.threadCount",
 						env.getProperty("org.quartz.threadPool.threadCount", "10"));
+				
+                propsMap.put("org.quartz.jobStore.isClustered",
+                        env.getProperty("org.quartz.jobStore.isClustered", "true"));
+
+                propsMap.put("rg.quartz.scheduler.instanceId",
+                        env.getProperty("rg.quartz.scheduler.instanceId", "AUTO"));
+                propsMap.put("org.quartz.scheduler.instanceName", env
+                        .getProperty("org.quartz.scheduler.instanceName", "gamificationCluster"));
+                // propsMap.put("org.quartz.jobStore.clusterCheckinInterval",
+                // env.getProperty("org.quartz.jobStore.clusterCheckinInterval", "10000"));
+                //
+                // propsMap.put("org.quartz.jobStore.triggerTimeoutMillis",
+                // env.getProperty("org.quartz.jobStore.triggerTimeoutMillis", "1200000"));
+                // propsMap.put("org.quartz.jobStore.jobTimeoutMillis",
+                // env.getProperty("org.quartz.jobStore.jobTimeoutMillis", "1200000"));
+                // propsMap.put("org.quartz.jobStore.misfireThreshold",
+                // env.getProperty("org.quartz.jobStore.misfireThreshold", "10000"));
+                // propsMap.put("org.quartz.jobStore.mongoOptionWriteConcernTimeoutMillis",
+                // env.getProperty("org.quartz.jobStore.mongoOptionWriteConcernTimeoutMillis",
+                // "10000"));
+                // propsMap.put("org.quartz.jobStore.checkInErrorHandler.class",
+                // env.getProperty("org.quartz.jobStore.checkInErrorHandler.class",
+                // "com.novemberain.quartz.mongodb.cluster.NoOpErrorHandler"));
+
 				props.putAll(propsMap);
 				return new StdSchedulerFactory(props).getScheduler();
 			} else {

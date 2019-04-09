@@ -16,17 +16,12 @@
 	</parent>
 
 	<dependencies>
-<!-- 
-  #######
-  #	
-  #	DON'T INTRODUCE spring-boot-devtools DEPENDENCY. IT BREAKS HOW DROOLS WORKS 
-  #
-  #######
- -->
+		<!-- ####### # # DON'T INTRODUCE spring-boot-devtools DEPENDENCY. IT BREAKS 
+			HOW DROOLS WORKS # ####### -->
 		<dependency>
 			<groupId>it.smartcommunitylab.gamification</groupId>
 			<artifactId>game-engine.core</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>4.0.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-log4j12</artifactId>
@@ -74,7 +69,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<exclusions>
-				<!-- Exclude logback dependency, with log4j 1.x library doesn't work correctly -->
+				<!-- Exclude logback dependency, with log4j 1.x library doesn't work 
+					correctly -->
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
@@ -145,7 +141,6 @@
 			<artifactId>json-path-assert</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>

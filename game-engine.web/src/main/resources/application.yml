@@ -27,7 +27,8 @@ management:
   
 server:
     port: 18000
-    contextPath: /gamification
+    servlet:
+      context-path: /gamification
     singeLogoutUrl: http://localhost:18000/gamification/singleLogout
     
 spring:

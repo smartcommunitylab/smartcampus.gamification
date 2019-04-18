@@ -32,12 +32,14 @@ package it.smartcommunitylab;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.OffsetDateTime;
@@ -49,6 +51,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.stream.JsonReader;
@@ -61,6 +65,7 @@ public class JSON {
     private Gson gson;
     private boolean isLenientOnJson = false;
     private DateTypeAdapter dateTypeAdapter = new DateTypeAdapter();
+    private DateAsLongTypeAdapter dateAsLongTypeAdapter = new DateAsLongTypeAdapter();
     private SqlDateTypeAdapter sqlDateTypeAdapter = new SqlDateTypeAdapter();
     private OffsetDateTimeTypeAdapter offsetDateTimeTypeAdapter = new OffsetDateTimeTypeAdapter();
     private LocalDateTypeAdapter localDateTypeAdapter = new LocalDateTypeAdapter();
@@ -89,8 +94,8 @@ public class JSON {
     }
 
     public JSON() {
-        gson = createGson()
-            .registerTypeAdapter(Date.class, dateTypeAdapter)
+        gson = createGson().registerTypeAdapter(Optional.class, new OptionalTypeAdapter())
+                .registerTypeAdapter(Date.class, dateAsLongTypeAdapter)
             .registerTypeAdapter(java.sql.Date.class, sqlDateTypeAdapter)
             .registerTypeAdapter(OffsetDateTime.class, offsetDateTimeTypeAdapter)
             .registerTypeAdapter(LocalDate.class, localDateTypeAdapter)
@@ -402,6 +407,61 @@ public class JSON {
         }
     }
 
+    /**
+     * Gson TypeAdapter for java.util.Date type Serialize a date as timestamp in MILLIS
+     */
+    public static class DateAsLongTypeAdapter extends TypeAdapter<Date> {
+
+
+        public DateAsLongTypeAdapter() {
+
+        }
+
+        @Override
+        public void write(JsonWriter out, Date date) throws IOException {
+            if(date != null) {
+                out.value(date.getTime());
+            } else {
+                out.value(-1);
+            }
+        }
+
+        @Override
+        public Date read(JsonReader in) throws IOException {
+            try {
+                switch (in.peek()) {
+                    case NULL:
+                        in.nextNull();
+                        return null;
+                    default:
+                        long timestamp = in.nextLong();
+                        return new Date(timestamp);
+                }
+            } catch (IllegalArgumentException e) {
+                throw new JsonParseException(e);
+            }
+        }
+
+    }
+
+    public class OptionalTypeAdapter
+            implements JsonDeserializer<Optional<?>>, JsonSerializer<Optional<?>> {
+
+        @Override
+        public Optional deserialize(JsonElement json, Type typeOfT,
+                JsonDeserializationContext context) throws JsonParseException {
+            final Object value = context.deserialize(json,
+                    ((ParameterizedType) typeOfT).getActualTypeArguments()[0]);
+            return Optional.ofNullable(value);
+        }
+
+        @Override
+        public JsonElement serialize(Optional<?> src, Type typeOfSrc,
+                JsonSerializationContext context) {
+            return context.serialize(src.orElse(null));
+        }
+    }
+
     public JSON setDateFormat(DateFormat dateFormat) {
         dateTypeAdapter.setFormat(dateFormat);
         return this;
@@ -413,3 +473,4 @@ public class JSON {
     }
 
 }
+

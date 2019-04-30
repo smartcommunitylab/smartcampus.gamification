@@ -48,23 +48,3 @@ aac:
   url: ${AAC.URL:http://localhost:8080/aac}
   clientId: ${AAC_CLIENTID:}
   clientSecret: ${AAC_CLIENTSECRET:}
-
-#
-# JMX REMOTE CONFIGS
-#
-com:
-  sun:
-    management:
-      jmxremote:
-        port: ${MANAGEMENT_JMXREMOTE_PORT:7777}
-        rmi:
-          port: ${MANAGEMENT_JMXREMOTE_RMI_PORT:7777}
-        authenticate: ${MANAGEMENT_JMXREMOTE_AUTHENTICATE:false}
-        ssl: ${MANAGEMENT_JMXREMOTE_SSL:false}
-        local:
-          only: ${MANAGEMENT_JMXREMOTE_LOCAL_ONLY:false}
-
-java:
-  rmi:
-    server:
-      hostname: localhost

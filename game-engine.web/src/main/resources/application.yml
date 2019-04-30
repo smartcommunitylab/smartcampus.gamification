@@ -21,9 +21,11 @@ oauth:
   role: ROLE_PROVIDER
     
 management:
-  context-path: ${MANAGEMENT_CONTEXT:/manage}
-  port: ${MANAGEMENT_PORT:9000}
-  security.enabled: ${MANAGEMENT_SECURITY_ENABLED:false}
+  endpoints:
+      web:
+          base-path: ${MANAGEMENT_CONTEXT:/manage}
+  server:
+      port: ${MANAGEMENT_PORT:9000}
   
 server:
     port: ${SERVER_PORT:8010}

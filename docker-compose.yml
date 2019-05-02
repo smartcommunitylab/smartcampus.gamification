@@ -9,16 +9,24 @@ services:
     volumes:
       - mongo-data:/data/db
   gamification-engine:
-    build: 
+    build:
       context: .
+    #image: gamification:final3
     container_name: gamification-engine
     ports:
       - "8010:8010"
       - "7777:7777"
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 1024m
+    #     reservations:
+    #       memory: 512m
     depends_on:
       - mongo
     links:
       - mongo:mongodb
+    env_file: gamification.env
     volumes:
       - ./logs:/app/game-engine.web/logs
 volumes:

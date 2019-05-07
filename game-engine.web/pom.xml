@@ -106,6 +106,17 @@
 			<artifactId>spring-security-oauth2</artifactId>
 			<version>2.3.4.RELEASE</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>2.2.3</version>
+		</dependency>
 
 		<!-- LOG -->
 		<dependency>

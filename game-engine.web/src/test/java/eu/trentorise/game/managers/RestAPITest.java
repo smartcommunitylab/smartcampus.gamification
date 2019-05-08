@@ -129,7 +129,7 @@ public class RestAPITest {
         cal.add(Calendar.HOUR_OF_DAY, -2);
         gp.setExpiration(cal.getTimeInMillis());
         mongo.save(gp);
-        gameManager.taskDestroyer();
+        // gameManager.taskDestroyer();
 
         ExecutionDataDTO bean = new ExecutionDataDTO();
         bean.setActionId(ACTION);

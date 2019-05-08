@@ -324,7 +324,7 @@ public class GameEngineTest {
         game.setExpiration(cal.getTimeInMillis());
         game.setTerminated(false);
         gameManager.saveGameDefinition(game.toGame());
-        gameManager.taskDestroyer();
+        // gameManager.taskDestroyer();
         Game g = gameManager.loadGameDefinitionById(GAME);
         Assert.assertEquals(true, g.isTerminated());
     }
@@ -371,7 +371,7 @@ public class GameEngineTest {
         game.setExpiration(cal.getTimeInMillis());
         game.setTerminated(false);
         gameManager.saveGameDefinition(game.toGame());
-        gameManager.taskDestroyer();
+        // gameManager.taskDestroyer();
         Game g = gameManager.loadGameDefinitionById(GAME);
         Assert.assertEquals(false, g.isTerminated());
     }

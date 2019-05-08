@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.model.core.EngineTask;
 import eu.trentorise.game.model.core.GameTask;
 
 @Component
@@ -75,5 +76,10 @@ public class TaskManager extends TaskDataManager {
 	public boolean destroyTask(GameTask task, String gameId) {
 		throw new UnsupportedOperationException("method not implemented !!");
 	}
+
+    @Override
+    public void createEngineTask(EngineTask engineTask) {
+        throw new UnsupportedOperationException("method not implemented !!");
+    }
 
 }

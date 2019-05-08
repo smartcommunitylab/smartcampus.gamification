@@ -20,10 +20,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import eu.trentorise.game.model.core.EngineTask;
 import eu.trentorise.game.model.core.GameTask;
 
 @Service
 public interface TaskService {
+
+    void createEngineTask(EngineTask engineTask);
 
 	public void createTask(GameTask task, String gameId);
 

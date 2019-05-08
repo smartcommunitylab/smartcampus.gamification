@@ -36,6 +36,7 @@ import org.perf4j.log4j.Log4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,8 +50,10 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.math.Quantiles;
 
+import eu.trentorise.game.core.JobDestroyerTask;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
@@ -65,6 +68,7 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
+import eu.trentorise.game.model.core.EngineTask;
 import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -90,6 +94,9 @@ public class GameManager implements GameService {
     public static final String INTERNAL_ACTION_PREFIX = "scogei_";
 
     private static final long ONE_SECOND_IN_MILLIS = 1000;
+
+    @Value("${schedule.task.job-destroyer}")
+    private String jobDestroyerCronExpression;
 
     @Autowired
     private TaskService taskSrv;
@@ -123,11 +130,21 @@ public class GameManager implements GameService {
 
     @PostConstruct
     private void startup() {
-
         for (Game game : loadGames(true)) {
             startupTasks(game.getId());
         }
 
+        startEngineTasks();
+    }
+
+    private void startEngineTasks() {
+        TaskSchedule jobDestroyerSchedule = new TaskSchedule();
+        jobDestroyerSchedule.setCronExpression(jobDestroyerCronExpression);
+        EngineTask jobDestroyerTask =
+                new JobDestroyerTask(taskSrv, this, "taskDestroyer", jobDestroyerSchedule);
+        taskSrv.createEngineTask(jobDestroyerTask);
+        LogHub.info(null, logger, String.format("Scheduled task %s at %s",
+                jobDestroyerTask.getName(), jobDestroyerTask.getSchedule().getCronExpression()));
     }
 
     public String getGameIdByAction(String actionId) {
@@ -327,27 +344,6 @@ public class GameManager implements GameService {
         }
         return rule;
     }
-
-    @Scheduled(cron = "0 0 1 * * *")
-    public void taskDestroyer() {
-        LogHub.info(null, logger, "task destroyer invocation");
-        long deadline = System.currentTimeMillis();
-
-        List<Game> games = loadGames(true);
-        for (Game game : games) {
-            if (game.getExpiration() > 0 && game.getExpiration() < deadline) {
-                for (GameTask task : game.getTasks()) {
-                    if (taskSrv.destroyTask(task, game.getId())) {
-                        LogHub.info(game.getId(), logger, "Destroy task - {} - of game {}",
-                                task.getName(), game.getId());
-                    }
-                }
-                game.setTerminated(true);
-                saveGameDefinition(game);
-            }
-        }
-    }
-
 
     @Scheduled(cron = "0 0 1 * * *")
     public void conditionCheckPerformanceGroupChallengesTask() {
@@ -845,8 +841,5 @@ public class GameManager implements GameService {
 		return mongoTemplate.find(q, GameStatistics.class);
 		
 	}
-	
-	
-
 
 }

@@ -18,6 +18,7 @@ package eu.trentorise.game.managers;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,9 @@ import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameJobQuartz;
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.core.EngineTask;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.repo.GamePersistence;
@@ -315,10 +318,6 @@ public class QuartzTaskManager extends TaskDataManager {
 				tokens[dayOfWeekPosition] = "?";
 			}
 			cron = StringUtils.join(tokens, " ");
-
-			// logger.info("fix cron expression for Quartz 2.2.1 issue: {}",
-			// cron);
-
 		}
 		return cron;
 	}
@@ -358,4 +357,39 @@ public class QuartzTaskManager extends TaskDataManager {
 			LogHub.error(gameId, logger, "SchedulerException: task {} not updated", task.getName());
 		}
 	}
+
+    @Override
+    public void createEngineTask(EngineTask engineTask) {
+        createTask(new EngineTaskAdapter(engineTask), null);
+    }
+
+    private class EngineTaskAdapter extends GameTask {
+        private EngineTask engineTask;
+
+        public EngineTaskAdapter(EngineTask engineTask) {
+            this.engineTask = engineTask;
+        }
+
+        @Override
+        public void execute(GameContext ctx) {
+            engineTask.execute();
+
+        }
+
+        @Override
+        public List<String> getExecutionActions() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public String getName() {
+            return engineTask.getName();
+        }
+
+        @Override
+        public TaskSchedule getSchedule() {
+            return engineTask.getSchedule();
+        }
+
+    }
 }

@@ -15,7 +15,7 @@ public class CheckPerformanceGroupChallengeTask extends EngineTask {
 
     @Override
     public void execute() {
-        gameSrv.conditionCheckPerformanceGroupChallengesTask();
+        gameSrv.taskCheckPerformanceGroupChallenges();
     }
 
 }

@@ -86,7 +86,7 @@ public interface GameService {
 
     List<PlayerLevel> calculateLevels(String gameId, PlayerState playerState);
 
-    void conditionCheckPerformanceGroupChallengesTask();
+    void taskCheckPerformanceGroupChallenges();
     
     void taskGameStats();
     

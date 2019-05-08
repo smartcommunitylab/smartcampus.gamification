@@ -593,7 +593,7 @@ public class GameManagerTest {
 
         challengeManager.save(challenge1);
 
-        gameSrv.conditionCheckPerformanceGroupChallengesTask();
+        gameSrv.taskCheckPerformanceGroupChallenges();
 
     }
     

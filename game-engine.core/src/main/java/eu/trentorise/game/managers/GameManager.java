@@ -362,8 +362,7 @@ public class GameManager implements GameService {
         return rule;
     }
 
-    // @Scheduled(cron = "0 0 1 * * *")
-    public void conditionCheckPerformanceGroupChallengesTask() {
+    public void taskCheckPerformanceGroupChallenges() {
         LogHub.info(null, logger,
                 "Condition checker for best performance group challenges in action");
         long startOperation = System.currentTimeMillis();

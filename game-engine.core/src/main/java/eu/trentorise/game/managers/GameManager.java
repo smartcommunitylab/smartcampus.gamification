@@ -50,6 +50,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.math.Quantiles;
 
+import eu.trentorise.game.core.CheckPerformanceGroupChallengeTask;
 import eu.trentorise.game.core.JobDestroyerTask;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
@@ -98,6 +99,10 @@ public class GameManager implements GameService {
     @Value("${schedule.task.job-destroyer}")
     private String jobDestroyerCronExpression;
 
+    @Value("${schedule.task.check-performance-group-challenge}")
+    private String checkPerformanceGroupChallengeCronExpression;
+
+
     @Autowired
     private TaskService taskSrv;
 
@@ -145,6 +150,18 @@ public class GameManager implements GameService {
         taskSrv.createEngineTask(jobDestroyerTask);
         LogHub.info(null, logger, String.format("Scheduled task %s at %s",
                 jobDestroyerTask.getName(), jobDestroyerTask.getSchedule().getCronExpression()));
+
+        TaskSchedule checkPerfomanceGroupChallengeSchedule = new TaskSchedule();
+        checkPerfomanceGroupChallengeSchedule
+                .setCronExpression(checkPerformanceGroupChallengeCronExpression);
+        EngineTask checkPerfomanceGroupChallengeTask =
+                new CheckPerformanceGroupChallengeTask(this,
+                "checkPerformanceGroupChallenge", checkPerfomanceGroupChallengeSchedule);
+        taskSrv.createEngineTask(checkPerfomanceGroupChallengeTask);
+        LogHub.info(null, logger,
+                String.format("Scheduled task %s at %s",
+                        checkPerfomanceGroupChallengeTask.getName(),
+                        checkPerfomanceGroupChallengeTask.getSchedule().getCronExpression()));
     }
 
     public String getGameIdByAction(String actionId) {
@@ -345,7 +362,7 @@ public class GameManager implements GameService {
         return rule;
     }
 
-    @Scheduled(cron = "0 0 1 * * *")
+    // @Scheduled(cron = "0 0 1 * * *")
     public void conditionCheckPerformanceGroupChallengesTask() {
         LogHub.info(null, logger,
                 "Condition checker for best performance group challenges in action");

@@ -112,7 +112,11 @@ public class QuartzTaskManager extends TaskDataManager {
 		}
 	}
 
-	public void createTask(GameTask task, String gameId) {
+    public void createTask(GameTask task, String gameId) {
+        createTask(task, gameId, false);
+    }
+
+    private void createTask(GameTask task, String gameId, boolean upsert) {
 		try {
 
 			// start the scheduler
@@ -162,6 +166,9 @@ public class QuartzTaskManager extends TaskDataManager {
 			} else {
 				LogHub.info(gameId, logger, "Job task {} in group {} already exists", task.getName(),
 						ctx.getGameRefId());
+                if (upsert) {
+                    updateTask(task, gameId);
+                }
 			}
 
 		} catch (Exception e) {
@@ -362,7 +369,7 @@ public class QuartzTaskManager extends TaskDataManager {
 
     @Override
     public void createEngineTask(EngineTask engineTask) {
-        createTask(new EngineTaskAdapter(engineTask), null);
+        createTask(new EngineTaskAdapter(engineTask), null, true);
     }
 
     private class EngineTaskAdapter extends GameTask {

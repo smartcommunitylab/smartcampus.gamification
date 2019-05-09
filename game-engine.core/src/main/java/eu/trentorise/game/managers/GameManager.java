@@ -45,13 +45,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.google.common.math.Quantiles;
 
 import eu.trentorise.game.core.ChallengeFailureTask;
 import eu.trentorise.game.core.CheckPerformanceGroupChallengeTask;
+import eu.trentorise.game.core.GameStatsTask;
 import eu.trentorise.game.core.JobDestroyerTask;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
@@ -105,6 +105,9 @@ public class GameManager implements GameService {
 
     @Value("${schedule.task.challenge-failure}")
     private String failureChallengeCronExpression;
+
+    @Value("${schedule.task.game-stats}")
+    private String gameStatsCronExpression;
 
     @Autowired
     private TaskService taskSrv;
@@ -166,6 +169,11 @@ public class GameManager implements GameService {
         EngineTask failureChallengeTask =
                 new ChallengeFailureTask(this, "challengeFailure", failureChallengeSchedule);
         engineTasks.add(failureChallengeTask);
+
+        TaskSchedule gameStatsSchedule = new TaskSchedule();
+        gameStatsSchedule.setCronExpression(gameStatsCronExpression);
+        EngineTask gameStatsTask = new GameStatsTask(this, "gameStats", gameStatsSchedule);
+        engineTasks.add(gameStatsTask);
 
         engineTasks.forEach(task -> {
             taskSrv.createEngineTask(task);
@@ -725,7 +733,6 @@ public class GameManager implements GameService {
     }
     
     
-    @Scheduled(cron = "0 0 1 * * *")
 	public void taskGameStats() {
 		/**
 		 * For every activeGame take settings -> statistics ( array of

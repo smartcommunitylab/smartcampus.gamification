@@ -177,8 +177,6 @@ public class GameManager implements GameService {
 
         engineTasks.forEach(task -> {
             taskSrv.createEngineTask(task);
-            LogHub.info(null, logger, String.format("Scheduled task %s at %s", task.getName(),
-                    task.getSchedule().getCronExpression()));
         });
 
     }

@@ -177,7 +177,9 @@ public class QuartzTaskManager extends TaskDataManager {
 			// fix for version 2.2.1 of CronTrigger
 			String cron = fixCronExpression(cronExpression);
 			triggerFactory.setCronExpression(cron);
-			LogHub.info(null, logger, "fix cron expression for Quartz 2.2.1 issue: {}", cron);
+            LogHub.info(null, logger,
+                    "fix cron expression for Quartz 2.2.1 issue: {} for job {}:{}", cron,
+                    job.getKey().getGroup(), job.getKey().getName());
 			triggerFactory.setName(task.getName());
 			triggerFactory.setGroup(gameId);
 			triggerFactory.setJobDetail(job);

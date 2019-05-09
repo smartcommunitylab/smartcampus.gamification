@@ -50,6 +50,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.math.Quantiles;
 
+import eu.trentorise.game.core.ChallengeFailureTask;
 import eu.trentorise.game.core.CheckPerformanceGroupChallengeTask;
 import eu.trentorise.game.core.JobDestroyerTask;
 import eu.trentorise.game.core.LogHub;
@@ -102,6 +103,8 @@ public class GameManager implements GameService {
     @Value("${schedule.task.check-performance-group-challenge}")
     private String checkPerformanceGroupChallengeCronExpression;
 
+    @Value("${schedule.task.challenge-failure}")
+    private String failureChallengeCronExpression;
 
     @Autowired
     private TaskService taskSrv;
@@ -143,13 +146,12 @@ public class GameManager implements GameService {
     }
 
     private void startEngineTasks() {
+        List<EngineTask> engineTasks = new ArrayList<>();
         TaskSchedule jobDestroyerSchedule = new TaskSchedule();
         jobDestroyerSchedule.setCronExpression(jobDestroyerCronExpression);
         EngineTask jobDestroyerTask =
                 new JobDestroyerTask(taskSrv, this, "taskDestroyer", jobDestroyerSchedule);
-        taskSrv.createEngineTask(jobDestroyerTask);
-        LogHub.info(null, logger, String.format("Scheduled task %s at %s",
-                jobDestroyerTask.getName(), jobDestroyerTask.getSchedule().getCronExpression()));
+        engineTasks.add(jobDestroyerTask);
 
         TaskSchedule checkPerfomanceGroupChallengeSchedule = new TaskSchedule();
         checkPerfomanceGroupChallengeSchedule
@@ -157,11 +159,20 @@ public class GameManager implements GameService {
         EngineTask checkPerfomanceGroupChallengeTask =
                 new CheckPerformanceGroupChallengeTask(this,
                 "checkPerformanceGroupChallenge", checkPerfomanceGroupChallengeSchedule);
-        taskSrv.createEngineTask(checkPerfomanceGroupChallengeTask);
-        LogHub.info(null, logger,
-                String.format("Scheduled task %s at %s",
-                        checkPerfomanceGroupChallengeTask.getName(),
-                        checkPerfomanceGroupChallengeTask.getSchedule().getCronExpression()));
+        engineTasks.add(checkPerfomanceGroupChallengeTask);
+
+        TaskSchedule failureChallengeSchedule = new TaskSchedule();
+        failureChallengeSchedule.setCronExpression(failureChallengeCronExpression);
+        EngineTask failureChallengeTask =
+                new ChallengeFailureTask(this, "challengeFailure", failureChallengeSchedule);
+        engineTasks.add(failureChallengeTask);
+
+        engineTasks.forEach(task -> {
+            taskSrv.createEngineTask(task);
+            LogHub.info(null, logger, String.format("Scheduled task %s at %s", task.getName(),
+                    task.getSchedule().getCronExpression()));
+        });
+
     }
 
     public String getGameIdByAction(String actionId) {
@@ -394,8 +405,7 @@ public class GameManager implements GameService {
                 (System.currentTimeMillis() - startOperation)));
     }
 
-    @Scheduled(cron = "0 0 4 1/1 * ?")
-    public void challengeFailureTask() {
+    public void taskChallengeFailure() {
         LogHub.info(null, logger, "Challenge failure checker in action");
         final int pageSize = 50;
         long start = System.currentTimeMillis();

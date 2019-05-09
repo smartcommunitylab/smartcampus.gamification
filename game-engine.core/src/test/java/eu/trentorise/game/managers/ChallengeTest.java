@@ -781,7 +781,7 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        gameSrv.challengeFailureTask();
+        gameSrv.taskChallengeFailure();
         assertThat(groupChallengeRepo.findAll().get(0).getState(), is(ChallengeState.FAILED));
     }
 
@@ -815,7 +815,7 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        gameSrv.challengeFailureTask();
+        gameSrv.taskChallengeFailure();
         List<GroupChallenge> groupChallenges = groupChallengeRepo.findAll();
         long failedCounter = groupChallenges.stream()
                 .filter(challenge -> challenge.getState() == ChallengeState.FAILED).count();
@@ -866,7 +866,7 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        gameSrv.challengeFailureTask();
+        gameSrv.taskChallengeFailure();
         List<GroupChallenge> groupChallenges = groupChallengeRepo.findAll();
         long failedCounter = groupChallenges.stream()
                 .filter(challenge -> challenge.getState() == ChallengeState.FAILED).count();

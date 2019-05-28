@@ -16,6 +16,9 @@
 
 package eu.trentorise.game.config;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,7 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
 
 import eu.trentorise.game.core.LogHub;
 
@@ -47,6 +51,17 @@ public class MongoConfig {
 		MongoClientFactoryBean mongo = new MongoClientFactoryBean();
 		mongo.setHost(env.getProperty("mongo.host"));
 		mongo.setPort(env.getProperty("mongo.port", Integer.class));
+
+		 
+        final String mongoUsername = env.getProperty("mongo.username");
+        final String mongoPwd = env.getProperty("mongo.pwd");
+        final String mongoAuthDb = env.getProperty("mongo.authDb");
+        if (StringUtils.isNotBlank(mongoUsername) && StringUtils.isNotBlank(mongoPwd)
+                && StringUtils.isNotBlank(mongoAuthDb)) {
+            LogHub.info(null, logger, "Try an authenticated mongodb connection");
+            mongo.setCredentials(Arrays.asList(MongoCredential.createCredential(mongoUsername,
+                    mongoAuthDb, mongoPwd.toCharArray())).toArray(new MongoCredential[0]));
+        }
 		try {
 			mongo.afterPropertiesSet();
 			return mongo.getObject();

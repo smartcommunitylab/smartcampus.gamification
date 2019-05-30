@@ -24,5 +24,5 @@ WORKDIR /app
 #ENV JAVA_TOOL_OPTIONS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
 COPY --from=build /app/game-engine.web/target/game-engine.web.jar /app
 EXPOSE 8010
-CMD java -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=7777 -Dcom.sun.management.jmxremote.rmi.port=7777 -Dcom.sun.management.jmxremote.authenticate=false \
--Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -jar game-engine.web.jar --spring.profiles.active=platform
+CMD ["sh","-c","java -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=7777 -Dcom.sun.management.jmxremote.rmi.port=7777 -Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -DlogFolder=${LOG_PATH} -jar game-engine.web.jar --spring.profiles.active=${SPRING_PROFILE}"]

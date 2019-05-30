@@ -2,41 +2,41 @@ security:
   oauth2:
     resource:
       preferTokenInfo: false
-      userInfoUri: http://localhost:8080/aac/basicprofile/me
+      userInfoUri: ${AAC_URL:}/basicprofile/me
     client:
-      clientId: 
-      clientSecret: 
-      userAuthorizationUri: http://localhost:8080/aac/eauth/authorize
+      clientId: ${AAC_CLIENTID:}
+      clientSecret: ${AAC_CLIENTSECRET:}
+      userAuthorizationUri: ${AAC_URL:}/eauth/authorize
       authenticationScheme: header
       tokenName: oauth_token
       scope: profile.basicprofile.me, user.roles.me
-      accessTokenUri: http://localhost:8080/aac/oauth/token
-      clientAuthenticationScheme: form  
-      preEstablishedRedirectUri: http://localhost:18000/gamification/login/aac
-      useCurrentUri: false   
+      accessTokenUri: ${AAC_URL:}/oauth/token
+      clientAuthenticationScheme: form
+      preEstablishedRedirectUri: ${GAMIFICATION_REVERSEPROXY:}/gamification/login/aac
+      useCurrentUri: false
 
 oauth:
-  serverUrl: http://localhost:8080/aac
+  serverUrl: ${AAC_URL:}
   context: COMPONENTS/GAMIFICATION
   role: ROLE_PROVIDER
-    
+
 management:
   endpoints:
       web:
           base-path: ${MANAGEMENT_CONTEXT:/manage}
   server:
       port: ${MANAGEMENT_PORT:9000}
-  
+
 server:
     port: ${SERVER_PORT:8010}
     servlet:
       context-path: ${SERVER_CONTEXTPATH:/gamification}
-    singeLogoutUrl: http://localhost:18000/gamification/singleLogout
-    
+    singeLogoutUrl: ${GAMIFICATION_REVERSEPROXY:}/gamification/singleLogout
+
 spring:
   main:
     allow-bean-definition-overriding: true
-    
+
 #
 # Platform security
 #
@@ -45,6 +45,6 @@ aac:
   roles:
     context: ${AAC_ROLES_CONTEXT:COMPONENTS/GAMIFICATION}
     role: ${AAC_ROLES_ROLE:ROLE_PROVIDER}
-  url: ${AAC.URL:http://localhost:8080/aac}
+  url: ${AAC_URL:http://localhost:8080/aac}
   clientId: ${AAC_CLIENTID:}
   clientSecret: ${AAC_CLIENTSECRET:}

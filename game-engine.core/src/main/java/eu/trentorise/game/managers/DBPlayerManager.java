@@ -1010,7 +1010,8 @@ public class DBPlayerManager implements PlayerService {
         if (state != null) {
             Inventory result = state.getInventory().activateChoice(choice);
             saveState(state);
-            StatsLogger.logChoiceActived(game.getId(), gameId, playerId, executionId, executionTime,
+            StatsLogger.logChoiceActived(game.getDomain(), gameId, playerId, executionId,
+                    executionTime,
                     executionTime, choice.getName());
             return result;
         } else {

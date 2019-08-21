@@ -28,6 +28,7 @@ import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobDetail;
@@ -206,13 +207,14 @@ public class QuartzTaskManager extends TaskDataManager {
 			Date calculatedStart = calculateStartDate(task.getSchedule().getStart(), task.getSchedule().getPeriod());
 			LogHub.info(gameId, logger, "Set start task {} group {} on next triggerDate: {}", task.getName(), gameId,
 					calculatedStart);
-			int delayMillis = getDelayInMillis(task.getSchedule().getDelay());
-			calTrigger.setStartTime(new DateTime(calculatedStart).plusMillis(delayMillis).toDate());
+            long delayMillis = getDelayInMillis(task.getSchedule().getDelay());
+            calTrigger.setStartTime(
+                    new DateTime(calculatedStart).plus(Duration.millis(delayMillis)).toDate());
 			if (delayMillis != 0) {
 				LogHub.info(gameId, logger, "Delay setted: {} millis, recalculated triggerDate: {}", delayMillis,
 						calTrigger.getStartTime());
 			}
-			Repeat repeat = extractRepeat((int) task.getSchedule().getPeriod());
+            Repeat repeat = extractRepeat(task.getSchedule().getPeriod());
 			LogHub.debug(gameId, logger, "extract repeat every {} unit {}", repeat.getInterval(),
 					repeat.getUnit().toString());
             calTrigger.setRepeatInterval(repeat.getInterval());
@@ -229,14 +231,15 @@ public class QuartzTaskManager extends TaskDataManager {
         }
 		LocalDateTime start = new LocalDateTime(initialStart);
 		while (start.toDateTime().isBeforeNow()) {
-			start = start.plusMillis((int) period);
+            // start = start.plusMillis((int) period);
+            start = start.plus(Duration.millis(period));
 		}
 
 		return start.toDate();
 	}
 
-	private int getDelayInMillis(TimeInterval delay) {
-		int value = 0;
+    private long getDelayInMillis(TimeInterval delay) {
+        long value = 0;
 		if (delay != null) {
 			switch (delay.getUnit()) {
 			case DAY:
@@ -262,11 +265,11 @@ public class QuartzTaskManager extends TaskDataManager {
 		return value;
 	}
 
-	private Repeat extractRepeat(int period) {
-		final int MILLIS_IN_MINUTE = 60000;
-		final int MILLIS_IN_HOUR = 3600000;
-		final int MILLIS_IN_DAY = 86400000;
-		int result = period / MILLIS_IN_DAY;
+    private Repeat extractRepeat(long period) {
+        final long MILLIS_IN_MINUTE = 60000;
+        final long MILLIS_IN_HOUR = 3600000;
+        final long MILLIS_IN_DAY = 86400000;
+        long result = period / MILLIS_IN_DAY;
 		IntervalUnit unit = null;
 		if (result * MILLIS_IN_DAY == period) {
 			unit = IntervalUnit.DAY;
@@ -283,7 +286,7 @@ public class QuartzTaskManager extends TaskDataManager {
 				}
 			}
 		}
-		return new Repeat(result, unit);
+        return new Repeat((int) result, unit);
 
 	}
 

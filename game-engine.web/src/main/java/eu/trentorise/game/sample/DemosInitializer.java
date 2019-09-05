@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -50,26 +51,35 @@ public class DemosInitializer {
 	@Autowired
 	private Environment env;
 
-	@PostConstruct
-	private void initDemos() {
-		Game g = null;
-		boolean secProfileActive = Arrays.binarySearch(env.getActiveProfiles(), "sec") >= 0;
-		if (secProfileActive) {
-			LogHub.info(null, logger, "sec profile active..create sample game for every user");
-			for (AuthUser user : usersProvider.getUsers()) {
-				g = gameFactory.createGame(null, null, null, user.getUsername());
-				if (g != null) {
-					gameSrv.startupTasks(g.getId());
-				}
-			}
-		} else {
-			LogHub.info(null, logger, "no-sec profile active..create sample game for default user");
-			// initialize demo-game for default user in no-sec env
-			g = gameFactory.createGame(null, null, null, DefaultIdentityLookup.DEFAULT_USER);
-			if (g != null) {
-				gameSrv.startupTasks(g.getId());
-			}
-		}
-	}
 
+    @Value("${game.createDemo}")
+    private boolean createDemoGame;
+
+    @PostConstruct
+    private void initDemos() {
+        if (createDemoGame) {
+            LogHub.info(null, logger, "createDemo configuration active...create demo games");
+            Game g = null;
+            boolean secProfileActive = Arrays.binarySearch(env.getActiveProfiles(), "sec") >= 0;
+            if (secProfileActive) {
+                LogHub.info(null, logger, "sec profile active..create sample game for every user");
+                for (AuthUser user : usersProvider.getUsers()) {
+                    g = gameFactory.createGame(null, null, null, user.getUsername());
+                    if (g != null) {
+                        gameSrv.startupTasks(g.getId());
+                    }
+                }
+            } else {
+                LogHub.info(null, logger,
+                        "no-sec profile active..create sample game for default user");
+                // initialize demo-game for default user in no-sec env
+                g = gameFactory.createGame(null, null, null, DefaultIdentityLookup.DEFAULT_USER);
+                if (g != null) {
+                    gameSrv.startupTasks(g.getId());
+                }
+            }
+        } else {
+            LogHub.info(null, logger, "createDemo configuration inactive");
+        }
+    }
 }

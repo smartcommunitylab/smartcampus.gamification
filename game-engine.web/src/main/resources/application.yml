@@ -48,3 +48,6 @@ aac:
   url: ${AAC_URL:http://localhost:8080/aac}
   clientId: ${AAC_CLIENTID:}
   clientSecret: ${AAC_CLIENTSECRET:}
+  
+game:
+  createDemo: ${CREATE_DEMO_GAME:false}

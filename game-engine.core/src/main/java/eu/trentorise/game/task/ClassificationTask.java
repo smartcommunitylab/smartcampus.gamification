@@ -69,44 +69,54 @@ public abstract class ClassificationTask extends GameTask {
 
 		if (logger.isDebugEnabled()) {
 			for (ClassificationPosition position : classification) {
-				logger.debug("{}: player {} score {}", classificationName, position.getPlayerId(), position.getScore());
-
+                LogHub.debug(ctx.getGameRefId(), logger, "{}: player {} score {}",
+                        classificationName, position.getPlayerId(), position.getScore());
 			}
 		}
 
-		int position = 1, nextPosition = 1, index;
-		Double lastScore = null;
-		boolean sameScore = false;
-		for (ClassificationPosition item : classification) {
+        // nobody gained score in this classification, avoid to run reward actions in engine
+        if (classification.size() == 0 || classification.get(0).getScore() == 0) {
+            LogHub.info(ctx.getGameRefId(), logger,
+                    "No scores for the classification {}, avoid to send reward actions to the engine",
+                    classificationName);
+        } else {
+            int position = 1, nextPosition = 1, index;
+            Double lastScore = null;
+            boolean sameScore = false;
+            for (ClassificationPosition item : classification) {
 
-			sameScore = lastScore != null && lastScore == item.getScore();
-			index = nextPosition - 1;
+                sameScore = lastScore != null && lastScore == item.getScore();
+                index = nextPosition - 1;
 
-			if (index >= itemsToNotificate && !sameScore) {
-				break;
-			}
+                if (index >= itemsToNotificate && !sameScore) {
+                    break;
+                }
 
-			if (!sameScore) {
-				position = nextPosition;
-			}
-			lastScore = item.getScore();
-			nextPosition++;
+                if (!sameScore) {
+                    position = nextPosition;
+                }
+                lastScore = item.getScore();
+                nextPosition++;
 
-			Classification c = createClassificationObject(ctx, item.getScore(), getScoreType(), position);
+                Classification c =
+                        createClassificationObject(ctx, item.getScore(), getScoreType(), position);
 
-			List<Object> factObjs = new ArrayList<Object>();
-			factObjs.add(c);
-			ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), null, factObjs);
+                List<Object> factObjs = new ArrayList<Object>();
+                factObjs.add(c);
+                ctx.sendAction(ACTION_CLASSIFICATION, item.getPlayerId(), null, factObjs);
 
-			ClassificationNotification classificationNotification = new ClassificationNotification();
-			classificationNotification.setGameId(ctx.getGameRefId());
-			classificationNotification.setPlayerId(item.getPlayerId());
-			classificationNotification.setClassificationName(classificationName);
-			classificationNotification.setClassificationPosition(position);
+                ClassificationNotification classificationNotification =
+                        new ClassificationNotification();
+                classificationNotification.setGameId(ctx.getGameRefId());
+                classificationNotification.setPlayerId(item.getPlayerId());
+                classificationNotification.setClassificationName(classificationName);
+                classificationNotification.setClassificationPosition(position);
 
-			ctx.sendNotification(classificationNotification);
-			LogHub.info(ctx.getGameRefId(), logger, "send notification: {}", classificationNotification.toString());
-		}
+                ctx.sendNotification(classificationNotification);
+                LogHub.info(ctx.getGameRefId(), logger, "send notification: {}",
+                        classificationNotification.toString());
+            }
+        }
 	}
 
 	@Override

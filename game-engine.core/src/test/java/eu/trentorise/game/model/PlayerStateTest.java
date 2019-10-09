@@ -229,6 +229,33 @@ public class PlayerStateTest {
         state.removeConcept("prova", PointConcept.class);
         assertThat(state.getState(), hasSize(1));
     }
+
+
+    @Test
+    public void gain_an_active_models() {
+        Game game = new Game("MY_GAME");
+        Level levelDefinition = new Level("greener", "green leaves");
+        Threshold walkerLevel = new Threshold("walker", 100d);
+        Config levelConfig = new Config();
+        levelConfig.setChoices(0);
+        levelConfig.getActiveModels().add("absoluteIncrement");
+        // levelConfig.getAvailableModels().add("absoluteIncrement");
+        walkerLevel.setConfig(levelConfig);
+        levelDefinition.getThresholds().add(walkerLevel);
+
+        game.getLevels().add(levelDefinition);
+
+        PlayerState state = new PlayerState("MY_GAME", "PLAYER_ID");
+        List<PlayerLevel> levels = new ArrayList<>();
+        levels.add(new PlayerLevel(levelDefinition, 200d));
+        state.updateLevels(levels);
+
+        state.updateInventory(game, Arrays.asList(new LevelInstance("greener", "walker"),
+                new LevelInstance("greener", "runner")));
+
+        ChallengeChoice item = state.getInventory().getChallengeChoices().get(0);
+        assertThat(item.getState(), is(ChoiceState.ACTIVE));
+    }
 }
 
 

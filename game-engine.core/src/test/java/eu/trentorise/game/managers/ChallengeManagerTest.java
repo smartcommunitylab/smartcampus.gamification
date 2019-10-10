@@ -432,7 +432,7 @@ public class ChallengeManagerTest {
         long assignedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         assertThat(assignedCount, is(1L));
-        assertThat(proposedCount, is(0L));
+        assertThat(proposedCount, is(2L));
     }
 
 
@@ -484,14 +484,14 @@ public class ChallengeManagerTest {
         long assignedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         assertThat(assignedCount, is(1L));
-        assertThat(proposedCount, is(0L));
+        assertThat(proposedCount, is(2L));
         PlayerState antManState = playerSrv.loadState("GAME", "ant-man", false, true);
         long antManAssignedCounter = antManState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         long antManProposedCounter = antManState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
         assertThat(antManAssignedCounter, is(1L));
-        assertThat(antManProposedCounter, is(0L));
+        assertThat(antManProposedCounter, is(1L));
     }
 
 

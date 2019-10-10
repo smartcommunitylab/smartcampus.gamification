@@ -189,6 +189,7 @@ public class DBPlayerManager implements PlayerService {
         return persist(gameId, playerId, concepts, null, null, null, null);
     }
 
+    @SuppressWarnings("unused")
     private StatePersistence persistCustomData(String gameId, String playerId, CustomData data) {
         return persist(gameId, playerId, null, null, null, data, null);
     }
@@ -200,6 +201,7 @@ public class DBPlayerManager implements PlayerService {
         return persist(gameId, playerId, null, null, null, c, null);
     }
 
+    @SuppressWarnings("unused")
     private StatePersistence persistMetadata(String gameId, String playerId,
             Map<String, Object> metadata) {
         return persist(gameId, playerId, null, null, null, null, metadata);
@@ -667,6 +669,8 @@ public class DBPlayerManager implements PlayerService {
             StatsLogger.logChallengeAccepted(game.getDomain(), gameId, playerId, executionId,
                     executionTime, executionTime, challengeName);
             java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
+
+            // refuse all SINGLE PROPOSED
             while (iterator.hasNext()) {
                 ChallengeConcept ch = iterator.next();
                 if (ch.getState() == ChallengeState.PROPOSED) {
@@ -679,25 +683,6 @@ public class DBPlayerManager implements PlayerService {
                 }
             }
             saveState(state);
-
-            List<GroupChallenge> otherProposedhallenges = groupChallengeRepo
-                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-            groupChallengeRepo.deleteAll(otherProposedhallenges);
-            otherProposedhallenges.forEach(challenge -> {
-                challenge.updateState(ChallengeState.REFUSED);
-                archiveSrv.moveToArchive(gameId, challenge);
-                StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
-                        executionId, executionTime, executionTime, challenge.getInstanceName());
-
-                // send notifications to other participants
-                challenge.guests().stream().filter(g -> g.getPlayerId().equals(playerId))
-                        .findFirst().ifPresent(
-                                guest -> sendRefusedNotification(guest.getPlayerId(), challenge));
-                final Attendee proposer = challenge.proposer();
-                if (proposer != null && proposer.getPlayerId().equals(playerId)) {
-                    sendCanceledNotifications(challenge);
-                }
-            });
         }
 
         if (!found) {
@@ -708,6 +693,7 @@ public class DBPlayerManager implements PlayerService {
         return accepted;
     }
 
+    @SuppressWarnings("unused")
     private ChallengeInvitationRefusedNotification sendRefusedNotification(String guestId,
             GroupChallenge refused) {
         ChallengeInvitationRefusedNotification notification =
@@ -729,6 +715,7 @@ public class DBPlayerManager implements PlayerService {
         return notification;
     }
 
+    @SuppressWarnings("unused")
     private void sendCanceledNotifications(GroupChallenge canceled) {
         final Attendee proposer = canceled.proposer();
         final String gameId = canceled.getGameId();

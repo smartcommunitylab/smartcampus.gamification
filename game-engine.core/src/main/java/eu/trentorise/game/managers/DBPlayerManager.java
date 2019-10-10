@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -750,69 +749,36 @@ public class DBPlayerManager implements PlayerService {
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
         PlayerState state = loadState(gameId, playerId, false, false);
-        Date now = new Date();
-        Optional<ChallengeConcept> maxPriorityChallenge = Optional.empty();
-        List<GroupChallenge> assignedGroupChallenges =
-                groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.ASSIGNED);
-        long assignedInFutureCounter = Stream.concat(state.challenges().stream()
-                .filter(challenge -> challenge.getState() == ChallengeState.ASSIGNED)
-                .filter(challenge -> challenge.getStart() == null
-                        || challenge.getStart().after(now)),
-                assignedGroupChallenges.stream().filter(challenge -> challenge.getStart() == null
-                        || challenge.getStart().after(now)))
-                .count();
-        if (assignedInFutureCounter < 1) {
-            List<GroupChallenge> proposedGroupChallenges = groupChallengeRepo
-                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-            Stream<ChallengeConcept> challengeConceptsRepresentation = proposedGroupChallenges
-                    .stream().map(groupChallenge -> groupChallenge.toChallengeConcept(playerId));
+        Optional<ChallengeConcept> maxPriorityChallenge = state.challenges().stream()
+                .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
+                .max(new PriorityComparator());
 
-            maxPriorityChallenge = Stream.concat(
-                    state.challenges().stream()
-                    .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED),challengeConceptsRepresentation)
-                    .max(new PriorityComparator());
-            maxPriorityChallenge.ifPresent(challenge -> {
+        // assign PROPOSED SINGLE challenge with max priority and flag as forced
+        ChallengeConcept forcedChallenge = maxPriorityChallenge
+                .map(challenge -> challenge.updateState(ChallengeState.ASSIGNED).forced())
+                .orElse(null);
 
-                if (challenge.isGroupChallenge()) {
-                    proposedGroupChallenges.stream()
-                            .filter(groupChallenge -> groupChallenge.getGameId().equals(gameId)
-                                    && groupChallenge.getInstanceName()
-                                            .equals(challenge.getName())
-                                    && groupChallenge.getAttendees().stream().anyMatch(
-                                            attendee -> attendee.getPlayerId().equals(playerId)))
-                            .findFirst().ifPresent(selectedGroupChallenge -> {
-                                selectedGroupChallenge.updateState(ChallengeState.ASSIGNED);
-                                groupChallengeRepo.save(selectedGroupChallenge);
-                            });
-                } else {
-                    challenge.updateState(ChallengeState.ASSIGNED).forced();
-                }
-            });
-
-            if (maxPriorityChallenge.isPresent()) {
-                java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
-                while (iterator.hasNext()) {
-                    ChallengeConcept ch = iterator.next();
-                    if (ch.getState() == ChallengeState.PROPOSED) {
-                        ChallengeConcept removedChallenge =
-                                state.removeConcept(ch.getName(), ChallengeConcept.class);
-                        removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
-                        archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
-                    }
-                }
-
-                List<GroupChallenge> otherProposedhallenges =
-                        groupChallengeRepo.playerGroupChallenges(gameId, playerId,
-                        ChallengeState.PROPOSED);
-                groupChallengeRepo.deleteAll(otherProposedhallenges);
-                otherProposedhallenges.forEach(challenge -> {
-                    challenge.updateState(ChallengeState.AUTO_DISCARDED);
-                    archiveSrv.moveToArchive(gameId, challenge);
+        // auto discarded all PROPOSED SINGLE challenges
+        state.challenges().stream()
+                .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
+                .forEach(proposed -> {
+                    ChallengeConcept removedChallenge =
+                            state.removeConcept(proposed.getName(), ChallengeConcept.class);
+                    removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
+                    archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
                 });
-            }
-            saveState(state);
-        }
-        return maxPriorityChallenge.orElse(null);
+
+        // auto discarded all PROPOSED GROUP challenges
+        List<GroupChallenge> otherProposedhallenges =
+                groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
+        groupChallengeRepo.deleteAll(otherProposedhallenges);
+        otherProposedhallenges.forEach(challenge -> {
+            challenge.updateState(ChallengeState.AUTO_DISCARDED);
+            archiveSrv.moveToArchive(gameId, challenge);
+        });
+
+        saveState(state);
+        return forcedChallenge;
     }
     
 

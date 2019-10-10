@@ -569,14 +569,9 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        assertThat(
-                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
-                hasSize(0));
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
-        assertThat(forced.getName(), is("bestPerformance"));
-        assertThat(
-                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
-                hasSize(1));
+        assertThat(forced.getName(), is("secondProposed"));
+
     }
 
     @Test
@@ -686,7 +681,7 @@ public class ChallengeTest {
         challengeSrv.save(groupChallenge);
 
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
-        assertThat(forced, is(nullValue()));
+        assertThat(forced.getName(), is("secondProposed"));
     }
 
     @Test

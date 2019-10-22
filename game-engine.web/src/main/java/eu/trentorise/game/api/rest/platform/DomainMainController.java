@@ -103,7 +103,8 @@ public class DomainMainController {
             @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, false));
+        return converter
+                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, false, true));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",
@@ -122,9 +123,9 @@ public class DomainMainController {
         List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
         Page<PlayerState> page = null;
         if (playerFilter == null) {
-            page = playerSrv.loadStates(gameId, pageable, true);
+            page = playerSrv.loadStates(gameId, pageable, true, true);
         } else {
-            page = playerSrv.loadStates(gameId, playerFilter, pageable, true);
+            page = playerSrv.loadStates(gameId, playerFilter, pageable, true, true);
         }
         for (PlayerState ps : page) {
             resList.add(converter.convertPlayerState(ps));

@@ -12,6 +12,7 @@ public class ChallengeAssignment {
     private Date start;
     private Date end;
     private int priority = 0;
+    private boolean hide = false;
 
     public ChallengeAssignment(String modelName,
             String instanceName, Map<String, Object> data, String challengeType, Date start,
@@ -91,5 +92,13 @@ public class ChallengeAssignment {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public boolean isHide() {
+        return hide;
+    }
+
+    public void setHide(boolean hide) {
+        this.hide = hide;
     }
 }

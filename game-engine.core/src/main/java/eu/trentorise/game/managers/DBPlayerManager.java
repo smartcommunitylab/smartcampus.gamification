@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -113,6 +114,11 @@ public class DBPlayerManager implements PlayerService {
     private static final int PROPOSER_RANGE = 2;
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
+        return loadState(gameId, playerId, upsert, mergeGroupChallenges, false);
+    }
+
+    public PlayerState loadState(String gameId, String playerId, boolean upsert,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
         eu.trentorise.game.repo.StatePersistence state =
                 playerRepo.findByGameIdAndPlayerId(gameId, playerId);
         PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
@@ -121,7 +127,26 @@ public class DBPlayerManager implements PlayerService {
         if (mergeGroupChallenges) {
             res = mergeGroupChallenges(res, gameId);
         }
+
+        if (filterHiddenChallenges) {
+            res = filterHiddenChallenges(res);
+        }
+
         return res;
+    }
+
+    private PlayerState filterHiddenChallenges(PlayerState state) {
+        Stream<GameConcept> conceptNotChallenges = state.getState().stream()
+                .filter(concept -> concept.getClass() != ChallengeConcept.class);
+        Stream<ChallengeConcept> publicChallenges = state.getState().stream()
+                .filter(concept -> concept.getClass() == ChallengeConcept.class)
+                .map(concept -> (ChallengeConcept) concept)
+                .filter(challenge -> !challenge.isHidden());
+
+        state.setState(
+                Stream.concat(conceptNotChallenges, publicChallenges).collect(Collectors.toSet()));
+
+        return state;
     }
 
     public PlayerState saveState(PlayerState state) {
@@ -261,7 +286,8 @@ public class DBPlayerManager implements PlayerService {
         return res;
     }
 
-    public Page<PlayerState> loadStates(String gameId, Pageable pageable, boolean mergeGroupChallenges) {
+    public Page<PlayerState> loadStates(String gameId, Pageable pageable,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
         StopWatch stopWatch =
                 LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
                         ? new Log4JStopWatch() : null;
@@ -276,6 +302,9 @@ public class DBPlayerManager implements PlayerService {
             if (mergeGroupChallenges) {
                 playerState = mergeGroupChallenges(playerState, gameId);
             }
+            if (filterHiddenChallenges) {
+                playerState = filterHiddenChallenges(playerState);
+            }
             result.add(playerState);
         }
         PageImpl<PlayerState> res =
@@ -284,6 +313,11 @@ public class DBPlayerManager implements PlayerService {
             stopWatch.stop("loadStates", "Loaded states of game " + gameId);
         }
         return res;
+    }
+
+    public Page<PlayerState> loadStates(String gameId, Pageable pageable,
+            boolean mergeGroupChallenges) {
+        return loadStates(gameId, pageable, mergeGroupChallenges, false);
     }
 
     // TODO: method use only by a test, investigate
@@ -299,8 +333,8 @@ public class DBPlayerManager implements PlayerService {
         return result;
     }
 
-    @Override
-    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges) {
+    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
         Page<StatePersistence> states =
                 playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId, pageable);
         List<PlayerState> result = new ArrayList<PlayerState>();
@@ -310,11 +344,20 @@ public class DBPlayerManager implements PlayerService {
             if (mergeGroupChallenges) {
                 playerState = mergeGroupChallenges(playerState, gameId);
             }
+            if (filterHiddenChallenges) {
+                playerState = filterHiddenChallenges(playerState);
+            }
             result.add(playerState);
         }
         PageImpl<PlayerState> res =
                 new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
         return res;
+    }
+
+    @Override
+    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable,
+            boolean mergeGroupChallenges) {
+        return loadStates(gameId, playerId, pageable, mergeGroupChallenges, false);
     }
 
     private PlayerState initConceptsStructure(PlayerState ps, String gameId) {
@@ -454,6 +497,8 @@ public class DBPlayerManager implements PlayerService {
         if (challengeAssignment.getModelName() == null) {
             throw new IllegalArgumentException("modelName cannot be null");
         }
+
+
         ChallengeModel model =
                 challengeModelRepo.findByGameIdAndName(gameId, challengeAssignment.getModelName());
         if (model == null) {
@@ -472,6 +517,7 @@ public class DBPlayerManager implements PlayerService {
                 }
             }
         }
+
 
         ChallengeConcept challenge = null;
         try {
@@ -492,6 +538,15 @@ public class DBPlayerManager implements PlayerService {
                 ? challengeAssignment.getInstanceName() : UUID.randomUUID().toString());
         challenge.setOrigin(challengeAssignment.getOrigin());
         challenge.setPriority(challengeAssignment.getPriority());
+
+        challenge.getVisibility().setHidden(challengeAssignment.isHide());
+
+        if (challenge.getVisibility().isHidden()) {
+            Game game = gameSrv.loadGameDefinitionById(gameId);
+            Date now = new Date();
+            Date disclosureDate = game.nextChallengeDisclosureDate(now);
+            challenge.getVisibility().setDisclosureDate(disclosureDate);
+        }
 
         // save in playerState
         PlayerState state = loadState(gameId, playerId, true, false);

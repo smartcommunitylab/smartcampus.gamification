@@ -9,15 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.core.SystemClock;
 import eu.trentorise.game.model.core.GameConcept;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY)
 public class ChallengeConcept extends GameConcept {
+    private final static List<String> GROUP_CHALLENGES_MODELS =
+            Arrays.asList(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+
     private String modelName;
     private Map<String, Object> fields = new HashMap<String, Object>();
     private Date start;
@@ -34,8 +36,7 @@ public class ChallengeConcept extends GameConcept {
     private Map<ChallengeState, Date> stateDate = new HashMap<>();
     private String origin;
 
-    private final static List<String> GROUP_CHALLENGES_MODELS =
-            Arrays.asList(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
+
 
     /**
      * An higher value refers to a higher priority
@@ -43,6 +44,7 @@ public class ChallengeConcept extends GameConcept {
     private int priority = 0;
 
     private boolean forced;
+    private Visibility visibility = new Visibility();
 
     @JsonIgnore
     private Date objectCreationDate;
@@ -81,6 +83,32 @@ public class ChallengeConcept extends GameConcept {
         updateState(state == null ? ChallengeState.ASSIGNED : state);
         this.objectCreationDate = clock.now();
     }
+
+
+    public static class Visibility {
+        private boolean hidden = false;
+        private Date disclosureDate;
+
+        public boolean isHidden() {
+            return hidden;
+        }
+
+        public void setHidden(boolean hidden) {
+            this.hidden = hidden;
+        }
+
+        public Date getDisclosureDate() {
+            return disclosureDate;
+        }
+
+        public void setDisclosureDate(Date disclosureDate) {
+            this.disclosureDate = disclosureDate;
+        }
+
+
+    }
+
+
 
     public String getModelName() {
         return modelName;
@@ -316,6 +344,20 @@ public class ChallengeConcept extends GameConcept {
 
     public boolean isForced() {
         return forced;
+    }
+
+    @JsonIgnore
+    public boolean isHidden() {
+        return visibility.hidden && (visibility.disclosureDate == null
+                || clock.now().before(visibility.disclosureDate));
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
     }
 
 }

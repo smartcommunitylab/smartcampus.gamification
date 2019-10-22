@@ -41,11 +41,20 @@ public interface PlayerService {
 
 	public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges);
 
+    public PlayerState loadState(String gameId, String playerId, boolean upsert,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges);
+
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable, boolean mergeGroupChallenges);
+
+    public Page<PlayerState> loadStates(String gameId, Pageable pageable,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges);
 
 	public List<PlayerState> loadStates(String gameId);
 
 	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges);
+
+    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges);
 
 	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable);
 

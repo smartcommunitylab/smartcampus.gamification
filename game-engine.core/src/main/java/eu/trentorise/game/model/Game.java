@@ -17,13 +17,24 @@
 package eu.trentorise.game.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.LocalDateTime;
+import org.joda.time.Minutes;
+import org.joda.time.ReadablePeriod;
+import org.joda.time.Seconds;
+
 import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.Settings.ChallengeSettings.ChallengeDisclosure;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.model.core.TimeInterval;
 
 public class Game {
 	private String id;
@@ -55,6 +66,52 @@ public class Game {
 		this.id = id;
 	}
 
+    /**
+     * calculated the disclosure date for challenges more closed to from Date
+     * 
+     * @param from date
+     * @return the disclosure date or null if any challenge settings is defined for the game
+     * 
+     */
+    public Date nextChallengeDisclosureDate(Date from) {
+        ChallengeDisclosure disclosure = settings.getChallengeSettings().getDisclosure();
+        if (disclosure.getFrequency() != null) {
+            final Date disclosureStart = disclosure.getStartDate();
+            final TimeInterval frequency = disclosure.getFrequency();
+
+            LocalDateTime cursorDate = new LocalDateTime(disclosureStart);
+            final DateTime fromDateTime = new DateTime(from);
+            while (cursorDate.toDateTime().isBefore(fromDateTime)) {
+                cursorDate = cursorDate.plus(periodFromFrequency(frequency));
+            }
+            return cursorDate.toDate();
+        } else {
+            return null;
+        }
+    }
+
+    private ReadablePeriod periodFromFrequency(TimeInterval interval) {
+        ReadablePeriod period = null;
+        switch (interval.getUnit()) {
+            case DAY:
+                period = Days.days(interval.getValue());
+                break;
+            case HOUR:
+                period = Hours.hours(interval.getValue());
+                break;
+            case MINUTE:
+                period = Minutes.minutes(interval.getValue());
+                break;
+            case SEC:
+                period = Seconds.seconds(interval.getValue());
+                break;
+            case MILLISEC:
+                throw new IllegalArgumentException("millis not supported");
+            default:
+                break;
+        }
+        return period;
+    }
 	public String getId() {
 		return id;
 	}

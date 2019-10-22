@@ -5,6 +5,7 @@ import static eu.trentorise.game.test_utils.Utils.date;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -43,6 +44,8 @@ import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.Settings;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
@@ -670,5 +673,25 @@ public class GameManagerTest {
 		Assert.assertTrue(gameStats.get(0).getQuantiles().get(9) == 2.0);
 	}
     
+    @Test
+    public void challengeDisclosureNotSetted() {
+        Game game = new Game();
+        Date from = date("2019-10-20T10:00:00");
+        Date disclosure = game.nextChallengeDisclosureDate(from);
+        assertThat(disclosure, is(nullValue()));
+    }
+
+    @Test
+    public void challengeDisclosureSetted() {
+        Game game = new Game();
+        Date disclosureStart = date("2019-10-02T15:00:00");
+        game.getSettings().getChallengeSettings().getDisclosure().setStartDate(disclosureStart);
+        game.getSettings().getChallengeSettings().getDisclosure()
+                .setFrequency(new TimeInterval(7, TimeUnit.DAY));
+        Date from = date("2019-10-20T10:00:00");
+        Date disclosure = game.nextChallengeDisclosureDate(from);
+        Date expectedDisclosure = date("2019-10-23T15:00:00");
+        assertThat(disclosure, is(expectedDisclosure));
+    }
 
 }

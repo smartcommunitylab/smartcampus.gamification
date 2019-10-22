@@ -211,7 +211,8 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
+        return converter
+                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true));
     }
 
     // Update a player
@@ -279,7 +280,7 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
-        PlayerState state = playerSrv.loadState(gameId, playerId, true, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, true, false, true);
         return state.challenges();
     }
 

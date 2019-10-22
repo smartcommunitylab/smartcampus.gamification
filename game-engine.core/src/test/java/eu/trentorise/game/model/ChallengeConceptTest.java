@@ -205,5 +205,42 @@ public class ChallengeConceptTest {
         assertThat(challenge.getFields().values(), hasSize(5));
     }
 
+    @Test
+    public void challenge_is_visible_by_default() {
+        ChallengeConcept challenge = new ChallengeConcept(ChallengeState.ASSIGNED);
+        assertThat(challenge.isHidden(), is(false));
+    }
+
+    @Test
+    public void challenge_setted_hidden() {
+        ChallengeConcept challenge = new ChallengeConcept(ChallengeState.ASSIGNED);
+        challenge.getVisibility().setHidden(true);
+        assertThat(challenge.isHidden(), is(true));
+    }
+
+    @Test
+    public void challenge_becomes_public() {
+        Date now = date("2019-10-17T10:00");
+        BDDMockito.given(clock.now()).willReturn(now);
+        Date disclosureDate = date("2019-10-17T08:00");
+        ChallengeConcept challenge = new ChallengeConcept(clock);
+        challenge.getVisibility().setHidden(true);
+        challenge.getVisibility().setDisclosureDate(disclosureDate);
+        assertThat(challenge.isHidden(), is(false));
+    }
+
+    @Test
+    public void challenge_stay_hidden() {
+        Date now = date("2019-10-17T10:00");
+        BDDMockito.given(clock.now()).willReturn(now);
+        Date disclosureDate = date("2019-10-17T12:00");
+        ChallengeConcept challenge = new ChallengeConcept(clock);
+        challenge.getVisibility().setHidden(true);
+        challenge.getVisibility().setDisclosureDate(disclosureDate);
+        assertThat(challenge.isHidden(), is(true));
+    }
+
+
+
 
 }

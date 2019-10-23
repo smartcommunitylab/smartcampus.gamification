@@ -2,10 +2,8 @@ package eu.trentorise.game.model;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -17,9 +15,6 @@ import eu.trentorise.game.model.core.GameConcept;
 
 @JsonAutoDetect(fieldVisibility = com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY)
 public class ChallengeConcept extends GameConcept {
-    private final static List<String> GROUP_CHALLENGES_MODELS =
-            Arrays.asList(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
-
     private String modelName;
     private Map<String, Object> fields = new HashMap<String, Object>();
     private Date start;
@@ -290,7 +285,7 @@ public class ChallengeConcept extends GameConcept {
 
     @JsonIgnore
     public boolean isGroupChallenge() {
-        return GROUP_CHALLENGES_MODELS.contains(modelName);
+        return GroupChallenge.MODELS.contains(modelName);
     }
 
     public ChallengeConcept forced() {

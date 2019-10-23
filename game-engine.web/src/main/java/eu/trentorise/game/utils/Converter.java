@@ -451,6 +451,7 @@ public class Converter {
             challengeAssignment.setModelName(dto.getModelName());
             challengeAssignment.setOrigin(dto.getOrigin());
             challengeAssignment.setPriority(dto.getPriority());
+            challengeAssignment.setHide(dto.isHide());
         }
         return challengeAssignment;
     }

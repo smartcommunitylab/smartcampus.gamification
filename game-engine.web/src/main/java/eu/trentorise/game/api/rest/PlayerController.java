@@ -184,8 +184,10 @@ public class PlayerController {
 
         // check if player already exists
         if (playerSrv.loadState(gameId, player.getPlayerId(), false, false) != null) {
-            throw new IllegalArgumentException(String.format("Player %s already exists in game %s",
-                    player.getPlayerId(), gameId));
+            final String msg = String.format("Player %s already exists in game %s",
+                    player.getPlayerId(), gameId);
+            LogHub.warn(gameId, logger, msg);
+            throw new IllegalArgumentException(msg);
         }
 
         Game game = gameSrv.loadGameDefinitionById(gameId);

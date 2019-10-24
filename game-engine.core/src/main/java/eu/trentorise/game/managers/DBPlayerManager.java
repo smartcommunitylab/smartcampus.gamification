@@ -976,16 +976,19 @@ public class DBPlayerManager implements PlayerService {
 						}
 						
 						// 5.2 check for single challenge assignment.
-						boolean isChallengeAssignedInFuture = false;
-						for (ChallengeConcept cp: loadState(gameId, ps.getPlayerId(), false, false).challenges()) {
-							if (cp.getState().equals(ChallengeState.ASSIGNED) && cp.getStart().after(now)) {
-								isChallengeAssignedInFuture = true;
-								break;
-							}
-						}						
-						if (!isChallengeAssignedInFuture) {
-							sps.add(ps.getPlayerId());	
-						}					
+                        // boolean isChallengeAssignedInFuture = false;
+                        // for (ChallengeConcept cp : loadState(gameId, ps.getPlayerId(), false,
+                        // false)
+                        // .challenges()) {
+                        // if (cp.getState().equals(ChallengeState.ASSIGNED)
+                        // && cp.getStart().after(now)) {
+                        // isChallengeAssignedInFuture = true;
+                        // break;
+                        // }
+                        // }
+                        // if (!isChallengeAssignedInFuture) {
+                            sps.add(ps.getPlayerId());
+                        // }
 					}
 				}
 				

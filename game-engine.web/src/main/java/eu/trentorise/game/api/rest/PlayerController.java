@@ -282,7 +282,7 @@ public class PlayerController {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
-        PlayerState state = playerSrv.loadState(gameId, playerId, true, false, true);
+        PlayerState state = playerSrv.loadState(gameId, playerId, true, true, true);
         return state.challenges();
     }
 

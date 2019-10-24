@@ -173,19 +173,20 @@ public class ChallengeManager {
                                     guest.getPlayerId(), LIMIT_INVITATIONS_AS_GUEST));
                 }
                 // check if player hasn't already ASSIGNED challenge starting in future
-                PlayerState state = playerSrv.loadState(invitation.getGameId(), guest.getPlayerId(),
-                        true, false);
-                Date now = new Date();
-                long assignedCounter =
-                        state.challenges().stream()
-                                .filter(c -> c.getState() == ChallengeState.ASSIGNED
-                                        && c.getStart() != null && c.getStart().after(now))
-                                .count();
-                if (assignedCounter > 0) {
-                    throw new IllegalArgumentException(String.format(
-                            "player %s already has ASSIGNED challenge in the invitation period",
-                            guest.getPlayerId()));
-                }
+                // PlayerState state = playerSrv.loadState(invitation.getGameId(),
+                // guest.getPlayerId(),
+                // true, false);
+                // Date now = new Date();
+                // long assignedCounter =
+                // state.challenges().stream()
+                // .filter(c -> c.getState() == ChallengeState.ASSIGNED
+                // && c.getStart() != null && c.getStart().after(now))
+                // .count();
+                // if (assignedCounter > 0) {
+                // throw new IllegalArgumentException(String.format(
+                // "player %s already has ASSIGNED challenge in the invitation period",
+                // guest.getPlayerId()));
+                // }
             });
 
             GroupChallenge groupChallenge = convert(invitation);

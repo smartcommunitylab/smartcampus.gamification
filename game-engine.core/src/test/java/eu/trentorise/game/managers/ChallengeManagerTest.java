@@ -648,6 +648,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(invitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_challenge_in_period() {
         gameSrv.saveGameDefinition(defineGame());
@@ -673,6 +674,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(drStrangeInvitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_challenge_in_period_3() {
         gameSrv.saveGameDefinition(defineGame());
@@ -698,6 +700,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(drStrangeInvitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_challenge_in_period_4() {
         gameSrv.saveGameDefinition(defineGame());
@@ -773,6 +776,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(drStrangeInvitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_never_ending_challenge_in_period() {
         gameSrv.saveGameDefinition(defineGame());
@@ -798,6 +802,7 @@ public class ChallengeManagerTest {
     }
 
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_never_ending_challenge_in_period_2() {
         gameSrv.saveGameDefinition(defineGame());

@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1583,6 +1584,7 @@ public class PlayerControllerTest {
 
 	}
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
 	@Test
 	public void read_system_playersState_singlechallenge_assigned_test() {
 		final String gameId = "PST_GAME";

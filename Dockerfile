@@ -3,6 +3,7 @@ FROM maven:3-jdk-8-alpine as build
 WORKDIR /app
 COPY ./game-engine.core /app/game-engine.core
 COPY ./game-engine.web /app/game-engine.web
+COPY ./run-configs/users.yml /app/run-configs/users.yml
 # install nodejs
 RUN apk --update add nodejs npm
 # install git client

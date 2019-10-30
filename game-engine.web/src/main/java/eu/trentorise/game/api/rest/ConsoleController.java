@@ -319,8 +319,7 @@ public class ConsoleController {
             throw new IllegalArgumentException(
                     String.format("player %s doesn't exist in game %s", playerId, gameId));
         } else {
-            state.getCustomData().putAll(customData);
-            state = playerSrv.updateCustomData(gameId, playerId, state.getCustomData());
+            state = playerSrv.updateCustomData(gameId, playerId, customData);
             return converter.convertPlayerState(state);
         }
     }

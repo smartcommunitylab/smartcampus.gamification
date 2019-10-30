@@ -5,6 +5,7 @@ import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.managers.ChallengeManager;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeInvitation;
+import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Inventory;
@@ -345,19 +347,31 @@ public class PlayerController {
         return playerSrv.choiceActivation(gameId, playerId, choice);
     }
 
-    // Read user custom data
-    // GET /data/game/{id}/player/{playerId}/custom
     @RequestMapping(method = RequestMethod.GET,
             value = "/data/game/{gameId}/player/{playerId}/custom",
             produces = {"application/json"})
     @ApiOperation(value = "Get player custom data")
-    public PlayerStateDTO readCustomData(@PathVariable String gameId,
+    public CustomData readCustomData(@PathVariable String gameId,
             @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
+        PlayerState state = playerSrv.loadState(gameId, playerId, true, false);
+        return converter.convertPlayerState(state).getCustomData();
+    }
 
-        throw new UnsupportedOperationException("Operation actually not supported");
-
+    @RequestMapping(method = RequestMethod.PUT,
+            value = "/data/game/{gameId}/player/{playerId}/custom",
+            consumes = {"application/json"}, produces = {"application/json"})
+    public PlayerStateDTO updateCustomData(@PathVariable String gameId,
+            @PathVariable String playerId, @RequestBody Map<String, Object> customData) {
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+        if (state == null) {
+            throw new IllegalArgumentException(
+                    String.format("player %s doesn't exist in game %s", playerId, gameId));
+        } else {
+            state = playerSrv.updateCustomData(gameId, playerId, customData);
+            return converter.convertPlayerState(state);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST,

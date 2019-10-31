@@ -39,4 +39,4 @@ EXPOSE 8010
 
 USER gamification
 CMD ["sh","-c","java -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=7777 -Dcom.sun.management.jmxremote.rmi.port=7777 -Dcom.sun.management.jmxremote.authenticate=false \
--Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -DlogFolder=${LOG_PATH} -jar game-engine.web.jar --spring.profiles.active=${SPRING_PROFILE}"]
+-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -DlogFolder=${LOG_PATH} -DstatsLoggerLevel=${STATS_LOGGER_LEVEL} -jar game-engine.web.jar --spring.profiles.active=${SPRING_PROFILE}"]

@@ -554,30 +554,33 @@ public class DBPlayerManager implements PlayerService {
         state.getState().add(challenge);
         persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
 
-        Notification challengeNotification = null;
-        if (challenge.getState() == ChallengeState.ASSIGNED) {
-            ChallengeAssignedNotification challengeAssignedNotification =
-                    new ChallengeAssignedNotification();
-            challengeAssignedNotification.setChallengeName(challenge.getName());
-            challengeAssignedNotification.setGameId(gameId);
-            challengeAssignedNotification.setPlayerId(playerId);
-            challengeAssignedNotification.setStartDate(challengeAssignment.getStart());
-            challengeAssignedNotification.setEndDate(challengeAssignment.getEnd());
-            challengeNotification = challengeAssignedNotification;
+        if (challenge.getVisibility().isHidden()) {
+            LogHub.info(gameId, logger, "challenge {} is hidden, notification will be not send",
+                    challenge.getName());
         } else {
-            ChallengeProposedNotification challengeProposedNotification =
-                    new ChallengeProposedNotification();
-            challengeProposedNotification.setChallengeName(challenge.getName());
-            challengeProposedNotification.setGameId(gameId);
-            challengeProposedNotification.setPlayerId(playerId);
-            challengeProposedNotification.setStartDate(challengeAssignment.getStart());
-            challengeProposedNotification.setEndDate(challengeAssignment.getEnd());
-            challengeNotification = challengeProposedNotification;
+            Notification challengeNotification = null;
+            if (challenge.getState() == ChallengeState.ASSIGNED) {
+                ChallengeAssignedNotification challengeAssignedNotification =
+                        new ChallengeAssignedNotification();
+                challengeAssignedNotification.setChallengeName(challenge.getName());
+                challengeAssignedNotification.setGameId(gameId);
+                challengeAssignedNotification.setPlayerId(playerId);
+                challengeAssignedNotification.setStartDate(challengeAssignment.getStart());
+                challengeAssignedNotification.setEndDate(challengeAssignment.getEnd());
+                challengeNotification = challengeAssignedNotification;
+            } else {
+                ChallengeProposedNotification challengeProposedNotification =
+                        new ChallengeProposedNotification();
+                challengeProposedNotification.setChallengeName(challenge.getName());
+                challengeProposedNotification.setGameId(gameId);
+                challengeProposedNotification.setPlayerId(playerId);
+                challengeProposedNotification.setStartDate(challengeAssignment.getStart());
+                challengeProposedNotification.setEndDate(challengeAssignment.getEnd());
+                challengeNotification = challengeProposedNotification;
+            }
+            notificationSrv.notificate(challengeNotification);
+            LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
         }
-
-        notificationSrv.notificate(challengeNotification);
-        LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
-
         Game game = gameSrv.loadGameDefinitionById(gameId);
         if (challenge.getState() == ChallengeState.ASSIGNED) {
             StatsLogger.logChallengeAssignment(game.getDomain(), gameId, playerId,

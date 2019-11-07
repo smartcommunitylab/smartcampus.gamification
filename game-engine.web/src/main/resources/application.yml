@@ -14,6 +14,7 @@ security:
       clientAuthenticationScheme: form
       preEstablishedRedirectUri: ${GAMIFICATION_REVERSEPROXY:}/gamification/login/aac
       useCurrentUri: false
+  usersFile: ${USERS_FILE:}
 
 oauth:
   serverUrl: ${AAC_URL:}

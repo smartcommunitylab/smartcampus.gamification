@@ -13,6 +13,8 @@ Platform is developed in Java using Apache Maven as build tool.
 
 You can use docker to have a quick running system.
 
+You can find configurations into the `gamification.env` file.
+
 1. run `docker-compose up` from the root folder.
 
 **NOTE**

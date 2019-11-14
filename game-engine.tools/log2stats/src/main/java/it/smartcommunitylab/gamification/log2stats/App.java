@@ -13,12 +13,13 @@ public class App {
 
     private static final Logger logger = Logger.getLogger(App.class);
 
-    private static final boolean OVERWRITE_STATS = true;
-    private static final String FOLDER_INPUT = "";
-    private static final String FOLDER_OUTPUT = "";
+    private static String FOLDER_INPUT = "";
+    private static String FOLDER_OUTPUT = "";
 
     public static void main(String[] args) throws IOException {
-        logger.info(String.format("overwrite_stats %s", OVERWRITE_STATS));
+        FOLDER_INPUT = args[0];
+        FOLDER_OUTPUT = args[1];
+
         logger.info(String.format("folder_input %s", FOLDER_INPUT));
         logger.info(String.format("folder_output %s", FOLDER_OUTPUT));
 
@@ -38,8 +39,8 @@ public class App {
                 logger.info(String.format("read logFile: %s", logFile.getName()));
                 String statsFileName = statsFileName(logFile.getName());
                 BufferedWriter writer = new BufferedWriter(
-                        new FileWriter(new File(FOLDER_OUTPUT, statsFileName), !OVERWRITE_STATS));
-                logger.info(String.format("write stasFile: %s", logFile.getName()));
+                        new FileWriter(new File(FOLDER_OUTPUT, statsFileName)));
+                logger.info(String.format("write stasFile: %s", statsFileName));
                 String row = null;
                 while ((row = reader.readLine()) != null) {
                     String result = analyzer.analyze(row);

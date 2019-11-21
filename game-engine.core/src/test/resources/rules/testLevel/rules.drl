@@ -1,5 +1,5 @@
 package eu.trentorise.game.model
-
+no-loop
 rule "my rule"
 when
     Player($levels : levels)

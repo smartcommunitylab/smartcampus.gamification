@@ -12,6 +12,7 @@ public class ChallengeAssignmentDTO {
 	private Date start;
 	private Date end;
     private int priority;
+    private boolean hide;
 
 	public String getModelName() {
 		return modelName;
@@ -75,6 +76,14 @@ public class ChallengeAssignmentDTO {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public boolean isHide() {
+        return hide;
+    }
+
+    public void setHide(boolean hide) {
+        this.hide = hide;
     }
 
 }

@@ -18,6 +18,7 @@ package eu.trentorise.game.managers;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobDetail;
@@ -47,7 +49,9 @@ import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.GameJobQuartz;
 import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.core.EngineTask;
 import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.repo.GamePersistence;
@@ -109,7 +113,11 @@ public class QuartzTaskManager extends TaskDataManager {
 		}
 	}
 
-	public void createTask(GameTask task, String gameId) {
+    public void createTask(GameTask task, String gameId) {
+        createTask(task, gameId, false);
+    }
+
+    private void createTask(GameTask task, String gameId, boolean upsert) {
 		try {
 
 			// start the scheduler
@@ -159,6 +167,9 @@ public class QuartzTaskManager extends TaskDataManager {
 			} else {
 				LogHub.info(gameId, logger, "Job task {} in group {} already exists", task.getName(),
 						ctx.getGameRefId());
+                if (upsert) {
+                    updateTask(task, gameId);
+                }
 			}
 
 		} catch (Exception e) {
@@ -174,7 +185,9 @@ public class QuartzTaskManager extends TaskDataManager {
 			// fix for version 2.2.1 of CronTrigger
 			String cron = fixCronExpression(cronExpression);
 			triggerFactory.setCronExpression(cron);
-			LogHub.info(null, logger, "fix cron expression for Quartz 2.2.1 issue: {}", cron);
+            LogHub.info(null, logger,
+                    "fix cron expression for Quartz 2.2.1 issue: {} for job {}:{}", cron,
+                    job.getKey().getGroup(), job.getKey().getName());
 			triggerFactory.setName(task.getName());
 			triggerFactory.setGroup(gameId);
 			triggerFactory.setJobDetail(job);
@@ -194,13 +207,14 @@ public class QuartzTaskManager extends TaskDataManager {
 			Date calculatedStart = calculateStartDate(task.getSchedule().getStart(), task.getSchedule().getPeriod());
 			LogHub.info(gameId, logger, "Set start task {} group {} on next triggerDate: {}", task.getName(), gameId,
 					calculatedStart);
-			int delayMillis = getDelayInMillis(task.getSchedule().getDelay());
-			calTrigger.setStartTime(new DateTime(calculatedStart).plusMillis(delayMillis).toDate());
+            long delayMillis = getDelayInMillis(task.getSchedule().getDelay());
+            calTrigger.setStartTime(
+                    new DateTime(calculatedStart).plus(Duration.millis(delayMillis)).toDate());
 			if (delayMillis != 0) {
 				LogHub.info(gameId, logger, "Delay setted: {} millis, recalculated triggerDate: {}", delayMillis,
 						calTrigger.getStartTime());
 			}
-			Repeat repeat = extractRepeat((int) task.getSchedule().getPeriod());
+            Repeat repeat = extractRepeat(task.getSchedule().getPeriod());
 			LogHub.debug(gameId, logger, "extract repeat every {} unit {}", repeat.getInterval(),
 					repeat.getUnit().toString());
             calTrigger.setRepeatInterval(repeat.getInterval());
@@ -217,14 +231,15 @@ public class QuartzTaskManager extends TaskDataManager {
         }
 		LocalDateTime start = new LocalDateTime(initialStart);
 		while (start.toDateTime().isBeforeNow()) {
-			start = start.plusMillis((int) period);
+            // start = start.plusMillis((int) period);
+            start = start.plus(Duration.millis(period));
 		}
 
 		return start.toDate();
 	}
 
-	private int getDelayInMillis(TimeInterval delay) {
-		int value = 0;
+    private long getDelayInMillis(TimeInterval delay) {
+        long value = 0;
 		if (delay != null) {
 			switch (delay.getUnit()) {
 			case DAY:
@@ -250,11 +265,11 @@ public class QuartzTaskManager extends TaskDataManager {
 		return value;
 	}
 
-	private Repeat extractRepeat(int period) {
-		final int MILLIS_IN_MINUTE = 60000;
-		final int MILLIS_IN_HOUR = 3600000;
-		final int MILLIS_IN_DAY = 86400000;
-		int result = period / MILLIS_IN_DAY;
+    private Repeat extractRepeat(long period) {
+        final long MILLIS_IN_MINUTE = 60000;
+        final long MILLIS_IN_HOUR = 3600000;
+        final long MILLIS_IN_DAY = 86400000;
+        long result = period / MILLIS_IN_DAY;
 		IntervalUnit unit = null;
 		if (result * MILLIS_IN_DAY == period) {
 			unit = IntervalUnit.DAY;
@@ -271,7 +286,7 @@ public class QuartzTaskManager extends TaskDataManager {
 				}
 			}
 		}
-		return new Repeat(result, unit);
+        return new Repeat((int) result, unit);
 
 	}
 
@@ -315,10 +330,6 @@ public class QuartzTaskManager extends TaskDataManager {
 				tokens[dayOfWeekPosition] = "?";
 			}
 			cron = StringUtils.join(tokens, " ");
-
-			// logger.info("fix cron expression for Quartz 2.2.1 issue: {}",
-			// cron);
-
 		}
 		return cron;
 	}
@@ -358,4 +369,39 @@ public class QuartzTaskManager extends TaskDataManager {
 			LogHub.error(gameId, logger, "SchedulerException: task {} not updated", task.getName());
 		}
 	}
+
+    @Override
+    public void createEngineTask(EngineTask engineTask) {
+        createTask(new EngineTaskAdapter(engineTask), null, true);
+    }
+
+    private class EngineTaskAdapter extends GameTask {
+        private EngineTask engineTask;
+
+        public EngineTaskAdapter(EngineTask engineTask) {
+            this.engineTask = engineTask;
+        }
+
+        @Override
+        public void execute(GameContext ctx) {
+            engineTask.execute();
+
+        }
+
+        @Override
+        public List<String> getExecutionActions() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public String getName() {
+            return engineTask.getName();
+        }
+
+        @Override
+        public TaskSchedule getSchedule() {
+            return engineTask.getSchedule();
+        }
+
+    }
 }

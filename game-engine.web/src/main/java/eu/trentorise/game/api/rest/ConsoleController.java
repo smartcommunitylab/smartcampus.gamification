@@ -86,6 +86,7 @@ public class ConsoleController {
         return converter.convertGame(res);
     }
 
+
     @RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}",
             produces = {"application/json"})
     public GameDTO readGame(@PathVariable String gameId) {
@@ -110,6 +111,15 @@ public class ConsoleController {
             r.add(converter.convertGame(g));
         }
         return r;
+    }
+
+    /*
+     * Maintain to permit platform version to work with old BASIC AUTH mode
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/game-by-domain",
+            produces = {"application/json"})
+    public List<GameDTO> readGamesByDomain() {
+        return readGames();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/game/{gameId}/point",
@@ -309,8 +319,7 @@ public class ConsoleController {
             throw new IllegalArgumentException(
                     String.format("player %s doesn't exist in game %s", playerId, gameId));
         } else {
-            state.getCustomData().putAll(customData);
-            state = playerSrv.updateCustomData(gameId, playerId, state.getCustomData());
+            state = playerSrv.updateCustomData(gameId, playerId, customData);
             return converter.convertPlayerState(state);
         }
     }

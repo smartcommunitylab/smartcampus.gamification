@@ -34,6 +34,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -86,6 +87,7 @@ import eu.trentorise.game.task.GeneralClassificationTask;
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
         TestMVCConfiguration.class},
         loader = AnnotationConfigWebContextLoader.class)
+@TestPropertySource(properties = {"game.createDemo=false"})
 @WebAppConfiguration
 public class RestAPITest {
 
@@ -129,7 +131,7 @@ public class RestAPITest {
         cal.add(Calendar.HOUR_OF_DAY, -2);
         gp.setExpiration(cal.getTimeInMillis());
         mongo.save(gp);
-        gameManager.taskDestroyer();
+        // gameManager.taskDestroyer();
 
         ExecutionDataDTO bean = new ExecutionDataDTO();
         bean.setActionId(ACTION);

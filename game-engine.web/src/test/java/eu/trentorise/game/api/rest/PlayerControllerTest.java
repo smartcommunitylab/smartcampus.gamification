@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -76,6 +78,7 @@ import eu.trentorise.game.services.PlayerService;
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
         TestMVCConfiguration.class},
         loader = AnnotationConfigWebContextLoader.class)
+@TestPropertySource(properties = {"game.createDemo=false"})
 @WebAppConfiguration
 public class PlayerControllerTest {
 
@@ -110,7 +113,7 @@ public class PlayerControllerTest {
     @Before
     public void cleanDB() {
         // clean mongo
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
     }
 
     private Game defineGame() {
@@ -182,7 +185,7 @@ public class PlayerControllerTest {
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -217,7 +220,7 @@ public class PlayerControllerTest {
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -252,7 +255,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
             assertThat(challenge.getPriority(), is(5));
         } catch (Exception e) {
@@ -317,7 +320,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -350,7 +353,7 @@ public class PlayerControllerTest {
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
             ChallengeConcept challenge =
-                    (ChallengeConcept) player.challenges().stream().findFirst().get();
+                    (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getOrigin(), is("MY_SYSTEM"));
         } catch (Exception e) {
             Assert.fail("Exception " + e.getMessage());
@@ -543,7 +546,7 @@ public class PlayerControllerTest {
 
             ChallengeConcept challenge = loaded.challenges().stream()
                     .filter(ch -> ch.getName().equals("instance_name")).findFirst()
-                    .get();
+                    .orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
 
         } catch (Exception e) {
@@ -1581,6 +1584,7 @@ public class PlayerControllerTest {
 
 	}
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
 	@Test
 	public void read_system_playersState_singlechallenge_assigned_test() {
 		final String gameId = "PST_GAME";

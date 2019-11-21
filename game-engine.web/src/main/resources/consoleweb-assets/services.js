@@ -19,9 +19,14 @@ angular.module('gamificationEngine.services', [])
 		// Games data operations factory
 		//var url = "https://dev.smartcommunitylab.it/gamification";
 		var url = "..";
-		
+
+		var setUrl = function (urlPrefix) {
+			url = urlPrefix;
+		}
+
 		// Get games
 		var getGames = function () {
+			
 			var deferred = $q.defer();
 
 			// If games haven't been already loaded
@@ -38,9 +43,29 @@ angular.module('gamificationEngine.services', [])
 			}
 			return deferred.promise;
 		};
+		
+		var getGamesByDomain = function () {
+			
+			var deferred = $q.defer();
+
+			// If games haven't been already loaded
+			if (!$rootScope.games || $rootScope.games.length === 0) {
+				// Load games
+				$http.get(url + `/console/game-by-domain`).success(function (data) {
+					$rootScope.games = data;
+					deferred.resolve();
+				}).error(function () {
+					deferred.reject();
+				});
+			} else {
+				deferred.resolve();
+			}
+			return deferred.promise;
+		};
 
 		// Get game by ID
 		var getGameById = function (id) {
+			
 			var deferred = $q.defer();
 
 			var game = {};
@@ -451,8 +476,21 @@ angular.module('gamificationEngine.services', [])
 			});
 			return deferred.promise;
 		}
+
+		// Get game by name
+		var userProfile = function () {
+			var deferred = $q.defer();
+			$http.get(`../userProfile/`).success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+
+			return deferred.promise;
+		};
 		
 		return {
+			getGamesByDomain,
 			'getGames': getGames,
 			'getGameById': getGameById,
 			'getGameByName': getGameByName,
@@ -478,7 +516,9 @@ angular.module('gamificationEngine.services', [])
 			'deleteIncrementalClassification' : deleteIncrementalClassification,
 			'editIncrementalClassification' : editIncrementalClassification,
 			'saveLevel' : saveLevel,
-			'deleteLevel' : deleteLevel
+			'deleteLevel': deleteLevel,
+			'userProfile': userProfile,
+			'setUrl': setUrl,
 		};
 	})
 	.factory('utilsFactory', function () {

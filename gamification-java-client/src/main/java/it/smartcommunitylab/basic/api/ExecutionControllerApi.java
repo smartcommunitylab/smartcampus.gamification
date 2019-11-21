@@ -44,7 +44,8 @@ import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.Pair;
 import it.smartcommunitylab.ProgressRequestBody;
 import it.smartcommunitylab.ProgressResponseBody;
-import it.smartcommunitylab.model.ExecutionDataDTO;
+import it.smartcommunitylab.model.ext.ExecutionDataDTO;
+
 
 public class ExecutionControllerApi {
     private ApiClient apiClient;

@@ -14,17 +14,22 @@
 
 package eu.trentorise.game.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import eu.trentorise.game.platform.PlatformAuthorizationInterceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -34,33 +39,50 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
  * resources publishing and restController functionalities
  */
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
-    /**
-     * If this mapping change, remember to align angular file app.js i18nextProvider if not angular
-     * internationalization will be broken
-     */
-    private static final String CONSOLE_URL_MAPPING = "consoleweb";
+	/**
+	 * If this mapping change, remember to align angular file app.js
+	 * i18nextProvider if not angular internationalization will be broken
+	 */
+	private static final String CONSOLE_URL_MAPPING = "consoleweb";
+	private static final String CONSOLE_LOGIN_URL_MAPPING = "login";
 
     @Autowired
     private HandlerInterceptor authInterceptor;
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(String.format("/%s/**", CONSOLE_URL_MAPPING))
-                .addResourceLocations("classpath:/consoleweb-assets/");
-    }
+    @Autowired
+    private Environment env;
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController(String.format("/%s/", CONSOLE_URL_MAPPING))
-                .setViewName("forward:index.html");
-    }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler(String.format("/%s/**", CONSOLE_URL_MAPPING))
+				.addResourceLocations("classpath:/consoleweb-assets/");
+		registry.addResourceHandler(String.format("/%s/**", CONSOLE_LOGIN_URL_MAPPING))
+				.addResourceLocations("classpath:/consoleweb-assets/");
+	}
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor).addPathPatterns("/gengine/**",
-                "/console/**", "/model/**", "/data/**", "/exec/**", "/notification/**");
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController(String.format("/%s/", CONSOLE_URL_MAPPING)).setViewName("forward:index.html");
+		registry.addViewController(String.format("/%s/", CONSOLE_LOGIN_URL_MAPPING)).setViewName("forward:login.html");
+	}
+
+	 @Bean
+     public HandlerInterceptor platformInterceptor() {
+     return new PlatformAuthorizationInterceptor();
+     }
+	
+	public void addInterceptors(InterceptorRegistry registry) {
+        String[] paths = null;
+        if (Arrays.stream(env.getActiveProfiles())
+                .anyMatch(profile -> profile.equals("platform"))) {
+            paths = new String[] {"/api/**"};
+        } else {
+            paths = new String[] {"/gengine/**", "/console/**", "/model/**", "/data/**", "/exec/**",
+                    "/notification/**"};
+        }
+        registry.addInterceptor(authInterceptor).addPathPatterns(paths);
     }
 
     @Override
@@ -71,7 +93,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         pageResolver.setOneIndexedParameters(true);
         pageResolver.setMaxPageSize(5000);
         argumentResolvers.add(pageResolver);
-        super.addArgumentResolvers(argumentResolvers);
     }
 
     @Autowired

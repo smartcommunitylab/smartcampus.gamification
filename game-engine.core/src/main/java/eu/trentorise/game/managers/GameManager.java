@@ -36,6 +36,7 @@ import org.perf4j.log4j.Log4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,13 +45,17 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.google.common.math.Quantiles;
 
+import eu.trentorise.game.core.ChallengeFailureTask;
+import eu.trentorise.game.core.CheckPerformanceGroupChallengeTask;
+import eu.trentorise.game.core.GameStatsTask;
+import eu.trentorise.game.core.JobDestroyerTask;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
@@ -65,6 +70,7 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.PointConcept.PeriodInstance;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.DBRule;
+import eu.trentorise.game.model.core.EngineTask;
 import eu.trentorise.game.model.core.FSRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -90,6 +96,18 @@ public class GameManager implements GameService {
     public static final String INTERNAL_ACTION_PREFIX = "scogei_";
 
     private static final long ONE_SECOND_IN_MILLIS = 1000;
+
+    @Value("${schedule.task.job-destroyer}")
+    private String jobDestroyerCronExpression;
+
+    @Value("${schedule.task.check-performance-group-challenge}")
+    private String checkPerformanceGroupChallengeCronExpression;
+
+    @Value("${schedule.task.challenge-failure}")
+    private String failureChallengeCronExpression;
+
+    @Value("${schedule.task.game-stats}")
+    private String gameStatsCronExpression;
 
     @Autowired
     private TaskService taskSrv;
@@ -123,10 +141,43 @@ public class GameManager implements GameService {
 
     @PostConstruct
     private void startup() {
-
         for (Game game : loadGames(true)) {
             startupTasks(game.getId());
         }
+
+        startEngineTasks();
+    }
+
+    private void startEngineTasks() {
+        List<EngineTask> engineTasks = new ArrayList<>();
+        TaskSchedule jobDestroyerSchedule = new TaskSchedule();
+        jobDestroyerSchedule.setCronExpression(jobDestroyerCronExpression);
+        EngineTask jobDestroyerTask =
+                new JobDestroyerTask(taskSrv, this, "taskDestroyer", jobDestroyerSchedule);
+        engineTasks.add(jobDestroyerTask);
+
+        TaskSchedule checkPerfomanceGroupChallengeSchedule = new TaskSchedule();
+        checkPerfomanceGroupChallengeSchedule
+                .setCronExpression(checkPerformanceGroupChallengeCronExpression);
+        EngineTask checkPerfomanceGroupChallengeTask =
+                new CheckPerformanceGroupChallengeTask(this,
+                "checkPerformanceGroupChallenge", checkPerfomanceGroupChallengeSchedule);
+        engineTasks.add(checkPerfomanceGroupChallengeTask);
+
+        TaskSchedule failureChallengeSchedule = new TaskSchedule();
+        failureChallengeSchedule.setCronExpression(failureChallengeCronExpression);
+        EngineTask failureChallengeTask =
+                new ChallengeFailureTask(this, "challengeFailure", failureChallengeSchedule);
+        engineTasks.add(failureChallengeTask);
+
+        TaskSchedule gameStatsSchedule = new TaskSchedule();
+        gameStatsSchedule.setCronExpression(gameStatsCronExpression);
+        EngineTask gameStatsTask = new GameStatsTask(this, "gameStats", gameStatsSchedule);
+        engineTasks.add(gameStatsTask);
+
+        engineTasks.forEach(task -> {
+            taskSrv.createEngineTask(task);
+        });
 
     }
 
@@ -153,7 +204,7 @@ public class GameManager implements GameService {
 
         boolean isChallengeChoiceTaskExistent = false;
         if (game.getId() != null) {
-            pers = gameRepo.findOne(game.getId());
+            pers = gameRepo.findById(game.getId()).orElse(null);
             if (pers != null) {
 
                 isChallengeChoiceTaskExistent = pers.getTasks() != null
@@ -234,7 +285,7 @@ public class GameManager implements GameService {
     }
 
     public Game loadGameDefinitionById(String gameId) {
-        GamePersistence gp = gameRepo.findOne(gameId);
+        GamePersistence gp = gameRepo.findById(gameId).orElse(null);
         return gp == null ? null : gp.toGame();
     }
 
@@ -311,7 +362,7 @@ public class GameManager implements GameService {
         if (url != null) {
             if (url.startsWith(DBRule.URL_PROTOCOL)) {
                 url = url.substring(DBRule.URL_PROTOCOL.length());
-                return ruleRepo.findOne(url);
+                return ruleRepo.findById(url).orElse(null);
             } else if (url.startsWith(ClasspathRule.URL_PROTOCOL)) {
                 url = url.substring(ClasspathRule.URL_PROTOCOL.length());
                 if (Thread.currentThread().getContextClassLoader().getResource(url) != null) {
@@ -328,29 +379,7 @@ public class GameManager implements GameService {
         return rule;
     }
 
-    @Scheduled(cron = "0 0 1 * * *")
-    public void taskDestroyer() {
-        LogHub.info(null, logger, "task destroyer invocation");
-        long deadline = System.currentTimeMillis();
-
-        List<Game> games = loadGames(true);
-        for (Game game : games) {
-            if (game.getExpiration() > 0 && game.getExpiration() < deadline) {
-                for (GameTask task : game.getTasks()) {
-                    if (taskSrv.destroyTask(task, game.getId())) {
-                        LogHub.info(game.getId(), logger, "Destroy task - {} - of game {}",
-                                task.getName(), game.getId());
-                    }
-                }
-                game.setTerminated(true);
-                saveGameDefinition(game);
-            }
-        }
-    }
-
-
-    @Scheduled(cron = "0 0 1 * * *")
-    public void conditionCheckPerformanceGroupChallengesTask() {
+    public void taskCheckPerformanceGroupChallenges() {
         LogHub.info(null, logger,
                 "Condition checker for best performance group challenges in action");
         long startOperation = System.currentTimeMillis();
@@ -382,8 +411,7 @@ public class GameManager implements GameService {
                 (System.currentTimeMillis() - startOperation)));
     }
 
-    @Scheduled(cron = "0 0 4 1/1 * ?")
-    public void challengeFailureTask() {
+    public void taskChallengeFailure() {
         LogHub.info(null, logger, "Challenge failure checker in action");
         final int pageSize = 50;
         long start = System.currentTimeMillis();
@@ -474,7 +502,7 @@ public class GameManager implements GameService {
         boolean res = false;
         if (g != null && url != null && url.indexOf(DBRule.URL_PROTOCOL) != -1) {
             String id = url.substring(5);
-            ruleRepo.delete(id);
+            ruleRepo.deleteById(id);
             res = g.getRules().remove(url);
             saveGameDefinition(g);
             kieContainerFactory.purgeContainer(gameId);
@@ -487,7 +515,7 @@ public class GameManager implements GameService {
     public boolean deleteGame(String gameId) {
         boolean res = false;
         if (gameId != null) {
-            gameRepo.delete(gameId);
+            gameRepo.deleteById(gameId);
             res = true;
         }
         return res;
@@ -511,7 +539,7 @@ public class GameManager implements GameService {
 
     @Override
     public boolean deleteChallengeModel(String gameId, String modelId) {
-        challengeModelRepo.delete(modelId);
+        challengeModelRepo.deleteById(modelId);
         return true;
     }
 
@@ -703,7 +731,6 @@ public class GameManager implements GameService {
     }
     
     
-    @Scheduled(cron = "0 0 1 * * *")
 	public void taskGameStats() {
 		/**
 		 * For every activeGame take settings -> statistics ( array of
@@ -845,8 +872,5 @@ public class GameManager implements GameService {
 		return mongoTemplate.find(q, GameStatistics.class);
 		
 	}
-	
-	
-
 
 }

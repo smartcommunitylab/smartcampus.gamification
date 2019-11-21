@@ -5,7 +5,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectId = mongodb.ObjectId;
 const Long = mongodb.Long;
 
-
+// example: mongodb://USER:PASSWORD@HOST:PORT/DBNAME?authSource=AUTHDB
 const dbSource = 'mongodb://localhost:27017';
 const dbTarget = 'mongodb://localhost:27017';
 

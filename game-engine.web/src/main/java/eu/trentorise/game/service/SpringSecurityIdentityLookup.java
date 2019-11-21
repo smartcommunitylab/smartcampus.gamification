@@ -14,11 +14,13 @@
 
 package eu.trentorise.game.service;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile({"sec", "platform"})
 public class SpringSecurityIdentityLookup implements IdentityLookupService {
 
     @Override

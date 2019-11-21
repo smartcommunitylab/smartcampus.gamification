@@ -104,7 +104,7 @@ public class GameEngineTest {
     }
 
     private void initClasspathRuleGame() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         gameManager.saveGameDefinition(defineGame().toGame());
 
         // add rules
@@ -125,7 +125,7 @@ public class GameEngineTest {
     }
 
     private void initDBRuleGame() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         gameManager.saveGameDefinition(defineGame().toGame());
 
         // add rules
@@ -255,7 +255,7 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 oneHourAgo, null);
 
-        PointConcept loaded = (PointConcept) p.getState().stream().findFirst().get();
+        PointConcept loaded = (PointConcept) p.getState().stream().findFirst().orElse(null);
 
         assertThat(loaded.getExecutionMoment(), equalTo(oneHourAgo));
         assertThat(loaded.getPeriodCurrentScore("hourly"), greaterThan(0d));
@@ -296,7 +296,7 @@ public class GameEngineTest {
 
     @Test
     public void mongoRule() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         Game game = new Game();
 
         game.setId(GAME);
@@ -324,7 +324,7 @@ public class GameEngineTest {
         game.setExpiration(cal.getTimeInMillis());
         game.setTerminated(false);
         gameManager.saveGameDefinition(game.toGame());
-        gameManager.taskDestroyer();
+        // gameManager.taskDestroyer();
         Game g = gameManager.loadGameDefinitionById(GAME);
         Assert.assertEquals(true, g.isTerminated());
     }
@@ -371,7 +371,7 @@ public class GameEngineTest {
         game.setExpiration(cal.getTimeInMillis());
         game.setTerminated(false);
         gameManager.saveGameDefinition(game.toGame());
-        gameManager.taskDestroyer();
+        // gameManager.taskDestroyer();
         Game g = gameManager.loadGameDefinitionById(GAME);
         Assert.assertEquals(false, g.isTerminated());
     }
@@ -585,7 +585,7 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         PointConcept green = (PointConcept) p.getState().stream()
-                .filter(gc -> gc.getName().equals("green")).findFirst().get();
+                .filter(gc -> gc.getName().equals("green")).findFirst().orElse(null);
         Assert.assertEquals(10d, green.getScore(), 0);
     }
 
@@ -615,7 +615,7 @@ public class GameEngineTest {
         p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         PointConcept green = (PointConcept) p.getState().stream()
-                .filter(gc -> gc.getName().equals("green")).findFirst().get();
+                .filter(gc -> gc.getName().equals("green")).findFirst().orElse(null);
         Assert.assertEquals(0d, green.getScore(), 0);
     }
 }

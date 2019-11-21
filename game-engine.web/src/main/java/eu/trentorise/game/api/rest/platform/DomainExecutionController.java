@@ -47,7 +47,7 @@ public class DomainExecutionController {
         gameId = decodePathVariable(gameId);
         actionId = decodePathVariable(actionId);
 
-        Game game = gameSrv.loadGameDefinitionByAction(actionId);
+        Game game = gameSrv.loadGameDefinitionById(gameId);
         if (game != null && game.isTerminated()) {
             try {
                 res.sendError(403, String.format("game %s is expired", game.getId()));

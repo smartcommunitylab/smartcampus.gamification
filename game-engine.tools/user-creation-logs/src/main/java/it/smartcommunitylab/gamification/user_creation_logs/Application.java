@@ -20,14 +20,16 @@ import org.apache.log4j.Logger;
 
 public class Application {
 	private static final Logger logger = Logger.getLogger(Application.class);
-	private static String GAME_ID = "57ac710fd4c6ac7872b0e7a1";
+    private static String GAME_ID = "";
 
 	public static void main(String[] args) throws IOException {
 		logger.info("start applicazione");
 		String logfolderPath = args[0];
 		String registrationUsersFile = args[1];
+        GAME_ID = args[2];
 		logger.info("folder log path: " + logfolderPath);
 		logger.info("file registrazione utenti: " + registrationUsersFile);
+        logger.info("gameId: " + GAME_ID);
 		elaboraRegistrazioni(logfolderPath, registrationUsersFile);
 
 	}
@@ -48,7 +50,7 @@ public class Application {
 			String inputLine;
 			try {
 				while ((inputLine = br.readLine()) != null) {
-					if (!inputLine.contains("socialId,personalData.timestamp")) {
+                    if (!inputLine.contains("playerId,personalData.timestamp")) {
 						logger.debug("inputLine: " + inputLine);
 						totalRegistration++;
 						valori = inputLine.split(",");

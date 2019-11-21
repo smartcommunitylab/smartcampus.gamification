@@ -114,6 +114,11 @@ public class DBPlayerManager implements PlayerService {
     private static final int PROPOSER_RANGE = 2;
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
+        return loadState(gameId, playerId, upsert, mergeGroupChallenges, false);
+    }
+
+    public PlayerState loadState(String gameId, String playerId, boolean upsert,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
         eu.trentorise.game.repo.StatePersistence state =
                 playerRepo.findByGameIdAndPlayerId(gameId, playerId);
         PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
@@ -122,7 +127,26 @@ public class DBPlayerManager implements PlayerService {
         if (mergeGroupChallenges) {
             res = mergeGroupChallenges(res, gameId);
         }
+
+        if (filterHiddenChallenges) {
+            res = filterHiddenChallenges(res);
+        }
+
         return res;
+    }
+
+    private PlayerState filterHiddenChallenges(PlayerState state) {
+        Stream<GameConcept> conceptNotChallenges = state.getState().stream()
+                .filter(concept -> concept.getClass() != ChallengeConcept.class);
+        Stream<ChallengeConcept> publicChallenges = state.getState().stream()
+                .filter(concept -> concept.getClass() == ChallengeConcept.class)
+                .map(concept -> (ChallengeConcept) concept)
+                .filter(challenge -> !challenge.isHidden());
+
+        state.setState(
+                Stream.concat(conceptNotChallenges, publicChallenges).collect(Collectors.toSet()));
+
+        return state;
     }
 
     public PlayerState saveState(PlayerState state) {
@@ -190,6 +214,7 @@ public class DBPlayerManager implements PlayerService {
         return persist(gameId, playerId, concepts, null, null, null, null);
     }
 
+    @SuppressWarnings("unused")
     private StatePersistence persistCustomData(String gameId, String playerId, CustomData data) {
         return persist(gameId, playerId, null, null, null, data, null);
     }
@@ -201,6 +226,7 @@ public class DBPlayerManager implements PlayerService {
         return persist(gameId, playerId, null, null, null, c, null);
     }
 
+    @SuppressWarnings("unused")
     private StatePersistence persistMetadata(String gameId, String playerId,
             Map<String, Object> metadata) {
         return persist(gameId, playerId, null, null, null, null, metadata);
@@ -260,7 +286,8 @@ public class DBPlayerManager implements PlayerService {
         return res;
     }
 
-    public Page<PlayerState> loadStates(String gameId, Pageable pageable, boolean mergeGroupChallenges) {
+    public Page<PlayerState> loadStates(String gameId, Pageable pageable,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
         StopWatch stopWatch =
                 LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
                         ? new Log4JStopWatch() : null;
@@ -275,6 +302,9 @@ public class DBPlayerManager implements PlayerService {
             if (mergeGroupChallenges) {
                 playerState = mergeGroupChallenges(playerState, gameId);
             }
+            if (filterHiddenChallenges) {
+                playerState = filterHiddenChallenges(playerState);
+            }
             result.add(playerState);
         }
         PageImpl<PlayerState> res =
@@ -283,6 +313,11 @@ public class DBPlayerManager implements PlayerService {
             stopWatch.stop("loadStates", "Loaded states of game " + gameId);
         }
         return res;
+    }
+
+    public Page<PlayerState> loadStates(String gameId, Pageable pageable,
+            boolean mergeGroupChallenges) {
+        return loadStates(gameId, pageable, mergeGroupChallenges, false);
     }
 
     // TODO: method use only by a test, investigate
@@ -298,8 +333,8 @@ public class DBPlayerManager implements PlayerService {
         return result;
     }
 
-    @Override
-    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges) {
+    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable,
+            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
         Page<StatePersistence> states =
                 playerRepo.findByGameIdAndPlayerIdLike(gameId, playerId, pageable);
         List<PlayerState> result = new ArrayList<PlayerState>();
@@ -309,11 +344,20 @@ public class DBPlayerManager implements PlayerService {
             if (mergeGroupChallenges) {
                 playerState = mergeGroupChallenges(playerState, gameId);
             }
+            if (filterHiddenChallenges) {
+                playerState = filterHiddenChallenges(playerState);
+            }
             result.add(playerState);
         }
         PageImpl<PlayerState> res =
                 new PageImpl<PlayerState>(result, pageable, states.getTotalElements());
         return res;
+    }
+
+    @Override
+    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable,
+            boolean mergeGroupChallenges) {
+        return loadStates(gameId, playerId, pageable, mergeGroupChallenges, false);
     }
 
     private PlayerState initConceptsStructure(PlayerState ps, String gameId) {
@@ -453,6 +497,8 @@ public class DBPlayerManager implements PlayerService {
         if (challengeAssignment.getModelName() == null) {
             throw new IllegalArgumentException("modelName cannot be null");
         }
+
+
         ChallengeModel model =
                 challengeModelRepo.findByGameIdAndName(gameId, challengeAssignment.getModelName());
         if (model == null) {
@@ -471,6 +517,7 @@ public class DBPlayerManager implements PlayerService {
                 }
             }
         }
+
 
         ChallengeConcept challenge = null;
         try {
@@ -492,36 +539,48 @@ public class DBPlayerManager implements PlayerService {
         challenge.setOrigin(challengeAssignment.getOrigin());
         challenge.setPriority(challengeAssignment.getPriority());
 
+        challenge.getVisibility().setHidden(challengeAssignment.isHide());
+
+        if (challenge.getVisibility().isHidden()) {
+            Game game = gameSrv.loadGameDefinitionById(gameId);
+            Date now = new Date();
+            Date disclosureDate = game.nextChallengeDisclosureDate(now);
+            challenge.getVisibility().setDisclosureDate(disclosureDate);
+        }
+
         // save in playerState
         PlayerState state = loadState(gameId, playerId, true, false);
 
         state.getState().add(challenge);
         persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
 
-        Notification challengeNotification = null;
-        if (challenge.getState() == ChallengeState.ASSIGNED) {
-            ChallengeAssignedNotification challengeAssignedNotification =
-                    new ChallengeAssignedNotification();
-            challengeAssignedNotification.setChallengeName(challenge.getName());
-            challengeAssignedNotification.setGameId(gameId);
-            challengeAssignedNotification.setPlayerId(playerId);
-            challengeAssignedNotification.setStartDate(challengeAssignment.getStart());
-            challengeAssignedNotification.setEndDate(challengeAssignment.getEnd());
-            challengeNotification = challengeAssignedNotification;
+        if (challenge.getVisibility().isHidden()) {
+            LogHub.info(gameId, logger, "challenge {} is hidden, notification will be not send",
+                    challenge.getName());
         } else {
-            ChallengeProposedNotification challengeProposedNotification =
-                    new ChallengeProposedNotification();
-            challengeProposedNotification.setChallengeName(challenge.getName());
-            challengeProposedNotification.setGameId(gameId);
-            challengeProposedNotification.setPlayerId(playerId);
-            challengeProposedNotification.setStartDate(challengeAssignment.getStart());
-            challengeProposedNotification.setEndDate(challengeAssignment.getEnd());
-            challengeNotification = challengeProposedNotification;
+            Notification challengeNotification = null;
+            if (challenge.getState() == ChallengeState.ASSIGNED) {
+                ChallengeAssignedNotification challengeAssignedNotification =
+                        new ChallengeAssignedNotification();
+                challengeAssignedNotification.setChallengeName(challenge.getName());
+                challengeAssignedNotification.setGameId(gameId);
+                challengeAssignedNotification.setPlayerId(playerId);
+                challengeAssignedNotification.setStartDate(challengeAssignment.getStart());
+                challengeAssignedNotification.setEndDate(challengeAssignment.getEnd());
+                challengeNotification = challengeAssignedNotification;
+            } else {
+                ChallengeProposedNotification challengeProposedNotification =
+                        new ChallengeProposedNotification();
+                challengeProposedNotification.setChallengeName(challenge.getName());
+                challengeProposedNotification.setGameId(gameId);
+                challengeProposedNotification.setPlayerId(playerId);
+                challengeProposedNotification.setStartDate(challengeAssignment.getStart());
+                challengeProposedNotification.setEndDate(challengeAssignment.getEnd());
+                challengeNotification = challengeProposedNotification;
+            }
+            notificationSrv.notificate(challengeNotification);
+            LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
         }
-
-        notificationSrv.notificate(challengeNotification);
-        LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
-
         Game game = gameSrv.loadGameDefinitionById(gameId);
         if (challenge.getState() == ChallengeState.ASSIGNED) {
             StatsLogger.logChallengeAssignment(game.getDomain(), gameId, playerId,
@@ -668,6 +727,8 @@ public class DBPlayerManager implements PlayerService {
             StatsLogger.logChallengeAccepted(game.getDomain(), gameId, playerId, executionId,
                     executionTime, executionTime, challengeName);
             java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
+
+            // refuse all SINGLE PROPOSED
             while (iterator.hasNext()) {
                 ChallengeConcept ch = iterator.next();
                 if (ch.getState() == ChallengeState.PROPOSED) {
@@ -680,25 +741,6 @@ public class DBPlayerManager implements PlayerService {
                 }
             }
             saveState(state);
-
-            List<GroupChallenge> otherProposedhallenges = groupChallengeRepo
-                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-            groupChallengeRepo.delete(otherProposedhallenges);
-            otherProposedhallenges.forEach(challenge -> {
-                challenge.updateState(ChallengeState.REFUSED);
-                archiveSrv.moveToArchive(gameId, challenge);
-                StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
-                        executionId, executionTime, executionTime, challenge.getInstanceName());
-
-                // send notifications to other participants
-                challenge.guests().stream().filter(g -> g.getPlayerId().equals(playerId))
-                        .findFirst().ifPresent(
-                                guest -> sendRefusedNotification(guest.getPlayerId(), challenge));
-                final Attendee proposer = challenge.proposer();
-                if (proposer != null && proposer.getPlayerId().equals(playerId)) {
-                    sendCanceledNotifications(challenge);
-                }
-            });
         }
 
         if (!found) {
@@ -709,6 +751,7 @@ public class DBPlayerManager implements PlayerService {
         return accepted;
     }
 
+    @SuppressWarnings("unused")
     private ChallengeInvitationRefusedNotification sendRefusedNotification(String guestId,
             GroupChallenge refused) {
         ChallengeInvitationRefusedNotification notification =
@@ -730,6 +773,7 @@ public class DBPlayerManager implements PlayerService {
         return notification;
     }
 
+    @SuppressWarnings("unused")
     private void sendCanceledNotifications(GroupChallenge canceled) {
         final Attendee proposer = canceled.proposer();
         final String gameId = canceled.getGameId();
@@ -750,69 +794,36 @@ public class DBPlayerManager implements PlayerService {
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
         PlayerState state = loadState(gameId, playerId, false, false);
-        Date now = new Date();
-        Optional<ChallengeConcept> maxPriorityChallenge = Optional.empty();
-        List<GroupChallenge> assignedGroupChallenges =
-                groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.ASSIGNED);
-        long assignedInFutureCounter = Stream.concat(state.challenges().stream()
-                .filter(challenge -> challenge.getState() == ChallengeState.ASSIGNED)
-                .filter(challenge -> challenge.getStart() == null
-                        || challenge.getStart().after(now)),
-                assignedGroupChallenges.stream().filter(challenge -> challenge.getStart() == null
-                        || challenge.getStart().after(now)))
-                .count();
-        if (assignedInFutureCounter < 1) {
-            List<GroupChallenge> proposedGroupChallenges = groupChallengeRepo
-                    .playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-            Stream<ChallengeConcept> challengeConceptsRepresentation = proposedGroupChallenges
-                    .stream().map(groupChallenge -> groupChallenge.toChallengeConcept(playerId));
+        Optional<ChallengeConcept> maxPriorityChallenge = state.challenges().stream()
+                .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
+                .max(new PriorityComparator());
 
-            maxPriorityChallenge = Stream.concat(
-                    state.challenges().stream()
-                    .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED),challengeConceptsRepresentation)
-                    .max(new PriorityComparator());
-            maxPriorityChallenge.ifPresent(challenge -> {
+        // assign PROPOSED SINGLE challenge with max priority and flag as forced
+        ChallengeConcept forcedChallenge = maxPriorityChallenge
+                .map(challenge -> challenge.updateState(ChallengeState.ASSIGNED).forced())
+                .orElse(null);
 
-                if (challenge.isGroupChallenge()) {
-                    proposedGroupChallenges.stream()
-                            .filter(groupChallenge -> groupChallenge.getGameId().equals(gameId)
-                                    && groupChallenge.getInstanceName()
-                                            .equals(challenge.getName())
-                                    && groupChallenge.getAttendees().stream().anyMatch(
-                                            attendee -> attendee.getPlayerId().equals(playerId)))
-                            .findFirst().ifPresent(selectedGroupChallenge -> {
-                                selectedGroupChallenge.updateState(ChallengeState.ASSIGNED);
-                                groupChallengeRepo.save(selectedGroupChallenge);
-                            });
-                } else {
-                    challenge.updateState(ChallengeState.ASSIGNED).forced();
-                }
-            });
-
-            if (maxPriorityChallenge.isPresent()) {
-                java.util.Iterator<ChallengeConcept> iterator = state.challenges().iterator();
-                while (iterator.hasNext()) {
-                    ChallengeConcept ch = iterator.next();
-                    if (ch.getState() == ChallengeState.PROPOSED) {
-                        ChallengeConcept removedChallenge =
-                                state.removeConcept(ch.getName(), ChallengeConcept.class);
-                        removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
-                        archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
-                    }
-                }
-
-                List<GroupChallenge> otherProposedhallenges =
-                        groupChallengeRepo.playerGroupChallenges(gameId, playerId,
-                        ChallengeState.PROPOSED);
-                groupChallengeRepo.delete(otherProposedhallenges);
-                otherProposedhallenges.forEach(challenge -> {
-                    challenge.updateState(ChallengeState.AUTO_DISCARDED);
-                    archiveSrv.moveToArchive(gameId, challenge);
+        // auto discarded all PROPOSED SINGLE challenges
+        state.challenges().stream()
+                .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
+                .forEach(proposed -> {
+                    ChallengeConcept removedChallenge =
+                            state.removeConcept(proposed.getName(), ChallengeConcept.class);
+                    removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
+                    archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
                 });
-            }
-            saveState(state);
-        }
-        return maxPriorityChallenge.orElse(null);
+
+        // auto discarded all PROPOSED GROUP challenges
+        List<GroupChallenge> otherProposedhallenges =
+                groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
+        groupChallengeRepo.deleteAll(otherProposedhallenges);
+        otherProposedhallenges.forEach(challenge -> {
+            challenge.updateState(ChallengeState.AUTO_DISCARDED);
+            archiveSrv.moveToArchive(gameId, challenge);
+        });
+
+        saveState(state);
+        return forcedChallenge;
     }
     
 
@@ -968,16 +979,19 @@ public class DBPlayerManager implements PlayerService {
 						}
 						
 						// 5.2 check for single challenge assignment.
-						boolean isChallengeAssignedInFuture = false;
-						for (ChallengeConcept cp: loadState(gameId, ps.getPlayerId(), false, false).challenges()) {
-							if (cp.getState().equals(ChallengeState.ASSIGNED) && cp.getStart().after(now)) {
-								isChallengeAssignedInFuture = true;
-								break;
-							}
-						}						
-						if (!isChallengeAssignedInFuture) {
-							sps.add(ps.getPlayerId());	
-						}					
+                        // boolean isChallengeAssignedInFuture = false;
+                        // for (ChallengeConcept cp : loadState(gameId, ps.getPlayerId(), false,
+                        // false)
+                        // .challenges()) {
+                        // if (cp.getState().equals(ChallengeState.ASSIGNED)
+                        // && cp.getStart().after(now)) {
+                        // isChallengeAssignedInFuture = true;
+                        // break;
+                        // }
+                        // }
+                        // if (!isChallengeAssignedInFuture) {
+                            sps.add(ps.getPlayerId());
+                        // }
 					}
 				}
 				
@@ -1010,7 +1024,8 @@ public class DBPlayerManager implements PlayerService {
         if (state != null) {
             Inventory result = state.getInventory().activateChoice(choice);
             saveState(state);
-            StatsLogger.logChoiceActived(game.getId(), gameId, playerId, executionId, executionTime,
+            StatsLogger.logChoiceActived(game.getDomain(), gameId, playerId, executionId,
+                    executionTime,
                     executionTime, choice.getName());
             return result;
         } else {

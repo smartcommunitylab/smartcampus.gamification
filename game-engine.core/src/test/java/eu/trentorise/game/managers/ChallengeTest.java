@@ -32,6 +32,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.core.ExecutionClock;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeModel;
@@ -46,6 +47,8 @@ import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
@@ -85,7 +88,7 @@ public class ChallengeTest {
     @Before
     public void setup() {
         // clean mongo
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         MockitoAnnotations.initMocks(this);
     }
 
@@ -569,14 +572,9 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        assertThat(
-                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
-                hasSize(0));
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
-        assertThat(forced.getName(), is("bestPerformance"));
-        assertThat(
-                groupChallengeRepo.playerGroupChallenges(GAME, "player", ChallengeState.ASSIGNED),
-                hasSize(1));
+        assertThat(forced.getName(), is("secondProposed"));
+
     }
 
     @Test
@@ -686,7 +684,7 @@ public class ChallengeTest {
         challengeSrv.save(groupChallenge);
 
         ChallengeConcept forced = playerSrv.forceChallengeChoice(GAME, "player");
-        assertThat(forced, is(nullValue()));
+        assertThat(forced.getName(), is("secondProposed"));
     }
 
     @Test
@@ -781,7 +779,7 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        gameSrv.challengeFailureTask();
+        gameSrv.taskChallengeFailure();
         assertThat(groupChallengeRepo.findAll().get(0).getState(), is(ChallengeState.FAILED));
     }
 
@@ -815,7 +813,7 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        gameSrv.challengeFailureTask();
+        gameSrv.taskChallengeFailure();
         List<GroupChallenge> groupChallenges = groupChallengeRepo.findAll();
         long failedCounter = groupChallenges.stream()
                 .filter(challenge -> challenge.getState() == ChallengeState.FAILED).count();
@@ -866,7 +864,7 @@ public class ChallengeTest {
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
         challengeSrv.save(groupChallenge);
 
-        gameSrv.challengeFailureTask();
+        gameSrv.taskChallengeFailure();
         List<GroupChallenge> groupChallenges = groupChallengeRepo.findAll();
         long failedCounter = groupChallenges.stream()
                 .filter(challenge -> challenge.getState() == ChallengeState.FAILED).count();
@@ -1068,6 +1066,88 @@ public class ChallengeTest {
         assertThat(prop.getChallengeScore(), is(12d));
     }
 
+
+    @Test
+    public void assign_a_hidden_challenge_in_game_without_settings() {
+        final String GAME = "noSettingsGame";
+        Game noSettingsGame = new Game(GAME);
+        gameSrv.saveGameDefinition(noSettingsGame);
+
+        // define challenge Model
+        ChallengeModel model1 = new ChallengeModel();
+        model1.setName("prize");
+        gameSrv.saveChallengeModel(GAME, model1);
+
+
+        ChallengeAssignment assignment = new ChallengeAssignment("prize", null, null,
+                "assigned", null, null);
+        assignment.setHide(true);
+        
+        ChallengeConcept challenge =
+                playerSrv.assignChallenge(GAME, PLAYER, assignment);
+        
+        assertThat(challenge.getVisibility().isHidden(), is(true));
+    }
+
+    /*
+     * Test actually commented because assignChallenge is bound to System actual time to calculate
+     * the next disclosure, so test is not repeatable
+     */
+    // @Test
+    public void assign_a_hidden_challenge_in_game_with_challenge_settings() {
+        final String GAME = "noSettingsGame";
+        Game noSettingsGame = new Game(GAME);
+
+        noSettingsGame.getSettings().getChallengeSettings().getDisclosure()
+                .setStartDate(date("2019-10-10T20:00:00"));
+        noSettingsGame.getSettings().getChallengeSettings().getDisclosure()
+                .setFrequency(new TimeInterval(1, TimeUnit.DAY));
+        gameSrv.saveGameDefinition(noSettingsGame);
+
+        // define challenge Model
+        ChallengeModel model1 = new ChallengeModel();
+        model1.setName("prize");
+        gameSrv.saveChallengeModel(GAME, model1);
+
+
+        ChallengeAssignment assignment =
+                new ChallengeAssignment("prize", null, null, "proposed", null, null);
+        assignment.setHide(true);
+
+        ChallengeConcept challenge = playerSrv.assignChallenge(GAME, PLAYER, assignment);
+
+        // NOTE: I modified clock of challenge to simulate behavior after disclosure
+        challenge.setClock(new ExecutionClock(date("2019-10-25T10:00:00").getTime()));
+        assertThat(challenge.isHidden(), is(false));
+        assertThat(challenge.getVisibility().getDisclosureDate(), is(date("2019-10-22T20:00:00")));
+    }
+
+    @Test
+    public void assign_a_public_challenge_in_game_with_challenge_settings() {
+        final String GAME = "noSettingsGame";
+        Game noSettingsGame = new Game(GAME);
+
+        noSettingsGame.getSettings().getChallengeSettings().getDisclosure()
+                .setStartDate(date("2019-10-10T20:00:00"));
+        noSettingsGame.getSettings().getChallengeSettings().getDisclosure()
+                .setFrequency(new TimeInterval(1, TimeUnit.DAY));
+        gameSrv.saveGameDefinition(noSettingsGame);
+
+        // define challenge Model
+        ChallengeModel model1 = new ChallengeModel();
+        model1.setName("prize");
+        gameSrv.saveChallengeModel(GAME, model1);
+
+
+        ChallengeAssignment assignment =
+                new ChallengeAssignment("prize", null, null, "proposed", null, null);
+        assignment.setHide(false);
+
+        ChallengeConcept challenge = playerSrv.assignChallenge(GAME, PLAYER, assignment);
+
+        assertThat(challenge.isHidden(), is(false));
+        assertThat(challenge.getVisibility().getDisclosureDate(), is(nullValue()));
+    }
 
 
     private Game defineGame() {

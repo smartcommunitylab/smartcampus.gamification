@@ -78,7 +78,7 @@ public class MainController {
     @ApiOperation(value = "Execute an action", notes = "Execute an action in a game")
     public void executeAction(@RequestBody ExecutionDataDTO data,
             HttpServletResponse res) {
-        Game game = gameSrv.loadGameDefinitionByAction(data.getActionId());
+        Game game = gameSrv.loadGameDefinitionById(data.getGameId());
         if (game != null && game.isTerminated()) {
             try {
                 res.sendError(403, String.format("game %s is expired", game.getId()));
@@ -103,7 +103,8 @@ public class MainController {
             @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        return converter.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true));
+        return converter
+                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",
@@ -122,9 +123,9 @@ public class MainController {
         List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
         Page<PlayerState> page = null;
         if (playerFilter == null) {
-            page = playerSrv.loadStates(gameId, pageable, true);
+            page = playerSrv.loadStates(gameId, pageable, true, true);
         } else {
-            page = playerSrv.loadStates(gameId, playerFilter, pageable, true);
+            page = playerSrv.loadStates(gameId, playerFilter, pageable, true, true);
         }
         for (PlayerState ps : page) {
             resList.add(converter.convertPlayerState(ps));

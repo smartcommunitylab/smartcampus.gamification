@@ -34,7 +34,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import it.smartcommunitylab.ApiException;
-import it.smartcommunitylab.model.ExecutionDataDTO;
+import it.smartcommunitylab.model.ext.ExecutionDataDTO;
 
 /**
  * API tests for DomainExecutionControllerApi

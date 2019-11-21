@@ -30,14 +30,17 @@
 
 package it.smartcommunitylab.oauth.api;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
-import it.smartcommunitylab.model.Collectionstring;
-import it.smartcommunitylab.model.TeamDTO;
+import it.smartcommunitylab.auth.OAuth;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 /**
  * API tests for DomainTeamControllerApi
@@ -46,7 +49,23 @@ import it.smartcommunitylab.model.TeamDTO;
 public class DomainTeamControllerApiTest {
 
     private final DomainTeamControllerApi api = new DomainTeamControllerApi();
-
+    private ApiClient apiClient;
+    private String baseUrl = "http://localhost:6060/gamification";
+    private String gameId = "5719e700e4b0bc2cc4677cb3";
+    private String domain = "demo-domain";
+    private String teamId = "1A";
+    
+    @Before
+    public void init() {
+    	 apiClient = new ApiClient(baseUrl);
+    	
+    	 // Configure OAuth2 access token for authorization: oauth2
+    	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 oauth2.setAccessToken("ef11debc-19cc-4477-84c4-15ce540075f7");
+    	 
+    	 // Configure basic auth. 
+    	 api.setApiClient(apiClient);
+    }
     
     /**
      * Add team member
@@ -111,15 +130,14 @@ public class DomainTeamControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws IllegalArgumentException 
      */
     @Test
-    public void readTeamMembersUsingGETTest() throws ApiException {
-        String domain = null;
-        String gameId = null;
-        String teamId = null;
-        Collectionstring response = api.readTeamMembersUsingGET(domain, gameId, teamId);
+    public void readTeamMembersUsingGETTest() throws ApiException, IllegalArgumentException, IOException {
+        List<String> response = api.readTeamMembersUsingGET(domain, gameId, teamId);
 
-        // TODO: test validations
+        System.out.println(response);
     }
     
     /**

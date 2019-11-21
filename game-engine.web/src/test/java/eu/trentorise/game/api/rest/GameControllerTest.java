@@ -24,6 +24,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -61,6 +62,8 @@ import eu.trentorise.game.services.PlayerService;
                 TestMVCConfiguration.class,
 },
         loader = AnnotationConfigWebContextLoader.class)
+
+@TestPropertySource(properties = {"game.createDemo=false"})
 @WebAppConfiguration
 public class GameControllerTest {
 
@@ -85,7 +88,7 @@ public class GameControllerTest {
 
     @Before
     public void cleanDB() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
     }
 
 
@@ -370,7 +373,7 @@ public class GameControllerTest {
 		try {
 			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
 					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
-					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+					.andExpect(jsonPath("$[0].quantiles.9", is(2.0d)));
 		} catch (Exception e) {
 			Assert.fail("exception: " + e.getMessage());
 		}
@@ -429,7 +432,7 @@ public class GameControllerTest {
 		try {
 			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
 					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
-					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+					.andExpect(jsonPath("$[0].quantiles.9", is(2.0d)));
 		} catch (Exception e) {
 			Assert.fail("exception: " + e.getMessage());
 		}
@@ -489,7 +492,7 @@ public class GameControllerTest {
 		try {
 			mocker.perform(getBuilder).andExpect(status().is(200)).andDo(print()).andExpect(jsonPath("$", hasSize(1)))
 					.andExpect(jsonPath("$[0].average", is(1.5d))).andExpect(jsonPath("$[0].variance", is(0.25d)))
-					.andExpect(jsonPath("$[0].quantiles[9]", is(2.0d)));
+					.andExpect(jsonPath("$[0].quantiles.9", is(2.0d)));
 		} catch (Exception e) {
 			Assert.fail("exception: " + e.getMessage());
 		}

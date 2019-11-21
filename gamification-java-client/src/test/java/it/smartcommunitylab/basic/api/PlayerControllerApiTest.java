@@ -30,11 +30,16 @@
 
 package it.smartcommunitylab.basic.api;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
@@ -47,10 +52,12 @@ import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
 import it.smartcommunitylab.model.PlayerBlackList;
-import it.smartcommunitylab.model.PlayerLevel;
 import it.smartcommunitylab.model.PlayerStateDTO;
-import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
+import it.smartcommunitylab.model.ext.GameConcept;
+import it.smartcommunitylab.model.ext.PlayerLevel;
+import it.smartcommunitylab.model.ext.PointConcept;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 /**
  * API tests for PlayerControllerApi
@@ -325,12 +332,20 @@ public class PlayerControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readStateUsingGETTest() throws ApiException {
+    public void readStateUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
         PlayerStateDTO response = api.readStateUsingGET(gameId, playerId);
-
-        // TODO: test validations
+        System.out.println(response.getGameId());
+       
+        Set<GameConcept> scores = response.getState().get("PointConcept");
+        scores.stream().filter(score -> "green leaves".equals(score.getName())).findFirst()
+        .map(concept -> (PointConcept) concept)
+        .ifPresent(score -> System.out.println(score.getScore()));
+       
     }
     
     /**
@@ -358,9 +373,11 @@ public class PlayerControllerApiTest {
      */
     @Test
     public void readTeamsByMemberUsingGET1Test() throws ApiException {
+    	gameId = "5719e700e4b0bc2cc4677cb3";
+    	playerId = "dff57c45-b3b0-419c-8435-3d8b488c45b8";
         List<TeamDTO> response = api.readTeamsByMemberUsingGET1(gameId, playerId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**

@@ -3,6 +3,7 @@ package eu.trentorise.game.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import eu.trentorise.game.model.ChallengeChoice.ChoiceState;
 import eu.trentorise.game.model.Inventory.ItemChoice.ChoiceType;
@@ -54,9 +55,13 @@ public class Inventory {
 
     public Inventory upgrade(Config levelConfig) {
         if (levelConfig != null) {
-            List<ChallengeChoice> levelChoices = levelConfig.getAvailableModels().stream()
-                    .map(availableModel -> new ChallengeChoice(availableModel,
-                            ChoiceState.AVAILABLE))
+            Stream<ChallengeChoice> availableChoiceStream = levelConfig.getAvailableModels()
+                    .stream().map(availableModel -> new ChallengeChoice(availableModel,
+                            ChoiceState.AVAILABLE));
+            Stream<ChallengeChoice> activeChoiceStream = levelConfig.getActiveModels().stream()
+                    .map(availableModel -> new ChallengeChoice(availableModel, ChoiceState.ACTIVE));
+            List<ChallengeChoice> levelChoices = Stream
+                    .concat(availableChoiceStream, activeChoiceStream)
                     .collect(Collectors.toList());
             challengeChoices.addAll(levelChoices);
             challengeActivationActions += levelConfig.getChoices();

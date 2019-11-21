@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -56,6 +57,7 @@ import net.minidev.json.parser.JSONParser;
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, NoSecurityConfig.class,
         TestMVCConfiguration.class},
         loader = AnnotationConfigWebContextLoader.class)
+@TestPropertySource(properties = {"game.createDemo=false"})
 @WebAppConfiguration
 public class ClassificationControllerTest {
 

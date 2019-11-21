@@ -83,7 +83,7 @@ public class ChallengeManagerTest {
 
     @Before
     public void setup() {
-        mongo.getDb().dropDatabase();
+        mongo.getDb().drop();
         MockitoAnnotations.initMocks(this);
     }
 
@@ -432,7 +432,7 @@ public class ChallengeManagerTest {
         long assignedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         assertThat(assignedCount, is(1L));
-        assertThat(proposedCount, is(0L));
+        assertThat(proposedCount, is(2L));
     }
 
 
@@ -484,14 +484,14 @@ public class ChallengeManagerTest {
         long assignedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         assertThat(assignedCount, is(1L));
-        assertThat(proposedCount, is(0L));
+        assertThat(proposedCount, is(2L));
         PlayerState antManState = playerSrv.loadState("GAME", "ant-man", false, true);
         long antManAssignedCounter = antManState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         long antManProposedCounter = antManState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
         assertThat(antManAssignedCounter, is(1L));
-        assertThat(antManProposedCounter, is(0L));
+        assertThat(antManProposedCounter, is(1L));
     }
 
 
@@ -648,6 +648,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(invitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_challenge_in_period() {
         gameSrv.saveGameDefinition(defineGame());
@@ -673,6 +674,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(drStrangeInvitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_challenge_in_period_3() {
         gameSrv.saveGameDefinition(defineGame());
@@ -698,6 +700,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(drStrangeInvitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_challenge_in_period_4() {
         gameSrv.saveGameDefinition(defineGame());
@@ -773,6 +776,7 @@ public class ChallengeManagerTest {
         challengeManager.inviteToChallenge(drStrangeInvitation);
     }
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_never_ending_challenge_in_period() {
         gameSrv.saveGameDefinition(defineGame());
@@ -798,6 +802,7 @@ public class ChallengeManagerTest {
     }
 
 
+    @Ignore // requirement is changed: you can invite a guest with 1 ASSIGNED single challenge
     @Test(expected = IllegalArgumentException.class)
     public void invitation_ant_man_with_an_assigned_never_ending_challenge_in_period_2() {
         gameSrv.saveGameDefinition(defineGame());

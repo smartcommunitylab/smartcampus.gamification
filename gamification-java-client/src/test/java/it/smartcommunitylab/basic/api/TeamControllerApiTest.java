@@ -30,14 +30,21 @@
 
 package it.smartcommunitylab.basic.api;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
-import it.smartcommunitylab.model.Collectionstring;
-import it.smartcommunitylab.model.TeamDTO;
+import it.smartcommunitylab.auth.HttpBasicAuth;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 /**
  * API tests for TeamControllerApi
@@ -46,7 +53,31 @@ import it.smartcommunitylab.model.TeamDTO;
 public class TeamControllerApiTest {
 
     private final TeamControllerApi api = new TeamControllerApi();
+    private ApiClient apiClient;
+    private final String userName = "long-rovereto";
+    private final String password = "rov";
+    private String baseUrl = "http://localhost:6060/gamification";
+    private String gameId = "5719e700e4b0bc2cc4677cb3";
+    private String domain = "demo-domain";
+    private String teamId = "1A";
+    private String playerId = "1A";
+    
+    @Before
+    public void init() {
+    	 apiClient = new ApiClient(baseUrl);
+    	
+    	 // Configure OAuth2 access token for authorization: oauth2
+    	 // OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+    	 // oauth2.setAccessToken("YOUR_ACCESS_TOKEN");
+    	 
+    	 // Configure basic auth. 
+    	 HttpBasicAuth basic = (HttpBasicAuth) apiClient.getAuthentication("basic");
+    	 basic.setUsername(userName);
+    	 basic.setPassword(password);
 
+    	 api.setApiClient(apiClient);
+    }
+    
     
     /**
      * Add team member
@@ -58,10 +89,9 @@ public class TeamControllerApiTest {
      */
     @Test
     public void addTeamMemberUsingPUTTest() throws ApiException {
-        String gameId = null;
-        String teamId = null;
-        String playerId = null;
-        List<String> members = null;
+       
+        List<String> members = new ArrayList<String>();
+        members.add("M1");
         api.addTeamMemberUsingPUT(gameId, teamId, playerId, members);
 
         // TODO: test validations
@@ -108,14 +138,15 @@ public class TeamControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readTeamMembersUsingGETTest() throws ApiException {
-        String gameId = null;
-        String teamId = null;
-        Collectionstring response = api.readTeamMembersUsingGET(gameId, teamId);
+    public void readTeamMembersUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
+        List<String> response = api.readTeamMembersUsingGET(gameId, teamId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**

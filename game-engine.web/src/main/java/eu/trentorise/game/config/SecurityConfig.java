@@ -30,37 +30,33 @@ import eu.trentorise.game.api.rest.AuthorizationInterceptor;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.AuthUser;
 import eu.trentorise.game.sec.UsersProvider;
-import eu.trentorise.game.service.IdentityLookupService;
-import eu.trentorise.game.service.SpringSecurityIdentityLookup;
 
 @Configuration
 @EnableWebSecurity
-@Profile({"sec", "platform"})
+@Profile({"sec"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
 
     @Autowired
     private UsersProvider usersProvider;
+    
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-    @Bean
-    public IdentityLookupService identityLookup() {
-        return new SpringSecurityIdentityLookup();
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+    	for (AuthUser user : usersProvider.getUsers()) {
+            auth.inMemoryAuthentication().withUser(user.getUsername()).password("{noop}"+user.getPassword())
+                    .roles(user.getRole());
+            LogHub.info(null, logger, "Loaded auth user {}", user.getUsername());
+        }
     }
 
     @Bean
     public HandlerInterceptor authInterceptor() {
         return new AuthorizationInterceptor();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-        for (AuthUser user : usersProvider.getUsers()) {
-            auth.inMemoryAuthentication().withUser(user.getUsername()).password(user.getPassword())
-                    .roles(user.getRole());
-            LogHub.info(null, logger, "Loaded auth user {}", user.getUsername());
-        }
     }
 
     @Override
@@ -71,10 +67,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/gengine/**", "/console/**", "/model/**", "/data/**", "/exec/**",
-                        "/notification/**")
+                        "/notification/**", "/userProfile/**")
                 .access("hasRole('ROLE_ADMIN')").and().httpBasic();
 
-        http.authorizeRequests().antMatchers("/api/**").anonymous();
+        http.logout().clearAuthentication(true).invalidateHttpSession(true).logoutSuccessHandler(customLogoutSuccessHandler);
 
 
         // disable csrf permits POST http call to DomainConsoleController

@@ -30,10 +30,15 @@
 
 package it.smartcommunitylab.oauth.api;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
@@ -43,10 +48,12 @@ import it.smartcommunitylab.model.ChallengeConcept;
 import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
-import it.smartcommunitylab.model.PlayerLevel;
 import it.smartcommunitylab.model.PlayerStateDTO;
-import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
+import it.smartcommunitylab.model.ext.GameConcept;
+import it.smartcommunitylab.model.ext.PlayerLevel;
+import it.smartcommunitylab.model.ext.PointConcept;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 /**
  * API tests for DomainPlayerControllerApi
@@ -59,7 +66,7 @@ public class DomainPlayerControllerApiTest {
     private ApiClient apiClient;
     private String baseUrl = "http://localhost:6060/gamification";
     private String gameId = "57ac710fd4c6ac7872b0e7a1";
-    private String playerId = "24153";
+    private String playerId = "341";
     private String conceptName = "green leaves";
     private String domain = "demo-domain";
     
@@ -69,7 +76,7 @@ public class DomainPlayerControllerApiTest {
     	
     	 // Configure OAuth2 access token for authorization: oauth2
     	 OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
-    	 oauth2.setAccessToken("f2f6ed19-cedf-4065-9dd9-262bfebbc0df");
+    	 oauth2.setAccessToken("ef11debc-19cc-4477-84c4-15ce540075f7");
     	 
     	 // Configure basic auth. 
     	 api.setApiClient(apiClient);
@@ -127,7 +134,7 @@ public class DomainPlayerControllerApiTest {
         ChallengeAssignmentDTO challengeData = null;
         String gameId = null;
         String playerId = null;
-        api.assignChallengeUsingPOST(challengeData, gameId, playerId);
+        api.assignChallengeUsingPOST(domain, challengeData, gameId, playerId);
 
         // TODO: test validations
     }
@@ -144,7 +151,7 @@ public class DomainPlayerControllerApiTest {
     public void createPlayerUsingPOST1Test() throws ApiException {
         String gameId = null;
         PlayerStateDTO player = null;
-        api.createPlayerUsingPOST1(gameId, player);
+        api.createPlayerUsingPOST1(domain, gameId, player);
 
         // TODO: test validations
     }
@@ -161,7 +168,7 @@ public class DomainPlayerControllerApiTest {
     public void deletePlayerUsingDELETE1Test() throws ApiException {
         String gameId = null;
         String playerId = null;
-        api.deletePlayerUsingDELETE1(gameId, playerId);
+        api.deletePlayerUsingDELETE1(domain, gameId, playerId);
 
         // TODO: test validations
     }
@@ -195,7 +202,7 @@ public class DomainPlayerControllerApiTest {
     public void readCustomDataUsingGETTest() throws ApiException {
         String gameId = null;
         String playerId = null;
-        PlayerStateDTO response = api.readCustomDataUsingGET(gameId, playerId);
+        PlayerStateDTO response = api.readCustomDataUsingGET(domain, gameId, playerId);
 
         // TODO: test validations
     }
@@ -227,7 +234,7 @@ public class DomainPlayerControllerApiTest {
     public void readLevelsUsingGETTest() throws ApiException {
         String gameId = null;
         String playerId = null;
-        List<PlayerLevel> response = api.readLevelsUsingGET(gameId, playerId);
+        List<PlayerLevel> response = api.readLevelsUsingGET(domain, gameId, playerId);
 
         // TODO: test validations
     }
@@ -242,9 +249,7 @@ public class DomainPlayerControllerApiTest {
      */
     @Test
     public void readPlayerUsingGETTest() throws ApiException {
-        String gameId = null;
-        String playerId = null;
-        PlayerStateDTO response = api.readPlayerUsingGET(gameId, playerId);
+        PlayerStateDTO response = api.readPlayerUsingGET(domain, gameId, playerId);
 
         // TODO: test validations
     }
@@ -256,14 +261,19 @@ public class DomainPlayerControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readStateUsingGETTest() throws ApiException {
-        String gameId = null;
-        String playerId = null;
-        PlayerStateDTO response = api.readStateUsingGET(gameId, playerId);
-
-        // TODO: test validations
+    public void readStateUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
+        PlayerStateDTO response = api.readStateUsingGET(domain, gameId, playerId);
+        System.out.println(response.getGameId());
+        
+        Set<GameConcept> scores = response.getState().get("PointConcept");
+        scores.stream().filter(score -> "green leaves".equals(score.getName())).findFirst()
+        .map(concept -> (PointConcept) concept)
+        .ifPresent(score -> System.out.println(score.getScore()));
     }
     
     /**
@@ -276,11 +286,11 @@ public class DomainPlayerControllerApiTest {
      */
     @Test
     public void readTeamsByMemberUsingGET1Test() throws ApiException {
-        String gameId = null;
-        String playerId = null;
-        List<TeamDTO> response = api.readTeamsByMemberUsingGET1(gameId, playerId);
+    	gameId = "5719e700e4b0bc2cc4677cb3";
+    	playerId = "dff57c45-b3b0-419c-8435-3d8b488c45b8";
+        List<TeamDTO> response = api.readTeamsByMemberUsingGET1(domain, gameId, playerId);
 
-        // TODO: test validations
+        System.out.println(response.size());
     }
     
     /**
@@ -297,7 +307,7 @@ public class DomainPlayerControllerApiTest {
         WrapperQuery query = null;
         String page = null;
         String size = null;
-        PagePlayerStateDTO response = api.searchByQueryUsingPOST(gameId, query, page, size);
+        PagePlayerStateDTO response = api.searchByQueryUsingPOST(domain, gameId, query, page, size);
 
         // TODO: test validations
     }
@@ -314,7 +324,7 @@ public class DomainPlayerControllerApiTest {
     public void updatePlayerUsingPUTTest() throws ApiException {
         String gameId = null;
         String playerId = null;
-        api.updatePlayerUsingPUT(gameId, playerId);
+        api.updatePlayerUsingPUT(domain, gameId, playerId);
 
         // TODO: test validations
     }

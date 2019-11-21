@@ -3,28 +3,29 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.smartcommunitylab.gamification</groupId>
 	<artifactId>game-engine.test</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>5.1.2.RELEASE</spring.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>4.1.1.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.12</version>
 		</dependency>
 
 		<dependency>
 			<groupId>it.smartcommunitylab.gamification</groupId>
 			<artifactId>game-engine.core</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>4.0.0-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>
@@ -108,6 +109,35 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>full-test-jar</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>3.1.1</version>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id> <!-- this is used for inheritance merges -->
+								<phase>package</phase> <!-- bind to the packaging phase -->
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 	<repositories>
 		<repository>
 			<id>SmartCommunityLab</id>

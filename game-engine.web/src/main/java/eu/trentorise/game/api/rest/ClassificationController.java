@@ -447,12 +447,12 @@ public class ClassificationController {
     }
 
     private PageRequest createPageRequest(int page, int size) {
-        PageRequest pageRequest = null;
+        PageRequest pageRequest = PageRequest.of(0, 20);
         if (page != -1 && size != -1) {
             // put page-1 to maintain same behavior of pageable config ( start
             // page
             // from index 1)
-            pageRequest = new PageRequest(page - 1, size);
+            pageRequest = PageRequest.of(page - 1, size);
         }
         return pageRequest;
     }

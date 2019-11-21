@@ -136,7 +136,7 @@ Name | Type | Description  | Notes
 
 <a name="assignChallengeUsingPOST"></a>
 # **assignChallengeUsingPOST**
-> assignChallengeUsingPOST(challengeData, gameId, playerId)
+> assignChallengeUsingPOST(domain, challengeData, gameId, playerId)
 
 Assign challenge
 
@@ -156,11 +156,12 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 ChallengeAssignmentDTO challengeData = new ChallengeAssignmentDTO(); // ChallengeAssignmentDTO | challengeData
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    apiInstance.assignChallengeUsingPOST(challengeData, gameId, playerId);
+    apiInstance.assignChallengeUsingPOST(domain, challengeData, gameId, playerId);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#assignChallengeUsingPOST");
     e.printStackTrace();
@@ -171,6 +172,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **challengeData** | [**ChallengeAssignmentDTO**](ChallengeAssignmentDTO.md)| challengeData |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
@@ -190,7 +192,7 @@ null (empty response body)
 
 <a name="createPlayerUsingPOST1"></a>
 # **createPlayerUsingPOST1**
-> createPlayerUsingPOST1(gameId, player)
+> createPlayerUsingPOST1(domain, gameId, player)
 
 Create player
 
@@ -210,10 +212,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 PlayerStateDTO player = new PlayerStateDTO(); // PlayerStateDTO | player
 try {
-    apiInstance.createPlayerUsingPOST1(gameId, player);
+    apiInstance.createPlayerUsingPOST1(domain, gameId, player);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#createPlayerUsingPOST1");
     e.printStackTrace();
@@ -224,6 +227,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **player** | [**PlayerStateDTO**](PlayerStateDTO.md)| player |
 
@@ -242,7 +246,7 @@ null (empty response body)
 
 <a name="deletePlayerUsingDELETE1"></a>
 # **deletePlayerUsingDELETE1**
-> deletePlayerUsingDELETE1(gameId, playerId)
+> deletePlayerUsingDELETE1(domain, gameId, playerId)
 
 Delete player state
 
@@ -262,10 +266,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    apiInstance.deletePlayerUsingDELETE1(gameId, playerId);
+    apiInstance.deletePlayerUsingDELETE1(domain, gameId, playerId);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#deletePlayerUsingDELETE1");
     e.printStackTrace();
@@ -276,6 +281,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
@@ -349,7 +355,7 @@ Name | Type | Description  | Notes
 
 <a name="readCustomDataUsingGET"></a>
 # **readCustomDataUsingGET**
-> PlayerStateDTO readCustomDataUsingGET(gameId, playerId)
+> PlayerStateDTO readCustomDataUsingGET(domain, gameId, playerId)
 
 Get player custom data
 
@@ -369,10 +375,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    PlayerStateDTO result = apiInstance.readCustomDataUsingGET(gameId, playerId);
+    PlayerStateDTO result = apiInstance.readCustomDataUsingGET(domain, gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readCustomDataUsingGET");
@@ -384,6 +391,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
@@ -457,7 +465,7 @@ Name | Type | Description  | Notes
 
 <a name="readLevelsUsingGET"></a>
 # **readLevelsUsingGET**
-> List&lt;PlayerLevel&gt; readLevelsUsingGET(gameId, playerId)
+> List&lt;PlayerLevel&gt; readLevelsUsingGET(domain, gameId, playerId)
 
 Get player levels
 
@@ -477,10 +485,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    List<PlayerLevel> result = apiInstance.readLevelsUsingGET(gameId, playerId);
+    List<PlayerLevel> result = apiInstance.readLevelsUsingGET(domain, gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readLevelsUsingGET");
@@ -492,6 +501,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
@@ -510,7 +520,7 @@ Name | Type | Description  | Notes
 
 <a name="readPlayerUsingGET"></a>
 # **readPlayerUsingGET**
-> PlayerStateDTO readPlayerUsingGET(gameId, playerId)
+> PlayerStateDTO readPlayerUsingGET(domain, gameId, playerId)
 
 Get player state
 
@@ -530,10 +540,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    PlayerStateDTO result = apiInstance.readPlayerUsingGET(gameId, playerId);
+    PlayerStateDTO result = apiInstance.readPlayerUsingGET(domain, gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readPlayerUsingGET");
@@ -545,6 +556,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
@@ -563,7 +575,7 @@ Name | Type | Description  | Notes
 
 <a name="readStateUsingGET"></a>
 # **readStateUsingGET**
-> PlayerStateDTO readStateUsingGET(gameId, playerId)
+> PlayerStateDTO readStateUsingGET(domain, gameId, playerId)
 
 Get player state
 
@@ -583,10 +595,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    PlayerStateDTO result = apiInstance.readStateUsingGET(gameId, playerId);
+    PlayerStateDTO result = apiInstance.readStateUsingGET(domain, gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readStateUsingGET");
@@ -598,6 +611,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
@@ -616,7 +630,7 @@ Name | Type | Description  | Notes
 
 <a name="readTeamsByMemberUsingGET1"></a>
 # **readTeamsByMemberUsingGET1**
-> List&lt;TeamDTO&gt; readTeamsByMemberUsingGET1(gameId, playerId)
+> List&lt;TeamDTO&gt; readTeamsByMemberUsingGET1(domain, gameId, playerId)
 
 Get player teams
 
@@ -636,10 +650,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    List<TeamDTO> result = apiInstance.readTeamsByMemberUsingGET1(gameId, playerId);
+    List<TeamDTO> result = apiInstance.readTeamsByMemberUsingGET1(domain, gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readTeamsByMemberUsingGET1");
@@ -651,6 +666,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
@@ -669,7 +685,7 @@ Name | Type | Description  | Notes
 
 <a name="searchByQueryUsingPOST"></a>
 # **searchByQueryUsingPOST**
-> PagePlayerStateDTO searchByQueryUsingPOST(gameId, query, page, size)
+> PagePlayerStateDTO searchByQueryUsingPOST(domain, gameId, query, page, size)
 
 Search player states
 
@@ -689,12 +705,13 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 WrapperQuery query = new WrapperQuery(); // WrapperQuery | query
 String page = "page_example"; // String | Results page you want to retrieve 
 String size = "size_example"; // String | Number of records per page.
 try {
-    PagePlayerStateDTO result = apiInstance.searchByQueryUsingPOST(gameId, query, page, size);
+    PagePlayerStateDTO result = apiInstance.searchByQueryUsingPOST(domain, gameId, query, page, size);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#searchByQueryUsingPOST");
@@ -706,6 +723,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **query** | [**WrapperQuery**](WrapperQuery.md)| query |
  **page** | **String**| Results page you want to retrieve  | [optional]
@@ -726,7 +744,7 @@ Name | Type | Description  | Notes
 
 <a name="updatePlayerUsingPUT"></a>
 # **updatePlayerUsingPUT**
-> updatePlayerUsingPUT(gameId, playerId)
+> updatePlayerUsingPUT(domain, gameId, playerId)
 
 Edit player state
 
@@ -746,10 +764,11 @@ OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
 oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
+String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    apiInstance.updatePlayerUsingPUT(gameId, playerId);
+    apiInstance.updatePlayerUsingPUT(domain, gameId, playerId);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#updatePlayerUsingPUT");
     e.printStackTrace();
@@ -760,6 +779,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
-import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeInvitation;
 import eu.trentorise.game.model.Game;
@@ -174,19 +173,20 @@ public class ChallengeManager {
                                     guest.getPlayerId(), LIMIT_INVITATIONS_AS_GUEST));
                 }
                 // check if player hasn't already ASSIGNED challenge starting in future
-                PlayerState state = playerSrv.loadState(invitation.getGameId(), guest.getPlayerId(),
-                        true, false);
-                Date now = new Date();
-                long assignedCounter =
-                        state.challenges().stream()
-                                .filter(c -> c.getState() == ChallengeState.ASSIGNED
-                                        && c.getStart() != null && c.getStart().after(now))
-                                .count();
-                if (assignedCounter > 0) {
-                    throw new IllegalArgumentException(String.format(
-                            "player %s already has ASSIGNED challenge in the invitation period",
-                            guest.getPlayerId()));
-                }
+                // PlayerState state = playerSrv.loadState(invitation.getGameId(),
+                // guest.getPlayerId(),
+                // true, false);
+                // Date now = new Date();
+                // long assignedCounter =
+                // state.challenges().stream()
+                // .filter(c -> c.getState() == ChallengeState.ASSIGNED
+                // && c.getStart() != null && c.getStart().after(now))
+                // .count();
+                // if (assignedCounter > 0) {
+                // throw new IllegalArgumentException(String.format(
+                // "player %s already has ASSIGNED challenge in the invitation period",
+                // guest.getPlayerId()));
+                // }
             });
 
             GroupChallenge groupChallenge = convert(invitation);
@@ -304,11 +304,11 @@ public class ChallengeManager {
                         pendingInvitation.getInstanceName(), pendingInvitation.getChallengeModel());
             }
 
-            triggerOnProposedChallenges(guestState);
+            triggerOnProposedGroupChallenges(guestState);
             if (challengeProposer != null) {
                 PlayerState proposerState =
                         playerSrv.loadState(gameId, challengeProposer.getPlayerId(), true, false);
-                triggerOnProposedChallenges(proposerState);
+                triggerOnProposedGroupChallenges(proposerState);
             }
 
             return pendingInvitation;
@@ -318,26 +318,14 @@ public class ChallengeManager {
         }
     }
 
-    private void triggerOnProposedChallenges(PlayerState playerState) {
+    private void triggerOnProposedGroupChallenges(PlayerState playerState) {
         final String gameId = playerState.getGameId();
         final String playerId = playerState.getPlayerId();
         final Game game = gameSrv.loadGameDefinitionById(gameId);
-        // trigger archiving of other PROPOSED challenges
-        java.util.Iterator<ChallengeConcept> iterator = playerState.challenges().iterator();
-        while (iterator.hasNext()) {
-            ChallengeConcept ch = iterator.next();
-            if (ch.getState() == ChallengeState.PROPOSED) {
-                ChallengeConcept removedChallenge =
-                        playerState.removeConcept(ch.getName(), ChallengeConcept.class);
-                removedChallenge.updateState(ChallengeState.REFUSED);
-                archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
-            }
-        }
-        playerSrv.saveState(playerState);
 
         List<GroupChallenge> otherProposedchallenges =
                 groupChallengeRepo.playerGroupChallenges(gameId, playerId, ChallengeState.PROPOSED);
-        groupChallengeRepo.delete(otherProposedchallenges);
+        groupChallengeRepo.deleteAll(otherProposedchallenges);
         otherProposedchallenges.forEach(challenge -> {
             final Attendee proposer = challenge.proposer();
             if (proposer != null && proposer.getPlayerId().equals(playerId)) {

@@ -39,6 +39,13 @@ public interface GameService {
 
     public Game saveGameDefinition(Game game);
 
+    /**
+     * Return the game definition by id.
+     * 
+     * @param gameId
+     * @return game definition or null if game doesn't exist
+     * 
+     */
     public Game loadGameDefinitionById(String gameId);
 
     public Game loadGameDefinitionByAction(String actionId);
@@ -86,11 +93,11 @@ public interface GameService {
 
     List<PlayerLevel> calculateLevels(String gameId, PlayerState playerState);
 
-    void conditionCheckPerformanceGroupChallengesTask();
+    void taskCheckPerformanceGroupChallenges();
     
     void taskGameStats();
     
-    void challengeFailureTask();
+    void taskChallengeFailure();
 
 	public List<GameStatistics> loadGameStats(String gameId, String pointConceptName, String periodName, Long timestamp,
 			String periodIndex, Pageable pageable);

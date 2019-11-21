@@ -37,7 +37,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Response;
 
 import it.smartcommunitylab.ApiCallback;
 import it.smartcommunitylab.ApiClient;
@@ -55,13 +59,16 @@ import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
 import it.smartcommunitylab.model.PlayerBlackList;
-import it.smartcommunitylab.model.PlayerLevel;
 import it.smartcommunitylab.model.PlayerStateDTO;
-import it.smartcommunitylab.model.TeamDTO;
 import it.smartcommunitylab.model.WrapperQuery;
+import it.smartcommunitylab.model.ext.PlayerControllerUtils;
+import it.smartcommunitylab.model.ext.PlayerLevel;
+import it.smartcommunitylab.model.ext.TeamDTO;
 
 public class PlayerControllerApi {
     private ApiClient apiClient;
+    ObjectMapper mapper = new ObjectMapper();
+    PlayerControllerUtils playerControllerUtils = new PlayerControllerUtils();
 
     public PlayerControllerApi() {
         this(Configuration.getDefaultApiClient());
@@ -2193,10 +2200,13 @@ public class PlayerControllerApi {
      * @param playerId playerId (required)
      * @return PlayerStateDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
-    public PlayerStateDTO readStateUsingGET(String gameId, String playerId) throws ApiException {
-        ApiResponse<PlayerStateDTO> resp = readStateUsingGETWithHttpInfo(gameId, playerId);
-        return resp.getData();
+    public PlayerStateDTO readStateUsingGET(String gameId, String playerId) throws ApiException, JsonParseException, JsonMappingException, IOException {
+    	Response response = readStateUsingGETWithHttpInfo(gameId, playerId);
+    	return playerControllerUtils.convertPlayerState(mapper.readValue(response.body().byteStream(), Map.class));        
     }
 
     /**
@@ -2207,10 +2217,10 @@ public class PlayerControllerApi {
      * @return ApiResponse&lt;PlayerStateDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<PlayerStateDTO> readStateUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
+    public Response readStateUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
         com.squareup.okhttp.Call call = readStateUsingGETValidateBeforeCall(gameId, playerId, null, null);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**

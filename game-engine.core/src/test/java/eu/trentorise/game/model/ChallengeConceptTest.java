@@ -181,7 +181,7 @@ public class ChallengeConceptTest {
 
         PlayerState saved = playerSrv.saveState(player);
         assertThat(saved.getState(), hasSize(1));
-        ChallengeConcept loaded = (ChallengeConcept) saved.getState().stream().findFirst().get();
+        ChallengeConcept loaded = (ChallengeConcept) saved.getState().stream().findFirst().orElse(null);
         assertThat(loaded.getState(), is(ChallengeState.ACTIVE));
         assertThat(loaded.getDate(ChallengeState.ACTIVE), is(activateDate));
 
@@ -204,6 +204,43 @@ public class ChallengeConceptTest {
                 is(date("2017-10-21T20:55:59.045")));
         assertThat(challenge.getFields().values(), hasSize(5));
     }
+
+    @Test
+    public void challenge_is_visible_by_default() {
+        ChallengeConcept challenge = new ChallengeConcept(ChallengeState.ASSIGNED);
+        assertThat(challenge.isHidden(), is(false));
+    }
+
+    @Test
+    public void challenge_setted_hidden() {
+        ChallengeConcept challenge = new ChallengeConcept(ChallengeState.ASSIGNED);
+        challenge.getVisibility().setHidden(true);
+        assertThat(challenge.isHidden(), is(true));
+    }
+
+    @Test
+    public void challenge_becomes_public() {
+        Date now = date("2019-10-17T10:00");
+        BDDMockito.given(clock.now()).willReturn(now);
+        Date disclosureDate = date("2019-10-17T08:00");
+        ChallengeConcept challenge = new ChallengeConcept(clock);
+        challenge.getVisibility().setHidden(true);
+        challenge.getVisibility().setDisclosureDate(disclosureDate);
+        assertThat(challenge.isHidden(), is(false));
+    }
+
+    @Test
+    public void challenge_stay_hidden() {
+        Date now = date("2019-10-17T10:00");
+        BDDMockito.given(clock.now()).willReturn(now);
+        Date disclosureDate = date("2019-10-17T12:00");
+        ChallengeConcept challenge = new ChallengeConcept(clock);
+        challenge.getVisibility().setHidden(true);
+        challenge.getVisibility().setDisclosureDate(disclosureDate);
+        assertThat(challenge.isHidden(), is(true));
+    }
+
+
 
 
 }

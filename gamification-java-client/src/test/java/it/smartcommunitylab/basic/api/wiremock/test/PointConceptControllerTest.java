@@ -18,25 +18,26 @@
 package it.smartcommunitylab.basic.api.wiremock.test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
 import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.basic.api.PointConceptControllerApi;
-import it.smartcommunitylab.model.PointConcept;
+import it.smartcommunitylab.model.ext.PointConcept;
 
 public class PointConceptControllerTest {
 
@@ -85,9 +86,12 @@ public class PointConceptControllerTest {
 	 *
 	 * @throws ApiException
 	 *             if the Api call fails
+	 * @throws IOException 
+	 * @throws IllegalArgumentException 
+	 * @throws ClassNotFoundException 
 	 */
 	@Test
-	public void readPointUsingGETTest() throws ApiException {
+	public void readPointUsingGETTest() throws ApiException, IllegalArgumentException, IOException, ClassNotFoundException {
 		String gameId = "mockGameId";
 		String pointId = "mockLeaves";
 
@@ -116,9 +120,14 @@ public class PointConceptControllerTest {
 	 *
 	 * @throws ApiException
 	 *             if the Api call fails
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalArgumentException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
 	@Test
-	public void readPointsUsingGET1Test() throws ApiException {
+	public void readPointsUsingGET1Test() throws ApiException, JsonParseException, JsonMappingException, IllegalArgumentException, ClassNotFoundException, IOException {
 		String gameId = "mockGameId";
 		String pointId = "mockLeaves";
 

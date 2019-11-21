@@ -75,6 +75,7 @@ public class Level {
     public static class Config {
         private int choices;
         private List<String> availableModels = new ArrayList<>();
+        private List<String> activeModels = new ArrayList<>();
 
         public int getChoices() {
             return choices;
@@ -88,6 +89,13 @@ public class Level {
             return availableModels;
         }
 
+        public List<String> getActiveModels() {
+            return activeModels;
+        }
+
+        public void setActiveModels(List<String> activeModels) {
+            this.activeModels = activeModels;
+        }
     }
 
     public static class Threshold {

@@ -37,7 +37,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Response;
 
 import it.smartcommunitylab.ApiCallback;
 import it.smartcommunitylab.ApiClient;
@@ -47,10 +51,13 @@ import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.Pair;
 import it.smartcommunitylab.ProgressRequestBody;
 import it.smartcommunitylab.ProgressResponseBody;
-import it.smartcommunitylab.model.PointConcept;
+import it.smartcommunitylab.model.ext.PointConcept;
+import it.smartcommunitylab.model.ext.PointConceptControllerUtils;
 
 public class PointConceptControllerApi {
     private ApiClient apiClient;
+    ObjectMapper mapper = new ObjectMapper();
+    PointConceptControllerUtils pointConceptControllerUtils = new PointConceptControllerUtils();
 
     public PointConceptControllerApi() {
         this(Configuration.getDefaultApiClient());
@@ -407,11 +414,17 @@ public class PointConceptControllerApi {
      * @param pointId pointId (required)
      * @return PointConcept
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws IOException 
+     * @throws IllegalArgumentException 
+     * @throws ClassNotFoundException 
      */
-    public PointConcept readPointUsingGET(String gameId, String pointId) throws ApiException {
-        ApiResponse<PointConcept> resp = readPointUsingGETWithHttpInfo(gameId, pointId);
-        return resp.getData();
-    }
+	public PointConcept readPointUsingGET(String gameId, String pointId)
+			throws ApiException, IllegalArgumentException, IOException, ClassNotFoundException {
+		Response response = readPointUsingGETWithHttpInfo(gameId, pointId);
+		Map myObject = mapper.readValue(response.body().byteStream(), Map.class);
+		return pointConceptControllerUtils.convertToSpecificType(myObject);
+
+	}
 
     /**
      * Get point
@@ -421,10 +434,10 @@ public class PointConceptControllerApi {
      * @return ApiResponse&lt;PointConcept&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<PointConcept> readPointUsingGETWithHttpInfo(String gameId, String pointId) throws ApiException {
+    public Response readPointUsingGETWithHttpInfo(String gameId, String pointId) throws ApiException {
         com.squareup.okhttp.Call call = readPointUsingGETValidateBeforeCall(gameId, pointId, null, null);
         Type localVarReturnType = new TypeToken<PointConcept>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**
@@ -532,10 +545,16 @@ public class PointConceptControllerApi {
      * @param gameId gameId (required)
      * @return List&lt;PointConcept&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @throws ClassNotFoundException 
+     * @throws IllegalArgumentException 
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
-    public List<PointConcept> readPointsUsingGET1(String gameId) throws ApiException {
-        ApiResponse<List<PointConcept>> resp = readPointsUsingGET1WithHttpInfo(gameId);
-        return resp.getData();
+    public List<PointConcept> readPointsUsingGET1(String gameId) throws ApiException, JsonParseException, JsonMappingException, IOException, IllegalArgumentException, ClassNotFoundException {
+    	Response response = readPointsUsingGET1WithHttpInfo(gameId);
+    	Map[] myObjects = mapper.readValue(response.body().byteStream(), Map[].class);
+        return pointConceptControllerUtils.convertToSpecificType(myObjects);
     }
 
     /**
@@ -545,10 +564,10 @@ public class PointConceptControllerApi {
      * @return ApiResponse&lt;List&lt;PointConcept&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<PointConcept>> readPointsUsingGET1WithHttpInfo(String gameId) throws ApiException {
+    public Response readPointsUsingGET1WithHttpInfo(String gameId) throws ApiException {
         com.squareup.okhttp.Call call = readPointsUsingGET1ValidateBeforeCall(gameId, null, null);
         Type localVarReturnType = new TypeToken<List<PointConcept>>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
+        return apiClient.executeSimple(call, localVarReturnType);
     }
 
     /**

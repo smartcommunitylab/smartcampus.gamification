@@ -23,8 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 
-import it.smartcommunitylab.model.PointConcept;
-
 public class LocalDateTimeDeserializer extends KeyDeserializer {
 
 	@Override

@@ -1,0 +1,54 @@
+security:
+  oauth2:
+    resource:
+      preferTokenInfo: false
+      userInfoUri: ${AAC_URL:}/basicprofile/me
+    client:
+      clientId: ${AAC_CLIENTID:}
+      clientSecret: ${AAC_CLIENTSECRET:}
+      userAuthorizationUri: ${AAC_URL:}/eauth/authorize
+      authenticationScheme: header
+      tokenName: oauth_token
+      scope: profile.basicprofile.me, user.roles.me
+      accessTokenUri: ${AAC_URL:}/oauth/token
+      clientAuthenticationScheme: form
+      preEstablishedRedirectUri: ${GAMIFICATION_REVERSEPROXY:}/gamification/login/aac
+      useCurrentUri: false
+  usersFile: ${USERS_FILE:}
+
+oauth:
+  serverUrl: ${AAC_URL:}
+  context: COMPONENTS/GAMIFICATION
+  role: ROLE_PROVIDER
+
+management:
+  endpoints:
+      web:
+          base-path: ${MANAGEMENT_CONTEXT:/manage}
+  server:
+      port: ${MANAGEMENT_PORT:9000}
+
+server:
+    port: ${SERVER_PORT:8010}
+    servlet:
+      context-path: ${SERVER_CONTEXTPATH:/gamification}
+    singeLogoutUrl: ${GAMIFICATION_REVERSEPROXY:}/gamification/singleLogout
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+#
+# Platform security
+#
+#Parent Space
+aac:
+  roles:
+    context: ${AAC_ROLES_CONTEXT:COMPONENTS/GAMIFICATION}
+    role: ${AAC_ROLES_ROLE:ROLE_PROVIDER}
+  url: ${AAC_URL:http://localhost:8080/aac}
+  clientId: ${AAC_CLIENTID:}
+  clientSecret: ${AAC_CLIENTSECRET:}
+  
+game:
+  createDemo: ${CREATE_DEMO_GAME:false}

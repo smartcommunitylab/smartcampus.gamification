@@ -30,11 +30,17 @@
 
 package it.smartcommunitylab.basic.api;
 
+import java.util.Date;
+
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import it.smartcommunitylab.ApiClient;
 import it.smartcommunitylab.ApiException;
-import it.smartcommunitylab.model.ExecutionDataDTO;
+import it.smartcommunitylab.auth.HttpBasicAuth;
+import it.smartcommunitylab.model.ext.ExecutionDataDTO;
+
 
 /**
  * API tests for ExecutionControllerApi
@@ -43,8 +49,31 @@ import it.smartcommunitylab.model.ExecutionDataDTO;
 public class ExecutionControllerApiTest {
 
     private final ExecutionControllerApi api = new ExecutionControllerApi();
+    private ApiClient apiClient;
+	private final String userName = "long-rovereto";
+	private final String password = "rov";
+	private String baseUrl = "http://localhost:6060/gamification";
+	private String gameId = "5b7a885149c95d50c5f9d442";
+	private String playerId = "8";
 
     
+	@Before
+	public void init() {
+		apiClient = new ApiClient(baseUrl);
+
+		// Configure OAuth2 access token for authorization: oauth2
+		// OAuth oauth2 = (OAuth) apiClient.getAuthentication("oauth2");
+		// oauth2.setAccessToken("YOUR_ACCESS_TOKEN");
+
+		// Configure basic auth.
+		HttpBasicAuth basic = (HttpBasicAuth) apiClient.getAuthentication("basic");
+		basic.setUsername(userName);
+		basic.setPassword(password);
+
+		api.setApiClient(apiClient);
+	}
+
+	
     /**
      * Execute an action
      *
@@ -55,10 +84,15 @@ public class ExecutionControllerApiTest {
      */
     @Test
     public void executeActionUsingPOSTTest() throws ApiException {
-        String gameId = null;
-        String actionId = null;
-        ExecutionDataDTO data = null;
-        api.executeActionUsingPOST(gameId, actionId, data);
+        String actionId = "test";
+        ExecutionDataDTO data = new ExecutionDataDTO();
+        data.setActionId("test");
+        data.setGameId(gameId);
+        data.setPlayerId(playerId);
+        data.setExecutionMoment(new Date());        
+        
+        api.executeActionUsingPOST(gameId, actionId, data);       
+        
 
         // TODO: test validations
     }

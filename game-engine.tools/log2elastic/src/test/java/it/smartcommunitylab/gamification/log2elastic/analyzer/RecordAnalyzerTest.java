@@ -34,6 +34,9 @@ public class RecordAnalyzerTest {
 		dataExpected.put("timestamp", "1486292961614");
 		dataExpected.put("eventType", "Action");
 		dataExpected.put("actionName", "save_itinerary");
+        dataExpected.put("type", "Action");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
 
 		Record record = new Record(recordInput);
 		RecordAnalyzer analyzer = new ActionRecordAnalyzer(record);
@@ -60,6 +63,9 @@ public class RecordAnalyzerTest {
 		dataExpected.put("name", "Walk_Km");
 		dataExpected.put("deltaScore", "1.953271623734048");
 		dataExpected.put("score", "5.0684636993923196");
+        dataExpected.put("type", "PointConcept");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
 
 		Record record = new Record(recordInput);
 		RecordAnalyzer analyzer = new PointConceptRecordAnalyzer(record);
@@ -84,6 +90,9 @@ public class RecordAnalyzerTest {
 		dataExpected.put("ruleName", "3rd of the week");
 		dataExpected.put("name", "leaderboard top 3");
 		dataExpected.put("new_badge", "3rd_of_the_week");
+        dataExpected.put("type", "BadgeCollectionConcept");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
 
 		Record record = new Record(recordInput);
 		RecordAnalyzer analyzer = new BadgeCollectionConceptRecordAnalyzer(record);
@@ -107,6 +116,9 @@ public class RecordAnalyzerTest {
 		dataExpected.put("eventType", "Classification");
 		dataExpected.put("classificationName", "week classification green");
 		dataExpected.put("classificationPosition", "3");
+        dataExpected.put("type", "Classification");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
 
 		Record record = new Record(recordInput);
 		RecordAnalyzer analyzer = new ClassificationRecordAnalyzer(record);
@@ -127,6 +139,9 @@ public class RecordAnalyzerTest {
 		dataExpected.put("executionTime", "1477140586036");
 		dataExpected.put("timestamp", "1477140586036");
 		dataExpected.put("eventType", "UserCreation");
+        dataExpected.put("type", "UserCreation");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
 
 		Record record = new Record(recordInput);
 		RecordAnalyzer analyzer = new UserCreationRecordAnalyzer(record);
@@ -148,6 +163,9 @@ public class RecordAnalyzerTest {
 		dataExpected.put("timestamp", "1476269822849");
 		dataExpected.put("eventType", "ChallengeCompleted");
 		dataExpected.put("name", "w2_walk_percent_30_47411045-1cb4-4174-8552-60a6a31ebac4");
+        dataExpected.put("type", "ChallengeCompleted");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
 
 		Record record = new Record(recordInput);
 		RecordAnalyzer analyzer = new ChallengeCompletedRecordAnalyzer(record);
@@ -172,6 +190,9 @@ public class RecordAnalyzerTest {
 		dataExpected.put("name", "w2_walk_percent_30_47411045-1cb4-4174-8552-60a6a31ebac4");
 		dataExpected.put("startDate", "1475877600000");
 		dataExpected.put("endDate", "1476482400000");
+        dataExpected.put("type", "ChallengeAssigned");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
 
 		Record record = new Record(recordInput);
 		RecordAnalyzer analyzer = new ChallengeAssignedRecordAnalyzer(record);

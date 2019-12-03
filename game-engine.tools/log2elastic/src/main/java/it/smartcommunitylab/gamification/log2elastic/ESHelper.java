@@ -26,8 +26,14 @@ public class ESHelper {
         client = new OkHttpClient();
     }
 
-    private static final String ELASTIC_URL = "http://localhost:19200";
+    private static final String ELASTIC_URL = "http://localhost:9200";
     private static final String INDEX_PREFIX = "gamification-stats-";
+
+    private Config config;
+
+    public ESHelper(Config config) {
+        this.config = config;
+    }
 
     private String pushToElastic(String url, String json) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
@@ -57,8 +63,17 @@ public class ESHelper {
 
     public void saveRecord(RecordType recordType, String gameId, long creationTimestamp,
             Map<String, String> recordFields) throws IOException {
-        logger.info(pushToElastic(ELASTIC_URL + "/" + getIndexName(gameId, creationTimestamp) + "/"
-                + recordType.getRepresentation(), recordFields));
+        String elasticResponse = "";
+        if (config.pushToElastic7()) {
+            elasticResponse = pushToElastic(
+                    ELASTIC_URL + "/" + getIndexName(gameId, creationTimestamp) + "/" + "_doc",
+                    recordFields);
+        } else {
+            elasticResponse =
+                    pushToElastic(ELASTIC_URL + "/" + getIndexName(gameId, creationTimestamp) + "/"
+                            + recordType.getRepresentation(), recordFields);
+        }
+        logger.info(elasticResponse);
     }
 
     private String toJsonString(Map<String, String> fields) {

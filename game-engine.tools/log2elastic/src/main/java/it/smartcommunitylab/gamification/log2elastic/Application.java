@@ -12,16 +12,17 @@ import it.smartcommunitylab.gamification.log2elastic.analyzer.RecordAnalyzer;
 import it.smartcommunitylab.gamification.log2elastic.analyzer.RecordAnalyzerFactory;
 
 public class Application {
-	private static final String PREFIX_PROCESSED_FILE = "NEW-";
+    private static final String PREFIX_PROCESSED_FILE = "NEW-";
 
 	private static final Logger logger = Logger.getLogger(Application.class);
 
 	public static void main(String[] args) throws IOException {
+        final Config config = new Config(args);
 		String logfolderPath = args[0];
 		logger.debug("stats processiong logs");
 		File folder = new File(logfolderPath);
 		File[] listOfFiles = folder.listFiles();
-		ESHelper esHelper = new ESHelper();
+        ESHelper esHelper = new ESHelper(config);
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (!listOfFiles[i].isDirectory()) {
 				if (isLogFileProcessato(listOfFiles[i])) {

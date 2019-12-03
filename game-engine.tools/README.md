@@ -4,7 +4,7 @@ A set of tools to manage gamification operations
 ### log2stats
 Extract statistic events from game-engine execution logs
 
-Follow instructions [HERE](https://github.com/smartcommunitylab/smartcampus.gamification/blob/platform-version/game-engine.tools/log2stats/README.md)
+Follow instructions [HERE](log2stats/README.md)
 ### challenge-db-stats
 Create challenge events and log them into statistic format reading the database or gamification engine.
 Events are: 
@@ -15,9 +15,11 @@ Convert statistic logs from version 1.0 to 2.0
 ### user-creation-logs
 Create user creation events and log them into statistic format reading the database of player registrations
 
-Follow instructions [HERE](https://github.com/smartcommunitylab/smartcampus.gamification/blob/platform-version/game-engine.tools/user-creation-logs/README.md)
+Follow instructions [HERE](user-creation-logs/README.md)
 ### log2elastic
 Push gamification events to elasticsearch storage. Take as input log statistic format.
+
+Follow instructions [HERE](log2elastic/README.md)
 ### dashboards/kibana
 Export of sample kibana dashboard for gamification statistic
 ### clone-game

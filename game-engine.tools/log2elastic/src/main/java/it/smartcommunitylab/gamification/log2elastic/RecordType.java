@@ -4,7 +4,8 @@ public enum RecordType {
     ACTION("Action"), RULE_POINTCONCEPT("PointConcept"), RULE_BADGECOLLECTIONCONCEPT(
             "BadgeCollectionConcept"), CLASSIFICATION("Classification"), CHALLENGEASSIGNED(
                     "ChallengeAssigned"), CHALLENGECOMPLETED("ChallengeCompleted"), USERCREATION(
-                            "UserCreation"), ENDGAMEACTION("EndGameAction");
+                            "UserCreation"), ENDGAMEACTION(
+                                    "EndGameAction"), LEVELGAINED("LevelGained");
 
     private String representation;
 
@@ -34,6 +35,8 @@ public enum RecordType {
                 return RecordType.USERCREATION;
             case "EndGameAction":
                 return RecordType.ENDGAMEACTION;
+            case "LevelGained":
+                return RecordType.LEVELGAINED;
             default:
                 throw new IllegalArgumentException(recordType + " non e' supportato");
         }

@@ -200,4 +200,29 @@ public class RecordAnalyzerTest {
 		MatcherAssert.assertThat(dataExpected, Matchers.equalTo(data));
 	}
 
+    @Test
+    public void testLevelGained() throws IOException, URISyntaxException {
+        String recordInput =
+                Files.asCharSource(new File(Thread.currentThread().getContextClassLoader()
+                        .getResource("levelGained-record-input").toURI()), Charsets.UTF_8).read();
+        Map<String, String> dataExpected = new HashMap<>();
+        dataExpected.put("logLevel", "INFO");
+        dataExpected.put("gameId", "5d9353a3f0856342b2dded7f");
+        dataExpected.put("playerId", "26613");
+        dataExpected.put("executionId", "49fbefce-54b3-4344-b83d-205bee221b5d");
+        dataExpected.put("executionTime", "1572604343810");
+        dataExpected.put("timestamp", "1572604343810");
+        dataExpected.put("eventType", "LevelGained");
+        dataExpected.put("levelName", "Green Lover");
+        dataExpected.put("levelType", "Green Warrior");
+        dataExpected.put("type", "LevelGained");
+        dataExpected.put("type-input", "log2elastic");
+        dataExpected.put("model-version", "2.0");
+
+        Record record = new Record(recordInput);
+        RecordAnalyzer analyzer = new LevelGainedRecordAnalyzer(record);
+        Map<String, String> data = analyzer.extractData();
+        MatcherAssert.assertThat(dataExpected, Matchers.equalTo(data));
+    }
+
 }

@@ -43,6 +43,10 @@ public class RecordAnalyzerFactory {
                 analyzer = new EndGameRecordAnalyzer(record);
                 logger.debug("created EndGameAction analyzer");
                 break;
+            case LEVELGAINED:
+                analyzer = new EndGameRecordAnalyzer(record);
+                logger.debug("created LevelGained analyzer");
+                break;
             default:
                 String msg = String.format("Format type %s is not supported", record.getType());
                 logger.error(msg);

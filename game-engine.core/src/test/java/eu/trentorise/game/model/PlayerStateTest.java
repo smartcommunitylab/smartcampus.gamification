@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.is;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -255,6 +256,23 @@ public class PlayerStateTest {
 
         ChallengeChoice item = state.getInventory().getChallengeChoices().get(0);
         assertThat(item.getState(), is(ChoiceState.ACTIVE));
+    }
+
+    @Test
+    public void delete_non_existent_challenge() {
+        PlayerState state = new PlayerState();
+        Optional<ChallengeConcept> removed = state.removeChallenge("non_existent_instance");
+        assertThat(removed.isPresent(), is(false));
+    }
+
+    @Test
+    public void delete_existent_challenge() {
+        ChallengeConcept wantToRemove = new ChallengeConcept();
+        wantToRemove.setName("wantToRemove");
+        PlayerState state = new PlayerState();
+        state.getState().add(wantToRemove);
+        Optional<ChallengeConcept> removed = state.removeChallenge("wantToRemove");
+        assertThat(removed.get(), is(wantToRemove));
     }
 }
 

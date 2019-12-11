@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -215,6 +216,16 @@ public class PlayerState {
             });
         }
         return this;
+    }
+
+    /**
+     * Try to remove a challenge identified by a instanceName from the player state.
+     * 
+     * @param instanceName id of the challenge
+     * @return Optional value: empty if challenge doesn't exist in PlayerState
+     */
+    public Optional<ChallengeConcept> removeChallenge(String instanceName) {
+        return Optional.ofNullable(removeConcept(instanceName, ChallengeConcept.class));
     }
 
     private Map<LevelInstance, Config> gameLevelConfigs(Game game) {

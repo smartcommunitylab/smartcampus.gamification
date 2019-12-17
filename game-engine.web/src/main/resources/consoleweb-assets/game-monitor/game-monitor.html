@@ -220,6 +220,9 @@
 											<div class="challenge-box"
 												data-ng-repeat="challenge in player.state['ChallengeConcept'] | orderBy : '-end'">
 												<span ng-attr-title="{{challenge.name}}" class="challenge-title">{{challenge.name | limitTo: challengeNameLimit}}</span>
+												<button type="button" class="btn btn-xs btn-danger btn-circle" ng-hide="challenge.isGroup" data-ng-click="deleteChallenge(player, challenge)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
+													<span class="glyphicon glyphicon-trash"></span>
+												</button>
 												<div class="challenge-date">{{challenge.modelName}}</div>
 												<div class="challenge-status">
 													<span ng-show="!challenge.failed" class="label label-success">{{challenge.state}} {{ challenge.stateDate[challenge.state] | date:'dd/MM/yyyy HH:mm:ss' }}</span>

@@ -476,6 +476,17 @@ angular.module('gamificationEngine.services', [])
 			});
 			return deferred.promise;
 		}
+		
+		const deleteChallenge = function (gameId, playerId, challenge) {
+			var deferred = $q.defer();
+
+			$http.delete(url + `/data/game/${gameId}/player/${playerId}/challenge/${challenge.name}`).success(function (data, status, headers, config) {
+				deferred.resolve();
+			}).error(function (data, status, headers, config) {
+				deferred.reject('msg_generic_error');
+			});
+			return deferred.promise;
+		}
 
 		// Get game by name
 		var userProfile = function () {
@@ -519,6 +530,7 @@ angular.module('gamificationEngine.services', [])
 			'deleteLevel': deleteLevel,
 			'userProfile': userProfile,
 			'setUrl': setUrl,
+			 deleteChallenge,
 		};
 	})
 	.factory('utilsFactory', function () {

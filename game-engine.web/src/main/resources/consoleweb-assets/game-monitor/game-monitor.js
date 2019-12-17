@@ -46,6 +46,7 @@ angular.module('gamificationEngine.monitor', [])
 				var referenceTimestamp = new Date().getTime();
 				challenges.forEach(function(c) {
 					c.failed = c.state === 'FAILED';
+					c.isGroup = c.name.startsWith('p_');
 				});
 				
 				/* patch for an explicit request of peppo
@@ -107,4 +108,56 @@ angular.module('gamificationEngine.monitor', [])
 		$scope.goToUrl = function (url) {
 			$window.location.href = url;
 		}
+		
+		$scope.deleteChallenge = function(state, challenge) {
+			// Delete a game
+			var modalInstance = $uibModal.open({
+				templateUrl: 'modals/modal_delete_confirm.html',
+				controller: 'DeleteChallengeConfirmModalInstanceCtrl',
+				backdrop: "static",
+				resolve: {
+					gameId: function () {
+						return $rootScope.currentGameId;
+					},
+					challenge: function () {
+						return challenge;
+					},
+					state: function () {
+						return state;
+					}
+				}
+			});
+			
+			modalInstance.result.then(function () {
+			});
+		};
 	});
+
+
+modals
+.controller('DeleteChallengeConfirmModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, gameId, challenge, state) {
+
+$scope.argument = challenge.name;
+$scope.monitorPage = true;
+
+$scope.alerts = {
+	'deleteError': false
+};
+
+// DELETE button click event-handler
+$scope.delete = function () {
+	gamesFactory.deleteChallenge(gameId, state.playerId, challenge).then(function (data) {
+		const challengeIndex = state.state['ChallengeConcept'].indexOf(challenge);
+		state.state['ChallengeConcept'].splice(challengeIndex, 1);
+		$uibModalInstance.close();
+	}, function (msg) {
+		$scope.err = 'messages:' + msg;
+	});	
+};
+
+// CANCEL button click event-handler
+$scope.cancel = function () {
+	$uibModalInstance.dismiss('cancel');
+};
+
+});

@@ -24,7 +24,7 @@
 		<uib-alert ng-if="!!alerts.deleteError" type="danger">{{'messages:msg_delete_error' | i18next}}</uib-alert>
 	</div>
 	<p>Are you sure you want to delete '{{argument}}'?</p>
-	<p><strong>Attention: Be sure that game is not actually active</strong></p>
+	<p ng-hide="monitorPage"><strong>Attention: Be sure that game is not actually active</strong></p>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-default" data-ng-click="cancel()" autofocus>{{'labels:btn_cancel' | i18next}}</button>

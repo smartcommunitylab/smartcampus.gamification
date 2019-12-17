@@ -4,17 +4,22 @@ import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.PlayerService;
 
 @RestController
 public class ChallengeController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ChallengeController.class);
 
     @Autowired
     private PlayerService playerSrv;
@@ -30,6 +35,8 @@ public class ChallengeController {
         Optional<ChallengeConcept> removed = state.removeChallenge(decodedInstanceName);
         if (removed.isPresent()) {
             playerSrv.saveState(state);
+            LogHub.info(gameId, logger, "removed challenge {} of player {}", instanceName,
+                    playerId);
         }
         return removed.orElseThrow(() -> new IllegalArgumentException(String.format(
                 "challenge %s doesn't exist in state of player %s", decodedInstanceName,

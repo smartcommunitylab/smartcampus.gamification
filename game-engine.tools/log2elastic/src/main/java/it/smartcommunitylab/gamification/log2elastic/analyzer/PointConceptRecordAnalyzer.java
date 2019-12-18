@@ -36,7 +36,7 @@ public class PointConceptRecordAnalyzer extends BaseRecordAnalyzer {
         data.put("ruleName", ruleName);
         data.put("score", score);
         data.put("deltaScore", deltaScore);
-        data.put("name", name);
+        data.put("conceptName", name);
 
         return data;
 

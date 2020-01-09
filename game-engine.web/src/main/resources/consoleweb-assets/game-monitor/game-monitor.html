@@ -224,6 +224,11 @@
 													<span class="glyphicon glyphicon-trash"></span>
 												</button>
 												<div class="challenge-date">{{challenge.modelName}}</div>
+												<div><span class="glyphicon glyphicon-eye-open" ng-show="challenge.isVisible" title="visible"></span></div>
+												<div ng-hide="challenge.isVisible">
+													<span class="glyphicon glyphicon-eye-close" title="hidden"></span>
+													<span class="challenge-date"><strong>disclosure</strong>: {{ challenge.visibility.disclosureDate | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+												</div>
 												<div class="challenge-status">
 													<span ng-show="!challenge.failed" class="label label-success">{{challenge.state}} {{ challenge.stateDate[challenge.state] | date:'dd/MM/yyyy HH:mm:ss' }}</span>
 													<span ng-show="challenge.failed" class="label label-danger">{{challenge.state}} {{ challenge.stateDate[challenge.state] | date:'dd/MM/yyyy HH:mm:ss' }}</span>													

@@ -44,9 +44,12 @@ angular.module('gamificationEngine.monitor', [])
 				p.hasChallenges = challenges.length > 0;
 				p.hasInventories = Object.keys(p.inventory.challengeChoices).length > 0;
 				var referenceTimestamp = new Date().getTime();
+				const now = moment();
 				challenges.forEach(function(c) {
 					c.failed = c.state === 'FAILED';
 					c.isGroup = c.name.startsWith('p_');
+					c.isVisible = !c.visibility.hidden || moment(c.visibility.disclosureDate).isSameOrBefore(now);
+					
 				});
 				
 				/* patch for an explicit request of peppo

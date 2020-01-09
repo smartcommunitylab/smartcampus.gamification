@@ -383,7 +383,7 @@ angular.module('gamificationEngine.services', [])
 
 		var getPlayersState = function (gameId, playerFilter, pageRequest, pageSize) {
 			var deferred = $q.defer();
-			$http.get(url + `/gengine/state/${gameId}`, {
+			$http.get(url + `/admin/data/game/${gameId}/player`, {
 				params: {
 					page: pageRequest,
 					size: pageSize,

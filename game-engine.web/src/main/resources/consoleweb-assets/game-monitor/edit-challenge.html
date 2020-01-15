@@ -1,0 +1,46 @@
+<!--
+
+       Copyright 2015 Fondazione Bruno Kessler - Trento RISE
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+
+<div class="modal-header text-center">
+	<h4 class="modal-title">Edit challenge</h4>
+</div>
+<div class="modal-body">
+	<div class="col-md-12 text-center">
+		<uib-alert ng-if="!!alerts.deleteError" type="danger">{{'messages:msg_delete_error' | i18next}}</uib-alert>
+	</div>
+	<p>challenge: {{challenge.name}}</p>
+	<div class="row">
+		<div class="col-md-12">
+			<form>
+				<div class="form-group">
+				    <label>Visibility</label>
+					<select class="form-control" ng-model="visibility" ng-options="x for x in visibilityStates">
+					</select>
+				</div>
+				<div class="form-group" ng-hide="visibility == 'Visible' ">
+				    <label>Disclosure date</label>
+					<datetimepicker show-spinners="true" placeholder="mm/dd/yyyy" ng-model="disclosureDate" show-meridian="showMeridian" date-format="dd-MMM-yyyy"></datetimepicker>					
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" data-ng-click="cancel()" autofocus>{{'labels:btn_cancel' | i18next}}</button>
+	<button type="button" class="btn btn-primary" data-ng-click="save()">{{'labels:btn_save' | i18next}}</button>
+</div>

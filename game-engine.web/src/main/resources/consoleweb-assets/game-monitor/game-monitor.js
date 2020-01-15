@@ -134,6 +134,29 @@ angular.module('gamificationEngine.monitor', [])
 			modalInstance.result.then(function () {
 			});
 		};
+		
+		$scope.editChallenge = function(state, challenge) {
+			
+			var modalInstance = $uibModal.open({
+				templateUrl: 'game-monitor/edit-challenge.html',
+				controller: 'EditChallengeModalInstanceCtrl',
+				backdrop: "static",
+				resolve: {
+					gameId: function () {
+						return $rootScope.currentGameId;
+					},
+					challenge: function () {
+						return challenge;
+					},
+					state: function () {
+						return state;
+					}
+				}
+			});
+			
+			modalInstance.result.then(function () {
+			});
+		};
 	});
 
 
@@ -162,5 +185,36 @@ $scope.delete = function () {
 $scope.cancel = function () {
 	$uibModalInstance.dismiss('cancel');
 };
+
+});
+modals
+.controller('EditChallengeModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, gameId, challenge, state) {
+
+	$scope.visibilityStates = ['Hidden','Visible'];
+	$scope.challenge = challenge;
+
+	$scope.disclosureDate = challenge.visibility.disclosureDate;
+	$scope.visibility = challenge.visibility.hidden ? $scope.visibilityStates[0] : $scope.visibilityStates[1];
+
+	$scope.alerts = {	
+		'deleteError': false
+	};
+
+
+	$scope.save = function () {
+	
+//	gamesFactory.deleteChallenge(gameId, state.playerId, challenge).then(function (data) {
+//		const challengeIndex = state.state['ChallengeConcept'].indexOf(challenge);
+//		state.state['ChallengeConcept'].splice(challengeIndex, 1);
+//		$uibModalInstance.close();
+//	}, function (msg) {
+//		$scope.err = 'messages:' + msg;
+//	});	
+	};
+
+	// CANCEL button click event-handler
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
 
 });

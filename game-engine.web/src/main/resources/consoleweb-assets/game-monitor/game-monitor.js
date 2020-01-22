@@ -136,6 +136,14 @@ angular.module('gamificationEngine.monitor', [])
 		};
 		
 		$scope.editChallenge = function(state, challenge) {
+			const challenges = state.state['ChallengeConcept'];
+			let challengeIndex = -1;
+			for(let index = 0; index < challenges.length; index++) {
+				if( challenges[index].name == challenge.name) {
+					challengeIndex = index;
+					break;
+				}
+			}
 			
 			var modalInstance = $uibModal.open({
 				templateUrl: 'game-monitor/edit-challenge.html',
@@ -148,13 +156,23 @@ angular.module('gamificationEngine.monitor', [])
 					challenge: function () {
 						return challenge;
 					},
+					challengeIndex: function() {
+						return challengeIndex;
+					},
 					state: function () {
 						return state;
 					}
 				}
 			});
 			
-			modalInstance.result.then(function () {
+			modalInstance.result.then(function (state) {
+//				const now = moment();
+//				let challenges = state.state['ChallengeConcept']
+//				challenges.forEach(function(c) {
+//					c.failed = c.state === 'FAILED';
+//					c.isGroup = c.name.startsWith('p_');
+//					c.isVisible = !c.visibility.hidden || moment(c.visibility.disclosureDate).isSameOrBefore(now);
+//				});
 			});
 		};
 	});
@@ -188,21 +206,59 @@ $scope.cancel = function () {
 
 });
 modals
-.controller('EditChallengeModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, gameId, challenge, state) {
+.controller('EditChallengeModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, gameId, challenge, state, challengeIndex) {
 
 	$scope.visibilityStates = ['Hidden','Visible'];
+	$scope.states = ['PROPOSED','ASSIGNED', 'ACTIVE', 'FAILED', 'COMPLETED'];
+	$scope.mode = new Array(Object.keys(challenge.fields).length).fill('normal');
+	
+	$scope.challengeIndex = challengeIndex;
 	$scope.challenge = challenge;
-
+	$scope.state = challenge.state;
 	$scope.disclosureDate = challenge.visibility.disclosureDate;
 	$scope.visibility = challenge.visibility.hidden ? $scope.visibilityStates[0] : $scope.visibilityStates[1];
-
+	$scope.start = challenge.start;
+	$scope.end = challenge.end;
+	$scope.fields = Object.assign({}, challenge.fields);
+	$scope.fieldData = {};
+	
 	$scope.alerts = {	
 		'deleteError': false
 	};
 
 
-	$scope.save = function () {
+	$scope.fieldRemove = function(key) {
+		delete $scope.fields[key];
+	};
 	
+	$scope.fieldEdit = function(index, key, value) {
+		$scope.mode[index] = 'edit';
+		for(let i = 0; i < $scope.mode.length; i++) {
+			if(i != index) {
+				$scope.mode[i] = 'normal';
+			}
+		}
+
+		$scope.fieldData['key'] = key;
+		$scope.fieldData['value'] = value;
+	}
+	
+	
+	$scope.save = function (challengeIndex) {
+		const now = moment();
+		challenge.visibility.hidden = $scope.visibility === 'Hidden';
+		challenge.visibility.disclosureDate = $scope.disclosureDate;
+		challenge.start = $scope.start;
+		challenge.end = $scope.end;
+		if(challenge.state != $scope.state) {
+			challenge.state = $scope.state;
+			challenge.stateDate[$scope.state] = now.valueOf();
+			challenge.failed = challenge.state === 'FAILED';
+		}
+		challenge.isVisible = !challenge.visibility.hidden || moment(challenge.visibility.disclosureDate).isSameOrBefore(now);
+		challenge.fields = $scope.fields;
+		state.state['ChallengeConcept'].splice(challengeIndex, 1, challenge);
+		$uibModalInstance.close(state);
 //	gamesFactory.deleteChallenge(gameId, state.playerId, challenge).then(function (data) {
 //		const challengeIndex = state.state['ChallengeConcept'].indexOf(challenge);
 //		state.state['ChallengeConcept'].splice(challengeIndex, 1);
@@ -212,6 +268,20 @@ modals
 //	});	
 	};
 
+	
+	// CANCEL button click event-handler
+	$scope.cancelEditing = function (index) {
+		$scope.mode[index] = 'normal';
+	};
+	
+	$scope.saveEditing = function (index) {
+		$scope.mode[index] = 'normal';
+		const originalKey = Object.keys($scope.fields)[index];
+		$scope.fieldRemove(originalKey);
+		$scope.fields[$scope.fieldData.key] = $scope.fieldData.value;
+	};
+	
+	
 	// CANCEL button click event-handler
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');

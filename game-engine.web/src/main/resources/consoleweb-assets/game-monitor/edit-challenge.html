@@ -18,12 +18,12 @@
 
 <div class="modal-header text-center">
 	<h4 class="modal-title">Edit challenge</h4>
+	{{challenge.name}}
 </div>
-<div class="modal-body">
+<div class="modal-body" style="padding: 5px;">
 	<div class="col-md-12 text-center">
 		<uib-alert ng-if="!!alerts.deleteError" type="danger">{{'messages:msg_delete_error' | i18next}}</uib-alert>
 	</div>
-	<p>challenge: {{challenge.name}}</p>
 	<div class="row">
 		<div class="col-md-12">
 			<form>
@@ -36,11 +36,54 @@
 				    <label>Disclosure date</label>
 					<datetimepicker show-spinners="true" placeholder="mm/dd/yyyy" ng-model="disclosureDate" show-meridian="showMeridian" date-format="dd-MMM-yyyy"></datetimepicker>					
 				</div>
+				<div class="form-group">
+				    <label>State</label>
+					<select class="form-control" ng-model="state" ng-options="x for x in states">
+					</select>				
+				</div>
+				<div class="form-group">
+				    <label>Start</label>
+					<datetimepicker show-spinners="true" placeholder="mm/dd/yyyy" ng-model="start" show-meridian="showMeridian" date-format="dd-MMM-yyyy"></datetimepicker>					
+				</div>
+				<div class="form-group">
+				    <label>End</label>
+					<datetimepicker show-spinners="true" placeholder="mm/dd/yyyy" ng-model="end" show-meridian="showMeridian" date-format="dd-MMM-yyyy"></datetimepicker>					
+				</div>
 			</form>
+		</div>
+		<div class="col-md-12">
+			<h4>Fields</h4>
+			<table class="table table-striped">
+				<tbody>
+					<tr ng-repeat="(key,value) in fields">
+						<td ng-show="mode[$index] == 'normal'">{{key}}</td>
+						<td ng-show="mode[$index] == 'edit'"><input type="text" class="form-control" ng-model="fieldData.key" /></td>
+						
+						<td ng-show="mode[$index] == 'normal'">{{value}}</td>
+						<td ng-show="mode[$index] == 'edit'"><input type="text" class="form-control" ng-model="fieldData.value" /></td>
+						<td ng-show="mode[$index] == 'normal'">
+							<button type="button" class="btn btn-primary btn-circle" data-ng-click="fieldEdit($index, key, value)" uib-tooltip="{{'labels:tool_edit' | i18next}}">
+								<span class="glyphicon glyphicon-pencil"></span>
+							</button> 
+							<button type="button" class="btn btn-danger btn-circle" data-ng-click="fieldRemove(key)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</td>
+						<td ng-show="mode[$index] == 'edit'">
+							<button type="button" class="btn btn-primary btn-square" data-ng-click="saveEditing($index)">
+								{{'labels:btn_save' | i18next}}
+							</button> 
+							<button type="button" class="btn btn-danger btn-square" data-ng-click="cancelEditing($index)">
+								{{'labels:btn_cancel' | i18next}}
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-default" data-ng-click="cancel()" autofocus>{{'labels:btn_cancel' | i18next}}</button>
-	<button type="button" class="btn btn-primary" data-ng-click="save()">{{'labels:btn_save' | i18next}}</button>
+	<button type="button" class="btn btn-primary" data-ng-click="save(challengeIndex)">{{'labels:btn_save' | i18next}}</button>
 </div>

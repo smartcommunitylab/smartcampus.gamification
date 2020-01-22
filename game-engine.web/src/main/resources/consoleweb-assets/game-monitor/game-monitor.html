@@ -218,13 +218,13 @@
 											| i18next }}</div>
 										<div ng-show="player.state['ChallengeConcept'].length != 0">
 											<div class="challenge-box"
-												data-ng-repeat="challenge in player.state['ChallengeConcept'] | orderBy : '-end'">
+												data-ng-repeat="challenge in player.state['ChallengeConcept'] | orderBy : '-end' track by $index">
 												<span ng-attr-title="{{challenge.name}}" class="challenge-title">{{challenge.name | limitTo: challengeNameLimit}}</span>
+												<button type="button" ng-hide="challenge.isGroup" data-ng-click="editChallenge(player, challenge)" uib-tooltip="{{'labels:tool_edit' | i18next}}" class="btn btn-xs btn-primary btn-circle" style="margin-left:3px;">
+													<span class="glyphicon glyphicon-pencil"></span>
+												</button>
 												<button type="button" class="btn btn-xs btn-danger btn-circle" ng-hide="challenge.isGroup" data-ng-click="deleteChallenge(player, challenge)" uib-tooltip="{{'labels:tool_delete' | i18next}}">
 													<span class="glyphicon glyphicon-trash"></span>
-												</button>
-												<button type="button" ng-hide="challenge.isGroup" data-ng-click="editChallenge(player, challenge)" uib-tooltip="edit" class="btn btn-xs btn-primary btn-circle" style="margin-left:3px;">
-													<span class="glyphicon glyphicon-pencil"></span>
 												</button>
 												<div class="challenge-date">{{challenge.modelName}}</div>
 												<div><span class="glyphicon glyphicon-eye-open" ng-show="challenge.isVisible" title="visible"></span></div>

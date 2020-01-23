@@ -220,6 +220,7 @@ modals
 	$scope.start = challenge.start;
 	$scope.end = challenge.end;
 	$scope.fields = Object.assign({}, challenge.fields);
+	$scope.priority = challenge.priority;
 	$scope.fieldData = {};
 	
 	$scope.alerts = {	
@@ -257,6 +258,7 @@ modals
 		}
 		challenge.isVisible = !challenge.visibility.hidden || moment(challenge.visibility.disclosureDate).isSameOrBefore(now);
 		challenge.fields = $scope.fields;
+		challenge.priority = $scope.priority;
 		state.state['ChallengeConcept'].splice(challengeIndex, 1, challenge);
 		$uibModalInstance.close(state);
 //	gamesFactory.deleteChallenge(gameId, state.playerId, challenge).then(function (data) {

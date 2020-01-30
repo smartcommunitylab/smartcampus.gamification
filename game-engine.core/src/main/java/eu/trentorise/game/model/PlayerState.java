@@ -247,4 +247,21 @@ public class PlayerState {
 
         return configs;
     }
+
+    public Optional<ChallengeConcept> challenge(String name) {
+        return challenges().stream().filter(c -> c.getName().equals(name)).findFirst();
+    }
+
+    public PlayerState upateChallenge(ChallengeUpdate changes) {
+        for (GameConcept concept : state) {
+            if (concept.getClass() == ChallengeConcept.class) {
+                ChallengeConcept challenge = (ChallengeConcept) concept;
+                if (challenge.getName().equals(changes.getName())) {
+                    challenge = challenge.update(changes);
+                    break;
+                }
+            }
+        }
+        return this;
+    }
 }

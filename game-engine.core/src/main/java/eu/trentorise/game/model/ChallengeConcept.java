@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.core.SystemClock;
+import eu.trentorise.game.model.ChallengeUpdate.StateUpdate;
 import eu.trentorise.game.model.core.GameConcept;
 
 @JsonAutoDetect(fieldVisibility = com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY)
@@ -353,6 +354,20 @@ public class ChallengeConcept extends GameConcept {
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
+    }
+
+    public ChallengeConcept update(ChallengeUpdate changes) {
+        if (name.equals(changes.getName())) {
+            if(changes.getStateUpdate() != null) {
+                final StateUpdate stateUpdate = changes.getStateUpdate();
+                state = stateUpdate.getState();
+                stateDate.put(state, stateUpdate.getStateDate() != null ? stateUpdate.getStateDate() : new Date());
+            }
+            priority = changes.getPriority();
+            visibility = changes.getVisibility();
+            fields = changes.getFields();
+        }
+        return this;
     }
 
 }

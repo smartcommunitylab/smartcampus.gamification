@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -872,5 +873,10 @@ public class GameManager implements GameService {
 		return mongoTemplate.find(q, GameStatistics.class);
 		
 	}
+
+    @Override
+    public Optional<ChallengeModel> readChallengeModelByName(String gameId, String modelName) {
+        return Optional.ofNullable(challengeModelRepo.findByGameIdAndName(gameId, modelName));
+    }
 
 }

@@ -75,6 +75,7 @@ public class ChallengeManagerTest {
     @Mock
     private Clock clock;
 
+    @InjectMocks
     @Autowired
     private GameService gameSrv;
 

@@ -76,7 +76,6 @@ import eu.trentorise.game.notification.ChallengeAssignedNotification;
 import eu.trentorise.game.notification.ChallengeInvitationCanceledNotification;
 import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
 import eu.trentorise.game.notification.ChallengeProposedNotification;
-import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.repo.PlayerRepo;
@@ -99,8 +98,8 @@ public class DBPlayerManager implements PlayerService {
     @Autowired
     private GameService gameSrv;
 
-    @Autowired
-    private ChallengeModelRepo challengeModelRepo;
+    // @Autowired
+    // private ChallengeModelRepo challengeModelRepo;
 
     @Autowired
     private GroupChallengeRepo groupChallengeRepo;
@@ -498,23 +497,18 @@ public class DBPlayerManager implements PlayerService {
             throw new IllegalArgumentException("modelName cannot be null");
         }
 
-
-        ChallengeModel model =
-                challengeModelRepo.findByGameIdAndName(gameId, challengeAssignment.getModelName());
-        if (model == null) {
-            throw new IllegalArgumentException(String.format("model %s not exist in game %s",
-                    challengeAssignment.getModelName(), gameId));
-        }
+        Optional<ChallengeModel> model = gameSrv.readChallengeModelByName(gameId, challengeAssignment.getModelName());
 
         if (data == null) {
             data = new HashMap<String, Object>();
         } else {
-            for (String var : data.keySet()) {
-                if (!model.getVariables().contains(var)) {
-                    throw new IllegalArgumentException(
-                            String.format("field %s not present in model %s", var,
-                                    challengeAssignment.getModelName()));
-                }
+            List<String> invalidFields = model.map(m -> m.invalidFields(challengeAssignment))
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            String.format("model %s not exist in game %s",
+                                    challengeAssignment.getModelName(), gameId)));
+            if (!invalidFields.isEmpty()) {
+                throw new IllegalArgumentException(String.format("field %s not present in model %s",
+                        invalidFields.get(0), challengeAssignment.getModelName()));
             }
         }
 

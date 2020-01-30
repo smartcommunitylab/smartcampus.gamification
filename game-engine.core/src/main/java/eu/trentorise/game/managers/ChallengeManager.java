@@ -1,8 +1,10 @@
 package eu.trentorise.game.managers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -13,8 +15,11 @@ import org.springframework.stereotype.Service;
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.StatsLogger;
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeInvitation;
+import eu.trentorise.game.model.ChallengeModel;
+import eu.trentorise.game.model.ChallengeUpdate;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.GroupChallenge.Attendee;
@@ -134,6 +139,31 @@ public class ChallengeManager {
         }
     }
 
+    public ChallengeConcept update(String gameId, String playerId, ChallengeUpdate changes) {
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+        Optional<ChallengeConcept> challenge = state.challenge(changes.getName());
+        challenge.ifPresent(c -> {
+            final String modelName = c.getModelName();
+            Optional<ChallengeModel> model =
+                    gameSrv.readChallengeModelByName(gameId, modelName);
+            List<String> invalidFields =
+                    model.map(m -> m.invalidFields(changes)).orElse(Collections.emptyList());
+            if (!invalidFields.isEmpty()) {
+                throw new IllegalArgumentException(String.format("field %s not present in model %s",
+                        invalidFields.get(0), modelName));
+            }
+        });
+        ChallengeConcept challengeUpdated = challenge.flatMap(c -> {
+            state.upateChallenge(changes);
+            playerSrv.saveState(state);
+            return state.challenge(changes.getName());
+        }).orElseThrow(() -> new IllegalArgumentException(String
+                .format(
+                        "challenges %s not found in player %s", changes.getName(), playerId)));
+        LogHub.info(gameId, logger,
+                String.format("updated challenge %s of player %s", changes.getName(), playerId));
+        return challengeUpdated;
+    }
 
     public List<GroupChallenge> completedPerformanceGroupChallenges(String gameId) {
         return groupChallengeRepo.findByGameIdAndStateAndEndBeforeAndChallengeModel(gameId,

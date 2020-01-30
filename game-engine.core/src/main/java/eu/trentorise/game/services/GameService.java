@@ -15,6 +15,7 @@
 package eu.trentorise.game.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
@@ -79,6 +80,8 @@ public interface GameService {
     public Set<ChallengeModel> readChallengeModels(String gameId);
 
     public ChallengeModel readChallengeModel(String gameId, String modelId);
+
+    public Optional<ChallengeModel> readChallengeModelByName(String gameId, String modelName);
 
     Game upsertLevel(String gameId, Level level);
 

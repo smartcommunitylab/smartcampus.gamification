@@ -21,9 +21,6 @@
 	{{challenge.name}}
 </div>
 <div class="modal-body" style="padding: 5px;">
-	<div class="col-md-12 text-center">
-		<uib-alert ng-if="!!alerts.deleteError" type="danger">{{'messages:msg_delete_error' | i18next}}</uib-alert>
-	</div>
 	<div class="row">
 		<div class="col-md-12">
 			<form>
@@ -53,6 +50,9 @@
 		</div>
 		<div class="col-md-12">
 			<h4>Fields</h4>
+			<div class="col-md-12 text-center">
+				<uib-alert ng-if="err" type="danger">{{err}}</uib-alert>
+			</div>
 			<table class="table table-striped">
 				<tbody>
 					<tr ng-repeat="(key,value) in fields">

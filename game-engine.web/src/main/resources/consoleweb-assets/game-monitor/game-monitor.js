@@ -244,30 +244,36 @@ modals
 		$scope.fieldData['value'] = value;
 	}
 	
-	
 	$scope.save = function (challengeIndex) {
 		const now = moment();
+		let challengeUpdate = {};
+		challengeUpdate.name = challenge.name;
 		challenge.visibility.hidden = $scope.visibility === 'Hidden';
 		challenge.visibility.disclosureDate = $scope.disclosureDate;
+		challengeUpdate.visibility = challenge.visibility;
 		challenge.start = $scope.start;
+		challengeUpdate.start = challenge.start;
 		challenge.end = $scope.end;
+		challengeUpdate.end = challenge.end;
+		
 		if(challenge.state != $scope.state) {
 			challenge.state = $scope.state;
 			challenge.stateDate[$scope.state] = now.valueOf();
 			challenge.failed = challenge.state === 'FAILED';
+			challengeUpdate.stateUpdate = {state : challenge.state, stateDate: challenge.stateDate[$scope.state] }; 
 		}
 		challenge.isVisible = !challenge.visibility.hidden || moment(challenge.visibility.disclosureDate).isSameOrBefore(now);
 		challenge.fields = $scope.fields;
+		challengeUpdate.fields = challenge.fields;
 		challenge.priority = $scope.priority;
-		state.state['ChallengeConcept'].splice(challengeIndex, 1, challenge);
-		$uibModalInstance.close(state);
-//	gamesFactory.deleteChallenge(gameId, state.playerId, challenge).then(function (data) {
-//		const challengeIndex = state.state['ChallengeConcept'].indexOf(challenge);
-//		state.state['ChallengeConcept'].splice(challengeIndex, 1);
-//		$uibModalInstance.close();
-//	}, function (msg) {
-//		$scope.err = 'messages:' + msg;
-//	});	
+		challengeUpdate.priority = challenge.priority;
+
+		gamesFactory.updateChallenge(gameId, state.playerId, challengeUpdate).then(function (data) {
+			state.state['ChallengeConcept'].splice(challengeIndex, 1, challenge);
+			$uibModalInstance.close(state);
+		}, function(msg) {
+			$scope.err = msg;
+		});
 	};
 
 	

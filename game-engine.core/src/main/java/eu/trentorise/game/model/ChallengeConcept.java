@@ -366,6 +366,8 @@ public class ChallengeConcept extends GameConcept {
             priority = changes.getPriority();
             visibility = changes.getVisibility();
             fields = changes.getFields();
+            start = changes.getStart();
+            end = changes.getEnd();
         }
         return this;
     }

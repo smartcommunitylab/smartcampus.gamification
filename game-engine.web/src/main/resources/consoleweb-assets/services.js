@@ -487,6 +487,21 @@ angular.module('gamificationEngine.services', [])
 			});
 			return deferred.promise;
 		}
+		
+		const updateChallenge = function (gameId, playerId, challengeUpdate) {
+			var deferred = $q.defer();
+
+			$http.put(url + `/data/game/${gameId}/player/${playerId}/challenge/${challengeUpdate.name}`, challengeUpdate).success(function (data, status, headers, config) {
+				deferred.resolve(data);
+			}).error(function (data, status, headers, config) {
+				if(status == 400) {
+					deferred.reject(data.message);
+				}
+			});
+			return deferred.promise;
+		}
+		
+		
 
 		// Get game by name
 		var userProfile = function () {
@@ -531,6 +546,7 @@ angular.module('gamificationEngine.services', [])
 			'userProfile': userProfile,
 			'setUrl': setUrl,
 			 deleteChallenge,
+			 updateChallenge,
 		};
 	})
 	.factory('utilsFactory', function () {

@@ -12,8 +12,6 @@ public class ChallengeUpdate {
     private Map<String, Object> fields = new HashMap<String, Object>();
     private Date start;
     private Date end;
-    // private ChallengeState stateUpdate;
-    // private Map<ChallengeState, Date> stateDate = new HashMap<>();
     private StateUpdate stateUpdate;
     private int priority = 0;
     private Visibility visibility = new Visibility();
@@ -66,22 +64,6 @@ public class ChallengeUpdate {
     public void setEnd(Date end) {
         this.end = end;
     }
-
-    // public ChallengeState getState() {
-    // return stateUpdate;
-    // }
-    //
-    // public void setState(ChallengeState stateUpdate) {
-    // this.state = stateUpdate;
-    // }
-    //
-    // public Map<ChallengeState, Date> getStateDate() {
-    // return stateDate;
-    // }
-    //
-    // public void setStateDate(Map<ChallengeState, Date> stateDate) {
-    // this.stateDate = stateDate;
-    // }
 
     public int getPriority() {
         return priority;

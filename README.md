@@ -13,7 +13,30 @@ Platform is developed in Java using Apache Maven as build tool.
 
 You can use docker to have a quick running system.
 
+### Requirements
+
+* docker > 1.18
+* docker-compose > 1.25.0
+   
+
 You can find configurations into the `gamification.env` file.
+
+### Setup simple security
+
+Instruction to use BASIC AUTH security
+
+1. Copy `run-configs/users.yml` where you want (ex: `/your-path/users.yml`)
+2. Open `/your-path/users.yml` and modify `username` and `password`
+3. In `gamification.env` modify `SPRING_PROFILE` to `sec`
+4. In `gamification.env` modify `USERS_FILE` to `/app/config/users.yml`
+5. In `docker-compose.yml` modify `volumes` as:
+```
+ volumes:
+   - ./logs:/app/game-engine.web/logs
+   - /your-path:/app/config
+```
+
+### Run
 
 1. run `docker-compose up` from the root folder.
 

@@ -1,5 +1,10 @@
 package eu.trentorise.game.core;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -84,4 +89,18 @@ public class LogHub {
 			logger.debug(msg, e);
 		}
 	}
+
+    /*
+     * UTILITY LOG FUNCTIONS
+     */
+
+    private static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+
+    public static Optional<String> logDate(Date date) {
+        if (date == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(dateFormatter.format(date));
+        }
+    }
 }

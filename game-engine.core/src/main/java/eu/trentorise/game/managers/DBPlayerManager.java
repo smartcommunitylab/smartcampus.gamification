@@ -549,8 +549,10 @@ public class DBPlayerManager implements PlayerService {
         persistConcepts(gameId, playerId, new StatePersistence(state).getConcepts());
 
         if (challenge.getVisibility().isHidden()) {
-            LogHub.info(gameId, logger, "challenge {} is hidden, notification will be not send",
-                    challenge.getName());
+            LogHub.info(gameId, logger,
+                    "challenge {} is hidden [disclosure date: {}], notification will be not send",
+                    challenge.getName(),
+                    LogHub.logDate(challenge.getVisibility().getDisclosureDate()).orElse("-"));
         } else {
             Notification challengeNotification = null;
             if (challenge.getState() == ChallengeState.ASSIGNED) {

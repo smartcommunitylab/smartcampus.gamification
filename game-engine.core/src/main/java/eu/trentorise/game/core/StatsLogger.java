@@ -311,6 +311,23 @@ public class StatsLogger {
         return msg;
     }
 
+    public static String logSurveyCompleted(String domain, String gameId, String playerId,
+            String executionId, long executionMoment, Map<String, Object> inputData) {
+        return logSurveyCompleted(domain, gameId, playerId, executionId, executionMoment,
+                System.currentTimeMillis(), inputData);
+    }
+
+    public static String logSurveyCompleted(String domain, String gameId, String playerId,
+            String executionId, long executionMoment, long timestamp,
+            Map<String, Object> inputData) {
+        String msg = commonFieldsOutput(domain, gameId, playerId, executionId, executionMoment,
+                timestamp);
+        final String surveyType = (String) inputData.getOrDefault("surveyType", "");
+        msg += " " + String.format("type=%s surveyType=\"%s\"", "SurveyCompleted", surveyType);
+        statsLogger.info(msg);
+        return msg;
+    }
+
     private static String commonFieldsOutput(String domain, String gameId, String playerId,
             String executionId, long executionMoment, long timestamp) {
         if(StringUtils.isBlank(domain)){

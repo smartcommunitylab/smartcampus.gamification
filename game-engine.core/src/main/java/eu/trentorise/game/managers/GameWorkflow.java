@@ -96,6 +96,10 @@ public class GameWorkflow implements Workflow {
 
         boolean result = playerSrv.saveState(newState) != null;
 
+        if (isSurveyCompleteAction(actionId)) {
+            StatsLogger.logSurveyCompleted(g.getDomain(), gameId, userId, executionId,
+                    executionMoment, data);
+        }
         // update score of all player active groupChallenges
 
         List<GroupChallenge> playerActiveGroupChallenges =
@@ -157,6 +161,10 @@ public class GameWorkflow implements Workflow {
 
     private boolean isClassificationAction(String actionId) {
         return actionId != null && "scogei_classification".equals(actionId);
+    }
+
+    private boolean isSurveyCompleteAction(String actionId) {
+        return actionId != null && "survey_complete".equals(actionId);
     }
 
     public void apply(String gameId, String actionId, String userId, Map<String, Object> data,

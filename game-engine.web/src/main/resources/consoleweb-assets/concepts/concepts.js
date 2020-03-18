@@ -169,7 +169,7 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 			let periodKeys = Object.keys(processedPoint.periods);
 			processedPoint.periodList = [];
 			periodKeys.forEach(function(k) {
-				processedPoint.periods[k].period = processedPoint.periods[k].period / (24 * 3600 * 1000);
+				processedPoint.periods[k].period = processedPoint.periods[k].period / (24 * 3600 * 1000); // representation as "days"
 				processedPoint.periodList.push(processedPoint.periods[k]);
 			});
 		}

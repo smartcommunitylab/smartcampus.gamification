@@ -128,13 +128,16 @@
 										<tr ng-show="point.periodList.length > 0">
 											<th>period name</th>
 											<th>start date</th>
+											<th>end date</th>
 											<th>period</th>
 											<th>capacity</th>
 										</tr>
 										<tr ng-repeat="instance in point.periodList">
 											<td>{{instance.identifier}}</td>
 											<td>{{instance.start | date:'dd/MM/yyyy'}}</td>
-											<td>{{instance.period}} days</td>
+											<td ng-if="instance.end">{{instance.end | date:'dd/MM/yyyy'}}</td>
+											<td ng-if="!instance.end">-</td>
+											<td>{{instance.period <=0 ? "-" : instance.period + " days"}}</td>
 											<td>{{!instance.capacity || instance.capacity <= 0 ? "-" : instance.capacity}}</td>
 										</tr>
 									</table>

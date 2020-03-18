@@ -18,10 +18,13 @@ import static eu.trentorise.game.core.StatsLogger.logInviteToChallenge;
 import static eu.trentorise.game.core.StatsLogger.logLevelGained;
 import static eu.trentorise.game.core.StatsLogger.logRuleBadgeCollectionConceptDelta;
 import static eu.trentorise.game.core.StatsLogger.logRulePointConceptDelta;
+import static eu.trentorise.game.core.StatsLogger.logSurveyCompleted;
 import static eu.trentorise.game.core.StatsLogger.logUnblacklist;
 import static eu.trentorise.game.core.StatsLogger.logUserCreation;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -40,7 +43,7 @@ public class SampleStatsProvider {
 
         final String domain = null;
         final String gameId = "GAME";
-        long executionMoment = dateAsMillis("2018-11-22T11:00:22");
+        long executionMoment = System.currentTimeMillis();
         final String actionUuid = uuid();
         logAction(domain, gameId, "101", actionUuid, executionMoment,
                 executionMoment, "ACTION", null, null, null);
@@ -66,7 +69,7 @@ public class SampleStatsProvider {
         logChallengeFailed(domain, gameId, "11", uuid(), failedChallengeMillis,
                 failedChallengeMillis, "challenge name");
 
-        long timestamp = dateAsMillis("2018-11-22T11:50:00");
+        long timestamp = System.currentTimeMillis();
         logChallengeInvitationAccepted(domain, gameId, "100", uuid(), timestamp,
                 timestamp, "challenge name", "groupCompetitiveTime");
 
@@ -94,6 +97,12 @@ public class SampleStatsProvider {
         
         logChallengeInvitationCanceled(domain, gameId, "100", uuid(), timestamp, timestamp,
                 "challenge name", "groupCompetitiveTime");
+        
+        logSurveyCompleted(domain, gameId, "4444", uuid(), timestamp, new HashMap<>());
+
+        Map<String,Object> data = new HashMap<>();
+        data.put("surveyType", "prova test");
+        logSurveyCompleted(domain, gameId, "4444", uuid(), timestamp + 10000, data);
     }
 
 

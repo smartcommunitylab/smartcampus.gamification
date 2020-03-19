@@ -223,18 +223,30 @@
 													<span class="glyphicon glyphicon-trash"></span>
 												</button>
 												<div class="challenge-date">{{challenge.modelName}}</div>
+												<!-- challenge visibility -->
 												<div><span class="glyphicon glyphicon-eye-open" ng-show="challenge.isVisible" title="visible"></span></div>
 												<div ng-hide="challenge.isVisible">
 													<span class="glyphicon glyphicon-eye-close" title="hidden"></span>
 													<span class="challenge-date"><strong>disclosure</strong>: {{ challenge.visibility.disclosureDate | date:'dd/MM/yyyy HH:mm:ss' }}</span>
 												</div>
+												<!-- challenge meta-info -->
+												<div class="col-md-6">
+														<div class="challenge-date">origin: <span class="challenge-field-value">{{challenge.origin ? challenge.origin : '-'}}</span></div>
+														<div class="challenge-date">priority: <span class="challenge-field-value">{{challenge.priority}}</span></div>
+												</div>
+												<div class="col-md-6">
+														<div class="challenge-date">forced: <span class="challenge-field-value">{{challenge.forced}}</span></div>
+												</div>
+												<!-- challenge state -->
 												<div class="challenge-status">
 													<span ng-show="!challenge.failed" class="label label-success">{{challenge.state}} {{ challenge.stateDate[challenge.state] | date:'dd/MM/yyyy HH:mm:ss' }}</span>
 													<span ng-show="challenge.failed" class="label label-danger">{{challenge.state}} {{ challenge.stateDate[challenge.state] | date:'dd/MM/yyyy HH:mm:ss' }}</span>													
 												</div>
+												<!-- challenge date validity -->
 												<div class="challenge-date">{{challenge.start | date:
 													'dd/MM/yyyy HH:mm:ss'}} - {{challenge.end | date:
 													'dd/MM/yyyy HH:mm:ss'}}</div>
+												<!-- challenge fields -->
 												<div ng-repeat="(key,value) in challenge.fields">
 													<span class="challenge-field">{{key}}</span>: <span
 														class="challenge-field-value">{{value}}</span>

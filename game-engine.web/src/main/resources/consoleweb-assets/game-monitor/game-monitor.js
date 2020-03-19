@@ -6,6 +6,7 @@ angular.module('gamificationEngine.monitor', [])
 		$scope.items4Page = 10;
 		$scope.challengeNameLimit = 30;
 		$scope.playerFilter = {};
+		$scope.currentGame = { id: $rootScope.currentGameId};
 		
 		if ($state.current.data) {
 			$rootScope.page = $state.current.data.page;

@@ -25,7 +25,7 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 			initialDate.setMinutes(0);
 			initialDate.setSeconds(0);
 			initialDate.setMilliseconds(0);
-			$scope.tmpPeriods.push({name:'', start: initialDate, period : 1});
+			$scope.tmpPeriods.push({name:'', start: initialDate});
 		}
 		
 		$scope.deleteTmpPeriod =function(index) {
@@ -48,10 +48,10 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 							$scope.alerts.editInstanceError = 'messages:msg_period_name_error';
 							validationError = true;
 						}
-						if(xx.period < 0) {
-							$scope.alerts.editInstanceError = 'messages:msg_period_negative_error';
-							validationError = true;
-						}
+//						if(xx.period < 0) {
+//							$scope.alerts.editInstanceError = 'messages:msg_period_negative_error';
+//							validationError = true;
+//						}
 					});
 				}
 				if(!validationError) {
@@ -144,9 +144,11 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 			});
 		};
 
+		// useful ?
 		$scope.process = function(p) {
-			p.identifier = 'ciccio';
+     		p.identifier = 'ciccio';
 		};
+		
 		gamesFactory.getPoints($rootScope.currentGameId).then(function (points) {
 			$scope.game.pointConcept = points;
 			// process periods data to view state
@@ -169,7 +171,7 @@ var concepts = angular.module('gamificationEngine.concepts', [])
 			let periodKeys = Object.keys(processedPoint.periods);
 			processedPoint.periodList = [];
 			periodKeys.forEach(function(k) {
-				processedPoint.periods[k].period = processedPoint.periods[k].period / (24 * 3600 * 1000); // representation as "days"
+				processedPoint.periods[k].period = processedPoint.periods[k].period ? processedPoint.periods[k].period / (24 * 3600 * 1000) : 0; // representation as "days"
 				processedPoint.periodList.push(processedPoint.periods[k]);
 			});
 		}

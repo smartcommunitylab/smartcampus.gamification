@@ -301,7 +301,9 @@ angular.module('gamificationEngine.services', [])
 				let periods = {};
 				let dayMillis = 24 * 3600 * 1000;
 				angular.forEach(instanceProperties.periods,function(value,key){
-					periods[value.name] = {start: value.start.getTime(),period: value.period * dayMillis, identifier :value.name, capacity: value.capacity};
+					const endDate = value.end ? value.end.getTime() : undefined;
+					const period = value.period ? value.period * dayMillis : undefined
+					periods[value.name] = {start: value.start.getTime(),end: endDate, period: period, identifier :value.name, capacity: value.capacity};
 				});
 				instance.periods = periods;
 				tmpGame.pointConcept.unshift(instance);

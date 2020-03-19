@@ -63,7 +63,8 @@
 							<tr ng-show="tmpPeriods.length > 0">
 								<th>period name</th>
 								<th>start date</th>
-								<th>period</th>
+								<th>end date</th>
+								<th>period (in days)</th>
 								<th>capacity</th>
 							</tr>
 							<tr ng-repeat="instance in tmpPeriods">
@@ -73,11 +74,13 @@
 										show-spinners="false" placeholder="mm/dd/yyyy"
 										ng-model="instance.start" show-meridian="showMeridian"
 										date-format="dd-MMM-yyyy"></datetimepicker></td>
+								<td><datetimepicker hidden-time="true"
+										show-spinners="false" placeholder="mm/dd/yyyy"
+										ng-model="instance.end" show-meridian="showMeridian"
+										date-format="dd-MMM-yyyy"></datetimepicker></td>
 								<td>
-									<div class="form-inline">
-										<input class="form-control" type="text"
-											ng-model="instance.period" /> <span>days</span>
-									</div>
+										<input class="form-control number-box" type="number" min="1"
+											ng-model="instance.period" />
 								</td>
 								<td>
 										<input class="form-control number-box" type="number" min="1"
@@ -129,7 +132,7 @@
 											<th>period name</th>
 											<th>start date</th>
 											<th>end date</th>
-											<th>period</th>
+											<th>period (in days)</th>
 											<th>capacity</th>
 										</tr>
 										<tr ng-repeat="instance in point.periodList">
@@ -137,7 +140,7 @@
 											<td>{{instance.start | date:'dd/MM/yyyy'}}</td>
 											<td ng-if="instance.end">{{instance.end | date:'dd/MM/yyyy'}}</td>
 											<td ng-if="!instance.end">-</td>
-											<td>{{instance.period <=0 ? "-" : instance.period + " days"}}</td>
+											<td>{{instance.period <=0 ? "-" : instance.period}}</td>
 											<td>{{!instance.capacity || instance.capacity <= 0 ? "-" : instance.capacity}}</td>
 										</tr>
 									</table>

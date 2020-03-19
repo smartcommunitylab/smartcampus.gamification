@@ -406,7 +406,7 @@ angular.module('gamificationEngine.services', [])
 			query.rawQuery = {};
 			query.rawQuery.query = {};
 			query.rawQuery.query = {'playerId' : '/' +playerFilter+'/'}
-			$http.post(url + `/gamification/data/game/${gameId}/player/search`,query, {
+			$http.post(url + `/data/game/${gameId}/player/search`,query, {
 				params: {
 					page: pageRequest,
 					size: pageSize,
@@ -549,6 +549,7 @@ angular.module('gamificationEngine.services', [])
 			'setUrl': setUrl,
 			 deleteChallenge,
 			 updateChallenge,
+			 playersSearch,
 		};
 	})
 	.factory('utilsFactory', function () {

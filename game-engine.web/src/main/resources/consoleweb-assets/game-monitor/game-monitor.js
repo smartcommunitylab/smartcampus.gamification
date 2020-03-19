@@ -97,17 +97,6 @@ angular.module('gamificationEngine.monitor', [])
 			});
 		}
 
-		$scope.update = function () {
-			//$scope.expandIdx = -1000;
-			gamesFactory.playersSearch($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {
-				data.content = enrichData(data.content);
-				$scope.playerStates = data;
-				$scope.totalItems = data.totalElements;
-			}, function (msg) {
-				$scope.err = 'messages:' + msg;
-			});
-		};
-
 		$scope.goToUrl = function (url) {
 			$window.location.href = url;
 		}
@@ -166,13 +155,6 @@ angular.module('gamificationEngine.monitor', [])
 			});
 			
 			modalInstance.result.then(function (state) {
-//				const now = moment();
-//				let challenges = state.state['ChallengeConcept']
-//				challenges.forEach(function(c) {
-//					c.failed = c.state === 'FAILED';
-//					c.isGroup = c.name.startsWith('p_');
-//					c.isVisible = !c.visibility.hidden || moment(c.visibility.disclosureDate).isSameOrBefore(now);
-//				});
 			});
 		};
 	});

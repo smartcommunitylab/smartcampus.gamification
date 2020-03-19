@@ -5,13 +5,14 @@ angular.module('gamificationEngine.monitor', [])
 		$scope.currentPage = 1;
 		$scope.items4Page = 10;
 		$scope.challengeNameLimit = 30;
-
+		$scope.playerFilter = {};
+		
 		if ($state.current.data) {
 			$rootScope.page = $state.current.data.page;
 		}
 
 		if ($rootScope.monitorFilter) {
-			$scope.playerIdFilter = $rootScope.monitorFilter;
+			$scope.playerFilter['filterBy'] = $rootScope.monitorFilter;
 		}
 
 
@@ -75,7 +76,7 @@ angular.module('gamificationEngine.monitor', [])
 		$scope.limitPeriodInstances = 3;
 
 
-		gamesFactory.getPlayersState($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {
+		gamesFactory.getPlayersState($rootScope.currentGameId, $scope.playerFilter.filterBy, $scope.currentPage, $scope.items4Page).then(function (data) {
 			data.content = enrichData(data.content);
 			$scope.playerStates = data;
 			$scope.totalItems = data.totalElements;
@@ -87,8 +88,9 @@ angular.module('gamificationEngine.monitor', [])
 		$scope.playerIdFilter = '';
 
 		$scope.filter = function () {
-			$rootScope.monitorFilter = $scope.playerIdFilter;
-			gamesFactory.getPlayersState($rootScope.currentGameId, $scope.playerIdFilter, $scope.currentPage, $scope.items4Page).then(function (data) {
+			const filterBy = $scope.playerFilter.filterBy;
+			$rootScope.monitorFilter = filterBy;
+			gamesFactory.getPlayersState($rootScope.currentGameId, filterBy, $scope.currentPage, $scope.items4Page).then(function (data) {
 				data.content = enrichData(data.content);
 				$scope.playerStates = data;
 				$scope.totalItems = data.totalElements;

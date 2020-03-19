@@ -61,12 +61,9 @@
 								<div class="col-md-12">
 									<div class="player">
 										<span class="id" ng-class="{'bold': !hideDetails}">{{player.playerId}}</span>
-										<span class="points" ng-show="hideDetails">{{'labels:lbl_summary_score'
-											| i18next}}: {{player.totalScore}}</span>
 									</div>
 									<button type="button"
 										class="btn btn-warning btn-circle pull-right"
-										style="margin-right: 1em; margin-top: 9px;"
 										data-ng-click="hideDetails = !hideDetails"
 										uib-tooltip="{{'labels:tool_view' | i18next}}">
 										<span class="glyphicon"
@@ -88,7 +85,6 @@
 												| i18next}}</h5>
 										</div>
 									</div>
-									<span class="total">{{'labels:lbl_total' | i18next}}: <b>{{player.totalScore}}</b></span>
 									<div uib-collapse="isPointSectorVisible">
 										<div ng-repeat="elem in player.state['PointConcept']">
 											<span>{{elem.name}}:</span> <span class="value">{{elem.score}}</span>

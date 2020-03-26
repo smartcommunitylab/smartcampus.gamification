@@ -65,31 +65,12 @@ angular.module('gamificationEngine.services', [])
 
 		// Get game by ID
 		var getGameById = function (id) {
-			
 			var deferred = $q.defer();
-
-			var game = {};
-
-			// Load games
-			getGames().then(function () {
-				var found = false; 
-				angular.forEach($rootScope.games, function (g) {
-					if (!found && g.id == id) {
-						game = g;
-						found = true;
-					}
-				});
-
-				// If i've found the requested game
-				if (!!game) {
-					deferred.resolve(game);
-				} else {
-					deferred.reject();
-				}
-			}, function () {
+			$http.get(url + `/console/game/${id}`) .success(function (data) {
+				deferred.resolve(data);
+			}).error(function () {
 				deferred.reject();
 			});
-
 			return deferred.promise;
 		};
 
@@ -261,6 +242,12 @@ angular.module('gamificationEngine.services', [])
 				game.name = fields.name.trim();
 				game.expiration = fields.expiration;
 				game.domain = fields.domain ? fields.domain.trim() : fields.domain;
+				if(fields.challengeSettings) {
+					if(!game.settings) {
+						game.settings = {};
+					}
+					game.settings.challengeSettings = fields.challengeSettings;
+				}
 
 				$http.post(url + `/console/game`, game).
 				success(function (data, status, headers, config) {

@@ -24,6 +24,9 @@
 		<div class="col-md-12 text-center">
 			<uib-alert ng-if="!!alerts.editGameError" type="danger">{{'messages:msg_generic_error' | i18next}}</uib-alert>
 		</div>
+		<div class="col-md-12 text-center">
+			<uib-alert ng-if="!!alerts.error" type="danger">{{alerts.error}}</uib-alert>
+		</div>
 	</div>
 	<form role="form">
 		<div class="modal-body">
@@ -48,6 +51,23 @@
 						<uib-alert ng-if="alerts.invalidTime" type="danger">{{'messages:msg_invalid_time'| i18next}}</uib-alert>
 					</div>
 					<datetimepicker show-spinners="true" placeholder="mm/dd/yyyy" ng-model="newGame.expiration" show-meridian="showMeridian" date-format="dd-MMM-yyyy"></datetimepicker>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Challenge Visibility</label>
+				<div>
+					<input id="hidden" data-ng-model="newGame.hideChallenges" type="checkbox" data-ng-checked="newGame.hideChallenges" />
+					<label for="hide">hide</label>
+				</div>
+				<div ng-show="newGame.hideChallenges">
+				    <div class="form-group">
+				    	<label>Disclosure date</label>
+						<datetimepicker show-spinners="true" placeholder="mm/dd/yyyy" ng-model="newGame.challengeSettings.disclosure.startDate" show-meridian="showMeridian" date-format="dd-MMM-yyyy"></datetimepicker>
+					</div>
+					<div class="form-group">
+				    	<label>Frequency</label>
+						<input type="number" ng-model="newGame.challengeSettings.disclosure.frequency.value" size="3"/><select ng-options="unit.value as unit.label for unit in frequencyUnits" ng-model="newGame.challengeSettings.disclosure.frequency.unit"></select>
+					</div>					
 				</div>
 			</div>
 		</div>

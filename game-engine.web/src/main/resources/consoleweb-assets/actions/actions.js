@@ -5,7 +5,13 @@ angular.module('gamificationEngine.actions', [])
 
 		$scope.input = {};
 
-		var game = $scope.game;
+		// Load game
+		gamesFactory.getGameById($stateParams.id).then(function (game) {
+			$scope.game = game;
+		}, function () {
+			// Show error alert
+			$scope.alerts.loadGameError = true;
+		});
 
 		$scope.alerts = {
 			'actionError': '',
@@ -18,16 +24,16 @@ angular.module('gamificationEngine.actions', [])
 			$scope.alerts.actionError = '';
 			if ($scope.input.actionName && $scope.input.actionName.length > 0) {
 				var found = false;
-				for (var i = 0; i < game.actions.length && !found; i++) {
-					if ($scope.input.actionName == game.actions[i]) {
+				for (var i = 0; i < $scope.game.actions.length && !found; i++) {
+					if ($scope.input.actionName == $scope.game.actions[i]) {
 						found = true;
 					}
 				}
 
 				if (!found) {
 					$scope.disabled = true;
-					game.actions.unshift($scope.input.actionName);
-					gamesFactory.saveGame(game).then(
+					$scope.game.actions.unshift($scope.input.actionName);
+					gamesFactory.saveGame($scope.game).then(
 						function () {
 							$scope.disabled = false;
 							$scope.input.actionName = '';
@@ -69,14 +75,6 @@ angular.module('gamificationEngine.actions', [])
 				}, 4000);
 			})
 		};
-
-		// Load game
-		gamesFactory.getGameById($stateParams.id).then(function (game) {
-			$scope.game = game;
-		}, function () {
-			// Show error alert
-			$scope.alerts.loadGameError = true;
-		});
 	});
 
 // Edit action instance modal

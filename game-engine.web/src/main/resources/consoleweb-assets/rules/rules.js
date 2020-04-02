@@ -1,166 +1,182 @@
-angular.module('gamificationEngine.rules', [])
-	.controller('RulesCtrl', function ($scope, $rootScope, $timeout, $window, $stateParams, $uibModal, gamesFactory) {
+'use strict'
+var ruleModule = angular.module('gamificationEngine.rules', [])
+	.controller('RulesCtrl', function ($scope, $rootScope, $timeout, $window, $stateParams, $uibModal, gamesFactory, ruleService) {
+		const self = this;
+		
 		$rootScope.currentNav = 'rules';
 		$rootScope.currentGameId = $stateParams.id;
 
-		$scope.list = true;
-
-		$scope.hideRule = true;
-		$scope.title = "labels:title_add_rule";
-		$scope.action = "labels:btn_publish";
-
-		$scope.ruleContent = '';
-		$scope.input = {};
-		$scope.alerts = {
+		self.list = true;
+		self.title = "labels:title_add_rule";
+		self.action = "labels:btn_publish";
+		self.input = {};
+		self.alerts = {
 			'nameError': false,
 			'contentError': false,
 			'ruleError': '',
 			'ruleEdited': false,
 			'ruleDeleted': false
 		};
-		var previousName = '';
+		
+		const createRuleVm = (rule = {}) => {
+			return {
+				id : rule.id,
+				name : rule.name ? rule.name : rule.id,
+				content : rule.content,
+				show : false,
+				editing : false,
+				position : -1
+			};
+		};
+		
+		self.rules = [];
+		self.ruleForm;
+		let loadedRule;
+		
+		
+		// Load game
+		gamesFactory.getGameById($stateParams.id).then(function (game) {
+			self.game = game;
+			self.rules = game.rules.map(r => createRuleVm(r));
+		}, function () {
+			// Show error alert
+			self.alerts.loadGameError = true;
+		});
+		
+		self.save = function () {
+			self.alerts.nameError = false;
+			self.alerts.contentError = false;
+			self.alerts.ruleError = '';
+			self.alerts.ruleValidation = '';
+			let valid = true;
 
-		var rule;
-		var game = $scope.game;
-
-		$scope.save = function () {
-			$scope.alerts.nameError = false;
-			$scope.alerts.contentError = false;
-			$scope.alerts.ruleError = '';
-			$scope.alerts.ruleValidation = '';
-			var valid = true;
-
-			if (!$scope.input.ruleContent || $scope.input.ruleContent.length == 0) {
-				$scope.alerts.contentError = true;
+			// rule validation
+			if (!self.ruleForm.content || self.ruleForm.content.length == 0) {
+				self.alerts.contentError = true;
 				valid = false;
 			}
-			if (!$scope.input.name || $scope.input.name.length == 0) {
-				$scope.alerts.nameError = true;
+			if (!self.ruleForm.name || self.ruleForm.name.length == 0) {
+				self.alerts.nameError = true;
 				valid = false;
 			}
-
+			
 			if (valid) {
 				//check if already exist
-				var found = false;
-				if (game.rules && (!rule || rule.name != $scope.input.name)) {
-					for (var i = 0; i < game.rules.length && !found; i++) {
-						found = game.rules[i].name == $scope.input.name;
+				let found = false;
+				if (self.ruleForm.editing == false || loadedRule.name != self.ruleForm.name) {
+					for (var i = 0; i < self.rules.length && !found; i++) {
+						found = self.rules[i].name == self.ruleForm.name;
 					}
 				}
 
-
 				if (!found) {
-					$scope.disabled = true;
-
-					var r = (rule) ? rule : {};
-					r.name = $scope.input.name;
-					r.content = $scope.input.ruleContent;
-
-					if ($scope.input.name != 'constants') {
-						gamesFactory.validateRule($scope.input.ruleContent).then(function (data) {
+					self.disabled = true;
+					if (self.ruleForm.name != 'constants') {
+						ruleService.validate(self.ruleForm.content).then(function (data) {
 							if (data.length > 0) {
-								$scope.alerts.ruleValidation = data;
-								$scope.disabled = false;
+								self.alerts.ruleValidation = data;
+								self.disabled = false;
 							}
 							else {
-								addRuleAPI(game, r);
+								addRuleAPI(self.game, self.ruleForm);
 							}
 						}, function (msg) {
-							r.name = previousName;
-							$scope.alerts.ruleError = 'messages:' + msg;
-							$scope.disabled = false;
+							self.ruleForm.name = loadedRule.name;
+							self.alerts.ruleError = 'messages:' + msg;
+							self.disabled = false;
 						});
 					}
 					else {
-						addRuleAPI(game, r);
+						addRuleAPI(self.game, self.ruleForm);
 					}
 				} else {
-					$scope.alerts.ruleError = 'messages:msg_error_exist';
+					self.alerts.ruleError = 'messages:msg_error_exist';
 				}
 			}
 		};
 
-		function addRuleAPI(game, r) {
-			gamesFactory.addRule(game, r).then(
+		function addRuleAPI(game, rule) {
+			ruleService.create(game, rule).then(
 				function (data) {
-					if (!game.rules) {
-						game.rules = [];
+					if (!self.ruleForm.editing) {
+						self.rules.unshift(data);
+					} else {
+						self.rules[self.ruleForm.position] = createRuleVm(data);
 					}
-					if (!rule) {
-						game.rules.unshift(data);
-					}
-					$scope.disabled = false;
-					$scope.list = true;
-					$scope.alerts.ruleEdited = true;
+					self.disabled = false;
+					self.list = true;
+					self.alerts.ruleEdited = true;
+					$timeout(function () {
+						self.alerts.ruleEdited = false;
+					}, 2000);
 				},
 				function (message) {
-					r.name = previousName;
+					self.ruleForm.name = loadedRule.name;
 					// Show given error alert
-					$scope.alerts.ruleError = 'messages:' + message;
-					$scope.disabled = false;
+					self.alerts.ruleError = 'messages:' + message;
+					self.disabled = false;
 				});
 		}
 
-		$scope.cancel = function () {
-			$scope.list = true;
-			$scope.alerts.nameError = false;
-			$scope.alerts.contentError = false;
-			$scope.alerts.ruleError = '';
-			$scope.alerts.ruleValidation = '';
+		self.cancel = function () {
+			self.list = true;
+			self.alerts.nameError = false;
+			self.alerts.contentError = false;
+			self.alerts.ruleError = '';
+			self.alerts.ruleValidation = '';
 		}
 
-		$scope.addRule = function () {
-			$scope.input = {};
-			rule = null;
-			$scope.alerts.ruleEdited = false;
-			$scope.list = false;
-			$scope.title = "labels:title_add_rule";
-			$scope.action = "labels:btn_publish";
+		self.addRule = function () {
+			self.input = {};
+			loadedRule = null;
+			self.alerts.ruleEdited = false;
+			self.list = false;
+			self.title = "labels:title_add_rule";
+			self.action = "labels:btn_publish";
+			
+			self.ruleForm = createRuleVm();
+			loadedRule = undefined;
 		}
 
-		$scope.editRule = function (editingRule) {
-			rule = editingRule;
-			$scope.alerts.ruleEdited = false;
-			$scope.list = false;
-			$scope.title = "labels:title_edit_rule";
-			$scope.action = "labels:btn_save";
+		self.editRule = function (ruleIndex) {
+			
+			loadedRule = angular.copy(self.rules[ruleIndex]);
+			self.alerts.ruleEdited = false;
+			self.list = false;
+			self.title = "labels:title_edit_rule";
+			self.action = "labels:btn_save";
 
-			gamesFactory.getRule(game, rule.id).then(
+			ruleService.read(self.game, loadedRule.id).then(
 				function (data) {
 					if (data) {
-						$scope.input.name = data.name;
-						$scope.input.ruleContent = data.content;
-
-						previousName = data.name;
-						
 						$window.scrollTo(0, 0);
+						self.ruleForm = createRuleVm(data);
+						self.ruleForm.editing = true;
+						self.ruleForm.position = ruleIndex;
 					}
 				},
 				function (message) {
 					// Show given error alert
-					$scope.input = {};
-					$scope.alerts.ruleError = 'messages:' + message;
+					self.alerts.ruleError = 'messages:' + message;
 				});
-		}
-
-		$scope.rules = [];
+		};
 	
-		$scope.showRule = function (index) {
-			var rule = game.rules[index];
-				gamesFactory.getRule(game, rule.id).then(
-					function (data) {
-						if (data) {
-							$scope.rules[index] = data.content;
-						}
-					},
-					function (message) {
-						// Show given error alert
-						$scope.rules[index] = '';
-						$scope.alerts.ruleError = 'messages:' + message;
-					});
+		self.showRule = function (index) {
+			var rule = self.rules[index];
+			ruleService.read(self.game, rule.id).then(
+				function (data) {
+					if (data) {
+						rule.content = data.content;
+					}
+				},
+				function (message) {
+					// Show given error alert
+					self.rules[index] = '';
+					self.alerts.ruleError = 'messages:' + message;
+				});
 			}
 
-		$scope.deleteRule = function (rule) {
+		self.deleteRule = function (ruleIndex) {
 			// Delete a game
 			var modalInstance = $uibModal.open({
 				templateUrl: 'modals/modal_delete_confirm.html',
@@ -168,52 +184,41 @@ angular.module('gamificationEngine.rules', [])
 				backdrop: "static",
 				resolve: {
 					game: function () {
-						return $scope.game;
+						return self.game;
 					},
 					rule: function () {
-						return rule;
+						return angular.copy(self.rules[ruleIndex]);
 					}
 				}
 			});
 			
 			modalInstance.result.then(function () {
-				$scope.alerts.ruleDeleted = true;
+				self.rules.splice(ruleIndex, 1);
+				self.alerts.ruleDeleted = true;
 				
 				$timeout(function () {
-					$scope.alerts.ruleDeleted = false;
-				}, 4000);
+					self.alerts.ruleDeleted = false;
+				}, 2000);
 			});
 		};
-
-		// Load game
-		gamesFactory.getGameById($stateParams.id).then(function (game) {
-			$scope.game = game;
-		}, function () {
-			// Show error alert
-			$scope.alerts.loadGameError = true;
-		});
+	
 	});
 
 // Delete rule modal
 modals
-	.controller('DeleteRuleModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, game, rule) {
+	.controller('DeleteRuleModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, ruleService, game, rule) {
 	$scope.alerts = {
 		'deleteError': '',
 	};
 	$scope.argument = rule.name;
 
 	$scope.delete = function () {
-		gamesFactory.deleteRule(game, rule.id).then(
+		ruleService.remove(game, rule.id).then(
 			function (data) {
-				if (data) {
-					var idx = 0;
-					for (idx = 0; idx < game.rules.length; idx++) {
-						if (game.rules[idx].id == rule.id) {
-							break;
-						}
-					}
-					game.rules.splice(idx, 1);
+				if(data) {
 					$uibModalInstance.close();
+				} else {
+					$scope.alerts.deleteError = 'Error deleting the rule';
 				}
 			},
 			function (message) {

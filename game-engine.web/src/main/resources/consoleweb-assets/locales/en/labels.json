@@ -98,5 +98,6 @@
   "lbl_levels_menu" : "Levels",
   "lbl_pointConcept" : "Point concept Reference",
   "lbl_add_level" : "Create level",
-  "lbl_inventory_section" : "Inventory"
+  "lbl_inventory_section" : "Inventory",
+  "title_edit_rule" : "Edit"
 }

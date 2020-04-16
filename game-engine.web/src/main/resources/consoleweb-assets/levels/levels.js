@@ -1,34 +1,103 @@
 angular.module('gamificationEngine.levels', [])
 	.controller('LevelsCtrl', function ($scope, $rootScope, $uibModal, $stateParams, gamesFactory) {
 		$rootScope.currentNav = 'levels';
+
+		const groupChallengeModels = ["groupCooperative", "groupCompetitiveTime", "groupCompetitivePerformance"];
 		
 		$scope.levels = [];
 		$scope.input = {};
 		$scope.thresholds = [];
 		$scope.threshold = {};
 
-		$scope.hide = true;
+		// $scope.hide = true;
 		
 		$scope.editMode = false;
 		$scope.loadedLevelIdx = -1;
 		
 		const gameId = $stateParams.id;
+		
 		// Load games
 		gamesFactory.getGameById(gameId).then(function (game) {
-			$scope.levels = game.levels;
+			$scope.levels = game.levels.map(l => levelVm(l));
 		}, function () {
 			// do nothing
 		});
+		
+		let challengeModelsNames;
+		gamesFactory.readChallengeModels(gameId)
+			.then(
+				models => {
+					challengeModelsNames = models.map(m => m.name).concat(groupChallengeModels);
+				},
+				() => {}
+			);
 		
 		$scope.addLevel = () => {
 			$scope.showForm = true;
 		};
 		
+		$scope.toggleLevel = (idx) => {
+			$scope.levels[idx].show = !$scope.levels[idx].show;
+			if($scope.loadedLevelIdx > -1 && $scope.loadedLevelIdx != idx) {
+				$scope.levels[$scope.loadedLevelIdx].show = false;
+			}
+			$scope.loadedLevelIdx = idx;
+			$scope.thresholds = $scope.levels[idx].thresholds.map(t => thresholdVm(t)); 
+		};
 		
 		$scope.pointConcepts = $scope.game.pointConcept.map(pc => pc.name);
 		
 		$scope.oldThreshold;
 		$scope.editingThresholdIdx = -1;
+		
+		
+		$scope.toggleConfigPanel = (idx) => {
+			const modalInstance = $uibModal.open({
+				templateUrl: 'levels/threshold-config.html',
+				controller: 'ThresholdConfigCtrl',
+				backdrop: "static",
+				resolve: {
+					threshold : function() {
+						return angular.copy($scope.thresholds[idx]);
+					},
+					challengeModels : function() {
+						return challengeModelsNames;
+					}
+				}
+			 });
+			
+			modalInstance.result.then((newConfig) => {
+				const level = $scope.levels[$scope.loadedLevelIdx];
+				const levelIdx = $scope.loadedLevelIdx;
+				level.thresholds[idx].config = newConfig;
+				gamesFactory.saveLevel(gameId, level).then( function(level) {
+					$scope.thresholds[idx].config = newConfig;
+					// $scope.levels[levelIdx].thresholds = $scope.thresholds;
+					$scope.levels.splice(levelIdx, 1, level);
+				}, function(msg) {
+					$scope.errors = 'messages:'+msg;
+				});
+				
+			});
+		};
+    
+		const levelVm = (model) => {
+	      return {
+	    	 name : model.name,
+	    	 thresholds : model.thresholds,
+	    	 pointConcept : model.pointConcept,
+	      	 show : false
+	      };
+		};
+		
+	    const thresholdVm = (model) => {
+	      return {
+	    	 name : model.name,
+	    	 value : model.value,
+	    	 config : model.config,
+	    	 edit : false,
+	      };
+	    };
 		
 		$scope.updateLevel = () => {
 			$scope.errors = '';
@@ -66,6 +135,7 @@ angular.module('gamificationEngine.levels', [])
 			collapseForm();
 			
 		}
+    
 		$scope.saveLevel = () => {
 			$scope.errors = '';
 			if(!$scope.input.levelName || !$scope.input.pointConcept) {
@@ -209,7 +279,6 @@ angular.module('gamificationEngine.levels', [])
 		};
 		
 		
-		
 		$scope.deleteLevel = (levelIdx) => {
 			const modalInstance = $uibModal.open({
 				templateUrl: 'modals/modal_delete_confirm.html',
@@ -250,6 +319,8 @@ angular.module('gamificationEngine.levels', [])
 		};
 	});
 
+// ************************************************* MODALS CONTROLLERS
+
 modals
 .controller('DeleteLevelModalInstanceCtrl', function ($scope, $uibModalInstance, gamesFactory, level) {
 	$scope.alerts = {
@@ -285,4 +356,35 @@ modals
 	$scope.cancel = function () {
 		$uibModalInstance.dismiss('cancel');
 	};
+});
+
+modals
+.controller('ThresholdConfigCtrl', function ($scope, $uibModalInstance, gamesFactory, threshold, challengeModels) {
+
+	$scope.config = threshold.config;
+	$scope.thresholdName = threshold.name;
+	$scope.availableChallengeModelsOptions = challengeModels;
+	$scope.activeChallengeModelsOptions =  challengeModels;
+	
+	$scope.$watchCollection('config.availableModels', (newValues) => {
+		if(newValues) {
+			$scope.activeChallengeModelsOptions = challengeModels.filter(m => !newValues.includes(m));
+		}
+	});
+	
+	$scope.$watchCollection('config.activeModels', (newValues) => {
+		if(newValues) {
+			$scope.availableChallengeModelsOptions = challengeModels.filter(m => !newValues.includes(m));
+		}
+	});
+	
+	$scope.save = function () {
+		$uibModalInstance.close($scope.config);
+	};
+
+	// CANCEL button click event-handler
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+
 });

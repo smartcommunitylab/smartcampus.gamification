@@ -1,5 +1,7 @@
-angular.module('gamificationEngine.levels', [])
-	.controller('LevelsCtrl', function ($scope, $rootScope, $uibModal, $stateParams, gamesFactory) {
+'use strict';
+
+var levelModule = angular.module('gamificationEngine.levels', [])
+	.controller('LevelsCtrl', function ($scope, $rootScope, $uibModal, $stateParams, gamesFactory, levelService) {
 		$rootScope.currentNav = 'levels';
 
 		const groupChallengeModels = ["groupCooperative", "groupCompetitiveTime", "groupCompetitivePerformance"];
@@ -9,8 +11,6 @@ angular.module('gamificationEngine.levels', [])
 		$scope.thresholds = [];
 		$scope.threshold = {};
 
-		// $scope.hide = true;
-		
 		$scope.editMode = false;
 		$scope.loadedLevelIdx = -1;
 		
@@ -70,9 +70,8 @@ angular.module('gamificationEngine.levels', [])
 				const level = $scope.levels[$scope.loadedLevelIdx];
 				const levelIdx = $scope.loadedLevelIdx;
 				level.thresholds[idx].config = newConfig;
-				gamesFactory.saveLevel(gameId, level).then( function(level) {
+				levelService.saveLevel(gameId, level).then( function(level) {
 					$scope.thresholds[idx].config = newConfig;
-					// $scope.levels[levelIdx].thresholds = $scope.thresholds;
 					$scope.levels.splice(levelIdx, 1, level);
 				}, function(msg) {
 					$scope.errors = 'messages:'+msg;
@@ -124,7 +123,7 @@ angular.module('gamificationEngine.levels', [])
 			if(elemIdx > -1) {
 				restoreThresholds();
 				const lev = {name: $scope.input.levelName, pointConcept: $scope.input.pointConcept, thresholds: $scope.thresholds};
-				gamesFactory.saveLevel(gameId, lev).then(function(level) {
+				levelService.saveLevel(gameId, lev).then(function(level) {
 					$scope.levels.splice(elemIdx,1,level);
 				}, function(msg) {
 					$scope.errors = 'messages:'+msg;
@@ -153,7 +152,7 @@ angular.module('gamificationEngine.levels', [])
 				}
 				restoreThresholds();
 				const lev = {name: $scope.input.levelName, pointConcept: $scope.input.pointConcept, thresholds: $scope.thresholds};
-				gamesFactory.saveLevel(gameId, lev).then(function(level) {
+				levelService.saveLevel(gameId, lev).then(function(level) {
 					$scope.levels.push(level);
 				}, function(msg) {
 					$scope.errors = 'messages:'+msg;
@@ -164,7 +163,7 @@ angular.module('gamificationEngine.levels', [])
 			}
 		};
 		
-		restoreThresholds = () => {
+		const restoreThresholds = () => {
 			if($scope.editingThresholdIdx > -1) {
 				$scope.thresholds.splice($scope.editingThresholdIdx,1,$scope.oldThreshold);
 				$scope.thresholds[$scope.editingThresholdIdx].edit = false;
@@ -292,7 +291,7 @@ angular.module('gamificationEngine.levels', [])
 			 });
 			
 			modalInstance.result.then( () => {
-				gamesFactory.deleteLevel(gameId , $scope.levels[levelIdx]).then(
+				levelService.deleteLevel(gameId , $scope.levels[levelIdx]).then(
 					function() {
 						$scope.levels.splice(levelIdx,1);
 						if($scope.loadedLevelIdx == levelIdx) {

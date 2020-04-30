@@ -38,7 +38,7 @@ Instruction to use BASIC AUTH security
 
 ### Run
 
-1. run `docker-compose up` from the root folder.
+1. run `sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up` from the root folder.
 
 **NOTE**
 * gamification-engine will be up and running on host port **8010** at url **http://localhost:8010/gamification/consoleweb/**

@@ -42,7 +42,7 @@ Instruction to use BASIC AUTH security
 
 **NOTE**
 * gamification-engine will be up and running on host port **8010** at url **http://localhost:8010/gamification/consoleweb/**
-* mongodb container exposes to host port **5000** to inspect the data inside
+* mongodb container exposes to host port **50000** to inspect the data inside
 * gamification-engine exposes a JMX connection on host port **7777**
 
 

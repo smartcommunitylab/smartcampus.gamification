@@ -101,22 +101,28 @@
 							<button type="button"
 								class="btn btn-warning btn-circle pull-right"
 								style="margin-right: 1em;"
-								data-ng-click="hide = !hide"
+								data-ng-click="toggleLevel($index)"
 								uib-tooltip="{{'labels:tool_view' | i18next}}">
 								<span class="glyphicon"
-									ng-class="{'glyphicon-eye-open': hide, 'glyphicon-eye-close': !hide}"></span>
+									ng-class="{'glyphicon-eye-open': !level.show, 'glyphicon-eye-close': level.show}"></span>
 							</button>
 							<div class="row">
-								<div uib-collapse="hide" class="col-md-12">
+								<div uib-collapse="!level.show" class="col-md-12">
 									<table class="table table-striped">
-										<tr ng-show="level.thresholds.length > 0">
+										<tr ng-show="thresholds.length > 0">
 											<th>name</th>
 											<th>value</th>
+                      						<th></th>
 										</tr>
-										<tr ng-repeat="threshold in level.thresholds">
+										<tr ng-repeat="threshold in thresholds">
 											<td>{{threshold.name}}</td>
-											<td>{{threshold.value | number : 1}}</td>
-										</tr>
+											<td>{{threshold.value | number : 1}} <span ng-show="threshold.show">CCCAUUUUU</span></td>
+				                        	<td>
+				                          		<button type="button" class="btn btn-default" ng-click="toggleConfigPanel($index)">
+				                           			<span class="glyphicon glyphicon-cog"></span>
+				                          		</button>
+				                        	</td>
+				                        </tr>
 									</table>
 								</div>
 							</div>

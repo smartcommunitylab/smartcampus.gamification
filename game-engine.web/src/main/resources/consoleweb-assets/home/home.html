@@ -41,7 +41,7 @@ Text will be soon placed in the middle of the panel-body
 <div class="row vertical-spacing">
 	<div class="col-md-4" ng-repeat="game in games">
 		<div class="game" ng-class="{'stopped': game.stopped}">
-			<h3 class="game-title" ng-click="goto('#/game/' + game.id)">{{game.name}}</h3>
+			<h3 class="game-title" ng-click="goto('#/game/' + game.id)"><a id="{{game.id}}"></a>{{game.name}}</h3>
 			<p><strong>gameId</strong>: {{game.id}}</p>
 			<p>
 				<strong>{{'labels:lbl_points' | i18next}}:</strong> {{game.pointConcept.length}}

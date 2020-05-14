@@ -146,7 +146,7 @@ angular.module('gamificationEngine.monitor', [])
 						return $rootScope.currentGameId;
 					},
 					challenge: function () {
-						return challenge;
+						return angular.copy(challenge);
 					},
 					challengeIndex: function() {
 						return challengeIndex;
@@ -204,7 +204,7 @@ modals
 	$scope.visibility = challenge.visibility.hidden ? $scope.visibilityStates[0] : $scope.visibilityStates[1];
 	$scope.start = challenge.start;
 	$scope.end = challenge.end;
-	$scope.fields = Object.assign({}, challenge.fields);
+	$scope.fields = angular.copy(challenge.fields);
 	$scope.priority = challenge.priority;
 	$scope.fieldData = {};
 	

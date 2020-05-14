@@ -33,15 +33,8 @@ public class TeamController {
     @Autowired
     private PlayerController playerController;
 
-    // Create a team
-    // POST /data/game/{id}/team/{teamId}
-    //
-    // ­ Error if the team ID already exists
-    // ­ In body specify name (optional), member list (optional)
-    //
     @RequestMapping(method = RequestMethod.POST,
-            value = "/data/game/{gameId}/team/{teamId}", consumes = {"application/json"},
-            produces = {"application/json"})
+            value = "/data/game/{gameId}/team/{teamId}", consumes = {"application/json"})
     @ApiOperation(value = "Create team")
     public void createTeam(@PathVariable String gameId,
             @RequestBody TeamDTO team) {
@@ -57,13 +50,9 @@ public class TeamController {
         playerSrv.saveTeam(t);
     }
 
-    // Delete a team
-    // DELETE /data/game/{id}/team/{teamId}
-
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/data/game/{gameId}/team/{teamId}", consumes = {"application/json"},
-            produces = {"application/json"})
-    @ApiOperation(value = "Delte team")
+            value = "/data/game/{gameId}/team/{teamId}")
+    @ApiOperation(value = "Delete team")
     public void deleteTeam(@PathVariable String gameId,
             @PathVariable String teamId) {
         gameId = decodePathVariable(gameId);
@@ -71,12 +60,9 @@ public class TeamController {
         playerController.deletePlayer(gameId, teamId);
     }
 
-    // Read team members
-    // GET /data/game/{id}/team/{teamId}/members
-
     @RequestMapping(method = RequestMethod.GET,
             value = "/data/game/{gameId}/team/{teamId}/members",
-            consumes = {"application/json"}, produces = {"application/json"})
+            produces = {"application/json"})
     @ApiOperation(value = "Get team members")
     public Collection<String> readTeamMembers(
             @PathVariable String gameId, @PathVariable String teamId) {
@@ -86,12 +72,9 @@ public class TeamController {
         return team != null ? team.getMembers() : new ArrayList<String>();
     }
 
-    // Update team members
-    // PUT /data/game/{id}/team/{teamId}/members
-
     @RequestMapping(method = RequestMethod.PUT,
             value = "/data/game/{gameId}/team/{teamId}/members",
-            consumes = {"application/json"}, produces = {"application/json"})
+            consumes = {"application/json"})
     @ApiOperation(value = "Edit team")
     public void updateTeamMembers(@PathVariable String gameId,
             @PathVariable String teamId, @RequestBody List<String> members) {
@@ -105,16 +88,11 @@ public class TeamController {
         }
     }
 
-    // Add team member
-    // PUT /data/game/{id}/team/{teamId}/members/{playerId}
-
     @RequestMapping(method = RequestMethod.PUT,
-            value = "/data/game/{gameId}/team/{teamId}/members/{playerId}",
-            consumes = {"application/json"}, produces = {"application/json"})
+            value = "/data/game/{gameId}/team/{teamId}/members/{playerId}")
     @ApiOperation(value = "Add team member")
     public void addTeamMember(@PathVariable String gameId,
-            @PathVariable String teamId, @PathVariable String playerId,
-            @RequestBody List<String> members) {
+            @PathVariable String teamId, @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
         teamId = decodePathVariable(teamId);
         playerId = decodePathVariable(playerId);
@@ -127,16 +105,11 @@ public class TeamController {
         }
     }
 
-    // Remove a team member
-    // DELETE /data/game/{id}/team/{teamId}/members/{playerId}
-
     @RequestMapping(method = RequestMethod.DELETE,
-            value = "/data/game/{gameId}/team/{teamId}/members/{playerId}",
-            consumes = {"application/json"}, produces = {"application/json"})
+            value = "/data/game/{gameId}/team/{teamId}/members/{playerId}")
     @ApiOperation(value = "Delete team member")
     public void removeTeamMember(@PathVariable String gameId,
-            @PathVariable String teamId, @PathVariable String playerId,
-            @RequestBody List<String> members) {
+            @PathVariable String teamId, @PathVariable String playerId) {
 
         gameId = decodePathVariable(gameId);
         teamId = decodePathVariable(teamId);

@@ -38,11 +38,14 @@ Instruction to use BASIC AUTH security
 
 ### Run
 
-1. run `docker-compose up` from the root folder.
+1. run `sudo COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up` from the root folder.
 
 **NOTE**
-* gamification-engine will be up and running on host port **8010** at url **http://localhost:8010/gamification/consoleweb/**
-* mongodb container exposes to host port **5000** to inspect the data inside
+* gamification-engine will be up and running on host port **8010** 
+* administration console is available at url **http://localhost:8010/gamification/consoleweb/**
+* APIs can be invoked using the url prefix **http://localhost:8010/gamification**
+* APIs are protected with the user you put in file `users.yml`
+* mongodb container exposes to host port **50000** to inspect the data inside
 * gamification-engine exposes a JMX connection on host port **7777**
 
 

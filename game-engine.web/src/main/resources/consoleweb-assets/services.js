@@ -325,54 +325,6 @@ angular.module('gamificationEngine.services', [])
 			return deferred.promise;
 		};
 
-//		var addRule = function (game, rule) {
-//			var deferred = $q.defer();
-//			const ruleForServer = {
-//					id : rule.id,
-//					name : rule.name,
-//					content : rule.content
-//			};
-//			$http.post(url + `/console/game/${game.id}/rule/db`, ruleForServer).success(function (data, status, headers, config) {
-//				deferred.resolve(data);
-//			}).error(function (data, status, headers, config) {
-//				deferred.reject('msg_generic_error');
-//			});
-//			return deferred.promise;
-//		}
-//
-//		var deleteRule = function (game, ruleId) {
-//			var deferred = $q.defer();
-//			var rule = {};
-//			ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
-//			$http.delete(url + `/console/game/${game.id}/rule/db/${ruleId}`).success(function (data, status, headers, config) {
-//				deferred.resolve(data);
-//			}).error(function (data, status, headers, config) {
-//				deferred.reject('msg_delete_error');
-//			});
-//			return deferred.promise;
-//		}
-//
-//		var validateRule = function (ruleContent) {
-//			var deferred = $q.defer();
-//			$http.post(url + `/console/rule/validate`, ruleContent).success(function (data, status, headers, config) {
-//				deferred.resolve(data);
-//			}).error(function (data, status, headers, config) {
-//				deferred.reject('msg_generic_error');
-//			});
-//			return deferred.promise;
-//		}
-//
-//		var getRule = function (game, ruleId) {
-//			var deferred = $q.defer();
-//			ruleId = ruleId.slice(ruleId.indexOf("://") + 3);
-//			$http.get(url + `/console/game/${game.id}/rule/db/${ruleId}`).success(function (data, status, headers, config) {
-//				deferred.resolve(data);
-//			}).error(function (data, status, headers, config) {
-//				deferred.reject('msg_rule_error');
-//			});
-//			return deferred.promise;
-//		}
-
 		var getPlayersState = function (gameId, playerFilter, pageRequest, pageSize) {
 			var deferred = $q.defer();
 			$http.get(url + `/admin/data/game/${gameId}/player`, {
@@ -496,13 +448,9 @@ angular.module('gamificationEngine.services', [])
 			'saveGame': saveGame,
 			'getPoints': getPoints,
 			'getBadges': getBadges,
-			//'addRule': addRule,
-			//'deleteRule': deleteRule,
-			//'getRule': getRule,
 			'addTask': addTask,
 			'deleteTask': deleteTask,
 			'editTask': editTask,
-			//'validateRule': validateRule,
 			'getPlayersState': getPlayersState,
 			'saveChallengeModel' : saveChallengeModel,
 			'readChallengeModels' : readChallengeModels,
@@ -519,7 +467,7 @@ angular.module('gamificationEngine.services', [])
 	})
 	.factory('utilsFactory', function () {
 		// Utils factory
-		// Get given instances lenght
+		// Get given instances length
 		var getLength = function (game, type) {
 			var len = 0;
 			if (!!game) {

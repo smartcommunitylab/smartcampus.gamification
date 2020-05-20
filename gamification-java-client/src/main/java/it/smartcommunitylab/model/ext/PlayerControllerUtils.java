@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.smartcommunitylab.model.Inventory;
@@ -14,7 +15,8 @@ import it.smartcommunitylab.model.PlayerStateDTO;
 
 public class PlayerControllerUtils {
 
-	ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper =
+            new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	public PlayerStateDTO convertPlayerState(Map ps) {
 		PlayerStateDTO res = null;

@@ -5,7 +5,7 @@
 	<artifactId>gamification-java-client</artifactId>
 	<packaging>jar</packaging>
 	<name>gamification-java-client</name>
-	<version>2.0.1</version>
+	<version>2.1.0</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -239,20 +239,6 @@
 			<artifactId>threetenbp</artifactId>
 			<version>${threetenbp-version}</version>
 		</dependency>
-
-		<!-- test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit-version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock</artifactId>
-			<version>2.19.0</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -268,6 +254,21 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.0</version>
 		</dependency>
+		
+		<!-- test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+			<version>2.19.0</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>
@@ -276,7 +277,7 @@
 			<url>http://repository.smartcommunitylab.it/content/groups/public</url>
 		</repository>
 	</repositories>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>SmartCommunityLab-releases</id>

@@ -15,6 +15,7 @@ Method | HTTP request | Description
 [**deletePlayerUsingDELETE1**](PlayerControllerApi.md#deletePlayerUsingDELETE1) | **DELETE** /data/game/{gameId}/player/{playerId} | Delete player state
 [**getPlayerChallengeUsingGET**](PlayerControllerApi.md#getPlayerChallengeUsingGET) | **GET** /data/game/{gameId}/player/{playerId}/challenges | Get player challenges
 [**inviteIntoAChallengeUsingPOST**](PlayerControllerApi.md#inviteIntoAChallengeUsingPOST) | **POST** /data/game/{gameId}/player/{playerId}/invitation | inviteIntoAChallenge
+[**readCustomDataUsingGET**](PlayerControllerApi.md#readCustomDataUsingGET) | **GET** /data/game/{gameId}/player/{playerId}/custom | Get player custom data
 [**readInventoryUsingGET**](PlayerControllerApi.md#readInventoryUsingGET) | **GET** /data/game/{gameId}/player/{playerId}/inventory | Get player inventory
 [**readLevelsUsingGET**](PlayerControllerApi.md#readLevelsUsingGET) | **GET** /data/game/{gameId}/player/{playerId}/levels | Get player levels
 [**readPlayerBlackListUsingGET**](PlayerControllerApi.md#readPlayerBlackListUsingGET) | **GET** /data/game/{gameId}/player/{playerId}/blacklist | Get player black list of other players
@@ -25,6 +26,8 @@ Method | HTTP request | Description
 [**refuseInvitationUsingPOST**](PlayerControllerApi.md#refuseInvitationUsingPOST) | **POST** /data/game/{gameId}/player/{playerId}/invitation/refuse/{challengeName} | refuseInvitation
 [**searchByQueryUsingPOST**](PlayerControllerApi.md#searchByQueryUsingPOST) | **POST** /data/game/{gameId}/player/search | Search player states
 [**unBlockPlayerUsingPOST**](PlayerControllerApi.md#unBlockPlayerUsingPOST) | **POST** /data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId} | Unblock another player from challenge block list
+[**updateCustomDataUsingPUT1**](PlayerControllerApi.md#updateCustomDataUsingPUT1) | **PUT** /data/game/{gameId}/player/{playerId}/custom | updateCustomData
+[**updatePlayerUsingPUT**](PlayerControllerApi.md#updatePlayerUsingPUT) | **PUT** /data/game/{gameId}/player/{playerId} | Edit player state
 
 
 <a name="acceptChallengeUsingPOST"></a>
@@ -629,6 +632,60 @@ Name | Type | Description  | Notes
  - **Content-Type**: application/json
  - **Accept**: application/json
 
+<a name="readCustomDataUsingGET"></a>
+# **readCustomDataUsingGET**
+> Map&lt;String, Object&gt; readCustomDataUsingGET(gameId, playerId)
+
+Get player custom data
+
+### Example
+```java
+// Import classes:
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
+//import it.smartcommunitylab.basic.api.PlayerControllerApi;
+
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure HTTP basic authorization: basic
+HttpBasicAuth basic = (HttpBasicAuth) defaultClient.getAuthentication("basic");
+basic.setUsername("YOUR USERNAME");
+basic.setPassword("YOUR PASSWORD");
+
+PlayerControllerApi apiInstance = new PlayerControllerApi();
+String gameId = "gameId_example"; // String | gameId
+String playerId = "playerId_example"; // String | playerId
+try {
+    Map<String, Object> result = apiInstance.readCustomDataUsingGET(gameId, playerId);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling PlayerControllerApi#readCustomDataUsingGET");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **gameId** | **String**| gameId |
+ **playerId** | **String**| playerId |
+
+### Return type
+
+**Map&lt;String, Object&gt;**
+
+### Authorization
+
+[basic](../README.md#basic)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
 <a name="readInventoryUsingGET"></a>
 # **readInventoryUsingGET**
 > Inventory readInventoryUsingGET(gameId, playerId)
@@ -685,7 +742,7 @@ Name | Type | Description  | Notes
 
 <a name="readLevelsUsingGET"></a>
 # **readLevelsUsingGET**
-> List&lt;PlayerLevel&gt; readLevelsUsingGET(gameId, playerId)
+> List&lt;it.smartcommunitylab.model.ext.PlayerLevel&gt; readLevelsUsingGET(gameId, playerId)
 
 Get player levels
 
@@ -709,7 +766,7 @@ PlayerControllerApi apiInstance = new PlayerControllerApi();
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    List<PlayerLevel> result = apiInstance.readLevelsUsingGET(gameId, playerId);
+    List<it.smartcommunitylab.model.ext.PlayerLevel> result = apiInstance.readLevelsUsingGET(gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling PlayerControllerApi#readLevelsUsingGET");
@@ -726,7 +783,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;PlayerLevel&gt;**](PlayerLevel.md)
+[**List&lt;it.smartcommunitylab.model.ext.PlayerLevel&gt;**](it.smartcommunitylab.model.ext.PlayerLevel.md)
 
 ### Authorization
 
@@ -957,7 +1014,7 @@ Name | Type | Description  | Notes
 
 <a name="readTeamsByMemberUsingGET1"></a>
 # **readTeamsByMemberUsingGET1**
-> List&lt;TeamDTO&gt; readTeamsByMemberUsingGET1(gameId, playerId)
+> List&lt;it.smartcommunitylab.model.ext.TeamDTO&gt; readTeamsByMemberUsingGET1(gameId, playerId)
 
 Get player teams
 
@@ -981,7 +1038,7 @@ PlayerControllerApi apiInstance = new PlayerControllerApi();
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    List<TeamDTO> result = apiInstance.readTeamsByMemberUsingGET1(gameId, playerId);
+    List<it.smartcommunitylab.model.ext.TeamDTO> result = apiInstance.readTeamsByMemberUsingGET1(gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling PlayerControllerApi#readTeamsByMemberUsingGET1");
@@ -998,7 +1055,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;TeamDTO&gt;**](TeamDTO.md)
+[**List&lt;it.smartcommunitylab.model.ext.TeamDTO&gt;**](it.smartcommunitylab.model.ext.TeamDTO.md)
 
 ### Authorization
 
@@ -1168,6 +1225,115 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**PlayerBlackList**](PlayerBlackList.md)
+
+### Authorization
+
+[basic](../README.md#basic)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+<a name="updateCustomDataUsingPUT1"></a>
+# **updateCustomDataUsingPUT1**
+> PlayerStateDTO updateCustomDataUsingPUT1(gameId, playerId, customData)
+
+updateCustomData
+
+### Example
+```java
+// Import classes:
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
+//import it.smartcommunitylab.basic.api.PlayerControllerApi;
+
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure HTTP basic authorization: basic
+HttpBasicAuth basic = (HttpBasicAuth) defaultClient.getAuthentication("basic");
+basic.setUsername("YOUR USERNAME");
+basic.setPassword("YOUR PASSWORD");
+
+PlayerControllerApi apiInstance = new PlayerControllerApi();
+String gameId = "gameId_example"; // String | gameId
+String playerId = "playerId_example"; // String | playerId
+Object customData = null; // Object | customData
+try {
+    PlayerStateDTO result = apiInstance.updateCustomDataUsingPUT1(gameId, playerId, customData);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling PlayerControllerApi#updateCustomDataUsingPUT1");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **gameId** | **String**| gameId |
+ **playerId** | **String**| playerId |
+ **customData** | **Object**| customData |
+
+### Return type
+
+[**PlayerStateDTO**](PlayerStateDTO.md)
+
+### Authorization
+
+[basic](../README.md#basic)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+<a name="updatePlayerUsingPUT"></a>
+# **updatePlayerUsingPUT**
+> updatePlayerUsingPUT(gameId, playerId)
+
+Edit player state
+
+### Example
+```java
+// Import classes:
+//import it.smartcommunitylab.ApiClient;
+//import it.smartcommunitylab.ApiException;
+//import it.smartcommunitylab.Configuration;
+//import it.smartcommunitylab.auth.*;
+//import it.smartcommunitylab.basic.api.PlayerControllerApi;
+
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure HTTP basic authorization: basic
+HttpBasicAuth basic = (HttpBasicAuth) defaultClient.getAuthentication("basic");
+basic.setUsername("YOUR USERNAME");
+basic.setPassword("YOUR PASSWORD");
+
+PlayerControllerApi apiInstance = new PlayerControllerApi();
+String gameId = "gameId_example"; // String | gameId
+String playerId = "playerId_example"; // String | playerId
+try {
+    apiInstance.updatePlayerUsingPUT(gameId, playerId);
+} catch (ApiException e) {
+    System.err.println("Exception when calling PlayerControllerApi#updatePlayerUsingPUT");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **gameId** | **String**| gameId |
+ **playerId** | **String**| playerId |
+
+### Return type
+
+null (empty response body)
 
 ### Authorization
 

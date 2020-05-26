@@ -58,7 +58,7 @@ java -jar lib/swagger-codegen-cli.jar generate \
 --api-package it.smartcommunitylab.basic.api \
 --artifact-id gamification-java-client \
 --model-package it.smartcommunitylab.model \
---invoker-package it.smartcommunitylab
+--invoker-package it.smartcommunitylab \
 --import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
 --import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
 ```
@@ -73,7 +73,7 @@ java -jar lib/swagger-codegen-cli.jar generate \
 --api-package it.smartcommunitylab.oauth.api \
 --artifact-id gamification-java-client \
 --model-package it.smartcommunitylab.model \
---invoker-package it.smartcommunitylab
+--invoker-package it.smartcommunitylab \
 --import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
 --import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
 ```

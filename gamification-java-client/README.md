@@ -4,21 +4,9 @@
 
 Building the API client library requires:
 1. Java 1.7+
-2. Maven or Gradle
+2. Maven
 
-## Installation
-
-To install the API client library to your local Maven repository, simply execute:
-
-```shell
-mvn clean install
-```
-
-To deploy it to a remote Maven repository instead, configure the settings of the repository and execute:
-
-```shell
-mvn clean deploy
-```
+## Usage
 
 ### Maven users
 
@@ -46,39 +34,7 @@ Then manually install the following JARs:
 * `target/gamification-java-client-2.2.0.jar`
 * `target/lib/*.jar`
 
-## Getting Started
-
-### Basic Auth
-In order to add or modify API, it is required to edit the api-docs-basic.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
-
-```shell
-java -jar lib/swagger-codegen-cli.jar generate \
--DhideGenerationTimestamp=true \ 
--i api-docs-basic.json -l java \
---api-package it.smartcommunitylab.basic.api \
---artifact-id gamification-java-client \
---model-package it.smartcommunitylab.model \
---invoker-package it.smartcommunitylab \
---import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
---import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
-```
-
-### OAuth
-In order to add or modify API, it is required to edit the api-docs-oauth.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
-
-```shell
-java -jar lib/swagger-codegen-cli.jar generate \
--DhideGenerationTimestamp=true \ 
--i api-docs-oauth.json -l java \
---api-package it.smartcommunitylab.oauth.api \
---artifact-id gamification-java-client \
---model-package it.smartcommunitylab.model \
---invoker-package it.smartcommunitylab \
---import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
---import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
-```
-
-Please follow the [installation](#installation) instruction and execute the following Java code:
+### Example
 
 ```java
 
@@ -118,6 +74,78 @@ public class ArchiveConceptControllerApiExample {
 
 ```
 
+## Getting Started
+
+### Generate
+
+#### Basic Auth
+In order to add or modify API, it is required to edit the api-docs-basic.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
+
+```shell
+java -jar lib/swagger-codegen-cli.jar generate \
+-DhideGenerationTimestamp=true \ 
+-i api-docs-basic.json -l java \
+--api-package it.smartcommunitylab.basic.api \
+--artifact-id gamification-java-client \
+--model-package it.smartcommunitylab.model \
+--invoker-package it.smartcommunitylab \
+--import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
+--import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
+```
+
+#### OAuth
+In order to add or modify API, it is required to edit the api-docs-oauth.json file on project root before generating the sdk client stub running the following command from project root(gamification-java-client). 
+
+```shell
+java -jar lib/swagger-codegen-cli.jar generate \
+-DhideGenerationTimestamp=true \ 
+-i api-docs-oauth.json -l java \
+--api-package it.smartcommunitylab.oauth.api \
+--artifact-id gamification-java-client \
+--model-package it.smartcommunitylab.model \
+--invoker-package it.smartcommunitylab \
+--import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
+--import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
+```
+
+**WARNING**: at the moment to resolve a problem about polyphormism the code has been manually patched. So avoid to generate completely the client code to not miss the patches. Instead execute a punctual generation to maintain the control of code regeneration and patch the code if necessary To create a punctual generation use -Dmodels= or -Dcontroller= options to create only models or APIs classes needed. Below the patched code to trace the workaround.
+
+class `PlayerControllerAPI`
+```
+ public PlayerStateDTO readStateUsingGET(String gameId, String playerId) throws ApiException, JsonParseException, JsonMappingException, IOException {
+    	Response response = readStateUsingGETWithHttpInfo(gameId, playerId);
+    	return playerControllerUtils.convertPlayerState(mapper.readValue(response.body().byteStream(), Map.class));        
+    }
+
+  public Response readStateUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
+        com.squareup.okhttp.Call call = readStateUsingGETValidateBeforeCall(gameId, playerId, null, null);
+        Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
+        return apiClient.executeSimple(call, localVarReturnType);
+}
+```
+
+### Installation
+
+#### Local installation
+To install the API client library to your local Maven repository, simply execute:
+
+```shell
+mvn clean install
+```
+
+#### Remote deployment
+
+To deploy it to a remote Maven repository instead, configure the settings of the repository and execute:
+
+```shell
+mvn clean install  deploy:deploy-file  \
+-Dmaven.test.skip=true \
+-Dpackaging=jar \
+-DrepositoryId=SmartCommunityLab-releases \
+-DpomFile=pom.xml \
+-Durl=http://repository.smartcommunitylab.it/content/repositories/releases \
+-Dfile=target/gamification-java-client-2.2.0.jar
+```
 ## Documentation for API Endpoints
 
 Class | Method | HTTP request | Description
@@ -288,21 +316,3 @@ Class | Method | HTTP request | Description
  - [TeamDTO](docs/TeamDTO.md)
  - [ThresholdDTO](docs/ThresholdDTO.md)
  - [WrapperQuery](docs/WrapperQuery.md)
-
-
-## Documentation for Authorization
-
-Authentication schemes defined for the API:
-### basic
-
-- **Type**: HTTP basic authentication
-
-
-## Recommendation
-
-It's recommended to create an instance of `ApiClient` per thread in a multithreaded environment to avoid any potential issues.
-
-## Author
-
-
-

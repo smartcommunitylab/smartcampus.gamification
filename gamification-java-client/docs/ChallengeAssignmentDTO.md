@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **data** | **Object** |  |  [optional]
 **end** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**hide** | **Boolean** |  |  [optional]
 **instanceName** | **String** |  |  [optional]
 **modelName** | **String** |  |  [optional]
 **origin** | **String** |  |  [optional]

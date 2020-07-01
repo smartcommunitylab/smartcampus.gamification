@@ -35,7 +35,6 @@ import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.Pair;
 import it.smartcommunitylab.ProgressRequestBody;
 import it.smartcommunitylab.ProgressResponseBody;
-import it.smartcommunitylab.model.ChallengeAssignmentDTO;
 import it.smartcommunitylab.model.ChallengeConcept;
 import it.smartcommunitylab.model.ChallengeInvitation;
 import it.smartcommunitylab.model.GroupChallengeDTO;
@@ -55,6 +54,7 @@ public class PlayerControllerApi {
     private ObjectMapper mapper =
             new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private PlayerControllerUtils playerControllerUtils = new PlayerControllerUtils();
+
 
     public PlayerControllerApi() {
         this(Configuration.getDefaultApiClient());
@@ -506,7 +506,7 @@ public class PlayerControllerApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call assignChallengeUsingPOSTCall(ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call assignChallengeUsingPOSTCall(it.smartcommunitylab.model.ext.ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = challengeData;
 
         // create path and map variables
@@ -550,7 +550,7 @@ public class PlayerControllerApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call assignChallengeUsingPOSTValidateBeforeCall(ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call assignChallengeUsingPOSTValidateBeforeCall(it.smartcommunitylab.model.ext.ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'challengeData' is set
         if (challengeData == null) {
@@ -581,7 +581,7 @@ public class PlayerControllerApi {
      * @param playerId playerId (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void assignChallengeUsingPOST(ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
+    public void assignChallengeUsingPOST(it.smartcommunitylab.model.ext.ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
         assignChallengeUsingPOSTWithHttpInfo(challengeData, gameId, playerId);
     }
 
@@ -594,7 +594,7 @@ public class PlayerControllerApi {
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> assignChallengeUsingPOSTWithHttpInfo(ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
+    public ApiResponse<Void> assignChallengeUsingPOSTWithHttpInfo(it.smartcommunitylab.model.ext.ChallengeAssignmentDTO challengeData, String gameId, String playerId) throws ApiException {
         com.squareup.okhttp.Call call = assignChallengeUsingPOSTValidateBeforeCall(challengeData, gameId, playerId, null, null);
         return apiClient.execute(call);
     }
@@ -609,7 +609,7 @@ public class PlayerControllerApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call assignChallengeUsingPOSTAsync(ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call assignChallengeUsingPOSTAsync(it.smartcommunitylab.model.ext.ChallengeAssignmentDTO challengeData, String gameId, String playerId, final ApiCallback<Void> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -2312,7 +2312,6 @@ public class PlayerControllerApi {
 
     }
 
-
     // FIXME PAY ATTENTION THIS METHOD IS MANUALLY MODIFIED
     // TO PERMIT CORRECT INSTANTIATION OF STATE SUBCLASSES AS GAMECONCEPT
     /**
@@ -2346,6 +2345,7 @@ public class PlayerControllerApi {
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
         return apiClient.executeSimple(call, localVarReturnType);
     }
+
 
     /**
      * Get player state (asynchronously)

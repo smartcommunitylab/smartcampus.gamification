@@ -220,7 +220,7 @@ basic.setUsername("YOUR USERNAME");
 basic.setPassword("YOUR PASSWORD");
 
 PlayerControllerApi apiInstance = new PlayerControllerApi();
-ChallengeAssignmentDTO challengeData = new ChallengeAssignmentDTO(); // ChallengeAssignmentDTO | challengeData
+it.smartcommunitylab.model.ext.ChallengeAssignmentDTO challengeData = new it.smartcommunitylab.model.ext.ChallengeAssignmentDTO(); // it.smartcommunitylab.model.ext.ChallengeAssignmentDTO | challengeData
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
@@ -235,7 +235,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **challengeData** | [**ChallengeAssignmentDTO**](ChallengeAssignmentDTO.md)| challengeData |
+ **challengeData** | [**it.smartcommunitylab.model.ext.ChallengeAssignmentDTO**](it.smartcommunitylab.model.ext.ChallengeAssignmentDTO.md)| challengeData |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 

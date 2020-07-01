@@ -16,7 +16,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>it.smartcommunitylab.gamification</groupId>
   <artifactId>gamification-java-client</artifactId>
-  <version>2.2.0</version>
+  <version>2.3.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -31,7 +31,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/gamification-java-client-2.2.0.jar`
+* `target/gamification-java-client-2.3.0.jar`
 * `target/lib/*.jar`
 
 ### Example
@@ -91,6 +91,7 @@ java -jar lib/swagger-codegen-cli.jar generate \
 --invoker-package it.smartcommunitylab \
 --import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
 --import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
+--import-mappings ChallengeAssignmentDTO=it.smartcommunitylab.model.ext.ChallengeAssignmentDTO
 ```
 
 #### OAuth
@@ -106,21 +107,41 @@ java -jar lib/swagger-codegen-cli.jar generate \
 --invoker-package it.smartcommunitylab \
 --import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
 --import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
+--import-mappings ChallengeAssignmentDTO=it.smartcommunitylab.model.ext.ChallengeAssignmentDTO
 ```
 
 **WARNING**: at the moment to resolve a problem about polyphormism the code has been manually patched. So avoid to generate completely the client code to not miss the patches. Instead execute a punctual generation to maintain the control of code regeneration and patch the code if necessary To create a punctual generation use -Dmodels= or -Dcontroller= options to create only models or APIs classes needed. Below the patched code to trace the workaround.
 
-class `PlayerControllerAPI`
 ```
- public PlayerStateDTO readStateUsingGET(String gameId, String playerId) throws ApiException, JsonParseException, JsonMappingException, IOException {
+public class PlayerControllerApi {
+    private ApiClient apiClient;
+
+    // FIXME PAY ATTENTION THIS FIELDS ARE MANUALLY INTRODUCED
+    // TO PERMIT CORRECT INSTANTIATION OF STATE SUBCLASSES AS GAMECONCEPT
+    private ObjectMapper mapper =
+            new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private PlayerControllerUtils playerControllerUtils = new PlayerControllerUtils();
+
+    ...
+    ...
+    ...
+    // FIXME PAY ATTENTION THIS FIELDS ARE MANUALLY INTRODUCED
+    // TO PERMIT CORRECT INSTANTIATION OF STATE SUBCLASSES AS GAMECONCEPT
+    public PlayerStateDTO readStateUsingGET(String gameId, String playerId) throws ApiException, JsonParseException, JsonMappingException, IOException {
     	Response response = readStateUsingGETWithHttpInfo(gameId, playerId);
     	return playerControllerUtils.convertPlayerState(mapper.readValue(response.body().byteStream(), Map.class));        
     }
-
-  public Response readStateUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
+    
+    // FIXME PAY ATTENTION THIS FIELDS ARE MANUALLY INTRODUCED
+    // TO PERMIT CORRECT INSTANTIATION OF STATE SUBCLASSES AS GAMECONCEPT
+    public Response readStateUsingGETWithHttpInfo(String gameId, String playerId) throws ApiException {
         com.squareup.okhttp.Call call = readStateUsingGETValidateBeforeCall(gameId, playerId, null, null);
         Type localVarReturnType = new TypeToken<PlayerStateDTO>(){}.getType();
         return apiClient.executeSimple(call, localVarReturnType);
+    }
+
+    ...
+    ...
 }
 ```
 

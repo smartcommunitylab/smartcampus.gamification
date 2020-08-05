@@ -910,6 +910,8 @@ public class ApiClient {
         }
     }
     
+    // FIXME PAY ATTENTION THIS FIELDS ARE MANUALLY INTRODUCED
+    // TO PERMIT CORRECT INSTANTIATION OF STATE SUBCLASSES AS GAMECONCEPT
 	public Response executeSimple(Call call, Type returnType) throws ApiException {
 		try {
 			Response response = call.execute();

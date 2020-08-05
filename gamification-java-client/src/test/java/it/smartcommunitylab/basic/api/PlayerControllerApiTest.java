@@ -46,7 +46,6 @@ import it.smartcommunitylab.ApiException;
 import it.smartcommunitylab.auth.HttpBasicAuth;
 import it.smartcommunitylab.model.ChallengeConcept;
 import it.smartcommunitylab.model.ChallengeInvitation;
-import it.smartcommunitylab.model.GroupChallengeDTO;
 import it.smartcommunitylab.model.Inventory;
 import it.smartcommunitylab.model.ItemChoice;
 import it.smartcommunitylab.model.PagePlayerStateDTO;
@@ -164,7 +163,7 @@ public class PlayerControllerApiTest {
      */
     @Test
     public void assignGroupChallengeUsingPOSTTest() throws ApiException {
-        GroupChallengeDTO challengeData = null;
+        it.smartcommunitylab.model.ext.GroupChallengeDTO challengeData = null;
         api.assignGroupChallengeUsingPOST(challengeData, gameId);
 
         // TODO: test validations

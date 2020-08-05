@@ -275,7 +275,7 @@ basic.setUsername("YOUR USERNAME");
 basic.setPassword("YOUR PASSWORD");
 
 PlayerControllerApi apiInstance = new PlayerControllerApi();
-GroupChallengeDTO challengeData = new GroupChallengeDTO(); // GroupChallengeDTO | challengeData
+it.smartcommunitylab.model.ext.GroupChallengeDTO challengeData = new it.smartcommunitylab.model.ext.GroupChallengeDTO(); // it.smartcommunitylab.model.ext.GroupChallengeDTO | challengeData
 String gameId = "gameId_example"; // String | gameId
 try {
     apiInstance.assignGroupChallengeUsingPOST(challengeData, gameId);
@@ -289,7 +289,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **challengeData** | [**GroupChallengeDTO**](GroupChallengeDTO.md)| challengeData |
+ **challengeData** | [**it.smartcommunitylab.model.ext.GroupChallengeDTO**](it.smartcommunitylab.model.ext.GroupChallengeDTO.md)| challengeData |
  **gameId** | **String**| gameId |
 
 ### Return type

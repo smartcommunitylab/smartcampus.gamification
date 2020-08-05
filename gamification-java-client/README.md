@@ -16,7 +16,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>it.smartcommunitylab.gamification</groupId>
   <artifactId>gamification-java-client</artifactId>
-  <version>2.3.0</version>
+  <version>2.4.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -31,7 +31,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/gamification-java-client-2.3.0.jar`
+* `target/gamification-java-client-2.4.0.jar`
 * `target/lib/*.jar`
 
 ### Example
@@ -83,15 +83,16 @@ In order to add or modify API, it is required to edit the api-docs-basic.json fi
 
 ```shell
 java -jar lib/swagger-codegen-cli.jar generate \
--DhideGenerationTimestamp=true \ 
+-DhideGenerationTimestamp=true \
 -i api-docs-basic.json -l java \
 --api-package it.smartcommunitylab.basic.api \
 --artifact-id gamification-java-client \
 --model-package it.smartcommunitylab.model \
 --invoker-package it.smartcommunitylab \
 --import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
---import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
---import-mappings ChallengeAssignmentDTO=it.smartcommunitylab.model.ext.ChallengeAssignmentDTO
+--import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel \
+--import-mappings ChallengeAssignmentDTO=it.smartcommunitylab.model.ext.ChallengeAssignmentDTO \
+--import-mappings GroupChallengeDTO=it.smartcommunitylab.model.ext.GroupChallengeDTO
 ```
 
 #### OAuth
@@ -99,19 +100,67 @@ In order to add or modify API, it is required to edit the api-docs-oauth.json fi
 
 ```shell
 java -jar lib/swagger-codegen-cli.jar generate \
--DhideGenerationTimestamp=true \ 
+-DhideGenerationTimestamp=true \
 -i api-docs-oauth.json -l java \
 --api-package it.smartcommunitylab.oauth.api \
 --artifact-id gamification-java-client \
 --model-package it.smartcommunitylab.model \
 --invoker-package it.smartcommunitylab \
 --import-mappings TeamDTO=it.smartcommunitylab.model.ext.TeamDTO \
---import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel
---import-mappings ChallengeAssignmentDTO=it.smartcommunitylab.model.ext.ChallengeAssignmentDTO
+--import-mappings PlayerLevel=it.smartcommunitylab.model.ext.PlayerLevel \
+--import-mappings ChallengeAssignmentDTO=it.smartcommunitylab.model.ext.ChallengeAssignmentDTO \ 
+--import-mappings GroupChallengeDTO=it.smartcommunitylab.model.ext.GroupChallengeDTO
 ```
 
-**WARNING**: at the moment to resolve a problem about polyphormism the code has been manually patched. So avoid to generate completely the client code to not miss the patches. Instead execute a punctual generation to maintain the control of code regeneration and patch the code if necessary To create a punctual generation use -Dmodels= or -Dcontroller= options to create only models or APIs classes needed. Below the patched code to trace the workaround.
+**WARNING**: at the moment to resolve a problem about polyphormism the code has been manually patched. So avoid to generate completely the client code to not miss the patches. Instead execute a punctual generation to maintain the control of code regeneration and patch the code if necessary To create a punctual generation use `-Dmodels=` (example: `-Dmodels=ChallengeAssignmentDTO`) or `-Dapis=` (example: `-Dapis=PlayerController`) options to create only models or APIs classes needed. Below the patched code to trace the workaround.
 
+```
+public class ApiClient {
+    ...
+    ...
+
+    // FIXME PAY ATTENTION THIS FIELDS ARE MANUALLY INTRODUCED
+    // TO PERMIT CORRECT INSTANTIATION OF STATE SUBCLASSES AS GAMECONCEPT
+	public Response executeSimple(Call call, Type returnType) throws ApiException {
+		try {
+			Response response = call.execute();
+			if (response.isSuccessful()) {
+				if (returnType == null || response.code() == 204) {
+					// returning null if the returnType is not defined,
+					// or the status code is 204 (No Content)
+					if (response.body() != null) {
+						try {
+							response.body().close();
+						} catch (IOException e) {
+							throw new ApiException(response.message(), e, response.code(),
+									response.headers().toMultimap());
+						}
+					}
+					return null;
+				} else {
+					return response;
+				}
+			} else {
+				String respBody = null;
+				if (response.body() != null) {
+					try {
+						respBody = response.body().string();
+					} catch (IOException e) {
+						throw new ApiException(response.message(), e, response.code(), response.headers().toMultimap());
+					}
+				}
+				throw new ApiException(response.message(), response.code(), response.headers().toMultimap(), respBody);
+			}
+		} catch (IOException e) {
+			throw new ApiException(e);
+		}
+	}
+
+    ...
+    ...
+
+}
+```
 ```
 public class PlayerControllerApi {
     private ApiClient apiClient;
@@ -165,7 +214,7 @@ mvn clean install  deploy:deploy-file  \
 -DrepositoryId=SmartCommunityLab-releases \
 -DpomFile=pom.xml \
 -Durl=http://repository.smartcommunitylab.it/content/repositories/releases \
--Dfile=target/gamification-java-client-2.2.0.jar
+-Dfile=target/gamification-java-client-2.4.0.jar
 ```
 ## Documentation for API Endpoints
 

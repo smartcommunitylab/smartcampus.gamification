@@ -146,11 +146,6 @@ public class AppConfig {
 	}
 
 	@Bean
-	public GameEngine engine(){
-		return new DroolsEngine();
-	}
-
-	@Bean
 	public TraceService traceSrv(){
 		return new TraceManager();
 	}

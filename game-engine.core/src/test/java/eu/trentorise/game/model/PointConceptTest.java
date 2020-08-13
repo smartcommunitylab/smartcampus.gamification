@@ -1,13 +1,14 @@
 package eu.trentorise.game.model;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
+import eu.trentorise.game.config.AppConfig;
+import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
+import eu.trentorise.game.model.core.ClasspathRule;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.Workflow;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
@@ -20,15 +21,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import eu.trentorise.game.config.AppConfig;
-import eu.trentorise.game.config.MongoConfig;
-import eu.trentorise.game.core.config.TestCoreConfiguration;
-import eu.trentorise.game.managers.GameWorkflow;
-import eu.trentorise.game.model.PointConcept.PeriodInstance;
-import eu.trentorise.game.model.core.ClasspathRule;
-import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.services.GameService;
-import eu.trentorise.game.services.PlayerService;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
@@ -45,7 +44,7 @@ public class PointConceptTest {
     private GameService gameSrv;
 
     @Autowired
-    private GameWorkflow workflow;
+    private Workflow workflow;
 
     private static final long HOUR_MILLISEC = 3600000;
     private static final long DAY_MILLISEC = HOUR_MILLISEC * 24;

@@ -16,10 +16,12 @@
 
 package eu.trentorise.game.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
+import eu.trentorise.game.core.AppContextProvider;
+import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.core.SystemClock;
+import eu.trentorise.game.managers.*;
+import eu.trentorise.game.services.*;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -34,16 +36,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.core.Clock;
-import eu.trentorise.game.core.LogHub;
-import eu.trentorise.game.core.SystemClock;
-import eu.trentorise.game.managers.DBPlayerManager;
-import eu.trentorise.game.managers.QuartzTaskManager;
-import eu.trentorise.game.managers.QueueGameWorkflow;
-import eu.trentorise.game.services.PlayerService;
-import eu.trentorise.game.services.TaskService;
-import eu.trentorise.game.services.Workflow;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 @ComponentScan("eu.trentorise.game")
 @Configuration
@@ -144,4 +139,19 @@ public class AppConfig {
     public Clock clock() {
         return new SystemClock();
     }
+
+	@Bean
+	public GameService gameSrv(){
+		return new GameManager();
+	}
+
+	@Bean
+	public GameEngine engine(){
+		return new DroolsEngine();
+	}
+
+	@Bean
+	public TraceService traceSrv(){
+		return new TraceManager();
+	}
 }

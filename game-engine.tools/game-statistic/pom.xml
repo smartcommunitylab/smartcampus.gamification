@@ -8,7 +8,7 @@
 	<dependency>
 		<groupId>it.smartcommunitylab.gamification</groupId>
 		<artifactId>game-engine.core</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</dependency>
   </dependencies>
   

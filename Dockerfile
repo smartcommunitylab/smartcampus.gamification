@@ -33,6 +33,7 @@ RUN  addgroup -g ${USER_GROUP_ID} ${USER_GROUP}; \
 RUN apk add --no-cache tzdata
 
 WORKDIR  /home/${USER}/app
+RUN chmod a+rwx /home/${USER}/app
 RUN chown ${USER}:${USER_GROUP} /home/${USER}/app
 COPY --from=build --chown=gamification:gamification ${FOLDER}/${APP} /home/${USER}/app
 EXPOSE 8010

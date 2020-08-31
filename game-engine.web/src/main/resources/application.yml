@@ -52,3 +52,4 @@ aac:
   
 game:
   createDemo: ${CREATE_DEMO_GAME:false}
+  createDica: ${CREATE_DICA_GAME:false}

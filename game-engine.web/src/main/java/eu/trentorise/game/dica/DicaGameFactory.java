@@ -157,7 +157,7 @@ public class DicaGameFactory {
             periodConfig.put("weekly", 7 * MILLIS_IN_DAY);
             periodConfig.put("monthly", 30 * MILLIS_IN_DAY);
             periodConfig.put("quarterly", 90 * MILLIS_IN_DAY);
-            periodConfig.put("annually", 365 * MILLIS_IN_DAY);
+            periodConfig.put("yearly", 365 * MILLIS_IN_DAY);
             for(Map.Entry<String, Long> entryPeriod : periodConfig.entrySet()){
                 pointConcept.addPeriod(entryPeriod.getKey(), new SimpleDateFormat("dd/MM/yyyy").parse(dicaGameStartAt), entryPeriod.getValue());
             }

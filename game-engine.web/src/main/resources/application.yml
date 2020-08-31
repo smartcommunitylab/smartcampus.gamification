@@ -53,4 +53,4 @@ aac:
 game:
   createDemo: ${CREATE_DEMO_GAME:false}
   createDica: ${CREATE_DICA_GAME:false}
-  dicaGameStartAt: ${DICA_GAME_START_AT:01/08/2020}
+  dicaGameStartAt: ${DICA_GAME_START_AT:31/08/2020}

@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "010-giraffe"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 900)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "010-giraffe")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '010-giraffe badge'");
+    $bc.getBadgeEarned().add("010-giraffe");
+    insert( new BadgeNotification($gameId,$playerId,"010-giraffe"));
+    update( $bc );
+end
+        

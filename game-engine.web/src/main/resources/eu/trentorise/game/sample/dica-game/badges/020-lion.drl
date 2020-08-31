@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "020-lion"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 15000)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "020-lion")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '020-lion badge'");
+    $bc.getBadgeEarned().add("020-lion");
+    insert( new BadgeNotification($gameId,$playerId,"020-lion"));
+    update( $bc );
+end
+        

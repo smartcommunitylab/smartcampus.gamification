@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "007-hedgehog"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 400)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "007-hedgehog")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '007-hedgehog badge'");
+    $bc.getBadgeEarned().add("007-hedgehog");
+    insert( new BadgeNotification($gameId,$playerId,"007-hedgehog"));
+    update( $bc );
+end
+        

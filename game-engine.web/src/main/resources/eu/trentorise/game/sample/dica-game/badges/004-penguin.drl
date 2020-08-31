@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "004-penguin"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 150)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "004-penguin")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '004-penguin badge'");
+    $bc.getBadgeEarned().add("004-penguin");
+    insert( new BadgeNotification($gameId,$playerId,"004-penguin"));
+    update( $bc );
+end
+        

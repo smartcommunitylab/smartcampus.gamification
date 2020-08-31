@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "008-goat"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 500)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "008-goat")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '008-goat badge'");
+    $bc.getBadgeEarned().add("008-goat");
+    insert( new BadgeNotification($gameId,$playerId,"008-goat"));
+    update( $bc );
+end
+        

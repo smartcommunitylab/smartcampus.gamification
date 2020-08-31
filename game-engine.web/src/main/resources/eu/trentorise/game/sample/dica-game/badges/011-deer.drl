@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "011-deer"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 1100)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "011-deer")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '011-deer badge'");
+    $bc.getBadgeEarned().add("011-deer");
+    insert( new BadgeNotification($gameId,$playerId,"011-deer"));
+    update( $bc );
+end
+        

@@ -1,0 +1,60 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.Date
+import java.time.ZoneId
+
+function boolean isNewPlayer(CustomData customData) {
+    return !customData.containsKey("status");
+}
+
+rule "update total points when users register"
+no-loop true
+    when
+        InputData( $point : data["points"])
+        $pc : PointConcept(name == "total")
+        Action($actionId: id == "user_register")
+        $customData: CustomData()
+    then
+        Integer point = 0;
+        if (isNewPlayer($customData)){
+            point = $point != null ? (Integer) $point : 0;
+            log("apply \'update total points\' " + point + " points from " + $actionId);
+        }
+        $customData.put("status", "active");
+        update($customData);
+        $pc.setScore($pc.getScore() + point);
+        update($pc);
+end
+
+function boolean hasLoginToday(CustomData customData) {
+    if (!customData.containsKey("lastLoginAt")) {
+        return false;
+    }
+    LocalDateTime lastLoginAt = ((Date)customData.get("lastLoginAt")).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    boolean result = lastLoginAt.toLocalDate().equals(LocalDate.now());
+    log("Verifying user last login " + lastLoginAt);
+    return result;
+}
+
+rule "update total points when users login"
+no-loop true
+    when
+        InputData( $point : data["points"])
+        $pc : PointConcept(name == "total")
+        Action($actionId: id == "user_login")
+        $customData: CustomData()
+    then
+        Integer point = 0;
+        if (!hasLoginToday($customData)){
+            point = $point != null ? (Integer) $point : 0;
+            log("apply \'update total points\' " + point + " points from " + $actionId);
+        }
+        LocalDateTime lastLoginAt = LocalDateTime.now();
+        $customData.put("lastLoginAt", lastLoginAt);
+        update($customData);
+        $pc.setScore($pc.getScore() + point);
+        update($pc);
+end

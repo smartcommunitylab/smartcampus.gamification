@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "005-ostrich"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 200)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "005-ostrich")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '005-ostrich badge'");
+    $bc.getBadgeEarned().add("005-ostrich");
+    insert( new BadgeNotification($gameId,$playerId,"005-ostrich"));
+    update( $bc );
+end
+        

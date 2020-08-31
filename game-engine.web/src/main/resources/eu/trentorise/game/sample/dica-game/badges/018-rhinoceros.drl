@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "018-rhinoceros"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 6000)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "018-rhinoceros")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '018-rhinoceros badge'");
+    $bc.getBadgeEarned().add("018-rhinoceros");
+    insert( new BadgeNotification($gameId,$playerId,"018-rhinoceros"));
+    update( $bc );
+end
+        

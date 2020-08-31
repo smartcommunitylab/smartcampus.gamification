@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "003-parrot"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 100)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "003-parrot")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '003-parrot badge'");
+    $bc.getBadgeEarned().add("003-parrot");
+    insert( new BadgeNotification($gameId,$playerId,"003-parrot"));
+    update( $bc );
+end
+        

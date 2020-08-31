@@ -14,6 +14,7 @@ import eu.trentorise.game.task.GeneralClassificationTask;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -28,6 +29,8 @@ public class DicaGameFactory {
 
     @Autowired
     private GameService gameSrv;
+    @Value("${game.dicaGameStartAt}")
+    private String dicaGameStartAt;
 
     private static final String DICA_PACKAGE = "eu/trentorise/game/sample";
 
@@ -156,7 +159,7 @@ public class DicaGameFactory {
             periodConfig.put("quarterly", 90 * MILLIS_IN_DAY);
             periodConfig.put("annually", 365 * MILLIS_IN_DAY);
             for(Map.Entry<String, Long> entryPeriod : periodConfig.entrySet()){
-                pointConcept.addPeriod(entryPeriod.getKey(), new SimpleDateFormat("dd/MM/yyyy").parse("01/09/2020"), entryPeriod.getValue());
+                pointConcept.addPeriod(entryPeriod.getKey(), new SimpleDateFormat("dd/MM/yyyy").parse(dicaGameStartAt), entryPeriod.getValue());
             }
             gameConcepts.add(pointConcept);
         }

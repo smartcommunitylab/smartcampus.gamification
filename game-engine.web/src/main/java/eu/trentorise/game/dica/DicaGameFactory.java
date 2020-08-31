@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,8 +68,12 @@ public class DicaGameFactory {
             game.setDomain(domain);
 
             game.setActions(new HashSet<>(Arrays.asList("user_register", "user_login", "ask", "answer", "best_answer")));
-
-            game.setConcepts(new HashSet<>(this.buildGameConcepts()));
+            try {
+                game.setConcepts(new HashSet<>(this.buildGameConcepts()));
+            } catch (ParseException e) {
+                logger.error("Error building concepts for game {}", gameName);
+                return null;
+            }
 
             // add tasks
             game.setTasks(new HashSet<>());
@@ -137,7 +143,7 @@ public class DicaGameFactory {
         return pointNames;
     }
 
-    private List<GameConcept> buildGameConcepts() {
+    private List<GameConcept> buildGameConcepts() throws ParseException {
         List<GameConcept> gameConcepts = new ArrayList<>();
         List<String> pointNames = this.pointNames();
         for (String pointName: pointNames) {
@@ -150,7 +156,7 @@ public class DicaGameFactory {
             periodConfig.put("quarterly", 90 * MILLIS_IN_DAY);
             periodConfig.put("annually", 365 * MILLIS_IN_DAY);
             for(Map.Entry<String, Long> entryPeriod : periodConfig.entrySet()){
-                pointConcept.addPeriod(entryPeriod.getKey(), new Date(), entryPeriod.getValue());
+                pointConcept.addPeriod(entryPeriod.getKey(), new SimpleDateFormat("dd/MM/yyyy").parse("01/09/2020"), entryPeriod.getValue());
             }
             gameConcepts.add(pointConcept);
         }

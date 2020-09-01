@@ -75,10 +75,14 @@ public class WebhookManager {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("Unexpected code " + response);
-                    } else {
-                        logger.debug("Successful send notification messages");
+                    try {
+                        if (!response.isSuccessful()) {
+                            throw new IOException("Unexpected code " + response);
+                        } else {
+                            logger.debug("Successful send notification messages");
+                        }
+                    } finally {
+                        response.close();
                     }
                 }
             });

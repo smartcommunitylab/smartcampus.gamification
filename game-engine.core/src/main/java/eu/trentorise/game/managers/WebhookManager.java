@@ -83,7 +83,7 @@ public class WebhookManager {
                 }
             });
         } catch (Exception e) {
-             logger.error("Error sending message to webhook.");
+             logger.error("Error building message for webhook.", e);
         }
     }
 }

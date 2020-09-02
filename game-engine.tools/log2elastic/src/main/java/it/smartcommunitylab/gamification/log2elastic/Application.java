@@ -13,6 +13,7 @@ import it.smartcommunitylab.gamification.log2elastic.analyzer.RecordAnalyzerFact
 
 public class Application {
     private static final String PREFIX_PROCESSED_FILE = "NEW-";
+    private static final String GAMEID = "";
 
 	private static final Logger logger = Logger.getLogger(Application.class);
 
@@ -38,8 +39,13 @@ public class Application {
 						logger.debug("Record type: " + record.getType());
 						RecordAnalyzer analyzer = RecordAnalyzerFactory.getAnalyzer(record);
 						Map<String, String> recordFields = analyzer.extractData();
-						esHelper.saveRecord(record.getType(), recordFields.get("gameId"),
-								Long.valueOf(recordFields.get("executionTime")), recordFields);
+                        if (GAMEID.equals(recordFields.get("gameId"))) {
+                            esHelper.saveRecord(record.getType(), recordFields.get("gameId"),
+                                    Long.valueOf(recordFields.get("executionTime")), recordFields);
+                        } else {
+                            logger.info("skip event for game not selected: "
+                                    + recordFields.get("gameId"));
+                        }
 					}
 
 					br.close();

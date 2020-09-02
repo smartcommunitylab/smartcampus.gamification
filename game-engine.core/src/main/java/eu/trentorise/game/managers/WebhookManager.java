@@ -3,11 +3,14 @@ package eu.trentorise.game.managers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.repo.NotificationPersistence;
 import okhttp3.*;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 
 @Component
@@ -18,7 +21,7 @@ public class WebhookManager {
 
     private String webHookEndpoint;
 
-    private String webHookToken;
+    private String webHookSecretKey;
     private ObjectMapper mapper = new ObjectMapper();
     
     @Autowired
@@ -37,7 +40,7 @@ public class WebhookManager {
 
                 }
                 this.webHookEndpoint = env.getProperty("webhook.endpoint");
-                this.webHookToken = env.getProperty("webhook.token");
+                this.webHookSecretKey = env.getProperty("webhook.secretKey");
 
                 logger.info("Connected to webhook endpoint: " + this.webHookEndpoint);
                 initialized = true;
@@ -62,8 +65,12 @@ public class WebhookManager {
                     = MediaType.parse("application/json; charset=utf-8");
             String message = mapper.writeValueAsString(notification);
             RequestBody body = RequestBody.create(JSON, message);
+            String webHookToken = this.buildWebHookToken(message);
+            if (webHookToken.isEmpty()) {
+                return;
+            }
             Request request = new Request.Builder()
-                    .header("Authorization", this.webHookToken)
+                    .header("Authorization", webHookToken)
                     .url(this.webHookEndpoint)
                     .post(body)
                     .build();
@@ -88,6 +95,23 @@ public class WebhookManager {
             });
         } catch (Exception e) {
              logger.error("Error building message for webhook.", e);
+        }
+    }
+
+    private String buildWebHookToken(String message) {
+        String hash = "";
+        try {
+
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(this.webHookSecretKey.getBytes(), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+
+            hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes()));
+
+        } catch (Exception e){
+            logger.error("Error building token for webhook.", e);
+        } finally {
+            return hash;
         }
     }
 }

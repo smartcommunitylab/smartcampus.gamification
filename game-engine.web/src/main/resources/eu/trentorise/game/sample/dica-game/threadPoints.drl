@@ -1,0 +1,87 @@
+package eu.trentorise.game.model
+
+import java.util.Set
+import java.util.HashSet
+
+function boolean isValidSubject(String subject) {
+    Set<String> availableSubjects = new HashSet<>();
+    availableSubjects.add("chua-phan-mon");
+
+    availableSubjects.add("lich-su");
+
+    availableSubjects.add("toan-hoc");
+
+    availableSubjects.add("van");
+
+    availableSubjects.add("sinh-hoc");
+
+    availableSubjects.add("vat-ly");
+
+    availableSubjects.add("on-thi-khoa-hoc-xa-hoi");
+
+    availableSubjects.add("cong-nghe");
+
+    availableSubjects.add("on-thi-khoa-hoc-tu-nhien");
+
+    availableSubjects.add("dia-ly");
+
+    availableSubjects.add("tieng-viet");
+
+    availableSubjects.add("hoa-hoc");
+
+    availableSubjects.add("tieng-anh");
+
+    availableSubjects.add("giao-duc-cong-dan");
+
+    availableSubjects.add("tin-hoc");
+
+    availableSubjects.add("ngu-van");
+
+    availableSubjects.add("am-nhac");
+
+    availableSubjects.add("my-thuat");
+
+    availableSubjects.add("khoa-hoc");
+
+    return availableSubjects.contains(subject);
+}
+
+function boolean isValidAction(String actionId) {
+    Set<String> availableActions = new HashSet<>();
+    availableActions.add("ask");
+    availableActions.add("answer");
+    availableActions.add("best_answer");
+    return availableActions.contains(actionId);
+}
+
+declare AddTotalPoint
+    fromSubject: String
+    point: Integer
+end
+
+rule "update subject points"
+when
+    InputData( $subject : data["subject"], $point : data["points"])
+    $pc : PointConcept(name == $subject)
+    Action( $actionId: id)
+then
+	log("apply \'update subject points\'");
+	String subj = $subject != null ? (String) $subject : "";
+    Integer score = 0;
+    if(isValidAction($actionId) && isValidSubject(subj))
+        score = $point != null ? (Integer) $point : 0;
+    $pc.setScore($pc.getScore() + score);
+    update($pc);
+    insert(new AddTotalPoint(subj, score));
+end
+
+rule "update total points"
+when
+    AddTotalPoint( $subject : fromSubject, $score: point)
+    $pc : PointConcept(name == "total")
+then
+	log("apply \'update total points\' from " + $subject);
+    $pc.setScore($pc.getScore() + $score);
+    update($pc);
+end
+

@@ -1,14 +1,20 @@
 package eu.trentorise.game.managers;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
-
+import eu.trentorise.game.config.AppConfig;
+import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.AppContextProvider;
+import eu.trentorise.game.core.GameContext;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
+import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.*;
+import eu.trentorise.game.services.GameEngine;
+import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.TaskService;
+import eu.trentorise.game.task.IncrementalClassificationTask;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.After;
@@ -22,25 +28,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import eu.trentorise.game.config.AppConfig;
-import eu.trentorise.game.config.MongoConfig;
-import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.core.GameContext;
-import eu.trentorise.game.core.config.TestCoreConfiguration;
-import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.core.ClasspathRule;
-import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.model.core.GameTask;
-import eu.trentorise.game.model.core.TimeInterval;
-import eu.trentorise.game.model.core.TimeUnit;
-import eu.trentorise.game.services.GameEngine;
-import eu.trentorise.game.services.GameService;
-import eu.trentorise.game.services.PlayerService;
-import eu.trentorise.game.services.TaskService;
-import eu.trentorise.game.task.IncrementalClassificationTask;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -61,7 +52,7 @@ public class ClassificationTaskTest {
     private PlayerService playerSrv;
 
     @Autowired
-    private GameEngine engine;
+    private GameEngine gameEngine;
 
     @Autowired
     private AppContextProvider provider;
@@ -181,7 +172,7 @@ public class ClassificationTaskTest {
         params.put("sustainable", true);
         params.put("p+r", true);
         params.put("park", "MANIFATTURA");
-        p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
         // expected 60 greenPoints and earned 10-point 50-point green badges

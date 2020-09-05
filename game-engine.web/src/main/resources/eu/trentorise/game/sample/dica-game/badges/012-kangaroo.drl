@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "012-kangaroo"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 1300)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "012-kangaroo")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '012-kangaroo badge'");
+    $bc.getBadgeEarned().add("012-kangaroo");
+    insert( new BadgeNotification($gameId,$playerId,"012-kangaroo"));
+    update( $bc );
+end
+        

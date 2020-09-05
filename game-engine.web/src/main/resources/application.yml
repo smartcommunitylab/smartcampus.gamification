@@ -15,6 +15,8 @@ security:
       preEstablishedRedirectUri: ${GAMIFICATION_REVERSEPROXY:}/gamification/login/aac
       useCurrentUri: false
   usersFile: ${USERS_FILE:}
+  defaultAdminUser: ${GEN_USER:}
+  defaultAdminPassword: ${GEN_PASSWORD:}
 
 oauth:
   serverUrl: ${AAC_URL:}
@@ -52,3 +54,5 @@ aac:
   
 game:
   createDemo: ${CREATE_DEMO_GAME:false}
+  createDica: ${CREATE_DICA_GAME:false}
+  dicaGameStartAt: ${DICA_GAME_START_AT:31/08/2020}

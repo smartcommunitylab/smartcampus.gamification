@@ -14,25 +14,23 @@
 
 package eu.trentorise.game.managers;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import eu.trentorise.game.config.AppConfig;
+import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.TaskSchedule;
+import eu.trentorise.game.core.config.TestCoreConfiguration;
+import eu.trentorise.game.model.*;
+import eu.trentorise.game.model.Level.Threshold;
+import eu.trentorise.game.model.core.ClasspathRule;
+import eu.trentorise.game.model.core.DBRule;
+import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.repo.GamePersistence;
+import eu.trentorise.game.repo.NotificationPersistence;
+import eu.trentorise.game.repo.StatePersistence;
+import eu.trentorise.game.services.GameEngine;
+import eu.trentorise.game.services.PlayerService;
+import eu.trentorise.game.services.Workflow;
+import eu.trentorise.game.task.GeneralClassificationTask;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
@@ -45,27 +43,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import eu.trentorise.game.config.AppConfig;
-import eu.trentorise.game.config.MongoConfig;
-import eu.trentorise.game.core.TaskSchedule;
-import eu.trentorise.game.core.config.TestCoreConfiguration;
-import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.Level;
-import eu.trentorise.game.model.Level.Threshold;
-import eu.trentorise.game.model.PlayerLevel;
-import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.core.ClasspathRule;
-import eu.trentorise.game.model.core.DBRule;
-import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.model.core.GameTask;
-import eu.trentorise.game.repo.GamePersistence;
-import eu.trentorise.game.repo.NotificationPersistence;
-import eu.trentorise.game.repo.StatePersistence;
-import eu.trentorise.game.services.GameEngine;
-import eu.trentorise.game.services.PlayerService;
-import eu.trentorise.game.task.GeneralClassificationTask;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
@@ -76,7 +62,7 @@ public class GameEngineTest {
     private GameManager gameManager;
 
     @Autowired
-    private GameEngine engine;
+    private GameEngine gameEngine;
 
     @Autowired
     private PlayerService playerSrv;
@@ -85,7 +71,7 @@ public class GameEngineTest {
     private MongoTemplate mongo;
 
     @Autowired
-    private GameWorkflow workflow;
+    private Workflow workflow;
 
 
     private static final String GAME = "coreGameTest";
@@ -206,7 +192,7 @@ public class GameEngineTest {
         params.put("sustainable", true);
         params.put("p+r", true);
         params.put("park", "MANIFATTURA");
-        p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         // expected 70 greenPoints and earned 10-point 50-point green badges
         boolean found = false;
@@ -252,7 +238,7 @@ public class GameEngineTest {
 
         long oneHourAgo = LocalDateTime.now().minusHours(1).atZone(ZoneId.systemDefault())
                 .toInstant().toEpochMilli();
-        p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 oneHourAgo, null);
 
         PointConcept loaded = (PointConcept) p.getState().stream().findFirst().orElse(null);
@@ -273,7 +259,7 @@ public class GameEngineTest {
         params.put("sustainable", true);
         params.put("p+r", true);
         params.put("park", "MANIFATTURA");
-        p = engine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, params, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         // expected 60 greenPoints and earned 10-point 50-point green badges
         boolean found = false;
@@ -387,7 +373,7 @@ public class GameEngineTest {
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, true, false);
 
-        p = engine.execute(GAME, p, ACTION, new HashMap<String, Object>(),
+        p = gameEngine.execute(GAME, p, ACTION, new HashMap<String, Object>(),
                 UUID.randomUUID().toString(), System.currentTimeMillis(), null);
 
     }
@@ -448,7 +434,7 @@ public class GameEngineTest {
         inputData.put("p+r", true);
         inputData.put("park", "MANIFATTURA");
         PlayerState p = playerSrv.loadState(GAME, "player", true, false);
-        p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
         Assert.assertEquals(1, p.getLevels().size());
@@ -484,7 +470,7 @@ public class GameEngineTest {
         inputData.put("p+r", true);
         inputData.put("park", "MANIFATTURA");
         PlayerState p = playerSrv.loadState(GAME, "player", true, false);
-        p = engine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, inputData, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
         Assert.assertEquals(2, p.getLevels().size());
@@ -582,7 +568,7 @@ public class GameEngineTest {
         PlayerState p = playerSrv.loadState(GAME, "player", true, false);
         p.updateLevels(
                 Arrays.asList(new PlayerLevel(levelDefinition, 200d)));
-        p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         PointConcept green = (PointConcept) p.getState().stream()
                 .filter(gc -> gc.getName().equals("green")).findFirst().orElse(null);
@@ -612,7 +598,7 @@ public class GameEngineTest {
         PlayerState p = playerSrv.loadState(GAME, "player", true, false);
         p.updateLevels(
                 Arrays.asList(new PlayerLevel(levelDefinition, 50d)));
-        p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
         PointConcept green = (PointConcept) p.getState().stream()
                 .filter(gc -> gc.getName().equals("green")).findFirst().orElse(null);

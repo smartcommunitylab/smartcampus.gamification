@@ -1,17 +1,19 @@
 package eu.trentorise.game.managers;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import eu.trentorise.game.config.AppConfig;
+import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.core.Clock;
+import eu.trentorise.game.core.ExecutionClock;
+import eu.trentorise.game.model.*;
+import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
+import eu.trentorise.game.model.GroupChallenge.Attendee;
+import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
+import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
+import eu.trentorise.game.model.core.*;
+import eu.trentorise.game.repo.GroupChallengeRepo;
+import eu.trentorise.game.services.GameEngine;
+import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -29,30 +31,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import eu.trentorise.game.config.AppConfig;
-import eu.trentorise.game.config.MongoConfig;
-import eu.trentorise.game.core.Clock;
-import eu.trentorise.game.core.ExecutionClock;
-import eu.trentorise.game.model.ChallengeConcept;
-import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
-import eu.trentorise.game.model.ChallengeModel;
-import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.GroupChallenge;
-import eu.trentorise.game.model.GroupChallenge.Attendee;
-import eu.trentorise.game.model.GroupChallenge.Attendee.Role;
-import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
-import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
-import eu.trentorise.game.model.core.ChallengeAssignment;
-import eu.trentorise.game.model.core.ClasspathRule;
-import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.model.core.GameTask;
-import eu.trentorise.game.model.core.TimeInterval;
-import eu.trentorise.game.model.core.TimeUnit;
-import eu.trentorise.game.repo.GroupChallengeRepo;
-import eu.trentorise.game.services.GameEngine;
-import eu.trentorise.game.services.GameService;
-import eu.trentorise.game.services.PlayerService;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
@@ -72,7 +54,7 @@ public class ChallengeTest {
     private GroupChallengeRepo groupChallengeRepo;
 
     @Autowired
-    private GameEngine engine;
+    private GameEngine gameEngine;
 
     @Autowired
     private MongoTemplate mongo;
@@ -125,7 +107,7 @@ public class ChallengeTest {
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
 
         // execution
-        p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 System.currentTimeMillis(), null);
 
         Assert.assertEquals(2, p.getState().size());
@@ -167,7 +149,7 @@ public class ChallengeTest {
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
 
         // execution
-        p = engine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
+        p = gameEngine.execute(GAME, p, ACTION, null, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
 
         Assert.assertEquals(3, p.getState().size());

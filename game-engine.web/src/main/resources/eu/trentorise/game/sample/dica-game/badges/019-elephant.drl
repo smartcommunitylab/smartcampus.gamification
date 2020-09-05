@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "019-elephant"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 10000)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "019-elephant")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '019-elephant badge'");
+    $bc.getBadgeEarned().add("019-elephant");
+    insert( new BadgeNotification($gameId,$playerId,"019-elephant"));
+    update( $bc );
+end
+        

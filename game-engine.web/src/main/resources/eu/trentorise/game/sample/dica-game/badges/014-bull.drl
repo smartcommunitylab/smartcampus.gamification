@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "014-bull"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 2000)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "014-bull")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '014-bull badge'");
+    $bc.getBadgeEarned().add("014-bull");
+    insert( new BadgeNotification($gameId,$playerId,"014-bull"));
+    update( $bc );
+end
+        

@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "001-rabbit"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 0)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "001-rabbit")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '001-rabbit badge'");
+    $bc.getBadgeEarned().add("001-rabbit");
+    insert( new BadgeNotification($gameId,$playerId,"001-rabbit"));
+    update( $bc );
+end
+        

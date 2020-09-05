@@ -1,29 +1,22 @@
 package it.smartcommunitylab.gamification.game_statistics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.math.Quantiles;
+import com.mongodb.MongoClient;
+import eu.trentorise.game.managers.ClassificationUtils;
+import eu.trentorise.game.model.GameStatistics;
+import eu.trentorise.game.repo.StatePersistence;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
-import org.springframework.data.mongodb.core.MongoFactoryBean;
+import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.google.common.math.Quantiles;
-import com.mongodb.Mongo;
-
-import eu.trentorise.game.managers.ClassificationUtils;
-import eu.trentorise.game.model.GameStatistics;
-import eu.trentorise.game.repo.StatePersistence;
+import java.util.*;
 
 public class App {
 
@@ -126,12 +119,13 @@ public class App {
     }
 
     private static MongoTemplate getInstance() {
-        MongoFactoryBean mongo = new MongoFactoryBean();
+        MongoClientFactoryBean mongo = new MongoClientFactoryBean();
+
         mongo.setHost(MONGO_HOST);
         mongo.setPort(MONGO_PORT);
         try {
             mongo.afterPropertiesSet();
-            Mongo mongoObj = mongo.getObject();
+            MongoClient mongoObj = mongo.getObject();
             MongoTemplate mongoTemplate = new MongoTemplate(
                     new SimpleMongoDbFactory(mongoObj, DB_NAME));
             return mongoTemplate;

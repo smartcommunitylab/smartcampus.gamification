@@ -17,14 +17,12 @@
 package eu.trentorise.game;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan("eu.trentorise.game")
-@EnableAutoConfiguration(
-        exclude = {org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration.class})
-@SpringBootApplication
+@SpringBootApplication(
+		scanBasePackages="eu.trentorise.game",
+		exclude = {org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration.class}
+		)
 public class WebApplication {
 
 	public static void main(String[] args) throws Exception {

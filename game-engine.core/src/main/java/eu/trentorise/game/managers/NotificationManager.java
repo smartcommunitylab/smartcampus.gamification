@@ -16,17 +16,16 @@
 
 package eu.trentorise.game.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
-
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.NotificationQuery;
 import eu.trentorise.game.repo.NotificationRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class NotificationManager {
@@ -37,11 +36,16 @@ public class NotificationManager {
 	@Autowired
 	private RabbitMQManager rabbitMQManager;
 
+	@Autowired
+	private WebhookManager webhookManager;
+
 	public void notificate(Notification n) {
 		NotificationPersistence np = new NotificationPersistence(n); 
 		repo.save(np);
 		
 		rabbitMQManager.sendMessage(np);
+
+		webhookManager.sendMessage(np);
 	}
 
 	public List<Notification> readNotifications(String gameId) {

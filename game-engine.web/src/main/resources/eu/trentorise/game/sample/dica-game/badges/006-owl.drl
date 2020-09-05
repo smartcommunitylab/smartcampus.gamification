@@ -1,0 +1,23 @@
+
+package eu.trentorise.game.model
+
+
+import eu.trentorise.game.notification.BadgeNotification
+import java.util.Set
+import java.util.HashSet
+
+
+rule "006-owl"
+    salience -1000
+when
+    PointConcept(name == "total", score >= 300)
+    $bc : BadgeCollectionConcept(name == "totalBadge", badgeEarned not contains "006-owl")
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    log("apply '006-owl badge'");
+    $bc.getBadgeEarned().add("006-owl");
+    insert( new BadgeNotification($gameId,$playerId,"006-owl"));
+    update( $bc );
+end
+        

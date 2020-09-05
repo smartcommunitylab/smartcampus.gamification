@@ -16,12 +16,9 @@
 
 package eu.trentorise.game.sec;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
+import eu.trentorise.game.core.AppContextProvider;
+import eu.trentorise.game.core.LogHub;
+import eu.trentorise.game.model.AuthUser;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +28,10 @@ import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.core.LogHub;
-import eu.trentorise.game.model.AuthUser;
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UsersProvider {
@@ -44,6 +42,12 @@ public class UsersProvider {
 
     @Value("${security.usersFile}")
     private String usersFilePath;
+
+    @Value("${security.defaultAdminUser}")
+    private String defaultAdminUser;
+
+    @Value("${security.defaultAdminPassword}")
+    private String defaultAdminPassword;
 
     @Autowired
     private AppContextProvider provider;
@@ -58,6 +62,15 @@ public class UsersProvider {
 		Yaml yaml = new Yaml(new Constructor(UsersProvider.class));
 		try {
 			UsersProvider data = (UsersProvider) yaml.load(resource.getInputStream());
+			if (data.users.isEmpty()) {
+			    data.users.add(new AuthUser());
+            }
+			if (!this.defaultAdminUser.isEmpty() && !this.defaultAdminPassword.isEmpty()) {
+                AuthUser admin = data.users.get(0);
+                admin.setUsername(this.defaultAdminUser);
+                admin.setPassword(this.defaultAdminPassword);
+                admin.setRole("ADMIN");
+            }
 			this.users = data.users;
 		} catch (IOException e) {
 			LogHub.error(null, logger, "exception loading auth users resource");

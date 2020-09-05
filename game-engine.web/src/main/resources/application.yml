@@ -15,6 +15,8 @@ security:
       preEstablishedRedirectUri: ${GAMIFICATION_REVERSEPROXY:}/gamification/login/aac
       useCurrentUri: false
   usersFile: ${USERS_FILE:}
+  defaultAdminUser: ${GEN_USER:}
+  defaultAdminPassword: ${GEN_PASSWORD:}
 
 oauth:
   serverUrl: ${AAC_URL:}

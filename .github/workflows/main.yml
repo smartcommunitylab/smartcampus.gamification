@@ -1,0 +1,32 @@
+name: Deploy the application to Google Cloud Run
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.1
+
+    # Setup gcloud CLI
+    - uses: GoogleCloudPlatform/github-actions@0.1.2
+      with:
+        service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+
+    # Configure docker to use the gcloud command-line tool as a credential helper
+    - run: |
+        # Set up docker to authenticate
+        # via gcloud command-line tool.
+        gcloud auth configure-docker
+    # Build the Docker image
+    - name: Build
+      run: |
+        docker build -t asia.gcr.io/${{ secrets.GCLOUD_PROJECT }}/gamification:${GITHUB_SHA::7} -t asia.gcr.io/${{ secrets.GCLOUD_PROJECT }}/gamification:latest -f ./Dockerfile .
+    # Push the Docker image to Google Container Registry
+    - name: Publish
+      run: |
+        docker push asia.gcr.io/${{ secrets.GCLOUD_PROJECT }}/gamification

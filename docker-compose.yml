@@ -2,12 +2,15 @@ version: "3"
 
 services:
   mongo:
-    image: mongo:3.6.2-jessie
+    image: mongo:4.4.1-bionic
     container_name: gamification-mongo
     ports:
       - "50000:27017"
     volumes:
       - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
   gamification-engine:
     build:
       context: .

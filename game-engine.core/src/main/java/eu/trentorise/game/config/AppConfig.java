@@ -71,6 +71,12 @@ public class AppConfig {
 				Map<String, Object> propsMap = new HashMap<String, Object>();
 				propsMap.put("org.quartz.jobStore.class",
 						env.getProperty("org.quartz.jobStore.class", "com.novemberain.quartz.mongodb.MongoDBJobStore"));
+				propsMap.put("org.quartz.jobStore.username",
+						env.getProperty("org.quartz.jobStore.username", "admin"));
+				propsMap.put("org.quartz.jobStore.password",
+						env.getProperty("org.quartz.jobStore.password", "admin"));
+				propsMap.put("org.quartz.jobStore.authDbName",
+						env.getProperty("org.quartz.jobStore.authDbName", "admin"));
 				propsMap.put("org.quartz.jobStore.addresses",
 						env.getProperty("org.quartz.jobStore.addresses", "localhost"));
 				propsMap.put("org.quartz.jobStore.dbName",

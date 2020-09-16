@@ -210,8 +210,9 @@ public class PlayerState {
                     inventory.upgrade(levelConfig);
                     LogHub.info(game.getId(), logger,
                             String.format(
-                                    "Upgrade Inventory: available items %s, added %s activationActions",
-                                    levelConfig.getAvailableModels(), levelConfig.getChoices()));
+                                    "Upgrade Inventory: available items %s, active items %s, added %s activationActions",
+                                    levelConfig.getAvailableModels(), levelConfig.getActiveModels(),
+                                    levelConfig.getChoices()));
                 }
             });
         }

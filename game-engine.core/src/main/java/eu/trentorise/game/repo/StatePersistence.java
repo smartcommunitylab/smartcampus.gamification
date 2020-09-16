@@ -44,7 +44,7 @@ public class StatePersistence {
 	private Map<String, Map<String, GenericObjectPersistence>> concepts = new HashMap<>();
 
     private List<PlayerLevel> levels = new ArrayList<>();
-	private CustomData customData;
+    private CustomData customData = new CustomData();
     private Inventory inventory = new Inventory();
 
 	public StatePersistence() {

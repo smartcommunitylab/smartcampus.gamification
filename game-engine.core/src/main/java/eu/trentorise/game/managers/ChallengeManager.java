@@ -118,6 +118,25 @@ public class ChallengeManager {
         }
     }
 
+    public void logStatsEvents(Game game, GroupChallenge challenge, long executionTime) {
+        if (challenge != null && game != null) {
+            List<Attendee> attendees = challenge.getAttendees();
+            long timestamp = System.currentTimeMillis();
+            String executionId = UUID.randomUUID().toString();
+            attendees.forEach(a -> {
+                if (a.isWinner()) {
+                    StatsLogger.logChallengeCompleted(game.getDomain(), game.getId(),
+                            a.getPlayerId(), executionId, executionTime, timestamp,
+                            challenge.getInstanceName());
+                } else {
+                    StatsLogger.logChallengeFailed(game.getDomain(), game.getId(), a.getPlayerId(),
+                            executionId, executionTime, timestamp,
+                            challenge.getInstanceName());
+                }
+            });
+        }
+    }
+
     public void sendChallengeNotification(GroupChallenge challenge) {
         if (challenge != null) {
             List<Attendee> attendees = challenge.getAttendees();

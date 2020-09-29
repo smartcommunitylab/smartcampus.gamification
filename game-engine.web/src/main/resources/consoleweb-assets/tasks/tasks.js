@@ -32,7 +32,15 @@ angular.module('gamificationEngine.tasks', [])
 		
 		// default value
 		$scope.input.itemToNotificate = 3;
-		var game = $scope.game;
+		
+		// Load game
+		gamesFactory.getGameById($stateParams.id).then(function (game) {
+			$scope.game = game;
+		}, function () {
+			// Show error alert
+			$scope.alerts.loadGameError = true;
+		});
+		
 		var task;
 
 		$scope.resetDelayField = function() {
@@ -83,17 +91,17 @@ angular.module('gamificationEngine.tasks', [])
 				
 				if (!task) {
 					var found = false;
-					for (var i = 0; i < game.classificationTask.length && !found; i++) {
-						if (game.classificationTask[i].name === t.name) {
+					for (var i = 0; i < $scope.game.classificationTask.length && !found; i++) {
+						if ($scope.game.classificationTask[i].name === t.name) {
 							found = true;
 						}
 					}
 					if (!found) {
-						gamesFactory.addIncrementalClassification(game, t).then(function (data) {
-							if (!game.classificationTask) {
-								game.classificationTask = [];
+						gamesFactory.addIncrementalClassification($scope.game, t).then(function (data) {
+							if (!$scope.game.classificationTask) {
+								$scope.game.classificationTask = [];
 							}
-							game.classificationTask.unshift(data);
+							$scope.game.classificationTask.unshift(data);
 							$scope.isCollapsed = true;
 							$scope.disabled = false;
 							$scope.alerts.rankEdited = true;
@@ -106,16 +114,16 @@ angular.module('gamificationEngine.tasks', [])
 						$scope.disabled = false;
 					}
 				} else {
-					gamesFactory.editIncrementalClassification(game, t).then(function () {
+					gamesFactory.editIncrementalClassification($scope.game, t).then(function () {
 						var idx = -1;
-						for (var i = 0; i < game.classificationTask.length; i++) {
-							if (game.classificationTask[i].name === t.name) {
+						for (var i = 0; i < $scope.game.classificationTask.length; i++) {
+							if ($scope.game.classificationTask[i].name === t.name) {
 								idx = i;
 								break;
 							}
 						}
 						if (idx > -1) {
-							game.classificationTask.splice(idx, 1, t);
+							$scope.game.classificationTask.splice(idx, 1, t);
 						}
 						$scope.isCollapsed = true;
 						$scope.disabled = false;
@@ -172,17 +180,17 @@ angular.module('gamificationEngine.tasks', [])
 
 				if (!task) {
 					var found = false;
-					for (var i = 0; i < game.classificationTask.length && !found; i++) {
-						if (game.classificationTask[i].name === t.name) {
+					for (var i = 0; i < $scope.game.classificationTask.length && !found; i++) {
+						if ($scope.game.classificationTask[i].name === t.name) {
 							found = true;
 						}
 					}
 					if (!found) {
-						gamesFactory.addTask(game, t).then(function (data) {
-							if (!game.classificationTask) {
-								game.classificationTask = [];
+						gamesFactory.addTask($scope.game, t).then(function (data) {
+							if (!$scope.game.classificationTask) {
+								$scope.game.classificationTask = [];
 							}
-							game.classificationTask.unshift(data);
+							$scope.game.classificationTask.unshift(data);
 							$scope.isCollapsed = true;
 							$scope.disabled = false;
 							$scope.alerts.rankEdited = true;
@@ -196,16 +204,16 @@ angular.module('gamificationEngine.tasks', [])
 						$scope.disabled = false;
 					}
 				} else {
-					gamesFactory.editTask(game, t).then(function () {
+					gamesFactory.editTask($scope.game, t).then(function () {
 						var idx = -1;
-						for (var i = 0; i < game.classificationTask.length; i++) {
-							if (game.classificationTask[i].name === t.name) {
+						for (var i = 0; i < $scope.game.classificationTask.length; i++) {
+							if ($scope.game.classificationTask[i].name === t.name) {
 								idx = i;
 								break;
 							}
 						}
 						if (idx > -1) {
-							game.classificationTask.splice(idx, 1, t);
+							$scope.game.classificationTask.splice(idx, 1, t);
 						}
 						$scope.isCollapsed = true;
 						$scope.disabled = false;
@@ -295,14 +303,6 @@ angular.module('gamificationEngine.tasks', [])
 				}, 4000);
 			});
 		};
-
-		// Load game
-		gamesFactory.getGameById($stateParams.id).then(function (game) {
-			$scope.game = game;
-		}, function () {
-			// Show error alert
-			$scope.alerts.loadGameError = true;
-		});
 	});
 
 // Delete task modal

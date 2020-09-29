@@ -69,9 +69,9 @@ angular.module('gamificationEngine.settings', [])
 			if (!$scope.newGame.name) {
 				$scope.alerts.nameError = 'messages:msg_game_name_error';
 				valid = false;
-			} else if (!!gamesFactory.getGameByName($scope.newGame.name) && $scope.game.name !== $scope.newGame.name) {
-				$scope.alerts.nameError = 'messages:msg_game_name_exists_error';
-				valid = false;
+			} else if(gamesFactory.existGameWithName($scope.newGame.name) && $scope.game.name !== $scope.newGame.name) {
+					$scope.alerts.nameError = 'messages:msg_game_name_exists_error';
+					valid = false;
 			}
 
 			// check hideChallenges fields validity
@@ -113,6 +113,8 @@ angular.module('gamificationEngine.settings', [])
 						$scope.game.challengeSettings = data.challengeSettings;
 						$scope.alerts.settingsEdited = true;
 						$scope.disabled = false;
+						$rootScope.gameName = data.name;
+						refreshHomeData(data);
 						if ($scope.new) {
 							$scope.goToUrl('#/game/' + data.id);
 						}
@@ -124,6 +126,14 @@ angular.module('gamificationEngine.settings', [])
 					}
 				);
 			}
+		};
+		
+		const refreshHomeData = (game) => {
+			$rootScope.games.forEach(g => {
+				if(g.id == game.id) {
+					g.name = game.name;
+				}
+			});
 		};
 		
 		$scope.frequencyUnits = [

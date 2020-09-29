@@ -74,14 +74,9 @@ angular.module('gamificationEngine.services', [])
 		};
 
 		// Get game by name
-		var getGameByName = function (name) {
-			var found = false;
-			angular.forEach($rootScope.games, function (g) {
-				if (!found && g.name === name) {
-					found = true;
-				}
-			});
-			return found;
+		var existGameWithName = function (name) {
+			const exists = $rootScope.games.filter(game => game.name == name).length > 0;
+			return exists;
 		};
 
 		// Boolean. Returns whether exists or not an instance by its name
@@ -440,7 +435,7 @@ angular.module('gamificationEngine.services', [])
 			getGamesByDomain,
 			'getGames': getGames,
 			'getGameById': getGameById,
-			'getGameByName': getGameByName,
+			'existGameWithName': existGameWithName,
 			'editGame': editGame,
 			'existsInstanceByName': existsInstanceByName,
 			'editInstance': editInstance,

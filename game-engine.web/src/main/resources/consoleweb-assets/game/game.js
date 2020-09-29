@@ -28,6 +28,7 @@ angular.module('gamificationEngine.game', [])
 		// Load games
 		gamesFactory.getGameById($stateParams.id).then(function (game) {
 			$scope.game = game;
+			$rootScope.gameName = game.name;
 		}, function () {
 			// Show error alert
 			$scope.alerts.loadGameError = true;

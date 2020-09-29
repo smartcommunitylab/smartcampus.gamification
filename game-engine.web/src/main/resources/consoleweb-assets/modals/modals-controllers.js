@@ -68,7 +68,7 @@ var modals = angular.module('gamificationEngine.modals', [])
 			if (!$scope.newGame.name) {
 				$scope.alerts.nameError = 'messages:msg_game_name_error';
 				valid = false;
-			} else if (!!gamesFactory.getGameByName($scope.newGame.name) && game.name !== $scope.newGame.name) {
+			} else if (gamesFactory.existGameWithName($scope.newGame.name) && game.name !== $scope.newGame.name) {
 				$scope.alerts.nameError = 'messages:msg_game_name_exists_error';
 				valid = false;
 			}

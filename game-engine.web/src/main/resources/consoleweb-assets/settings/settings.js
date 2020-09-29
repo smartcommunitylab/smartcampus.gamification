@@ -115,6 +115,8 @@ angular.module('gamificationEngine.settings', [])
 						$scope.disabled = false;
 						$rootScope.gameName = data.name;
 						refreshHomeData(data);
+						$scope.newGame.hideChallenges = isChallengesHidden($scope.game);
+						$scope.newGame.challengeSettings = extractChallengeSettings($scope.game);
 						if ($scope.new) {
 							$scope.goToUrl('#/game/' + data.id);
 						}

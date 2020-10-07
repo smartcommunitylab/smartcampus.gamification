@@ -32,6 +32,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import eu.trentorise.game.platform.PlatformAuthorizationInterceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /*
@@ -98,6 +99,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     public void configureJackson(ObjectMapper jackson2ObjectMapper) {
         jackson2ObjectMapper.registerModule(new Jdk8Module());
+        // WORKAROUND
+        // added for an absurd behavior when engine is run by eclipse 2020-09.
+        // Without the following configuration, engine run by eclipse serializes date as an ISODATE string
+        // instead of a timestamp. So it not consider the default behavior.
+        // Running the engine outside eclipse works as expected.
+        jackson2ObjectMapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
 }

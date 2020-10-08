@@ -3,10 +3,13 @@ Gamification Engine is a platform that permits to define and execute score based
 Platform is developed in Java using Apache Maven as build tool.
 
 ## Components
-* game-engine.core: it contains Drools engine implementation and models
-* game-engine.web: REST API, admin web interface and security layer
-* game-engine.test: junit test environment to test a new game definition
-* game-engine.games: collection of production games.
+* [game-engine.core](game-engine.core): it contains Drools engine implementation and models
+* [game-engine.web](game-engine.web): REST API, admin web interface and security layer
+* [game-engine.test](game-engine.test): junit test environment to test a new game definition
+* [game-engine.games](game-engine.games): collection of production games.
+* [game-engine.tools](game-engine.tools): a collection of tools to manage gamification operations 
+* [gamification-java-client](gamification-java-client): a java client library that wraps the gamification-engine APIs
+* [run-configs](run-configs): folder used by docker
 
 
 ## Quickstart run

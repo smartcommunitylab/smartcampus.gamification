@@ -66,6 +66,9 @@ Build steps:
 
 ### v2.1.0 -> v2.2.0
 
+**This is old stuff. Version prior of v2.2.0 are very old and we don't think exist anymore a database based on these versions.
+This section is maintained only for historical reasons.**
+
 In version 2.2.0 we have changed the persistence model representation of playerState and pointConcept, so if you migrate from v2.1.0 or prior version to v.2.2.0 you have to run following script
 to you mongo database.
 

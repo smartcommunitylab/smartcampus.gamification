@@ -24,4 +24,6 @@ Follow instructions [HERE](log2elastic/README.md)
 Export of sample kibana dashboard for gamification statistic
 ### clone-game
 Utility to clone a game in the same or different database and server
-
+### rule-manager
+A cli tool to manager the rules of a game
+Follow instructions [HERE](rule-manager/README.md)

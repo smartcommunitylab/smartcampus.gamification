@@ -1,6 +1,6 @@
 ## Getting Started
 
-Follow [Setup](https://github.com/smartcommunitylab/smartcampus.gamification/wiki) wiki page to run the gamification-engine
+Follow [Setup](https://github.com/smartcommunitylab/smartcampus.gamification/wiki/Setup) wiki page to run the gamification-engine
 
 ### Basic Auth
 In order to start the web engine with Basic Auth mode, run the following command. 

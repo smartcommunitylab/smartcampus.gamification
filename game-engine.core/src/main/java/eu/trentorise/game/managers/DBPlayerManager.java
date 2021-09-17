@@ -608,17 +608,17 @@ public class DBPlayerManager implements PlayerService {
             String periodName, String key, String gameId, Pageable pageable) {
 
         ClassificationBoard classificationBoard = new ClassificationBoard();
-
-        Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
+        String field = "concepts.PointConcept." + pointConceptName
+                + ".obj.periods." + periodName + ".instances." + key + ".score";
+        Criteria criteria = Criteria
+        		.where("gameId").is(gameId).and(field).gt(0);
 
         Query query = new Query();
         // criteria.
-        query.addCriteria(criteriaGameId);
-        query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName
-                + ".obj.periods." + periodName + ".instances." + key + ".score"));
+        query.addCriteria(criteria);
+        query.with(new Sort(Sort.Direction.DESC, field));
         // fields in response.
-        query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods."
-                + periodName + ".instances." + key + ".score");
+        query.fields().include(field);
         query.fields().include("playerId");
         // pagination.
         query.with(pageable);

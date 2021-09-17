@@ -622,6 +622,7 @@ public class DBPlayerManager implements PlayerService {
         query.fields().include("playerId");
         // pagination.
         query.with(pageable);
+        logger.info("Classification query " + query);
 
         List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
 

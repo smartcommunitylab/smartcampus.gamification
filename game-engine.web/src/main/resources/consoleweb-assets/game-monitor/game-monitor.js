@@ -160,6 +160,11 @@ angular.module('gamificationEngine.monitor', [])
 			modalInstance.result.then(function (state) {
 			});
 		};
+
+		$scope.changeScore = function () {
+			debugger
+			alert('modify agreegated score');
+		}
 	});
 
 

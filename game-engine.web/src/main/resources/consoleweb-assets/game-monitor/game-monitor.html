@@ -88,7 +88,7 @@
 									</div>
 									<div uib-collapse="isPointSectorVisible">
 										<div ng-repeat="elem in player.state['PointConcept']">
-											<span>{{elem.name}}:</span> <span class="value">{{elem.score}}</span>
+											<span>{{elem.name}}:</span> <a href="" ><span data-ng-click="changeScore()" class="value">{{elem.score}}</a></span>
 											<button type="button" class="btn btn-xs btn-warning"
 												ng-show="elem.periodKeys.length > 0"
 												data-ng-click="hidePeriods = !hidePeriods"

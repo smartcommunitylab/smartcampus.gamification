@@ -1,0 +1,15 @@
+package eu.trentorise.game.test_utils
+
+rule "Is of valid age"
+when
+    $a : Applicant( age > 15 )
+then
+    $a.setValid( true );
+end
+
+rule "Application was made this year"
+when
+    $a : Application( dateApplied > "01-jan-2022" )     
+then
+    $a.setValid( true );
+end

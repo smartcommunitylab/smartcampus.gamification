@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,8 @@ import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.model.core.TimeUnit;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.task.AutoChallengeChoiceTask;
 import eu.trentorise.game.task.GeneralClassificationTask;
@@ -76,6 +79,9 @@ public class Converter {
 
 	@Autowired
 	private GameService gameSrv;
+	
+	@Autowired
+	private ChallengeConceptRepo challengeConceptRepo;
 
 	private static final Logger logger = LoggerFactory.getLogger(Converter.class);
 
@@ -336,6 +342,9 @@ public class Converter {
 					gcSet.add(gc);
 				}
 			}
+
+			List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(ps.getGameId(), ps.getPlayerId()); 
+			res.loadChallengeConcepts(listCcs);
 
             res.getLevels().addAll(ps.getLevels());
             res.setInventory(ps.getInventory());

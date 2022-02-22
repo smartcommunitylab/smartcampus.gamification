@@ -70,6 +70,8 @@ import eu.trentorise.game.model.core.ArchivedConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
@@ -90,6 +92,9 @@ public class PlayerControllerTest {
 
     @Autowired
     private ChallengeManager challengeSrv;
+    
+    @Autowired
+	private ChallengeConceptRepo challengeConceptRepo;
 
     @Autowired
     private MongoTemplate mongo;
@@ -184,6 +189,9 @@ public class PlayerControllerTest {
                     .andExpect(MockMvcResultMatchers.status().is(200));
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
+            List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(game.getId(), "10001"); 
+            player.loadChallengeConcepts(listCcs);
+         
             ChallengeConcept challenge =
                     (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
@@ -219,6 +227,8 @@ public class PlayerControllerTest {
                     .andExpect(MockMvcResultMatchers.status().is(200));
             
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
+            List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(game.getId(), "10001"); 
+            player.loadChallengeConcepts(listCcs);
             ChallengeConcept challenge =
                     (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
@@ -254,6 +264,9 @@ public class PlayerControllerTest {
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
+            List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(game.getId(), "10001"); 
+            player.loadChallengeConcepts(listCcs);
+         
             ChallengeConcept challenge =
                     (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.PROPOSED));
@@ -319,6 +332,9 @@ public class PlayerControllerTest {
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
+            List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(game.getId(), "10001"); 
+            player.loadChallengeConcepts(listCcs);
+         
             ChallengeConcept challenge =
                     (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getState(), is(ChallengeState.ASSIGNED));
@@ -352,6 +368,9 @@ public class PlayerControllerTest {
                     .andExpect(MockMvcResultMatchers.status().is(200));
 
             PlayerState player = playerSrv.loadState(game.getId(), "10001", false, false);
+            List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(game.getId(), "10001"); 
+            player.loadChallengeConcepts(listCcs);
+         
             ChallengeConcept challenge =
                     (ChallengeConcept) player.challenges().stream().findFirst().orElse(null);
             assertThat(challenge.getOrigin(), is("MY_SYSTEM"));

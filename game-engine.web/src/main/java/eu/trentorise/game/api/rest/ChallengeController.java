@@ -2,6 +2,7 @@ package eu.trentorise.game.api.rest;
 
 import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -18,6 +19,8 @@ import eu.trentorise.game.managers.ChallengeManager;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeUpdate;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.services.PlayerService;
 
 @RestController
@@ -30,6 +33,9 @@ public class ChallengeController {
 
     @Autowired
     private ChallengeManager challengeSrv;
+    
+    @Autowired
+   	private ChallengeConceptRepo challengeConceptRepo;
 
     @DeleteMapping("/data/game/{gameId}/player/{playerId}/challenge/{instanceName}")
     public ChallengeConcept deleteChallenge(@PathVariable String gameId,
@@ -39,7 +45,11 @@ public class ChallengeController {
         final String decodedInstanceName = decodePathVariable(instanceName);
 
         PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId); 
+        state.loadChallengeConcepts(listCcs);
         Optional<ChallengeConcept> removed = state.removeChallenge(decodedInstanceName);
+        ChallengeConceptPersistence saved = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId, playerId, instanceName);
+        challengeConceptRepo.delete(saved);
         if (removed.isPresent()) {
             playerSrv.saveState(state);
             LogHub.info(gameId, logger, "removed challenge {} of player {}", instanceName,

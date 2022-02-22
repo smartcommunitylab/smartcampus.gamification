@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.model.Level.Config;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 
@@ -265,4 +266,11 @@ public class PlayerState {
         }
         return this;
     }
+    
+    public void loadChallengeConcepts(List<ChallengeConceptPersistence> listCcps) {
+    	listCcps.forEach(ccp -> {
+        	 state.add(ccp.getConcept());
+        });
+    }
+    
 }

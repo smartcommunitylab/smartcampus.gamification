@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import org.joda.time.LocalDateTime;
 import org.junit.Assert;
@@ -30,6 +31,8 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.core.ExecutionClock;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,6 +45,9 @@ public class ChallengeConceptTest {
 
     @Autowired
     private PlayerService playerSrv;
+    
+    @Autowired
+  	private ChallengeConceptRepo challengeConceptRepo;
 
     @Before
     public void setup() {
@@ -180,6 +186,8 @@ public class ChallengeConceptTest {
         player.getState().add(challenge);
 
         PlayerState saved = playerSrv.saveState(player);
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId("my_game", "my_player"); 
+        saved.loadChallengeConcepts(listCcs);
         assertThat(saved.getState(), hasSize(1));
         ChallengeConcept loaded = (ChallengeConcept) saved.getState().stream().findFirst().orElse(null);
         assertThat(loaded.getState(), is(ChallengeState.ACTIVE));

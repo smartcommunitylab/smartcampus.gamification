@@ -80,6 +80,8 @@ import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.UrlRule;
 import eu.trentorise.game.notification.ChallengeCompletedNotication;
 import eu.trentorise.game.notification.LevelGainedNotification;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -104,6 +106,9 @@ public class DroolsEngine implements GameEngine {
 
     @Autowired
     private KieContainerFactory kieContainerFactory;
+    
+    @Autowired
+    private ChallengeConceptRepo challengeConceptRepo;
 
     public PlayerState execute(String gameId, PlayerState state, String action,
             Map<String, Object> data, String executionId, long executionMoment,
@@ -115,7 +120,10 @@ public class DroolsEngine implements GameEngine {
         if (stopWatch != null) {
             stopWatch.start("game execution");
         }
-
+        
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, state.getPlayerId()); 
+        state.loadChallengeConcepts(listCcs);
+      
         Game game = gameSrv.loadGameDefinitionById(gameId);
         if (game != null && game.isTerminated()) {
             throw new IllegalArgumentException(String.format("game %s is expired", gameId));
@@ -153,7 +161,6 @@ public class DroolsEngine implements GameEngine {
         // filter state removing all ended or completed challenges for the
         // player
         Set<GameConcept> concepts = new HashSet<>(state.getState());
-
         concepts = conceptHelper.injectExecutionMoment(concepts, executionMoment);
         concepts = conceptHelper.activateConcepts(concepts);
 

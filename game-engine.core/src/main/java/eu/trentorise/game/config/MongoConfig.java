@@ -16,8 +16,6 @@
 
 package eu.trentorise.game.config;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +24,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.mongodb.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 import eu.trentorise.game.core.LogHub;
 
@@ -48,23 +47,26 @@ public class MongoConfig {
 
 	@Bean
 	public MongoClient mongo() {
-		MongoClientFactoryBean mongo = new MongoClientFactoryBean();
-		mongo.setHost(env.getProperty("mongo.host"));
-		mongo.setPort(env.getProperty("mongo.port", Integer.class));
+		StringBuilder connectionString = new StringBuilder(String.format("mongodb://%s:%d/%s",
+				env.getProperty("mongo.host"), env.getProperty("mongo.port", Integer.class), env.getProperty("mongo.dbname")));
+		ConnectionString uri = new ConnectionString(connectionString.toString());
+		MongoClientSettings mongoClientSettings = null;
+		final String mongoUsername = env.getProperty("mongo.username");
+		final String mongoPwd = env.getProperty("mongo.pwd");
+		final String mongoAuthDb = env.getProperty("mongo.authDb");
+		if (StringUtils.isNotBlank(mongoUsername) && StringUtils.isNotBlank(mongoPwd)
+				&& StringUtils.isNotBlank(mongoAuthDb)) {
+			LogHub.info(null, logger, "Try an authenticated mongodb connection");
+			MongoCredential credential = MongoCredential.createCredential(mongoUsername, mongoAuthDb,
+					mongoPwd.toCharArray());
+			mongoClientSettings = MongoClientSettings.builder().credential(credential).applyConnectionString(uri)
+					.build();
+		} else {
+			mongoClientSettings = MongoClientSettings.builder().applyConnectionString(uri).build();
+		}
 
-		 
-        final String mongoUsername = env.getProperty("mongo.username");
-        final String mongoPwd = env.getProperty("mongo.pwd");
-        final String mongoAuthDb = env.getProperty("mongo.authDb");
-        if (StringUtils.isNotBlank(mongoUsername) && StringUtils.isNotBlank(mongoPwd)
-                && StringUtils.isNotBlank(mongoAuthDb)) {
-            LogHub.info(null, logger, "Try an authenticated mongodb connection");
-            mongo.setCredentials(Arrays.asList(MongoCredential.createCredential(mongoUsername,
-                    mongoAuthDb, mongoPwd.toCharArray())).toArray(new MongoCredential[0]));
-        }
 		try {
-			mongo.afterPropertiesSet();
-			return mongo.getObject();
+			return MongoClients.create(mongoClientSettings);
 		} catch (Exception e) {
 			LogHub.error(null, logger, "Exception in mongo configuration: {}", e.getMessage());
 			return null;
@@ -72,14 +74,13 @@ public class MongoConfig {
 	}
 
 	@Bean
-	public MongoTemplate mongoTemplate() {
+	public MongoTemplate mongoTemplate() throws Exception {
 		try {
-			MongoTemplate mongoTemplate = new MongoTemplate(
-					new SimpleMongoDbFactory(mongo(), env.getProperty("mongo.dbname")));
-			return mongoTemplate;
+			return new MongoTemplate(mongo(), env.getProperty("mongo.dbname"));
 		} catch (Exception e) {
 			LogHub.error(null, logger, "Exception in mongotemplate configuration: {}", e.getMessage());
 			return null;
 		}
+
 	}
 }

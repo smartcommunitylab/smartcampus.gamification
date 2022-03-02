@@ -45,10 +45,9 @@ import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 
 @RestController
 @Profile({ "platform" })
@@ -70,7 +69,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges", consumes = {
 			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Assign challenge")
+	@Operation(summary = "Assign challenge")
 	public void assignChallenge(@PathVariable String domain, @RequestBody ChallengeAssignmentDTO challengeData,
 			@PathVariable String gameId, @PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
@@ -153,7 +152,7 @@ public class DomainPlayerController {
     }
 
 	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges/{challengeName}/accept")
-	@ApiOperation(value = "Accept challenge")
+	@Operation(summary = "Accept challenge")
 	public ChallengeConcept acceptChallenge(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId, @PathVariable String challengeName) {
 		gameId = decodePathVariable(gameId);
@@ -173,7 +172,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", consumes = {
 			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Create player")
+	@Operation(summary = "Create player")
 	public void createPlayer(@PathVariable String domain, @PathVariable String gameId,
 			@RequestBody PlayerStateDTO player) {
 		gameId = decodePathVariable(gameId);
@@ -199,7 +198,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get player state")
+	@Operation(summary = "Get player state")
 	public PlayerStateDTO readPlayer(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
@@ -216,7 +215,7 @@ public class DomainPlayerController {
 	// not update it.
 	@RequestMapping(method = RequestMethod.PUT, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", consumes = {
 			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Edit player state")
+	@Operation(summary = "Edit player state")
 	public void updatePlayer(@PathVariable String domain, @PathVariable String gameId, @PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
@@ -230,7 +229,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", produces = {
 			"application/json" })
-	@ApiOperation(value = "Delete player state")
+	@Operation(summary = "Delete player state")
 	public void deletePlayer(@PathVariable String domain, @PathVariable String gameId, @PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
@@ -242,7 +241,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/teams", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get player teams")
+	@Operation(summary = "Get player teams")
 	public List<TeamDTO> readTeamsByMember(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
@@ -260,7 +259,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challenges", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get player challenges")
+	@Operation(summary = "Get player challenges")
 	public List<ChallengeConcept> getPlayerChallenge(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
@@ -274,7 +273,7 @@ public class DomainPlayerController {
 	// GET /data/game/{id}/player/{playerId}/state
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/state", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get player state")
+	@Operation(summary = "Get player state")
 	public PlayerStateDTO readState(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		return readPlayer(domain, gameId, playerId);
@@ -282,7 +281,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/levels", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get player levels")
+	@Operation(summary = "Get player levels")
 	public List<PlayerLevel> readLevels(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
@@ -295,7 +294,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/inventory", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get player inventory")
+	@Operation(summary = "Get player inventory")
 	public Inventory readInventory(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
@@ -309,7 +308,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/inventory/activate", produces = {
 			"application/json" })
-	@ApiOperation(value = "Activate a choice")
+	@Operation(summary = "Activate a choice")
 	public Inventory activateChoice(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId, @RequestBody ItemChoice choice) {
         gameId = decodePathVariable(gameId);
@@ -319,7 +318,7 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/custom", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get player custom data")
+	@Operation(summary = "Get player custom data")
     public CustomData readCustomData(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
 		gameId = decodePathVariable(gameId);
@@ -345,12 +344,12 @@ public class DomainPlayerController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/data/game/{gameId}/player/search", consumes = {
 			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Search player states")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve "),
-			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."), })
+	@Operation(summary = "Search player states")
+	@Parameters({
+			@Parameter(name = "page", description = "Results page you want to retrieve "),
+			@Parameter(name = "size", description = "Number of records per page."), })
 	public Page<PlayerStateDTO> searchByQuery(@PathVariable String domain, @PathVariable String gameId,
-			@RequestBody WrapperQuery query, @ApiIgnore Pageable pageable) {
+			@RequestBody WrapperQuery query, @Parameter(hidden = true) Pageable pageable) {
 		gameId = decodePathVariable(gameId);
 		Page<PlayerState> page = null;
 		if (query.getComplexQuery() != null) {
@@ -373,7 +372,7 @@ public class DomainPlayerController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/api/{domain}/data/game/{gameId}/player/{playerId}/block/{otherPlayerId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add another player to challenge block list")
+    @Operation(summary = "Add another player to challenge block list")
     public PlayerBlackList blockPlayer(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId,
             @PathVariable String otherPlayerId) {
@@ -392,7 +391,7 @@ public class DomainPlayerController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/api/{domain}/data/game/{gameId}/player/{playerId}/unblock/{otherPlayerId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Unblock another player from challenge block list")
+    @Operation(summary = "Unblock another player from challenge block list")
     public PlayerBlackList unBlockPlayer(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId,
             @PathVariable String otherPlayerId) {
@@ -411,7 +410,7 @@ public class DomainPlayerController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/data/game/{gameId}/player/{playerId}/blacklist",
             produces = {"application/json"})
-    @ApiOperation(value = "Get player black list of other players")
+    @Operation(summary = "Get player black list of other players")
     public PlayerBlackList readPlayerBlackList(@PathVariable String domain,
             @PathVariable String gameId,
             @PathVariable String playerId) {
@@ -426,7 +425,7 @@ public class DomainPlayerController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/data/game/{gameId}/player/{playerId}/challengers",
             produces = {"application/json"})
-    @ApiOperation(value = "Get availabe challengers for the player")
+    @Operation(summary = "Get availabe challengers for the player")
     public List<String> readSystemPlayerState(@PathVariable String domain,
             @PathVariable String gameId,
             @PathVariable String playerId, @RequestParam(required = false) String conceptName)

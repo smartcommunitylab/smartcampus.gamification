@@ -64,7 +64,6 @@ import eu.trentorise.game.model.Level.Threshold;
 import eu.trentorise.game.model.PlayerBlackList;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClassificationBoard;
@@ -622,7 +621,8 @@ public class DBPlayerManager implements PlayerService {
         Query query = new Query();
         // criteria.
         query.addCriteria(criteria);
-        query.with(new Sort(Sort.Direction.DESC, field));
+//        query.with(new Sort(Sort.Direction.DESC, field));
+        query.with(Sort.by(Sort.Order.desc(field)));
         // fields in response.
         query.fields().include(field);
         query.fields().include("playerId");
@@ -655,8 +655,10 @@ public class DBPlayerManager implements PlayerService {
 
         Query query = new Query();
         query.addCriteria(general);
-        query.with(
-                new Sort(Sort.Direction.DESC, "concepts.PointConcept." + itemType + ".obj.score"));
+//        query.with(
+//                new Sort(Sort.Direction.DESC, "concepts.PointConcept." + itemType + ".obj.score"));
+        query.with(Sort.by(Sort.Order.desc("concepts.PointConcept." + itemType + ".obj.score")));
+        
         query.fields().include("concepts.PointConcept." + itemType + ".obj.score");
         query.fields().include("playerId");
         // pagination.

@@ -235,14 +235,16 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 	private Query addSort(Query query, List<SortItem> sortItems) {
 		if (sortItems != null) {
-			query.with(new Sort(createDataOders(sortItems)));
+//			query.with(new Sort(createDataOders(sortItems)));
+			query.with(Sort.by(createDataOders(sortItems)));
 		}
 		return query;
 	}
 
 	private Query addStructuredSort(Game game, Query query, List<StructuredSortItem> sortItems) {
 		if (sortItems != null) {
-			query.with(new Sort(createStructuredDataOders(game, sortItems)));
+//			query.with(new Sort(createStructuredDataOders(game, sortItems)));
+			query.with(Sort.by(createStructuredDataOders(game, sortItems)));
 		}
 		return query;
 	}

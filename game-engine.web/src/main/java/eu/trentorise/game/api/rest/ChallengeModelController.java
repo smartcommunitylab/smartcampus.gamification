@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.services.GameService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile({"sec", "no-sec"})
@@ -25,7 +25,7 @@ public class ChallengeModelController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/challenge",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add challenge model")
+    @Operation(summary = "Add challenge model")
     public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel,
             @PathVariable String gameId) {
 
@@ -35,7 +35,7 @@ public class ChallengeModelController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/challenge",
             produces = {"application/json"})
-    @ApiOperation(value = "Get challenge models")
+    @Operation(summary = "Get challenge models")
     public Set<ChallengeModel> readChallengeModels(
             @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
@@ -45,7 +45,7 @@ public class ChallengeModelController {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/model/game/{gameId}/challenge/{modelId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete challenge model")
+    @Operation(summary = "Delete challenge model")
     public void deleteChallengeModels(@PathVariable String gameId,
             @PathVariable String modelId) {
         gameId = decodePathVariable(gameId);

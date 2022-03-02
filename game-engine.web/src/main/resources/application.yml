@@ -37,6 +37,22 @@ server:
 spring:
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
+
+openapi:
+   version: 1.0.0
+   license: Apache License, Version 2.0
+   licenseUrl: http://www.apache.org/licenses/LICENSE-2.0
+   contact:
+      name: DS Lab
+      url: www.smartcommunitylab.it
+      email: info@smartcommunitylab.it
+                      
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+  api-docs:
+    path: /gamification/v3/api-docs
 
 #
 # Platform security

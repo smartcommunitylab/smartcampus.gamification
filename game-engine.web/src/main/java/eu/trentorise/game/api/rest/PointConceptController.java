@@ -22,7 +22,7 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile({"sec", "no-sec"})
@@ -41,7 +41,7 @@ public class PointConceptController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/point",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add point")
+    @Operation(summary = "Add point")
     public PointConcept addPoint(@PathVariable String gameId,
             @RequestBody PointConcept point) {
         gameId = decodePathVariable(gameId);
@@ -57,7 +57,7 @@ public class PointConceptController {
     @RequestMapping(method = RequestMethod.PUT,
             value = "/model/game/{gameId}/point/{pointId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Edit point")
+    @Operation(summary = "Edit point")
     public void updatePoint(@PathVariable String gameId,
             @RequestBody PointConcept point) {
         gameId = decodePathVariable(gameId);
@@ -69,7 +69,7 @@ public class PointConceptController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/point",
             produces = {"application/json"})
-    @ApiOperation(value = "Get points")
+    @Operation(summary = "Get points")
     public List<PointConcept> readPoints(@PathVariable String gameId) {
 
         gameId = decodePathVariable(gameId);
@@ -92,7 +92,7 @@ public class PointConceptController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/model/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get point")
+    @Operation(summary = "Get point")
     public PointConcept readPoint(@PathVariable String gameId,
             @PathVariable String pointId) {
 
@@ -116,7 +116,7 @@ public class PointConceptController {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/model/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete point")
+    @Operation(summary = "Delete point")
     public void deletePoint(@PathVariable String gameId,
             @PathVariable String pointId) {
         gameId = decodePathVariable(gameId);

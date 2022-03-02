@@ -32,6 +32,8 @@ public class DBRule extends Rule {
 	private String id;
 	private String content;
 
+	public DBRule() {}
+	
 	public DBRule(String gameId, String content) {
 		super(gameId);
 		this.content = content;

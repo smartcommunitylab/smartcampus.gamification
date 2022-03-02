@@ -24,6 +24,11 @@ public abstract class Rule {
 	private String gameId;
 	private String name;
 
+	
+	public Rule() {
+		super();
+	}
+
 	public Rule(String gameId) {
 		this.gameId = gameId;
 	}

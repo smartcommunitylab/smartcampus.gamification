@@ -18,7 +18,7 @@ import eu.trentorise.game.bean.TeamDTO;
 import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile("platform")
@@ -36,7 +36,7 @@ public class DomainTeamController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/api/{domain}/data/game/{gameId}/team/{teamId}",
             consumes = {"application/json"})
-    @ApiOperation(value = "Create team")
+    @Operation(summary = "Create team")
     public void createTeam(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody TeamDTO team) {
         gameId = decodePathVariable(gameId);
@@ -53,7 +53,7 @@ public class DomainTeamController {
 
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/data/game/{gameId}/team/{teamId}")
-    @ApiOperation(value = "Delete team")
+    @Operation(summary = "Delete team")
     public void deleteTeam(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String teamId) {
         gameId = decodePathVariable(gameId);
@@ -64,7 +64,7 @@ public class DomainTeamController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members",
             produces = {"application/json"})
-    @ApiOperation(value = "Get team members")
+    @Operation(summary = "Get team members")
     public Collection<String> readTeamMembers(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String teamId) {
         gameId = decodePathVariable(gameId);
@@ -76,7 +76,7 @@ public class DomainTeamController {
     @RequestMapping(method = RequestMethod.PUT,
             value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members",
             consumes = {"application/json"})
-    @ApiOperation(value = "Edit team")
+    @Operation(summary = "Edit team")
     public void updateTeamMembers(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String teamId, @RequestBody List<String> members) {
         gameId = decodePathVariable(gameId);
@@ -90,7 +90,7 @@ public class DomainTeamController {
 
     @RequestMapping(method = RequestMethod.PUT,
             value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members/{playerId}")
-    @ApiOperation(value = "Add team member")
+    @Operation(summary = "Add team member")
     public void addTeamMember(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String teamId, @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
@@ -107,7 +107,7 @@ public class DomainTeamController {
 
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/data/game/{gameId}/team/{teamId}/members/{playerId}")
-    @ApiOperation(value = "Delete team member")
+    @Operation(summary = "Delete team member")
     public void removeTeamMember(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String teamId, @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);

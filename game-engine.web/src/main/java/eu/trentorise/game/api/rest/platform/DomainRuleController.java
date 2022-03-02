@@ -20,7 +20,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile("platform")
@@ -36,7 +36,7 @@ public class DomainRuleController {
     // POST /model/game/{id}/rule
     @RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/model/game/{gameId}/rule",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add rule")
+    @Operation(summary = "Add rule")
     public RuleDTO addRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleDTO rule) {
         gameId = decodePathVariable(gameId);
@@ -54,7 +54,7 @@ public class DomainRuleController {
             value = "/api/{domain}/model/game/{gameId}/rule/{ruleId}",
             consumes = {"application/json"},
             produces = {"application/json"})
-    @ApiOperation(value = "Edit rule")
+    @Operation(summary = "Edit rule")
     public RuleDTO editRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleDTO rule) {
         gameId = decodePathVariable(gameId);
@@ -70,7 +70,7 @@ public class DomainRuleController {
     // GET /model/game/{id}/rule
     @RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/model/game/{gameId}/rule",
             produces = {"application/json"})
-    @ApiOperation(value = "Get rules")
+    @Operation(summary = "Get rules")
     public List<RuleDTO> readAllRules(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
@@ -93,7 +93,7 @@ public class DomainRuleController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/model/game/{gameId}/rule/{ruleId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get rule")
+    @Operation(summary = "Get rule")
     public RuleDTO readDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
         gameId = decodePathVariable(gameId);
@@ -112,7 +112,7 @@ public class DomainRuleController {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/model/game/{gameId}/rule/{ruleId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete rule")
+    @Operation(summary = "Delete rule")
     public boolean deleteDbRule(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String ruleId) {
         gameId = decodePathVariable(gameId);
@@ -127,7 +127,7 @@ public class DomainRuleController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/api/{domain}/model/game/{gameId}/rule/validate",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Validate rule")
+    @Operation(summary = "Validate rule")
     public List<String> validateRule(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody RuleValidateWrapper wrapper) {
         return gameEngine.validateRule(gameId, wrapper.getRuleContent());

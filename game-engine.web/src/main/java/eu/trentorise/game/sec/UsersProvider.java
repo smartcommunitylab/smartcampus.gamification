@@ -42,7 +42,7 @@ public class UsersProvider {
 
     private static final String DEFAULT_USERS_RESOURCE = "classpath:/users.yml";
 
-    @Value("${security.usersFile}")
+    @Value("${security.usersFile:}")
     private String usersFilePath;
 
     @Autowired

@@ -20,7 +20,7 @@ import eu.trentorise.game.bean.ExecutionDataDTO;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.Workflow;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile("platform")
@@ -40,7 +40,7 @@ public class DomainExecutionController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/api/{domain}/exec/game/{gameId}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Execute an action")
+    @Operation(summary = "Execute an action")
     public void executeAction(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String actionId, @RequestBody ExecutionDataDTO data,
             HttpServletResponse res) {

@@ -20,7 +20,8 @@ import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
-import springfox.documentation.annotations.ApiIgnore;
+import eu.trentorise.game.utils.JsonDB;
+//import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -32,10 +33,13 @@ public class AdminController {
     
     @Autowired
     private Converter converter;
+    
+	@Autowired
+	private JsonDB jsonDB;
 
     @GetMapping(value="/data/game/{gameId}/player")
     public Page<PlayerStateDTO> readPlayerStates(@PathVariable String gameId,
-            @ApiIgnore Pageable pageable, @RequestParam(required = false) String playerFilter) {
+            Pageable pageable, @RequestParam(required = false) String playerFilter) {
         gameId = decodePathVariable(gameId);
         List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
         Page<PlayerState> page = null;
@@ -60,7 +64,7 @@ public class AdminController {
 
     @GetMapping(value = "/data/game/{gameId}/player/{playerId}")
     public PlayerStateDTO readPlayerState(@PathVariable String gameId,
-            @PathVariable String playerId, @ApiIgnore Pageable pageable,
+            @PathVariable String playerId, Pageable pageable,
             @RequestParam(required = false) String playerFilter) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
@@ -70,4 +74,14 @@ public class AdminController {
                 .convertPlayerState(playerSrv.loadState(gameId, playerId, true,
                         mergeGroupChallenges, hideHiddenChallenges));
     }
+    
+    @GetMapping("/exportJsonDB")
+	public void exportJsonDB() throws Exception {
+		jsonDB.exportDB();
+	}
+    
+    @GetMapping("/importJsonDB")
+	public void importJsonDB() throws Exception {
+		jsonDB.importDB();
+	}
 }

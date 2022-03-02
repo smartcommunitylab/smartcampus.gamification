@@ -15,3 +15,12 @@ In order to start the web engine with OAuth mode, run the following command.
 ```shell
 java -jar game-engine.web.jar --spring.profiles.active=platform --server.servlet.context-path=/gamification --server.port=6060 --mongo.dbname=gamification-climb-prod-marzo
 ```
+
+### Setup
+In order to setup the database copy the provided db.json file inside the import directory path as specified in engine-core.properties file, the import can be performed invoking the API
+
+```shell
+http://localhost:8010/gamification/admin/importJsonDB
+```
+
+

@@ -24,3 +24,31 @@ http://localhost:8010/gamification/admin/importJsonDB
 ```
 
 
+### Usage
+In order to test usage of gamification one can try to assign challenge to test user
+
+```shell
+POST http://localhost:8010/gamification/data/game/{gameId}/player/{playerId}/challenges
+```
+with json body
+
+```shell
+{
+  "data": {"bonusScore" : 250.0,"periodName" : "weekly", "bonusPointType" : "green leaves","counterName" : "NoCar_Trips","target" : 4.0},
+  "modelName":"absoluteIncrement",
+  "instanceName":"testInstance",
+  "start": 1644447600000,
+  "end": 1654812000000
+}
+```
+
+In order to assign point to user, test execute API call can be made in following way.
+
+```shell
+POST http://localhost:8010/gamification/gengine/execute
+```
+with json body
+
+```shell
+{"gameId":"{gameId}","playerId":"{playerId}","actionId":"save_itinerary", "data":{"travelId":"1","walkDistance":0.25}}
+```

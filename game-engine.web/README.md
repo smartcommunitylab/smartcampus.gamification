@@ -57,5 +57,5 @@ with json body
 In order to access the gamification console open in browser the following url
 
 ```shell
-http://localhost:8010/gamification/consoleweb/#/game/6218a62e3a253e24e8191931
+http://localhost:8010/gamification/consoleweb/#/game/{gameId}
 ```

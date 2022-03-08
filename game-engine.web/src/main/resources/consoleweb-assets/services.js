@@ -241,13 +241,14 @@ angular.module('gamificationEngine.services', [])
 				game.name = fields.name.trim();
 				game.expiration = fields.expiration;
 				game.domain = fields.domain ? fields.domain.trim() : fields.domain;
+				game.notifyPCName = fields.notifyPCName;
 				if(fields.challengeSettings) {
 					if(!game.settings) {
 						game.settings = {};
 					}
 					game.settings.challengeSettings = fields.challengeSettings;
 				}
-
+				
 				$http.post(url + `/console/game`, game).
 				success(function (data, status, headers, config) {
 					if (!game.id) {

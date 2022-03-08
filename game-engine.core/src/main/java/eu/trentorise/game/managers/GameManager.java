@@ -229,6 +229,7 @@ public class GameManager implements GameService {
                 pers.setTerminated(game.isTerminated());
                 pers.setRules(game.getRules());
                 pers.setDomain(game.getDomain());
+                pers.setNotifyPCName(game.getNotifyPCName());
 
                 if (game.getConcepts() != null) {
                     Set<GenericObjectPersistence> concepts =

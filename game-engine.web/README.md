@@ -59,3 +59,10 @@ In order to access the gamification console open in browser the following url
 ```shell
 http://localhost:8010/gamification/consoleweb/#/home
 ```
+
+### API Console
+In order to access the API console based on Spring Doc, open in browser the following url
+
+```shell
+http://localhost:8010/gamification/swagger-ui/index.html
+```

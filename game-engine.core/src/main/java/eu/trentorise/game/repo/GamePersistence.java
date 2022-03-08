@@ -70,6 +70,8 @@ public class GamePersistence {
 
 	private Settings settings;
 
+	private String notifyPCName;
+
 	public GamePersistence() {
 
 	}
@@ -81,6 +83,7 @@ public class GamePersistence {
 		domain = game.getDomain();
 		actions = game.getActions();
 		rules = game.getRules();
+		notifyPCName = game.getNotifyPCName();
 		if (game.getTasks() != null) {
 			for (GameTask gt : game.getTasks()) {
 				tasks.add(new GenericObjectPersistence(gt));
@@ -108,6 +111,7 @@ public class GamePersistence {
 		game.setDomain(domain);
 		game.setActions(actions);
 		game.setRules(rules);
+		game.setNotifyPCName(notifyPCName);
 		Set<GameTask> t = new HashSet<GameTask>();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
@@ -244,6 +248,14 @@ public class GamePersistence {
 
 	public void setSettings(Settings settings) {
 		this.settings = settings;
+	}
+
+	public String getNotifyPCName() {
+		return notifyPCName;
+	}
+
+	public void setNotifyPCName(String notifyPCName) {
+		this.notifyPCName = notifyPCName;
 	}
 
 }

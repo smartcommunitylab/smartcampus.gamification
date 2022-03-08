@@ -100,6 +100,7 @@ public class Converter {
 			gDTO.setDomain(game.getDomain());
             gDTO.setLevels(game.getLevels().stream().map(level -> convert(level))
                     .collect(Collectors.toList()));
+            gDTO.setNotifyPCName(game.getNotifyPCName());
 
             gDTO.setSettings(game.getSettings());
 
@@ -172,6 +173,9 @@ public class Converter {
 		g.setName(game.getName());
 		g.setOwner(game.getOwner());
 		g.setDomain(game.getDomain());
+		if (game.getNotifyPCName() != null) {
+			g.setNotifyPCName(game.getNotifyPCName());	
+		}		
 		if (game.getRules() != null) {
 			g.setRules(new HashSet<String>());
 			for (RuleDTO r : game.getRules()) {

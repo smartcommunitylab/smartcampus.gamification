@@ -20,7 +20,6 @@ import com.google.common.collect.Multimap;
 
 import eu.trentorise.game.managers.NotificationManager;
 import eu.trentorise.game.model.core.Notification;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;

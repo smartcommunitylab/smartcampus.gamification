@@ -21,7 +21,6 @@ import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.utils.Converter;
 import eu.trentorise.game.utils.JsonDB;
-//import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping(value = "/admin")

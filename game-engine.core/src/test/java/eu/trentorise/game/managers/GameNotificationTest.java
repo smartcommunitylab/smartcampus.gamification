@@ -77,7 +77,7 @@ public class GameNotificationTest {
 	}
 
 	@Test
-	public void simpleScenario() throws InterruptedException {
+	public void testGameNotification() throws InterruptedException {
 		simpleEnv();
 		execute();
 		analyze();

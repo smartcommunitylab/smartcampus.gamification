@@ -106,8 +106,13 @@ public class GameWorkflow implements Workflow {
             StatsLogger.logSurveyCompleted(g.getDomain(), gameId, userId, executionId,
                     executionMoment, data);
         }
+        
+        // Game notification.
+        if (Utils.isNotEmpty(g.getNotifyPCName())) {
+        	sendGameNotificationforPlayer(g, actionId, data, oldState, newState);
+        }
+        
         // update score of all player active groupChallenges
-
         List<GroupChallenge> playerActiveGroupChallenges =
                 challengeSrv.activeGroupChallengesByDate(gameId, userId, executionDate);
         if (playerActiveGroupChallenges.size() > 0) {
@@ -156,11 +161,6 @@ public class GameWorkflow implements Workflow {
         });
 
         
-        // Game notification.
-        if (Utils.isNotEmpty(g.getNotifyPCName())) {
-        	sendGameNotificationforPlayer(g, actionId, data, oldState, newState);
-        }
-        	
         if (env.getProperty("trace.playerMove", Boolean.class, false)) {
             traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
             LogHub.info(gameId, logger, "Traced player {} move", userId);
@@ -185,7 +185,7 @@ public class GameWorkflow implements Workflow {
 			pcNotification.setDataPayLoad(data);
 			pcNotification.setDelta(newPC.getScore() - oldPC.getScore());
 			notificationSrv.notificate(pcNotification);
-			LogHub.info(g.getId(), logger, "send notification: {}", pcNotification.toString());
+			LogHub.info(g.getId(), logger, "send game notification: {}", pcNotification.toString());
 		}
 	}
 

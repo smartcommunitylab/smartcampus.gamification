@@ -271,7 +271,7 @@
 	<repositories>
 		<repository>
 			<id>SmartCommunityLab</id>
-			<url>http://repository.smartcommunitylab.it/content/groups/public</url>
+			<url>https://repository.smartcommunitylab.it/content/groups/public</url>
 		</repository>
 		<repository>
 			<id>clojars.org</id>
@@ -286,11 +286,11 @@
 	<distributionManagement>
 		<repository>
 			<id>SmartCommunityLab-releases</id>
-			<url>http://repository.smartcommunitylab.it/content/repositories/releases</url>
+			<url>https://repository.smartcommunitylab.it/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>SmartCommunityLab-snapshots</id>
-			<url>http://repository.smartcommunitylab.it/content/repositories/snapshots</url>
+			<url>https://repository.smartcommunitylab.it/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 

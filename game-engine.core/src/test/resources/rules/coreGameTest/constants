@@ -30,3 +30,14 @@ health_bike_points=3
 
 # P+R BONUS
 pr_points=10
+
+#soglie di rilevanza per modo
+walk_min=0.25
+walk_daily_max=10.0
+bike_daily_max=30.0
+pt_daily_max=8.0
+transit_daily_max=4.0
+carpooling_daily_max=4.0
+boat_daily_max=4.0
+carpooling_min_km=1.0
+boat_min_km=1.0

@@ -5,6 +5,8 @@ global Integer green_walk_bike_points;
 global Integer green_bus_train_points;
 global Integer green_pr_bonus;
 global Integer green_sustainable_bonus;
+global Double walk_min;
+global Double carpooling_min_km;
 
 declare PRItinerary end
 
@@ -58,3 +60,43 @@ then
     update($pc);
 end
 
+rule "update no-car counters"
+lock-on-active
+when
+	Action ($id : id == "save_itinerary")
+    InputData( $km : data["carDistance"] == null, $walk : data["walkDistance"], 
+    	$transit : data["transitDistance"],
+    	$bus : data["busDistance"], 
+    	$bike : data["bikeDistance"], 
+    	$train : data["trainDistance"],
+    	$carpooling : data["carpoolingDistance"],
+    	$boat : data["boatDistance"])
+    $noCarTrips : PointConcept(name == "NoCar_Trips")
+then
+	boolean isValidNoCar = false;
+	if ($walk == null || (Double)$walk >= walk_min)
+		isValidNoCar = true;
+		
+	if (isValidNoCar == false) {
+		if ($bus != null && (Double)$bus > 0) 
+			isValidNoCar = true;
+		else if ($bike != null && (Double)$bike > 0)
+			isValidNoCar = true;
+		else if ($train != null && (Double)$train > 0)
+			isValidNoCar = true;
+		else if ($transit != null && (Double)$transit > 0)
+			isValidNoCar = true;
+		else if ($boat != null)
+			isValidNoCar = true;
+	}
+	
+	if($carpooling != null && (Double)$carpooling >= carpooling_min_km) {
+		isValidNoCar = false;
+	}
+	
+	if (isValidNoCar == true) {
+		utils.log("apply \'NoCar_Trips update\'");
+		$noCarTrips.setScore($noCarTrips.getScore() + 1.0d);
+		update($noCarTrips); 
+	}
+end

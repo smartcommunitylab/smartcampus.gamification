@@ -16,7 +16,6 @@
 
 package eu.trentorise.game.config;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
@@ -47,23 +45,9 @@ public class MongoConfig {
 
 	@Bean
 	public MongoClient mongo() {
-		StringBuilder connectionString = new StringBuilder(String.format("mongodb://%s:%d/%s",
-				env.getProperty("mongo.host"), env.getProperty("mongo.port", Integer.class), env.getProperty("mongo.dbname")));
-		ConnectionString uri = new ConnectionString(connectionString.toString());
+		ConnectionString uri = new ConnectionString(env.getProperty("spring.data.mongodb.uri"));
 		MongoClientSettings mongoClientSettings = null;
-		final String mongoUsername = env.getProperty("mongo.username");
-		final String mongoPwd = env.getProperty("mongo.pwd");
-		final String mongoAuthDb = env.getProperty("mongo.authDb");
-		if (StringUtils.isNotBlank(mongoUsername) && StringUtils.isNotBlank(mongoPwd)
-				&& StringUtils.isNotBlank(mongoAuthDb)) {
-			LogHub.info(null, logger, "Try an authenticated mongodb connection");
-			MongoCredential credential = MongoCredential.createCredential(mongoUsername, mongoAuthDb,
-					mongoPwd.toCharArray());
-			mongoClientSettings = MongoClientSettings.builder().credential(credential).applyConnectionString(uri)
-					.build();
-		} else {
-			mongoClientSettings = MongoClientSettings.builder().applyConnectionString(uri).build();
-		}
+		mongoClientSettings = MongoClientSettings.builder().applyConnectionString(uri).build();
 
 		try {
 			return MongoClients.create(mongoClientSettings);
@@ -76,7 +60,7 @@ public class MongoConfig {
 	@Bean
 	public MongoTemplate mongoTemplate() throws Exception {
 		try {
-			return new MongoTemplate(mongo(), env.getProperty("mongo.dbname"));
+			return new MongoTemplate(mongo(), env.getProperty("spring.data.mongodb.database"));
 		} catch (Exception e) {
 			LogHub.error(null, logger, "Exception in mongotemplate configuration: {}", e.getMessage());
 			return null;

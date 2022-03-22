@@ -1,42 +1,33 @@
 # syntax=docker/dockerfile:experimental
-FROM maven:3-jdk-8-alpine as build
-WORKDIR /app
-COPY ./game-engine.core /app/game-engine.core
-COPY ./game-engine.web /app/game-engine.web
-COPY ./run-configs/users.yml /app/run-configs/users.yml
-# install nodejs
-RUN apk --update add nodejs npm
-# install git client
-RUN apk --update add git
-# install bower
+FROM maven:3-openjdk-11 as mvn
+COPY ./game-engine.core /tmp/game-engine.core
+COPY ./game-engine.web /tmp/game-engine.web
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
 RUN npm install -g bower
-WORKDIR game-engine.core
-RUN --mount=type=cache,target=/root/.m2 mvn -Dmaven.test.skip=true install;
-WORKDIR ../game-engine.web
-RUN mkdir logs
-RUN if [ -e "/app/run-configs/users.yml" ]; then cp /app/run-configs/users.yml /app/game-engine.web/src/main/resources/users.yml; fi;
-RUN cd /app/game-engine.web/src/main/resources/consoleweb-assets && bower --allow-root install
-RUN --mount=type=cache,target=/root/.m2 cd /app/game-engine.web && mvn -Dmaven.test.skip=true package
+WORKDIR /tmp/game-engine.core
+#RUN --mount=type=bind,target=/root/.m2,source=/root/.m2,from=smartcommunitylab/aac:cache-alpine mvn package -DskipTests
+RUN mvn clean install -DskipTests
+RUN cd /tmp/game-engine.web/src/main/resources/consoleweb-assets && bower --allow-root install
+WORKDIR /tmp/game-engine.web
+RUN mvn clean install -DskipTests
 
-FROM openjdk:8-alpine
-ENV FOLDER=/app/game-engine.web/target
-ARG VER=0.1
-ENV APP=game-engine.web.jar
+FROM adoptopenjdk/openjdk11:alpine
+ARG VER=3.0.0
 ARG USER=gamification
-ARG USER_ID=3003
+ARG USER_ID=1005
 ARG USER_GROUP=gamification
-ARG USER_GROUP_ID=3003
+ARG USER_GROUP_ID=1005
 ARG USER_HOME=/home/${USER}
-
+ENV FOLDER=/tmp/target
+#dslab.playandgo.engine-1.0.jar
+ENV APP=game-engine.web
+ENV VER=${VER}
+# create a user group and a user
 RUN  addgroup -g ${USER_GROUP_ID} ${USER_GROUP}; \
      adduser -u ${USER_ID} -D -g '' -h ${USER_HOME} -G ${USER_GROUP} ${USER} ;
-RUN apk add --no-cache tzdata
 
-WORKDIR  /home/${USER}/app
-RUN chown ${USER}:${USER_GROUP} /home/${USER}/app
-COPY --from=build --chown=gamification:gamification ${FOLDER}/${APP} /home/${USER}/app
-EXPOSE 8010
-
+WORKDIR ${USER_HOME}
+COPY --chown=gamification:gamification --from=mvn /tmp/game-engine.web/target/${APP}.jar ${USER_HOME}
 USER gamification
-CMD ["sh","-c","java -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=7777 -Dcom.sun.management.jmxremote.rmi.port=7777 -Dcom.sun.management.jmxremote.authenticate=false \
--Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -DlogFolder=${LOG_PATH} -DstatsLoggerLevel=${STATS_LOGGER_LEVEL} -jar game-engine.web.jar --spring.profiles.active=${SPRING_PROFILE}"]
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar ${APP}.jar --spring.profiles.active=sec"]

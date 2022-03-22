@@ -41,6 +41,23 @@ maven-build:
     - bower --allow-root install
     - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests
+  artifacts:
+    paths:
+      - .m2/
+      - game-engine.core/target/
+      - game-engine.web/target/
+
+spotbugs-sast:
+  dependencies:
+    - build
+  variables:
+    MAVEN_REPO_PATH: ./.m2/repository
+    COMPILE: "false"
+    SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
+
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
 
 backend-container-build:
   stage: container-build

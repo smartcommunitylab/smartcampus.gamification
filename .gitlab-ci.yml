@@ -49,7 +49,7 @@ maven-build:
 
 spotbugs-sast:
   dependencies:
-    - build
+    - maven-build
   variables:
     MAVEN_REPO_PATH: ./.m2/repository
     COMPILE: "false"

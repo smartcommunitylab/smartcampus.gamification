@@ -35,11 +35,11 @@ maven-build:
   script:
     - apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
     - npm install -g bower
-    - cd game-engine.core
+    - cd ${CI_PROJECT_DIR}/game-engine.core
     - mvn -DskipTests=true clean install
-    - cd game-engine.web/src/main/resources/consoleweb-assets
+    - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
     - bower --allow-root install
-    - cd game-engine.web
+    - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests
 
 backend-container-build:

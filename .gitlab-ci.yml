@@ -4,11 +4,16 @@ services:
   - docker:dind
 
 stages:
-  - test
   - build
   - container-build
+  - test
   - container-scan
   - deploy
+
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 variables:
   SECURE_LOG_LEVEL: info
@@ -35,12 +40,30 @@ maven-build:
   script:
     - apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
     - npm install -g bower
-    - cd game-engine.core
+    - cd ${CI_PROJECT_DIR}/game-engine.core
     - mvn -DskipTests=true clean install
-    - cd game-engine.web/src/main/resources/consoleweb-assets
+    - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
     - bower --allow-root install
-    - cd game-engine.web
+    - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests
+  artifacts:
+    paths:
+      - .m2/
+      - game-engine.core/target/
+      - game-engine.web/target/
+
+spotbugs-sast:
+  dependencies:
+    - maven-build
+  variables:
+    MAVEN_REPO_PATH: ./.m2/repository
+    COMPILE: "false"
+    SAST_EXCLUDED_PATHS: geme-engine.games, game-engine.test, game-engine.tools, gamification-java-client
+    SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
+    SECURE_LOG_LEVEL: "debug"
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
 
 backend-container-build:
   stage: container-build
@@ -54,10 +77,17 @@ backend-container-build:
   only:
     - playAndGo-dev-v2
 
-include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
+spotbugs-sast:
+  dependencies:
+    - maven-build
+  variables:
+    MAVEN_REPO_PATH: ./.m2/repository
+    COMPILE: "false"
+    SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
+
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
 
 container_scanning:
   stage: container-scan

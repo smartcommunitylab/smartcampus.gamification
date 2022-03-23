@@ -23,7 +23,11 @@ variables:
   CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
   # MAVEN_CLI_OPTS: -DskipTests --batch-mode
   SAST_JAVA_VERSION: 11
-
+  MAVEN_REPO_PATH: ./.m2/repository
+  COMPILE: "false"
+  SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
+  SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
+  SECURE_LOG_LEVEL: "debug"
 # maven-test:
 #   image: maven:3-openjdk-8
 #   stage: test
@@ -58,7 +62,7 @@ spotbugs-sast:
   variables:
     MAVEN_REPO_PATH: ./.m2/repository
     COMPILE: "false"
-    SAST_EXCLUDED_PATHS: geme-engine.games, game-engine.test, game-engine.tools, gamification-java-client
+    SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
     SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
     SECURE_LOG_LEVEL: "debug"
   artifacts:

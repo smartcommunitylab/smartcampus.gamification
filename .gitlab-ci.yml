@@ -47,18 +47,6 @@ maven-build:
       - game-engine.core/target/
       - game-engine.web/target/
 
-spotbugs-sast:
-  dependencies:
-    - maven-build
-  variables:
-    MAVEN_REPO_PATH: ./.m2/repository
-    COMPILE: "false"
-    SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
-
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
-
 backend-container-build:
   stage: container-build
   environment:
@@ -76,6 +64,18 @@ include:
   - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml
 
+spotbugs-sast:
+  dependencies:
+    - maven-build
+  variables:
+    MAVEN_REPO_PATH: ./.m2/repository
+    COMPILE: "false"
+    SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
+
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+      
 container_scanning:
   stage: container-scan
   variables:

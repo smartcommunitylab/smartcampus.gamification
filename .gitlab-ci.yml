@@ -60,6 +60,7 @@ spotbugs-sast:
     COMPILE: "false"
     SAST_EXCLUDED_PATHS: geme-engine.games, game-engine.test, game-engine.tools, gamification-java-client
     SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
+    SECURE_LOG_LEVEL: "debug"
   artifacts:
     reports:
       sast: gl-sast-report.json

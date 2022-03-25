@@ -126,7 +126,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.9</version>
+						<version>3.2.0</version>
 						<executions>
 							<execution>
 								<id>attach-javadoc</id>
@@ -277,23 +277,23 @@
 	<repositories>
 		<repository>
 			<id>SmartCommunityLab</id>
-			<url>http://repository.smartcommunitylab.it/content/groups/public</url>
+			<url>https://repository.smartcommunitylab.it/content/groups/public</url>
 		</repository>
 	</repositories>
 
 	<distributionManagement>
 		<repository>
 			<id>SmartCommunityLab-releases</id>
-			<url>http://repository.smartcommunitylab.it/content/repositories/releases</url>
+			<url>https://repository.smartcommunitylab.it/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>SmartCommunityLab-snapshots</id>
-			<url>http://repository.smartcommunitylab.it/content/repositories/snapshots</url>
+			<url>https://repository.smartcommunitylab.it/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<gson-fire-version>1.8.0</gson-fire-version>

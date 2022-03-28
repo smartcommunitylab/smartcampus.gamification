@@ -22,12 +22,7 @@ variables:
   CONTAINER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
   # MAVEN_CLI_OPTS: -DskipTests --batch-mode
-  SAST_JAVA_VERSION: 11
-  MAVEN_REPO_PATH: ./.m2/repository
-  COMPILE: "false"
-  SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
-  SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
-  SECURE_LOG_LEVEL: "debug"
+
 # maven-test:
 #   image: maven:3-openjdk-8
 #   stage: test
@@ -45,26 +40,28 @@ maven-build:
     - apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
     - npm install -g bower
     - cd ${CI_PROJECT_DIR}/game-engine.core
-    - mvn -DskipTests=true clean install
+    - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
     - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
     - bower --allow-root install
-    - cd ${CI_PROJECT_DIR}/game-engine.web
-    - mvn clean install -DskipTests
+    - cd ${CI_PROJECT_DIR}/game-engine.web 
+    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+    - ls ${CI_PROJECT_DIR}/.m2/
   artifacts:
     paths:
-      - .m2/
-      - game-engine.core/target/
-      - game-engine.web/target/
+      - ${CI_PROJECT_DIR}/.m2/
+      - game-engine.core/
+      - game-engine.web/
 
 spotbugs-sast:
   dependencies:
     - maven-build
   variables:
-    MAVEN_REPO_PATH: ./.m2/repository
-    COMPILE: "false"
-    SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
-    SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
+    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/
     SECURE_LOG_LEVEL: "debug"
+    SAST_JAVA_VERSION: 11
+    COMPILE: "false"
+    SAST_EXCLUDED_PATHS: "geme-engine.games, game-engine.test, game-engine.tools, gamification-java-client"
+    SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
   artifacts:
     reports:
       sast: gl-sast-report.json
@@ -81,20 +78,10 @@ backend-container-build:
   only:
     - playAndGo-dev-v2
 
-spotbugs-sast:
-  dependencies:
-    - maven-build
-  variables:
-    MAVEN_REPO_PATH: ./.m2/repository
-    COMPILE: "false"
-    SAST_EXCLUDED_PATHS: geme-engine.games,game-engine.test,game-engine.tools,gamification-java-client
-
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
-
 container_scanning:
   stage: container-scan
+  dependencies:
+  - backend-container-build
   variables:
     DOCKER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
     DOCKERFILE_PATH: "Dockerfile"

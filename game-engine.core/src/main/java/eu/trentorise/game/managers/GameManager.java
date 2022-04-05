@@ -229,6 +229,7 @@ public class GameManager implements GameService {
                 pers.setTerminated(game.isTerminated());
                 pers.setRules(game.getRules());
                 pers.setDomain(game.getDomain());
+                pers.setNotifyPCName(game.getNotifyPCName());
 
                 if (game.getConcepts() != null) {
                     Set<GenericObjectPersistence> concepts =
@@ -418,14 +419,14 @@ public class GameManager implements GameService {
         long start = System.currentTimeMillis();
         Date now = new Date();
         List<Game> activeGames = loadGames(true);
-        PageRequest firstPage = new PageRequest(0, pageSize);
+        PageRequest firstPage = PageRequest.of(0, pageSize);
 
         activeGames.forEach(game -> {
             final String gameId = game.getId();
             Page<String> pagedPlayerIds = playerSrv.readPlayers(gameId, firstPage);
             updateChallengeState(pagedPlayerIds, game, now);
             for (int pageIdx = 1; pageIdx < pagedPlayerIds.getTotalPages(); pageIdx++) {
-                PageRequest pageRequest = new PageRequest(pageIdx, pageSize);
+                PageRequest pageRequest = PageRequest.of(pageIdx, pageSize);
                 pagedPlayerIds = playerSrv.readPlayers(gameId, pageRequest);
                 updateChallengeState(pagedPlayerIds, game, now);
             }

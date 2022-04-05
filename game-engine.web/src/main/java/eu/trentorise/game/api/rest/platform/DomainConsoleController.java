@@ -60,7 +60,7 @@ import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping(value = "/consoleapi/{domain}")
@@ -383,7 +383,7 @@ public class DomainConsoleController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/challenge", consumes = {
 			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Add challenge model")
+	@Operation(summary = "Add challenge model")
 	public ChallengeModel saveGame(@RequestBody ChallengeModel challengeModel, @PathVariable String domain,
 			@PathVariable String gameId) {
 		gameId = decodePathVariable(gameId);
@@ -392,7 +392,7 @@ public class DomainConsoleController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/challenge", produces = {
 			"application/json" })
-	@ApiOperation(value = "Get challenge models")
+	@Operation(summary = "Get challenge models")
 	public Set<ChallengeModel> readChallengeModels(@PathVariable String domain, @PathVariable String gameId) {
 		gameId = decodePathVariable(gameId);
 		return gameSrv.readChallengeModels(gameId);
@@ -400,7 +400,7 @@ public class DomainConsoleController {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/challenge/{modelId}", produces = {
 			"application/json" })
-	@ApiOperation(value = "Delete challenge model")
+	@Operation(summary = "Delete challenge model")
 	public void deleteChallengeModels(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String modelId) {
 		gameId = decodePathVariable(gameId);
@@ -412,7 +412,7 @@ public class DomainConsoleController {
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/incclassification", consumes = {
 			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Add incremental classification definition")
+	@Operation(summary = "Add incremental classification definition")
 	public IncrementalClassificationDTO createIncremental(@PathVariable String domain, @PathVariable String gameId,
 			@RequestBody IncrementalClassificationDTO classification) {
 		gameId = decodePathVariable(gameId);
@@ -439,7 +439,7 @@ public class DomainConsoleController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/model/game/{gameId}/incclassification/{classificationId}", consumes = {
 			"application/json" }, produces = { "application/json" })
-	@ApiOperation(value = "Edit general classification definition")
+	@Operation(summary = "Edit general classification definition")
 	public void updateIncrementalClassification(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String classificationId, @RequestBody IncrementalClassificationDTO classification) {
 		gameId = decodePathVariable(gameId);
@@ -484,7 +484,7 @@ public class DomainConsoleController {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/incclassification/{classificationId}", produces = {
 			"application/json" })
-	@ApiOperation(value = "Delete incremental classification definition")
+	@Operation(summary = "Delete incremental classification definition")
 	public void deleteIncremental(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String classificationId) {
 		gameId = decodePathVariable(gameId);
@@ -507,7 +507,7 @@ public class DomainConsoleController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/level", produces = {
 			"application/json" })
-	@ApiOperation(value = "Save a level")
+	@Operation(summary = "Save a level")
 	public LevelDTO saveLevel(@PathVariable String gameId, @RequestBody LevelDTO level) {
 		Game game = gameSrv.upsertLevel(gameId, converter.convert(level));
 
@@ -519,7 +519,7 @@ public class DomainConsoleController {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/model/game/{gameId}/level/{levelName}", produces = {
 			"application/json" })
-	@ApiOperation(value = "Delete a level")
+	@Operation(summary = "Delete a level")
 	public boolean deleteLevel(@PathVariable String gameId, @PathVariable String levelName) {
 		gameSrv.deleteLevel(gameId, levelName);
 		return true;

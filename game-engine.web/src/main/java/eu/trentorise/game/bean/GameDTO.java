@@ -45,7 +45,9 @@ public class GameDTO {
 
 	private ChallengeChoiceConfig challengeChoiceConfig;
 
-    private Settings settings = new Settings();
+	private Settings settings = new Settings();
+
+	private String notifyPCName;
 
 	public static class ChallengeChoiceConfig {
 		private Date deadline;
@@ -174,6 +176,14 @@ public class GameDTO {
 
 	public void setSettings(Settings settings) {
 		this.settings = settings;
+	}
+
+	public String getNotifyPCName() {
+		return notifyPCName;
+	}
+
+	public void setNotifyPCName(String notifyPCName) {
+		this.notifyPCName = notifyPCName;
 	}
 
 }

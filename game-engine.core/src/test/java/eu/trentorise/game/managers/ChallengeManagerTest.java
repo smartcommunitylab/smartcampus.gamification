@@ -48,6 +48,8 @@ import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.GameService;
@@ -64,6 +66,9 @@ public class ChallengeManagerTest {
 
     @Autowired
     private GroupChallengeRepo groupChallengeRepo;
+    
+    @Autowired
+	private ChallengeConceptRepo challengeConceptRepo;
 
     @InjectMocks
     @Autowired
@@ -428,6 +433,8 @@ public class ChallengeManagerTest {
                 invitationChallenge.getInstanceName());
         assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
         PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "wasp"); 
+        waspState.loadChallengeConcepts(listCcs);
         long proposedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
         long assignedCount = waspState.challenges().stream()
@@ -480,6 +487,8 @@ public class ChallengeManagerTest {
                 challengeWithAntMan.getInstanceName());
         assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
         PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "wasp"); 
+        waspState.loadChallengeConcepts(listCcs);
         long proposedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
         long assignedCount = waspState.challenges().stream()
@@ -487,6 +496,8 @@ public class ChallengeManagerTest {
         assertThat(assignedCount, is(1L));
         assertThat(proposedCount, is(2L));
         PlayerState antManState = playerSrv.loadState("GAME", "ant-man", false, true);
+        listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "ant-man"); 
+        antManState.loadChallengeConcepts(listCcs);
         long antManAssignedCounter = antManState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         long antManProposedCounter = antManState.challenges().stream()

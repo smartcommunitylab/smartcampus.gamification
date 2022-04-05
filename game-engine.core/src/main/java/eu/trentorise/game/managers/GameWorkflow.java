@@ -33,11 +33,14 @@ import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.notification.GameNotification;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TraceService;
 import eu.trentorise.game.services.Workflow;
+import eu.trentorise.game.utils.Utils;
 
 @Component
 public class GameWorkflow implements Workflow {
@@ -58,6 +61,9 @@ public class GameWorkflow implements Workflow {
 
     @Autowired
     private ChallengeManager challengeSrv;
+    
+    @Autowired
+    private NotificationManager notificationSrv;
 
     @Autowired
     private Environment env;
@@ -100,8 +106,13 @@ public class GameWorkflow implements Workflow {
             StatsLogger.logSurveyCompleted(g.getDomain(), gameId, userId, executionId,
                     executionMoment, data);
         }
+        
+        // Game notification.
+        if (Utils.isNotEmpty(g.getNotifyPCName())) {
+        	sendGameNotificationforPlayer(g, actionId, data, oldState, newState);
+        }
+        
         // update score of all player active groupChallenges
-
         List<GroupChallenge> playerActiveGroupChallenges =
                 challengeSrv.activeGroupChallengesByDate(gameId, userId, executionDate);
         if (playerActiveGroupChallenges.size() > 0) {
@@ -149,7 +160,7 @@ public class GameWorkflow implements Workflow {
             }
         });
 
-
+        
         if (env.getProperty("trace.playerMove", Boolean.class, false)) {
             traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
             LogHub.info(gameId, logger, "Traced player {} move", userId);
@@ -159,7 +170,26 @@ public class GameWorkflow implements Workflow {
                 System.currentTimeMillis());
     }
 
-    private boolean isClassificationAction(String actionId) {
+	private void sendGameNotificationforPlayer(Game g, String actionId, Map<String, Object> data, PlayerState oldState,
+			PlayerState newState) {
+		PointConcept oldPC = oldState.pointConcept(g.getNotifyPCName());
+		PointConcept newPC = newState.pointConcept(g.getNotifyPCName());
+		boolean samePCScore = oldPC.getScore().equals(newPC.getScore());
+		if (!samePCScore) {
+			GameNotification pcNotification = new GameNotification();
+			pcNotification.setGameId(g.getId());
+			pcNotification.setPlayerId(oldState.getPlayerId());
+			pcNotification.setPointConceptName(g.getNotifyPCName());
+			pcNotification.setScore(newPC.getScore());
+			pcNotification.setActionId(actionId);
+			pcNotification.setDataPayLoad(data);
+			pcNotification.setDelta(newPC.getScore() - oldPC.getScore());
+			notificationSrv.notificate(pcNotification);
+			LogHub.info(g.getId(), logger, "send game notification: {}", pcNotification.toString());
+		}
+	}
+
+	private boolean isClassificationAction(String actionId) {
         return actionId != null && "scogei_classification".equals(actionId);
     }
 

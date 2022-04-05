@@ -45,6 +45,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.ResourceNotFoundException;
 import eu.trentorise.game.core.StatsLogger;
@@ -76,6 +78,8 @@ import eu.trentorise.game.notification.ChallengeAssignedNotification;
 import eu.trentorise.game.notification.ChallengeInvitationCanceledNotification;
 import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
 import eu.trentorise.game.notification.ChallengeProposedNotification;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.repo.GenericObjectPersistence;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.repo.PlayerRepo;
@@ -98,8 +102,8 @@ public class DBPlayerManager implements PlayerService {
     @Autowired
     private GameService gameSrv;
 
-    // @Autowired
-    // private ChallengeModelRepo challengeModelRepo;
+    @Autowired
+	private ChallengeConceptRepo challengeConceptRepo;
 
     @Autowired
     private GroupChallengeRepo groupChallengeRepo;
@@ -244,6 +248,7 @@ public class DBPlayerManager implements PlayerService {
         Query query = new Query(criteria);
         Update update = new Update();
         if (concepts != null) {
+        	concepts = persistChallengeConcept(concepts, gameId, playerId);
             update.set("concepts", concepts);
         }
         if (levels != null) {
@@ -608,20 +613,22 @@ public class DBPlayerManager implements PlayerService {
             String periodName, String key, String gameId, Pageable pageable) {
 
         ClassificationBoard classificationBoard = new ClassificationBoard();
-
-        Criteria criteriaGameId = Criteria.where("gameId").is(gameId);
+        String field = "concepts.PointConcept." + pointConceptName
+                + ".obj.periods." + periodName + ".instances." + key + ".score";
+        Criteria criteria = Criteria
+        		.where("gameId").is(gameId).and(field).gt(0);
 
         Query query = new Query();
         // criteria.
-        query.addCriteria(criteriaGameId);
-        query.with(new Sort(Sort.Direction.DESC, "concepts.PointConcept." + pointConceptName
-                + ".obj.periods." + periodName + ".instances." + key + ".score"));
+        query.addCriteria(criteria);
+//        query.with(new Sort(Sort.Direction.DESC, field));
+        query.with(Sort.by(Sort.Order.desc(field)));
         // fields in response.
-        query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods."
-                + periodName + ".instances." + key + ".score");
+        query.fields().include(field);
         query.fields().include("playerId");
         // pagination.
         query.with(pageable);
+        logger.info("Classification query " + query);
 
         List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
 
@@ -648,8 +655,10 @@ public class DBPlayerManager implements PlayerService {
 
         Query query = new Query();
         query.addCriteria(general);
-        query.with(
-                new Sort(Sort.Direction.DESC, "concepts.PointConcept." + itemType + ".obj.score"));
+//        query.with(
+//                new Sort(Sort.Direction.DESC, "concepts.PointConcept." + itemType + ".obj.score"));
+        query.with(Sort.by(Sort.Order.desc("concepts.PointConcept." + itemType + ".obj.score")));
+        
         query.fields().include("concepts.PointConcept." + itemType + ".obj.score");
         query.fields().include("playerId");
         // pagination.
@@ -702,6 +711,8 @@ public class DBPlayerManager implements PlayerService {
     public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName) {
         Game game = gameSrv.loadGameDefinitionById(gameId);
         PlayerState state = loadState(gameId, playerId, false, false);
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId); 
+        state.loadChallengeConcepts(listCcs);
         boolean found = false;
         ChallengeConcept accepted = null;
         for (ChallengeConcept challenge : state.challenges()) {
@@ -790,6 +801,8 @@ public class DBPlayerManager implements PlayerService {
     @Override
     public ChallengeConcept forceChallengeChoice(String gameId, String playerId) {
         PlayerState state = loadState(gameId, playerId, false, false);
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, state.getPlayerId()); 
+        state.loadChallengeConcepts(listCcs);
         Optional<ChallengeConcept> maxPriorityChallenge = state.challenges().stream()
                 .filter(challenge -> challenge.getState() == ChallengeState.PROPOSED)
                 .max(new PriorityComparator());
@@ -1029,5 +1042,32 @@ public class DBPlayerManager implements PlayerService {
                     .format("state for player %s in game %s doesn't exist", playerId, gameId));
         }
     }
+    
+	private Map<String, Map<String, GenericObjectPersistence>> persistChallengeConcept(
+			Map<String, Map<String, GenericObjectPersistence>> concepts, String gameId, String playerId) {
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Map<String, GenericObjectPersistence>> challengeConcepts = concepts.entrySet().stream()
+				.filter(x -> x.getKey().equals(ChallengeConcept.class.getSimpleName()))
+				.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+		Map<String, Map<String, GenericObjectPersistence>> otherConcepts = concepts.entrySet().stream()
+				.filter(x -> !(x.getKey().equals(ChallengeConcept.class.getSimpleName())))
+				.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+		// UPDATE, INSERT
+		for (Map<String, GenericObjectPersistence> entry : challengeConcepts.values()) {
+			for (GenericObjectPersistence gpo : entry.values()) {
+				ChallengeConcept cc = mapper.convertValue(gpo.getObj(), ChallengeConcept.class);
+				// update, insert
+				ChallengeConceptPersistence persist = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId, playerId, cc.getName());
+				if (persist != null) {
+					persist.setConcept(cc);
+				} else {
+					persist = new ChallengeConceptPersistence(cc, gameId, playerId, cc.getName());
+				}
+				challengeConceptRepo.save(persist);
+			}
+		}
+		
+		return otherConcepts;
+	}
 	
 }

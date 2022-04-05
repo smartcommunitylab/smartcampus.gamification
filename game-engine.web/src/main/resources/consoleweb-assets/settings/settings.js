@@ -97,6 +97,7 @@ angular.module('gamificationEngine.settings', [])
 				fields.name = $scope.newGame.name;
 				fields.expiration = $scope.newGame.expiration && !$scope.newGame.neverending ? $scope.newGame.expiration.getTime() : undefined;
 				fields.domain = $scope.newGame.domain;
+				fields.notifyPCName = $scope.newGame.notifyPCName;
 				if($scope.newGame.hideChallenges) {
 					fields.challengeSettings = $scope.newGame.challengeSettings;
 				} else {
@@ -111,6 +112,7 @@ angular.module('gamificationEngine.settings', [])
 						$scope.game.expiration = data.expiration;
 						$scope.game.domain = $scope.newGame.domain;
 						$scope.game.challengeSettings = data.challengeSettings;
+						$scope.game.notifyPCName = data.notifyPCName;
 						$scope.alerts.settingsEdited = true;
 						$scope.disabled = false;
 						$rootScope.gameName = data.name;

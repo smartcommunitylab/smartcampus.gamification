@@ -21,7 +21,7 @@ import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile({"sec", "no-sec"})
@@ -38,8 +38,8 @@ public class BadgeCollectionConceptController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/model/game/{gameId}/badges",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add a badge collection",
-            notes = "Add a badge collection to the game definition")
+    @Operation(summary = "Add a badge collection",
+            description = "Add a badge collection to the game definition")
     public void addBadge(@PathVariable String gameId,
             @RequestBody BadgeCollectionConcept badge) {
         gameId = decodePathVariable(gameId);
@@ -52,7 +52,7 @@ public class BadgeCollectionConceptController {
     @RequestMapping(method = RequestMethod.PUT,
             value = "/model/game/{gameId}/badges/{collectionId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Update a badge collection")
+    @Operation(summary = "Update a badge collection")
     public void updateBadgeCollection(@PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
 
@@ -64,7 +64,7 @@ public class BadgeCollectionConceptController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/model/game/{gameId}/badges",
             produces = {"application/json"})
-    @ApiOperation(value = "Get the badge collections", notes = "Get badge collections in a game")
+    @Operation(summary = "Get the badge collections", description = "Get badge collections in a game")
     public List<BadgeCollectionConcept> readBadgeCollections(
             @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
@@ -87,8 +87,8 @@ public class BadgeCollectionConceptController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/model/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get a badge collection",
-            notes = "Get the definition of a badge collection in a game")
+    @Operation(summary = "Get a badge collection",
+            description = "Get the definition of a badge collection in a game")
     public BadgeCollectionConcept readBadgeCollection(
             @PathVariable String gameId, @PathVariable String collectionId) {
 
@@ -112,7 +112,7 @@ public class BadgeCollectionConceptController {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/model/game/{gameId}/badges/{collectionId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete a badge collection")
+    @Operation(summary = "Delete a badge collection")
     public void deleteBadgeCollection(@PathVariable String gameId,
             @PathVariable String collectionId) {
         gameId = decodePathVariable(gameId);

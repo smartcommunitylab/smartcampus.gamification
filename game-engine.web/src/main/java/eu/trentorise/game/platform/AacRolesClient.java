@@ -33,18 +33,18 @@ import it.smartcommunitylab.aac.model.Role;
 public class AacRolesClient implements PlatformRolesClient {
 
 	@Autowired
-	@Value("${oauth.serverUrl}")
+	@Value("${oauth.serverUrl:}")
 	private String aacURL;
     
     // tuple
 	@Autowired
-	@Value("${oauth.context}")
+	@Value("${oauth.context:}")
     private String context;
 	@Autowired
-	@Value("${oauth.role}")
+	@Value("${oauth.role:}")
 	private String rolePrefix;
 	@Autowired
-	@Value("${oauth.domain}")
+	@Value("${oauth.domain:}")
 	private String domain;
 	
     private AACRoleService aacRoleService;

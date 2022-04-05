@@ -21,10 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 	
 	@Autowired
-	@Value("${oauth.serverUrl}")
+	@Value("${oauth.serverUrl:}")
 	private String oauthServerUrl;
 	
-	@Value("${server.singeLogoutUrl}")
+	@Value("${server.singeLogoutUrl:}")
 	private String singeLogoutUrl;
 
 	

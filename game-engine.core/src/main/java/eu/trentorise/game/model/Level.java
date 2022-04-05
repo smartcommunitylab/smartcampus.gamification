@@ -14,8 +14,9 @@ public class Level {
     private String pointConceptName;
     private List<Threshold> thresholds = new ArrayList<>();
 
+    public Level() {}
 
-    public Level(String name, String pointConceptName) {
+	public Level(String name, String pointConceptName) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("name cannot be blank");
         }
@@ -105,6 +106,8 @@ public class Level {
         private Config config;
 
 
+        public Threshold() {}
+        
         public Threshold(String name, double value) {
             this.name = name;
             this.value = value;

@@ -18,6 +18,7 @@ package eu.trentorise.game.bean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,7 @@ import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Inventory;
 import eu.trentorise.game.model.PlayerLevel;
 import eu.trentorise.game.model.core.GameConcept;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
 
 @JsonInclude(Include.NON_NULL)
 public class PlayerStateDTO {
@@ -89,5 +91,17 @@ public class PlayerStateDTO {
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
+
+	public void loadChallengeConcepts(List<ChallengeConceptPersistence> listCcps) {
+		listCcps.forEach(ccp -> {
+			String conceptType = ccp.getConcept().getClass().getSimpleName();
+			Set<GameConcept> gcSet = state.get(conceptType);
+			if (gcSet == null) {
+				gcSet = new HashSet<GameConcept>();
+				state.put(conceptType, gcSet);
+			}
+			gcSet.add(ccp.getConcept());
+		});
+	}
 
 }

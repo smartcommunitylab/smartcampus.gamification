@@ -22,7 +22,7 @@ import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile("platform")
@@ -41,7 +41,7 @@ public class DomainPointConceptController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/model/game/{gameId}/point",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add point")
+    @Operation(summary = "Add point")
     public PointConcept addPoint(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody PointConcept point) {
         gameId = decodePathVariable(gameId);
@@ -57,7 +57,7 @@ public class DomainPointConceptController {
     @RequestMapping(method = RequestMethod.PUT,
             value = "/api/{domain}/model/game/{gameId}/point/{pointId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Edit point")
+    @Operation(summary = "Edit point")
     public void updatePoint(@PathVariable String domain, @PathVariable String gameId,
             @RequestBody PointConcept point) {
         gameId = decodePathVariable(gameId);
@@ -69,7 +69,7 @@ public class DomainPointConceptController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/model/game/{gameId}/point",
             produces = {"application/json"})
-    @ApiOperation(value = "Get points")
+    @Operation(summary = "Get points")
     public List<PointConcept> readPoints(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
@@ -91,7 +91,7 @@ public class DomainPointConceptController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/model/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get point")
+    @Operation(summary = "Get point")
     public PointConcept readPoint(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String pointId) {
         gameId = decodePathVariable(gameId);
@@ -113,7 +113,7 @@ public class DomainPointConceptController {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/model/game/{gameId}/point/{pointId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete point")
+    @Operation(summary = "Delete point")
     public void deletePoint(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String pointId) {
         gameId = decodePathVariable(gameId);

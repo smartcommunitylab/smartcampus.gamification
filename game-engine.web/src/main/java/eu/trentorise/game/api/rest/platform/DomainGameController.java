@@ -30,7 +30,7 @@ import eu.trentorise.game.model.Level;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile("platform")
@@ -59,7 +59,7 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/model/game",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Save a game")
+    @Operation(summary = "Save a game")
     public GameDTO saveGame(@PathVariable String domain, @RequestBody GameDTO game) {
         // set creator
         String user = identityLookup.getName();
@@ -75,7 +75,7 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/model/game/{gameId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Read game definition")
+    @Operation(summary = "Read game definition")
     public GameDTO readGame(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
@@ -87,7 +87,7 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/model/game",
             produces = {"application/json"})
-    @ApiOperation(value = "Get games", notes = "Get all the game definitions of a user")
+    @Operation(summary = "Get games", description = "Get all the game definitions of a user")
     public List<GameDTO> readGames(@PathVariable String domain) {
         String user = identityLookup.getName();
         List<GameDTO> r = new ArrayList<GameDTO>();
@@ -102,7 +102,7 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/api/{domain}/model/game/{gameId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete game")
+    @Operation(summary = "Delete game")
     public void deleteGame(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         gameSrv.deleteGame(gameId);
@@ -113,7 +113,7 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/api/{domain}/model/game/{gameId}/start",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Start game", notes = "The game is able to accept action executions")
+    @Operation(summary = "Start game", description = "The game is able to accept action executions")
     public void startGame(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
@@ -124,8 +124,8 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/api/{domain}/model/game/{gameId}/stop",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Stop a game",
-            notes = "The game will not accept action execution anymore")
+    @Operation(summary = "Stop a game",
+            description = "The game will not accept action execution anymore")
     public void stopGame(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
@@ -144,7 +144,7 @@ public class DomainGameController  {
     @RequestMapping(method = RequestMethod.POST,
             value = "/api/{domain}/model/game/{gameId}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add action")
+    @Operation(summary = "Add action")
     public void addAction(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
@@ -156,7 +156,7 @@ public class DomainGameController  {
     @RequestMapping(method = RequestMethod.PUT,
             value = "/api/{domain}/model/game/{domain}/action/{actionId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Edit action")
+    @Operation(summary = "Edit action")
     public void editAction(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
@@ -167,7 +167,7 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/model/game/{gameId}/action",
             produces = {"application/json"})
-    @ApiOperation(value = "Get actions")
+    @Operation(summary = "Get actions")
     public Set<String> readAllAction(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         Game g = gameSrv.loadGameDefinitionById(gameId);
@@ -181,7 +181,7 @@ public class DomainGameController  {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/model/game/{gameId}/action/{actionId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get action")
+    @Operation(summary = "Get action")
     public void readAction(@PathVariable String domain, @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
         throw new UnsupportedOperationException("Operation actually not supported");
@@ -192,7 +192,7 @@ public class DomainGameController  {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/model/game/{gameId}/action/{actionId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete action")
+    @Operation(summary = "Delete action")
     public void deleteAction(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String actionId) {
         gameId = decodePathVariable(gameId);
@@ -208,7 +208,7 @@ public class DomainGameController  {
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/{domain}/model/game/{gameId}/level",
             produces = {"application/json"})
-    @ApiOperation(value = "Save a level")
+    @Operation(summary = "Save a level")
     public LevelDTO saveLevel(@PathVariable String gameId, @RequestBody LevelDTO level) {
         Game game = gameSrv.upsertLevel(gameId, converter.convert(level));
 
@@ -221,7 +221,7 @@ public class DomainGameController  {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/model/game/{gameId}/level/{levelName}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete a level")
+    @Operation(summary = "Delete a level")
     public boolean deleteLevel(@PathVariable String gameId, @PathVariable String levelName) {
         gameSrv.deleteLevel(gameId, levelName);
         return true;
@@ -230,7 +230,7 @@ public class DomainGameController  {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/data/game/{gameId}/statistics",
             produces = {"application/json"})
-    @ApiOperation(value = "Get game statistics")
+    @Operation(summary = "Get game statistics")
     public List<GameStatistics> readGameStatistics(@PathVariable String domain,
             @PathVariable String gameId,
             @RequestParam(required = false) String pointConceptName,
@@ -273,7 +273,7 @@ public class DomainGameController  {
             // put page-1 to maintain same behavior of pageable config ( start
             // page
             // from index 1)
-            pageRequest = new PageRequest(page - 1, size);
+            pageRequest = PageRequest.of(page - 1, size);
         }
         return pageRequest;
     }

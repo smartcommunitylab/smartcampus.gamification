@@ -31,6 +31,8 @@ import eu.trentorise.game.notification.ChallengeInvitationAcceptedNotification;
 import eu.trentorise.game.notification.ChallengeInvitationCanceledNotification;
 import eu.trentorise.game.notification.ChallengeInvitationNotification;
 import eu.trentorise.game.notification.ChallengeInvitationRefusedNotification;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.repo.GroupChallengeRepo;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -50,6 +52,9 @@ public class ChallengeManager {
 
     @Autowired
     private GroupChallengeRepo groupChallengeRepo;
+    
+    @Autowired
+   	private ChallengeConceptRepo challengeConceptRepo;
 
     @Autowired
     private Clock clock;
@@ -160,6 +165,8 @@ public class ChallengeManager {
 
     public ChallengeConcept update(String gameId, String playerId, ChallengeUpdate changes) {
         PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId); 
+        state.loadChallengeConcepts(listCcs);
         Optional<ChallengeConcept> challenge = state.challenge(changes.getName());
         challenge.ifPresent(c -> {
             final String modelName = c.getModelName();

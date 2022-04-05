@@ -35,7 +35,7 @@ import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile("platform")
@@ -64,7 +64,7 @@ public class DomainClassificationController {
             value = "/api/{domain}/model/game/{gameId}/classification",
             consumes = {"application/json"},
             produces = {"application/json"})
-    @ApiOperation(value = "Add general classification definition")
+    @Operation(summary = "Add general classification definition")
     public GeneralClassificationDTO addClassificationTask(@PathVariable String domain,
             @PathVariable String gameId, @RequestBody GeneralClassificationDTO task) {
         gameId = decodePathVariable(gameId);
@@ -95,7 +95,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.PUT,
             value = "/api/{domain}/model/game/{gameId}/classification/{classificationId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Edit general classification definition")
+    @Operation(summary = "Edit general classification definition")
     public void editClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId, @RequestBody GeneralClassificationDTO task) {
         gameId = decodePathVariable(gameId);
@@ -129,7 +129,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/model/game/{gameId}/classification",
             produces = {"application/json"})
-    @ApiOperation(value = "Get general classification definitions")
+    @Operation(summary = "Get general classification definitions")
     public List<GeneralClassificationDTO> readAllGeneralClassifications(@PathVariable String domain,
             @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
@@ -158,7 +158,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/model/game/{gameId}/classification/{classificationId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get general classification definition")
+    @Operation(summary = "Get general classification definition")
     public GeneralClassificationDTO readGeneralClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId) {
         gameId = decodePathVariable(gameId);
@@ -180,7 +180,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/model/game/{gameId}/task/{classificationId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete general classification definition")
+    @Operation(summary = "Delete general classification definition")
     public void deleteClassificationTask(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId) {
         gameId = decodePathVariable(gameId);
@@ -206,7 +206,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.POST,
             value = "/api/{domain}/model/game/{gameId}/incclassification",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Add incremental classification definition")
+    @Operation(summary = "Add incremental classification definition")
     public IncrementalClassificationDTO createIncremental(@PathVariable String domain,
             @PathVariable String gameId, @RequestBody IncrementalClassificationDTO classification) {
         gameId = decodePathVariable(gameId);
@@ -235,7 +235,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.PUT,
             value = "/api/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Edit general classification definition")
+    @Operation(summary = "Edit general classification definition")
     public void updateIncrementalClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestBody IncrementalClassificationDTO classification) {
@@ -286,7 +286,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/model/game/{gameId}/incclassification",
             produces = {"application/json"})
-    @ApiOperation(value = "Get incremental classification defintions")
+    @Operation(summary = "Get incremental classification defintions")
     public List<IncrementalClassificationDTO> readAllIncremental(@PathVariable String domain,
             @PathVariable String gameId) {
         gameId = decodePathVariable(gameId);
@@ -307,7 +307,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get incremental classification defition")
+    @Operation(summary = "Get incremental classification defition")
     public IncrementalClassificationDTO readIncremental(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId) {
         gameId = decodePathVariable(gameId);
@@ -328,7 +328,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/{domain}/model/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Delete incremental classification definition")
+    @Operation(summary = "Delete incremental classification definition")
     public void deleteIncremental(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String classificationId) {
         gameId = decodePathVariable(gameId);
@@ -357,7 +357,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/data/game/{gameId}/incclassification/{classificationId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Read incremental classification board")
+    @Operation(summary = "Read incremental classification board")
     public ClassificationBoard getIncrementalClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestParam(defaultValue = "-1") long timestamp,
@@ -457,7 +457,7 @@ public class DomainClassificationController {
     @RequestMapping(method = RequestMethod.GET,
             value = "/api/{domain}/data/game/{gameId}/classification/{classificationId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Read general classification board")
+    @Operation(summary = "Read general classification board")
     public ClassificationBoard getGeneralClassification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String classificationId,
             @RequestParam(required = false, defaultValue = "-1") int page,

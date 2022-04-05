@@ -46,10 +46,9 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.Workflow;
 import eu.trentorise.game.utils.Converter;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 
 @RestController
 @RequestMapping(value = "/consoleapi/{domain}/gengine")
@@ -75,7 +74,7 @@ public class DomainMainController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/execute",
             consumes = {"application/json"}, produces = {"application/json"})
-    @ApiOperation(value = "Execute an action", notes = "Execute an action in a game")
+    @Operation(summary = "Execute an action", description = "Execute an action in a game")
     public void executeAction(@PathVariable String domain, @RequestBody ExecutionDataDTO data,
             HttpServletResponse res) {
         Game game = gameSrv.loadGameDefinitionById(data.getGameId());
@@ -98,7 +97,7 @@ public class DomainMainController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get player state", notes = "Get the state of a player in a game")
+    @Operation(summary = "Get player state", description = "Get the state of a player in a game")
     public PlayerStateDTO readPlayerState(@PathVariable String domain, @PathVariable String gameId,
             @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
@@ -109,15 +108,13 @@ public class DomainMainController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get player states",
-            notes = "Get the state of players in a game filter by optional player name")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve "),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page."),})
+    @Operation(summary = "Get player states",
+            description = "Get the state of players in a game filter by optional player name")
+    @Parameters({
+            @Parameter(name = "page", description = "Results page you want to retrieve "),
+            @Parameter(name = "size", description = "Number of records per page."),})
     public Page<PlayerStateDTO> readPlayerState(@PathVariable String domain,
-            @PathVariable String gameId, @ApiIgnore Pageable pageable,
+            @PathVariable String gameId, @Parameter(hidden = true) Pageable pageable,
             @RequestParam(required = false) String playerFilter) {
         gameId = decodePathVariable(gameId);
         List<PlayerStateDTO> resList = new ArrayList<PlayerStateDTO>();
@@ -139,7 +136,7 @@ public class DomainMainController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/notification/{gameId}",
             produces = {"application/json"})
-    @ApiOperation(value = "Get notifications", notes = "Get the notifications of a game")
+    @Operation(summary = "Get notifications", description = "Get the notifications of a game")
     @Deprecated
     public List<Notification> readNotification(@PathVariable String domain,
             @PathVariable String gameId, @RequestParam(required = false) Long timestamp) {
@@ -153,8 +150,8 @@ public class DomainMainController {
 
     @RequestMapping(method = RequestMethod.GET,
             value = "/notification/{gameId}/{playerId}", produces = {"application/json"})
-    @ApiOperation(value = "Get player notifications",
-            notes = "Get the player notifications of a game")
+    @Operation(summary = "Get player notifications",
+            description = "Get the player notifications of a game")
     @Deprecated
     public List<Notification> readNotification(@PathVariable String domain,
             @PathVariable String gameId, @PathVariable String playerId,

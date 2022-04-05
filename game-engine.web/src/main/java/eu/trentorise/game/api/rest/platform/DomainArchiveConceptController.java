@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eu.trentorise.game.managers.ArchiveManager;
 import eu.trentorise.game.model.core.ArchivedConcept;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @Profile("platform")
@@ -27,7 +27,7 @@ public class DomainArchiveConceptController {
     @RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/archive",
             produces = {
 			"application/json" })
-	@ApiOperation(value = "Read archive concepts for a game with optional filter parameters")
+	@Operation(summary = "Read archive concepts for a game with optional filter parameters")
     public List<ArchivedConcept> readArchivesForGame(@PathVariable String domain,
             @PathVariable String gameId,
 			@RequestParam(required = false) String playerId,

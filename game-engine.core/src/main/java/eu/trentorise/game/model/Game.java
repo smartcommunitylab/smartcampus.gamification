@@ -47,6 +47,7 @@ public class Game {
 	private Set<GameConcept> concepts;
 	private List<Level> levels = new ArrayList<>();
 	private Settings settings = new Settings();
+	private String notifyPCName;
 
 	public void setLevels(List<Level> levels) {
 		this.levels = levels;
@@ -66,52 +67,54 @@ public class Game {
 		this.id = id;
 	}
 
-    /**
-     * calculated the disclosure date for challenges more closed to from Date
-     * 
-     * @param from date
-     * @return the disclosure date or null if any challenge settings is defined for the game
-     * 
-     */
-    public Date nextChallengeDisclosureDate(Date from) {
-        ChallengeDisclosure disclosure = settings.getChallengeSettings().getDisclosure();
-        if (disclosure.getFrequency() != null) {
-            final Date disclosureStart = disclosure.getStartDate();
-            final TimeInterval frequency = disclosure.getFrequency();
+	/**
+	 * calculated the disclosure date for challenges more closed to from Date
+	 * 
+	 * @param from date
+	 * @return the disclosure date or null if any challenge settings is defined for
+	 *         the game
+	 * 
+	 */
+	public Date nextChallengeDisclosureDate(Date from) {
+		ChallengeDisclosure disclosure = settings.getChallengeSettings().getDisclosure();
+		if (disclosure.getFrequency() != null) {
+			final Date disclosureStart = disclosure.getStartDate();
+			final TimeInterval frequency = disclosure.getFrequency();
 
-            LocalDateTime cursorDate = new LocalDateTime(disclosureStart);
-            final DateTime fromDateTime = new DateTime(from);
-            while (cursorDate.toDateTime().isBefore(fromDateTime)) {
-                cursorDate = cursorDate.plus(periodFromFrequency(frequency));
-            }
-            return cursorDate.toDate();
-        } else {
-            return null;
-        }
-    }
+			LocalDateTime cursorDate = new LocalDateTime(disclosureStart);
+			final DateTime fromDateTime = new DateTime(from);
+			while (cursorDate.toDateTime().isBefore(fromDateTime)) {
+				cursorDate = cursorDate.plus(periodFromFrequency(frequency));
+			}
+			return cursorDate.toDate();
+		} else {
+			return null;
+		}
+	}
 
-    private ReadablePeriod periodFromFrequency(TimeInterval interval) {
-        ReadablePeriod period = null;
-        switch (interval.getUnit()) {
-            case DAY:
-                period = Days.days(interval.getValue());
-                break;
-            case HOUR:
-                period = Hours.hours(interval.getValue());
-                break;
-            case MINUTE:
-                period = Minutes.minutes(interval.getValue());
-                break;
-            case SEC:
-                period = Seconds.seconds(interval.getValue());
-                break;
-            case MILLISEC:
-                throw new IllegalArgumentException("millis not supported");
-            default:
-                break;
-        }
-        return period;
-    }
+	private ReadablePeriod periodFromFrequency(TimeInterval interval) {
+		ReadablePeriod period = null;
+		switch (interval.getUnit()) {
+		case DAY:
+			period = Days.days(interval.getValue());
+			break;
+		case HOUR:
+			period = Hours.hours(interval.getValue());
+			break;
+		case MINUTE:
+			period = Minutes.minutes(interval.getValue());
+			break;
+		case SEC:
+			period = Seconds.seconds(interval.getValue());
+			break;
+		case MILLISEC:
+			throw new IllegalArgumentException("millis not supported");
+		default:
+			break;
+		}
+		return period;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -208,6 +211,14 @@ public class Game {
 
 	public void setSettings(Settings settings) {
 		this.settings = settings;
+	}
+
+	public String getNotifyPCName() {
+		return notifyPCName;
+	}
+
+	public void setNotifyPCName(String notifyPCName) {
+		this.notifyPCName = notifyPCName;
 	}
 
 }

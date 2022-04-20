@@ -1,0 +1,21 @@
+package eu.trentorise.game.model
+
+//list any import classes here.
+import eu.trentorise.game.core.Utility;
+
+//declare any global variables here
+global Utility utils;
+
+rule 'point_interest_reached_go'
+when
+    InputData( $poi : data['poi'], $type : data['type'])
+	$act : Action(id == 'point_interest_reached')
+    Game( $gameId: id)
+    Player( $playerId : id)
+then
+    utils.log("ciaooooooooo");
+    utils.log($gameId);
+    utils.log($playerId);
+    utils.log((String) $poi);
+    utils.log((String) $type);
+end

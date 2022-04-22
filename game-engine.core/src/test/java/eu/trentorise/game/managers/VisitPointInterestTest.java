@@ -17,13 +17,9 @@ package eu.trentorise.game.managers;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
-import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.*;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
@@ -35,6 +31,7 @@ import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +53,8 @@ public class VisitPointInterestTest {
     private static final String ACTION = "point_interest_reached";
     private static final String DOMAIN = "my-domain";
     private static final String PLAYER = "pippo";
+    private static final String CHALLENGE = "visitPointInterest";
+    private static final String TYPE_POI = "citta";
 
     @Autowired
     private GameManager gameManager;
@@ -112,6 +111,13 @@ public class VisitPointInterestTest {
         gameManager.addRule(
                 new ClasspathRule(GAME, "rules/" + GAME + "/visitPoint.drl"));
 
+        // define challenge
+        ChallengeModel chaVisit = new ChallengeModel();
+        chaVisit.setName(CHALLENGE);
+        chaVisit.setGameId(GAME);
+        chaVisit.setVariables(new HashSet<>(Arrays.asList("target", "bonusScore", "bonusPointType", "typePoi")));
+        gameManager.saveChallengeModel(GAME, chaVisit);
+
         // define player states
 
         mongo.save(definePlayerState(PLAYER, 15d, 2d, 5d));
@@ -122,12 +128,51 @@ public class VisitPointInterestTest {
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
 
+        // give challenge
+        LocalDate today = new LocalDate();
+
+        Map<String, Object> chaData = new HashMap<>();
+        chaData.put("target", 2);
+        chaData.put("bonusScore", 100);
+        chaData.put("bonusPointType", "green leaves");
+        chaData.put("typePoi", TYPE_POI);
+        
+        playerSrv.assignChallenge(GAME, PLAYER,
+                new ChallengeAssignment(CHALLENGE, "challenge_easy", chaData, null,
+                        today.dayOfMonth().addToCopy(-2).toDate(),
+                        today.dayOfMonth().addToCopy(7).toDate()));
+
+        chaData.put("target", 3);
+
+        playerSrv.assignChallenge(GAME, PLAYER,
+                new ChallengeAssignment(CHALLENGE, "challenge_medium", chaData, null,
+                        today.dayOfMonth().addToCopy(-2).toDate(),
+                        today.dayOfMonth().addToCopy(7).toDate()));
+
         // visited the first point of interest
         Map<String, Object> data = new HashMap<>();
         data.put("poi", "topolinia");
-        data.put("type", "citta");
+        data.put("typePoi", TYPE_POI);
+
+        // first visit to topolinia
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
+
+        Assert.assertTrue(hasBadge(p, TYPE_POI, "topolinia"));
+
+        // second visit to topolinia
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+
+        Assert.assertTrue(hasBadge(p, TYPE_POI, "topolinia"));
+
+        // first visit to paperopoli (2 cities)
+        data.put("poi", "paperopoli");
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+
+        Assert.assertTrue(hasBadge(p, TYPE_POI, "paperopoli"));
+        printBadges(p, TYPE_POI);
 //
 //        t = new GeneralClassificationTask(null, 1, "green leaves", "week classification green");
 //        t.execute((GameContext) provider.getApplicationContext().getBean("gameCtx", GAME, t));
@@ -178,12 +223,41 @@ public class VisitPointInterestTest {
 
     }
 
-    private void check(String[] values, String playerId, String conceptName) {
-        List<PlayerState> states = playerSrv.loadStates(GAME);
-        StateAnalyzer analyzer = new StateAnalyzer(states);
-        Assert.assertTrue(String.format("Failure concept %s of  player %s", conceptName, playerId),
-                new HashSet<String>(Arrays.asList(values)).containsAll(
-                        analyzer.getBadges(analyzer.findPlayer(playerId), conceptName)));
+//    private void check(String[] values, String playerId, String conceptName) {
+//        List<PlayerState> states = playerSrv.loadStates(GAME);
+//        StateAnalyzer analyzer = new StateAnalyzer(states);
+//        Assert.assertTrue(String.format("Failure concept %s of  player %s", conceptName, playerId),
+//                new HashSet<String>(Arrays.asList(values)).containsAll(
+//                        analyzer.getBadges(analyzer.findPlayer(playerId), conceptName)));
+//    }
+
+    public boolean hasBadge(PlayerState ps, String collection, String badge) {
+        printBadges(ps, collection);
+
+        for (String s : getBadges(ps, collection)) {
+            if (s.equals(badge)) return true;
+        }
+
+        System.out.println(" ");
+
+        return false;
+    }
+
+    private void printBadges(PlayerState ps, String collection) {
+        System.out.printf("collection %s of player %s:", collection, ps.getPlayerId());
+        for (String s : getBadges(ps, collection))
+            System.out.print(s + ' ');
+    }
+
+
+    public List<String> getBadges(PlayerState ps, String name) {
+        for (GameConcept gc : ps.getState()) {
+            if (gc instanceof BadgeCollectionConcept && gc.getName().equals(name)) {
+                return ((BadgeCollectionConcept) gc).getBadgeEarned();
+            }
+        }
+
+        return Collections.<String>emptyList();
     }
 
     class StateAnalyzer {
@@ -229,23 +303,18 @@ public class VisitPointInterestTest {
             Double healthPoint, Double prPoint) {
         PlayerState player = new PlayerState(GAME, playerId);
         Set<GameConcept> myState = new HashSet<GameConcept>();
-        PointConcept pc = new PointConcept("green leaves");
+        PointConcept pc;
+        pc = new PointConcept("green leaves");
         pc.setScore(greenPoint);
         myState.add(pc);
-        pc = new PointConcept("health");
-        pc.setScore(healthPoint);
-        myState.add(pc);
-        pc = new PointConcept("p+r");
-        pc.setScore(prPoint);
-        myState.add(pc);
-        BadgeCollectionConcept badge = new BadgeCollectionConcept("green leaves");
+
+        BadgeCollectionConcept badge;
+        badge = new BadgeCollectionConcept("green leaves");
         myState.add(badge);
-        badge = new BadgeCollectionConcept("health");
+
+        badge = new BadgeCollectionConcept(TYPE_POI);
         myState.add(badge);
-        badge = new BadgeCollectionConcept("p+r");
-        myState.add(badge);
-        badge = new BadgeCollectionConcept("special");
-        myState.add(badge);
+
         player.setState(myState);
 
         return new StatePersistence(player);
@@ -263,51 +332,49 @@ public class VisitPointInterestTest {
 
         game.setConcepts(new HashSet<GameConcept>());
         game.getConcepts().add(new PointConcept("green leaves"));
-        game.getConcepts().add(new PointConcept("health"));
-        game.getConcepts().add(new PointConcept("p+r"));
+
         game.getConcepts().add(new BadgeCollectionConcept("green leaves"));
-        game.getConcepts().add(new BadgeCollectionConcept("health"));
-        game.getConcepts().add(new BadgeCollectionConcept("p+r"));
-        game.getConcepts().add(new BadgeCollectionConcept("special"));
 
-        game.setTasks(new HashSet<GameTask>());
+        game.getConcepts().add(new BadgeCollectionConcept(TYPE_POI));
 
-        // final classifications
-        TaskSchedule schedule = new TaskSchedule();
-        schedule.setCronExpression("0 20 * * * *");
-        GeneralClassificationTask task1 = new GeneralClassificationTask(schedule, 3, "green leaves",
-                "final classification green");
-        game.getTasks().add(task1);
-
-        // schedule = new TaskSchedule(); //
-        schedule.setCronExpression("0 * * * * *");
-        GeneralClassificationTask task2 =
-                new GeneralClassificationTask(schedule, 3, "health", "final classification health");
-        game.getTasks().add(task2);
-
-        // schedule = new TaskSchedule(); //
-        schedule.setCronExpression("0 * * * * *");
-        GeneralClassificationTask task3 =
-                new GeneralClassificationTask(schedule, 3, "p+r", "final classification p+r");
-        game.getTasks().add(task3);
-
-        // week classifications // schedule = new TaskSchedule(); //
-        schedule.setCronExpression("0 * * * * *");
-        GeneralClassificationTask task4 = new GeneralClassificationTask(schedule, 1, "green leaves",
-                "week classification green");
-        game.getTasks().add(task4);
-
-        // schedule = new TaskSchedule(); //
-        schedule.setCronExpression("0 * * * * *");
-        GeneralClassificationTask task5 =
-                new GeneralClassificationTask(schedule, 1, "health", "week classification health");
-        game.getTasks().add(task5);
-
-        // schedule = new TaskSchedule(); //
-        schedule.setCronExpression("0 * * * * *");
-        GeneralClassificationTask task6 =
-                new GeneralClassificationTask(schedule, 1, "p+r", "week classification p+r");
-        game.getTasks().add(task6);
+//        game.setTasks(new HashSet<GameTask>());
+//
+//        // final classifications
+//        TaskSchedule schedule = new TaskSchedule();
+//        schedule.setCronExpression("0 20 * * * *");
+//        GeneralClassificationTask task1 = new GeneralClassificationTask(schedule, 3, "green leaves",
+//                "final classification green");
+//        game.getTasks().add(task1);
+//
+//        // schedule = new TaskSchedule(); //
+//        schedule.setCronExpression("0 * * * * *");
+//        GeneralClassificationTask task2 =
+//                new GeneralClassificationTask(schedule, 3, "health", "final classification health");
+//        game.getTasks().add(task2);
+//
+//        // schedule = new TaskSchedule(); //
+//        schedule.setCronExpression("0 * * * * *");
+//        GeneralClassificationTask task3 =
+//                new GeneralClassificationTask(schedule, 3, "p+r", "final classification p+r");
+//        game.getTasks().add(task3);
+//
+//        // week classifications // schedule = new TaskSchedule(); //
+//        schedule.setCronExpression("0 * * * * *");
+//        GeneralClassificationTask task4 = new GeneralClassificationTask(schedule, 1, "green leaves",
+//                "week classification green");
+//        game.getTasks().add(task4);
+//
+//        // schedule = new TaskSchedule(); //
+//        schedule.setCronExpression("0 * * * * *");
+//        GeneralClassificationTask task5 =
+//                new GeneralClassificationTask(schedule, 1, "health", "week classification health");
+//        game.getTasks().add(task5);
+//
+//        // schedule = new TaskSchedule(); //
+//        schedule.setCronExpression("0 * * * * *");
+//        GeneralClassificationTask task6 =
+//                new GeneralClassificationTask(schedule, 1, "p+r", "week classification p+r");
+//        game.getTasks().add(task6);
 
         return game;
 

@@ -200,11 +200,12 @@ public class DomainPlayerController {
 			"application/json" })
 	@Operation(summary = "Get player state")
 	public PlayerStateDTO readPlayer(@PathVariable String domain, @PathVariable String gameId,
-			@PathVariable String playerId) {
+			@PathVariable String playerId,
+			 @RequestParam (required = false, defaultValue = "false") Boolean readChallenges) {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
         return converter
-                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true));
+                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, readChallenges, true));
 	}
 
 	// Update a player
@@ -276,7 +277,7 @@ public class DomainPlayerController {
 	@Operation(summary = "Get player state")
 	public PlayerStateDTO readState(@PathVariable String domain, @PathVariable String gameId,
 			@PathVariable String playerId) {
-		return readPlayer(domain, gameId, playerId);
+		return readPlayer(domain, gameId, playerId, true);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/levels", produces = {

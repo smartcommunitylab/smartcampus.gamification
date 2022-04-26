@@ -33,6 +33,8 @@ server:
     servlet:
       context-path: ${SERVER_CONTEXTPATH:/gamification}
     singeLogoutUrl: ${GAMIFICATION_REVERSEPROXY:}/gamification/singleLogout
+    error:
+      include-message: always
 
 spring:
   main:

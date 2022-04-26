@@ -347,8 +347,8 @@ public class Converter {
 				}
 			}
 
-			List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(ps.getGameId(), ps.getPlayerId()); 
-			res.loadChallengeConcepts(listCcs);
+//			List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(ps.getGameId(), ps.getPlayerId()); 
+//			res.loadChallengeConcepts(listCcs);
 
             res.getLevels().addAll(ps.getLevels());
             res.setInventory(ps.getInventory());

@@ -121,19 +121,22 @@ public class DBPlayerManager implements PlayerService {
     }
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert,
-            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
+            boolean mergeChallenges, boolean filterHiddenChallenges) {
         eu.trentorise.game.repo.StatePersistence state =
                 playerRepo.findByGameIdAndPlayerId(gameId, playerId);
         PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
                 : isTeam(state) ? new TeamState(state) : new PlayerState(state);
+              
         res = initDefaultLevels(initConceptsStructure(res, gameId), gameId);
-        if (mergeGroupChallenges) {
+        if (mergeChallenges) {
+        	List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId);
+    		res.loadChallengeConcepts(listCcs);
             res = mergeGroupChallenges(res, gameId);
-        }
-
-        if (filterHiddenChallenges) {
-            res = filterHiddenChallenges(res);
-        }
+            
+            if (filterHiddenChallenges) {
+                res = filterHiddenChallenges(res);
+            }
+        }       
 
         return res;
     }
@@ -742,6 +745,9 @@ public class DBPlayerManager implements PlayerService {
                     ChallengeConcept removedChallenge =
                             state.removeConcept(ch.getName(), ChallengeConcept.class);
                     removedChallenge.updateState(ChallengeState.REFUSED);
+                    ChallengeConceptPersistence saved = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId,
+							playerId, ch.getName());
+                    challengeConceptRepo.delete(saved);
                     archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
                     StatsLogger.logChallengeRefused(game.getDomain(), gameId, playerId,
                             executionId, executionTime, executionTime, ch.getName());
@@ -818,6 +824,9 @@ public class DBPlayerManager implements PlayerService {
                 .forEach(proposed -> {
                     ChallengeConcept removedChallenge =
                             state.removeConcept(proposed.getName(), ChallengeConcept.class);
+					ChallengeConceptPersistence saved = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId,
+							playerId, proposed.getName());
+					challengeConceptRepo.delete(saved);
                     removedChallenge.updateState(ChallengeState.AUTO_DISCARDED);
                     archiveSrv.moveToArchive(gameId, playerId, removedChallenge);
                 });

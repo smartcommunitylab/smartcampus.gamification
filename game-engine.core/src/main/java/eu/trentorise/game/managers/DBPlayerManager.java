@@ -307,7 +307,9 @@ public class DBPlayerManager implements PlayerService {
             PlayerState playerState = initDefaultLevels(
                     initConceptsStructure(new PlayerState(state), gameId), gameId);
             if (mergeGroupChallenges) {
-                playerState = mergeGroupChallenges(playerState, gameId);
+            	playerState = mergeGroupChallenges(playerState, gameId);
+            	List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerState.getPlayerId());
+            	playerState.loadChallengeConcepts(listCcs);
             }
             if (filterHiddenChallenges) {
                 playerState = filterHiddenChallenges(playerState);
@@ -349,7 +351,10 @@ public class DBPlayerManager implements PlayerService {
             PlayerState playerState = initDefaultLevels(
                     initConceptsStructure(new PlayerState(state), gameId), gameId);
             if (mergeGroupChallenges) {
-                playerState = mergeGroupChallenges(playerState, gameId);
+            	playerState = mergeGroupChallenges(playerState, gameId);
+            	List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId);
+            	playerState.loadChallengeConcepts(listCcs); 
+                
             }
             if (filterHiddenChallenges) {
                 playerState = filterHiddenChallenges(playerState);

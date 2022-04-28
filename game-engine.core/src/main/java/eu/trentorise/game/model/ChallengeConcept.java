@@ -31,6 +31,7 @@ public class ChallengeConcept extends GameConcept {
     private ChallengeState state;
     private Map<ChallengeState, Date> stateDate = new HashMap<>();
     private String origin;
+    private boolean group;
 
 
 
@@ -290,10 +291,6 @@ public class ChallengeConcept extends GameConcept {
         return GroupChallenge.MODELS.contains(modelName);
     }
     
-    public void setGroupChallenge() {
-    	this.groupChallenge = GroupChallenge.MODELS.contains(modelName); 
-    }
-
     public ChallengeConcept forced() {
         this.forced = true;
         return this;
@@ -376,5 +373,13 @@ public class ChallengeConcept extends GameConcept {
         }
         return this;
     }
+
+	public boolean isGroup() {
+		return this.isGroupChallenge();
+	}
+
+	public void setGroup(boolean group) {
+		this.group = group;
+	}
 
 }

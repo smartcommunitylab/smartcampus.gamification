@@ -47,6 +47,7 @@ public class ChallengeConcept extends GameConcept {
 
     @JsonIgnore
     private Clock clock;
+	private boolean groupChallenge;
 
     @JsonIgnore
     private static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -287,6 +288,10 @@ public class ChallengeConcept extends GameConcept {
     @JsonIgnore
     public boolean isGroupChallenge() {
         return GroupChallenge.MODELS.contains(modelName);
+    }
+    
+    public void setGroupChallenge() {
+    	this.groupChallenge = GroupChallenge.MODELS.contains(modelName); 
     }
 
     public ChallengeConcept forced() {

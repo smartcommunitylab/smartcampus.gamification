@@ -211,7 +211,9 @@ public class PlayerController {
     @Operation(summary = "Get player state")
     public PlayerStateDTO readPlayer(@PathVariable String gameId,
             @PathVariable String playerId,
-            @RequestParam (required = false, defaultValue = "false") Boolean readChallenges) {
+            @RequestParam (required = false, defaultValue = "false") Boolean readChallenges,
+            @RequestParam (required = false) List<String> points,
+            @RequestParam (required = false) List<String> badges) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
@@ -293,10 +295,12 @@ public class PlayerController {
             produces = {"application/json"})
     @Operation(summary = "Get player state")
     public PlayerStateDTO readState(@PathVariable String gameId,
-            @PathVariable String playerId) {
+            @PathVariable String playerId,
+            @RequestParam (required = false) List<String> points,
+            @RequestParam (required = false) List<String> badges) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        return readPlayer(gameId, playerId, true);
+        return readPlayer(gameId, playerId, true, points, badges);
     }
 
 

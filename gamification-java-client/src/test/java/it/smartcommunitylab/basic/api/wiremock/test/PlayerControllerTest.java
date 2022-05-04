@@ -26,6 +26,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Rule;
@@ -68,13 +69,13 @@ public class PlayerControllerTest {
 
 		String gameId = "mockGameId";
 		String playerId = "mockPlayerId";
-
+	
 		String mResponse = "{\"gameId\":\"mockGameId\"}";
 
-		stubFor(get(urlEqualTo("/data/game/" + gameId + "/player/" + playerId))
+		stubFor(get(urlEqualTo("/data/game/" + gameId + "/player/" + playerId + "?readChallenges=true"))
 				.willReturn(aResponse().withHeader("Content-Type", "application/json").withBody(mResponse)));
 
-		PlayerStateDTO result = api.readPlayerUsingGET(gameId, playerId);
+		PlayerStateDTO result = api.readPlayerUsingGET(gameId, playerId, true, null, null);
 
 		assertEquals(result.getGameId(), gameId);
 	}

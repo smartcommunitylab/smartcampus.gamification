@@ -70,7 +70,7 @@ public class PlayerControllerTest {
 		String gameId = "mockGameId";
 		String playerId = "mockPlayerId";
 	
-		String mResponse = "{\"gameId\":\"mockGameId\"}";
+		String mResponse = "{\"gameId\":\"mockGameId\",\"playerId\":\"mockPlayerId\"}";
 
 		stubFor(get(urlEqualTo("/data/game/" + gameId + "/player/" + playerId + "?readChallenges=true"))
 				.willReturn(aResponse().withHeader("Content-Type", "application/json").withBody(mResponse)));

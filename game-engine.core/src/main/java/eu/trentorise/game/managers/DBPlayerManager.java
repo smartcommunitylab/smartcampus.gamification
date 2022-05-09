@@ -1083,5 +1083,38 @@ public class DBPlayerManager implements PlayerService {
 		
 		return otherConcepts;
 	}
+
+	@Override
+	public PlayerState readPlayerState(String gameId, String playerId, boolean upsert, Boolean readChallenges,
+			boolean filterHiddenChallenges, List<String> points, List<String> badges) {
+		eu.trentorise.game.repo.StatePersistence state = null;
+
+		if (points != null && !points.isEmpty() && badges != null && !badges.isEmpty()) {
+			state = playerRepo.search(gameId, playerId, points, badges);
+		} else if (points != null && !points.isEmpty()) {
+			state = playerRepo.search(gameId, playerId, points, null);
+		} else if (badges != null && !badges.isEmpty()) {
+			state = playerRepo.search(gameId, playerId, null, badges);
+		} else {
+			state = playerRepo.findByGameIdAndPlayerId(gameId, playerId);
+		}
+
+		PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
+				: isTeam(state) ? new TeamState(state) : new PlayerState(state);
+
+		res = initDefaultLevels(res, gameId);
+		if (readChallenges) {
+			List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId);
+			res.loadChallengeConcepts(listCcs);
+			res = mergeGroupChallenges(res, gameId);
+
+			if (filterHiddenChallenges) {
+				res = filterHiddenChallenges(res);
+			}
+		}
+
+		return res;
+	}
+	
 	
 }

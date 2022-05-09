@@ -118,4 +118,7 @@ public interface PlayerService {
      */
     public List<String> readSystemPlayerState(String gameId, String playerId, String conceptName);
 
+	public PlayerState readPlayerState(String gameId, String playerId, boolean b, Boolean readChallenges, boolean c,
+			List<String> points, List<String> badges);
+
 }

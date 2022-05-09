@@ -407,4 +407,32 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		throw new IllegalArgumentException("Query seems to be not valid");
 	}
 
+	@Override
+	public StatePersistence search(String gameId, String playerId, List<String> points, List<String> badges) {
+		StatePersistence state = null;
+		Criteria criteria = Criteria.where("gameId").is(gameId).and("playerId").is(playerId);
+		Query query = new Query();
+		query.addCriteria(criteria);
+		query.fields().include("id").include("gameId").include("playerId").include("customData").include("inventory").include("levels").include("metaData");
+		if (points != null && !points.isEmpty()) {
+			for (String pt: points) {
+				query.fields().include("concepts.PointConcept." + pt );				
+			}	
+		}
+		
+		if (badges != null && !badges.isEmpty()) {
+			for (String bg: badges) {
+				query.fields().include("concepts.BadgeCollectionConcept." + bg );				
+			}
+		}
+		
+		List<StatePersistence> result = mongo.find(query, StatePersistence.class);
+
+		if (!result.isEmpty()) {
+			state = result.get(0);
+		}
+
+		return state;
+	}
+
 }

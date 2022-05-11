@@ -43,7 +43,7 @@ maven-build:
     - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
     - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
     - bower --allow-root install
-    - cd ${CI_PROJECT_DIR}/game-engine.web 
+    - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
     - ls ${CI_PROJECT_DIR}/.m2/
   artifacts:
@@ -99,7 +99,7 @@ container_scanning:
 #   rules:
 #     - if: '$CI_COMMIT_REF_NAME != "adc-aac-test"'
 
-deploy:
+deploy-dev:
   stage: deploy
   image: smartcommunitylab/kubectl-alpine:latest
   environment:
@@ -108,5 +108,17 @@ deploy:
     - echo "deploy backend"
     - kubectl -n playngo-dev set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
     - kubectl -n playngo-dev rollout status deployment gamification-engine
+  only:
+    - playAndGo-dev-v2
+
+deploy-test:
+  stage: deploy
+  image: smartcommunitylab/kubectl-alpine:latest
+  environment:
+    name: platform-new
+  script:
+    - echo "deploy backend"
+    - kubectl -n gamification-test set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
+    - kubectl -n gamification-test rollout status deployment gamification-engine
   only:
     - playAndGo-dev-v2

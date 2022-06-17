@@ -211,7 +211,7 @@ To deploy it to a remote Maven repository instead, configure the settings of the
 mvn clean install  deploy:deploy-file  \
 -Dmaven.test.skip=true \
 -Dpackaging=jar \
--DrepositoryId=SmartCommunityLab-releases \
+-DrepositoryId=SmartCommunity-releases \
 -DpomFile=pom.xml \
 -Durl=http://repository.smartcommunitylab.it/content/repositories/releases \
 -Dfile=target/gamification-java-client-2.4.0.jar

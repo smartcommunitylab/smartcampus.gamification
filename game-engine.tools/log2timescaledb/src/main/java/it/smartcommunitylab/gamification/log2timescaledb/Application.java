@@ -16,21 +16,29 @@ import it.smartcomunitylab.gamification.log2timescaledb.analyzer.RecordAnalyzerF
 
 public class Application {
 	private static final Logger logger = Logger.getLogger(Application.class);
+	private static String CONN_URL = "";
 	private static String FOLDER_INPUT = "";
 
 	public static void main(String args[]) {
-		final var connUrl = "jdbc:postgresql://localhost:5432/gamification?user=postgres&password=root";
 		FOLDER_INPUT = args[0];
+		CONN_URL = args[1]; 
 		logger.info(String.format("folder_input %s", FOLDER_INPUT));
 
-		try (var conn = DriverManager.getConnection(connUrl)) {
+		try (var conn = DriverManager.getConnection(CONN_URL)) {
+			deleteSchema(conn);
 			createSchema(conn);
-			insertData(conn, args[0]);
+			insertData(conn, FOLDER_INPUT);
 		} catch (SQLException ex) {
 			System.err.println(ex.getMessage());
 		} catch (IOException ex) {
 			// TODO Auto-generated catch block
 			System.err.println(ex.getMessage());
+		}
+	}
+
+	private static void deleteSchema(Connection conn) throws SQLException {
+		try (var stmt = conn.createStatement()) {
+			stmt.execute("DROP TABLE IF EXISTS eventLogs");
 		}
 	}
 
@@ -63,7 +71,7 @@ public class Application {
 				while ((row = reader.readLine()) != null) {
 					Record record;
 					try {
-					 record = analizza(row);
+						record = analizza(row);
 					} catch (IllegalArgumentException ile) {
 						System.err.println(ile.getMessage());
 						continue;
@@ -73,24 +81,25 @@ public class Application {
 					Map<String, String> recordFields = analyzer.extractData();
 					if (recordFields.containsKey("gameId")) {
 						counter++;
-						String type = recordFields.containsKey("type")?"'" + recordFields.get("type") + "'": null;
-						String actionName = recordFields.containsKey("actionName")?"'" + recordFields.get("actionName") + "'": null;
-						String ruleName = recordFields.containsKey("ruleName")?"'" + recordFields.get("ruleName") + "'": null;
-						String conceptName = recordFields.containsKey("conceptName")?"'" + recordFields.get("conceptName") + "'": null;
-						
+						String type = recordFields.containsKey("type") ? "'" + recordFields.get("type") + "'" : null;
+						String actionName = recordFields.containsKey("actionName")
+								? "'" + recordFields.get("actionName") + "'"
+								: null;
+						String ruleName = recordFields.containsKey("ruleName")
+								? "'" + recordFields.get("ruleName") + "'"
+								: null;
+						String conceptName = recordFields.containsKey("conceptName")
+								? "'" + recordFields.get("conceptName") + "'"
+								: null;
+
 						try (var stmt = conn.prepareStatement(
 								"INSERT INTO eventLogs (gameid, playerid, executionid, executionTime, time, type, actionname, rulename, conceptname, deltascore, score) VALUES("
-										+ "'" + recordFields.get("gameId") + "', "
-										+ "'" + recordFields.get("playerId") + "', "
-										+ "'" + recordFields.get("executionId") + "', "
-										+ "to_timestamp(" +  Long.valueOf(recordFields.get("executionTime"))/1000 + "), "
-										+ "to_timestamp(" +  Long.valueOf(recordFields.get("timestamp"))/1000 + "), "
-										+ type + ", "
-										+ actionName + ", "
-										+ ruleName + ", "
-										+ conceptName + ", "
-										+ recordFields.get("deltaScore") + ", "
-										+ recordFields.get("score") + ")")) {
+										+ "'" + recordFields.get("gameId") + "', " + "'" + recordFields.get("playerId")
+										+ "', " + "'" + recordFields.get("executionId") + "', " + "to_timestamp("
+										+ Long.valueOf(recordFields.get("executionTime")) / 1000 + "), "
+										+ "to_timestamp(" + Long.valueOf(recordFields.get("timestamp")) / 1000 + "), "
+										+ type + ", " + actionName + ", " + ruleName + ", " + conceptName + ", "
+										+ recordFields.get("deltaScore") + ", " + recordFields.get("score") + ")")) {
 							logger.info(counter + "-" + stmt);
 							stmt.execute();
 						}

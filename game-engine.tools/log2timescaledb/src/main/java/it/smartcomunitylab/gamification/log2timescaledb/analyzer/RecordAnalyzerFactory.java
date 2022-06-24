@@ -91,6 +91,10 @@ public class RecordAnalyzerFactory {
                 analyzer = new ChallengeInvitationCanceledRecordAnalyzer(record);
                 logger.debug("created ChallengeInvitationCanceled analyzer");
                 break;
+            case SURVEY_COMPLETED:
+                analyzer = new SurveyCompletedAnalyzer(record);
+                logger.debug("created SurveyCompleted analyzer");
+                break;
             default:
                 String msg = String.format("Format type %s is not supported", record.getType());
                 logger.error(msg);

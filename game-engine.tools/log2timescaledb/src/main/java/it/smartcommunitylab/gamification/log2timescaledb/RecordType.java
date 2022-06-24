@@ -7,7 +7,7 @@ public enum RecordType {
 
     CHALLENGE_ASSIGNED("ChallengeAssigned"), CHALLENGE_COMPLETED("ChallengeCompleted"),
 
-    USER_CREATION("UserCreation"), END_GAME_ACTION("EndGameAction"),
+    USER_CREATION("UserCreation"), SURVEY_COMPLETED("SurveyCompleted"), END_GAME_ACTION("EndGameAction"),
 
     LEVEL_GAINED("LevelGained"), BLACKLIST("Blacklist"),
 
@@ -75,6 +75,8 @@ public enum RecordType {
                 return RecordType.CHALLENGE_INVITATION_REFUSED;
             case "ChallengeInvitationCanceled":
                 return RecordType.CHALLENGE_INVITATION_CANCELED;
+            case "SurveyCompleted":
+            	return RecordType.SURVEY_COMPLETED;
             default:
                 throw new IllegalArgumentException(recordType + " non e' supportato");
         }

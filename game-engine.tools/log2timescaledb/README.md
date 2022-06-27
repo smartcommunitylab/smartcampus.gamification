@@ -16,6 +16,13 @@ For example
 ```shell
  java -jar target\log2timescaledb-1.0-jar-with-dependencies.jar "C:\home\dev\gamification\logs" "jdbc:postgresql://localhost:5432/gamification?user=postgres&password=root"
 ```
+
+For more info about timescaledb.
+
+```
 https://github.com/timescale/timescaledb
+```
+
+
 
 

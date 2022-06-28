@@ -96,17 +96,6 @@ container_scanning:
     DOCKER_USER: ""
     DOCKER_PASSWORD: ""
 
-stats_container_scanning:
-  stage: container-scan
-  dependencies:
-  - stats-container-build
-  variables:
-    DOCKER_IMAGE: $CONTAINER_IMAGE_STATS
-    DOCKERFILE_PATH: "Dockerfile"
-    GIT_STRATEGY: fetch
-    DOCKER_USER: ""
-    DOCKER_PASSWORD: ""
-
 deploy-dev:
   stage: deploy-dev
   image: smartcommunitylab/kubectl-alpine:latest

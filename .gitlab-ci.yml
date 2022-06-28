@@ -103,7 +103,7 @@ deploy-dev:
     name: platform-new
   script:
     - echo "deploy backend"
-    - kubectl -n playngo-dev set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE gamification-log2timescaledb=$CONTAINER_IMAGE_STATS --record=true
+    - kubectl -n playngo-dev set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
     - kubectl -n playngo-dev rollout status deployment gamification-engine
   only:
     - playAndGo-dev-v2

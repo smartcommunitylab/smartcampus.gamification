@@ -37,8 +37,8 @@ maven-build:
     - bower --allow-root install
     - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-    - cd ${CI_PROJECT_DIR}/game-engine.tools
-    - mvn clean install -DskipTests -D -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+    - cd ${CI_PROJECT_DIR}/game-engine.tools/log2timescaledb
+    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/.m2/

@@ -80,7 +80,7 @@ stats-container-build:
   script:
     - cd game-engine.tools/log2timescaledb
     - docker login -u $DHUB_USER -p $DHUB_PASS
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
+    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE_STATS -t $CONTAINER_IMAGE_STATS_LATEST .
     - docker push $CONTAINER_IMAGE_STATS
     - docker push $CONTAINER_IMAGE_STATS_LATEST
   only:

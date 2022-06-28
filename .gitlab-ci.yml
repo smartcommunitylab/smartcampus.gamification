@@ -5,7 +5,8 @@ services:
 
 stages:
   - build
-  - container-build
+  - stats-container-build
+  - backend-container-build
   - test
   - container-scan
   - deploy-dev
@@ -61,7 +62,7 @@ spotbugs-sast:
       sast: gl-sast-report.json
 
 backend-container-build:
-  stage: container-build
+  stage: backend-container-build
   environment:
     name: $CI_COMMIT_REF_NAME
   script:
@@ -73,7 +74,7 @@ backend-container-build:
     - playAndGo-dev-v2
 
 stats-container-build:
-  stage: container-build
+  stage: stats-container-build
   environment:
     name: $CI_COMMIT_REF_NAME
   script:

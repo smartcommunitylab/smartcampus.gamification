@@ -24,7 +24,7 @@ variables:
   CONTAINER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
   CONTAINER_IMAGE_STATS: smartcommunitylab/gamification-log2timescaledb:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-  CONTAINER_IMAGE__STATS_LATEST: smartcommunitylab/gamification-log2timescaledb:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_IMAGE_STATS_LATEST: smartcommunitylab/gamification-log2timescaledb:$CI_COMMIT_REF_NAME-latest
 
 maven-build:
   image: maven:3-openjdk-11

@@ -63,6 +63,8 @@ public class Application {
 	private static void insertData(final Connection conn, String path) throws SQLException, IOException {
 
 		for (File logFile : getStatsFile(FOLDER_INPUT)) {
+			if (logFile.getName().indexOf("stats.log") == -1) 
+				continue;
 			if (!logFile.isDirectory()) {
 				BufferedReader reader = new BufferedReader(new FileReader(logFile));
 				logger.info(String.format("read logFile: %s", logFile.getName()));

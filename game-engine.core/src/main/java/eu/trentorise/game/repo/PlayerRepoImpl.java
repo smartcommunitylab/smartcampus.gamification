@@ -414,16 +414,21 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		Query query = new Query();
 		query.addCriteria(criteria);
 		query.fields().include("id").include("gameId").include("playerId").include("customData").include("inventory").include("levels").include("metaData");
+		
 		if (points != null && !points.isEmpty()) {
 			for (String pt: points) {
 				query.fields().include("concepts.PointConcept." + pt );				
 			}	
+		} else {
+			query.fields().include("concepts.PointConcept");
 		}
 		
 		if (badges != null && !badges.isEmpty()) {
 			for (String bg: badges) {
 				query.fields().include("concepts.BadgeCollectionConcept." + bg );				
 			}
+		} else {
+			query.fields().include("concepts.BadgeCollectionConcept");
 		}
 		
 		List<StatePersistence> result = mongo.find(query, StatePersistence.class);

@@ -463,7 +463,11 @@ public class GameManager implements GameService {
                     notification.setChallengeName(challenge.getName());
                     notification.setGameId(game.getId());
                     notification.setPlayerId(player.getPlayerId());
-                    notificationSrv.notificate(notification);
+					notification.setModel(challenge.getModelName());
+					notification.setPointConcept(challenge.getFields().containsKey("counterName")
+							? String.valueOf(challenge.getFields().get("counterName"))
+							: "");
+					 notificationSrv.notificate(notification);
                 }
             });
             playerSrv.saveState(player);

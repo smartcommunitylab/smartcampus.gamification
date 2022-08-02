@@ -282,10 +282,11 @@ public class PlayerController {
             produces = {"application/json"})
     @Operation(summary = "Get player challenges")
     public List<ChallengeConcept> getPlayerChallenge(@PathVariable String gameId,
-            @PathVariable String playerId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false, defaultValue = "false") Boolean active) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        return challengeSrv.readChallenges(gameId, playerId);
+        return challengeSrv.readChallenges(gameId, playerId, active);
     }
 
     // Read user game state

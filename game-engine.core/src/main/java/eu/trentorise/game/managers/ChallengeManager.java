@@ -778,13 +778,13 @@ public class ChallengeManager {
 
 	}
 
-	public List<ChallengeConcept> readChallenges(String gameId, String playerId, Boolean active) {
+	public List<ChallengeConcept> readChallenges(String gameId, String playerId, Boolean incorso) {
 
 		List<ChallengeConcept> result = new ArrayList<>();
 		Query query = new Query();
 		Criteria criteria = Criteria.where("gameId").is(gameId).and("playerId").is(playerId);
-		if (active) {
-			criteria = criteria.and("concept.state").is(ChallengeState.ACTIVE);
+		if (incorso) {
+			criteria = criteria.and("concept.state").nin(ChallengeState.FAILED.name(), ChallengeState.COMPLETED.name());
 		}
 		query.addCriteria(criteria);
 		List<ChallengeConceptPersistence> singleChallenges = mongoTemplate.find(query,
@@ -793,8 +793,8 @@ public class ChallengeManager {
 		Query query2 = new Query();
 		Criteria criteria2 = Criteria.where("gameId").is(gameId).and("attendees")
 				.elemMatch(Criteria.where("playerId").is(playerId));
-		if (active) {
-			criteria2 = criteria2.and("state").is(ChallengeState.ACTIVE);
+		if (incorso) {
+			criteria2 = criteria2.and("state").nin(ChallengeState.FAILED.name(), ChallengeState.COMPLETED.name());
 		}
 		query2.addCriteria(criteria2);
 		List<GroupChallenge> groupChallenge = mongoTemplate.find(query2, GroupChallenge.class);

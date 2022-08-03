@@ -265,12 +265,11 @@ public class DomainPlayerController {
 			"application/json" })
 	@Operation(summary = "Get player challenges")
 	public List<ChallengeConcept> getPlayerChallenge(@PathVariable String domain, @PathVariable String gameId,
-			@PathVariable String playerId) {
+			@PathVariable String playerId,
+			@RequestParam(required = false, defaultValue = "false") Boolean incorso) {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
-
-        PlayerState state = playerSrv.loadState(gameId, playerId, true, false, true);
-		return state.challenges();
+		return challengeSrv.readChallenges(gameId, playerId, incorso);
 	}
 
 	// Read user game state

@@ -283,10 +283,10 @@ public class PlayerController {
     @Operation(summary = "Get player challenges")
     public List<ChallengeConcept> getPlayerChallenge(@PathVariable String gameId,
             @PathVariable String playerId,
-            @RequestParam(required = false, defaultValue = "false") Boolean incorso) {
+            @RequestParam(required = false, defaultValue = "false") Boolean inprogress) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        return challengeSrv.readChallenges(gameId, playerId, incorso);
+        return challengeSrv.readChallenges(gameId, playerId, inprogress);
     }
 
     // Read user game state

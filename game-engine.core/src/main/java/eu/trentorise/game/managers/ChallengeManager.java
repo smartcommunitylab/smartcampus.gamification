@@ -778,12 +778,12 @@ public class ChallengeManager {
 
 	}
 
-	public List<ChallengeConcept> readChallenges(String gameId, String playerId, Boolean incorso) {
+	public List<ChallengeConcept> readChallenges(String gameId, String playerId, Boolean inprogress) {
 
 		List<ChallengeConcept> result = new ArrayList<>();
 		Query query = new Query();
 		Criteria criteria = Criteria.where("gameId").is(gameId).and("playerId").is(playerId);
-		if (incorso) {
+		if (inprogress) {
 			criteria = criteria.and("concept.state").nin(ChallengeState.FAILED.name(), ChallengeState.COMPLETED.name());
 		}
 		query.addCriteria(criteria);
@@ -793,7 +793,7 @@ public class ChallengeManager {
 		Query query2 = new Query();
 		Criteria criteria2 = Criteria.where("gameId").is(gameId).and("attendees")
 				.elemMatch(Criteria.where("playerId").is(playerId));
-		if (incorso) {
+		if (inprogress) {
 			criteria2 = criteria2.and("state").nin(ChallengeState.FAILED.name(), ChallengeState.COMPLETED.name());
 		}
 		query2.addCriteria(criteria2);

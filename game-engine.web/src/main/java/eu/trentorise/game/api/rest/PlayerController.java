@@ -329,7 +329,7 @@ public class PlayerController {
             @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, true);
         if (state != null) {
             return state.getInventory();
         } else {

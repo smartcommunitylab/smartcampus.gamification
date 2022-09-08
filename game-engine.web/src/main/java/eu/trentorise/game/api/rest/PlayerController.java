@@ -210,12 +210,15 @@ public class PlayerController {
             produces = {"application/json"})
     @Operation(summary = "Get player state")
     public PlayerStateDTO readPlayer(@PathVariable String gameId,
-            @PathVariable String playerId) {
+            @PathVariable String playerId,
+            @RequestParam (required = false, defaultValue = "false") Boolean readChallenges,
+            @RequestParam (required = false) List<String> points,
+            @RequestParam (required = false) List<String> badges) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
 
         return converter
-                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true));
+                .convertPlayerState(playerSrv.readPlayerState(gameId, playerId, true, readChallenges, true, points, badges));
     }
 
     // Update a player
@@ -279,12 +282,11 @@ public class PlayerController {
             produces = {"application/json"})
     @Operation(summary = "Get player challenges")
     public List<ChallengeConcept> getPlayerChallenge(@PathVariable String gameId,
-            @PathVariable String playerId) {
+            @PathVariable String playerId,
+            @RequestParam(required = false, defaultValue = "false") Boolean inprogress) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-
-        PlayerState state = playerSrv.loadState(gameId, playerId, true, true, true);
-        return state.challenges();
+        return challengeSrv.readChallenges(gameId, playerId, inprogress);
     }
 
     // Read user game state
@@ -294,10 +296,12 @@ public class PlayerController {
             produces = {"application/json"})
     @Operation(summary = "Get player state")
     public PlayerStateDTO readState(@PathVariable String gameId,
-            @PathVariable String playerId) {
+            @PathVariable String playerId,
+            @RequestParam (required = false) List<String> points,
+            @RequestParam (required = false) List<String> badges) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        return readPlayer(gameId, playerId);
+        return readPlayer(gameId, playerId, true, points, badges);
     }
 
 
@@ -325,7 +329,7 @@ public class PlayerController {
             @PathVariable String playerId) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+        PlayerState state = playerSrv.loadState(gameId, playerId, false, true);
         if (state != null) {
             return state.getInventory();
         } else {

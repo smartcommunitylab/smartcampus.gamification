@@ -157,7 +157,7 @@ oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
 DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
 String domain = "domain_example"; // String | domain
-ChallengeAssignmentDTO challengeData = new ChallengeAssignmentDTO(); // ChallengeAssignmentDTO | challengeData
+it.smartcommunitylab.model.ext.ChallengeAssignmentDTO challengeData = new it.smartcommunitylab.model.ext.ChallengeAssignmentDTO(); // it.smartcommunitylab.model.ext.ChallengeAssignmentDTO | challengeData
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
@@ -173,7 +173,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **domain** | **String**| domain |
- **challengeData** | [**ChallengeAssignmentDTO**](ChallengeAssignmentDTO.md)| challengeData |
+ **challengeData** | [**it.smartcommunitylab.model.ext.ChallengeAssignmentDTO**](it.smartcommunitylab.model.ext.ChallengeAssignmentDTO.md)| challengeData |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
 
@@ -465,7 +465,7 @@ Name | Type | Description  | Notes
 
 <a name="readLevelsUsingGET"></a>
 # **readLevelsUsingGET**
-> List&lt;PlayerLevel&gt; readLevelsUsingGET(domain, gameId, playerId)
+> List&lt;it.smartcommunitylab.model.ext.PlayerLevel&gt; readLevelsUsingGET(domain, gameId, playerId)
 
 Get player levels
 
@@ -489,7 +489,7 @@ String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    List<PlayerLevel> result = apiInstance.readLevelsUsingGET(domain, gameId, playerId);
+    List<it.smartcommunitylab.model.ext.PlayerLevel> result = apiInstance.readLevelsUsingGET(domain, gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readLevelsUsingGET");
@@ -507,7 +507,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;PlayerLevel&gt;**](PlayerLevel.md)
+[**List&lt;it.smartcommunitylab.model.ext.PlayerLevel&gt;**](it.smartcommunitylab.model.ext.PlayerLevel.md)
 
 ### Authorization
 
@@ -520,7 +520,7 @@ Name | Type | Description  | Notes
 
 <a name="readPlayerUsingGET"></a>
 # **readPlayerUsingGET**
-> PlayerStateDTO readPlayerUsingGET(domain, gameId, playerId)
+> PlayerStateDTO readPlayerUsingGET(domain, gameId, playerId, readChallenges, points, badges)
 
 Get player state
 
@@ -543,8 +543,11 @@ DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
 String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
+Boolean readChallenges = true; // Boolean | readChallenges
+List<String> points = Arrays.asList("points_example"); // List<String> | 
+List<String> badges = Arrays.asList("badges_example"); // List<String> | 
 try {
-    PlayerStateDTO result = apiInstance.readPlayerUsingGET(domain, gameId, playerId);
+    PlayerStateDTO result = apiInstance.readPlayerUsingGET(domain, gameId, playerId, readChallenges, points, badges);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readPlayerUsingGET");
@@ -559,6 +562,9 @@ Name | Type | Description  | Notes
  **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
+ **readChallenges** | **Boolean**| readChallenges | [optional]
+ **points** | [**List&lt;String&gt;**](String.md)|  | [optional]
+ **badges** | [**List&lt;String&gt;**](String.md)|  | [optional]
 
 ### Return type
 
@@ -575,7 +581,7 @@ Name | Type | Description  | Notes
 
 <a name="readStateUsingGET"></a>
 # **readStateUsingGET**
-> PlayerStateDTO readStateUsingGET(domain, gameId, playerId)
+> PlayerStateDTO readStateUsingGET(domain, gameId, playerId, points, badges)
 
 Get player state
 
@@ -598,8 +604,10 @@ DomainPlayerControllerApi apiInstance = new DomainPlayerControllerApi();
 String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
+List<String> points = Arrays.asList("points_example"); // List<String> | 
+List<String> badges = Arrays.asList("badges_example"); // List<String> | 
 try {
-    PlayerStateDTO result = apiInstance.readStateUsingGET(domain, gameId, playerId);
+    PlayerStateDTO result = apiInstance.readStateUsingGET(domain, gameId, playerId, points, badges);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readStateUsingGET");
@@ -614,6 +622,8 @@ Name | Type | Description  | Notes
  **domain** | **String**| domain |
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
+ **points** | [**List&lt;String&gt;**](String.md)|  | [optional]
+ **badges** | [**List&lt;String&gt;**](String.md)|  | [optional]
 
 ### Return type
 
@@ -630,7 +640,7 @@ Name | Type | Description  | Notes
 
 <a name="readTeamsByMemberUsingGET1"></a>
 # **readTeamsByMemberUsingGET1**
-> List&lt;TeamDTO&gt; readTeamsByMemberUsingGET1(domain, gameId, playerId)
+> List&lt;it.smartcommunitylab.model.ext.TeamDTO&gt; readTeamsByMemberUsingGET1(domain, gameId, playerId)
 
 Get player teams
 
@@ -654,7 +664,7 @@ String domain = "domain_example"; // String | domain
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
 try {
-    List<TeamDTO> result = apiInstance.readTeamsByMemberUsingGET1(domain, gameId, playerId);
+    List<it.smartcommunitylab.model.ext.TeamDTO> result = apiInstance.readTeamsByMemberUsingGET1(domain, gameId, playerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DomainPlayerControllerApi#readTeamsByMemberUsingGET1");
@@ -672,7 +682,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;TeamDTO&gt;**](TeamDTO.md)
+[**List&lt;it.smartcommunitylab.model.ext.TeamDTO&gt;**](it.smartcommunitylab.model.ext.TeamDTO.md)
 
 ### Authorization
 

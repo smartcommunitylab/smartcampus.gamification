@@ -18,6 +18,7 @@ package eu.trentorise.game.managers;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.Map;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
@@ -226,13 +228,16 @@ public class QuartzTaskManager extends TaskDataManager {
 	}
 
 	private Date calculateStartDate(Date initialStart, long period) {
-        if (period <= 0) {
-            return initialStart;
-        }
+		if (period <= 0) {
+			return initialStart;
+		}
 		LocalDateTime start = new LocalDateTime(initialStart);
 		while (start.toDateTime().isBeforeNow()) {
-            // start = start.plusMillis((int) period);
-            start = start.plus(Duration.millis(period));
+			start = start.plus(Duration.millis(period));
+//			Date targetTime = Calendar.getInstance().getTime();
+//			targetTime = DateUtils.addMinutes(targetTime, 2);
+//			System.out.println("After adding targetTime : " + targetTime);
+//			return targetTime;	
 		}
 
 		return start.toDate();

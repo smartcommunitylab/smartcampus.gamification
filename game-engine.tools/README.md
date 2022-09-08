@@ -19,6 +19,11 @@ Follow instructions [HERE](user-creation-logs/README.md)
 ### log2elastic
 Push gamification events to elasticsearch storage. Take as input log statistic format.
 
+### log2timescaledb
+Push gamification events to postgres storage with timescaledb extension. The timescabledb Take as input log statistic format. 
+TimescaleDB is the open-source relational database for time-series and analytics. It is then integrated with Grafana console for
+for complex analytics data operation for the realization of gamification statistics dashboard.
+
 Follow instructions [HERE](log2elastic/README.md)
 ### dashboards/kibana
 Export of sample kibana dashboard for gamification statistic

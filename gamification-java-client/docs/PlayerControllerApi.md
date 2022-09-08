@@ -850,7 +850,7 @@ Name | Type | Description  | Notes
 
 <a name="readPlayerUsingGET"></a>
 # **readPlayerUsingGET**
-> PlayerStateDTO readPlayerUsingGET(gameId, playerId)
+> PlayerStateDTO readPlayerUsingGET(gameId, playerId, readChallenges, points, badges)
 
 Get player state
 
@@ -873,8 +873,11 @@ basic.setPassword("YOUR PASSWORD");
 PlayerControllerApi apiInstance = new PlayerControllerApi();
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
+Boolean readChallenges = true; // Boolean | readChallenges
+List<String> points = Arrays.asList("points_example"); // List<String> | 
+List<String> badges = Arrays.asList("badges_example"); // List<String> | 
 try {
-    PlayerStateDTO result = apiInstance.readPlayerUsingGET(gameId, playerId);
+    PlayerStateDTO result = apiInstance.readPlayerUsingGET(gameId, playerId, readChallenges, points, badges);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling PlayerControllerApi#readPlayerUsingGET");
@@ -888,6 +891,9 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
+ **readChallenges** | **Boolean**| readChallenges | [optional]
+ **points** | [**List&lt;String&gt;**](String.md)|  | [optional]
+ **badges** | [**List&lt;String&gt;**](String.md)|  | [optional]
 
 ### Return type
 
@@ -904,7 +910,7 @@ Name | Type | Description  | Notes
 
 <a name="readStateUsingGET"></a>
 # **readStateUsingGET**
-> PlayerStateDTO readStateUsingGET(gameId, playerId)
+> PlayerStateDTO readStateUsingGET(gameId, playerId, points, badges)
 
 Get player state
 
@@ -927,8 +933,10 @@ basic.setPassword("YOUR PASSWORD");
 PlayerControllerApi apiInstance = new PlayerControllerApi();
 String gameId = "gameId_example"; // String | gameId
 String playerId = "playerId_example"; // String | playerId
+List<String> points = Arrays.asList("points_example"); // List<String> | 
+List<String> badges = Arrays.asList("badges_example"); // List<String> | 
 try {
-    PlayerStateDTO result = apiInstance.readStateUsingGET(gameId, playerId);
+    PlayerStateDTO result = apiInstance.readStateUsingGET(gameId, playerId, points, badges);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling PlayerControllerApi#readStateUsingGET");
@@ -942,6 +950,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **gameId** | **String**| gameId |
  **playerId** | **String**| playerId |
+ **points** | [**List&lt;String&gt;**](String.md)|  | [optional]
+ **badges** | [**List&lt;String&gt;**](String.md)|  | [optional]
 
 ### Return type
 

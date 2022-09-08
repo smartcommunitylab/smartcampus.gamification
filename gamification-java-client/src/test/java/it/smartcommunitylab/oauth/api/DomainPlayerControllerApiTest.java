@@ -31,6 +31,7 @@
 package it.smartcommunitylab.oauth.api;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -247,10 +248,15 @@ public class DomainPlayerControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readPlayerUsingGETTest() throws ApiException {
-        PlayerStateDTO response = api.readPlayerUsingGET(domain, gameId, playerId);
+    public void readPlayerUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
+    	List<String> points = Arrays.asList("green leaves", "BikeSharing_Km");
+		List<String> badges = Arrays.asList("green leaves", "sustainable life");
+        PlayerStateDTO response = api.readPlayerUsingGET(domain, gameId, playerId, true, points, badges);
 
         // TODO: test validations
     }
@@ -268,7 +274,9 @@ public class DomainPlayerControllerApiTest {
      */
     @Test
     public void readStateUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
-        PlayerStateDTO response = api.readStateUsingGET(domain, gameId, playerId);
+    	List<String> points = Arrays.asList("green leaves", "BikeSharing_Km");
+		List<String> badges = Arrays.asList("green leaves", "sustainable life");
+        PlayerStateDTO response = api.readStateUsingGET(domain, gameId, playerId, points, badges);
         System.out.println(response.getGameId());
         
         Set<GameConcept> scores = response.getState().get("PointConcept");

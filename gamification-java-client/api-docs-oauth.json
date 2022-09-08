@@ -340,6 +340,33 @@
 						"description": "playerId",
 						"required": true,
 						"type": "string"
+					},
+					{
+						"name": "readChallenges",
+						"in": "query",
+						"description": "readChallenges",
+						"required": false,
+						"type": "boolean"
+					},
+					{
+						"name": "points",
+						"in": "query",
+						"required": false,
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"collectionFormat": "multi"
+					},
+					{
+						"name": "badges",
+						"in": "query",
+						"required": false,
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"collectionFormat": "multi"
 					}
 				],
 				"responses": {
@@ -973,7 +1000,27 @@
 						"description": "playerId",
 						"required": true,
 						"type": "string"
-					}
+					},
+					{
+						"name": "points",
+						"in": "query",
+						"required": false,
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"collectionFormat": "multi"
+					},
+					{
+						"name": "badges",
+						"in": "query",
+						"required": false,
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"collectionFormat": "multi"
+				}
 				],
 				"responses": {
 					"200": {

@@ -1,0 +1,122 @@
+image: docker:19
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - stats-container-build
+  - backend-container-build
+  - test
+  - container-scan
+  - deploy-dev
+  - deploy-test
+
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  SECURE_LOG_LEVEL: info
+  DS_JAVA_VERSION: 11
+  DOCKER_DRIVER: overlay
+  CONTAINER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_IMAGE_STATS: smartcommunitylab/gamification-log2timescaledb:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  CONTAINER_IMAGE_STATS_LATEST: smartcommunitylab/gamification-log2timescaledb:$CI_COMMIT_REF_NAME-latest
+
+maven-build:
+  image: maven:3-openjdk-11
+  stage: build
+  script:
+    - apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
+    - npm install -g bower
+    - cd ${CI_PROJECT_DIR}/game-engine.core
+    - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+    - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
+    - bower --allow-root install
+    - cd ${CI_PROJECT_DIR}/game-engine.web
+    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+    - cd ${CI_PROJECT_DIR}/game-engine.tools/log2timescaledb
+    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/.m2/
+      - game-engine.core/
+      - game-engine.web/
+      - game-engine.tools/log2timescaledb
+
+spotbugs-sast:
+  dependencies:
+    - maven-build
+  variables:
+    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/
+    SECURE_LOG_LEVEL: "debug"
+    SAST_JAVA_VERSION: 11
+    COMPILE: "false"
+    SAST_EXCLUDED_PATHS: "geme-engine.games, game-engine.test, game-engine.tools, gamification-java-client"
+    SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+
+backend-container-build:
+  stage: backend-container-build
+  environment:
+    name: $CI_COMMIT_REF_NAME
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
+    - docker push $CONTAINER_IMAGE
+    - docker push $CONTAINER_IMAGE_LATEST
+  only:
+    - playAndGo-dev-v2
+
+stats-container-build:
+  stage: stats-container-build
+  environment:
+    name: $CI_COMMIT_REF_NAME
+  script:
+    - cd game-engine.tools/log2timescaledb
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE_STATS -t $CONTAINER_IMAGE_STATS_LATEST .
+    - docker push $CONTAINER_IMAGE_STATS
+    - docker push $CONTAINER_IMAGE_STATS_LATEST
+  only:
+    - playAndGo-dev-v2
+
+container_scanning:
+  stage: container-scan
+  dependencies:
+  - backend-container-build
+  variables:
+    DOCKER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+    DOCKERFILE_PATH: "Dockerfile"
+    GIT_STRATEGY: fetch
+    DOCKER_USER: ""
+    DOCKER_PASSWORD: ""
+
+deploy-dev:
+  stage: deploy-dev
+  image: smartcommunitylab/kubectl-alpine:latest
+  environment:
+    name: platform-new
+  script:
+    - echo "deploy backend"
+    - kubectl -n playngo-dev set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
+    - kubectl -n playngo-dev rollout status deployment gamification-engine
+  only:
+    - playAndGo-dev-v2
+
+deploy-test:
+  stage: deploy-test
+  image: smartcommunitylab/kubectl-alpine:latest
+  environment:
+    name: platform-new
+  script:
+    - echo "deploy backend"
+    - kubectl -n gamification-test set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
+    - kubectl -n gamification-test rollout status deployment gamification-engine
+  only:
+    - playAndGo-dev-v2

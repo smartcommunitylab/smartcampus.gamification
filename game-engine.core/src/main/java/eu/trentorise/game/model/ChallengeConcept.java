@@ -31,6 +31,7 @@ public class ChallengeConcept extends GameConcept {
     private ChallengeState state;
     private Map<ChallengeState, Date> stateDate = new HashMap<>();
     private String origin;
+    private boolean group;
 
 
 
@@ -47,6 +48,7 @@ public class ChallengeConcept extends GameConcept {
 
     @JsonIgnore
     private Clock clock;
+	private boolean groupChallenge;
 
     @JsonIgnore
     private static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -288,7 +290,7 @@ public class ChallengeConcept extends GameConcept {
     public boolean isGroupChallenge() {
         return GroupChallenge.MODELS.contains(modelName);
     }
-
+    
     public ChallengeConcept forced() {
         this.forced = true;
         return this;
@@ -371,5 +373,13 @@ public class ChallengeConcept extends GameConcept {
         }
         return this;
     }
+
+	public boolean isGroup() {
+		return this.isGroupChallenge();
+	}
+
+	public void setGroup(boolean group) {
+		this.group = group;
+	}
 
 }

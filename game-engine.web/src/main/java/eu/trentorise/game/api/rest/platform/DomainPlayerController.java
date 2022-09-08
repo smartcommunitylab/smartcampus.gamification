@@ -199,12 +199,16 @@ public class DomainPlayerController {
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}", produces = {
 			"application/json" })
 	@Operation(summary = "Get player state")
-	public PlayerStateDTO readPlayer(@PathVariable String domain, @PathVariable String gameId,
-			@PathVariable String playerId) {
+	public PlayerStateDTO readPlayer(@PathVariable String domain,
+			@PathVariable String gameId,
+			@PathVariable String playerId,
+			@RequestParam (required = false, defaultValue = "false") Boolean readChallenges,
+			@RequestParam (required = false) List<String> points,
+	           @RequestParam (required = false) List<String> badges) {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
         return converter
-                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true));
+                .convertPlayerState(playerSrv.readPlayerState(gameId, playerId, true, readChallenges, true, points, badges));
 	}
 
 	// Update a player
@@ -261,12 +265,11 @@ public class DomainPlayerController {
 			"application/json" })
 	@Operation(summary = "Get player challenges")
 	public List<ChallengeConcept> getPlayerChallenge(@PathVariable String domain, @PathVariable String gameId,
-			@PathVariable String playerId) {
+			@PathVariable String playerId,
+			@RequestParam(required = false, defaultValue = "false") Boolean inprogress) {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
-
-        PlayerState state = playerSrv.loadState(gameId, playerId, true, false, true);
-		return state.challenges();
+		return challengeSrv.readChallenges(gameId, playerId, inprogress);
 	}
 
 	// Read user game state
@@ -274,9 +277,12 @@ public class DomainPlayerController {
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/state", produces = {
 			"application/json" })
 	@Operation(summary = "Get player state")
-	public PlayerStateDTO readState(@PathVariable String domain, @PathVariable String gameId,
-			@PathVariable String playerId) {
-		return readPlayer(domain, gameId, playerId);
+	public PlayerStateDTO readState(@PathVariable String domain,
+			@PathVariable String gameId,
+			@PathVariable String playerId,
+			@RequestParam (required = false) List<String> points,
+	        @RequestParam (required = false) List<String> badges) {
+		return readPlayer(domain, gameId, playerId, true, points, badges);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/api/{domain}/data/game/{gameId}/player/{playerId}/levels", produces = {

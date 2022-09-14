@@ -96,7 +96,7 @@ public class Application {
 								: null;
 
 						try (var stmt = conn.prepareStatement(
-								"INSERT INTO eventLogs (gameid, playerid, executionid, executionTime, time, type, actionname, rulename, conceptname, deltascore, score) VALUES("
+								"INSERT INTO eventLogs (gameid, playerid, executionid, executiontime, time, type, actionname, rulename, conceptname, deltascore, score) VALUES("
 										+ "'" + recordFields.get("gameId") + "', " + "'" + recordFields.get("playerId")
 										+ "', " + "'" + recordFields.get("executionId") + "', " + "to_timestamp("
 										+ Long.valueOf(recordFields.get("executionTime")) / 1000 + "), "

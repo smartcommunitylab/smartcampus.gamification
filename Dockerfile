@@ -12,7 +12,7 @@ RUN cd /tmp/game-engine.web/src/main/resources/consoleweb-assets && bower --allo
 WORKDIR /tmp/game-engine.web
 RUN mvn clean install -DskipTests
 
-FROM adoptopenjdk/openjdk11:alpine
+FROM eclipse-temurin:11-alpine
 ARG VER=3.0.0
 ARG USER=gamification
 ARG USER_ID=1005

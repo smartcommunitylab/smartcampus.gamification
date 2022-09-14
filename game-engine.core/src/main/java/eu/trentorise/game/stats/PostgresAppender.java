@@ -30,6 +30,7 @@ public class PostgresAppender extends WriterAppender {
 	public void append(LoggingEvent event) {
 		try {
 			if (conn == null) {
+				url = System.getenv("POSTGRES_URL");
 				conn = DriverManager.getConnection(url);
 			}
 			String row = super.layout.format(event);

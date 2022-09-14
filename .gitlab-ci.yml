@@ -11,6 +11,7 @@ stages:
   - container-scan
   - deploy-dev
   - deploy-test
+  - deploy-prod
 
 include:
   - template: Security/Container-Scanning.gitlab-ci.yml
@@ -23,8 +24,6 @@ variables:
   DOCKER_DRIVER: overlay
   CONTAINER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
-  CONTAINER_IMAGE_STATS: smartcommunitylab/gamification-log2timescaledb:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-  CONTAINER_IMAGE_STATS_LATEST: smartcommunitylab/gamification-log2timescaledb:$CI_COMMIT_REF_NAME-latest
 
 maven-build:
   image: maven:3-openjdk-11
@@ -73,19 +72,6 @@ backend-container-build:
   only:
     - playAndGo-dev-v2
 
-stats-container-build:
-  stage: stats-container-build
-  environment:
-    name: $CI_COMMIT_REF_NAME
-  script:
-    - cd game-engine.tools/log2timescaledb
-    - docker login -u $DHUB_USER -p $DHUB_PASS
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE_STATS -t $CONTAINER_IMAGE_STATS_LATEST .
-    - docker push $CONTAINER_IMAGE_STATS
-    - docker push $CONTAINER_IMAGE_STATS_LATEST
-  only:
-    - playAndGo-dev-v2
-
 container_scanning:
   stage: container-scan
   dependencies:
@@ -99,7 +85,9 @@ container_scanning:
 
 deploy-dev:
   stage: deploy-dev
-  image: smartcommunitylab/kubectl-alpine:latest
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
   environment:
     name: platform-new
   script:
@@ -111,7 +99,9 @@ deploy-dev:
 
 deploy-test:
   stage: deploy-test
-  image: smartcommunitylab/kubectl-alpine:latest
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
   environment:
     name: platform-new
   script:
@@ -120,3 +110,17 @@ deploy-test:
     - kubectl -n gamification-test rollout status deployment gamification-engine
   only:
     - playAndGo-dev-v2
+
+deploy-prod:
+  stage: deploy-prod
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: platform-new
+  script:
+    - echo "deploy backend"
+    - kubectl -n playngo-prod set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
+    - kubectl -n playngo-prod rollout status deployment gamification-engine
+  only:
+    - playAndGo-prod-v2

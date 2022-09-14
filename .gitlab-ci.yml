@@ -71,6 +71,7 @@ backend-container-build:
     - docker push $CONTAINER_IMAGE_LATEST
   only:
     - playAndGo-dev-v2
+    - playAndGo-prod-v2
 
 container_scanning:
   stage: container-scan

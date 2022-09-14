@@ -146,7 +146,7 @@ public class GameWorkflow implements Workflow {
                     groupChallenge.updateState(ChallengeState.COMPLETED, executionDate);
                     challengeSrv.save(groupChallenge);
                     challengeSrv.sendChallengeNotification(groupChallenge);
-                    challengeSrv.logStatsEvents(g, groupChallenge, executionMoment);
+                    challengeSrv.logStatsEvents(g, groupChallenge);
                     LogHub.info(gameId, logger,
                             String.format(
                                     "Player %s wins group challenge %s of type %s, he will be rewarded",

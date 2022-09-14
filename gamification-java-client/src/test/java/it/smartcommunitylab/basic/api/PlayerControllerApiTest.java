@@ -31,6 +31,7 @@
 package it.smartcommunitylab.basic.api;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -68,9 +69,9 @@ public class PlayerControllerApiTest {
     private ApiClient apiClient;
     private final String userName = "long-rovereto";
     private final String password = "rov";
-    private String baseUrl = "http://localhost:6060/gamification";
-    private String gameId = "57ac710fd4c6ac7872b0e7a1";
-    private String playerId = "24153";
+    private String baseUrl = "http://localhost:8010/gamification";
+    private String gameId = "62555de98d3ac50d84315d70";
+    private String playerId = "test1";
     private String conceptName = "green leaves";
 
     @Before
@@ -99,7 +100,7 @@ public class PlayerControllerApiTest {
      */
     @Test
     public void acceptChallengeUsingPOSTTest() throws ApiException {
-        String challengeName = null;
+        String challengeName = "test";
         ChallengeConcept response = api.acceptChallengeUsingPOST(gameId, playerId, challengeName);
 
         // TODO: test validations
@@ -193,7 +194,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
+//    @Test
     public void cancelInvitationUsingPOSTTest() throws ApiException {
         String challengeName = null;
         api.cancelInvitationUsingPOST(gameId, playerId, challengeName);
@@ -225,7 +226,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
+//    @Test
     public void deletePlayerUsingDELETE1Test() throws ApiException {
         api.deletePlayerUsingDELETE1(gameId, playerId);
 
@@ -315,10 +316,15 @@ public class PlayerControllerApiTest {
      *
      * @throws ApiException
      *          if the Api call fails
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @Test
-    public void readPlayerUsingGETTest() throws ApiException {
-        PlayerStateDTO response = api.readPlayerUsingGET(gameId, playerId);
+    public void readPlayerUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
+    	List<String> points = Arrays.asList("green leaves", "BikeSharing_Km");
+		List<String> badges = Arrays.asList("green leaves", "sustainable life");
+        PlayerStateDTO response = api.readPlayerUsingGET(gameId, playerId, true, points, badges);
         System.out.println(response.getPlayerId());
 
         // TODO: test validations
@@ -337,7 +343,9 @@ public class PlayerControllerApiTest {
      */
     @Test
     public void readStateUsingGETTest() throws ApiException, JsonParseException, JsonMappingException, IOException {
-        PlayerStateDTO response = api.readStateUsingGET(gameId, playerId);
+    	List<String> points = Arrays.asList("green leaves", "BikeSharing_Km");
+		List<String> badges = Arrays.asList("green leaves", "sustainable life");
+        PlayerStateDTO response = api.readStateUsingGET(gameId, playerId, points, badges);
         System.out.println(response.getGameId());
        
         Set<GameConcept> scores = response.getState().get("PointConcept");
@@ -387,7 +395,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
+//    @Test
     public void refuseInvitationUsingPOSTTest() throws ApiException {
         String gameId = null;
         String playerId = null;
@@ -424,7 +432,7 @@ public class PlayerControllerApiTest {
      * @throws ApiException
      *          if the Api call fails
      */
-    @Test
+//    @Test
     public void unBlockPlayerUsingPOSTTest() throws ApiException {
         String gameId = null;
         String playerId = null;

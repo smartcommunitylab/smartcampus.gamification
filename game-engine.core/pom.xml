@@ -171,6 +171,12 @@
 			<version>5.5.0</version>
 		</dependency>
 
+		<!-- POSTGRES -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.3.6</version>
+		</dependency>
 
 	</dependencies>
 

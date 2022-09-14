@@ -433,8 +433,6 @@ public class ChallengeManagerTest {
                 invitationChallenge.getInstanceName());
         assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
         PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
-        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "wasp"); 
-        waspState.loadChallengeConcepts(listCcs);
         long proposedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
         long assignedCount = waspState.challenges().stream()
@@ -487,8 +485,8 @@ public class ChallengeManagerTest {
                 challengeWithAntMan.getInstanceName());
         assertThat(invitationAccepted.getState(), is(ChallengeState.ASSIGNED));
         PlayerState waspState = playerSrv.loadState("GAME", "wasp", false, true);
-        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "wasp"); 
-        waspState.loadChallengeConcepts(listCcs);
+//        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "wasp"); 
+//        waspState.loadChallengeConcepts(listCcs);
         long proposedCount = waspState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.PROPOSED).count();
         long assignedCount = waspState.challenges().stream()
@@ -496,8 +494,8 @@ public class ChallengeManagerTest {
         assertThat(assignedCount, is(1L));
         assertThat(proposedCount, is(2L));
         PlayerState antManState = playerSrv.loadState("GAME", "ant-man", false, true);
-        listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "ant-man"); 
-        antManState.loadChallengeConcepts(listCcs);
+//        listCcs = challengeConceptRepo.findByGameIdAndPlayerId("GAME", "ant-man"); 
+//        antManState.loadChallengeConcepts(listCcs);
         long antManAssignedCounter = antManState.challenges().stream()
                 .filter(c -> c.getState() == ChallengeState.ASSIGNED).count();
         long antManProposedCounter = antManState.challenges().stream()

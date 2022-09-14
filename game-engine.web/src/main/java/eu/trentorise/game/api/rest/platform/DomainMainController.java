@@ -98,12 +98,16 @@ public class DomainMainController {
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}/{playerId}",
             produces = {"application/json"})
     @Operation(summary = "Get player state", description = "Get the state of a player in a game")
-    public PlayerStateDTO readPlayerState(@PathVariable String domain, @PathVariable String gameId,
-            @PathVariable String playerId) {
+    public PlayerStateDTO readPlayerState(@PathVariable String domain, 
+    		@PathVariable String gameId,
+            @PathVariable String playerId,
+            @RequestParam (required = false, defaultValue = "false") Boolean readChallenges,
+            @RequestParam (required = false) List<String> points,
+            @RequestParam (required = false) List<String> badges) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
         return converter
-                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, false, true));
+                .convertPlayerState(playerSrv.readPlayerState(gameId, playerId, true, readChallenges, true, points, badges));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",

@@ -251,6 +251,8 @@ public class NotificationControllerTest {
         completedNotification.setPlayerId(PLAYER_1);
         completedNotification.setGameId(GAME);
         completedNotification.setChallengeName("challenge_1");
+        completedNotification.setModel("model1");
+        completedNotification.setPointConcept("pc");
         notificationManager.notificate(completedNotification);
 
     }

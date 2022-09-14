@@ -5,10 +5,13 @@ services:
 
 stages:
   - build
-  - container-build
+  - stats-container-build
+  - backend-container-build
   - test
   - container-scan
-  - deploy
+  - deploy-dev
+  - deploy-test
+  - deploy-prod
 
 include:
   - template: Security/Container-Scanning.gitlab-ci.yml
@@ -21,21 +24,10 @@ variables:
   DOCKER_DRIVER: overlay
   CONTAINER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
-  # MAVEN_CLI_OPTS: -DskipTests --batch-mode
-
-# maven-test:
-#   image: maven:3-openjdk-8
-#   stage: test
-#   script:
-#     - mvn $MAVEN_REPO test
 
 maven-build:
   image: maven:3-openjdk-11
   stage: build
-  # only:
-  #   refs:
-  #     - dev
-  #     - master
   script:
     - apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
     - npm install -g bower
@@ -43,14 +35,16 @@ maven-build:
     - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
     - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
     - bower --allow-root install
-    - cd ${CI_PROJECT_DIR}/game-engine.web 
+    - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-    - ls ${CI_PROJECT_DIR}/.m2/
+    - cd ${CI_PROJECT_DIR}/game-engine.tools/log2timescaledb
+    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/.m2/
       - game-engine.core/
       - game-engine.web/
+      - game-engine.tools/log2timescaledb
 
 spotbugs-sast:
   dependencies:
@@ -67,7 +61,7 @@ spotbugs-sast:
       sast: gl-sast-report.json
 
 backend-container-build:
-  stage: container-build
+  stage: backend-container-build
   environment:
     name: $CI_COMMIT_REF_NAME
   script:
@@ -77,6 +71,7 @@ backend-container-build:
     - docker push $CONTAINER_IMAGE_LATEST
   only:
     - playAndGo-dev-v2
+    - playAndGo-prod-v2
 
 container_scanning:
   stage: container-scan
@@ -88,20 +83,12 @@ container_scanning:
     GIT_STRATEGY: fetch
     DOCKER_USER: ""
     DOCKER_PASSWORD: ""
-#   rules:
-#     - if: '$CI_COMMIT_REF_NAME != "adc-aac-test"'
-#
-# gemnasium-dependency_scanning:
-#   rules:
-#     - if: '$CI_COMMIT_REF_NAME != "adc-aac-test"'
-#
-# spotbugs-sast:
-#   rules:
-#     - if: '$CI_COMMIT_REF_NAME != "adc-aac-test"'
 
-deploy:
-  stage: deploy
-  image: smartcommunitylab/kubectl-alpine:latest
+deploy-dev:
+  stage: deploy-dev
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
   environment:
     name: platform-new
   script:
@@ -110,3 +97,31 @@ deploy:
     - kubectl -n playngo-dev rollout status deployment gamification-engine
   only:
     - playAndGo-dev-v2
+
+deploy-test:
+  stage: deploy-test
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: platform-new
+  script:
+    - echo "deploy backend"
+    - kubectl -n gamification-test set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
+    - kubectl -n gamification-test rollout status deployment gamification-engine
+  only:
+    - playAndGo-dev-v2
+
+deploy-prod:
+  stage: deploy-prod
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: platform-new
+  script:
+    - echo "deploy backend"
+    - kubectl -n playngo-prod set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
+    - kubectl -n playngo-prod rollout status deployment gamification-engine
+  only:
+    - playAndGo-prod-v2

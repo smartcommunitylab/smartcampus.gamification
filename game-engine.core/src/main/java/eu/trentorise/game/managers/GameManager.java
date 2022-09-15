@@ -521,7 +521,19 @@ public class GameManager implements GameService {
     public boolean deleteGame(String gameId) {
         boolean res = false;
         if (gameId != null) {
+            Game g = loadGameDefinitionById(gameId);
+            for(String ruleUrl: g.getRules()) {
+            	if (g != null && ruleUrl != null && ruleUrl.indexOf(DBRule.URL_PROTOCOL) != -1) {
+                    String id = ruleUrl.substring(5);
+                    ruleRepo.deleteById(id);
+                }           	
+            }
+            Set<ChallengeModel> gameModels =  challengeModelRepo.findByGameId(gameId);
+            for (ChallengeModel cm : gameModels) {
+            	challengeModelRepo.deleteByGameIdAndId(gameId, cm.getId());
+            }	
             gameRepo.deleteById(gameId);
+            kieContainerFactory.purgeContainer(gameId);
             res = true;
         }
         return res;

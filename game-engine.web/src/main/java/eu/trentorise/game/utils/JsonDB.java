@@ -86,7 +86,7 @@ public class JsonDB {
 			mapTemp.put("challengeModels", gameChallengeModels);
 		}
 		File f = new File(exportPath, "db.json");
-		logger.info("Export db file to path" + exportPath);
+		logger.info("Export db file to path " + exportPath);
 		mapper.writerWithDefaultPrettyPrinter().writeValue(f, gameJson);
 	}
 
@@ -113,7 +113,7 @@ public class JsonDB {
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			File f = new File(importPath, "db.json");
 			Map<?, ?> map = mapper.readValue(f, Map.class);
-			logger.info("Import db from file path" + exportPath);
+			logger.info("Import db from file path " + exportPath);
 			map.entrySet().forEach(entry -> {
 				Map<String, Object> gameData = (Map<String, Object>) entry.getValue();
 				GamePersistence g = mapper.convertValue(gameData.get("game"), GamePersistence.class);

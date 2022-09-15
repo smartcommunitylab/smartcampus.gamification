@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import eu.trentorise.game.api.rest.ChallengeController;
 import eu.trentorise.game.managers.GameManager;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
@@ -32,6 +35,8 @@ import eu.trentorise.game.services.TaskService;
 @Repository
 public class JsonDB {
 
+	private static final Logger logger = LoggerFactory.getLogger(JsonDB.class); 
+	
 	@Autowired
 	@Value("${import.dir}")
 	private String importPath;
@@ -81,6 +86,7 @@ public class JsonDB {
 			mapTemp.put("challengeModels", gameChallengeModels);
 		}
 		File f = new File(exportPath, "db.json");
+		logger.info("Export db file to path" + exportPath);
 		mapper.writerWithDefaultPrettyPrinter().writeValue(f, gameJson);
 	}
 
@@ -107,6 +113,7 @@ public class JsonDB {
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			File f = new File(importPath, "db.json");
 			Map<?, ?> map = mapper.readValue(f, Map.class);
+			logger.info("Import db from file path" + exportPath);
 			map.entrySet().forEach(entry -> {
 				Map<String, Object> gameData = (Map<String, Object>) entry.getValue();
 				GamePersistence g = mapper.convertValue(gameData.get("game"), GamePersistence.class);

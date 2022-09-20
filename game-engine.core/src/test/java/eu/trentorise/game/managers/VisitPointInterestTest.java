@@ -77,6 +77,7 @@ public class VisitPointInterestTest {
         mongo.dropCollection(StatePersistence.class);
         mongo.dropCollection(GamePersistence.class);
         mongo.dropCollection(NotificationPersistence.class);
+        mongo.dropCollection(ChallengeModel.class);
     }
 
     @Test

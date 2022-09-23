@@ -794,7 +794,7 @@ public class ChallengeManager {
 		Criteria criteria2 = Criteria.where("gameId").is(gameId).and("attendees")
 				.elemMatch(Criteria.where("playerId").is(playerId));
 		if (inprogress) {
-			criteria2 = criteria2.and("concept.end").gt(new Date());
+			criteria2 = criteria2.and("end").gt(new Date());
 		}
 		query2.addCriteria(criteria2);
 		List<GroupChallenge> groupChallenge = mongoTemplate.find(query2, GroupChallenge.class);

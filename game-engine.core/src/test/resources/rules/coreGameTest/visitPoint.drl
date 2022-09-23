@@ -33,7 +33,7 @@ lock-on-active true
 salience -3000
 when
     $challenge : ChallengeConcept( modelName == "visitPointInterest", $target: fields["target"] != null, $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], $bcName : fields["typePoi"], isCompleted() != true )
-    $bc : BadgeCollectionConcept(name == $bcName, $badges : badgeEarned, badgeEarned.size() >= (Integer) $target)
+    $bc : BadgeCollectionConcept(name == $bcName, $badges : badgeEarned, badgeEarned.size() >= (Double) $target)
     $pc : PointConcept(name == (String) $bonusPointType)
     Player($playerId : id)
     Game( $gameId: id)

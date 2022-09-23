@@ -784,7 +784,7 @@ public class ChallengeManager {
 		Query query = new Query();
 		Criteria criteria = Criteria.where("gameId").is(gameId).and("playerId").is(playerId);
 		if (inprogress) {
-			criteria = criteria.and("concept.state").nin(ChallengeState.FAILED.name(), ChallengeState.COMPLETED.name());
+			criteria = criteria.and("concept.end").gt(new Date());
 		}
 		query.addCriteria(criteria);
 		List<ChallengeConceptPersistence> singleChallenges = mongoTemplate.find(query,
@@ -794,7 +794,7 @@ public class ChallengeManager {
 		Criteria criteria2 = Criteria.where("gameId").is(gameId).and("attendees")
 				.elemMatch(Criteria.where("playerId").is(playerId));
 		if (inprogress) {
-			criteria2 = criteria2.and("state").nin(ChallengeState.FAILED.name(), ChallengeState.COMPLETED.name());
+			criteria2 = criteria2.and("concept.end").gt(new Date());
 		}
 		query2.addCriteria(criteria2);
 		List<GroupChallenge> groupChallenge = mongoTemplate.find(query2, GroupChallenge.class);

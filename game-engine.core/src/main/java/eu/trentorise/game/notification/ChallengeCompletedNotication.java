@@ -7,6 +7,7 @@ public class ChallengeCompletedNotication extends Notification {
 	private String model;
 	private String pointConcept;
 	private long start;
+	private long end;
 
 	public String getChallengeName() {
 		return challengeName;
@@ -39,10 +40,18 @@ public class ChallengeCompletedNotication extends Notification {
 	public void setStart(long start) {
 		this.start = start;
 	}
+	
+	public long getEnd() {
+		return end;
+	}
+
+	public void setEnd(long end) {
+		this.end = end;
+	}
 
 	@Override
 	public String toString() {
-		return String.format("[gameId=%s, playerId=%s, challengeName=%s, model=%s, pointConcept=%s, start=%s]", getGameId(), getPlayerId(), challengeName, model, pointConcept, start);
+		return String.format("[gameId=%s, playerId=%s, challengeName=%s, model=%s, pointConcept=%s, start=%s, end=%s]", getGameId(), getPlayerId(), challengeName, model, pointConcept, start, end);
 	}
 
 }

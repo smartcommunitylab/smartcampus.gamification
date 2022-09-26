@@ -468,6 +468,7 @@ public class GameManager implements GameService {
 							? String.valueOf(challenge.getFields().get("counterName"))
 							: "");
 					notification.setStart(challenge.getStart().getTime());
+					notification.setEnd(challenge.getEnd().getTime());
 					notificationSrv.notificate(notification);
                 }
             });

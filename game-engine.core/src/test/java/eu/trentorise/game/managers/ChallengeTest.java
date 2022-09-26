@@ -774,6 +774,7 @@ public class ChallengeTest {
         player.setPlayerId("player");
         player.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(player);
+        groupChallenge.setStart(LocalDate.now().minusDays(2).toDate());
         groupChallenge.setEnd(LocalDate.now().minusDays(1).toDate());
         groupChallenge.setState(ChallengeState.ASSIGNED);
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
@@ -795,6 +796,7 @@ public class ChallengeTest {
         player.setPlayerId("player");
         player.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(player);
+        groupChallenge.setStart(LocalDate.now().minusDays(2).toDate());
         groupChallenge.setEnd(LocalDate.now().minusDays(1).toDate());
         groupChallenge.setState(ChallengeState.ASSIGNED);
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
@@ -808,6 +810,7 @@ public class ChallengeTest {
         player.setPlayerId("player");
         player.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(player);
+        groupChallenge.setStart(LocalDateTime.now().minusHours(10).toDate());
         groupChallenge.setEnd(LocalDateTime.now().minusHours(5).toDate());
         groupChallenge.setState(ChallengeState.ASSIGNED);
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
@@ -833,6 +836,7 @@ public class ChallengeTest {
         player.setPlayerId("player");
         player.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(player);
+        groupChallenge.setStart(LocalDate.now().minusDays(2).toDate());
         groupChallenge.setEnd(LocalDate.now().minusDays(1).toDate());
         groupChallenge.setState(ChallengeState.ASSIGNED);
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
@@ -846,6 +850,7 @@ public class ChallengeTest {
         player.setPlayerId("player");
         player.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(player);
+        groupChallenge.setStart(LocalDateTime.now().minusHours(10).toDate());
         groupChallenge.setEnd(LocalDateTime.now().minusHours(5).toDate());
         groupChallenge.setState(ChallengeState.ASSIGNED);
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));
@@ -859,6 +864,7 @@ public class ChallengeTest {
         player.setPlayerId("player");
         player.setRole(Role.GUEST);
         groupChallenge.getAttendees().add(player);
+        groupChallenge.setStart(LocalDateTime.now().minusDays(1).toDate());
         groupChallenge.setEnd(LocalDateTime.now().plusDays(5).toDate());
         groupChallenge.setState(ChallengeState.ASSIGNED);
         groupChallenge.setChallengePointConcept(new PointConceptRef("green leaves", null));

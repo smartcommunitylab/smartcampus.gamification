@@ -582,6 +582,7 @@ public class GameManagerTest {
         challenge1.setChallengeModel(GroupChallenge.MODEL_NAME_COMPETITIVE_PERFORMANCE);
         challenge1.setGameId("game");
         challenge1.setInstanceName("competitive_performance_123456");
+        challenge1.setStart(startDate);
         challenge1.setEnd(date("2018-09-27T00:00:00"));
         challenge1.setState(ChallengeState.ASSIGNED);
         Attendee antMan = new Attendee();

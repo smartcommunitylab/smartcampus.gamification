@@ -430,6 +430,7 @@ public class DroolsEngine implements GameEngine {
             challengeNotification.setTimestamp(executionMoment);
             challengeNotification.setModel(stateElement.getModelName());
             challengeNotification.setPointConcept(stateElement.getFields().containsKey("counterName")? String.valueOf(stateElement.getFields().get("counterName")): "");
+            challengeNotification.setStart(stateElement.getStart().getTime());
             notificationSrv.notificate(challengeNotification);
             LogHub.info(gameId, logger, "send notification: {}", challengeNotification.toString());
         }

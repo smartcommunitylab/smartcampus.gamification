@@ -151,6 +151,7 @@ public class ChallengeManager {
 					notification.setPlayerId(a.getPlayerId());
 					notification.setModel(challenge.getChallengeModel());
 					notification.setPointConcept(challenge.getChallengePointConcept().getName());
+					notification.setStart(challenge.getStart().getTime());
 					notificationSrv.notificate(notification);
 				} else {
 					ChallengeFailedNotication notification = new ChallengeFailedNotication();
@@ -159,6 +160,7 @@ public class ChallengeManager {
 					notification.setPlayerId(a.getPlayerId());
 					notification.setModel(challenge.getChallengeModel());
 					notification.setPointConcept(challenge.getChallengePointConcept().getName());
+					notification.setStart(challenge.getStart().getTime());
 					notificationSrv.notificate(notification);
 				}
 			});

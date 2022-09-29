@@ -1,6 +1,9 @@
 package eu.trentorise.game.stats;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -29,20 +32,38 @@ public class PostgresAppender extends WriterAppender {
 	@Override
 	public void append(LoggingEvent event) {
 		try {
-			if (conn == null) {
-				url = System.getenv("POSTGRES_URL");
-				conn = DriverManager.getConnection(url);
-			}
-			String row = super.layout.format(event);
+			createConnection();
+			String row = getRow(event);
 			insert(row);
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+			try {
+				logToExceptionErrorFile(getRow(event));
+			} catch (IOException ee) {
+				logger.error(e.getMessage());
+			}
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					/* Ignored */}
+			}
 		}
 	}
 
-	private void insert(String row) throws SQLException, IOException {
+	private void logToExceptionErrorFile(String row) throws IOException {
+		FileWriter writer = new FileWriter(System.getProperty("logFolder") + System.getProperty("file.separator")
+				+ "gamification.postgres.exception.stats.log", true);
+		BufferedWriter buffer = new BufferedWriter(writer);
+		PrintWriter printer = new PrintWriter(buffer, true);
+		printer.print(row);
+		printer.close();
+		buffer.close();
+		writer.close();
+	}
+
+	private void insert(String row) throws SQLException {
 		Record record;
 		record = analizza(row);
 		logger.debug("Record type: " + record.getType());
@@ -80,6 +101,17 @@ public class PostgresAppender extends WriterAppender {
 			logger.debug("RECORD : " + record.toString());
 		}
 		return result;
+	}
+
+	public synchronized void createConnection() throws SQLException {
+		if (conn == null || conn.isClosed()) {
+			url = System.getenv("POSTGRES_URL");
+			conn = DriverManager.getConnection(url);
+		}
+	}
+
+	private String getRow(LoggingEvent event) {
+		return super.layout.format(event);
 	}
 
 }

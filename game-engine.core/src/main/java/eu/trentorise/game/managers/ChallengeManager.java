@@ -814,4 +814,22 @@ public class ChallengeManager {
 		return result;
 	}
 	
+	public ChallengeConcept readSingleChallenge(String gameId, String playerId, String instanceName) {
+		ChallengeConcept result = null;
+		ChallengeConceptPersistence singleChallenge = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId,
+				playerId, instanceName);
+		if (singleChallenge != null) {
+			return singleChallenge.getConcept();			
+		}
+		Query query2 = new Query();
+		Criteria criteria2 = Criteria.where("gameId").is(gameId).and("instanceName").is(instanceName).and("attendees")
+				.elemMatch(Criteria.where("playerId").is(playerId));
+		query2.addCriteria(criteria2);
+		GroupChallenge groupChallenge = mongoTemplate.findOne(query2, GroupChallenge.class);
+		if (groupChallenge != null) {
+			result = groupChallenge.toChallengeConcept(playerId);				
+		}		
+		return result;
+	}
+	
 }

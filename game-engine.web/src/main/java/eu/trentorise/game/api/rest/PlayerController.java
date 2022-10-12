@@ -288,7 +288,18 @@ public class PlayerController {
         playerId = decodePathVariable(playerId);
         return challengeSrv.readChallenges(gameId, playerId, inprogress);
     }
-
+    
+	@RequestMapping(method = RequestMethod.GET, 
+			value = "/data/game/{gameId}/player/{playerId}/challenge/{instanceName}",
+			produces = {"application/json" })
+	@Operation(summary = "Read single challenge")
+	public ChallengeConcept getPlayerChallengeByName(@PathVariable String gameId, @PathVariable String playerId,
+			@PathVariable String instanceName) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		return challengeSrv.readSingleChallenge(gameId, playerId, instanceName);
+	}
+    
     // Read user game state
     // GET /data/game/{id}/player/{playerId}/state
     @RequestMapping(method = RequestMethod.GET,

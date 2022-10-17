@@ -14,6 +14,8 @@
 
 package eu.trentorise.game.config;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import eu.trentorise.game.api.rest.AuthorizationInterceptor;
@@ -54,6 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
+    
+    
     @Bean
     public HandlerInterceptor authInterceptor() {
         return new AuthorizationInterceptor();
@@ -62,6 +67,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+    	http.cors()
+    	.configurationSource(request -> {
+    		CorsConfiguration corsConfiguration = new CorsConfiguration();
+            corsConfiguration.setAllowedHeaders(List.of("*"));
+            corsConfiguration.setAllowedOrigins(List.of("*"));
+            corsConfiguration.setAllowedMethods(List.of("*"));
+            corsConfiguration.setExposedHeaders(List.of("*"));
+            return corsConfiguration;
+    	});
+    	
         // application never creates an http session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

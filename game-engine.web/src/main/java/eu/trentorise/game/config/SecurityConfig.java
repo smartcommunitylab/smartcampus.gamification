@@ -64,17 +64,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthorizationInterceptor();
     }
 
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-    	http.cors()
-    	.configurationSource(request -> {
-    		CorsConfiguration corsConfiguration = new CorsConfiguration();
-            corsConfiguration.setAllowedHeaders(List.of("*"));
-            corsConfiguration.setAllowedOrigins(List.of("*"));
-            corsConfiguration.setAllowedMethods(List.of("*"));
-            corsConfiguration.setExposedHeaders(List.of("*"));
-            return corsConfiguration;
+    	http.cors().configurationSource(request -> {
+    	      var corsConfiguration = new CorsConfiguration();
+    	      corsConfiguration.setAllowedHeaders(List.of("*"));
+              corsConfiguration.addAllowedOriginPattern("*");
+              corsConfiguration.setAllowedMethods(List.of("*"));
+              corsConfiguration.setExposedHeaders(List.of("*"));
+              corsConfiguration.setAllowCredentials(true);
+              return corsConfiguration;
     	});
     	
         // application never creates an http session

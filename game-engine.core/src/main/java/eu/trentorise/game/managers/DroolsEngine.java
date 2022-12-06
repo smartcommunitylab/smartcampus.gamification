@@ -157,6 +157,13 @@ public class DroolsEngine implements GameEngine {
 
         Player player = new Player(state);
         cmds.add(CommandFactory.newInsert(player));
+        
+        //push team state to kb.
+        List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
+        for (TeamState ts: playerTeams) {
+        	cmds.add(CommandFactory.newInsert(new Player(ts)));
+        }
+       
 
         // filter state removing all ended or completed challenges for the
         // player
@@ -245,7 +252,6 @@ public class DroolsEngine implements GameEngine {
                 facts.add(new Propagation(updateCalls.getPropagationAction(), level));
             }
 
-            List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
             LogHub.info(gameId, logger, "Player {} belongs to {} teams", state.getPlayerId(),
                     playerTeams.size());
             if (playerTeams.size() > 0) {

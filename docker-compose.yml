@@ -29,5 +29,6 @@ services:
     env_file: gamification.env
     volumes:
       - ./logs:/app/game-engine.web/logs
+      - /test-run:/app/config
 volumes:
   mongo-data:

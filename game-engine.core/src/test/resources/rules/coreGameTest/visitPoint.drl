@@ -8,14 +8,15 @@ global Utility utils;
 
 rule 'point_interest_reached_go'
 when
-    InputData( $poi : data['poi'], typePoi : data['typePoi'])
+    InputData( $poi : data['poi'], $typePoi : data['typePoi'])
 	$act : Action(id == 'point_interest_reached')
-	$bc : BadgeCollectionConcept(name == typePoi)
+	$bc : BadgeCollectionConcept(name == $typePoi)
     Game( $gameId: id)
     Player( $playerId : id)
+    $challenge : ChallengeConcept( modelName == "visitPointInterest", $target: fields["target"] != null, $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], fields["typePoi"] == $typePoi, isActive() == true )
 then
     utils.log("point_interest_reached_go");
-    if (! $bc.getBadgeEarned().contains((String) $poi)) {
+    if (! $bc.getBadgeEarned().contains((String) $poi) && !String.valueOf($poi).equals("null")) {
         $bc.getBadgeEarned().add((String) $poi);
         update( $bc );
         utils.log("aaaahhhh");
@@ -32,7 +33,7 @@ rule 'point_interest_reached_challenge'
     salience -3000
 when
     $challenge : ChallengeConcept( modelName == "visitPointInterest", $target: fields["target"] != null, $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], $bcName : fields["typePoi"], isCompleted() != true )
-    $bc : BadgeCollectionConcept(name == $bcName, $badges : badgeEarned, badgeEarned.size() >= $target)
+    $bc : BadgeCollectionConcept(name == $bcName, $badges : badgeEarned, badgeEarned.size() >= (Integer) $target)
     $pc : PointConcept(name == (String) $bonusPointType)
 then
     utils.log("point_interest_reached_challenge");
@@ -41,4 +42,4 @@ then
     $pc.setScore($pc.getScore() + (Double) $bonusScore);
     update($pc);
     update($challenge);
-End
+end

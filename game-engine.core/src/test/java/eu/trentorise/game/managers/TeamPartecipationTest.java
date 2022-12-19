@@ -17,22 +17,16 @@ package eu.trentorise.game.managers;
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
-import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.*;
-import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
-import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
-import eu.trentorise.game.task.GeneralClassificationTask;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,15 +41,14 @@ import java.util.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
-public class VisitPointInterestTest {
+public class TeamPartecipationTest {
 
     private static String GAME = "";
     private static final String BASEGAME = "coreGameTest";
-    private static final String ACTION = "point_interest_reached";
+    private static final String ACTION = "test";
     private static final String DOMAIN = "my-domain";
-    private static final String PLAYER = "pippo";
-    private static final String CHALLENGE = "visitPointInterest";
-    private static final String TYPE_POI = "citta";
+
+    private static final String[] PLAYERS = {"pippo", "topolino", "pluto"};
 
     @Autowired
     private GameManager gameManager;
@@ -93,39 +86,98 @@ public class VisitPointInterestTest {
         GAME = BASEGAME + '_' + UUID.randomUUID();
 
         // define game
-        Game game = defineGame();
+        Game game = new Game();
+
+        game.setId(GAME);
+        game.setName(GAME);
+        game.setDomain(DOMAIN);
+
+        HashSet<String> actions = new HashSet<>();
+        actions.add(ACTION);
+        game.setActions(actions);
+
+        HashSet<GameConcept> gc = new HashSet<>();
+        gc.add(new PointConcept("green leaves"));
+        game.setConcepts(gc);
+
         gameManager.saveGameDefinition(game);
 
-        ClasspathRule rule = new ClasspathRule(GAME, "rules/" + BASEGAME + "/constants");
+        /*ClasspathRule rule = new ClasspathRule(GAME, "rules/" + BASEGAME + "/constants");
         rule.setName("constants");
-        gameManager.addRule(rule);
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthBadges.drl"));
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthPoints.drl"));
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/prBadges.drl"));
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/prPoints.drl"));
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/specialBadges.drl"));
-//        gameManager.addRule(
-//                new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
-//        gameManager.addRule(
-//                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
+        gameManager.addRule(rule);*/
         gameManager.addRule(
-                new ClasspathRule(GAME, "rules/" + BASEGAME + "/visitPoint.drl"));
-
-        // define challenge
-        ChallengeModel chaVisit = new ChallengeModel();
-        chaVisit.setName(CHALLENGE);
-        chaVisit.setGameId(GAME);
-        chaVisit.setVariables(new HashSet<>(Arrays.asList("target", "bonusScore", "bonusPointType", "typePoi")));
-        gameManager.saveChallengeModel(GAME, chaVisit);
+                new ClasspathRule(GAME, "rules/" + BASEGAME + "/teamPartecipation.drl"));
 
         // define player states
 
-        mongo.save(definePlayerState(PLAYER, 15d, 2d, 5d));
+        print("add " + PLAYERS[0]);
+        mongo.save(definePlayerState(PLAYERS[0], 0d));
+        print("add " + PLAYERS[1]);
+        mongo.save(definePlayerState(PLAYERS[1], 0d));
+        print("add " + PLAYERS[2]);
+        mongo.save(definePlayerState(PLAYERS[2], 0d));
+        print("add team");
+        mongo.save(defineTeamState("disney", 0d, PLAYERS));
 
     }
 
+    private Object defineTeamState(String playerId, double greenPoint, String[] players) {
+        TeamState team = new TeamState(GAME, playerId);
+
+        team.setMembers(List.of(players));
+
+        Set<GameConcept> myState = new HashSet<GameConcept>();
+        PointConcept pc;
+        pc = new PointConcept("green leaves");
+        pc.setScore(greenPoint);
+        myState.add(pc);
+
+        team.setState(myState);
+
+        System.out.println(team.getMembers());
+
+        return new StatePersistence(team);
+    }
+
+    private StatePersistence definePlayerState(String playerId, Double greenPoint) {
+
+        PlayerState player = new PlayerState(GAME, playerId);
+        Set<GameConcept> myState = new HashSet<GameConcept>();
+        PointConcept pc;
+        pc = new PointConcept("green leaves");
+        pc.setScore(greenPoint);
+        myState.add(pc);
+
+        player.setState(myState);
+
+        return new StatePersistence(player);
+    }
+
+
+    private void check() {
+    }
+
+    private void doSomething() {
+
+        // first player saves itinerary
+        Map<String, Object> data = new HashMap<>();
+        data.put("walkDistance", "10");
+
+        print("ehilà");
+
+        PlayerState p = playerSrv.loadState(GAME, PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+
+        print("ehilà");
+
+    }
+
+    private void print(String text) {
+        System.out.println("############ " + text);
+    }
+
+    /*
     private void doSomething() {
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, false, false);
@@ -301,43 +353,11 @@ public class VisitPointInterestTest {
         }
     }
 
-    private StatePersistence definePlayerState(String playerId, Double greenPoint,
-            Double healthPoint, Double prPoint) {
-        PlayerState player = new PlayerState(GAME, playerId);
-        Set<GameConcept> myState = new HashSet<GameConcept>();
-        PointConcept pc;
-        pc = new PointConcept("green leaves");
-        pc.setScore(greenPoint);
-        myState.add(pc);
 
-        BadgeCollectionConcept badge;
-        badge = new BadgeCollectionConcept("green leaves");
-        myState.add(badge);
-
-        badge = new BadgeCollectionConcept(TYPE_POI);
-        myState.add(badge);
-
-        player.setState(myState);
-
-        return new StatePersistence(player);
-    }
 
     private Game defineGame() {
-        Game game = new Game();
 
-        game.setId(GAME);
-        game.setName(GAME);
-        game.setDomain(DOMAIN);
 
-        game.setActions(new HashSet<String>());
-        game.getActions().add(ACTION);
-
-        game.setConcepts(new HashSet<GameConcept>());
-        game.getConcepts().add(new PointConcept("green leaves"));
-
-        game.getConcepts().add(new BadgeCollectionConcept("green leaves"));
-
-        game.getConcepts().add(new BadgeCollectionConcept(TYPE_POI));
 
 //        game.setTasks(new HashSet<GameTask>());
 //
@@ -381,4 +401,6 @@ public class VisitPointInterestTest {
         return game;
 
     }
+
+     */
 }

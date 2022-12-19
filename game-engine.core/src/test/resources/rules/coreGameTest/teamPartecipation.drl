@@ -1,0 +1,94 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.core.Utility;
+import eu.trentorise.game.notification.MessageNotification;
+import java.lang.Math;
+
+global Utility utils;
+
+global Double green_transit_points;
+global Double green_boat_points;
+global Double park_and_ride_points;
+global Double recommendation_bonus;
+global Double driver_first_passenger_bonus;
+global Double driver_other_passenger_bonus;
+global Double passenger_bonus;
+
+global Double transit_daily_max;
+global Double carpooling_daily_max;
+global Double boat_daily_max;
+global Double carpooling_min_km;
+global Double boat_min_km;
+
+global java.util.ArrayList parkings;
+
+function double getModePoint(String mode) {
+    switch(mode) {
+   	 case 'Walk':
+   		 return 10.0;
+   	 case 'Bike':
+   		 return 6.0;
+   	 case 'Bus':
+   		 return 3.75;
+   	 case 'Train':
+   		 return 2.5;
+   	 default:
+   		 return 0.0;
+    }
+}
+
+function double getModeLimit(String mode) {
+    switch(mode) {
+   	 case 'Walk':
+   		 return 10.0;
+   	 case 'Bike':
+   		 return 25.0;
+   	 case 'Bus':
+   		 return 40.0;
+   	 case 'Train':
+   		 return 60.0;
+   	 default:
+   		 return 0.0;
+    }
+}
+
+function double getScore(String mode, double distance) {
+	double point = getModePoint(mode);
+	double limit = getModeLimit(mode);
+	double score = 0.0;
+	int index = 0;
+      while(index < 8) {
+     	 limit /= 2;
+     	 score += Math.min(distance, limit) * point;
+    	distance -= limit;
+    	point /= 2;
+    	if (distance < 0) {
+        	break;
+    	}
+    	index++;
+      }
+	return score;
+}
+
+function double tripScore(double modeDaily, double tripDistance, String mode) {
+    double beforeTripDistance = modeDaily - tripDistance;
+    double oldModeDailyScore = Math.rint(getScore(mode, beforeTripDistance));
+    double newModeDailyScore = Math.rint(getScore(mode, modeDaily));
+    double gainedScore = newModeDailyScore - oldModeDailyScore;
+    return gainedScore;
+}
+
+rule "all modes - update green points"
+when
+    Action($id : id == 'test')
+    Game( $gameId : id)
+    Player($playerId : id, team == false)
+    // Player($teamId : id, team == true, $members: members)
+then
+    utils.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ all modes - update green points");
+    utils.log($playerId);
+    // utils.log($teamId);
+    double score = 0.0;
+
+
+end

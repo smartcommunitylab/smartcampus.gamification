@@ -1,0 +1,4 @@
+users:
+ - username: test
+   password: test
+   role: ADMIN

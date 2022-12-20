@@ -1,0 +1,139 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.core.Utility;
+import eu.trentorise.game.notification.MessageNotification;
+import java.lang.Math;
+
+global Utility utils;
+
+global Double green_transit_points;
+global Double green_boat_points;
+global Double park_and_ride_points;
+global Double recommendation_bonus;
+global Double driver_first_passenger_bonus;
+global Double driver_other_passenger_bonus;
+global Double passenger_bonus;
+
+global Double transit_daily_max;
+global Double carpooling_daily_max;
+global Double boat_daily_max;
+global Double carpooling_min_km;
+global Double boat_min_km;
+
+global java.util.ArrayList parkings;
+
+function double getModePoint(String mode) {
+    switch(mode) {
+   	 case 'Walk':
+   		 return 10.0;
+   	 case 'Bike':
+   		 return 6.0;
+   	 case 'Bus':
+   		 return 3.75;
+   	 case 'Train':
+   		 return 2.5;
+   	 default:
+   		 return 0.0;
+    }
+}
+
+function double getModeLimit(String mode) {
+    switch(mode) {
+   	 case 'Walk':
+   		 return 10.0;
+   	 case 'Bike':
+   		 return 25.0;
+   	 case 'Bus':
+   		 return 40.0;
+   	 case 'Train':
+   		 return 60.0;
+   	 default:
+   		 return 0.0;
+    }
+}
+
+function double getScore(String mode, double distance) {
+	double point = getModePoint(mode);
+	double limit = getModeLimit(mode);
+	double score = 0.0;
+	int index = 0;
+      while(index < 8) {
+     	 limit /= 2;
+     	 score += Math.min(distance, limit) * point;
+    	distance -= limit;
+    	point /= 2;
+    	if (distance < 0) {
+        	break;
+    	}
+    	index++;
+      }
+	return score;
+}
+
+function double tripScore(double modeDaily, double tripDistance, String mode) {
+    double beforeTripDistance = modeDaily - tripDistance;
+    double oldModeDailyScore = Math.rint(getScore(mode, beforeTripDistance));
+    double newModeDailyScore = Math.rint(getScore(mode, modeDaily));
+    double gainedScore = newModeDailyScore - oldModeDailyScore;
+    return gainedScore;
+}
+
+rule "all modes - update green points"
+when
+    Action($id : id == 'test')
+    Game( $gameId : id)
+    Player($playerId : id, team == false)
+    Player($teamId : id, team == true, $totalMembers: totalMembers)
+    InputData($travelId : data["travelId"],
+          	$walk : data["walkDistance"])
+    $greenLeaves : PointConcept( name == "green leaves")
+    $walkKm : PointConcept(name == "Walk_Km")
+    $participation : PointConcept( name == "participation")
+then
+    utils.log("@@@ all modes - update green points");
+    utils.log("Player: " + $playerId);
+    utils.log("Team: " + $teamId);
+    utils.log("TotalMembers: " + String.valueOf($totalMembers));
+
+    utils.log("$greenLeaves: " + String.valueOf($greenLeaves));
+    utils.log("$walkKm: " + String.valueOf($walkKm));
+
+    double score = 0.0;
+
+    if($walk != null) {
+   	 utils.log("rule \'all modes - update green points\': counting Walking Km green points");
+   	 double modeDaily = $walkKm.getPeriodCurrentScore("daily");
+   	 double gainedScore = tripScore(modeDaily, (double) $walk, "Walk");
+   	 utils.log("daily Km: " + modeDaily);
+   	 score += gainedScore;
+    }
+
+    // all other stuff
+
+    /* update player score */
+    MessageNotification mn = new MessageNotification($gameId,$playerId,null);
+    mn.addData("travelId", $travelId);
+    mn.addData("score", score);
+    insert(mn);
+
+    utils.log("calcultated score: " + score );
+    if(score > 0.0) {
+   	 $greenLeaves.setScore($greenLeaves.getScore() + score);
+   	 update($greenLeaves);
+   	 utils.log($greenLeaves);
+    } else {
+   	 utils.log("No score to update");
+    }
+
+    /* update player participation */
+    double part = score / $totalMembers;
+
+    if (part > 0) {
+     $participation.setScore($participation.getScore() + part);
+     update($participation);
+  } else {
+     utils.log("No score to update");
+  }
+
+
+end

@@ -49,9 +49,12 @@ public class TeamPartecipationTest {
     private static final String ACTION = "test";
     private static final String DOMAIN = "my-domain";
 
-    private static final String[] PLAYERS = {"pippo", "topolino", "pluto"};
+    private static final String[] TEAM1_PLAYERS = {"pippo", "topolino", "pluto"};
 
-    private static final String POINT_NAME =  "green leaves";
+    private static final String[] TEAM2_PLAYERS = {"batman", "superman"};
+
+    private static final String POINT_NAME =  "leaves";
+    private static final String POINT_NAME_TEAM =  "leaves-team";
 
     private static final String PART_NAME =  "participation";
 
@@ -117,14 +120,19 @@ public class TeamPartecipationTest {
 
         // define player states
 
-        print("add " + PLAYERS[0]);
-        definePlayerState(PLAYERS[0]);
-        print("add " + PLAYERS[1]);
-        definePlayerState(PLAYERS[1]);
-        print("add " + PLAYERS[2]);
-        definePlayerState(PLAYERS[2]);
+        print("add " + TEAM1_PLAYERS[0]);
+        definePlayerState(TEAM1_PLAYERS[0]);
+        print("add " + TEAM1_PLAYERS[1]);
+        definePlayerState(TEAM1_PLAYERS[1]);
+        print("add " + TEAM1_PLAYERS[2]);
+        definePlayerState(TEAM1_PLAYERS[2]);
         print("add team");
-        defineTeamState("disney", PLAYERS);
+        defineTeamState("disney", TEAM1_PLAYERS);
+
+
+        definePlayerState(TEAM2_PLAYERS[0]);
+        definePlayerState(TEAM2_PLAYERS[1]);
+        defineTeamState("marvel", TEAM2_PLAYERS);
 
         print("done");
     }
@@ -136,7 +144,7 @@ public class TeamPartecipationTest {
 
         Set<GameConcept> myState = new HashSet<GameConcept>();
         PointConcept pc;
-        pc = new PointConcept(POINT_NAME);
+        pc = new PointConcept(POINT_NAME_TEAM);
         pc.setScore(0d);
 
         myState.add(pc);
@@ -177,14 +185,14 @@ public class TeamPartecipationTest {
 
         print("ehilà");
 
-        PlayerState p = playerSrv.loadState(GAME, PLAYERS[0], false, false);
+        PlayerState p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
-
+        p = playerSrv.saveState(p);
         print("ehilà");
 
-        check(PLAYERS[0], POINT_NAME, 120.0 );
-        check(PLAYERS[0], PART_NAME, 40.0 );
+        check(TEAM1_PLAYERS[0], POINT_NAME, 120.0 );
+        check(TEAM1_PLAYERS[0], PART_NAME, 40.0 );
 
 
     }

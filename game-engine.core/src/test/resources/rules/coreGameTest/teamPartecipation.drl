@@ -85,8 +85,8 @@ when
     Player($playerId : id, team == false)
     Player($teamId : id, team == true, $totalMembers: totalMembers)
     InputData($travelId : data["travelId"],
-          	$walk : data["walkDistance"])
-    $greenLeaves : PointConcept( name == "green leaves")
+          	$walkDistance : data["walkDistance"])
+    $greenLeaves : PointConcept( name == "leaves")
     $walkKm : PointConcept(name == "Walk_Km")
     $participation : PointConcept( name == "participation")
 then
@@ -100,10 +100,10 @@ then
 
     double score = 0.0;
 
-    if($walk != null) {
+    if($walkDistance != null) {
    	 utils.log("rule \'all modes - update green points\': counting Walking Km green points");
    	 double modeDaily = $walkKm.getPeriodCurrentScore("daily");
-   	 double gainedScore = tripScore(modeDaily, (double) $walk, "Walk");
+   	 double gainedScore = tripScore(modeDaily, (double) $walkDistance, "Walk");
    	 utils.log("daily Km: " + modeDaily);
    	 score += gainedScore;
     }
@@ -136,4 +136,18 @@ then
   }
 
 
+    insert(new UpdateTeams());
+
+end
+
+
+rule "trip mode update propagation"
+when
+    Member(
+    	$walkDistance : inputData["walkDistance"] != null
+    )
+    Player($teamId : id, team == true)
+then
+	utils.log("&&&&&&&&&&&&&&&&&&&&&& apply trip mode update propagation");
+    utils.log($teamId);
 end

@@ -1,6 +1,8 @@
 import { AUTH_LOGIN, AUTH_CHECK, AUTH_LOGOUT } from 'react-admin';
 import { Buffer } from 'buffer';
 
+const apiUrl= process.env.REACT_APP_API_ENDPOINT + '';
+
 const auth =  (type:any, params:any) => {
 
     if (type === AUTH_CHECK) {
@@ -10,7 +12,7 @@ const auth =  (type:any, params:any) => {
     if (type === AUTH_LOGIN) {
         const { username, password } = params;
         const token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64');
-        const request = new Request('http://localhost:8010/gamification/userProfile/', {
+        const request = new Request(apiUrl + '/userProfile/', {
             method: 'GET',
             headers: new Headers({ 'Content-Type': 'application/json', "Accept": "application/json", 'Authorization': `Basic ${token}` }),
             

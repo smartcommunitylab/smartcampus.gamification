@@ -1,6 +1,7 @@
 import simpleRestProvider from 'ra-data-simple-rest';
 
-const apiUrl = 'http://localhost:8010/gamification/console-ui';
+const apiUrl= process.env.REACT_APP_API_ENDPOINT + '/console-ui';
+console.log("Endpoint ->" + apiUrl);
 const dataProvider = simpleRestProvider(apiUrl);
 
 const gamificationDataProvider = {

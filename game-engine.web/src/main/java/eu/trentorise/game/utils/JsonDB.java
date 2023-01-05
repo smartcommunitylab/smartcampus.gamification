@@ -1,10 +1,12 @@
 package eu.trentorise.game.utils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -124,6 +126,27 @@ public class JsonDB {
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	/**
+	 * Import JSON DB GamePersistence, ChallengeModel, Rule
+	 * @return 
+	 * 
+	 * @throws Exception
+	 */
+	public String importDB(Map<String, Object> map) throws Exception {
+		try {
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			Entry<?, ?> entry = map.entrySet().iterator().next();
+			Map<String, Object> gameData = (Map<String, Object>) entry.getValue();
+			GamePersistence g = mapper.convertValue(gameData.get("game"), GamePersistence.class);
+			List<?> r = (List<?>) gameData.get("rules");
+			List<?> chModels = (List<?>) gameData.get("challengeModels");
+			persist(g, r, chModels);
+			return g.getId();
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}	
 	}
 
 	private void persist(GamePersistence g, List<?> rules, List<?> chModels) {

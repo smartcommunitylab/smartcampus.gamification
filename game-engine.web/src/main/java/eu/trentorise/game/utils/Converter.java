@@ -418,6 +418,7 @@ public class Converter {
         if (level != null) {
 
             levelDTO = new LevelDTO();
+            levelDTO.setId(level.getName());
             levelDTO.setName(level.getName());
             levelDTO.setPointConceptName(level.getPointConceptName());
 

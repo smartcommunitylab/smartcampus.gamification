@@ -20,10 +20,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({
-		@JsonSubTypes.Type(value = IncrementalClassificationDTO.class, name = "incremental"),
+@JsonSubTypes({ @JsonSubTypes.Type(value = IncrementalClassificationDTO.class, name = "incremental"),
 		@JsonSubTypes.Type(value = GeneralClassificationDTO.class, name = "general") })
 public class ClassificationDTO {
+	private String id;
 	private String name;
 	private String gameId;
 	private int itemsToNotificate;
@@ -77,6 +77,14 @@ public class ClassificationDTO {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

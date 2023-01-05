@@ -10,67 +10,76 @@ import eu.trentorise.game.model.Level.Config;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LevelDTO {
-    private String name;
+	private String id;
+	private String name;
 
-    @JsonProperty("pointConcept")
-    private String pointConceptName;
+	@JsonProperty("pointConcept")
+	private String pointConceptName;
 
-    private List<ThresholdDTO> thresholds = new ArrayList<>();
+	private List<ThresholdDTO> thresholds = new ArrayList<>();
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ThresholdDTO {
-        private String name;
-        private double value;
-        private Config config;
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class ThresholdDTO {
+		private String name;
+		private double value;
+		private Config config;
 
-        public String getName() {
-            return name;
-        }
+		public String getName() {
+			return name;
+		}
 
-        public void setName(String name) {
-            this.name = name;
-        }
+		public void setName(String name) {
+			this.name = name;
+		}
 
-        public double getValue() {
-            return value;
-        }
+		public double getValue() {
+			return value;
+		}
 
-        public void setValue(double value) {
-            this.value = value;
-        }
+		public void setValue(double value) {
+			this.value = value;
+		}
 
-        public Config getConfig() {
-            return config;
-        }
+		public Config getConfig() {
+			return config;
+		}
 
-        public void setConfig(Config config) {
-            this.config = config;
-        }
+		public void setConfig(Config config) {
+			this.config = config;
+		}
 
-    }
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getPointConceptName() {
-        return pointConceptName;
-    }
+	public String getPointConceptName() {
+		return pointConceptName;
+	}
 
-    public void setPointConceptName(String pointConceptName) {
-        this.pointConceptName = pointConceptName;
-    }
+	public void setPointConceptName(String pointConceptName) {
+		this.pointConceptName = pointConceptName;
+	}
 
-    public List<ThresholdDTO> getThresholds() {
-        return thresholds;
-    }
+	public List<ThresholdDTO> getThresholds() {
+		return thresholds;
+	}
 
-    public void setThresholds(List<ThresholdDTO> thresholds) {
-        this.thresholds = thresholds;
-    }
+	public void setThresholds(List<ThresholdDTO> thresholds) {
+		this.thresholds = thresholds;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 }

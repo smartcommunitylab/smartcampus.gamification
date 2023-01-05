@@ -21,8 +21,13 @@ import eu.trentorise.game.model.core.GameConcept;
 public class BadgeConcept extends GameConcept {
 	private String icon;
 
+	
 	public BadgeConcept(String name) {
 		super(name);
+	}
+
+	public BadgeConcept() {
+		super();
 	}
 
 	public String getIcon() {

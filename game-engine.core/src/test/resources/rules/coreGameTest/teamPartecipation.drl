@@ -135,19 +135,31 @@ then
      utils.log("No score to update");
   }
 
-
-    insert(new UpdateTeams());
+    UpdateTeams ut = new UpdateTeams();
+    ut.addData("part", part);
+    insert(ut);
 
 end
 
 
 rule "trip mode update propagation"
 when
-    Member(
-    	$walkDistance : inputData["walkDistance"] != null
+    Transmission (
+        $part: data["part"] != null
     )
     Player($teamId : id, team == true)
+    $greenLeaves : PointConcept( name == "leaves-team")
 then
 	utils.log("&&&&&&&&&&&&&&&&&&&&&& apply trip mode update propagation");
     utils.log($teamId);
+
+    double score = utils.getDouble($part);
+
+    if(score > 0.0) {
+   	 $greenLeaves.setScore($greenLeaves.getScore() + score);
+   	 update($greenLeaves);
+   	 utils.log($greenLeaves);
+    } else {
+   	 utils.log("No score to update");
+    }
 end

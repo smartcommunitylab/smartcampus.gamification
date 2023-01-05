@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.trentorise.game.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -58,22 +59,7 @@ import eu.trentorise.game.core.LoggingRuleListener;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.core.Utility;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
-import eu.trentorise.game.model.Action;
-import eu.trentorise.game.model.ChallengeConcept;
-import eu.trentorise.game.model.CustomData;
-import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Level.Threshold;
-import eu.trentorise.game.model.LevelInstance;
-import eu.trentorise.game.model.Member;
-import eu.trentorise.game.model.Player;
-import eu.trentorise.game.model.PlayerLevel;
-import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.Propagation;
-import eu.trentorise.game.model.Team;
-import eu.trentorise.game.model.TeamState;
-import eu.trentorise.game.model.UpdateMembers;
-import eu.trentorise.game.model.UpdateTeams;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.Rule;
@@ -250,6 +236,7 @@ public class DroolsEngine implements GameEngine {
                     level++;
                 }
                 facts.add(new Propagation(updateCalls.getPropagationAction(), level));
+                facts.add(new Transmission(updateCalls.getData()));
             }
 
             LogHub.info(gameId, logger, "Player {} belongs to {} teams", state.getPlayerId(),

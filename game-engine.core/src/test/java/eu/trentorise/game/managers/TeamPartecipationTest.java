@@ -141,6 +141,7 @@ public class TeamPartecipationTest {
         TeamState team = new TeamState(GAME, playerId);
 
         team.setMembers(List.of(players));
+        team.setName(playerId);
 
         Set<GameConcept> myState = new HashSet<GameConcept>();
         PointConcept pc;

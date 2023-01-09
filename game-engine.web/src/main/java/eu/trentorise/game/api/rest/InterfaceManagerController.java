@@ -204,6 +204,9 @@ public class InterfaceManagerController {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		if (!g.getActions().contains(actionName)) {
 			g.getActions().add(actionName);
+		} else {
+			throw new IllegalArgumentException(String.format("Action %s already exists in game %s",
+                    actionName, gameId));	
 		}
 		Game res = gameSrv.saveGameDefinition(g);
 		List<ActionDTO> actions = new ArrayList<ActionDTO>();
@@ -683,7 +686,12 @@ public class InterfaceManagerController {
 			"application/json" }, produces = { "application/json" })
 	@Operation(summary = "Save a level")
 	public GetOneResponse addLevel(@PathVariable String gameId, @RequestBody LevelDTO level) {
-		Game game = gameSrv.upsertLevel(gameId, converter.convert(level));
+		Game game = gameSrv.loadGameDefinitionById(gameId);
+		if (game.getLevels().stream().anyMatch(lev -> lev.getName().equals(level.getName()) )) {
+			throw new IllegalArgumentException(String.format("Level %s already exists in game %s",
+					level.getName(), gameId));	
+		}
+		game = gameSrv.upsertLevel(gameId, converter.convert(level));
 		Level saved = game.getLevels().stream().filter(lev -> lev.getName().equals(level.getName())).findFirst()
 				.orElse(null);
 		return new GetOneResponse(converter.convert(saved));
@@ -726,7 +734,7 @@ public class InterfaceManagerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{ids}", produces = {
 			"application/json" })
-	public GetListResponse readChallengeModelsById(@PathVariable String gameId, @PathVariable List<String> ids) {
+	public GetListResponse readChallengeModelsByIds(@PathVariable String gameId, @PathVariable List<String> ids) {
 		gameId = decodePathVariable(gameId);
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
@@ -736,9 +744,19 @@ public class InterfaceManagerController {
 			tmp.setGameId(gameId);
 			challengeModelList.add(tmp);
 		}
-		List<ChallengeModel> result = challengeModelList.stream().filter(ch -> ids.contains(ch.getName())).collect(Collectors.toList());;
+		List<ChallengeModel> result = challengeModelList.stream().filter(ch -> ids.contains(ch.getName())).collect(Collectors.toList());
 		
 		return gameId == null ? null : new GetListResponse(result.size(), result);
 	}
+	
+//	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{name}", produces = {
+//			"application/json" })
+//	public GetOneResponse singleChallengeModel(@PathVariable String gameId, @PathVariable String name) {
+//		gameId = decodePathVariable(gameId);
+//		Game g = gameSrv.loadGameDefinitionById(gameId);
+//		ChallengeModel saved = gameSrv.readChallengeModels(gameId).stream()
+//				.filter(chModel -> chModel.getName().equals(name)).findFirst().orElse(null);
+//		return g == null ? null : new GetOneResponse(saved);
+//	}
 
 }

@@ -1,24 +1,24 @@
 import {
     ShowBase, useShowContext,
-    EditButton, useStore, ArrayField, Datagrid, TextField
+    EditButton, useStore
 } from 'react-admin';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
-import { Level } from '../types';
+import { ChallengeModel } from '../types';
 
-export const LevelShow = () => {
+export const ChallengeModelShow = () => {
     const [gameId] = useStore('game.selected');
     const options = { meta: { gameId: gameId } };
 
     return (<ShowBase queryOptions={options}>
-        <LevelShowContent />
+        <ChallengeModelShowContent />
     </ShowBase>
     );
 
 }
 
-const LevelShowContent = () => {
-    const { record, isLoading } = useShowContext<Level>();
+const ChallengeModelShowContent = () => {
+    const { record, isLoading } = useShowContext<ChallengeModel>();
 
     if (isLoading || !record) return null;
     return (
@@ -30,27 +30,14 @@ const LevelShowContent = () => {
                             <Box>
                                 <Typography >Name: {record.name}</Typography>
                                 <br />
-                                <Typography >PointConcept : {record.pointConcept}</Typography>
-                                <br />
-                                <Typography >Thresholds</Typography>
-                                <Box>
-                                    <ArrayField source="thresholds">
-                                        <Datagrid  bulkActionButtons={false}>
-                                            <TextField source="name" />
-                                            <TextField source="value" />
-                                            <TextField source="config.choices" />
-                                            <TextField source="config.activeModels" />
-                                            {/* <TextField source="config.availableModels" /> */}
-                                        </Datagrid>
-                                    </ArrayField >
-                                </Box>
+                                <Typography >{record.variables}</Typography>
                             </Box>
                         </Box>
                     </CardContent>
                 </Card>
             </Box>
             <Box>
-                <EditButton label="Edit Level" to={`/levels/${record.name}`} />
+                <EditButton label="Edit ChallengeModel" to={`/challengemodels/${record.name}`} />
             </Box>
         </Box>
     );

@@ -57,3 +57,8 @@ export interface Level extends RaRecord {
     pointConcept: string;
 }
 
+export interface ChallengeModel extends RaRecord {
+    name: string;
+    variables: string[];
+}
+

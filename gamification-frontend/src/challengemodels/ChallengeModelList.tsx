@@ -54,7 +54,7 @@ const ButtonPanel = () => {
         return (<span><ShowButton disabled />&nbsp;&nbsp;&nbsp;
             <EditButton disabled /></span>);
     }
-    return <span><ShowButton />&nbsp;&nbsp;&nbsp;
+    return <span><ShowButton to={`/challengemodels/${record.name}/show`} />&nbsp;&nbsp;&nbsp;
         <EditButton /></span>;
 
 }

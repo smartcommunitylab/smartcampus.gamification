@@ -1,6 +1,6 @@
 import simpleRestProvider from 'ra-data-simple-rest';
 
-const apiUrl= process.env.REACT_APP_API_ENDPOINT + '/console-ui';
+const apiUrl = process.env.REACT_APP_API_ENDPOINT + '/console-ui';
 console.log("Endpoint ->" + apiUrl);
 const dataProvider = simpleRestProvider(apiUrl);
 
@@ -20,7 +20,14 @@ const gamificationDataProvider = {
         }
 
         return fetch(url, { method: 'GET', headers: headers })
-            .then(response => response.json())
+            .then(async (response: any) => {
+                const json = await response.json();
+                if (json.error) {
+                    const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                    throw errorObj;
+                }
+                return json;
+            })
     },
     getOne: (resource: any, params: any) => {
         let url = `${apiUrl}/${resource}`;
@@ -36,7 +43,14 @@ const gamificationDataProvider = {
         }
 
         return fetch(url, { method: 'GET', headers: headers })
-            .then(response => response.json())
+            .then(async (response: any) => {
+                const json = await response.json();
+                if (json.error) {
+                    const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                    throw errorObj;
+                }
+                return json;
+            })
     },
     create: (resource: any, params: any) => {
         let url = `${apiUrl}/${resource}`;
@@ -84,7 +98,15 @@ const gamificationDataProvider = {
         }
 
         return fetch(url, { method: 'POST', headers: headers, body: body })
-            .then(response => response.json())
+            .then(async (response: any) => {
+                const json = await response.json();
+                if (json.error) {
+                    const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                    throw errorObj;
+                }
+                return json;
+            })
+
     },
     update: (resource: any, params: any) => {
         let url = `${apiUrl}/${resource}`;
@@ -116,8 +138,12 @@ const gamificationDataProvider = {
         }
 
         return fetch(url, { method: 'PUT', headers: headers, body: body })
-            .then(async response => {
+            .then(async (response: any) => {
                 const json = await response.json();
+                if (json.error) {
+                    const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                    throw errorObj;
+                }
                 return json;
             })
     },
@@ -125,18 +151,6 @@ const gamificationDataProvider = {
         let url = `${apiUrl}/${resource}`;
         const token = localStorage.getItem('token');
         const headers = { 'Authorization': `Basic ${token}` };
-        // if (resource === 'tasks') {
-        //     const gameId = params.meta.gameId;
-        //     url = url + '/' + gameId + '/' + params.id;
-        // }
-        // if (resource === 'rules') {
-        //     const gameId = params.meta.gameId;
-        //     url = url + '/' + gameId + '/' + params.id;
-        // }
-        // if (resource === 'levels') {
-        //     const gameId = params.meta.gameId;
-        //     url = url + '/' + gameId + '/' + params.id;
-        // }
         if (resource === 'game') {
             url = url + '/' + params.id;
         } else {
@@ -144,7 +158,14 @@ const gamificationDataProvider = {
             url = url + '/' + gameId + '/' + params.id;
         }
         return fetch(url, { method: 'DELETE', headers: headers })
-            .then(response => response.json())
+            .then(async (response: any) => {
+                const json = await response.json();
+                if (json.error) {
+                    const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                    throw errorObj;
+                }
+                return json;
+            })
     },
     deleteMany: (resource: any, params: any) => {
         let url = `${apiUrl}/${resource}`;
@@ -157,20 +178,32 @@ const gamificationDataProvider = {
             url = url + '/' + gameId + '/' + params.ids;
         }
         return fetch(url, { method: 'DELETE', headers: headers })
-            .then(response => response.json())
+            .then(async (response: any) => {
+                const json = await response.json();
+                if (json.error) {
+                    const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                    throw errorObj;
+                }
+                return json;
+            })
     },
     getMany: (resource: any, params: any) => {
         let url = `${apiUrl}/${resource}`;
         const token = localStorage.getItem('token');
         const headers = { 'Authorization': `Basic ${token}` };
-        // if (resource === 'pointconcepts') {
-            const gameId = params.meta.gameId;
-            url = url + '/' + gameId + '/' + params.ids;
-            // console.log(url);
-        // }
+        const gameId = params.meta.gameId;
+        url = url + '/' + gameId + '/' + params.ids;
         return fetch(url, { method: 'GET', headers: headers })
-            .then(response => response.json())
+            .then(async (response: any) => {
+                const json = await response.json();
+                if (json.error) {
+                    const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                    throw errorObj;
+                }
+                return json;
+            })
     }
 };
 
 export default gamificationDataProvider;
+

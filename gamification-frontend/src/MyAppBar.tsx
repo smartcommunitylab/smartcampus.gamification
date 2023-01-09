@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 
 export const MyAppBar = function (props:any) {
     const [gameName, getGameName] = useStore('game.name');
+    const [role, getRole] = useStore('user.role');
   
     return (
         <AppBar
@@ -33,7 +34,7 @@ export const MyAppBar = function (props:any) {
                 style={{ width:'60%' }}
             > {gameName} </Typography>
 
-
+            <Typography>{role}</Typography>
         </AppBar>
     );
 }

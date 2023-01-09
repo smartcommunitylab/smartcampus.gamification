@@ -31,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,8 +65,11 @@ import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.model.core.TimeUnit;
+import eu.trentorise.game.repo.PlayerRepo;
+import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
+import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.services.TaskService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
@@ -80,6 +84,9 @@ public class InterfaceManagerController {
 
 	@Autowired
 	private GameService gameSrv;
+
+	@Autowired
+	private PlayerRepo playerRepo;
 
 	@Autowired
 	private TaskService taskSrv;
@@ -205,8 +212,8 @@ public class InterfaceManagerController {
 		if (!g.getActions().contains(actionName)) {
 			g.getActions().add(actionName);
 		} else {
-			throw new IllegalArgumentException(String.format("Action %s already exists in game %s",
-                    actionName, gameId));	
+			throw new IllegalArgumentException(
+					String.format("Action %s already exists in game %s", actionName, gameId));
 		}
 		Game res = gameSrv.saveGameDefinition(g);
 		List<ActionDTO> actions = new ArrayList<ActionDTO>();
@@ -687,9 +694,9 @@ public class InterfaceManagerController {
 	@Operation(summary = "Save a level")
 	public GetOneResponse addLevel(@PathVariable String gameId, @RequestBody LevelDTO level) {
 		Game game = gameSrv.loadGameDefinitionById(gameId);
-		if (game.getLevels().stream().anyMatch(lev -> lev.getName().equals(level.getName()) )) {
-			throw new IllegalArgumentException(String.format("Level %s already exists in game %s",
-					level.getName(), gameId));	
+		if (game.getLevels().stream().anyMatch(lev -> lev.getName().equals(level.getName()))) {
+			throw new IllegalArgumentException(
+					String.format("Level %s already exists in game %s", level.getName(), gameId));
 		}
 		game = gameSrv.upsertLevel(gameId, converter.convert(level));
 		Level saved = game.getLevels().stream().filter(lev -> lev.getName().equals(level.getName())).findFirst()
@@ -715,21 +722,30 @@ public class InterfaceManagerController {
 		GameDTO gameDTO = converter.convertGame(g);
 		return g == null ? null : new GetListResponse(gameDTO.getLevels().size(), gameDTO.getLevels());
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}", produces = { "application/json" })
 	@Operation(summary = "Read challenge models")
-	public GetListResponse readChallengeModels(@PathVariable String gameId) {
+	public GetListResponse readChallengeModels(@PathVariable String gameId, Pageable pageable) {
 		gameId = decodePathVariable(gameId);
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
-		for (String groupChallengeName :GroupChallenge.MODELS) {
+		for (String groupChallengeName : GroupChallenge.MODELS) {
 			ChallengeModel tmp = new ChallengeModel();
 			tmp.setName(groupChallengeName);
 			tmp.setGameId(gameId);
 			challengeModelList.add(tmp);
 		}
-		return gameId == null ? null
-				: new GetListResponse(challengeModelList.size(), challengeModelList);
+
+		int totalpages = challengeModelList.size() / pageable.getPageSize();
+
+		int max = pageable.getPageNumber() >= totalpages ? challengeModelList.size()
+				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
+		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
+
+		Page<ChallengeModel> page = new PageImpl<ChallengeModel>(challengeModelList.subList(min, max), pageable,
+				challengeModelList.size());
+
+		return challengeModelList == null ? null : new GetListResponse(page.getSize(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{ids}", produces = {
@@ -738,17 +754,18 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
-		for (String groupChallengeName :GroupChallenge.MODELS) {
+		for (String groupChallengeName : GroupChallenge.MODELS) {
 			ChallengeModel tmp = new ChallengeModel();
 			tmp.setName(groupChallengeName);
 			tmp.setGameId(gameId);
 			challengeModelList.add(tmp);
 		}
-		List<ChallengeModel> result = challengeModelList.stream().filter(ch -> ids.contains(ch.getName())).collect(Collectors.toList());
-		
+		List<ChallengeModel> result = challengeModelList.stream().filter(ch -> ids.contains(ch.getName()))
+				.collect(Collectors.toList());
+
 		return gameId == null ? null : new GetListResponse(result.size(), result);
 	}
-	
+
 //	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{name}", produces = {
 //			"application/json" })
 //	public GetOneResponse singleChallengeModel(@PathVariable String gameId, @PathVariable String name) {
@@ -758,5 +775,12 @@ public class InterfaceManagerController {
 //				.filter(chModel -> chModel.getName().equals(name)).findFirst().orElse(null);
 //		return g == null ? null : new GetOneResponse(saved);
 //	}
+
+	@GetMapping(value = "/monitor/{gameId}")
+	public GetListResponse readPlayerStates(@PathVariable String gameId, Pageable pageable) {
+		gameId = decodePathVariable(gameId);
+		Page<StatePersistence> states = playerRepo.findByGameId(gameId, pageable);
+		return states == null ? null : new GetListResponse(states.getSize(), states.getContent());
+	}
 
 }

@@ -35,7 +35,7 @@ const RuleShowContent = () => {
                 </Box>
             </Box>
             <br />
-            <AceEditor mode="drools" readOnly theme="github" value={record.content} wrapEnabled width="100%"></AceEditor>
+            <AceEditor mode="drools" showPrintMargin={false} readOnly theme="github" value={record.content} wrapEnabled maxLines={60} width="100%"></AceEditor>
         </SimpleShowLayout>
     );
 };

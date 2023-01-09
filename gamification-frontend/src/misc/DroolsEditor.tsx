@@ -24,7 +24,7 @@ export const DroolRuleEditor = (props:InputProps) => {
     return (
         <span>
             <Box>
-                <AceEditor name={field.name} onChange={field.onChange} mode="drools" value={field.value} width="100%" wrapEnabled ></AceEditor>
+                <AceEditor name={field.name} onChange={field.onChange} showPrintMargin={false} mode="drools" value={field.value} width="100%" maxLines={50} wrapEnabled ></AceEditor>
             </Box>
         </span>
     );

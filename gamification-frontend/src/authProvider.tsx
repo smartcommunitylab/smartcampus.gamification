@@ -27,7 +27,7 @@ const auth =  (type:any, params:any) => {
             .then(auth => {
                 const token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64');
                 localStorage.setItem('token', token);
-                localStorage.setItem('role', auth.domains[0]);
+                localStorage.setItem('RaStore.user.role', auth.domains[0]);
                 localStorage.setItem('username', auth.username);
             })
             .catch(() => {

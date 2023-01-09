@@ -16,6 +16,7 @@ import badges from './badges';
 import rules from './rules';
 import levels from './levels';
 import challengemodels from './challengemodels';
+import monitor from './monitor';
 
 const MyLayout = (props:any) => <Layout {...props} menu={MyMenu}  appBar={MyAppBar} />;
 
@@ -37,7 +38,7 @@ function App() {
             <Resource name="rules" {...rules}></Resource>
             <Resource name="levels" {...levels}></Resource>
             <Resource name="challengemodels" {...challengemodels}></Resource>
-            <Resource name="monitor" list={ListGuesser}></Resource>
+            <Resource name="monitor" {...monitor}></Resource>
         </Admin>
     );
 }

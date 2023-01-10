@@ -1,20 +1,16 @@
+import { List, ListItem, ListItemIcon, Checkbox, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction, Typography, ListSubheader } from '@mui/material';
+import { formatDistance } from 'date-fns';
 import {
-    List as RaList,
-    SimpleListLoading, TextField,
-    useListContext, TopToolbar,
-    CreateButton,
-    Pagination, Datagrid,
-    EditButton,
-    ShowButton,
-    useStore,
-    useRecordContext
+    BulkActionsToolbar,
+    CreateButton, Datagrid, EditButton, Link, List as RaList, ListActions, Pagination, RecordContextProvider, ReferenceField, ShowButton, SimpleListLoading, TextField, TopToolbar, useListContext, useRecordContext, useStore
 } from 'react-admin';
 import { BulkActionButtons } from '../misc/BulkActionButtons';
+import { Status } from '../misc/Status';
 
 const ChallengeModelListContent = () => {
 
     const {
-        data,
+        data: chmodels,
         isLoading,
         onToggleItem,
         selectedIds,
@@ -22,29 +18,62 @@ const ChallengeModelListContent = () => {
     if (isLoading) {
         return <SimpleListLoading hasLeftAvatarOrIcon hasSecondaryText />;
     }
-    const now = Date.now();
+    let groupChallenges: string[] = ['groupCompetitivePerformance', 'groupCompetitiveTime', 'groupCooperative'];
 
-    let groupChallenges:string[] = ['groupCompetitivePerformance','groupCompetitiveTime','groupCooperative'];
+    // return (
+    //     <>
+    //         <Datagrid
+    //             bulkActionButtons={<BulkActionButtons title="Challenge Model" resource="challengemodels" />}
+    //             isRowSelectable={record => (!groupChallenges.includes(record.name))} 
+    //             sx={{
+    //                 '& .RaDatagrid-headerCell': {
+    //                     fontWeight: 600,
+    //                 },
+
+    //             }}>
+    //             <TextField label="Model Name" source="name" />
+    //             <span style={{ float: 'right' }}>
+    //                 <ButtonPanel />
+    //             </span>
+    //         </Datagrid>
+    //     </>
+    // );
 
     return (
         <>
-            <Datagrid
-                bulkActionButtons={<BulkActionButtons title="Challenge Model" resource="challengemodels" />}
-                isRowSelectable={record => (!groupChallenges.includes(record.name))} 
-                sx={{
-                    '& .RaDatagrid-headerCell': {
-                        fontWeight: 600,
-                    },
+            <BulkActionsToolbar>
+                <BulkActionButtons title="Challenge Model" resource="challengemodels" />
+            </BulkActionsToolbar>
+            <ListSubheader>Model Name</ListSubheader>
+            <List>
+                {chmodels.map(model => (
+                    <RecordContextProvider>
+                        {!groupChallenges.includes(model.name) && <ListItem dense={true} sx={{ pt: 0, pb: 0, borderBottom: 1, borderColor: 'grey.300' }} >
+                            <Checkbox
+                                edge="start"
+                                checked={selectedIds.includes(model.name)}
+                                tabIndex={-1}
+                                disableRipple
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    onToggleItem(model.name);
+                                }}
+                            />
 
-                }}>
-                <TextField label="Model Name" source="name" />
-                <span style={{ float: 'right' }}>
-                    <ButtonPanel />
-                </span>
-            </Datagrid>
+                            <ListItemText
+                                primary={`${model.name}`}
+                            />
+
+
+                        </ListItem>
+                        }
+
+                    </RecordContextProvider>
+                ))}
+            </List>
         </>
     );
-};
+}
 
 const ButtonPanel = () => {
     const record = useRecordContext();

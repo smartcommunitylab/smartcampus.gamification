@@ -25,7 +25,7 @@ const MonitorListContent = () => {
                     fontWeight: 600
                 },
             }}>
-                <TextField label="Player" source="playerId" />
+                <TextField label="Players" source="playerId" />
                 <span style={{ float: 'right' }}>
                     <ShowButton />
                 </span>

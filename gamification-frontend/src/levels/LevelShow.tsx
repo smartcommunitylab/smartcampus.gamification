@@ -1,6 +1,6 @@
 import {
     ShowBase, useShowContext,
-    EditButton, useStore, ArrayField, Datagrid, TextField
+    EditButton, useStore, ArrayField, Datagrid, TextField, RichTextField
 } from 'react-admin';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
@@ -39,8 +39,8 @@ const LevelShowContent = () => {
                                             <TextField source="name" />
                                             <TextField source="value" />
                                             <TextField source="config.choices" />
-                                            <TextField source="config.activeModels" />
-                                            {/* <TextField source="config.availableModels" /> */}
+                                            <RichTextField  source="config.activeModels" />
+                                            {/* <TextField source="config.activeModels" /> */}
                                         </Datagrid>
                                     </ArrayField >
                                 </Box>

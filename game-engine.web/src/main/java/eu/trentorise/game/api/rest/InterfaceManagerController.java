@@ -50,6 +50,7 @@ import eu.trentorise.game.bean.GetListResponse;
 import eu.trentorise.game.bean.GetOneResponse;
 import eu.trentorise.game.bean.IncrementalClassificationDTO;
 import eu.trentorise.game.bean.LevelDTO;
+import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.PointConceptDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
@@ -58,6 +59,7 @@ import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Level;
+import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.GameConcept;
@@ -65,8 +67,6 @@ import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.model.core.TimeUnit;
-import eu.trentorise.game.repo.PlayerRepo;
-import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -86,7 +86,7 @@ public class InterfaceManagerController {
 	private GameService gameSrv;
 
 	@Autowired
-	private PlayerRepo playerRepo;
+	private PlayerService playerSrv;
 
 	@Autowired
 	private TaskService taskSrv;
@@ -750,7 +750,8 @@ public class InterfaceManagerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{ids}", produces = {
 			"application/json" })
-	public GetListResponse readChallengeModelsByIds(@PathVariable String gameId, @PathVariable List<String> ids) {
+	public GetListResponse readChallengeModelsByIds(@PathVariable String gameId, @PathVariable List<String> ids) { // to
+																													// remove
 		gameId = decodePathVariable(gameId);
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
@@ -766,9 +767,9 @@ public class InterfaceManagerController {
 		return gameId == null ? null : new GetListResponse(result.size(), result);
 	}
 
-//	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{name}", produces = {
+//	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{id}", produces = {
 //			"application/json" })
-//	public GetOneResponse singleChallengeModel(@PathVariable String gameId, @PathVariable String name) {
+//	public GetOneResponse singleChallengeModel(@PathVariable String gameId, @PathVariable String id) {
 //		gameId = decodePathVariable(gameId);
 //		Game g = gameSrv.loadGameDefinitionById(gameId);
 //		ChallengeModel saved = gameSrv.readChallengeModels(gameId).stream()
@@ -779,8 +780,24 @@ public class InterfaceManagerController {
 	@GetMapping(value = "/monitor/{gameId}")
 	public GetListResponse readPlayerStates(@PathVariable String gameId, Pageable pageable) {
 		gameId = decodePathVariable(gameId);
-		Page<StatePersistence> states = playerRepo.findByGameId(gameId, pageable);
-		return states == null ? null : new GetListResponse(states.getSize(), states.getContent());
+		Page<PlayerState> playerStates = playerSrv.loadStates(gameId, pageable, true, false);
+		List<PlayerStateDTO> monitors = new ArrayList<PlayerStateDTO>();
+		for (PlayerState ps : playerStates) {
+			PlayerStateDTO temp = converter.convertPlayerState(ps);
+			temp.setId(ps.getPlayerId());
+			monitors.add(temp);
+		}
+		return monitors == null ? null : new GetListResponse(monitors.size(), monitors);
+	}
+
+	@GetMapping(value = "/monitor/{gameId}/{playerId}")
+	public GetOneResponse readPlayerState(@PathVariable String gameId, @PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		PlayerStateDTO playerState = converter
+				.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, false));
+		playerState.setId(playerState.getPlayerId());
+		return new GetOneResponse(playerState);
 	}
 
 }

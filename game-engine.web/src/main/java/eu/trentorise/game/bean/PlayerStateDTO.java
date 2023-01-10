@@ -34,6 +34,7 @@ import eu.trentorise.game.repo.ChallengeConceptPersistence;
 
 @JsonInclude(Include.NON_NULL)
 public class PlayerStateDTO {
+	private String id;
 	private String playerId;
 	private String gameId;
 
@@ -43,6 +44,14 @@ public class PlayerStateDTO {
     private Inventory inventory;
 
 	private CustomData customData = new CustomData();
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getPlayerId() {
 		return playerId;

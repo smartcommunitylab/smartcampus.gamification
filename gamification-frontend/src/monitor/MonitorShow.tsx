@@ -1,8 +1,8 @@
 import {
     ShowBase, useShowContext,
-    EditButton, useStore, ArrayField, Datagrid, TextField, RichTextField, DateField, RecordContextProvider
+    EditButton, useStore, ArrayField, Datagrid, TextField, RichTextField, DateField, RecordContextProvider, useRecordContext
 } from 'react-admin';
-import {List,  Box, Card, CardContent, ListItem, ListItemText, Typography } from '@mui/material';
+import { List, Box, Card, CardContent, ListItem, ListItemText, Typography } from '@mui/material';
 import { isNoSubstitutionTemplateLiteral } from 'typescript';
 
 
@@ -29,80 +29,87 @@ const MonitorShowContent = () => {
                     <CardContent>
                         <Box >
                             <Box>
-                                <Typography sx={{ fontWeight: 600}} >{record.playerId}</Typography>
+                                <Typography sx={{ fontWeight: 600 }} >{record.playerId}</Typography>
                             </Box>
-                            <br />                               
+                            <br />
                             <Box>
-                                <Typography sx={{ fontWeight: 400, color:'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300'}}>Points</Typography>
+                                <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Points</Typography>
                                 <br />
                                 <ArrayField source="state.PointConcept">
-                                        <Datagrid  bulkActionButtons={false}>
-                                            <TextField source="name" />
-                                            <TextField source="score" />
-                                            {/* <ArrayField source="periods" >
+                                    <Datagrid bulkActionButtons={false}>
+                                        <TextField source="name" />
+                                        <TextField source="score" />
+                                        <PeriodField source="periods.daily.instances"></PeriodField>
+                                        {/* <ArrayField source="periods.daily.instances" >
                                                 <Datagrid  bulkActionButtons={false}>
-                                                    <RichTextField source="daily" />
-                                                    <RichTextField source="weekly" />
+                                                    <DateField source="start" />
+                                                    <DateField source="end" />
+                                                </Datagrid>
+                                            </ArrayField>
+                                            <ArrayField source="periods.weekly.instances" >
+                                                <Datagrid  bulkActionButtons={false}>
+                                                    <DateField source="start" />
+                                                    <DateField source="end" />
                                                 </Datagrid>
                                             </ArrayField> */}
-                                        </Datagrid>
+                                    </Datagrid>
                                 </ArrayField >
-                                                          
+
                             </Box>
-                            <br/>
+                            <br />
                             <Box>
-                            <Typography sx={{ fontWeight: 400, color:'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300'}}>Badges</Typography>
+                                <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Badges</Typography>
                                 <br />
                                 <ArrayField source="state.BadgeCollectionConcept">
-                                        <Datagrid  bulkActionButtons={false}>
-                                            <TextField source="name" />
-                                            <TextField source="score" />
-                                            <RichTextField  source="badgeEarned" />
-                                        </Datagrid>
-                                </ArrayField >   
-                            </Box>
-                            <br/>
-                            <Box>
-                                <Typography sx={{ fontWeight: 400, color:'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300'}}>Levels</Typography>
-                                <ArrayField source="levels">
-                                        <Datagrid  bulkActionButtons={false}>
-                                            <TextField source="levelName" />
-                                            <TextField source="levelValue" />
-                                            <TextField source="startLevelScore" />
-                                            <TextField source="toNextLevel" />
-                                            <TextField source="levelIndex" />
-                                            <TextField source="endLevelScore" />
-                                        </Datagrid>
-                                </ArrayField >   
-                            </Box>
-                            <br/>
-                            <Box>
-                                <Typography sx={{ fontWeight: 400, color:'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300'}}>Inventory</Typography>
-                                <TextField source="challengeActivationActions" />
-                                <ArrayField source="challengeChoices">
-                                        <Datagrid  bulkActionButtons={false}>
-                                            <TextField source="modelName" />
-                                            <TextField source="state" />
-                                        </Datagrid>
-                                </ArrayField >
-                            </Box>
-                            <br/>
-                            <Box>
-                                <Typography sx={{ fontWeight: 400, color:'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300'}}>Challenges</Typography>
-                                <ArrayField source="state.ChallengeConcept">
-                                        <Datagrid  bulkActionButtons={false}>
-                                            <DateField source="dateCompleted" />
-                                            <TextField source="group" />
-                                            <TextField source="modelName" />
-                                            <TextField source="name" />
-                                            <DateField source="start" />
-                                           </Datagrid>
+                                    <Datagrid bulkActionButtons={false}>
+                                        <TextField source="name" />
+                                        <TextField source="score" />
+                                        <RichTextField source="badgeEarned" />
+                                    </Datagrid>
                                 </ArrayField >
                             </Box>
                             <br />
                             <Box>
-                                <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300'}}>Custom Data</Typography>
-                               
+                                <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Levels</Typography>
+                                <ArrayField source="levels">
+                                    <Datagrid bulkActionButtons={false}>
+                                        <TextField source="levelName" />
+                                        <TextField source="levelValue" />
+                                        <TextField source="startLevelScore" />
+                                        <TextField source="toNextLevel" />
+                                        <TextField source="levelIndex" />
+                                        <TextField source="endLevelScore" />
+                                    </Datagrid>
+                                </ArrayField >
+                            </Box>
+                            <br />
+                            <Box>
+                                <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Inventory</Typography>
+                                <TextField source="challengeActivationActions" />
+                                <ArrayField source="challengeChoices">
+                                    <Datagrid bulkActionButtons={false}>
+                                        <TextField source="modelName" />
+                                        <TextField source="state" />
+                                    </Datagrid>
+                                </ArrayField >
+                            </Box>
+                            <br />
+                            <Box>
+                                <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Challenges</Typography>
+                                <ArrayField source="state.ChallengeConcept">
+                                    <Datagrid bulkActionButtons={false}>
+                                        <DateField source="dateCompleted" />
+                                        <TextField source="group" />
+                                        <TextField source="modelName" />
+                                        <TextField source="name" />
+                                        <DateField source="start" />
+                                    </Datagrid>
+                                </ArrayField >
+                            </Box>
+                            <br />
+                            <Box>
+                                <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Custom Data</Typography>
+
                                 {/* <ul>
     {record.customData.map((value:any, index:any) => {
       return <li key={index}>{value}</li>
@@ -117,13 +124,32 @@ const MonitorShowContent = () => {
                                         </RecordContextProvider>
                                     ))}
                                 </List> */}
-                             </Box>
+                            </Box>
                         </Box>
-                        
+
                     </CardContent>
                 </Card>
-            </Box>           
+            </Box>
         </Box>
     );
 };
+
+
+const PeriodField = (props: any) => {
+    const record = useRecordContext();
+    console.log(props);
+    return (
+         <ul>
+            {
+                Object.entries(record.periods.daily.instances).map((elem:any) => (
+                    <li>
+                        <Typography>{elem[1].start} &nbsp;&nbsp; {elem[1].end} &nbsp;&nbsp; {elem[1].score}</Typography>
+                    </li>
+                    
+                ))
+            }
+        </ul>
+
+    );
+}
 

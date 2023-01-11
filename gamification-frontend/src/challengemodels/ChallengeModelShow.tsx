@@ -1,6 +1,6 @@
 import {
     ShowBase, useShowContext,
-    EditButton, useStore
+    EditButton, useStore, RichTextField, ArrayField, TextField
 } from 'react-admin';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
@@ -30,14 +30,21 @@ const ChallengeModelShowContent = () => {
                             <Box>
                                 <Typography >Name: {record.name}</Typography>
                                 <br />
-                                <Typography >{record.variables}</Typography>
+                                <Typography >Variables:
+                                    <ul>
+                                        {record.variables.map(item => (
+                                            <li>{item}</li>
+                                        ))}
+                                    </ul>
+
+                                </Typography>
                             </Box>
                         </Box>
                     </CardContent>
                 </Card>
             </Box>
             <Box>
-                <EditButton label="Edit ChallengeModel" to={`/challengemodels/${record.name}`} />
+                <EditButton label="Edit ChallengeModel" to={`/challengemodels/${record.id}`} />
             </Box>
         </Box>
     );

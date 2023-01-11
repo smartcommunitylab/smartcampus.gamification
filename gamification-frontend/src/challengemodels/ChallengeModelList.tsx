@@ -1,11 +1,11 @@
-import { List, ListItem, ListItemIcon, Checkbox, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction, Typography, ListSubheader } from '@mui/material';
-import { formatDistance } from 'date-fns';
+import { Button, List, ListItem, Checkbox, ListItemText, ListSubheader } from '@mui/material';
 import {
     BulkActionsToolbar,
-    CreateButton, Datagrid, EditButton, Link, List as RaList, ListActions, Pagination, RecordContextProvider, ReferenceField, ShowButton, SimpleListLoading, TextField, TopToolbar, useListContext, useRecordContext, useStore
+    CreateButton, List as RaList, Pagination, RecordContextProvider, ShowButton, SimpleListLoading, TopToolbar, useListContext, useRecordContext, useRedirect, useStore
 } from 'react-admin';
 import { BulkActionButtons } from '../misc/BulkActionButtons';
-import { Status } from '../misc/Status';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
 
 const ChallengeModelListContent = () => {
 
@@ -48,43 +48,51 @@ const ChallengeModelListContent = () => {
             <List>
                 {chmodels.map(model => (
                     <RecordContextProvider>
-                        {!groupChallenges.includes(model.name) && <ListItem dense={true} sx={{ pt: 0, pb: 0, borderBottom: 1, borderColor: 'grey.300' }} >
+                        {!groupChallenges.includes(model.id) && <ListItem dense={true} sx={{ pt: 0, pb: 0, borderBottom: 1, borderColor: 'grey.300' }} >
                             <Checkbox
                                 edge="start"
-                                checked={selectedIds.includes(model.name)}
+                                checked={selectedIds.includes(model.id)}
                                 tabIndex={-1}
                                 disableRipple
                                 onClick={e => {
                                     e.stopPropagation();
-                                    onToggleItem(model.name);
+                                    onToggleItem(model.id);
                                 }}
                             />
 
                             <ListItemText
                                 primary={`${model.name}`}
                             />
-
+                            <ButtonPanel id={model.id} />
 
                         </ListItem>
                         }
 
                     </RecordContextProvider>
                 ))}
+
             </List>
         </>
     );
 }
 
-const ButtonPanel = () => {
-    const record = useRecordContext();
-    if (record.name === "groupCompetitivePerformance" ||
-        record.name === "groupCompetitiveTime" ||
-        record.name === "groupCooperative") {
-        return (<span><ShowButton disabled />&nbsp;&nbsp;&nbsp;
-            <EditButton disabled /></span>);
-    }
-    return <span><ShowButton to={`/challengemodels/${record.name}/show`} />&nbsp;&nbsp;&nbsp;
-        <EditButton /></span>;
+const ButtonPanel = (params: any) => {
+    const redirect = useRedirect();
+    return (
+        <>
+            <Button endIcon={<VisibilityIcon />} onClick={() => {
+                redirect('/challengemodels/' + params.id + '/show');
+            }}>
+               Show
+            </Button>
+
+            <Button endIcon={<EditIcon />} onClick={() => {
+                redirect('/challengemodels/' + params.id + '/edit');
+            }}>
+               Edit
+            </Button>
+        </>
+    );
 
 }
 

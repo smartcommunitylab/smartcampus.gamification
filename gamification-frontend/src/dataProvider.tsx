@@ -17,6 +17,8 @@ const gamificationDataProvider = {
         if (resource !== "game") {
             const gameId = params.meta.gameId;
             url = url + '/' + gameId + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order;
+        } else {
+            url = url + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order;
         }
 
         return fetch(url, { method: 'GET', headers: headers })
@@ -89,6 +91,13 @@ const gamificationDataProvider = {
             url = url + '/' + gameId;
         }
 
+        if (resource === 'challengemodels') {
+            headers = { 'Authorization': `Basic ${token}`, 'Content-type': 'application/json' };
+            const gameId = params.meta.gameId;
+            body = JSON.stringify(params.data);
+            url = url + '/' + gameId;
+        }
+
         if (resource === 'game') {
             headers = { 'Authorization': `Basic ${token}` };
             let formData = new FormData();
@@ -129,6 +138,11 @@ const gamificationDataProvider = {
             url = url + '/' + gameId;
         }
         if (resource === 'levels') {
+            const gameId = params.meta.gameId;
+            body = JSON.stringify(params.data);
+            url = url + '/' + gameId;
+        }
+        if (resource === 'challengemodels') {
             const gameId = params.meta.gameId;
             body = JSON.stringify(params.data);
             url = url + '/' + gameId;
@@ -192,7 +206,7 @@ const gamificationDataProvider = {
         const token = localStorage.getItem('token');
         const headers = { 'Authorization': `Basic ${token}` };
         const gameId = params.meta.gameId;
-        url = url + '/' + gameId + '/' + params.ids;
+        url = url + '/' + gameId + '?ids=' + params.ids;
         return fetch(url, { method: 'GET', headers: headers })
             .then(async (response: any) => {
                 const json = await response.json();

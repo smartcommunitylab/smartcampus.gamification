@@ -1,43 +1,57 @@
-import * as React from 'react';
-import { Create, Form, TextInput, Toolbar, useNotify, useRedirect, useStore } from 'react-admin';
-import { Card, CardContent, Box, Avatar } from '@mui/material';
+import { ArrayInput, Create, Form, SimpleFormIterator, TextInput, Toolbar, useNotify, useRedirect, useStore } from 'react-admin';
+import { Card, CardContent, Box } from '@mui/material';
 
-import { LevelInputs } from './ChallengeModelInputs';
 
-export const LevelCreate = () => {
+export const ChallengeModelCreate = () => {
     const [gameId] = useStore('game.selected');
     const notify = useNotify();
     const redirect = useRedirect();
 
     const options = { meta: { gameId: gameId } };
 
-    const onSuccess = (data:any) => {
-        notify(`Level created successfully`);
-        redirect('list', 'levels');
+    const onSuccess = (data: any) => {
+        notify(`ChallengeModel created successfully`);
+        redirect('list', 'challengemodels');
     };
 
+    const transform = (data: any) => {{       
+        let body: any = {};
+        body['name'] = data.name;
+        body['variables'] = [];
+        data.variables.forEach((element:any) => {
+            body['variables'].push(element.name);
+        });
+        return body;
+    }}
+
     return (
-    <Create mutationOptions={{ ...options, onSuccess }} >
-        <Box mt={2} display="flex">
-            <Box flex="1">
-                <Form>
-                    <Card>
-                        <CardContent>
-                            <Box>
-                                <Box display="flex">
+        <Create transform={transform} mutationOptions={{ ...options, onSuccess }} >
+            <Box mt={2} display="flex">
+                <Box flex="1">
+                    <Form>
+                        <Card>
+                            <CardContent>
+                                <Box>
+                                    <Box display="flex">
                                     </Box>
                                     <Box display="flex" width={630}>
                                         <TextInput label="Name" source="name" fullWidth />
-                                    </Box>            
-                                    <LevelInputs />
-                            </Box>
-                        </CardContent>
-                        <Toolbar />
-                    </Card>
-                </Form>
+                                    </Box>
+                                    <Box>
+                                        <ArrayInput source="variables">
+                                            <SimpleFormIterator inline>
+                                                <TextInput source="name" helperText={false} />                                                
+                                            </SimpleFormIterator>
+                                        </ArrayInput>
+                                    </Box>
+                                </Box>
+                            </CardContent>
+                            <Toolbar />
+                        </Card>
+                    </Form>
+                </Box>
             </Box>
-        </Box>
-    </Create>);    
+        </Create>);
 }
 
 

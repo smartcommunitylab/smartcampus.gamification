@@ -1,11 +1,11 @@
 import { ChallengeModelShow } from './ChallengeModelShow';
-// import { LevelEdit } from './ChallengeModelEdit';
-// import { LevelCreate } from './ChallengeModelCreate';
+import { ChallengeModelEdit } from './ChallengeModelEdit';
+import { ChallengeModelCreate } from './ChallengeModelCreate';
 import { ChallengeModelList } from './ChallengeModelList';
 
 export default {
     list: ChallengeModelList,
     show: ChallengeModelShow,
-    // edit: LevelEdit,
-    // create: LevelCreate,
+    edit: ChallengeModelEdit,
+    create: ChallengeModelCreate,
 };

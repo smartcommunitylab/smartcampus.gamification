@@ -224,7 +224,8 @@ public class InterfaceManagerController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/pointconcepts/{gameId}", produces = { "application/json" })
-	public GetListResponse readPointConceptList(@PathVariable String gameId, Pageable pageable) {
+	public GetListResponse readPointConceptList(@PathVariable String gameId,
+			@RequestParam(required = false) List<String> ids, Pageable pageable) {
 		gameId = decodePathVariable(gameId);
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 
@@ -235,6 +236,11 @@ public class InterfaceManagerController {
 				pcs.add(new PointConceptDTO(String.valueOf(i), (PointConcept) gc));
 			}
 			i++;
+		}
+
+		// GetMany
+		if (ids != null && !ids.isEmpty()) {
+			pcs = pcs.stream().filter(pc -> ids.contains(pc.getId())).collect(Collectors.toList());
 		}
 
 		int totalpages = pcs.size() / pageable.getPageSize();
@@ -245,26 +251,6 @@ public class InterfaceManagerController {
 		Page<PointConceptDTO> page = new PageImpl<PointConceptDTO>(pcs.subList(min, max), pageable, pcs.size());
 
 		return g == null ? null : new GetListResponse(page.getSize(), page.getContent());
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/pointconcepts/{gameId}/{ids}", produces = {
-			"application/json" })
-	public GetListResponse readPointConceptById(@PathVariable String gameId, @PathVariable List<String> ids) {
-		gameId = decodePathVariable(gameId);
-		Game g = gameSrv.loadGameDefinitionById(gameId);
-
-		List<PointConceptDTO> pcs = new ArrayList<PointConceptDTO>();
-		int i = 0;
-		for (GameConcept gc : g.getConcepts()) {
-			if (gc instanceof PointConcept) {
-				pcs.add(new PointConceptDTO(String.valueOf(i), (PointConcept) gc));
-			}
-			i++;
-		}
-
-		List<PointConceptDTO> result = pcs.stream().filter(pc -> ids.contains(pc.getId())).collect(Collectors.toList());
-
-		return g == null ? null : new GetListResponse(result.size(), result);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/tasks/{gameId}", produces = { "application/json" })
@@ -725,15 +711,30 @@ public class InterfaceManagerController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}", produces = { "application/json" })
 	@Operation(summary = "Read challenge models")
-	public GetListResponse readChallengeModels(@PathVariable String gameId, Pageable pageable) {
+	public GetListResponse readChallengeModels(@PathVariable String gameId,
+			@RequestParam(required = false) List<String> ids, Pageable pageable) {
 		gameId = decodePathVariable(gameId);
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
+
+//		for (ChallengeModel chm : gameSrv.readChallengeModels(gameId)) {
+//			ChallengeModel temp = chm;
+//			temp.setId(chm.getName());
+//			challengeModelList.add(temp);
+//		}
+
 		for (String groupChallengeName : GroupChallenge.MODELS) {
 			ChallengeModel tmp = new ChallengeModel();
 			tmp.setName(groupChallengeName);
 			tmp.setGameId(gameId);
+			tmp.setId(groupChallengeName);
 			challengeModelList.add(tmp);
+		}
+
+		// GetMany
+		if (ids != null && !ids.isEmpty()) {
+			challengeModelList = challengeModelList.stream().filter(ch -> ids.contains(ch.getName()))
+					.collect(Collectors.toList());
 		}
 
 		int totalpages = challengeModelList.size() / pageable.getPageSize();
@@ -748,34 +749,41 @@ public class InterfaceManagerController {
 		return challengeModelList == null ? null : new GetListResponse(page.getSize(), page.getContent());
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{ids}", produces = {
+	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{id}", produces = {
 			"application/json" })
-	public GetListResponse readChallengeModelsByIds(@PathVariable String gameId, @PathVariable List<String> ids) { // to
-																													// remove
+	public GetOneResponse singleChallengeModel(@PathVariable String gameId, @PathVariable String id) {
 		gameId = decodePathVariable(gameId);
-		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
-		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
-		for (String groupChallengeName : GroupChallenge.MODELS) {
-			ChallengeModel tmp = new ChallengeModel();
-			tmp.setName(groupChallengeName);
-			tmp.setGameId(gameId);
-			challengeModelList.add(tmp);
-		}
-		List<ChallengeModel> result = challengeModelList.stream().filter(ch -> ids.contains(ch.getName()))
-				.collect(Collectors.toList());
-
-		return gameId == null ? null : new GetListResponse(result.size(), result);
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+		return g == null ? null : new GetOneResponse(gameSrv.readChallengeModel(gameId, id));
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/challengemodels/{gameId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@Operation(summary = "Add challenge model")
+	public GetOneResponse createChallengeModel(@RequestBody ChallengeModel challengeModel,
+			@PathVariable String gameId) {
+		gameId = decodePathVariable(gameId);
+		return new GetOneResponse(gameSrv.saveChallengeModel(gameId, challengeModel));
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/challengemodels/{gameId}", produces = { "application/json" })
+	@Operation(summary = "Update a challenge model")
+	public GetOneResponse updateLevel(@PathVariable String gameId, @RequestBody ChallengeModel challengeModel) {
+		gameId = decodePathVariable(gameId);
+		return new GetOneResponse(gameSrv.saveChallengeModel(gameId, challengeModel));
 	}
 
-//	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{id}", produces = {
-//			"application/json" })
-//	public GetOneResponse singleChallengeModel(@PathVariable String gameId, @PathVariable String id) {
-//		gameId = decodePathVariable(gameId);
-//		Game g = gameSrv.loadGameDefinitionById(gameId);
-//		ChallengeModel saved = gameSrv.readChallengeModels(gameId).stream()
-//				.filter(chModel -> chModel.getName().equals(name)).findFirst().orElse(null);
-//		return g == null ? null : new GetOneResponse(saved);
-//	}
+	@RequestMapping(method = RequestMethod.DELETE, value = "/challengemodels/{gameId}/{modelId}", produces = {
+			"application/json" })
+	@Operation(summary = "Delete challenge model")
+	public GetListResponse deleteChallengeModels(@PathVariable String gameId, @PathVariable String modelId) {
+		gameId = decodePathVariable(gameId);
+		gameSrv.deleteChallengeModel(gameId, modelId);
+		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
+		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
+		return challengeModelList == null ? null : new GetListResponse(challengeModelList.size(), challengeModelList);
+
+	}
 
 	@GetMapping(value = "/monitor/{gameId}")
 	public GetListResponse readPlayerStates(@PathVariable String gameId, Pageable pageable) {

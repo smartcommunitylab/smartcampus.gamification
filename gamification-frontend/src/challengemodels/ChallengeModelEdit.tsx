@@ -1,22 +1,23 @@
-import { ArrayInput, Edit, EditBase, Form, InputProps, RecordContext, RecordContextProvider, SimpleFormIterator, TextInput, useEditContext, useNotify, useRecordContext, useRedirect, useStore, WithRecord } from 'react-admin';
+import { ArrayInput, EditBase, Form, SimpleFormIterator, TextInput, useNotify, useRedirect, useStore } from 'react-admin';
 import { Card, CardContent, Box } from '@mui/material';
-import { ChallengeModel, Level } from '../types';
 import { EditToolbar } from '../misc/EditToolbar';
-import { isVariableStatement } from 'typescript';
-import { getValue } from '@testing-library/user-event/dist/utils';
 
 export const ChallengeModelEdit = () => {
     const [gameId] = useStore('game.selected');
     const notify = useNotify();
     const redirect = useRedirect();
     const options = { meta: { gameId: gameId } };
-   
-    const transform = (data: any) => {
-        {
-            let body = data;
-            return body;
-        }
-    }
+
+    const transform = (data: any) => {{       
+        let body: any = {};
+        body['name'] = data.name;
+        body['id'] = data.id;
+        body['variables'] = [];
+        data.variables.forEach((element:any) => {
+            body['variables'].push(element.name);
+        });
+        return body;
+    }}
 
     const onSuccess = (data: any) => {
         notify(`ChallengeModel updated successfully`);
@@ -24,37 +25,19 @@ export const ChallengeModelEdit = () => {
     };
 
 
-    return (<EditBase 
+    return (<EditBase
         mutationMode='pessimistic'
         transform={transform}
         mutationOptions={{ ...options, onSuccess }}
         queryOptions={options}
     >
-         <ChallengeModelEditContent />
-        
+        <ChallengeModelEditContent />
     </EditBase>);
 }
 
 const ChallengeModelEditContent = () => {
-    const { isLoading, record } = useEditContext<ChallengeModel>();
-    if (isLoading || !record) return null;
-    
-    let saved = record.variables;
-    let variables: any = [];
-   
-    saved.forEach((element: any) => {
-        let v: any = {};
-        v['name'] = element;              
-        variables.push(v);
-    });
-    record.variables = [];
-    record.variables = variables;
 
-    console.log(record);
-
-
-    
-     return (
+    return (
         <Box mt={2} display="flex">
             <Box flex="1">
                 <Form>

@@ -46,10 +46,13 @@ const gamificationDataProvider = {
 
         return fetch(url, { method: 'GET', headers: headers })
             .then(async (response: any) => {
-                const json = await response.json();
+                let json = await response.json();
                 if (json.error) {
                     const errorObj = { status: json.status, message: json.error + " - " + json.message };
                     throw errorObj;
+                }
+                if (resource==='challengemodels') {
+                    json.data = modifyChallengeModel(json);
                 }
                 return json;
             })
@@ -220,4 +223,19 @@ const gamificationDataProvider = {
 };
 
 export default gamificationDataProvider;
+
+function modifyChallengeModel(json: any) {
+    let body: any = {};
+    let variables: any = [];
+    json.data.variables.forEach((element: any) => {
+        let v: any = {};
+        v['name'] = element;              
+        variables.push(v);
+    });
+    body['gameId']= json.data.gameId;
+    body['id'] = json.data.id;
+    body['name'] = json.data.name;
+    body['variables'] = variables;
+    return body;
+}
 

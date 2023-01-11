@@ -1,6 +1,6 @@
 import {
     ShowBase, useShowContext,
-    EditButton, useStore, RichTextField, ArrayField, TextField
+    EditButton, useStore, RichTextField, ArrayField, TextField, Datagrid
 } from 'react-admin';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
@@ -30,14 +30,19 @@ const ChallengeModelShowContent = () => {
                             <Box>
                                 <Typography >Name: {record.name}</Typography>
                                 <br />
-                                <Typography >Variables:
+                                {/* <Typography >Variables:
                                     <ul>
                                         {record.variables.map(item => (
                                             <li>{item}</li>
                                         ))}
                                     </ul>
 
-                                </Typography>
+                                </Typography> */}
+                                <ArrayField source="variables">
+                                        <Datagrid  bulkActionButtons={false}>
+                                            <TextField source="name" />                                          
+                                        </Datagrid>
+                                    </ArrayField >
                             </Box>
                         </Box>
                     </CardContent>

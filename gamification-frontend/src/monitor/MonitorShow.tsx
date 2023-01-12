@@ -37,8 +37,8 @@ const MonitorShowContent = () => {
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Points</Typography>
                                 <br />
                                 <ArrayField source="state.PointConcept">
-                                    <Datagrid bulkActionButtons={false}>
-                                        <TextField source="name" />
+                                    <Datagrid sx={{ '& .RaDatagrid-headerCell': {fontWeight: 600} }} bulkActionButtons={false}>
+                                     <TextField source="name" />
                                         <TextField source="score" />
                                         <PeriodField source="periods.daily.instances" period="daily"></PeriodField>
                                         <PeriodField source="periods.weekly.instances" period="weekly"></PeriodField>
@@ -51,9 +51,9 @@ const MonitorShowContent = () => {
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Badges</Typography>
                                 <br />
                                 <ArrayField source="state.BadgeCollectionConcept">
-                                    <Datagrid bulkActionButtons={false}>
+                                    <Datagrid sx={{ '& .RaDatagrid-headerCell': {fontWeight: 600} }} bulkActionButtons={false}>
                                         <TextField source="name" />
-                                        <TextField source="score" />
+                                        <CustomTextField source="score" arrayName="badgeEarned"/>
                                         <RichTextField source="badgeEarned" />
                                     </Datagrid>
                                 </ArrayField >
@@ -62,7 +62,7 @@ const MonitorShowContent = () => {
                             <Box>
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Levels</Typography>
                                 <ArrayField source="levels">
-                                    <Datagrid bulkActionButtons={false}>
+                                    <Datagrid sx={{ '& .RaDatagrid-headerCell': {fontWeight: 600} }} bulkActionButtons={false}>
                                         <TextField source="levelName" />
                                         <TextField source="levelValue" />
                                         <TextField source="startLevelScore" />
@@ -75,9 +75,8 @@ const MonitorShowContent = () => {
                             <br />
                             <Box>
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Inventory</Typography>
-                                <TextField source="challengeActivationActions" />
-                                <ArrayField source="challengeChoices">
-                                    <Datagrid bulkActionButtons={false}>
+                                <ArrayField source="inventory.challengeChoices">
+                                    <Datagrid sx={{ '& .RaDatagrid-headerCell': {fontWeight: 600} }} bulkActionButtons={false}>
                                         <TextField source="modelName" />
                                         <TextField source="state" />
                                     </Datagrid>
@@ -87,12 +86,15 @@ const MonitorShowContent = () => {
                             <Box>
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Challenges</Typography>
                                 <ArrayField source="state.ChallengeConcept">
-                                    <Datagrid bulkActionButtons={false}>
-                                        <DateField source="dateCompleted" />
-                                        <TextField source="group" />
-                                        <TextField source="modelName" />
+                                    <Datagrid sx={{ '& .RaDatagrid-headerCell': {fontWeight: 600} }} bulkActionButtons={false}>
                                         <TextField source="name" />
+                                        <TextField source="modelName" />
+                                        <TextField source="fields.bonusPointType" />
+                                        <TextField source="fields.bonusScore" />                                        
+                                        <TextField source="fields.counterName" />
+                                        <TextField source="group" />
                                         <DateField source="start" />
+                                        <DateField source="dateCompleted" />                                       
                                     </Datagrid>
                                 </ArrayField >
                             </Box>
@@ -127,6 +129,20 @@ const PeriodField = (props: any) => {
                 ))
             }
         </ul>
+
+    );
+}
+
+const CustomTextField = (props: any) => {
+    const record = useRecordContext();
+   
+    return (
+         <>
+            {
+                record[props.arrayName].length
+                // record.badgeEarned.length
+            }
+        </>
 
     );
 }

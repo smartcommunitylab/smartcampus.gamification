@@ -1,11 +1,13 @@
 import { Button, List, ListItem, Checkbox, ListItemText, ListSubheader } from '@mui/material';
 import {
     BulkActionsToolbar,
-    CreateButton, List as RaList, Pagination, RecordContextProvider, ShowButton, SimpleListLoading, TopToolbar, useListContext, useRecordContext, useRedirect, useStore
+    CheckboxGroupInput,
+    CreateButton, Datagrid, DatagridHeader, EditButton, List as RaList, Pagination, RecordContextProvider, Show, ShowButton, SimpleListLoading, TextField, TopToolbar, useListContext, useRecordContext, useRedirect, useStore
 } from 'react-admin';
 import { BulkActionButtons } from '../misc/BulkActionButtons';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
+import { Children } from 'react';
 
 const ChallengeModelListContent = () => {
 
@@ -20,60 +22,72 @@ const ChallengeModelListContent = () => {
     }
     let groupChallenges: string[] = ['groupCompetitivePerformance', 'groupCompetitiveTime', 'groupCooperative'];
 
-    // return (
-    //     <>
-    //         <Datagrid
-    //             bulkActionButtons={<BulkActionButtons title="Challenge Model" resource="challengemodels" />}
-    //             isRowSelectable={record => (!groupChallenges.includes(record.name))} 
-    //             sx={{
-    //                 '& .RaDatagrid-headerCell': {
-    //                     fontWeight: 600,
-    //                 },
+    let result:any=[];
+    chmodels.forEach(chm=> {
+        if (!groupChallenges.includes(chm.name)) {
+            result.push(chm);
+        }
+    })
 
-    //             }}>
-    //             <TextField label="Model Name" source="name" />
-    //             <span style={{ float: 'right' }}>
-    //                 <ButtonPanel />
-    //             </span>
-    //         </Datagrid>
-    //     </>
-    // );
-
+    
     return (
         <>
-            <BulkActionsToolbar>
-                <BulkActionButtons title="Challenge Model" resource="challengemodels" />
-            </BulkActionsToolbar>
-            <ListSubheader>Model Name</ListSubheader>
-            <List>
-                {chmodels.map(model => (
-                    <RecordContextProvider>
-                        {!groupChallenges.includes(model.id) && <ListItem dense={true} sx={{ pt: 0, pb: 0, borderBottom: 1, borderColor: 'grey.300' }} >
-                            <Checkbox
-                                edge="start"
-                                checked={selectedIds.includes(model.id)}
-                                tabIndex={-1}
-                                disableRipple
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    onToggleItem(model.id);
-                                }}
-                            />
+           <Datagrid
+                data={result}
+                placeholder='Model Name'
+                bulkActionButtons={<BulkActionButtons title="Challenge Model" resource="challengemodels" />}
+                // isRowSelectable={record => (!groupChallenges.includes(record.name))} 
+                sx={{
+                    '& .RaDatagrid-headerCell': {
+                        fontWeight: 600,
+                    },
 
-                            <ListItemText
-                                primary={`${model.name}`}
-                            />
-                            <ButtonPanel id={model.id} />
-
-                        </ListItem>
-                        }
-
-                    </RecordContextProvider>
-                ))}
-
-            </List>
+                }}>
+                <TextField label="Model Name" source="name" />
+                <span style={{ float: 'right' }}>
+                    <ShowButton />
+                    <EditButton />
+                </span>
+                {/* <CustomItem /> */}
+            </Datagrid>
         </>
     );
+
+    // return (
+    //     <>
+    //         <BulkActionsToolbar>
+    //             <BulkActionButtons title="Challenge Model" resource="challengemodels" />
+    //         </BulkActionsToolbar>
+    //          Model Name
+    //         <List >
+    //             {chmodels.map(model => (
+    //                 <RecordContextProvider>
+    //                     {!groupChallenges.includes(model.id) && <ListItem dense={true} sx={{ pt: 0, pb: 0, borderBottom: 1, borderColor: 'grey.300' }} >
+    //                         <Checkbox
+    //                             edge="start"
+    //                             checked={selectedIds.includes(model.id)}
+    //                             tabIndex={-1}
+    //                             disableRipple
+    //                             onClick={e => {
+    //                                 e.stopPropagation();
+    //                                 onToggleItem(model.id);
+    //                             }}
+    //                         />
+
+    //                         <ListItemText
+    //                             primary={`${model.name}`}
+    //                         />
+    //                         <ButtonPanel id={model.id} />
+
+    //                     </ListItem>
+    //                     }
+
+    //                 </RecordContextProvider>
+    //             ))}
+
+    //         </List>
+    //     </>
+    // );
 }
 
 const ButtonPanel = (params: any) => {
@@ -94,6 +108,30 @@ const ButtonPanel = (params: any) => {
         </>
     );
 
+}
+
+const CustomItem = (params: any) => {
+    const record = useRecordContext();
+    if (!record) return null;
+    if (record.name === "groupCompetitivePerformance" ||
+        record.name === "groupCompetitiveTime" ||
+        record.name === "groupCooperative") {
+        return (
+            <>
+            </>
+        )
+        } else {
+            return (
+                <>
+                   
+                    <span style={{ float: 'right' }}>
+                        <ButtonPanel />
+                    </span>
+                </>
+        
+            );
+        }
+    
 }
 
 const CustomDataGridBulkAction = () => {

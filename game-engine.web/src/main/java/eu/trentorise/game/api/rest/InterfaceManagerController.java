@@ -22,16 +22,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,8 +59,10 @@ import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.PointConceptDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
+import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.ResourceNotFoundException;
 import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
@@ -69,6 +75,8 @@ import eu.trentorise.game.model.core.GameTask;
 import eu.trentorise.game.model.core.Rule;
 import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.model.core.TimeUnit;
+import eu.trentorise.game.repo.ChallengeConceptPersistence;
+import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -83,12 +91,16 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping(value = "/console-ui")
 @Profile({ "sec", "no-sec" })
 public class InterfaceManagerController {
-
+	private static final Logger logger = LoggerFactory.getLogger(InterfaceManagerController.class);
+	
 	@Autowired
 	private GameService gameSrv;
 
 	@Autowired
 	private PlayerService playerSrv;
+	
+	@Autowired
+	private ChallengeConceptRepo challengeConceptRepo;
 
 	@Autowired
 	private TaskService taskSrv;
@@ -855,6 +867,29 @@ public class InterfaceManagerController {
 				.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, false));
 		playerState.setId(playerState.getPlayerId());
 		return new GetOneResponse(playerState);
+	}
+	
+	@DeleteMapping("/challenges/{gameId}/{playerId}/challenge/{instanceName}")
+	public GetOneResponse deleteChallenge(@PathVariable String gameId, @PathVariable String playerId,
+			@PathVariable String instanceName) {
+		gameId = decodePathVariable(gameId);
+		final String decodedPlayerId = decodePathVariable(playerId);
+		final String decodedInstanceName = decodePathVariable(instanceName);
+		PlayerState state = playerSrv.loadState(gameId, playerId, false, false);
+		List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId);
+		state.loadChallengeConcepts(listCcs);
+		Optional<ChallengeConcept> removed = state.removeChallenge(decodedInstanceName);
+		ChallengeConceptPersistence saved = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId, playerId,
+				instanceName);
+		challengeConceptRepo.delete(saved);
+		
+		if (removed.isPresent()) {
+			playerSrv.saveState(state);
+			LogHub.info(gameId, logger, "removed challenge {} of player {}", instanceName, playerId);
+			return new GetOneResponse(removed.get());
+		}  
+		
+		throw new IllegalArgumentException(String.format("challenge %s doesn't exist in state of player %s", decodedInstanceName, decodedPlayerId));
 	}
 
 }

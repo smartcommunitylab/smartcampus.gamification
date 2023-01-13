@@ -180,6 +180,10 @@ const gamificationDataProvider = {
         const headers = { 'Authorization': `Basic ${token}` };
         if (resource === 'game') {
             url = url + '/' + params.id;
+        } else if (resource=== 'challenges') {
+            const gameId = params.meta.gameId;
+            const playerId = params.meta.playerId;
+            url = url + '/' + gameId + '/' + playerId + '/challenge/' + params.id;
         } else {
             const gameId = params.meta.gameId;
             url = url + '/' + gameId + '/' + params.id;

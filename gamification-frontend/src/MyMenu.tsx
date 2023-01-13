@@ -6,11 +6,12 @@ export const MyMenu = () => {
     const resources = useResourceDefinitions();
     const getResourceLabel = useGetResourceLabel();
     const createPath = useCreatePath();
+    const listHiddenMenu = ['challenges'];
 
     const [gameId, getGameId] = useStore('game.selected');
     
     return (Object.keys(resources)
-        .filter(name => name==='game' || ( gameId && name!=='game'))
+        .filter(name => name==='game' || ( gameId && !listHiddenMenu.includes(name)))
         .map(name => (
             // name==='game'?
             <MenuItemLink

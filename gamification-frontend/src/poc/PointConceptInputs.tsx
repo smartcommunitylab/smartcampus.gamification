@@ -1,17 +1,29 @@
 import {
-    TextInput
+    TextInput, NumberInput,
+    useStore,
+    ArrayInput,
+    SimpleFormIterator, DateField, DateInput, DateTimeInput
 } from 'react-admin';
-import { Divider, Box } from '@mui/material';
+import { Box } from '@mui/material';
 
 export const PointConceptInputs = () => {
+    const [gameId] = useStore('game.selected');
+    const options = { meta: { gameId: gameId } };
     return (
         <Box flex="1" mt={-1}>
-            <Box display="flex" width={430}>
-                <TextInput source="action_name" fullWidth />
+            <Box>
+                <ArrayInput source="periods">
+                    <SimpleFormIterator inline>
+                        <TextInput source="name" helperText={false} />
+                        <DateInput source="start" helperText={false}/>
+                        <DateInput source="end" helperText={false} />
+                        <NumberInput title='period in days' source="period" helperText={'period in days'} />
+                        <NumberInput source="capacity" helperText={false} />
+                     </SimpleFormIterator>
+                </ArrayInput>
             </Box>
-            <Divider />
         </Box>
     );
 };
 
-const Spacer = () => <Box width={20} component="span" />;
+

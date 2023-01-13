@@ -19,6 +19,7 @@ import static eu.trentorise.game.api.rest.ControllerUtils.decodePathVariable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +55,7 @@ import eu.trentorise.game.bean.PlayerStateDTO;
 import eu.trentorise.game.bean.PointConceptDTO;
 import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
+import eu.trentorise.game.core.ResourceNotFoundException;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.ChallengeModel;
 import eu.trentorise.game.model.Game;
@@ -230,12 +232,10 @@ public class InterfaceManagerController {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 
 		List<PointConceptDTO> pcs = new ArrayList<PointConceptDTO>();
-		int i = 0;
 		for (GameConcept gc : g.getConcepts()) {
 			if (gc instanceof PointConcept) {
-				pcs.add(new PointConceptDTO(String.valueOf(i), (PointConcept) gc));
+				pcs.add(new PointConceptDTO(gc.getName(), (PointConcept) gc));
 			}
-			i++;
 		}
 
 		// GetMany
@@ -247,10 +247,75 @@ public class InterfaceManagerController {
 		int max = pageable.getPageNumber() >= totalpages ? pcs.size()
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
-
 		Page<PointConceptDTO> page = new PageImpl<PointConceptDTO>(pcs.subList(min, max), pageable, pcs.size());
-
 		return g == null ? null : new GetListResponse(page.getSize(), page.getContent());
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/pointconcepts/{gameId}/{pointId}", produces = {
+			"application/json" })
+	@Operation(summary = "Get point")
+	public GetOneResponse readPoint(@PathVariable String gameId, @PathVariable String pointId) {
+		gameId = decodePathVariable(gameId);
+		pointId = decodePathVariable(pointId);
+		Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
+		PointConcept point = null;
+
+		if (concepts != null) {
+			for (GameConcept gc : concepts) {
+				if (gc instanceof PointConcept && gc.getName().equals(pointId)) {
+					point = (PointConcept) gc;
+					point.setId(point.getName());
+					break;
+				}
+			}
+		}
+
+		if (point == null) {
+			throw new ResourceNotFoundException(String.format("pointId %s not exist in game %s", pointId, gameId));
+		}
+
+		return (new GetOneResponse(point));
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/pointconcepts/{gameId}", consumes = {
+			"application/json" }, produces = { "application/json" })
+	@Operation(summary = "Add point")
+	public GetOneResponse addPoint(@PathVariable String gameId, @RequestBody PointConcept point) {
+		gameId = decodePathVariable(gameId);
+		gameSrv.addConceptInstance(gameId, point);
+		return gameId == null ? null : new GetOneResponse(point);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/pointconcepts/{gameId}/{pointId}", produces = {
+			"application/json" })
+	@Operation(summary = "Delete point")
+	public GetListResponse deletePoint(@PathVariable String gameId, @PathVariable List<String> pointId) {
+		gameId = decodePathVariable(gameId);
+		Game g = gameSrv.loadGameDefinitionById(gameId);
+
+		if (g != null) {
+			for (String pcName : pointId) {
+				for (Iterator<GameConcept> iter = g.getConcepts().iterator(); iter.hasNext();) {
+					GameConcept gc = iter.next();
+					if (gc instanceof PointConcept && pcName.equals(gc.getName())) {
+						iter.remove();
+						break;
+					}
+				}
+				gameSrv.saveGameDefinition(g);
+			}
+		}
+
+		g = gameSrv.loadGameDefinitionById(gameId);
+		List<PointConceptDTO> pcs = new ArrayList<PointConceptDTO>();
+
+		for (GameConcept gc : g.getConcepts()) {
+			if (gc instanceof PointConcept) {
+				pcs.add(new PointConceptDTO(gc.getName(), (PointConcept) gc));
+			}
+		}
+
+		return new GetListResponse(pcs.size(), pcs);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/tasks/{gameId}", produces = { "application/json" })
@@ -258,11 +323,9 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		GameDTO game = converter.convertGame(g);
-
 		List<TaskDTO> tasks = new ArrayList<TaskDTO>();
 
 		for (ClassificationDTO c : game.getClassificationTask()) {
-
 			if (c instanceof GeneralClassificationDTO) {
 				GeneralClassificationTask general = converter.convertClassificationTask((GeneralClassificationDTO) c);
 				tasks.add(new TaskDTO(general.getName(), general));
@@ -271,7 +334,6 @@ public class InterfaceManagerController {
 						.convertClassificationTask((IncrementalClassificationDTO) c);
 				tasks.add(new TaskDTO(incremental.getName(), incremental));
 			}
-
 		}
 		return g == null ? null : new GetListResponse(tasks.size(), tasks);
 	}
@@ -281,12 +343,15 @@ public class InterfaceManagerController {
 	public GetOneResponse createGeneralTask(@PathVariable String gameId, @RequestBody GeneralClassificationDTO task) {
 		gameId = decodePathVariable(gameId);
 		Game g = gameSrv.loadGameDefinitionById(gameId);
+
 		if (g != null) {
 			if (g.getTasks() == null) {
 				g.setTasks(new HashSet<GameTask>());
 			}
+
 			GeneralClassificationTask t = converter.convertClassificationTask(task);
 			t.setName(task.getName());
+
 			if (g.getTasks().contains(t)) {
 				throw new IllegalArgumentException("task name already exist");
 			} else {
@@ -294,6 +359,7 @@ public class InterfaceManagerController {
 				gameSrv.saveGameDefinition(g);
 				taskSrv.createTask(t, gameId);
 			}
+
 			task.setGameId(gameId);
 			return g == null ? null : new GetOneResponse(task);
 		} else {
@@ -321,9 +387,8 @@ public class InterfaceManagerController {
 				}
 				gameSrv.saveGameDefinition(g);
 			}
-			task.setId(task.getName()); // must have id inside data.
+			task.setId(task.getName());
 			return g == null ? null : new GetOneResponse(task);
-
 		} else {
 			throw new IllegalArgumentException("game not exist");
 		}
@@ -364,18 +429,17 @@ public class InterfaceManagerController {
 			if (g.getTasks() != null) {
 				for (GameTask gt : g.getTasks()) {
 					if (gt instanceof IncrementalClassificationTask && gt.getName().equals(task.getName())) {
-
 						IncrementalClassificationTask ct = (IncrementalClassificationTask) gt;
 						ct.setItemsToNotificate(task.getItemsToNotificate());
 						ct.setClassificationName(task.getClassificationName());
+
 						if (StringUtils.isNotBlank(task.getDelayUnit())) {
 							ct.getSchedule().setDelay(
 									new TimeInterval(task.getDelayValue(), TimeUnit.valueOf(task.getDelayUnit())));
 						} else {
 							ct.getSchedule().setDelay(null);
 						}
-						// if itemType or periodName changes update schedule
-						// data
+
 						if (!ct.getPeriodName().equals(task.getPeriodName())
 								|| !ct.getPointConceptName().equals(task.getItemType())) {
 							// found pointConcept
@@ -386,6 +450,7 @@ public class InterfaceManagerController {
 								}
 							}
 						}
+
 						taskSrv.updateTask(gt, gameId);
 					}
 				}
@@ -438,11 +503,9 @@ public class InterfaceManagerController {
 
 		Game gUpdate = gameSrv.loadGameDefinitionById(gameId);
 		GameDTO game = converter.convertGame(gUpdate);
-
 		List<TaskDTO> taskUpdated = new ArrayList<TaskDTO>();
 
 		for (ClassificationDTO c : game.getClassificationTask()) {
-
 			if (c instanceof GeneralClassificationDTO) {
 				GeneralClassificationTask general = converter.convertClassificationTask((GeneralClassificationDTO) c);
 				taskUpdated.add(new TaskDTO(general.getName(), general));
@@ -451,7 +514,6 @@ public class InterfaceManagerController {
 						.convertClassificationTask((IncrementalClassificationDTO) c);
 				taskUpdated.add(new TaskDTO(incremental.getName(), incremental));
 			}
-
 		}
 
 		return g == null ? null : new GetListResponse(taskUpdated.size(), taskUpdated);
@@ -462,11 +524,9 @@ public class InterfaceManagerController {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		String classificationId = decodePathVariable(id);
 		GameDTO game = converter.convertGame(g);
-
 		TaskDTO task = new TaskDTO();
 
 		for (ClassificationDTO c : game.getClassificationTask()) {
-
 			if (c instanceof GeneralClassificationDTO) {
 				GeneralClassificationTask general = converter.convertClassificationTask((GeneralClassificationDTO) c);
 				GeneralClassificationDTO generalObj = converter.convertClassificationTask(general);
@@ -482,9 +542,7 @@ public class InterfaceManagerController {
 					task = new TaskDTO(incrementalObj.getName(), incrementalObj);
 					break;
 				}
-
 			}
-
 		}
 
 		return g == null ? null : new GetOneResponse(task);
@@ -495,6 +553,7 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		Set<GameConcept> concepts = gameSrv.readConceptInstances(gameId);
 		List<BadgeCollectionConcept> badgeColl = new ArrayList<BadgeCollectionConcept>();
+
 		if (concepts != null) {
 			for (GameConcept gc : concepts) {
 				if (gc instanceof BadgeCollectionConcept) {
@@ -505,14 +564,11 @@ public class InterfaceManagerController {
 		}
 
 		int totalpages = badgeColl.size() / pageable.getPageSize();
-
 		int max = pageable.getPageNumber() >= totalpages ? badgeColl.size()
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
-
 		Page<BadgeCollectionConcept> page = new PageImpl<BadgeCollectionConcept>(badgeColl.subList(min, max), pageable,
 				badgeColl.size());
-
 		return badgeColl == null ? null : new GetListResponse(page.getSize(), page.getContent());
 	}
 
@@ -546,11 +602,13 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		GameDTO gameDTO = converter.convertGame(g);
+
 		if (!gameDTO.getBadgeCollectionConcept().contains(badge)) {
 			gameDTO.getBadgeCollectionConcept().add(badge);
 		} else {
 			throw new IllegalArgumentException("badge already exist");
 		}
+
 		gameSrv.saveGameDefinition(converter.convertGame(gameDTO));
 		return gameId == null ? null : new GetOneResponse(badge);
 	}
@@ -560,6 +618,7 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 		List<RuleDTO> rules = new ArrayList<RuleDTO>();
+
 		if (game.getRules() != null) {
 			for (String ruleUrl : game.getRules()) {
 				RuleDTO r = new RuleDTO();
@@ -573,13 +632,10 @@ public class InterfaceManagerController {
 		}
 
 		int totalpages = rules.size() / pageable.getPageSize();
-
 		int max = pageable.getPageNumber() >= totalpages ? rules.size()
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
-
 		Page<RuleDTO> page = new PageImpl<RuleDTO>(rules.subList(min, max), pageable, rules.size());
-
 		return rules == null ? null : new GetListResponse(page.getSize(), page.getContent());
 	}
 
@@ -648,6 +704,7 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		Game game = gameSrv.loadGameDefinitionById(gameId);
 		List<LevelDTO> levels = new ArrayList<LevelDTO>();
+
 		if (game.getLevels() != null) {
 			for (Level level : game.getLevels()) {
 				LevelDTO l = converter.convert(level);
@@ -656,13 +713,10 @@ public class InterfaceManagerController {
 		}
 
 		int totalpages = levels.size() / pageable.getPageSize();
-
 		int max = pageable.getPageNumber() >= totalpages ? levels.size()
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
-
 		Page<LevelDTO> page = new PageImpl<LevelDTO>(levels.subList(min, max), pageable, levels.size());
-
 		return levels == null ? null : new GetListResponse(page.getSize(), page.getContent());
 	}
 
@@ -699,11 +753,16 @@ public class InterfaceManagerController {
 		return new GetOneResponse(converter.convert(saved));
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/levels/{gameId}/{levelName}", produces = {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/levels/{gameId}/{levels}", produces = {
 			"application/json" })
 	@Operation(summary = "Delete a level")
-	public GetListResponse deleteLevel(@PathVariable String gameId, @PathVariable String levelName) {
-		gameSrv.deleteLevel(gameId, levelName);
+	public GetListResponse deleteLevel(@PathVariable String gameId, @PathVariable List<String> levels) {
+		gameId = decodePathVariable(gameId);
+
+		for (String levelName : levels) {
+			gameSrv.deleteLevel(gameId, levelName);
+		}
+
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		GameDTO gameDTO = converter.convertGame(g);
 		return g == null ? null : new GetListResponse(gameDTO.getLevels().size(), gameDTO.getLevels());
@@ -716,12 +775,6 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
-
-//		for (ChallengeModel chm : gameSrv.readChallengeModels(gameId)) {
-//			ChallengeModel temp = chm;
-//			temp.setId(chm.getName());
-//			challengeModelList.add(temp);
-//		}
 
 		for (String groupChallengeName : GroupChallenge.MODELS) {
 			ChallengeModel tmp = new ChallengeModel();
@@ -738,14 +791,11 @@ public class InterfaceManagerController {
 		}
 
 		int totalpages = challengeModelList.size() / pageable.getPageSize();
-
 		int max = pageable.getPageNumber() >= totalpages ? challengeModelList.size()
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
-
 		Page<ChallengeModel> page = new PageImpl<ChallengeModel>(challengeModelList.subList(min, max), pageable,
 				challengeModelList.size());
-
 		return challengeModelList == null ? null : new GetListResponse(page.getSize(), page.getContent());
 	}
 
@@ -756,7 +806,7 @@ public class InterfaceManagerController {
 		Game g = gameSrv.loadGameDefinitionById(gameId);
 		return g == null ? null : new GetOneResponse(gameSrv.readChallengeModel(gameId, id));
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST, value = "/challengemodels/{gameId}", consumes = {
 			"application/json" }, produces = { "application/json" })
 	@Operation(summary = "Add challenge model")
@@ -765,7 +815,7 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		return new GetOneResponse(gameSrv.saveChallengeModel(gameId, challengeModel));
 	}
-	
+
 	@RequestMapping(method = RequestMethod.PUT, value = "/challengemodels/{gameId}", produces = { "application/json" })
 	@Operation(summary = "Update a challenge model")
 	public GetOneResponse updateLevel(@PathVariable String gameId, @RequestBody ChallengeModel challengeModel) {
@@ -782,7 +832,6 @@ public class InterfaceManagerController {
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
 		return challengeModelList == null ? null : new GetListResponse(challengeModelList.size(), challengeModelList);
-
 	}
 
 	@GetMapping(value = "/monitor/{gameId}")

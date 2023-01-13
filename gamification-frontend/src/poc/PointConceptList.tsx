@@ -9,8 +9,10 @@ import {
     BulkDeleteButton,
     Datagrid,
     TextField,
-    useStore
+    useStore,
+    ShowButton
 } from 'react-admin';
+import { BulkActionButtons } from '../misc/BulkActionButtons';
 import { PointConcept } from '../types';
 
 const PointConceptListContent = () => {
@@ -26,19 +28,19 @@ const PointConceptListContent = () => {
     const now = Date.now();
     return (
         <>
-            <BulkActionsToolbar>
-                <BulkDeleteButton />
-            </BulkActionsToolbar>
             <Datagrid
+                bulkActionButtons={<BulkActionButtons title="PointConcept" resource="pointconcepts" />}
                 sx={{
                     '& .RaDatagrid-headerCell': {
                         fontWeight: 600,
-                        // backgroundColor: 'cornflowerblue',
-                        // color: 'white'
                     }
                 }}
             >
                 <TextField label="Point Concept Name" source="pc.name" />
+                <span style={{ float: 'right' }}>
+                    <ShowButton />
+                </span>
+
             </Datagrid>
         </>
     );

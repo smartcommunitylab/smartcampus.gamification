@@ -54,6 +54,9 @@ const gamificationDataProvider = {
                 if (resource==='challengemodels') {
                     json.data = modifyChallengeModel(json);
                 }
+                if (resource==="pointconcepts") {
+                    json.data = modifyPointConceptModel(json);
+                }
                 return json;
             })
     },
@@ -95,6 +98,13 @@ const gamificationDataProvider = {
         }
 
         if (resource === 'challengemodels') {
+            headers = { 'Authorization': `Basic ${token}`, 'Content-type': 'application/json' };
+            const gameId = params.meta.gameId;
+            body = JSON.stringify(params.data);
+            url = url + '/' + gameId;
+        }
+
+        if (resource === 'pointconcepts') {
             headers = { 'Authorization': `Basic ${token}`, 'Content-type': 'application/json' };
             const gameId = params.meta.gameId;
             body = JSON.stringify(params.data);
@@ -236,6 +246,25 @@ function modifyChallengeModel(json: any) {
     body['id'] = json.data.id;
     body['name'] = json.data.name;
     body['variables'] = variables;
+    return body;
+}
+
+function modifyPointConceptModel(json: any): any {
+    let body: any = {};
+    let periods: any = [];
+    Object.entries(json.data.periods).map((element: any) => {
+        let item: any = {};
+        item['name'] = element[1].identifier;   
+        item['start'] = element[1].start;
+        item['end']=element[1].end;
+        item['period'] = element[1].period;
+        item['capacity'] = element[1].capacity;           
+        periods.push(item);
+    });
+    body['id'] = json.data.name;
+    body['name'] = json.data.name;
+    body['score'] = json.data.score;
+    body['periods'] = periods;
     return body;
 }
 

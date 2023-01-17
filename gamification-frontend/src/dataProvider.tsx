@@ -13,12 +13,13 @@ const gamificationDataProvider = {
 
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
+        let filter = params.filter.q?params.filter.q:'';
 
         if (resource !== "game") {
             const gameId = params.meta.gameId;
             url = url + '/' + gameId + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order;
         } else {
-            url = url + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order;
+            url = url + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order + "&filter=" + filter;;
         }
 
         return fetch(url, { method: 'GET', headers: headers })

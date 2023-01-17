@@ -550,6 +550,16 @@ public class GameManager implements GameService {
         return result;
 
     }
+    
+    @Override
+    public List<Game> loadGameByOwnerAndName(String user, String title) {
+        List<Game> result = new ArrayList<Game>();
+        if (user != null) {
+            result = convert(gameRepo.findBySearchName(title, user));
+        }
+        return result;
+
+    }
 
     @Override
     public ChallengeModel saveChallengeModel(String gameId, ChallengeModel model) {

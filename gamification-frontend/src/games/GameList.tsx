@@ -6,7 +6,9 @@ import {
     Pagination,
     BulkActionsToolbar,
     BulkDeleteButton,
-    RecordContextProvider
+    RecordContextProvider,
+    TextInput,
+    SearchInput
 } from 'react-admin';
 import { useRedirect } from 'react-admin';
 import {
@@ -70,6 +72,7 @@ export const GameList = () => {
             perPage={25}
             pagination={<Pagination rowsPerPageOptions={[10, 25, 50, 100]} />}
             sort={{ field: 'last_seen', order: 'DESC' }}
+            filters={GameFilters}
         >
             <GameListContent />
         </RaList>
@@ -108,3 +111,7 @@ const SettingButton = (params: any) => {
         </>
     );
 }
+
+const GameFilters = [
+    <SearchInput placeholder='Search by game name'source="q" alwaysOn />
+];

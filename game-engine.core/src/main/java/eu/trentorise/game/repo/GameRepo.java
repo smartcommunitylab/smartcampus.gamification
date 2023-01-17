@@ -16,6 +16,7 @@ package eu.trentorise.game.repo;
 
 import java.util.List;
 
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +32,8 @@ public interface GameRepo extends CrudRepository<GamePersistence, String> {
     public List<GamePersistence> findByDomain(String domain);
 
     public List<GamePersistence> findByTerminated(boolean value);
-
+    
+    @Query("{'name': {'$regex': ?0, '$options': 'i'}, 'owner': ?1}")
+	public List<GamePersistence> findBySearchName(String title, String user);
 
 }

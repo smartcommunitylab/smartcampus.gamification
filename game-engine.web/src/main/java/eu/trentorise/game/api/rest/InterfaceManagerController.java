@@ -92,13 +92,13 @@ import io.swagger.v3.oas.annotations.Operation;
 @Profile({ "sec", "no-sec" })
 public class InterfaceManagerController {
 	private static final Logger logger = LoggerFactory.getLogger(InterfaceManagerController.class);
-	
+
 	@Autowired
 	private GameService gameSrv;
 
 	@Autowired
 	private PlayerService playerSrv;
-	
+
 	@Autowired
 	private ChallengeConceptRepo challengeConceptRepo;
 
@@ -117,11 +117,18 @@ public class InterfaceManagerController {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game", produces = { "application/json" })
-	public GetListResponse readGames(Pageable pageable) {
+	public GetListResponse readGames(Pageable pageable, @RequestParam(required = false) String filter) {
 		String user = identityLookup.getName();
 		List<GameDTO> r = new ArrayList<GameDTO>();
-		for (Game g : gameSrv.loadGameByOwner(user)) {
-			r.add(converter.convertGame(g));
+
+		if (filter != null && !filter.isEmpty()) {
+			for (Game g : gameSrv.loadGameByOwnerAndName(user, filter)) {
+				r.add(converter.convertGame(g));
+			}
+		} else {
+			for (Game g : gameSrv.loadGameByOwner(user)) {
+				r.add(converter.convertGame(g));
+			}
 		}
 
 		int totalpages = r.size() / pageable.getPageSize();
@@ -840,9 +847,9 @@ public class InterfaceManagerController {
 	@Operation(summary = "Delete challenge model")
 	public GetListResponse deleteChallengeModels(@PathVariable String gameId, @PathVariable List<String> modelIds) {
 		gameId = decodePathVariable(gameId);
-		for (String modelId: modelIds) {
-			gameSrv.deleteChallengeModel(gameId, modelId);	
-		}		
+		for (String modelId : modelIds) {
+			gameSrv.deleteChallengeModel(gameId, modelId);
+		}
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
 		return challengeModelList == null ? null : new GetListResponse(challengeModelList.size(), challengeModelList);
@@ -870,7 +877,7 @@ public class InterfaceManagerController {
 		playerState.setId(playerState.getPlayerId());
 		return new GetOneResponse(playerState);
 	}
-	
+
 	@DeleteMapping("/challenges/{gameId}/{playerId}/challenge/{instanceName}")
 	public GetOneResponse deleteChallenge(@PathVariable String gameId, @PathVariable String playerId,
 			@PathVariable String instanceName) {
@@ -884,14 +891,15 @@ public class InterfaceManagerController {
 		ChallengeConceptPersistence saved = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId, playerId,
 				instanceName);
 		challengeConceptRepo.delete(saved);
-		
+
 		if (removed.isPresent()) {
 			playerSrv.saveState(state);
 			LogHub.info(gameId, logger, "removed challenge {} of player {}", instanceName, playerId);
 			return new GetOneResponse(removed.get());
-		}  
-		
-		throw new IllegalArgumentException(String.format("challenge %s doesn't exist in state of player %s", decodedInstanceName, decodedPlayerId));
+		}
+
+		throw new IllegalArgumentException(String.format("challenge %s doesn't exist in state of player %s",
+				decodedInstanceName, decodedPlayerId));
 	}
 
 }

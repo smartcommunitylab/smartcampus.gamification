@@ -88,7 +88,7 @@ frontend-container-build:
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - cd gamification-frontend
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
+    - DOCKER_BUILDKIT=1 docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://gedev.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
     - docker push $CONTAINER_FRONTEND_IMAGE
     - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
   only:

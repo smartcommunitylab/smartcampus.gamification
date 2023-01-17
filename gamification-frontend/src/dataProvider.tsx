@@ -51,9 +51,9 @@ const gamificationDataProvider = {
                     const errorObj = { status: json.status, message: json.error + " - " + json.message };
                     throw errorObj;
                 }
-                if (resource==='challengemodels') {
-                    json.data = modifyChallengeModel(json);
-                }
+                // if (resource==='challengemodels') {
+                //     json.data = modifyChallengeModel(json);
+                // }
                 if (resource==="pointconcepts") {
                     json.data = modifyPointConceptModel(json);
                 }
@@ -238,20 +238,20 @@ const gamificationDataProvider = {
 
 export default gamificationDataProvider;
 
-function modifyChallengeModel(json: any) {
-    let body: any = {};
-    let variables: any = [];
-    json.data.variables.forEach((element: any) => {
-        let v: any = {};
-        v['name'] = element;              
-        variables.push(v);
-    });
-    body['gameId']= json.data.gameId;
-    body['id'] = json.data.id;
-    body['name'] = json.data.name;
-    body['variables'] = variables;
-    return body;
-}
+// function modifyChallengeModel(json: any) {
+//     let body: any = {};
+//     let variables: any = [];
+//     json.data.variables.forEach((element: any) => {
+//         let v: any = {};
+//         v['name'] = element;              
+//         variables.push(v);
+//     });
+//     body['gameId']= json.data.gameId;
+//     body['id'] = json.data.id;
+//     body['name'] = json.data.name;
+//     body['variables'] = variables;
+//     return body;
+// }
 
 function modifyPointConceptModel(json: any): any {
     let body: any = {};

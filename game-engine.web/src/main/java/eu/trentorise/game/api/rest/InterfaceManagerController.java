@@ -835,12 +835,14 @@ public class InterfaceManagerController {
 		return new GetOneResponse(gameSrv.saveChallengeModel(gameId, challengeModel));
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/challengemodels/{gameId}/{modelId}", produces = {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/challengemodels/{gameId}/{modelIds}", produces = {
 			"application/json" })
 	@Operation(summary = "Delete challenge model")
-	public GetListResponse deleteChallengeModels(@PathVariable String gameId, @PathVariable String modelId) {
+	public GetListResponse deleteChallengeModels(@PathVariable String gameId, @PathVariable List<String> modelIds) {
 		gameId = decodePathVariable(gameId);
-		gameSrv.deleteChallengeModel(gameId, modelId);
+		for (String modelId: modelIds) {
+			gameSrv.deleteChallengeModel(gameId, modelId);	
+		}		
 		List<ChallengeModel> challengeModelList = new ArrayList<ChallengeModel>();
 		challengeModelList.addAll(gameSrv.readChallengeModels(gameId));
 		return challengeModelList == null ? null : new GetListResponse(challengeModelList.size(), challengeModelList);

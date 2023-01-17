@@ -14,18 +14,18 @@ export const ChallengeModelCreate = () => {
         redirect('list', 'challengemodels');
     };
 
-    const transform = (data: any) => {{       
-        let body: any = {};
-        body['name'] = data.name;
-        body['variables'] = [];
-        data.variables.forEach((element:any) => {
-            body['variables'].push(element.name);
-        });
-        return body;
-    }}
-
+    // const transform = (data: any) => {{       
+    //     let body: any = {};
+    //     body['name'] = data.name;
+    //     body['variables'] = [];
+    //     data.variables.forEach((element:any) => {
+    //         body['variables'].push(element);
+    //     });
+    //     return body;
+    // }}
+//transform={transform} 
     return (
-        <Create transform={transform} mutationOptions={{ ...options, onSuccess }} >
+        <Create mutationOptions={{ ...options, onSuccess }} >
             <Box mt={2} display="flex">
                 <Box flex="1">
                     <Form>
@@ -40,7 +40,7 @@ export const ChallengeModelCreate = () => {
                                     <Box>
                                         <ArrayInput source="variables">
                                             <SimpleFormIterator inline>
-                                                <TextInput source="name" helperText={false} />                                                
+                                                <TextInput source="" label="Name" helperText={false} />                                                
                                             </SimpleFormIterator>
                                         </ArrayInput>
                                     </Box>

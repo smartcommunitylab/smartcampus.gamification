@@ -8,16 +8,16 @@ export const ChallengeModelEdit = () => {
     const redirect = useRedirect();
     const options = { meta: { gameId: gameId } };
 
-    const transform = (data: any) => {{       
-        let body: any = {};
-        body['name'] = data.name;
-        body['id'] = data.id;
-        body['variables'] = [];
-        data.variables.forEach((element:any) => {
-            body['variables'].push(element.name);
-        });
-        return body;
-    }}
+    // const transform = (data: any) => {{       
+    //     let body: any = {};
+    //     body['name'] = data.name;
+    //     body['id'] = data.id;
+    //     body['variables'] = [];
+    //     data.variables.forEach((element:any) => {
+    //         body['variables'].push(element.name);
+    //     });
+    //     return body;
+    // }}
 
     const onSuccess = (data: any) => {
         notify(`ChallengeModel updated successfully`);
@@ -27,7 +27,7 @@ export const ChallengeModelEdit = () => {
 
     return (<EditBase
         mutationMode='pessimistic'
-        transform={transform}
+        // transform={transform}
         mutationOptions={{ ...options, onSuccess }}
         queryOptions={options}
     >
@@ -52,8 +52,8 @@ const ChallengeModelEditContent = () => {
                                 <br />
                                 <Box>
                                     <ArrayInput source="variables">
-                                        <SimpleFormIterator inline>
-                                            <TextInput source="name" helperText={false} />
+                                        <SimpleFormIterator inline disableReordering>
+                                            <TextInput source="" helperText={false} />
                                         </SimpleFormIterator>
                                     </ArrayInput>
                                 </Box>

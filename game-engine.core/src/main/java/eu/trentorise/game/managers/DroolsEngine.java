@@ -256,7 +256,7 @@ public class DroolsEngine implements GameEngine {
             }
             facts.add(new Member(state.getPlayerId(), payloadData));
             for (TeamState team : playerTeams) {
-                workflow.apply(gameId, action, team.getPlayerId(), executionMoment, null,
+                workflow.apply(gameId, action, team.getPlayerId(), executionMoment, payloadData,
                         new ArrayList<>(facts));
             }
         }
@@ -275,7 +275,7 @@ public class DroolsEngine implements GameEngine {
                 LogHub.info(gameId, logger, "Team {} has {} members", state.getPlayerId(),
                         members.size());
                 for (String member : members) {
-                    workflow.apply(gameId, action, member, executionMoment, null,
+                    workflow.apply(gameId, action, member, executionMoment, data,
                             new ArrayList<>(facts));
                 }
             } catch (ClassCastException e) {

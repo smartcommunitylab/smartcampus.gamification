@@ -46,19 +46,27 @@ public class TeamPartecipationTest {
 
     private static String GAME = "";
     private static final String BASEGAME = "coreGameTest";
-    private static final String ACTION = "test";
+    private static final String ACTION = "save_itinerary";
     private static final String DOMAIN = "my-domain";
 
     private static final String[] TEAM1_PLAYERS = {"pippo", "topolino", "pluto"};
 
     private static final String[] TEAM2_PLAYERS = {"batman", "superman"};
 
-    private static final String POINT_NAME =  "leaves";
-    private static final String POINT_NAME_TEAM =  "leaves-team";
+    private static final String POINT_NAME =  "green leaves";
+    private static final String POINT_NAME_TEAM =  "green leaves";
 
     private static final String PART_NAME =  "participation";
 
     private static final String WALK_KM =  "Walk_Km";
+
+    private static final String BIKE_KM =  "Bike_Km";
+
+    private static final String BUS_KM =  "Bus_Km";
+
+    private static final String TRAIN_KM =  "Train_Km";
+
+    private static final String FLAG_COLLECTION =  "flags";
 
     @Autowired
     private GameManager gameManager;
@@ -108,7 +116,9 @@ public class TeamPartecipationTest {
 
         HashSet<GameConcept> gc = new HashSet<>();
         gc.add(new PointConcept(POINT_NAME));
+        gc.add(new BadgeCollectionConcept(FLAG_COLLECTION));
         game.setConcepts(gc);
+
 
         gameManager.saveGameDefinition(game);
 
@@ -155,13 +165,18 @@ public class TeamPartecipationTest {
         System.out.println(team.getMembers());
 
         playerSrv.saveTeam(team);
+
+        Map<String, Object> customData = new HashMap<>();
+        customData.put("maxMembers", team.getMembers().size());
+        playerSrv.updateCustomData(GAME, playerId, customData);
+
     }
 
     private void definePlayerState(String playerId) {
 
         PlayerState player = new PlayerState(GAME, playerId);
         Set<GameConcept> myState = new HashSet<>();
-        for (String s: new String[]{POINT_NAME, PART_NAME, WALK_KM}) {
+        for (String s: new String[]{POINT_NAME, PART_NAME, WALK_KM, BIKE_KM, BUS_KM, TRAIN_KM}) {
             PointConcept pc;
             pc = new PointConcept(s);
             pc.setScore(0d);
@@ -192,10 +207,9 @@ public class TeamPartecipationTest {
         p = playerSrv.saveState(p);
         print("ehilà");
 
-        check(TEAM1_PLAYERS[0], POINT_NAME, 120.0 );
-        check(TEAM1_PLAYERS[0], PART_NAME, 40.0 );
-
-
+        check(TEAM1_PLAYERS[0], POINT_NAME, 40.0 * 20 );
+        // check(TEAM1_PLAYERS[0], PART_NAME, 40.0 * 20);
+        check("disney", POINT_NAME, 40.0 * 20 );
     }
     
     private void check(String playerId, String conceptName, Double value) throws Exception {

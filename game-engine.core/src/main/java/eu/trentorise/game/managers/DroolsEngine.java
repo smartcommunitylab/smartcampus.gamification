@@ -106,10 +106,10 @@ public class DroolsEngine implements GameEngine {
         if (stopWatch != null) {
             stopWatch.start("game execution");
         }
-        
-        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, state.getPlayerId()); 
+
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, state.getPlayerId());
         state.loadChallengeConcepts(listCcs);
-      
+
         Game game = gameSrv.loadGameDefinitionById(gameId);
         if (game != null && game.isTerminated()) {
             throw new IllegalArgumentException(String.format("game %s is expired", gameId));
@@ -143,13 +143,13 @@ public class DroolsEngine implements GameEngine {
 
         Player player = new Player(state);
         cmds.add(CommandFactory.newInsert(player));
-        
+
         //push team state to kb.
         List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
         for (TeamState ts: playerTeams) {
         	cmds.add(CommandFactory.newInsert(new Player(ts)));
         }
-       
+
 
         // filter state removing all ended or completed challenges for the
         // player
@@ -158,15 +158,16 @@ public class DroolsEngine implements GameEngine {
         concepts = conceptHelper.activateConcepts(concepts);
 
         Set<GameConcept> activeConcepts = conceptHelper.findActiveConcepts(concepts);
-        
+
         Set<GameConcept> inactiveConcepts =
                 new HashSet<>(CollectionUtils.subtract(concepts, activeConcepts));
-        
-        
+
+
         // ATTENTION: Drools modifies objects inserted in working memory by
         // reference
         cmds.add(CommandFactory.newInsertElements(activeConcepts));
-        cmds.add(CommandFactory.newInsert(state.getCustomData()));
+        CustomData insCustomData = state.getCustomData();
+        cmds.add(CommandFactory.newInsert(insCustomData));
         cmds.add(CommandFactory.newFireAllRules());
 
         // queries

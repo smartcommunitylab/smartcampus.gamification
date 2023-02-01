@@ -6,22 +6,6 @@ import java.lang.Math;
 
 global Utility utils;
 
-global Double green_transit_points;
-global Double green_boat_points;
-global Double park_and_ride_points;
-global Double recommendation_bonus;
-global Double driver_first_passenger_bonus;
-global Double driver_other_passenger_bonus;
-global Double passenger_bonus;
-
-global Double transit_daily_max;
-global Double carpooling_daily_max;
-global Double boat_daily_max;
-global Double carpooling_min_km;
-global Double boat_min_km;
-
-global java.util.ArrayList parkings;
-
 function double getModePoint(String mode) {
     switch(mode) {
    	 case 'Walk':
@@ -53,7 +37,9 @@ function double getModeLimit(String mode) {
 }
 
 function double getScore(String mode, double distance) {
-	double point = getModePoint(mode);
+    double point = getModePoint(mode);
+	// HSC special feature: multiply points by 20
+	point *= 20;
 	double limit = getModeLimit(mode);
 	double score = 0.0;
 	int index = 0;
@@ -80,41 +66,68 @@ function double tripScore(double modeDaily, double tripDistance, String mode) {
 
 rule "all modes - update green points"
 when
-    Action($id : id == 'test')
+    Action($id : id == 'save_itinerary')
     Game( $gameId : id)
     Player($playerId : id, team == false)
     Player($teamId : id, team == true, $totalMembers: totalMembers)
-    InputData($travelId : data["travelId"],
-          	$walkDistance : data["walkDistance"])
-    $greenLeaves : PointConcept( name == "leaves")
-    $walkKm : PointConcept(name == "Walk_Km")
-    $participation : PointConcept( name == "participation")
-then
-    utils.log("@@@ all modes - update green points");
-    utils.log("Player: " + $playerId);
-    utils.log("Team: " + $teamId);
-    utils.log("TotalMembers: " + String.valueOf($totalMembers));
 
-    utils.log("$greenLeaves: " + String.valueOf($greenLeaves));
-    utils.log("$walkKm: " + String.valueOf($walkKm));
+    InputData($travelId : data["travelId"],
+          	$walkDistance : data["walkDistance"],
+          	$bikeDistance : data["bikeDistance"],
+          	$busDistance : data["busDistance"],
+          	$trainDistance : data["trainDistance"])
+
+    $greenLeaves : PointConcept( name == "green leaves")
+
+    $walkKm : PointConcept(name == "Walk_Km")
+    $bikeKm : PointConcept(name == "Bike_Km")
+    $busKm : PointConcept(name == "Bus_Km")
+    $trainKm : PointConcept(name == "Train_Km")
+
+    $bc : BadgeCollectionConcept(name == "flags")
+
+then
+    utils.log("&&&&&&&&&&&&&& all modes - update green points");
+    utils.log($playerId);
 
     double score = 0.0;
 
     if($walkDistance != null) {
-   	 utils.log("rule \'all modes - update green points\': counting Walking Km green points");
+   	 utils.log("counting Walking Km green points");
    	 double modeDaily = $walkKm.getPeriodCurrentScore("daily");
    	 double gainedScore = tripScore(modeDaily, (double) $walkDistance, "Walk");
    	 utils.log("daily Km: " + modeDaily);
    	 score += gainedScore;
     }
 
-    // all other stuff
+    if($bikeDistance != null) {
+   	 utils.log("counting bike Km green points");
+   	 double modeDaily = $bikeKm.getPeriodCurrentScore("daily");
+   	 double gainedScore = tripScore(modeDaily, (double) $bikeDistance, "Bike");
+   	 utils.log("daily Km: " + modeDaily);
+   	 score += gainedScore;
+    }
 
-    /* update player score */
-    MessageNotification mn = new MessageNotification($gameId,$playerId,null);
-    mn.addData("travelId", $travelId);
-    mn.addData("score", score);
-    insert(mn);
+    if($busDistance != null) {
+   	 utils.log("counting bus Km green points");
+   	 double modeDaily = $busKm.getPeriodCurrentScore("daily");
+   	 double gainedScore = tripScore(modeDaily, (double) $busDistance, "Bus");
+   	 utils.log("daily Km: " + modeDaily);
+   	 score += gainedScore;
+    }
+
+    if($trainDistance != null) {
+   	 utils.log("counting train Km green points");
+   	 double modeDaily = $trainKm.getPeriodCurrentScore("daily");
+   	 double gainedScore = tripScore(modeDaily, (double) $trainDistance, "Train");
+   	 utils.log("daily Km: " + modeDaily);
+   	 score += gainedScore;
+    }
+
+   /* update player score by number of members in team */
+   if ($totalMembers < 1)
+        $totalMembers = 1;
+    score = score / $totalMembers;
 
     utils.log("calcultated score: " + score );
     if(score > 0.0) {
@@ -125,33 +138,44 @@ then
    	 utils.log("No score to update");
     }
 
-    /* update player participation */
-    double part = score / $totalMembers;
-
-    if (part > 0) {
-     $participation.setScore($participation.getScore() + part);
-     update($participation);
-  } else {
-     utils.log("No score to update");
-  }
-
     UpdateTeams ut = new UpdateTeams();
-    ut.addData("part", part);
+    ut.addData("part", score);
+    ut.addData("playerId", $playerId);
+
+    /* bonus first partecipation */
+    String bnm = "bonus_first_partecipation";
+    if (! $bc.getBadgeEarned().contains(bnm)) {
+         $bc.getBadgeEarned().add(bnm);
+        ut.addData("first_partecipation", true);
+    } else {
+        ut.addData("first_partecipation", false);
+    }
+
     insert(ut);
 
-end
 
+end
 
 rule "trip mode update propagation"
 when
     Transmission (
-        $part: data["part"] != null
+        $part: data["part"] != null,
+        $playerId: data["playerId"] != null,
+        $first_partecipation: data["first_partecipation"] != null
     )
+
     Player($teamId : id, team == true)
-    $greenLeaves : PointConcept( name == "leaves-team")
+    $greenLeaves : PointConcept( name == "green leaves")
+
+    CustomData (
+        $maxMembers : data["maxMembers"] != null
+    )
 then
-	utils.log("&&&&&&&&&&&&&&&&&&&&&& apply trip mode update propagation");
+	utils.log("@@@@@@@@@@@@@@@@@@@ apply trip mode update propagation");
     utils.log($teamId);
+    utils.log($playerId);
+    utils.log($first_partecipation);
+    utils.log($maxMembers);
 
     double score = utils.getDouble($part);
 

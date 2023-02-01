@@ -25,7 +25,15 @@ public class CustomData implements Map<String, Object> {
 	private Map<String, Object> data;
 
 	public CustomData() {
-		data = new HashMap<String, Object>();
+		setData(new HashMap<String, Object>());
+	}
+
+	public Map<String, Object> getData() {
+		return data;
+	}
+
+	public void setData(Map<String, Object> data) {
+		this.data = data;
 	}
 
 	@Override

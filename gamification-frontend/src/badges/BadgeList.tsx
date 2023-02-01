@@ -29,6 +29,7 @@ const BadgesListContent = () => {
                 },
             }}>
                 <TextField label="Badge Name" source="id" />
+                <TextField label="Hidden" source="hidden" />
             </Datagrid>
 
         </>

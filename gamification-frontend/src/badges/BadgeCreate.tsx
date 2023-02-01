@@ -50,5 +50,6 @@ function createBadge(data: any): any {
     let body: any = {};
     body['id'] = data.badgeName;
     body['name'] = data.badgeName;
+    body['hidden'] = data.hidden;
     return body;
 }

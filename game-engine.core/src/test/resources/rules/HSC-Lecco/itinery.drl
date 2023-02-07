@@ -6,16 +6,33 @@ import java.lang.Math;
 
 global Utility utils;
 
+global Double green_walk_points;
+global Double green_bike_points;
+global Double green_bus_points;
+global Double green_train_points;
+
+global Double threshold_walk_distance;
+global Double threshold_bike_distance;
+global Double threshold_bus_distance;
+global Double threshold_train_distance;
+
+global Double driver_first_passenger_bonus;
+global Double driver_other_passenger_bonus;
+global Double passenger_bonus;
+
+global Double team_multiplication_factor;
+global Double team_bonus_first_partecipation;
+
 function double getModePoint(String mode) {
     switch(mode) {
    	 case 'Walk':
-   		 return 10.0;
+   		 return green_walk_points;
    	 case 'Bike':
-   		 return 6.0;
+   		 return green_bike_points;
    	 case 'Bus':
-   		 return 3.75;
+   		 return green_bus_points5;
    	 case 'Train':
-   		 return 2.5;
+   		 return green_train_points;
    	 default:
    		 return 0.0;
     }
@@ -24,27 +41,26 @@ function double getModePoint(String mode) {
 function double getModeLimit(String mode) {
     switch(mode) {
    	 case 'Walk':
-   		 return 10.0;
+   		 return threshold_walk_distance;
    	 case 'Bike':
-   		 return 25.0;
+   		 return threshold_bike_distance;
    	 case 'Bus':
-   		 return 40.0;
+   		 return threshold_bus_distance;
    	 case 'Train':
-   		 return 60.0;
+   		 return threshold_train_distance;
    	 default:
    		 return 0.0;
     }
 }
 
-function double getScore(String mode, double distance) {
+function double getScoreLimit(String mode, double distance) {
     double point = getModePoint(mode);
-	// HSC special feature: multiply points by 20
-	point *= 20;
+	// HSC special feature: multiply points
+	point *= team_multiplication_factor;
 	double limit = getModeLimit(mode);
 	double score = 0.0;
 	int index = 0;
-      while(index < 8) {
-     	 limit /= 2;
+      while(index < 10) {
      	 score += Math.min(distance, limit) * point;
     	distance -= limit;
     	point /= 2;
@@ -57,9 +73,10 @@ function double getScore(String mode, double distance) {
 }
 
 function double tripScore(double modeDaily, double tripDistance, String mode) {
-    double beforeTripDistance = modeDaily - tripDistance;
-    double oldModeDailyScore = Math.rint(getScore(mode, beforeTripDistance));
-    double newModeDailyScore = Math.rint(getScore(mode, modeDaily));
+    double oldModeDailyScore = Math.rint(getScoreLimit(mode, modeDaily));
+    System.out.println(oldModeDailyScore);
+    double newModeDailyScore = Math.rint(getScoreLimit(mode, modeDaily + tripDistance ));
+    System.out.println(newModeDailyScore);
     double gainedScore = newModeDailyScore - oldModeDailyScore;
     return gainedScore;
 }
@@ -75,7 +92,12 @@ when
           	$walkDistance : data["walkDistance"],
           	$bikeDistance : data["bikeDistance"],
           	$busDistance : data["busDistance"],
-          	$trainDistance : data["trainDistance"])
+          	$trainDistance : data["trainDistance"],
+
+            $carpooling: data["carpoolingDistance"],
+            $isDriver: data["driverTrip"],
+            $firstPair: data["firstPair"]
+    )
 
     $greenLeaves : PointConcept( name == "green leaves")
 
@@ -83,12 +105,12 @@ when
     $bikeKm : PointConcept(name == "Bike_Km")
     $busKm : PointConcept(name == "Bus_Km")
     $trainKm : PointConcept(name == "Train_Km")
+    $carpoolingTrips : PointConcept(name == "Carpooling_Trips")
 
     $bc : BadgeCollectionConcept(name == "flags")
 
 then
-    utils.log("&&&&&&&&&&&&&& all modes - update green points");
-    utils.log($playerId);
+    utils.log("& all modes - update green points");
 
     double score = 0.0;
 
@@ -98,6 +120,7 @@ then
    	 double gainedScore = tripScore(modeDaily, (double) $walkDistance, "Walk");
    	 utils.log("daily Km: " + modeDaily);
    	 score += gainedScore;
+   	 utils.log("score: " + gainedScore);
     }
 
     if($bikeDistance != null) {
@@ -124,10 +147,34 @@ then
    	 score += gainedScore;
     }
 
+    //handling of carpooling points
+    if($carpooling != null && (Double) $carpooling >= 1.0) {
+   	 utils.log("rule \'all modes - update green points\': counting Carpooling green points");
+   	 Double carpoolingDaily = $carpoolingTrips.getPeriodCurrentScore("daily");
+   	 if( carpoolingDaily <= 4.0) {
+   		 if((boolean) $isDriver && (boolean) $firstPair) {
+   	        // driver_first_passenger_bonus
+   			 score = score + driver_first_passenger_bonus;
+   		 }
+   		 if((boolean) $isDriver && (boolean) $firstPair == false) {
+   		    // driver_other_passenger_bonus
+   		     score = score + driver_other_passenger_bonus;
+   		 }
+   		 if((boolean) $isDriver == false) {
+               // 	 passenger_bonus
+       		     score = score + passenger_bonus;
+   		 }
+   	 } else {
+   		 utils.log("rule \'all modes - update green points\': Reached daily limit for carpooling trips");
+   	 }
+    }
+
+
    /* update player score by number of members in team */
    if ($totalMembers < 1)
         $totalMembers = 1;
     score = score / $totalMembers;
+    score = Math.ceil(score);
 
     utils.log("calcultated score: " + score );
     if(score > 0.0) {
@@ -171,11 +218,7 @@ when
         $maxMembers : data["maxMembers"] != null
     )
 then
-	utils.log("@@@@@@@@@@@@@@@@@@@ apply trip mode update propagation");
-    utils.log($teamId);
-    utils.log($playerId);
-    utils.log($first_partecipation);
-    utils.log($maxMembers);
+	utils.log("@ apply trip mode update propagation");
 
     double score = utils.getDouble($part);
 
@@ -185,5 +228,19 @@ then
    	 utils.log($greenLeaves);
     } else {
    	 utils.log("No score to update");
+    }
+
+    if ((Boolean) $first_partecipation) {
+       Integer maxMembers = new Integer($maxMembers.toString());
+       if (maxMembers < 1)
+            maxMembers = 1;
+
+        // HSC special feature: bonus first partecipation 5000
+        double part = team_bonus_first_partecipation / maxMembers;
+        part = Math.ceil(part);
+
+       	 $greenLeaves.setScore($greenLeaves.getScore() + part);
+       	 update($greenLeaves);
+       	 utils.log("first partecipation bonus");
     }
 end

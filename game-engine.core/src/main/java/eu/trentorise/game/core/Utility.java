@@ -18,7 +18,11 @@ public class Utility {
 		LogHub.info(gameId, logger, String.valueOf(msg));
 	}
 
-	public double getDouble(Object o) {
+	public Double getDouble(Object o) {
 		return new Double(o.toString());
+	}
+
+	public Integer getInteger(Object o) {
+		return new Integer(o.toString());
 	}
 }

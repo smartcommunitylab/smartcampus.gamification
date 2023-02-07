@@ -44,6 +44,7 @@ import java.util.*;
         loader = AnnotationConfigContextLoader.class)
 public class TeamPartecipationTest {
 
+
     private static String GAME = "";
     private static final String BASEGAME = "coreGameTest";
     private static final String ACTION = "save_itinerary";
@@ -65,6 +66,8 @@ public class TeamPartecipationTest {
     private static final String BUS_KM =  "Bus_Km";
 
     private static final String TRAIN_KM =  "Train_Km";
+
+    private static final String CARPOOLING_TRIPS = "Carpooling_Trips";
 
     private static final String FLAG_COLLECTION =  "flags";
 
@@ -125,8 +128,10 @@ public class TeamPartecipationTest {
         /*ClasspathRule rule = new ClasspathRule(GAME, "rules/" + BASEGAME + "/constants");
         rule.setName("constants");
         gameManager.addRule(rule);*/
-        gameManager.addRule(
-                new ClasspathRule(GAME, "rules/" + BASEGAME + "/teamPartecipation.drl"));
+        for (String s: new String[] {"itinery", "constants", "mode-counters"}) {
+            String url = "rules/" + BASEGAME + "/" + s + ".drl";
+            gameManager.addRule(new ClasspathRule(GAME, url));
+        }
 
         // define player states
 
@@ -176,7 +181,7 @@ public class TeamPartecipationTest {
 
         PlayerState player = new PlayerState(GAME, playerId);
         Set<GameConcept> myState = new HashSet<>();
-        for (String s: new String[]{POINT_NAME, PART_NAME, WALK_KM, BIKE_KM, BUS_KM, TRAIN_KM}) {
+        for (String s: new String[]{POINT_NAME, PART_NAME, WALK_KM, BIKE_KM, BUS_KM, TRAIN_KM, CARPOOLING_TRIPS}) {
             PointConcept pc;
             pc = new PointConcept(s);
             pc.setScore(0d);
@@ -196,20 +201,27 @@ public class TeamPartecipationTest {
 
         // first player saves itinerary
         Map<String, Object> data = new HashMap<>();
-        data.put("walkDistance", 12.0);
+        data.put("walkDistance", 6.0);
         data.put("travelId", "asdjsakdjsa9");
-
-        print("ehilà");
 
         PlayerState p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
         p = playerSrv.saveState(p);
+
         print("ehilà");
 
-        check(TEAM1_PLAYERS[0], POINT_NAME, 40.0 * 20 );
+        check(TEAM1_PLAYERS[0], POINT_NAME, 300.0 );
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 319.0 );
+
         // check(TEAM1_PLAYERS[0], PART_NAME, 40.0 * 20);
-        check("disney", POINT_NAME, 40.0 * 20 );
+        check("disney", POINT_NAME, 1985.0);
     }
     
     private void check(String playerId, String conceptName, Double value) throws Exception {
@@ -458,4 +470,28 @@ public class TeamPartecipationTest {
     }
 
      */
+    @Test
+    public void testgetscore() {
+        getScore("walk", 12);
+    }
+
+    double getScore(String mode, double distance) {
+        double point = 20;
+        // HSC special feature: multiply points by 16
+        point *= 16;
+        double limit = 1.5;
+        double score = 0.0;
+        int index = 0;
+        while(index < 10) {
+            score += Math.min(distance, limit) * point;
+            System.out.printf("score: %.2f\n", score);
+            distance -= limit;
+            point /= 2;
+            if (distance < 0) {
+                break;
+            }
+            index++;
+        }
+        return score;
+    }
 }

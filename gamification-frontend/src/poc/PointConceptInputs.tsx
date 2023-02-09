@@ -2,7 +2,7 @@ import {
     TextInput, NumberInput,
     useStore,
     ArrayInput,
-    SimpleFormIterator, DateField, DateInput, DateTimeInput
+    SimpleFormIterator, DateField, DateInput, DateTimeInput, required
 } from 'react-admin';
 import { Box } from '@mui/material';
 
@@ -14,11 +14,11 @@ export const PointConceptInputs = () => {
             <Box>
                 <ArrayInput source="periods">
                     <SimpleFormIterator inline>
-                        <TextInput source="name" helperText={false} />
-                        <DateInput source="start" helperText={false}/>
-                        <DateInput source="end" helperText={false} />
-                        <NumberInput title='period in days' source="period" helperText={'period in days'} />
-                        <NumberInput source="capacity" helperText={false} />
+                        <TextInput source="name" helperText={false} validate={[required()]}/>
+                        <DateInput source="start"  validate={[required()]} helperText={false}/>
+                        <DateInput source="end"  validate={[required()]} helperText={false} />
+                        <NumberInput title='period in days' source="period" validate={[required()]} helperText={'period in days'} />
+                        <NumberInput source="capacity" validate={[required()]} helperText={false} />
                      </SimpleFormIterator>
                 </ArrayInput>
             </Box>

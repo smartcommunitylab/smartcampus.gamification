@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Create, Form, TextInput, Toolbar, useNotify, useRedirect, useStore } from 'react-admin';
+import { Create, Form, required, TextInput, Toolbar, useNotify, useRedirect, useStore } from 'react-admin';
 import { Card, CardContent, Box, Avatar } from '@mui/material';
 
 import { PointConceptInputs } from './PointConceptInputs';
@@ -45,7 +45,7 @@ export const PointConceptCreate = () => {
                                     <Box display="flex">
                                     </Box>
                                     <Box display="flex" width={630}>
-                                        <TextInput label="Name" source="name" fullWidth />
+                                        <TextInput label="Name" source="name" validate={[required()]} fullWidth />
                                     </Box>
                                     <PointConceptInputs />
                                 </Box>

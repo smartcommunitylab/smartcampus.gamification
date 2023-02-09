@@ -46,10 +46,7 @@ const PointConceptShowContent = () => {
                         </Box>
                     </CardContent>
                 </Card>
-            </Box>
-            <Box>
-                <DeleteButton />
-            </Box>
+            </Box>           
         </Box>
     );
 };

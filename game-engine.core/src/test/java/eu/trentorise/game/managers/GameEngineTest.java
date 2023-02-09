@@ -112,7 +112,7 @@ public class GameEngineTest {
         rule.setName("constants");
         gameManager.addRule(rule);
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthBadges.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/prBadges.drl"));
@@ -121,7 +121,7 @@ public class GameEngineTest {
         gameManager.addRule(
                 new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
         gameManager.addRule(
-                new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
     }
 
     private void initDBRuleGame() {
@@ -144,7 +144,7 @@ public class GameEngineTest {
             rule.setName("greenBadges");
             gameManager.addRule(rule);
             c = FileUtils.readFileToString(new File(Thread.currentThread().getContextClassLoader()
-                    .getResource("rules/" + GAME + "/itinery.drl").getFile()));
+                    .getResource("rules/" + GAME + "/greenPoints.drl").getFile()));
             rule = new DBRule(GAME, c);
             rule.setName("greenPoints");
             gameManager.addRule(rule);
@@ -179,7 +179,7 @@ public class GameEngineTest {
             rule.setName("weekClassificationBadges");
             gameManager.addRule(rule);
             c = FileUtils.readFileToString(new File(Thread.currentThread().getContextClassLoader()
-                    .getResource("rules/" + GAME + "/itinery.drl").getFile()));
+                    .getResource("rules/" + GAME + "/finalClassificationBadges.drl").getFile()));
             rule = new DBRule(GAME, c);
             rule.setName("finalClassificationBadges");
             gameManager.addRule(rule);

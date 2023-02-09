@@ -66,7 +66,7 @@ function double tripScore(double modeDaily, double tripDistance, String mode) {
 }
 
 rule "all modes - update green points"
-salience 100
+salience 1000
 when
     Action($id : id == 'save_itinerary')
     Game( $gameId : id)

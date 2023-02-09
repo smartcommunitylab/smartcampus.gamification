@@ -111,7 +111,7 @@ public class RoveretoGameTest {
         rule.setName("constants");
         gameManager.addRule(rule);
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthBadges.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/prBadges.drl"));
@@ -120,7 +120,7 @@ public class RoveretoGameTest {
         gameManager.addRule(
                 new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
         gameManager.addRule(
-                new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
 
         // define player states
 
@@ -152,7 +152,7 @@ public class RoveretoGameTest {
         rule.setName("constants");
         gameManager.addRule(rule);
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthBadges.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/prBadges.drl"));
@@ -161,7 +161,7 @@ public class RoveretoGameTest {
         gameManager.addRule(
                 new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
         gameManager.addRule(
-                new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
 
         mongo.save(definePlayerState("1", 12d, 52d, 5d));
         mongo.save(definePlayerState("2", 115d, 50d, 12d));
@@ -201,7 +201,7 @@ public class RoveretoGameTest {
         rule.setName("constants");
         gameManager.addRule(rule);
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthBadges.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthPoints.drl"));
         gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/prBadges.drl"));
@@ -210,7 +210,7 @@ public class RoveretoGameTest {
         gameManager.addRule(
                 new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
         gameManager.addRule(
-                new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
 
         mongo.save(definePlayerState("1", 1d, 52d, 5d));
         mongo.save(definePlayerState("2", 15d, 50d, 12d));

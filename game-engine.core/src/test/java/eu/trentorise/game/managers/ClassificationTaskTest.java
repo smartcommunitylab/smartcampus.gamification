@@ -168,10 +168,10 @@ public class ClassificationTaskTest {
         rule.setName("constants");
         gameSrv.addRule(rule);
         gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
         gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthPoints.drl"));
         gameSrv.addRule(
-                new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
 
         PlayerState p = playerSrv.loadState(GAME, PLAYER, true, false);
         Map<String, Object> params = new HashMap<String, Object>();
@@ -249,9 +249,9 @@ public class ClassificationTaskTest {
         rule.setName("constants");
         gameSrv.addRule(rule);
         gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
         gameSrv.addRule(
-                new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
+                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
 
         // define a dataset of player states
         DateTime timeMachine = new DateTime().withTimeAtStartOfDay().plusMinutes(1).minusDays(2);

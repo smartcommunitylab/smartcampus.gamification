@@ -228,7 +228,7 @@ public class HscGameTest {
         check(TEAM1_PLAYERS[0], POINT_NAME, 319.0 );
 
         // check(TEAM1_PLAYERS[0], PART_NAME, 40.0 * 20);
-        check("disney", POINT_NAME, 1985.0);
+        check("disney", POINT_NAME, 1986.0);
     }
     
     private void check(String playerId, String conceptName, Double value) throws Exception {

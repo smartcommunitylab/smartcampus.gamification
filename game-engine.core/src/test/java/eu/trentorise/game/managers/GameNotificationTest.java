@@ -169,7 +169,7 @@ public class GameNotificationTest {
 		rule.setName("constants");
 		gameManager.addRule(rule);
 		gameManager.addRule(new ClasspathRule(GAME, "rules/group-challenge/reward.drl"));
-		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
 		// define player states
 		mongo.save(definePlayerState("1", 15d, 0d, 0d));
 		mongo.save(definePlayerState("2", 15d, 0d, 0d));

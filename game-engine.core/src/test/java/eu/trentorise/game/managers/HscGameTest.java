@@ -42,11 +42,11 @@ import java.util.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
-public class TeamPartecipationTest {
+public class HscGameTest {
 
 
     private static String GAME = "";
-    private static final String BASEGAME = "coreGameTest";
+    private static final String BASEGAME = "HSC";
     private static final String ACTION = "save_itinerary";
     private static final String DOMAIN = "my-domain";
 
@@ -67,9 +67,10 @@ public class TeamPartecipationTest {
 
     private static final String TRAIN_KM =  "Train_Km";
 
-    private static final String CARPOOLING_TRIPS = "Carpooling_Trips";
-
     private static final String FLAG_COLLECTION =  "flags";
+
+    private static final String[] POINT_CONCEPTS = new String[]
+            {POINT_NAME, PART_NAME, WALK_KM, BIKE_KM, BUS_KM, TRAIN_KM, "Walk_Trips", "Bike_Trips", "Bus_Trips", "Train_Trips", "BikeSharing_Km", "BikeSharing_Trips", "Carpooling_Km" , "Carpooling_Trips"};
 
     @Autowired
     private GameManager gameManager;
@@ -98,11 +99,9 @@ public class TeamPartecipationTest {
     public void simpleScenario() throws Exception {
         prepare();
         doSomething();
-        check();
-
     }
 
-    public void prepare() {
+    public void prepare() throws Exception {
         // randomize game id
         GAME = BASEGAME + '_' + UUID.randomUUID();
 
@@ -118,7 +117,11 @@ public class TeamPartecipationTest {
         game.setActions(actions);
 
         HashSet<GameConcept> gc = new HashSet<>();
-        gc.add(new PointConcept(POINT_NAME));
+        for (String s: POINT_CONCEPTS) {
+            PointConcept pt = new PointConcept(s);
+            pt.addPeriod("daily", new Date(), 60000);
+            gc.add(pt);
+        }
         gc.add(new BadgeCollectionConcept(FLAG_COLLECTION));
         game.setConcepts(gc);
 
@@ -128,9 +131,15 @@ public class TeamPartecipationTest {
         /*ClasspathRule rule = new ClasspathRule(GAME, "rules/" + BASEGAME + "/constants");
         rule.setName("constants");
         gameManager.addRule(rule);*/
-        for (String s: new String[] {"itinery", "constants", "mode-counters"}) {
-            String url = "rules/" + BASEGAME + "/" + s + ".drl";
-            gameManager.addRule(new ClasspathRule(GAME, url));
+        for (String s: new String[] {"constants", "itinery.drl",  "mode-counters.drl"}) {
+            String url = "rules/" + BASEGAME + "/" + s;
+            // check if url exists
+            if (Thread.currentThread().getContextClassLoader().getResource(url) == null) {
+                throw new Exception("rule file not found! - " + s);
+            }
+            ClasspathRule rule = new ClasspathRule(GAME, url);
+            rule.setName(s);
+            gameManager.addRule(rule);
         }
 
         // define player states
@@ -162,6 +171,7 @@ public class TeamPartecipationTest {
         PointConcept pc;
         pc = new PointConcept(POINT_NAME_TEAM);
         pc.setScore(0d);
+        pc.addPeriod("daily", new Date(), 60000);
 
         myState.add(pc);
 
@@ -181,20 +191,17 @@ public class TeamPartecipationTest {
 
         PlayerState player = new PlayerState(GAME, playerId);
         Set<GameConcept> myState = new HashSet<>();
-        for (String s: new String[]{POINT_NAME, PART_NAME, WALK_KM, BIKE_KM, BUS_KM, TRAIN_KM, CARPOOLING_TRIPS}) {
+        for (String s: POINT_CONCEPTS) {
             PointConcept pc;
             pc = new PointConcept(s);
             pc.setScore(0d);
+            pc.addPeriod("daily", new Date(), 60000);
             myState.add(pc);
         }
 
         player.setState(myState);
 
         playerSrv.saveState(player);
-    }
-
-
-    private void check() {
     }
 
     private void doSomething() throws Exception {

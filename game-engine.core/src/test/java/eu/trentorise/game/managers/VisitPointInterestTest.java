@@ -99,7 +99,7 @@ public class VisitPointInterestTest {
         rule.setName("constants");
         gameManager.addRule(rule);
 //        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
-//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
+//        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
 //        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthBadges.drl"));
 //        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/healthPoints.drl"));
 //        gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/prBadges.drl"));
@@ -108,7 +108,7 @@ public class VisitPointInterestTest {
 //        gameManager.addRule(
 //                new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
 //        gameManager.addRule(
-//                new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
+//                new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
         gameManager.addRule(
                 new ClasspathRule(GAME, "rules/" + GAME + "/visitPoint.drl"));
 

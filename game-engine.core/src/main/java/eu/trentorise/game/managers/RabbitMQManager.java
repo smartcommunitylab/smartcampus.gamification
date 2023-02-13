@@ -1,6 +1,8 @@
 package eu.trentorise.game.managers;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
@@ -69,7 +71,8 @@ public class RabbitMQManager {
 				connectionFactory.setHost(rabbitMQHost);
 				connectionFactory.setPort(rabbitMQPort);
 				connectionFactory.setAutomaticRecoveryEnabled(true);
-
+				connectionFactory.setTopologyRecoveryEnabled(true);				
+				
 				Connection connection = connectionFactory.newConnection();
 				rabbitMQChannel = connection.createChannel();
 				rabbitMQChannel.basicQos(1);
@@ -110,7 +113,9 @@ public class RabbitMQManager {
 	}
 
 	private void createQueue(String queueId, String gameId) throws IOException {
-		String queueName = rabbitMQChannel.queueDeclare(queueId, true, false, false, null).getQueue();
+		Map<String, Object> args = new HashMap<>();
+		args.put("x-queue-type", "quorum");
+		String queueName = rabbitMQChannel.queueDeclare(queueId, true, false, false, args).getQueue();
 		rabbitMQChannel.queueBind(queueName, rabbitMQExchangeName, rabbitMQroutingKeyPrefix + "-" + gameId);
 		logger.info("Connected to RabbitMQ queues: " + queueName);
 	}

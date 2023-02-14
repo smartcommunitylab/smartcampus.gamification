@@ -123,8 +123,8 @@ container_scanning:
     DOCKER_PASSWORD: ""
   artifacts:
     expire_in: 1 week
-  only:
-    - master
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"
     
 deploy-dev:
   stage: deploy-dev

@@ -1,7 +1,5 @@
 image: docker:19
 
-services:
-  - docker:dind
 
 stages:
   - build

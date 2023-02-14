@@ -50,6 +50,8 @@ maven-build:
       - game-engine.web/
       - game-engine.tools/log2timescaledb
     expire_in: 1 week
+  only:
+    - master
 
 spotbugs-sast:
   dependencies:
@@ -66,6 +68,18 @@ spotbugs-sast:
       sast: gl-sast-report.json
     expire_in: 1 week
 
+semgrep-sast:
+  dependencies:
+    - maven-build
+
+nodejs-scan-sast:
+  dependencies:
+    - maven-build
+
+gemnasium-maven-dependency_scanning:
+  dependencies:
+    - maven-build
+
 backend-container-build:
   stage: backend-container-build
   environment:
@@ -78,6 +92,7 @@ backend-container-build:
   only:
     - playAndGo-dev-v2
     - playAndGo-prod-v2
+    - master
   artifacts:
     expire_in: 1 week
 
@@ -108,6 +123,8 @@ container_scanning:
     DOCKER_PASSWORD: ""
   artifacts:
     expire_in: 1 week
+  only:
+    - master
     
 deploy-dev:
   stage: deploy-dev

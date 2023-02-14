@@ -1,5 +1,10 @@
-image: docker:19
+image: docker:20.10.16
 
+services:
+  - docker:20.10.16-dind
+
+before_script:
+  - docker info
 
 stages:
   - build

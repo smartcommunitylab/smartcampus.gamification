@@ -108,7 +108,7 @@ public class ChallengeTest {
 
         // add rules
         gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenges.drl"));
-        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
+        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
 
         // define challenge Model
         ChallengeModel model1 = new ChallengeModel();
@@ -145,7 +145,7 @@ public class ChallengeTest {
 
         // add rules
         gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenges.drl"));
-        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
+        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
 
         // define challenge Model
         ChallengeModel model1 = new ChallengeModel();
@@ -288,7 +288,7 @@ public class ChallengeTest {
 
         // add rules
         gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenges.drl"));
-        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
+        gameSrv.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/itinery.drl"));
 
         // define challenge Model
         ChallengeModel model1 = new ChallengeModel();

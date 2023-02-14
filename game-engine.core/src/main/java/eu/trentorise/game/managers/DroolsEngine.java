@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.trentorise.game.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -58,22 +59,7 @@ import eu.trentorise.game.core.LoggingRuleListener;
 import eu.trentorise.game.core.StatsLogger;
 import eu.trentorise.game.core.Utility;
 import eu.trentorise.game.managers.drools.KieContainerFactory;
-import eu.trentorise.game.model.Action;
-import eu.trentorise.game.model.ChallengeConcept;
-import eu.trentorise.game.model.CustomData;
-import eu.trentorise.game.model.Game;
-import eu.trentorise.game.model.InputData;
 import eu.trentorise.game.model.Level.Threshold;
-import eu.trentorise.game.model.LevelInstance;
-import eu.trentorise.game.model.Member;
-import eu.trentorise.game.model.Player;
-import eu.trentorise.game.model.PlayerLevel;
-import eu.trentorise.game.model.PlayerState;
-import eu.trentorise.game.model.Propagation;
-import eu.trentorise.game.model.Team;
-import eu.trentorise.game.model.TeamState;
-import eu.trentorise.game.model.UpdateMembers;
-import eu.trentorise.game.model.UpdateTeams;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.Notification;
 import eu.trentorise.game.model.core.Rule;
@@ -120,10 +106,10 @@ public class DroolsEngine implements GameEngine {
         if (stopWatch != null) {
             stopWatch.start("game execution");
         }
-        
-        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, state.getPlayerId()); 
+
+        List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, state.getPlayerId());
         state.loadChallengeConcepts(listCcs);
-      
+
         Game game = gameSrv.loadGameDefinitionById(gameId);
         if (game != null && game.isTerminated()) {
             throw new IllegalArgumentException(String.format("game %s is expired", gameId));
@@ -158,6 +144,13 @@ public class DroolsEngine implements GameEngine {
         Player player = new Player(state);
         cmds.add(CommandFactory.newInsert(player));
 
+        //push team state to kb.
+        List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
+        for (TeamState ts: playerTeams) {
+        	cmds.add(CommandFactory.newInsert(new Player(ts)));
+        }
+
+
         // filter state removing all ended or completed challenges for the
         // player
         Set<GameConcept> concepts = new HashSet<>(state.getState());
@@ -165,15 +158,16 @@ public class DroolsEngine implements GameEngine {
         concepts = conceptHelper.activateConcepts(concepts);
 
         Set<GameConcept> activeConcepts = conceptHelper.findActiveConcepts(concepts);
-        
+
         Set<GameConcept> inactiveConcepts =
                 new HashSet<>(CollectionUtils.subtract(concepts, activeConcepts));
-        
-        
+
+
         // ATTENTION: Drools modifies objects inserted in working memory by
         // reference
         cmds.add(CommandFactory.newInsertElements(activeConcepts));
-        cmds.add(CommandFactory.newInsert(state.getCustomData()));
+        CustomData insCustomData = state.getCustomData();
+        cmds.add(CommandFactory.newInsert(insCustomData));
         cmds.add(CommandFactory.newFireAllRules());
 
         // queries
@@ -243,9 +237,9 @@ public class DroolsEngine implements GameEngine {
                     level++;
                 }
                 facts.add(new Propagation(updateCalls.getPropagationAction(), level));
+                facts.add(new Transmission(updateCalls.getData()));
             }
 
-            List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
             LogHub.info(gameId, logger, "Player {} belongs to {} teams", state.getPlayerId(),
                     playerTeams.size());
             if (playerTeams.size() > 0) {
@@ -263,7 +257,7 @@ public class DroolsEngine implements GameEngine {
             }
             facts.add(new Member(state.getPlayerId(), payloadData));
             for (TeamState team : playerTeams) {
-                workflow.apply(gameId, action, team.getPlayerId(), executionMoment, null,
+                workflow.apply(gameId, action, team.getPlayerId(), executionMoment, payloadData,
                         new ArrayList<>(facts));
             }
         }
@@ -282,7 +276,7 @@ public class DroolsEngine implements GameEngine {
                 LogHub.info(gameId, logger, "Team {} has {} members", state.getPlayerId(),
                         members.size());
                 for (String member : members) {
-                    workflow.apply(gameId, action, member, executionMoment, null,
+                    workflow.apply(gameId, action, member, executionMoment, data,
                             new ArrayList<>(facts));
                 }
             } catch (ClassCastException e) {

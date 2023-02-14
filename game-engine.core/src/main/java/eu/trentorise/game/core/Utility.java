@@ -14,7 +14,15 @@ public class Utility {
 		this.gameId = gameId;
 	}
 
-	public void log(String msg) {
-		LogHub.info(gameId, logger, msg);
+	public void log(Object msg) {
+		LogHub.info(gameId, logger, String.valueOf(msg));
+	}
+
+	public Double getDouble(Object o) {
+		return new Double(o.toString());
+	}
+
+	public Integer getInteger(Object o) {
+		return new Integer(o.toString());
 	}
 }

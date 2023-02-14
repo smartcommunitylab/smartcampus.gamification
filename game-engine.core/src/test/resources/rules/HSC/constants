@@ -1,0 +1,29 @@
+# insert your constants to use in game rules
+#
+# SAMPLE USAGE
+#
+# constants file
+# var_name = var_value
+#
+#
+# usage in rule
+# global VALUE_TYPE var_name;
+#
+# supported VALUE_TYPE
+# Integer (i.e. var=1)
+# Double  (i.e. var=2.3)
+# String  (i.e. var=park)
+# java.util.ArrayList (i.e var=park,street,bikestation)
+
+# MIN RELEVANCE
+walk_min=0.25
+walk_daily_max=10.0
+bike_daily_max=30.0
+transit_daily_max=4.0
+carpooling_daily_max=4.0
+carpooling_min_km=1.0
+
+# GREEN POINTS for carpooling
+driver_first_passenger_bonus=160.0
+driver_other_passenger_bonus=80.0
+passenger_bonus=160.0

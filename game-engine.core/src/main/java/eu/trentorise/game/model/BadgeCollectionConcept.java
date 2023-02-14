@@ -26,6 +26,7 @@ import eu.trentorise.game.model.core.GameConcept;
 public class BadgeCollectionConcept extends GameConcept {
 
 	private List<String> badgeEarned;
+	private boolean hidden;
 
 	public BadgeCollectionConcept() {
 		badgeEarned = new ArrayList<String>();
@@ -42,6 +43,14 @@ public class BadgeCollectionConcept extends GameConcept {
 
 	public void setBadgeEarned(List<String> badgeEarned) {
 		this.badgeEarned = badgeEarned;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 	@Override

@@ -1,0 +1,53 @@
+{
+  "name": "react-admin-gengine",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@mui/icons-material": "^5.0.1",
+    "@mui/material": "^5.0.2",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/core": "^0.67.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "ace-builds": "^1.14.0",
+    "buffer": "^6.0.3",
+    "clsx": "^1.1.1",
+    "date-fns": "^2.19.0",
+    "faker": "~5.4.0",
+    "lodash": "~4.17.5",
+    "prop-types": "^15.8.1",
+    "ra-data-simple-rest": "^4.6.2",
+    "ra-input-rich-text": "^4.6.2",
+    "react": "^18.2.0",
+    "react-ace": "^10.1.0",
+    "react-admin": "^4.6.2",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dom": "^18.2.0",
+    "react-error-boundary": "^3.1.4",
+    "react-redux": "^8.0.5",
+    "react-router": "^6.6.0",
+    "react-router-dom": "^6.6.0",
+    "react-scripts": "^5.0.1",
+    "typescript": "^4.9.4",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

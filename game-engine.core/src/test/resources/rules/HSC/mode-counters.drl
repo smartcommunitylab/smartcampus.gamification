@@ -1,0 +1,96 @@
+package eu.trentorise.game.model
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+global Double walk_min;
+global Double carpooling_min_km;
+
+rule "update walk counters"
+lock-on-active
+when
+	InputData( $km : data["walkDistance"] != null, $km >= walk_min)
+	$walkTrips : PointConcept(name == "Walk_Trips")
+	$walkKm : PointConcept(name == "Walk_Km")
+then
+    utils.log("apply \'Walk_Trips and Walk_Km update\'");
+    $walkTrips.setScore($walkTrips.getScore() + 1.0d);
+    $walkKm.setScore($walkKm.getScore() + (Double) $km);
+    update($walkTrips);
+    update($walkKm);
+end
+
+
+rule "update bike and bike sharing counters"
+lock-on-active
+when
+	InputData( $km : data["bikeDistance"] != null, $bs : data["bikesharing"])
+	$bikeTrips : PointConcept(name == "Bike_Trips")
+	$bikeKm : PointConcept(name == "Bike_Km")
+	$bsTrips : PointConcept(name == "BikeSharing_Trips")
+	$bsKm : PointConcept(name == "BikeSharing_Km")
+then
+    if($bs !=null){
+   	 if((boolean) $bs == true) {
+   		 utils.log("apply \'BikeSharing_Trips and BikeSharing_Km update\'");
+   		 $bsTrips.setScore($bsTrips.getScore() + 1.0d);
+   		 $bsKm.setScore($bsKm.getScore() + (Double) $km);
+   		 update($bsTrips);
+   		 update($bsKm);
+   	 }
+    }
+    utils.log("apply \'Bike_Trips and Bike_Km update\'");
+    $bikeTrips.setScore($bikeTrips.getScore() + 1.0d);
+    $bikeKm.setScore($bikeKm.getScore() + (Double) $km);
+    update($bikeTrips);
+    update($bikeKm);
+end
+
+
+rule "update bus counters"
+lock-on-active
+when
+	InputData( $km : data["busDistance"] != null)
+	$busTrips : PointConcept(name == "Bus_Trips")
+	$busKm : PointConcept(name == "Bus_Km")
+then
+    utils.log("apply \'Bus_Trips and Bus_Km update\'");
+    $busTrips.setScore($busTrips.getScore() + 1.0d);
+    $busKm.setScore($busKm.getScore() + (Double) $km);
+    update($busTrips);
+    update($busKm);
+end
+
+
+rule "update train counters"
+lock-on-active
+when
+	InputData( $km : data["trainDistance"] != null)
+	$trainTrips : PointConcept(name == "Train_Trips")
+	$trainKm : PointConcept(name == "Train_Km")
+then
+    utils.log("apply \'Train_Trips and Train_Km update\'");
+    $trainTrips.setScore($trainTrips.getScore() + 1.0d);
+    $trainKm.setScore($trainKm.getScore() + (Double) $km);
+    update($trainTrips);
+    update($trainKm);
+end
+
+rule "update carpooling counters"
+lock-on-active
+when
+	InputData( $km : data["carpoolingDistance"] != null,
+   			$km >= carpooling_min_km,
+   			(data["driverTrip"] == true && data["firstPair"] == true) || data["driverTrip"] == false
+         	)
+	$carpoolingTrips : PointConcept(name == "Carpooling_Trips")
+	$carpoolingKm : PointConcept(name == "Carpooling_Km")
+
+then
+    utils.log("apply \'Carpooling_Trips and Carpooling_Km update\'");
+    $carpoolingTrips.setScore($carpoolingTrips.getScore() + 1.0d);
+    $carpoolingKm.setScore($carpoolingKm.getScore() + (Double) $km);
+    update($carpoolingTrips);
+    update($carpoolingKm);
+end
+
+

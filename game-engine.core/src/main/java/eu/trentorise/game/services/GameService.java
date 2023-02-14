@@ -58,6 +58,8 @@ public interface GameService {
     public List<Game> loadGames(boolean onlyActive);
 
     public List<Game> loadGameByOwner(String user);
+    
+    public List<Game> loadGameByOwnerAndName(String user, String name);
 
     public List<Game> loadGameByOwner(String domain, String user);
 

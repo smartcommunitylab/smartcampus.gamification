@@ -9,7 +9,6 @@ stages:
   - backend-container-build
   - frontend-container-build
   - test
-  - container-scan
   - deploy-dev
   - deploy-frontend-dev
   - deploy-test
@@ -108,7 +107,7 @@ frontend-container-build:
     expire_in: 1 week
 
 container_scanning:
-  stage: container-scan
+  stage: test
   dependencies:
   - backend-container-build
   variables:

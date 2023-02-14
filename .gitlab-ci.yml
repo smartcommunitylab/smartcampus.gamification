@@ -33,12 +33,8 @@ maven-build:
   image: maven:3-openjdk-11
   stage: build
   script:
-    - apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
-    - npm install -g bower
     - cd ${CI_PROJECT_DIR}/game-engine.core
     - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-    - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
-    - bower --allow-root install
     - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
     - cd ${CI_PROJECT_DIR}/game-engine.tools/log2timescaledb

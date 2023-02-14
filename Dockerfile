@@ -2,13 +2,9 @@
 FROM maven:3-openjdk-11 as mvn
 COPY ./game-engine.core /tmp/game-engine.core
 COPY ./game-engine.web /tmp/game-engine.web
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
-RUN npm install -g bower
 WORKDIR /tmp/game-engine.core
 #RUN --mount=type=bind,target=/root/.m2,source=/root/.m2,from=smartcommunitylab/aac:cache-alpine mvn package -DskipTests
 RUN mvn clean install -DskipTests
-RUN cd /tmp/game-engine.web/src/main/resources/consoleweb-assets && bower --allow-root install
 WORKDIR /tmp/game-engine.web
 RUN mvn clean install -DskipTests
 

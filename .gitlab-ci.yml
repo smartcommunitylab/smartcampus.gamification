@@ -101,8 +101,6 @@ gemnasium-maven-dependency_scanning:
 
 backend-container-build:
   stage: container-build
-  environment:
-    name: $CI_COMMIT_REF_NAME
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
@@ -117,8 +115,6 @@ backend-container-build:
 
 frontend-container-build:
   stage: container-build
-  environment:
-    name: $CI_COMMIT_REF_NAME
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - cd gamification-frontend

@@ -61,6 +61,7 @@ import eu.trentorise.game.bean.RuleDTO;
 import eu.trentorise.game.bean.TaskDTO;
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.core.ResourceNotFoundException;
+import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.ChallengeModel;
@@ -452,6 +453,12 @@ public class InterfaceManagerController {
 						ct.setItemsToNotificate(task.getItemsToNotificate());
 						ct.setClassificationName(task.getClassificationName());
 
+						// create if not exist 'schedule'
+						if (ct.getSchedule() == null) {
+							TaskSchedule schedule = new TaskSchedule();
+							gt.setSchedule(schedule);									
+						}
+						
 						if (StringUtils.isNotBlank(task.getDelayUnit())) {
 							ct.getSchedule().setDelay(
 									new TimeInterval(task.getDelayValue(), TimeUnit.valueOf(task.getDelayUnit())));
@@ -459,16 +466,18 @@ public class InterfaceManagerController {
 							ct.getSchedule().setDelay(null);
 						}
 
-						if (!ct.getPeriodName().equals(task.getPeriodName())
-								|| !ct.getPointConceptName().equals(task.getItemType())) {
-							// found pointConcept
-							for (GameConcept gc : g.getConcepts()) {
-								if (gc instanceof PointConcept && gc.getName().equals(task.getItemType())) {
-									ct.updatePointConceptData((PointConcept) gc, task.getPeriodName(), null);
-									break;
+						if (StringUtils.isNotBlank(task.getPeriodName())) {
+							if (ct.getPeriodName() == null || !ct.getPeriodName().equals(task.getPeriodName())
+									|| !ct.getPointConceptName().equals(task.getItemType())) {
+								// found pointConcept
+								for (GameConcept gc : g.getConcepts()) {
+									if (gc instanceof PointConcept && gc.getName().equals(task.getItemType())) {
+										ct.updatePointConceptData((PointConcept) gc, task.getPeriodName(), null);
+										break;
+									}
 								}
-							}
-						}
+							}						
+						}	
 
 						taskSrv.updateTask(gt, gameId);
 					}

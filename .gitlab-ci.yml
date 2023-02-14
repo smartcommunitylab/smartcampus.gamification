@@ -133,7 +133,7 @@ frontend-container-build:
 container_scanning:
   stage: test
   dependencies:
-  - container-build
+  - backend-container-build
   variables:
     DOCKER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
     DOCKERFILE_PATH: "Dockerfile"

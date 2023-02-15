@@ -1,0 +1,10 @@
+FROM maven:3-openjdk-11 as mvn
+COPY ./game-engine.core /tmp/game-engine.core
+COPY ./game-engine.web /tmp/game-engine.web
+WORKDIR /tmp/game-engine.core
+RUN mvn clean install -DskipTests
+WORKDIR /tmp/game-engine.web
+RUN mvn clean install -DskipTests
+
+FROM scratch
+COPY --from=mvn /root/.m2 /.m2

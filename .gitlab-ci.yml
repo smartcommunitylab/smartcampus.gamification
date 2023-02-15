@@ -35,7 +35,7 @@ update-backend-cache-image:
     DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
-    - docker build -f Dockerfile-cache -t CONTAINER_CACHE_IMAGE .
+    - docker build -f Dockerfile-cache -t $CONTAINER_CACHE_IMAGE .
     - docker push $CONTAINER_CACHE_IMAGE
   rules:
     - changes:
@@ -50,7 +50,7 @@ update-frontend-cache-image:
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - cd gamification-frontend
-    - docker build -f Dockerfile-cache -t CONTAINER_FRONTEND_CACHE_IMAGE .
+    - docker build -f Dockerfile-cache -t $CONTAINER_FRONTEND_CACHE_IMAGE .
     - docker push $CONTAINER_FRONTEND_CACHE_IMAGE
   rules:
     - changes:

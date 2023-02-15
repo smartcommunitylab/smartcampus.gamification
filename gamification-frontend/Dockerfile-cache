@@ -4,12 +4,10 @@ WORKDIR /app
 COPY public /app/public
 COPY src /app/src
 COPY .env /app/
-COPY package.json ./
+COPY package*.json ./
 COPY tsconfig.json ./
-COPY .yarnrc /app/
-COPY yarn.lock /app/yarn.lock
-RUN yarn
-RUN yarn build
+RUN npm install
+RUN npm build
 
-# FROM scratch
-# COPY --from=react-build /app/node_modules /node_modules
+FROM scratch
+COPY --from=react-build /app/node_modules /node_modules

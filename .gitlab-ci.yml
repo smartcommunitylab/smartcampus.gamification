@@ -30,9 +30,12 @@ variables:
 
 update-backend-cache-image:
   stage: build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile-cache -t CONTAINER_CACHE_IMAGE .
+    - docker build -f Dockerfile-cache -t CONTAINER_CACHE_IMAGE .
     - docker push $CONTAINER_CACHE_IMAGE
   rules:
     - changes:
@@ -41,10 +44,13 @@ update-backend-cache-image:
 
 update-frontend-cache-image:
   stage: build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - cd gamification-frontend
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile-cache -t CONTAINER_FRONTEND_CACHE_IMAGE .
+    - docker build -f Dockerfile-cache -t CONTAINER_FRONTEND_CACHE_IMAGE .
     - docker push $CONTAINER_FRONTEND_CACHE_IMAGE
   rules:
     - changes:
@@ -101,9 +107,12 @@ gemnasium-maven-dependency_scanning:
 
 backend-container-build:
   stage: container-build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
+    - docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
     - docker push $CONTAINER_IMAGE
     - docker push $CONTAINER_IMAGE_LATEST
   only:
@@ -115,10 +124,13 @@ backend-container-build:
 
 frontend-container-build:
   stage: container-build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - cd gamification-frontend
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://gedev.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
+    - docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://gedev.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
     - docker push $CONTAINER_FRONTEND_IMAGE
     - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
   only:

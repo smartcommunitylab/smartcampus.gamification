@@ -3,10 +3,9 @@ FROM maven:3-openjdk-11 as mvn
 COPY ./game-engine.core /tmp/game-engine.core
 COPY ./game-engine.web /tmp/game-engine.web
 WORKDIR /tmp/game-engine.core
-#RUN --mount=type=bind,target=/root/.m2,source=/root/.m2,from=smartcommunitylab/aac:cache-alpine mvn package -DskipTests
-RUN mvn clean install -DskipTests
+RUN --mount=type=cache,target=/root/.m2,source=/.m2,from=smartcommunitylab/gamification-engine:cache mvn install -DskipTests
 WORKDIR /tmp/game-engine.web
-RUN mvn clean install -DskipTests
+RUN --mount=type=cache,target=/root/.m2,source=/.m2,from=smartcommunitylab/gamification-engine:cache mvn install -DskipTests
 
 FROM eclipse-temurin:11-alpine
 ARG VER=3.0.0

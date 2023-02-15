@@ -5,9 +5,7 @@ services:
 
 stages:
   - build
-  - stats-container-build
-  - backend-container-build
-  - frontend-container-build
+  - container-build
   - test
   - deploy-dev
   - deploy-frontend-dev
@@ -25,8 +23,38 @@ variables:
   DOCKER_DRIVER: overlay
   CONTAINER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_CACHE_IMAGE: smartcommunitylab/gamification-engine:cache
   CONTAINER_FRONTEND_IMAGE: smartcommunitylab/gamification-engine-frontend:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_FRONTEND_IMAGE_LATEST: smartcommunitylab/gamification-engine-frontend:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_FRONTEND_CACHE_IMAGE: smartcommunitylab/gamification-engine-frontend:cache
+
+update-backend-cache-image:
+  stage: build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - docker build -f Dockerfile-cache -t CONTAINER_CACHE_IMAGE .
+    - docker push $CONTAINER_CACHE_IMAGE
+  rules:
+    - changes:
+      - game-engine.core/pom.xml
+      - game-engine.web/pom.xml
+
+update-frontend-cache-image:
+  stage: build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - cd gamification-frontend
+    - docker build -f Dockerfile-cache -t CONTAINER_FRONTEND_CACHE_IMAGE .
+    - docker push $CONTAINER_FRONTEND_CACHE_IMAGE
+  rules:
+    - changes:
+      - gamification-frontend/package.json
 
 maven-build:
   image: maven:3-openjdk-11
@@ -62,26 +90,29 @@ spotbugs-sast:
     reports:
       sast: gl-sast-report.json
     expire_in: 1 week
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
 
 semgrep-sast:
-  dependencies:
-    - maven-build
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
 
 nodejs-scan-sast:
-  dependencies:
-    - maven-build
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
 
 gemnasium-maven-dependency_scanning:
-  dependencies:
-    - maven-build
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
 
 backend-container-build:
-  stage: backend-container-build
-  environment:
-    name: $CI_COMMIT_REF_NAME
+  stage: container-build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
+    - docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
     - docker push $CONTAINER_IMAGE
     - docker push $CONTAINER_IMAGE_LATEST
   only:
@@ -92,13 +123,14 @@ backend-container-build:
     expire_in: 1 week
 
 frontend-container-build:
-  stage: frontend-container-build
-  environment:
-    name: $CI_COMMIT_REF_NAME
+  stage: container-build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - cd gamification-frontend
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://gedev.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
+    - docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://gedev.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
     - docker push $CONTAINER_FRONTEND_IMAGE
     - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
   only:

@@ -5,10 +5,11 @@ WORKDIR /app
 COPY public /app/public
 COPY src /app/src
 COPY .env /app/
+COPY .yarnrc /app/
 COPY package.json ./
 COPY tsconfig.json ./
-RUN yarn
-RUN yarn build
+RUN --mount=type=cache,target=/app/node_modules/,source=/node_modules/,from=smartcommunitylab/gamification-engine-frontend:cache ls -la node_modules/ && yarn
+RUN --mount=type=cache,target=/app/node_modules/,source=/node_modules/,from=smartcommunitylab/gamification-engine-frontend:cache yarn build
 
 FROM nginx:alpine
 ARG USER=gamification

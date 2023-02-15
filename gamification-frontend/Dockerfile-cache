@@ -9,5 +9,5 @@ COPY tsconfig.json ./
 RUN yarn
 RUN yarn build
 
-# FROM scratch
-# COPY --from=react-build /app/node_modules /node_modules
+FROM scratch
+COPY --from=react-build /app/node_modules /node_modules

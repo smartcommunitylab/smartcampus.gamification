@@ -101,12 +101,7 @@ const MonitorShowContent = () => {
                             <br />
                             <Box>
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Custom Data</Typography>
-                                <CustomField sx={{ 
-                                    fontFamily: ['"Roboto", Helvetica', 'Arial', 'sans-serif'].join(','),
-                                    fontSize: '14px',
-                                    lineHeight: 1.43,
-                                    letterSpacing: 0.01071 }}/>
-
+                                <CustomField />
                             </Box>
                         </Box>
 
@@ -136,6 +131,12 @@ const PeriodField = (props: any) => {
     );
 }
 
+const customListStyle = {
+    fontFamily: ['"Roboto", Helvetica', 'Arial', 'sans-serif'].join(','),
+    fontSize: '14px',
+    // color: 'red'
+};
+
 const CustomTextField = (props: any) => {
     const record = useRecordContext();
 
@@ -154,7 +155,7 @@ const CustomField = (props: any) => {
     const record = useRecordContext();
 
     return (
-        <ul>
+        <ul style={customListStyle}>
             {
                 Object.entries(record.customData).map((elem: any) => (
                     <li>

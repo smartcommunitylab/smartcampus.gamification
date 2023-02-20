@@ -3,6 +3,8 @@ package eu.trentorise.game.model
 import java.lang.Math;
 import eu.trentorise.game.core.Utility;
 
+import eu.trentorise.game.notification.MessageNotification;
+
 global Utility utils;
 
 global Double driver_first_passenger_bonus;
@@ -66,7 +68,8 @@ function double tripScore(double modeDaily, double tripDistance, String mode) {
 }
 
 rule "all modes - update green points"
-salience 1000
+salience 10000
+lock-on-active
 when
     Action($id : id == 'save_itinerary')
     Game( $gameId : id)
@@ -94,8 +97,20 @@ when
 
     $bc : BadgeCollectionConcept(name == "flags")
 
+    CustomData (
+        $currentPlayers: data["currentPlayers"] != null
+    )
+
 then
-    utils.log("& all modes - update green points");
+    String travelId = new String($travelId.toString());
+    if ($bc.getBadgeEarned().contains(travelId)) return;
+    $bc.getBadgeEarned().add(travelId);
+
+    utils.log("&&&&&&&& all modes - update green points");
+    utils.log($travelId);
+    utils.log($currentPlayers);
+    utils.log($playerId);
+    utils.log($teamId);
 
     double score = 0.0;
 
@@ -154,21 +169,22 @@ then
    	 }
     }
 
-
    /* update player score by number of members in team */
-   if ($totalMembers < 1)
-        $totalMembers = 1;
-    score = score / $totalMembers;
+       Integer currentPlayers = new Integer($currentPlayers.toString());
+       if (currentPlayers < 1)
+            currentPlayers = 1;
+
+    score = score / currentPlayers;
     score = Math.ceil(score);
 
-    utils.log("calcultated score: " + score );
-    if(score > 0.0) {
-   	 $greenLeaves.setScore($greenLeaves.getScore() + score);
-   	 update($greenLeaves);
-   	 utils.log($greenLeaves);
-    } else {
-   	 utils.log("No score to update");
-    }
+        utils.log("calcultated score: " + score );
+        if(score > 0.0) {
+       	 $greenLeaves.setScore($greenLeaves.getScore() + score);
+       	 update($greenLeaves);
+       	 utils.log($greenLeaves);
+        } else {
+       	 utils.log("No score to update");
+        }
 
     UpdateTeams ut = new UpdateTeams();
     ut.addData("part", score);
@@ -189,6 +205,7 @@ then
 end
 
 rule "trip mode update propagation"
+lock-on-active
 when
     Transmission (
         $part: data["part"] != null,
@@ -196,11 +213,15 @@ when
         $first_partecipation: data["first_partecipation"] != null
     )
 
+    Game($gameId : id)
     Player($teamId : id, team == true)
     $greenLeaves : PointConcept( name == "green leaves")
 
+    $bonus: PointConcept( name == "bonus")
+
     CustomData (
-        $maxMembers : data["maxMembers"] != null
+        $maxMembers : data["maxMembers"] != null,
+        $currentPlayers: data["currentPlayers"] != null
     )
 then
 	utils.log("@ apply trip mode update propagation");
@@ -227,5 +248,13 @@ then
        	 $greenLeaves.setScore($greenLeaves.getScore() + part);
        	 update($greenLeaves);
        	 utils.log("first partecipation bonus");
+
+       	 $bonus.setScore($bonus.getScore() + part);
+       	 update($bonus);
+
+        MessageNotification mn = new MessageNotification($gameId, $teamId, "HSCRegistrationBonus");
+        mn.addData("registeredPlayerId", $playerId);
+        mn.addData("points", part);
+        insert(mn);
     }
 end

@@ -1,15 +1,12 @@
-image: docker:19
+image: docker:latest
 
 services:
   - docker:dind
 
 stages:
   - build
-  - stats-container-build
-  - backend-container-build
-  - frontend-container-build
+  - container-build
   - test
-  - container-scan
   - deploy-dev
   - deploy-frontend-dev
   - deploy-test
@@ -26,19 +23,45 @@ variables:
   DOCKER_DRIVER: overlay
   CONTAINER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_IMAGE_LATEST: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_CACHE_IMAGE: smartcommunitylab/gamification-engine:cache
   CONTAINER_FRONTEND_IMAGE: smartcommunitylab/gamification-engine-frontend:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CONTAINER_FRONTEND_IMAGE_LATEST: smartcommunitylab/gamification-engine-frontend:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_FRONTEND_CACHE_IMAGE: smartcommunitylab/gamification-engine-frontend:cache
+
+update-backend-cache-image:
+  stage: build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - docker build -f Dockerfile-cache -t $CONTAINER_CACHE_IMAGE .
+    - docker push $CONTAINER_CACHE_IMAGE
+  rules:
+    - changes:
+      - game-engine.core/pom.xml
+      - game-engine.web/pom.xml
+
+update-frontend-cache-image:
+  stage: build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - cd gamification-frontend
+    - docker build -f Dockerfile-cache -t $CONTAINER_FRONTEND_CACHE_IMAGE .
+    - docker push $CONTAINER_FRONTEND_CACHE_IMAGE
+  rules:
+    - changes:
+      - gamification-frontend/package.json
 
 maven-build:
   image: maven:3-openjdk-11
   stage: build
   script:
-    - apt update && apt install -y nodejs npm git && rm -rf /var/lib/apt/lists/*
-    - npm install -g bower
     - cd ${CI_PROJECT_DIR}/game-engine.core
     - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-    - cd ${CI_PROJECT_DIR}/game-engine.web/src/main/resources/consoleweb-assets
-    - bower --allow-root install
     - cd ${CI_PROJECT_DIR}/game-engine.web
     - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
     - cd ${CI_PROJECT_DIR}/game-engine.tools/log2timescaledb
@@ -50,6 +73,8 @@ maven-build:
       - game-engine.web/
       - game-engine.tools/log2timescaledb
     expire_in: 1 week
+  only:
+    - master
 
 spotbugs-sast:
   dependencies:
@@ -65,30 +90,47 @@ spotbugs-sast:
     reports:
       sast: gl-sast-report.json
     expire_in: 1 week
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
+
+semgrep-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
+
+nodejs-scan-sast:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
+
+gemnasium-maven-dependency_scanning:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
 
 backend-container-build:
-  stage: backend-container-build
-  environment:
-    name: $CI_COMMIT_REF_NAME
+  stage: container-build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
+    - docker build -f Dockerfile -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
     - docker push $CONTAINER_IMAGE
     - docker push $CONTAINER_IMAGE_LATEST
   only:
     - playAndGo-dev-v2
     - playAndGo-prod-v2
+    - master
   artifacts:
     expire_in: 1 week
 
 frontend-container-build:
-  stage: frontend-container-build
-  environment:
-    name: $CI_COMMIT_REF_NAME
+  stage: container-build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
   script:
     - docker login -u $DHUB_USER -p $DHUB_PASS
     - cd gamification-frontend
-    - DOCKER_BUILDKIT=1 docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://gedev.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
+    - docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://gedev.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
     - docker push $CONTAINER_FRONTEND_IMAGE
     - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
   only:
@@ -97,7 +139,7 @@ frontend-container-build:
     expire_in: 1 week
 
 container_scanning:
-  stage: container-scan
+  stage: test
   dependencies:
   - backend-container-build
   variables:
@@ -108,6 +150,8 @@ container_scanning:
     DOCKER_PASSWORD: ""
   artifacts:
     expire_in: 1 week
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
     
 deploy-dev:
   stage: deploy-dev

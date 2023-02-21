@@ -60,23 +60,22 @@ function double getScoreLimit(String mode, double distance) {
 
 function double tripScore(double modeDaily, double tripDistance, String mode) {
     double oldModeDailyScore = Math.rint(getScoreLimit(mode, modeDaily));
-    System.out.println(oldModeDailyScore);
+    // System.out.println(oldModeDailyScore);
     double newModeDailyScore = Math.rint(getScoreLimit(mode, modeDaily + tripDistance ));
-    System.out.println(newModeDailyScore);
+    // System.out.println(newModeDailyScore);
     double gainedScore = newModeDailyScore - oldModeDailyScore;
     return gainedScore;
 }
 
 rule "all modes - update green points"
-salience 10000
-lock-on-active
+salience 1000
 when
     Action($id : id == 'save_itinerary')
     Game( $gameId : id)
     Player($playerId : id, team == false)
-    Player($teamId : id, team == true, $totalMembers: totalMembers)
+    Player($teamId : id, team == true, $customData: customData)
 
-    InputData($travelId : data["travelId"],
+    InputData($trackId : data["trackId"],
           	$walkDistance : data["walkDistance"],
           	$bikeDistance : data["bikeDistance"],
           	$busDistance : data["busDistance"],
@@ -97,20 +96,14 @@ when
 
     $bc : BadgeCollectionConcept(name == "flags")
 
-    CustomData (
-        $currentPlayers: data["currentPlayers"] != null
-    )
-
 then
-    String travelId = new String($travelId.toString());
-    if ($bc.getBadgeEarned().contains(travelId)) return;
-    $bc.getBadgeEarned().add(travelId);
 
     utils.log("&&&&&&&& all modes - update green points");
-    utils.log($travelId);
-    utils.log($currentPlayers);
     utils.log($playerId);
-    utils.log($teamId);
+    utils.log($customData);
+    // utils.log($trackId);
+    // utils.log($currentPlayers)
+    // utils.log($teamId);
 
     double score = 0.0;
 
@@ -170,7 +163,8 @@ then
     }
 
    /* update player score by number of members in team */
-       Integer currentPlayers = new Integer($currentPlayers.toString());
+
+       Integer currentPlayers = new Integer($customData.get("currentPlayers").toString());
        if (currentPlayers < 1)
             currentPlayers = 1;
 
@@ -205,7 +199,6 @@ then
 end
 
 rule "trip mode update propagation"
-lock-on-active
 when
     Transmission (
         $part: data["part"] != null,
@@ -220,11 +213,10 @@ when
     $bonus: PointConcept( name == "bonus")
 
     CustomData (
-        $maxMembers : data["maxMembers"] != null,
-        $currentPlayers: data["currentPlayers"] != null
+        $maxMembers : data["maxMembers"] != null
     )
 then
-	utils.log("@ apply trip mode update propagation");
+	utils.log("@@@@@@@@ apply trip mode update propagation");
 
     double score = utils.getDouble($part);
 

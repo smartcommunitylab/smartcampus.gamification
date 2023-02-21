@@ -26,6 +26,7 @@ public class Player {
 	private boolean team = false;
 	private int totalMembers = 0;
     private Map<String, String> levels = new HashMap<>();
+	private Map<String, Object> customData = new HashMap<>();
 
 	public Player(String id) {
 		this.id = id;
@@ -52,6 +53,8 @@ public class Player {
             }
             
             levels = convert(state.getLevels());
+
+			customData = state.getCustomData().getData();
         }
     }
 
@@ -80,5 +83,9 @@ public class Player {
     public Map<String, String> getLevels() {
         return Collections.unmodifiableMap(levels);
     }
+
+	public Map<String, Object> getCustomData() {
+		return customData;
+	}
 
 }

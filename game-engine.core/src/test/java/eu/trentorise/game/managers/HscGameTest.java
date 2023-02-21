@@ -215,7 +215,7 @@ public class HscGameTest {
         // first player saves itinerary
         Map<String, Object> data = new HashMap<>();
         data.put("walkDistance", 6.0);
-        data.put("travelId", "111111");
+        data.put("trackId", "111111");
 
         PlayerState p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
@@ -229,7 +229,7 @@ public class HscGameTest {
 
         check("disney", BONUS, 1667.0);
 
-        data.put("travelId", "2222222");
+        data.put("trackId", "2222222");
         p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
@@ -242,7 +242,7 @@ public class HscGameTest {
 
         print("ehilà222");
 
-        data.put("travelId", "3333333");
+        data.put("trackId", "3333333");
         p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);

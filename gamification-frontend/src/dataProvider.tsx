@@ -1,4 +1,6 @@
 import simpleRestProvider from 'ra-data-simple-rest';
+import { Options } from 'react-admin';
+import { stringify } from 'querystring';
 
 const apiUrl = process.env.REACT_APP_API_ENDPOINT + '/console-ui';
 console.log("Endpoint ->" + apiUrl);
@@ -13,7 +15,7 @@ const gamificationDataProvider = {
 
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
-        let filter = params.filter.q?params.filter.q:'';
+        let filter = params.filter.q ? params.filter.q : '';
 
         if (resource !== "game") {
             const gameId = params.meta.gameId;
@@ -55,7 +57,7 @@ const gamificationDataProvider = {
                 // if (resource==='challengemodels') {
                 //     json.data = modifyChallengeModel(json);
                 // }
-                if (resource==="pointconcepts") {
+                if (resource === "pointconcepts") {
                     json.data = modifyPointConceptModel(json);
                 }
                 return json;
@@ -181,7 +183,7 @@ const gamificationDataProvider = {
         const headers = { 'Authorization': `Basic ${token}` };
         if (resource === 'game') {
             url = url + '/' + params.id;
-        } else if (resource=== 'challenges') {
+        } else if (resource === 'challenges') {
             const gameId = params.meta.gameId;
             const playerId = params.meta.playerId;
             url = url + '/' + gameId + '/' + playerId + '/challenge/' + params.id;
@@ -234,36 +236,49 @@ const gamificationDataProvider = {
                 }
                 return json;
             })
+    },
+    invoke: ({
+        path,
+        params,
+        body,
+        options,
+    }: {
+        path: string;
+        params?: any;
+        body?: string;
+        options?: Options;
+    }) => {
+        let url = `${apiUrl}/${path}`;
+        if (params) {
+            url = `${apiUrl}/${path}?${stringify(params)}`;
+        }
+        const opts = options ? options : {};
+        if (body) {
+            opts.body = body;
+        }
+        return fetch(url, opts).then( async(response: any) => {
+            const json = await response.json();
+            if (json.error) {
+                const errorObj = { status: json.status, message: json.error + " - " + json.message };
+                throw errorObj;
+            }
+            return json;
+        });
     }
 };
 
 export default gamificationDataProvider;
-
-// function modifyChallengeModel(json: any) {
-//     let body: any = {};
-//     let variables: any = [];
-//     json.data.variables.forEach((element: any) => {
-//         let v: any = {};
-//         v['name'] = element;              
-//         variables.push(v);
-//     });
-//     body['gameId']= json.data.gameId;
-//     body['id'] = json.data.id;
-//     body['name'] = json.data.name;
-//     body['variables'] = variables;
-//     return body;
-// }
 
 function modifyPointConceptModel(json: any): any {
     let body: any = {};
     let periods: any = [];
     Object.entries(json.data.periods).map((element: any) => {
         let item: any = {};
-        item['name'] = element[1].identifier;   
+        item['name'] = element[1].identifier;
         item['start'] = element[1].start;
-        item['end']=element[1].end;
+        item['end'] = element[1].end;
         item['period'] = element[1].period;
-        item['capacity'] = element[1].capacity;           
+        item['capacity'] = element[1].capacity;
         periods.push(item);
     });
     body['id'] = json.data.name;

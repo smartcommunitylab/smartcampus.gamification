@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -909,6 +910,16 @@ public class InterfaceManagerController {
 
 		throw new IllegalArgumentException(String.format("challenge %s doesn't exist in state of player %s",
 				decodedInstanceName, decodedPlayerId));
+	}
+	
+	@Autowired
+	@Value("${export.dir}")
+	private String exportPath;
+
+	@RequestMapping(method = RequestMethod.GET, value = "/exportJsonDB", produces = {"application/json" })
+	public String exportJsonDB() throws Exception {
+		jsonDB.exportDB();
+		return objectMapper.writeValueAsString(exportPath);	
 	}
 
 }

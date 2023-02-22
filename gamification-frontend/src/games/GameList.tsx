@@ -8,7 +8,10 @@ import {
     BulkDeleteButton,
     RecordContextProvider,
     TextInput,
-    SearchInput
+    SearchInput,
+    ExportButton,
+    useDataProvider,
+    useNotify
 } from 'react-admin';
 import { useRedirect } from 'react-admin';
 import {
@@ -18,6 +21,7 @@ import {
     Button
 } from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Game } from '../types';
 
@@ -55,8 +59,7 @@ const GameListContent = () => {
 
 const GameListActions = () => (
     <TopToolbar>
-        {/* <SortButton fields={['name', 'id']} /> */}
-        {/* <ExportButton /> */}
+        <ExportGameButton />
         <CreateButton
             variant="contained"
             label="New Game"
@@ -115,3 +118,45 @@ const SettingButton = (params: any) => {
 const GameFilters = [
     <SearchInput placeholder='Search by game name'source="q" alwaysOn />
 ];
+
+const ExportGameButton = (params: any) => {
+    const dataProvider = useDataProvider();
+    const notify = useNotify();
+    const exportGames = function () {
+        const req = {
+            path: 'exportJsonDB',
+            // options: { method: 'GET' },
+            // body: JSON.stringify(data),
+        };
+
+        dataProvider
+            .invoke(req)
+            .then(async function (response: any) {
+                notify("Exported successfully to " + response)
+            }).catch(function (error: any) {
+                notify(error.toString())
+            })
+    }
+
+    return (
+        <>
+            <Button 
+            sx={{
+                color: 'white',
+                backgroundColor: '#1976d2',
+                boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+                marginLeft: '16px',
+                lineHeight: '1.5',
+                fontWeight: '500',
+                fontSize: '0.8125rem',
+                minWidth: '64px',
+                padding: '4px 10px',
+                borderRadius: '4px'
+            }} 
+            endIcon={<FileDownloadIcon />} onClick={exportGames}
+            >
+                Export Games
+            </Button>
+        </>
+    );
+};

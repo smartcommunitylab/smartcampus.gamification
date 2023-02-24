@@ -1,6 +1,12 @@
 package eu.trentorise.game.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,10 +15,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,6 +100,35 @@ public class JsonDB {
 		File f = new File(exportPath, "db.json");
 		logger.info("Export db file to path " + exportPath);
 		mapper.writerWithDefaultPrettyPrinter().writeValue(f, gameJson);
+	}
+	
+	public HttpEntity<byte[]> downloadDB() throws Exception {
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		List<GamePersistence> games = (List<GamePersistence>) gameRepo.findAll();
+		Map<String, Map<String, Object>> gameJson = new HashMap<String, Map<String, Object>>();
+		for (GamePersistence game : games) {
+			Set<ChallengeModel> gameChallengeModels = challengeModelRepo.findByGameId(game.getId());
+			Set<DBRule> rules = new HashSet<DBRule>();
+			for (String rule : game.getRules()) {
+				rules.add((DBRule) gameManager.loadRule(game.getId(), rule));
+			}
+			String gameId = game.getId();
+			Map<String, Object> mapTemp = gameJson.get(gameId);
+			if (mapTemp == null) {
+				mapTemp = new HashMap<String, Object>();
+				gameJson.put(gameId, mapTemp);
+			}
+			nullifyIds(game, rules, gameChallengeModels);
+			mapTemp.put("game", game);
+			mapTemp.put("rules", rules);
+			mapTemp.put("challengeModels", gameChallengeModels);
+		}
+		byte[] buf = mapper.writeValueAsBytes(gameJson);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setContentLength(buf.length);
+		headers.add("Content-Disposition", "attachment;filename=db.json");
+		return new HttpEntity<byte[]>(buf, headers);
 	}
 
 	private void nullifyIds(GamePersistence game, Set<DBRule> rules, Set<ChallengeModel> gameChallengeModels) {

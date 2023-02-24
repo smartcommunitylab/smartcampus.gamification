@@ -256,14 +256,14 @@ const gamificationDataProvider = {
         if (body) {
             opts.body = body;
         }
-        return fetch(url, opts).then( async(response: any) => {
+        return fetch(url, opts).then(async (response: any) => {
             const json = await response.json();
             if (json.error) {
                 const errorObj = { status: json.status, message: json.error + " - " + json.message };
                 throw errorObj;
             }
             return json;
-        });
+        })
     }
 };
 

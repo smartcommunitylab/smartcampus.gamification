@@ -116,7 +116,7 @@ const SettingButton = (params: any) => {
 }
 
 const GameFilters = [
-    <SearchInput placeholder='Search by game name'source="q" alwaysOn />
+    <SearchInput placeholder='Search by game name' source="q" alwaysOn />
 ];
 
 const ExportGameButton = (params: any) => {
@@ -124,15 +124,20 @@ const ExportGameButton = (params: any) => {
     const notify = useNotify();
     const exportGames = function () {
         const req = {
-            path: 'exportJsonDB',
-            // options: { method: 'GET' },
+            path: 'downloadJsonDB', //exportJsonDB
+            // options: { responseType: 'arraybuffer' }
             // body: JSON.stringify(data),
         };
-
         dataProvider
             .invoke(req)
-            .then(async function (response: any) {
-                notify("Exported successfully to " + response)
+            .then(function (response: any) {
+                var json = JSON.stringify(response);
+                var blob = new Blob([json], { type: 'application/json' });
+                let url = window.URL.createObjectURL(blob);
+                let link = document.createElement('a');
+                link.href = url;
+                link.download = 'data.json';
+                link.click();
             }).catch(function (error: any) {
                 notify(error.toString())
             })
@@ -140,20 +145,20 @@ const ExportGameButton = (params: any) => {
 
     return (
         <>
-            <Button 
-            sx={{
-                color: 'white',
-                backgroundColor: '#1976d2',
-                boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
-                marginLeft: '16px',
-                lineHeight: '1.5',
-                fontWeight: '500',
-                fontSize: '0.8125rem',
-                minWidth: '64px',
-                padding: '4px 10px',
-                borderRadius: '4px'
-            }} 
-            endIcon={<FileDownloadIcon />} onClick={exportGames}
+            <Button
+                sx={{
+                    color: 'white',
+                    backgroundColor: '#1976d2',
+                    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+                    marginLeft: '16px',
+                    lineHeight: '1.5',
+                    fontWeight: '500',
+                    fontSize: '0.8125rem',
+                    minWidth: '64px',
+                    padding: '4px 10px',
+                    borderRadius: '4px'
+                }}
+                endIcon={<FileDownloadIcon />} onClick={exportGames}
             >
                 Export Games
             </Button>

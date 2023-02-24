@@ -148,6 +148,8 @@ public class DroolsEngine implements GameEngine {
         List<TeamState> playerTeams = playerSrv.readTeams(gameId, state.getPlayerId());
         for (TeamState ts: playerTeams) {
         	cmds.add(CommandFactory.newInsert(new Player(ts)));
+            CustomData insCustomData = ts.getCustomData();
+            cmds.add(CommandFactory.newInsert(insCustomData));
         }
 
 

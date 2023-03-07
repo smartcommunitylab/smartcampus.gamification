@@ -7,9 +7,9 @@ import {
     BulkActionsToolbar,
     BulkDeleteButton,
     RecordContextProvider,
-    TextInput,
-    SearchInput,
-    ExportButton,
+    useStore,
+    useRemoveFromStore,
+    SearchInput,    
     useDataProvider,
     useNotify
 } from 'react-admin';
@@ -24,6 +24,7 @@ import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Game } from '../types';
+import { useEffect } from 'react';
 
 const GameListContent = () => {
     const {
@@ -47,7 +48,7 @@ const GameListContent = () => {
                     <RecordContextProvider key={Game.id} value={Game}>
                         <ListItem>
                             <ListItemText primary={`${Game.name}`} secondary={`${Game.id}`}></ListItemText>
-                            <SettingButton selectedId={Game.id} />
+                            {/* <SettingButton selectedId={Game.id} /> */}
                             <ManageButton selectedId={Game.id} selectedName={Game.name}></ManageButton>
                         </ListItem>
                     </RecordContextProvider>
@@ -68,7 +69,12 @@ const GameListActions = () => (
     </TopToolbar>
 );
 
-export const GameList = () => {
+export const GameList = () => {    
+    const remove = useRemoveFromStore();
+    useEffect(() => {
+        remove('game.selected');
+        remove('game.name');
+      }, []);
     return (
         <RaList
             actions={<GameListActions />}
@@ -82,9 +88,8 @@ export const GameList = () => {
     )
 };
 
-import { useStore } from 'react-admin';
-
 const ManageButton = (params: any) => {
+    const redirect = useRedirect();
     const [gameId, setGameId] = useStore('game.selected');
     const [gameName, setGameName] = useStore('game.name');
     return (
@@ -92,7 +97,7 @@ const ManageButton = (params: any) => {
             <Button endIcon={<CheckCircleOutlinedIcon />} onClick={() => {
                 setGameId(params.selectedId);
                 setGameName(params.selectedName);
-                console.log(params.selectedId);
+                redirect('/game/' + params.selectedId + '/show');
             }}>
                 Manage
             </Button>

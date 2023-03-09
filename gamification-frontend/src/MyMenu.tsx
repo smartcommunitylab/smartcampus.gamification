@@ -15,9 +15,9 @@ export const MyMenu = () => {
         .filter(name => name === 'game' || (gameId && !listHiddenMenu.includes(name)))
         .map(name => {
             if (name == 'game') {
-                return (<MenuItemLink leftIcon={<GamesIcon fontSize='small'/>} key={name} to={createPath({ resource: name, type: 'list', })} state={{ _scrollToTop: true }} primaryText={getResourceLabel(name, 2)} />)
+                return (<MenuItemLink style={styles.align} leftIcon={<GamesIcon fontSize='small'/>} key={name} to={createPath({ resource: name, type: 'list', })} state={{ _scrollToTop: true }} primaryText={getResourceLabel(name, 2)} />)
             }
-            return (<MenuItemLink style={styles.align10} key={name} to={createPath({ resource: name, type: 'list', })} state={{ _scrollToTop: true }} primaryText={getResourceLabel(name, 2)} />)
+            return (<MenuItemLink style={styles.align50} key={name} to={createPath({ resource: name, type: 'list', })} state={{ _scrollToTop: true }} primaryText={getResourceLabel(name, 2)} />)
         }
 
         ))
@@ -25,10 +25,13 @@ export const MyMenu = () => {
 
 
 const styles = {
-    align10: {
-        left: "10px"
+    align50: {
+        padding: '5px 60px'
     },
     align: {
-        left: '0px'
+        padding: '5px 5px'        
+    },
+    icon: {
+        minWidth: '0px'
     }
 }

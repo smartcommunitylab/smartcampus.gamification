@@ -1,0 +1,83 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.PointConcept.PeriodInstance;
+import eu.trentorise.game.core.Utility;
+import eu.trentorise.game.model.core.Notification;
+import eu.trentorise.game.notification.ChallengeCompletedNotication;
+
+import java.util.Date;
+import java.util.Calendar;
+
+global Utility utils;
+
+
+function Double numberOfActivePeriods(PointConcept pc, Double target, String pName, long start) {
+	Double activePeriods = 0d;
+	
+	PeriodInstance pi = pc.getPeriodCurrentInstance(pName);
+	
+	if (pi == null){
+		//System.out.println(pc.getName() + " NULL");
+		return activePeriods;
+	}
+	
+	
+	int i = pi.getIndex();
+	while ( (i >= 0) && (pi.getStart() >= start) ) {	
+		Double s = pi.getScore();	
+		if(s >= target)
+			activePeriods++;
+		i--;	
+                pi = pc.getPeriodInstance(pName, i);
+	}
+	
+	return activePeriods;
+}
+
+rule "repetitiveBehaviour"
+	salience -2000
+    when 
+    	//checking if it's the right challenge and if it's not completed
+        $c: ChallengeConcept( modelName == 'repetitiveBehaviour',
+        					  $counter: fields['counterName'],
+        					  $target: fields['target'],
+        					  $period: fields['periodName'],
+        					  $periodTarget: fields['periodTarget'],
+        					  $bonusPointType: fields['bonusPointType'],
+        					  $bonusScore: fields['bonusScore'],
+        					  isCompleted() != true,
+        					  $startTime : getStart().getTime())
+        $pc : PointConcept(name == (String) $counter)
+        $pcBonus : PointConcept(name == (String) $bonusPointType)
+        eval(numberOfActivePeriods($pc, (Double) $target, (String) $period, $startTime) >= (Double) $periodTarget)
+        Player($playerId : id)
+        Game( $gameId: id)
+    then
+        
+        utils.log('repetitiveBehaviour COMPLETED');
+        
+        $c.completed();
+        
+        // assign bonus
+		//How are the point bounded to the player???
+		if ($bonusScore instanceof Long) {
+		     $pcBonus.setScore($pcBonus.getScore() + (Long)$bonusScore );
+		} else if ($bonusScore instanceof Integer) {
+		     $pcBonus.setScore($pcBonus.getScore() + (Integer)$bonusScore );
+		} else {
+		   $pcBonus.setScore($pcBonus.getScore() +  (Double)$bonusScore );
+		}
+		
+		update($pcBonus);
+		update($c);
+        
+        //System notification ??
+		/*ChallengeCompletedNotication ccn = new ChallengeCompletedNotication();
+		ccn.setGameId($gameId);
+		ccn.setPlayerId($playerId);
+		ccn.setTimestamp($c.getDateCompleted().getTime());
+		ccn.setChallengeName($c.getName());
+		insert(ccn);*/
+		
+end

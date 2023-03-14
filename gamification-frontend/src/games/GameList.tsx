@@ -7,8 +7,11 @@ import {
     BulkActionsToolbar,
     BulkDeleteButton,
     RecordContextProvider,
-    TextInput,
-    SearchInput
+    useStore,
+    useRemoveFromStore,
+    SearchInput,    
+    useDataProvider,
+    useNotify
 } from 'react-admin';
 import { useRedirect } from 'react-admin';
 import {
@@ -18,8 +21,10 @@ import {
     Button
 } from '@mui/material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Game } from '../types';
+import { useEffect } from 'react';
 
 const GameListContent = () => {
     const {
@@ -43,7 +48,7 @@ const GameListContent = () => {
                     <RecordContextProvider key={Game.id} value={Game}>
                         <ListItem>
                             <ListItemText primary={`${Game.name}`} secondary={`${Game.id}`}></ListItemText>
-                            <SettingButton selectedId={Game.id} />
+                            {/* <SettingButton selectedId={Game.id} /> */}
                             <ManageButton selectedId={Game.id} selectedName={Game.name}></ManageButton>
                         </ListItem>
                     </RecordContextProvider>
@@ -55,8 +60,7 @@ const GameListContent = () => {
 
 const GameListActions = () => (
     <TopToolbar>
-        {/* <SortButton fields={['name', 'id']} /> */}
-        {/* <ExportButton /> */}
+        <ExportGameButton />
         <CreateButton
             variant="contained"
             label="New Game"
@@ -65,7 +69,12 @@ const GameListActions = () => (
     </TopToolbar>
 );
 
-export const GameList = () => {
+export const GameList = () => {    
+    const remove = useRemoveFromStore();
+    useEffect(() => {
+        remove('game.selected');
+        remove('game.name');
+      }, []);
     return (
         <RaList
             actions={<GameListActions />}
@@ -79,9 +88,8 @@ export const GameList = () => {
     )
 };
 
-import { useStore } from 'react-admin';
-
 const ManageButton = (params: any) => {
+    const redirect = useRedirect();
     const [gameId, setGameId] = useStore('game.selected');
     const [gameName, setGameName] = useStore('game.name');
     return (
@@ -89,7 +97,7 @@ const ManageButton = (params: any) => {
             <Button endIcon={<CheckCircleOutlinedIcon />} onClick={() => {
                 setGameId(params.selectedId);
                 setGameName(params.selectedName);
-                console.log(params.selectedId);
+                redirect('/game/' + params.selectedId + '/show');
             }}>
                 Manage
             </Button>
@@ -113,5 +121,52 @@ const SettingButton = (params: any) => {
 }
 
 const GameFilters = [
-    <SearchInput placeholder='Search by game name'source="q" alwaysOn />
+    <SearchInput placeholder='Search by game name' source="q" alwaysOn />
 ];
+
+const ExportGameButton = (params: any) => {
+    const dataProvider = useDataProvider();
+    const notify = useNotify();
+    const exportGames = function () {
+        const req = {
+            path: 'downloadJsonDB', //exportJsonDB
+            // options: { responseType: 'arraybuffer' }
+            // body: JSON.stringify(data),
+        };
+        dataProvider
+            .invoke(req)
+            .then(function (response: any) {
+                var json = JSON.stringify(response);
+                var blob = new Blob([json], { type: 'application/json' });
+                let url = window.URL.createObjectURL(blob);
+                let link = document.createElement('a');
+                link.href = url;
+                link.download = 'data.json';
+                link.click();
+            }).catch(function (error: any) {
+                notify(error.toString())
+            })
+    }
+
+    return (
+        <>
+            <Button
+                sx={{
+                    color: 'white',
+                    backgroundColor: '#1976d2',
+                    boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+                    marginLeft: '16px',
+                    lineHeight: '1.5',
+                    fontWeight: '500',
+                    fontSize: '0.8125rem',
+                    minWidth: '64px',
+                    padding: '4px 10px',
+                    borderRadius: '4px'
+                }}
+                endIcon={<FileDownloadIcon />} onClick={exportGames}
+            >
+                Export Games
+            </Button>
+        </>
+    );
+};

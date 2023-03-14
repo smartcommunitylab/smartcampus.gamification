@@ -1,0 +1,20 @@
+//created on: Oct 24, 2016
+package eu.trentorise.game.model
+import eu.trentorise.game.core.Utility;
+
+//declare any global variables here
+global Utility utils;
+global Double green_Trento_Fiera_registration_points
+
+rule "green leaves for user registration rule"
+lock-on-active
+when
+	Action( $id : id == 'checkin_new_user_Trento_Fiera' ) 
+	$pc : PointConcept(name == "green leaves")
+	$cd: CustomData($reg : this['checkin_new_user_Trento_Fiera'] != true)
+then
+	$pc.setScore($pc.getScore() + green_Trento_Fiera_registration_points);
+	$cd.put('checkin_new_user_Trento_Fiera',true);
+	update($pc);
+	utils.log("green leaves for user registration rule COMPLETED");		
+end

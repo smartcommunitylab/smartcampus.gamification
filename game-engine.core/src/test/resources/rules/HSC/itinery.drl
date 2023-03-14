@@ -75,12 +75,10 @@ when
     Player($playerId : id, team == false)
     Player($teamId : id, team == true, $customData: customData)
 
-    InputData($trackId : data["trackId"],
-          	$walkDistance : data["walkDistance"],
+    InputData($walkDistance : data["walkDistance"],
           	$bikeDistance : data["bikeDistance"],
           	$busDistance : data["busDistance"],
           	$trainDistance : data["trainDistance"],
-
             $carpooling: data["carpoolingDistance"],
             $isDriver: data["driverTrip"],
             $firstPair: data["firstPair"]
@@ -106,6 +104,7 @@ then
     // utils.log($trackId);
     // utils.log($currentPlayers)
     // utils.log($teamId);
+
 
     double score = 0.0;
 

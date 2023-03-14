@@ -87,6 +87,7 @@ when
     )
 
     $greenLeaves : PointConcept( name == "green leaves")
+    $activity : PointConcept( name == "activity", $prev_act : getPeriodCurrentScore("daily") )
 
     $walkKm : PointConcept(name == "Walk_Km")
     $bikeKm : PointConcept(name == "Bike_Km")
@@ -101,6 +102,7 @@ then
     utils.log("&&&&&&&& all modes - update green points");
     utils.log($playerId);
     utils.log($customData);
+
     // utils.log($trackId);
     // utils.log($currentPlayers)
     // utils.log($teamId);
@@ -110,7 +112,7 @@ then
     if($walkDistance != null) {
    	 utils.log("counting Walking Km green points");
    	 double modeDaily = $walkKm.getPeriodCurrentScore("daily");
-   	 double gainedScore = tripScore(modeDaily, (double) $walkDistance, "Walk");
+   	 double gainedScore = tripScore(modeDaily, utils.getDouble($walkDistance), "Walk");
    	 utils.log("daily Km: " + modeDaily);
    	 score += gainedScore;
    	 utils.log("score: " + gainedScore);
@@ -119,7 +121,7 @@ then
     if($bikeDistance != null) {
    	 utils.log("counting bike Km green points");
    	 double modeDaily = $bikeKm.getPeriodCurrentScore("daily");
-   	 double gainedScore = tripScore(modeDaily, (double) $bikeDistance, "Bike");
+   	 double gainedScore = tripScore(modeDaily, utils.getDouble($bikeDistance), "Bike");
    	 utils.log("daily Km: " + modeDaily);
    	 score += gainedScore;
     }
@@ -127,7 +129,7 @@ then
     if($busDistance != null) {
    	 utils.log("counting bus Km green points");
    	 double modeDaily = $busKm.getPeriodCurrentScore("daily");
-   	 double gainedScore = tripScore(modeDaily, (double) $busDistance, "Bus");
+   	 double gainedScore = tripScore(modeDaily, utils.getDouble($busDistance), "Bus");
    	 utils.log("daily Km: " + modeDaily);
    	 score += gainedScore;
     }
@@ -135,13 +137,13 @@ then
     if($trainDistance != null) {
    	 utils.log("counting train Km green points");
    	 double modeDaily = $trainKm.getPeriodCurrentScore("daily");
-   	 double gainedScore = tripScore(modeDaily, (double) $trainDistance, "Train");
+   	 double gainedScore = tripScore(modeDaily, utils.getDouble($trainDistance), "Train");
    	 utils.log("daily Km: " + modeDaily);
    	 score += gainedScore;
     }
 
     //handling of carpooling points
-    if($carpooling != null && (Double) $carpooling >= 1.0) {
+    if($carpooling != null && utils.getDouble($carpooling) >= 1.0) {
    	 utils.log("rule \'all modes - update green points\': counting Carpooling green points");
    	 Double carpoolingDaily = $carpoolingTrips.getPeriodCurrentScore("daily");
    	 if( carpoolingDaily <= 4.0) {
@@ -162,23 +164,27 @@ then
    	 }
     }
 
+    /* get previous daily activity */
+
+
    /* update player score by number of members in team */
 
-       Integer currentPlayers = new Integer($customData.get("currentPlayers").toString());
-       if (currentPlayers < 1)
-            currentPlayers = 1;
+    Integer currentPlayers = new Integer($customData.get("currentPlayers").toString());
+    if (currentPlayers < 1)
+        currentPlayers = 1;
 
     score = score / currentPlayers;
     score = Math.ceil(score);
 
-        utils.log("calcultated score: " + score );
-        if(score > 0.0) {
-       	 $greenLeaves.setScore($greenLeaves.getScore() + score);
-       	 update($greenLeaves);
-       	 utils.log($greenLeaves);
-        } else {
-       	 utils.log("No score to update");
-        }
+    utils.log("calcultated score: " + score );
+    if(score <= 0.0) {
+        utils.log("No score to update");
+        return;
+    }
+
+    $greenLeaves.setScore($greenLeaves.getScore() + score);
+    update($greenLeaves);
+    utils.log($greenLeaves);
 
     UpdateTeams ut = new UpdateTeams();
     ut.addData("part", score);
@@ -186,15 +192,23 @@ then
 
     /* bonus first partecipation */
     String bnm = "bonus_first_partecipation";
+    Boolean $first_partecipation = false;
     if (! $bc.getBadgeEarned().contains(bnm)) {
          $bc.getBadgeEarned().add(bnm);
-        ut.addData("first_partecipation", true);
-    } else {
-        ut.addData("first_partecipation", false);
+         $first_partecipation = true;
     }
+    ut.addData("first_partecipation", $first_partecipation);
+
+    /* activity */
+    Boolean $new_activity = false;
+    if ($prev_act <= 0.0) {
+        $activity.setScore(1.0d);
+        update($activity);
+        $new_activity = true;
+    }
+    ut.addData("new_activity", $new_activity);
 
     insert(ut);
-
 
 end
 
@@ -203,12 +217,14 @@ when
     Transmission (
         $part: data["part"] != null,
         $playerId: data["playerId"] != null,
-        $first_partecipation: data["first_partecipation"] != null
+        $first_partecipation: data["first_partecipation"] != null,
+        $new_activity: data["new_activity"] != null
     )
 
     Game($gameId : id)
     Player($teamId : id, team == true)
     $greenLeaves : PointConcept( name == "green leaves")
+    $activity : PointConcept( name == "activity" )
 
     $bonus: PointConcept( name == "bonus")
 
@@ -220,12 +236,12 @@ then
 
     double score = utils.getDouble($part);
 
-    if(score > 0.0) {
-   	 $greenLeaves.setScore($greenLeaves.getScore() + score);
-   	 update($greenLeaves);
-   	 utils.log($greenLeaves);
+    if (score > 0.0) {
+        $greenLeaves.setScore($greenLeaves.getScore() + score);
+        update($greenLeaves);
+        utils.log($greenLeaves);
     } else {
-   	 utils.log("No score to update");
+        utils.log("No score to update");
     }
 
     if ((Boolean) $first_partecipation) {
@@ -249,4 +265,13 @@ then
         mn.addData("points", part);
         insert(mn);
     }
+
+    if ((Boolean) $new_activity) {
+        $activity.setScore($activity.getScore() + 1.0d);
+        update($activity);
+        utils.log($greenLeaves);
+    }
 end
+
+
+

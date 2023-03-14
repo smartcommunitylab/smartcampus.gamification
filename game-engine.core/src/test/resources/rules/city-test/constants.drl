@@ -1,0 +1,64 @@
+# insert your constants to use in game rules
+# 
+# SAMPLE USAGE 
+# 
+# constants file
+# var_name = var_value
+# 
+#
+# usage in rule
+# global VALUE_TYPE var_name;
+#
+# supported VALUE_TYPE
+# Integer (i.e. var=1)
+# Double  (i.e. var=2.3)
+# String  (i.e. var=park)
+# java.util.ArrayList (i.e var=park,street,bikestation)
+
+
+# GREEN POINTS for special actions
+green_Trento_Fiera_registration_points=100.0
+
+# GREEN POINTS for Walk, Bike, BikeSharing
+green_walk_points=10.0
+green_bike_points=5.0
+zero_impact_booster=0.5
+recommendation_bonus=20.0
+
+#GREEN POINTS for public transport (BOTH bus AND train)
+green_bus_points_base=10.0
+green_bus_points_step0=15.0
+green_bus_points_step1=20.0
+
+bus_threshold_step0=1.0
+bus_threshold_step1=5.0
+
+# GREEN POINTS for each Sardagna TRANSIT trip
+green_transit_points=15.0
+
+# GREEN POINTS for each Boat trip
+green_boat_points=10.0
+
+#GREEN POINTS for each park & ride
+park_and_ride_points=15.0
+
+#GREEN POINTS for carpooling
+driver_first_passenger_bonus=5.0
+driver_other_passenger_bonus=2.0
+passenger_bonus=5.0
+
+#soglie di rilevanza per modo
+walk_min=0.25
+//walk_max=3.5
+//bike_max=7.0
+walk_daily_max=10.0
+bike_daily_max=30.0
+pt_daily_max=8.0
+transit_daily_max=4.0
+carpooling_daily_max=4.0
+boat_daily_max=4.0
+carpooling_min_km=1.0
+boat_min_km=1.0
+
+#P&R locations in Trento
+parkings=Via Asiago\, Stazione FS Villazzano, Ex-Zuffo, Monte Baldo, Via Lidorno, Ghiaie via Fersina, Via Ragazzi del '99, Parcheggio Centro, Municipio

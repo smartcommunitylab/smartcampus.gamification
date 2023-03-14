@@ -1,0 +1,20 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.core.Utility;
+
+global Utility utils;
+
+rule 'ch_multiTarget_check'
+no-loop
+when
+	$challenge : ChallengeConcept( modelName == "multiTarget", $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)
+	$bt: PointConcept(name == "Bike_Trips", $bikeScore: score, getPeriodCurrentScore("daily") >= 1.0)
+	$tt: PointConcept(name == "Train_Trips", $trainScore: score, getPeriodCurrentScore("daily") >= 1.0)
+then
+	utils.log('MultiTarget challenge COMPLETED');
+	$challenge.completed();
+	double newScore = $pc.getScore() + (Double) $bonusScore;
+	modify($pc)  { setScore(newScore); }
+	update($challenge);
+end

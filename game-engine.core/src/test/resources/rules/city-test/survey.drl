@@ -1,0 +1,131 @@
+package eu.trentorise.game.model
+
+//list any import classes here.
+import eu.trentorise.game.core.Utility;
+
+//declare any global variables here
+global Utility utils;
+
+rule 'ch_survey_check'
+when
+	Action(id == 'survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $challengeSurveyType : fields["surveyType"] , $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+        InputData($surveyType: data["surveyType"] != null)
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if($challengeSurveyType.equals($surveyType)){
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+		utils.log($surveyType + ' survey COMPLETED');
+	}
+end
+
+rule 'ch_init_survey_check'
+when
+	Action(id == 'start_survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $surveyType : fields["surveyType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+        utils.log("inside start survey check");
+	if("start".equals($surveyType)){
+		utils.log('Initial survey COMPLETED');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end
+
+rule 'ch_final_survey_check'
+when
+	Action(id == 'end_survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $surveyType : fields["surveyType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if("end".equals($surveyType)){
+		utils.log('Final survey COMPLETED');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end
+
+
+rule 'ch_last_survey_check'
+when
+	Action(id == 'last_survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $surveyType : fields["surveyType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if("last".equals($surveyType)){
+		utils.log('Final survey COMPLETED');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end
+
+rule 'ch_prediction_survey_check'
+when
+	Action(id == 'prediction_survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $surveyType : fields["surveyType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if("prediction".equals($surveyType)){
+		utils.log('Prediction survey COMPLETED');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end
+
+rule 'ch_evaluation_survey_check'
+when
+	Action(id == 'evaluation_survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $surveyType : fields["surveyType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if("evaluation".equals($surveyType)){
+		utils.log('Evaluation survey COMPLETED');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end
+
+rule 'ch_challenge_survey_check'
+when
+	Action(id == 'challenge_survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $surveyType : fields["surveyType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if("challenge".equals($surveyType)){
+		utils.log('Challenge survey COMPLETED');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end
+
+
+rule 'ch_bellaCoincidenza_survey_check'
+when
+	Action(id == 'bellaCoincidenza_survey_complete')
+	$challenge : ChallengeConcept( modelName == "survey", $surveyType : fields["surveyType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if("bellaCoincidenza".equals($surveyType)){
+		utils.log('BellaCoincidenza survey COMPLETED');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end

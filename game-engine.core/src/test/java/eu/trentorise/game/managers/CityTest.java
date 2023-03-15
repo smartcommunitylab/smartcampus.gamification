@@ -69,9 +69,9 @@ public class CityTest {
 			"Bike_Trips", "Walk_Trips", "Walk_Km", "Car_Trips", "Carpooling_Km", "NoCar_Trips", "Bus_Km", POINT_NAME,
 			"Boat_Trips", "Car_Km", "BikeSharing_Trips", "Train_Km", "Recommendations", "Bus_Trips", "Train_Trips",
 			"Bike_Km", "Carpooling_Trips" };
-	private static final String[] BADGES_COLLECTION = new String[] { "park and ride pioneer", "public transport aficionado",
-			"recommendations", "bike sharing pioneer", "green leaves", "festa", "sustainable life", "leaderboard top 3",
-			"bike aficionado" };
+	private static final String[] BADGES_COLLECTION = new String[] { "park and ride pioneer",
+			"public transport aficionado", "recommendations", "bike sharing pioneer", "green leaves", "festa",
+			"sustainable life", "leaderboard top 3", "bike aficionado" };
 
 	@Autowired
 	private GameManager gameManager;
@@ -94,7 +94,12 @@ public class CityTest {
 	}
 
 	@Test
-	public void simpleEnv() throws Exception {
+	public void levelTest() throws Exception {
+		init();
+		scenario1();
+	}
+
+	private void init() throws Exception {
 		// define game
 		Game game = defineGame();
 		gameManager.saveGameDefinition(game);
@@ -120,8 +125,6 @@ public class CityTest {
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/visitPointInterest.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
 
-		scenario1();
-
 	}
 
 	private Game defineGame() {
@@ -141,8 +144,7 @@ public class CityTest {
 		}
 		game.setConcepts(gc);
 		// badges
-		for (String badge: BADGES_COLLECTION)
-		{
+		for (String badge : BADGES_COLLECTION) {
 			gc.add(new BadgeCollectionConcept(badge));
 		}
 		// tasks
@@ -209,45 +211,139 @@ public class CityTest {
 		 * https://docs.google.com/document/d/1njKGeraPiM5ljlhwwOZUn8vVvvjTZDxJy1IC2TdV5sU/edit#
 		 * 
 		 * Assign points step by step (100, 200, .... 100) and check if levels reached
-		 * correctly.
+		 * 
+		 * playerId			 Level				 Points
+		 *  ---------------------------------------------- 
+		 * A				"Green Starter" 		100
+		 * B 				"Green Follower" 		200
+		 * C 				"Green Influencer" 		300
+		 * D 				"Green Soldier" 		400
+		 * E 				"Green Master" 			500
+		 * F 				"Green Ambassador"		600
+		 * G 				"Green Warrior"			700
+		 * H 				"Green Veteran"			800
+		 * I 				"Green Guru"			900
+		 * J 				"Green God" 			1000
 		 */
 
+		// A "Green Starter" 100
 		definePlayerState("A");
-		Map<String, Object> data = new HashMap<>();
-		data.put("walkDistance", 50.0);
-		data.put("trackId", "1");
-		PlayerState p = playerSrv.loadState(GAME, "A", true, false);
-		p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(), DateTime.now().getMillis(), null);
-		p = playerSrv.saveState(p);
-		Assert.assertTrue(p.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Follower"));
+		Map<String, Object> dataA = new HashMap<>();
+		dataA.put("walkDistance", 50.0);
+		dataA.put("trackId", "A");
+		PlayerState psA = playerSrv.loadState(GAME, "A", true, false);
+		psA = engine.execute(GAME, psA, ACTION, dataA, UUID.randomUUID().toString(), DateTime.now().getMillis(), null);
+		psA = playerSrv.saveState(psA);
+		printScore(psA);
+		Assert.assertTrue(psA.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Follower"));
+
+		// B "Green Follower" 200
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("bikeDistance", 40.0);
+		dataB.put("trackId", "B1");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		printScore(psB);
+		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
+
+		//	C "Green Influencer" 300
+		definePlayerState("C");
+		Map<String, Object> dataC = new HashMap<>();
+		dataC.put("bikeDistance", 50.0);
+		dataC.put("trackId", "C1");
+		PlayerState psC = playerSrv.loadState(GAME, "C", true, false);
+		psC = engine.execute(GAME, psC, ACTION, dataC, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		printScore(psC);
+		System.out.println(psC.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psC.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Influencer"));
 		
+		// D "Green Soldier" 400
+		definePlayerState("D");
+		Map<String, Object> dataD = new HashMap<>();
+		dataD.put("bikeDistance", 70.0);
+		dataD.put("trackId", "D1");
+		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psD = playerSrv.saveState(psD);
+		printScore(psD);
+		System.out.println(psD.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
+		
+		// E "Green Master" 500
+		definePlayerState("E");
+		Map<String, Object> dataE = new HashMap<>();
+		dataE.put("bikeDistance", 90.0);
+		dataE.put("trackId", "e1");
+		PlayerState psE = playerSrv.loadState(GAME, "E", true, false);
+		psE = engine.execute(GAME, psE, ACTION, dataE, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psE = playerSrv.saveState(psE);
+		printScore(psE);
+		System.out.println(psE.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psE.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Master"));
+		
+		// F "Green Ambassador"	600
+		definePlayerState("F");
+		Map<String, Object> dataF = new HashMap<>();
+		dataF.put("bikeDistance", 110.0);
+		dataF.put("trackId", "f1");
+		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
+		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psF = playerSrv.saveState(psF);
+		printScore(psF);
+		System.out.println(psF.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psF.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Ambassador"));
+		
+//		 * G "Green Warrior" 700
+		definePlayerState("G");
+		Map<String, Object> dataG = new HashMap<>();
+		dataG.put("bikeDistance", 130.0);
+		dataG.put("trackId", "G1");
+		PlayerState psG = playerSrv.loadState(GAME, "G", true, false);
+		psG = engine.execute(GAME, psG, ACTION, dataG, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psG = playerSrv.saveState(psG);
+		printScore(psG);
+		System.out.println(psG.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psG.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Warrior"));
 
-		// players
-//		definePlayerState("A", 0d, 0d);
-//		definePlayerState("B", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("C", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("D", 0d, new PlayerLevel(LEVEL, 300));
-//		definePlayerState("E", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("F", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("G", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("H", 0d, new PlayerLevel(LEVEL, 100));
-//		definePlayerState("I", 0d, new PlayerLevel(LEVEL, 100));
-//		definePlayerState("J", 0d, new PlayerLevel(LEVEL, 500));
-//		definePlayerState("K", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("L", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("M", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("N", 0d, new PlayerLevel(LEVEL, 100));
-//		definePlayerState("0", 0d, new PlayerLevel(LEVEL, 500));
-//		definePlayerState("P", 0d, new PlayerLevel(LEVEL, 300));
-//		definePlayerState("Q", 0d, new PlayerLevel(LEVEL, 200));
-//		definePlayerState("R", 0d, new PlayerLevel(LEVEL, 100));
-//		definePlayerState("S", 0d, new PlayerLevel(LEVEL, 500));
-//		definePlayerState("T", 0d, new PlayerLevel(LEVEL, 500));
-//		definePlayerState("U", 0d, new PlayerLevel(LEVEL, 100));
-//		definePlayerState("V", 0d, new PlayerLevel(LEVEL, 600));
-//		definePlayerState("W", 0d, new PlayerLevel(LEVEL, 0));
-//		definePlayerState("X", 0d, new PlayerLevel(LEVEL, 0));
+//		H "Green Veteran" 800
+		definePlayerState("H");
+		Map<String, Object> dataH = new HashMap<>();
+		dataH.put("bikeDistance", 140.0);
+		dataH.put("trackId", "H1");
+		PlayerState psH = playerSrv.loadState(GAME, "H", true, false);
+		psH = engine.execute(GAME, psH, ACTION, dataH, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psH = playerSrv.saveState(psH);
+		printScore(psH);
+		System.out.println(psH.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psH.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Veteran"));
 
+
+//		I "Green Guru" 900
+		definePlayerState("I");
+		Map<String, Object> dataI = new HashMap<>();
+		dataI.put("bikeDistance", 150.0);
+		dataI.put("trackId", "I1");
+		PlayerState psI = playerSrv.loadState(GAME, "I", true, false);
+		psI = engine.execute(GAME, psI, ACTION, dataI, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psI = playerSrv.saveState(psI);
+		printScore(psI);
+		System.out.println(psI.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psI.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Guru"));
+
+//		J "Green God" 1000
+		definePlayerState("J");
+		Map<String, Object> dataJ = new HashMap<>();
+		dataJ.put("bikeDistance", 170.0);
+		dataJ.put("trackId", "J1");
+		PlayerState psJ = playerSrv.loadState(GAME, "J", true, false);
+		psJ = engine.execute(GAME, psJ, ACTION, dataJ, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psJ = playerSrv.saveState(psJ);
+		printScore(psJ);
+		System.out.println(psJ.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psJ.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green God"));
+		
 		// SCENARIO 2 <inside ChallengeGenerator>
 
 	}
@@ -261,6 +357,15 @@ public class CityTest {
 		myState.add(pc);
 		player.setState(myState);
 		playerSrv.saveState(player);
+	}
+
+	private void printScore(PlayerState p) {
+		for (GameConcept gc : p.getState()) {
+			if (gc instanceof PointConcept && gc.getName().equals(POINT_NAME)) {
+				System.out.println(((PointConcept) gc).getScore().doubleValue());
+				break;
+			}
+		}
 	}
 
 }

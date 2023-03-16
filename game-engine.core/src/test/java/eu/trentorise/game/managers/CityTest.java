@@ -14,6 +14,7 @@
 
 package eu.trentorise.game.managers;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,12 +34,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
 import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.Level.Config;
 import eu.trentorise.game.model.Level.Threshold;
@@ -84,19 +91,101 @@ public class CityTest {
 
 	@Autowired
 	private GameEngine engine;
-
+	
+	@Autowired
+	private ChallengeManager challengeSrv;
+		
+	ObjectMapper mapper = new ObjectMapper();
+	
 	@Before
 	public void cleanDB() {
 		// clean mongo
 		mongo.dropCollection(StatePersistence.class);
 		mongo.dropCollection(GamePersistence.class);
 		mongo.dropCollection(NotificationPersistence.class);
+		mongo.dropCollection(GroupChallenge.class);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
 	@Test
-	public void levelTest() throws Exception {
+	public void avanzamentoLivelloScenario1() throws Exception {
 		init();
 		scenario1();
+	}
+	
+	@Test
+	public void sfidaMigliorPerformanceScenario3() throws Exception {
+		init();
+		scenario2();
+	}
+	
+	private void scenario2() throws JsonParseException, JsonMappingException, IOException {
+		
+		// L2 Player
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("bikeDistance", 40.0);
+		dataB.put("trackId", "B1");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		printScore(psB);
+		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
+
+		// L4 Player
+		definePlayerState("D");
+		Map<String, Object> dataD = new HashMap<>();
+		dataD.put("bikeDistance", 70.0);
+		dataD.put("trackId", "D1");
+		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psD = playerSrv.saveState(psD);
+		printScore(psD);
+		System.out.println(psD.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
+	
+		String guestId= "B";
+		String proposerId = "D";
+		String challengeName = "p_u_f89ebf548d8c48bcb367a73e0c18fbfa_ff95f02b-bcc3-47fa-839b-b801e2989960";
+		
+		String groupChallenge = ""
+				+ "{"
+				+ "\"gameId\" : \"" + GAME + "\","
+				+ "\"instanceName\" : \"" + challengeName + "\","
+				+ "\"attendees\" : [ "
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ "],"
+				+ "\"challengeModel\" : \"groupCooperative\","
+				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
+				+ "\"challengeTarget\" : 3.0,"
+				+ "\"reward\" : {\"percentage\" : 0.0,\"threshold\" : 0.0,\"bonusScore\" : {\"" + proposerId + "\" : 50.0, \"" + guestId + "\" : 50.0},"
+				+ "\"calculationPointConcept\" : {\"name\" : \"NoCar_Trips\"},"
+				+ "\"targetPointConcept\" : {\"name\" : \"NoCar_Trips\"}},"
+				+ "\"state\" : \"PROPOSED\","
+				+ "\"priority\" : 0"
+				+ "}";
+		
+		// create groupChallenge
+		GroupChallenge assignment = mapper.readValue(groupChallenge, GroupChallenge.class);
+		DateTime startOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(1);
+		DateTime endOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(1);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, guestId, true).size());
+		
+		/* 1. GUEST L2 refused the PROPOSE Group challenge */
+		challengeSrv.refuseInvitation(GAME, guestId, challengeName);
+		Assert.assertEquals(0, challengeSrv.readChallenges(GAME, guestId, true).size());
+
+		/* 2 PROPOSER L4 Cancelled the invitation*/
+		challengeSrv.save(assignment);
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, proposerId, true).size());
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, guestId, true).size());
+		challengeSrv.cancelInvitation(GAME, proposerId, challengeName);
+		Assert.assertEquals(0, challengeSrv.readChallenges(GAME, guestId, true).size());		
+		
 	}
 
 	private void init() throws Exception {
@@ -140,6 +229,7 @@ public class CityTest {
 		for (String s : POINT_CONCEPTS) {
 			PointConcept pt = new PointConcept(s);
 			pt.addPeriod("daily", new Date(), 60000);
+			pt.addPeriod("weekly", new Date(), 60000);
 			gc.add(pt);
 		}
 		game.setConcepts(gc);
@@ -214,16 +304,17 @@ public class CityTest {
 		 * 
 		 * playerId			 Level				 Points
 		 *  ---------------------------------------------- 
-		 * A				"Green Starter" 		100
-		 * B 				"Green Follower" 		200
-		 * C 				"Green Influencer" 		300
-		 * D 				"Green Soldier" 		400
-		 * E 				"Green Master" 			500
-		 * F 				"Green Ambassador"		600
-		 * G 				"Green Warrior"			700
-		 * H 				"Green Veteran"			800
-		 * I 				"Green Guru"			900
-		 * J 				"Green God" 			1000
+		 * A				"Green Starter" 		  0  L0
+		 * B 				"Green Follower" 		100  L1
+		 * C                "Green Lover"           200  L2
+		 * C 				"Green Influencer" 		300  L3
+		 * D 				"Green Soldier" 		400  L4
+		 * E 				"Green Master" 			500  L5
+		 * F 				"Green Ambassador"		600  L6
+		 * G 				"Green Warrior"			700  L7
+		 * H 				"Green Veteran"			800  L8
+		 * I 				"Green Guru"			900  L9
+		 * J 				"Green God" 			1000 L10
 		 */
 
 		// A "Green Starter" 100
@@ -344,7 +435,7 @@ public class CityTest {
 		System.out.println(psJ.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psJ.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green God"));
 		
-		// SCENARIO 2 <inside ChallengeGenerator>
+		// SCENARIO 2 Tipologie di sfida disponibili <inside ChallengeGenerator>
 
 	}
 

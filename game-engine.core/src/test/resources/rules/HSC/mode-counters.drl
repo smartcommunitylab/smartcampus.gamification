@@ -11,10 +11,35 @@ when
 	InputData( $km : data["walkDistance"] != null, $km >= walk_min)
 	$walkTrips : PointConcept(name == "Walk_Trips")
 	$walkKm : PointConcept(name == "Walk_Km")
+	Player($playerId : id, team == false)
 then
     utils.log("apply \'Walk_Trips and Walk_Km update\'");
     $walkTrips.setScore($walkTrips.getScore() + 1.0d);
-    $walkKm.setScore($walkKm.getScore() + (Double) $km);
+    $walkKm.setScore($walkKm.getScore() + utils.getDouble($km));
+    update($walkTrips);
+    update($walkKm);
+    
+    UpdateTeams ut = new UpdateTeams();
+    ut.addData("playerId", $playerId);
+    ut.addData("walkDistance", $km);
+    insert(ut);
+end
+
+rule "update walk counters - team"
+when
+    Transmission (
+        $walkDistance: data["walkDistance"] != null,
+        $playerId: data["playerId"] != null
+    )
+
+    Player($teamId : id, team == true)
+	$walkTrips : PointConcept(name == "Walk_Trips")
+	$walkKm : PointConcept(name == "Walk_Km")
+then
+	utils.log("apply \'Walk_Trips and Walk_Km update - team\'");
+
+    $walkTrips.setScore($walkTrips.getScore() + 1.0d);
+    $walkKm.setScore($walkKm.getScore() + utils.getDouble($walkDistance));
     update($walkTrips);
     update($walkKm);
 end
@@ -28,19 +53,44 @@ when
 	$bikeKm : PointConcept(name == "Bike_Km")
 	$bsTrips : PointConcept(name == "BikeSharing_Trips")
 	$bsKm : PointConcept(name == "BikeSharing_Km")
+	Player($playerId : id, team == false)
 then
     if($bs !=null){
    	 if((boolean) $bs == true) {
    		 utils.log("apply \'BikeSharing_Trips and BikeSharing_Km update\'");
    		 $bsTrips.setScore($bsTrips.getScore() + 1.0d);
-   		 $bsKm.setScore($bsKm.getScore() + (Double) $km);
+   		 $bsKm.setScore($bsKm.getScore() + utils.getDouble($km));
    		 update($bsTrips);
    		 update($bsKm);
    	 }
     }
     utils.log("apply \'Bike_Trips and Bike_Km update\'");
     $bikeTrips.setScore($bikeTrips.getScore() + 1.0d);
-    $bikeKm.setScore($bikeKm.getScore() + (Double) $km);
+    $bikeKm.setScore($bikeKm.getScore() + utils.getDouble($km));
+    update($bikeTrips);
+    update($bikeKm);
+    
+    UpdateTeams ut = new UpdateTeams();
+    ut.addData("playerId", $playerId);
+    ut.addData("bikeDistance", $km);
+    insert(ut);
+end
+
+rule "update bike counters - team"
+when
+    Transmission (
+        $bikeDistance: data["bikeDistance"] != null,
+        $playerId: data["playerId"] != null
+    )
+
+    Player($teamId : id, team == true)
+	$bikeTrips : PointConcept(name == "Bike_Trips")
+	$bikeKm : PointConcept(name == "Bike_Km")
+then
+	utils.log("apply \'bike_Trips and bike_Km update - team\'");
+
+    $bikeTrips.setScore($bikeTrips.getScore() + 1.0d);
+    $bikeKm.setScore($bikeKm.getScore() + utils.getDouble($bikeDistance));
     update($bikeTrips);
     update($bikeKm);
 end
@@ -52,10 +102,35 @@ when
 	InputData( $km : data["busDistance"] != null)
 	$busTrips : PointConcept(name == "Bus_Trips")
 	$busKm : PointConcept(name == "Bus_Km")
+	Player($playerId : id, team == false)
 then
     utils.log("apply \'Bus_Trips and Bus_Km update\'");
     $busTrips.setScore($busTrips.getScore() + 1.0d);
-    $busKm.setScore($busKm.getScore() + (Double) $km);
+    $busKm.setScore($busKm.getScore() + utils.getDouble($km));
+    update($busTrips);
+    update($busKm);
+    
+    UpdateTeams ut = new UpdateTeams();
+    ut.addData("playerId", $playerId);
+    ut.addData("busDistance", $km);
+    insert(ut);
+end
+
+rule "update bus counters - team"
+when
+    Transmission (
+        $busDistance: data["busDistance"] != null,
+        $playerId: data["playerId"] != null
+    )
+
+    Player($teamId : id, team == true)
+	$busTrips : PointConcept(name == "Bus_Trips")
+	$busKm : PointConcept(name == "Bus_Km")
+then
+	utils.log("apply \'Bus_Trips and Bus_Km update - team\'");
+
+    $busTrips.setScore($busTrips.getScore() + 1.0d);
+    $busKm.setScore($busKm.getScore() + utils.getDouble($busDistance));
     update($busTrips);
     update($busKm);
 end
@@ -67,10 +142,35 @@ when
 	InputData( $km : data["trainDistance"] != null)
 	$trainTrips : PointConcept(name == "Train_Trips")
 	$trainKm : PointConcept(name == "Train_Km")
+	Player($playerId : id, team == false)
 then
     utils.log("apply \'Train_Trips and Train_Km update\'");
     $trainTrips.setScore($trainTrips.getScore() + 1.0d);
-    $trainKm.setScore($trainKm.getScore() + (Double) $km);
+    $trainKm.setScore($trainKm.getScore() + utils.getDouble($km));
+    update($trainTrips);
+    update($trainKm);
+
+    UpdateTeams ut = new UpdateTeams();
+    ut.addData("playerId", $playerId);
+    ut.addData("trainDistance", $km);
+    insert(ut);
+end
+
+rule "update train counters - team"
+when
+    Transmission (
+        $trainDistance: data["trainDistance"] != null,
+        $playerId: data["playerId"] != null
+    )
+
+    Player($teamId : id, team == true)
+	$trainTrips : PointConcept(name == "Train_Trips")
+	$trainKm : PointConcept(name == "Train_Km")
+then
+	utils.log("apply \'Train_Trips and Train_Km update - team\'");
+
+    $trainTrips.setScore($trainTrips.getScore() + 1.0d);
+    $trainKm.setScore($trainKm.getScore() + utils.getDouble($trainDistance));
     update($trainTrips);
     update($trainKm);
 end
@@ -84,11 +184,36 @@ when
          	)
 	$carpoolingTrips : PointConcept(name == "Carpooling_Trips")
 	$carpoolingKm : PointConcept(name == "Carpooling_Km")
+	Player($playerId : id, team == false)
 
 then
     utils.log("apply \'Carpooling_Trips and Carpooling_Km update\'");
     $carpoolingTrips.setScore($carpoolingTrips.getScore() + 1.0d);
-    $carpoolingKm.setScore($carpoolingKm.getScore() + (Double) $km);
+    $carpoolingKm.setScore($carpoolingKm.getScore() + utils.getDouble( $km));
+    update($carpoolingTrips);
+    update($carpoolingKm);
+
+    UpdateTeams ut = new UpdateTeams();
+    ut.addData("playerId", $playerId);
+    ut.addData("carpoolingDistance", $km);
+    insert(ut);
+end
+
+rule "update carpooling counters - team"
+when
+    Transmission (
+        $carpoolingDistance: data["carpoolingDistance"] != null,
+        $playerId: data["playerId"] != null
+    )
+
+    Player($teamId : id, team == true)
+	$carpoolingTrips : PointConcept(name == "Carpooling_Trips")
+	$carpoolingKm : PointConcept(name == "Carpooling_Km")
+then
+	utils.log("apply \'Carpooling_Trips and Carpooling_Km update - team\'");
+
+    $carpoolingTrips.setScore($carpoolingTrips.getScore() + 1.0d);
+    $carpoolingKm.setScore($carpoolingKm.getScore() + utils.getDouble($carpoolingDistance));
     update($carpoolingTrips);
     update($carpoolingKm);
 end

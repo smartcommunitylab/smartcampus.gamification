@@ -2,75 +2,17 @@ package eu.trentorise.game.model
 
 import eu.trentorise.game.notification.BadgeNotification;
 import eu.trentorise.game.task.Classification;
-
 import eu.trentorise.game.core.Utility;
 
+//declare any global variables here
 global Utility utils;
 
-/* ***************************************************************************
-GREEN WEEK CLASSIFICATION
-  
-*************************************************************************** */
-rule "week classification badge green"
-	salience -1000
-when
-    Classification( name == 'week classification green', position == 1)
-    Game( $gameId: id)
-    Player( $playerId : id)
-    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'king-week-green')
-then
-	utils.log("apply \'king-week-green badge\'");
-	$bc.getBadgeEarned().add('king-week-green');
-	insert( new BadgeNotification($gameId,$playerId,'king-week-green'));
-	update( $bc );
-end
-
-
-/* ***************************************************************************
-HEALTH WEEK CLASSIFICATION
-  
-*************************************************************************** */
-
-rule "week classification badge health"
-	salience -1000
-when
-    Classification( name == 'week classification health', position == 1)
-    Game( $gameId: id)
-    Player( $playerId : id)
-    $bc : BadgeCollectionConcept(name == "health", badgeEarned not contains 'king-week-health')
-then
-	utils.log("apply \'king-week-health badge\'");
-	$bc.getBadgeEarned().add('king-week-health');
-	insert( new BadgeNotification($gameId,$playerId,'king-week-health'));
-	update( $bc );
-end
-
-
-
-/* ***************************************************************************
-P+R WEEK CLASSIFICATION
-  
-*************************************************************************** */
-
-rule "week classification badge pr"
-	salience -1000
-when
-    Classification( name == 'week classification p+r', position == 1)
-    Game( $gameId: id)
-    Player( $playerId : id)
-    $bc : BadgeCollectionConcept(name == "p+r", badgeEarned not contains 'king-week-pr')
-then
-	utils.log("apply \'king-week-pr badge\'");
-	$bc.getBadgeEarned().add('king-week-pr');
-	insert( new BadgeNotification($gameId,$playerId,'king-week-pr'));
-	update( $bc );
-end
-
 
 /* ***************************************************************************
 GREEN WEEK CLASSIFICATION
-
+  
 *************************************************************************** */
+
 rule "1st of the week"
 no-loop
 	salience -1000
@@ -86,7 +28,7 @@ then
 		$bc.getBadgeEarned().add('1st_of_the_week');
 		update( $bc );
 	}
-	insert( new BadgeNotification($gameId,$playerId,"leaderboard top 3",'1st_of_the_week'));
+	insert( new BadgeNotification($gameId,$playerId,"leaderboard top 3",'1st_of_the_week'));	
 end
 
 rule "2nd of the week"

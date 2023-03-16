@@ -1,0 +1,59 @@
+package eu.trentorise.game.model
+
+//list any import classes here.
+import eu.trentorise.game.core.Utility;
+
+//declare any global variables here
+global Utility utils;
+
+rule 'ch_boat_survey_step'
+no-loop
+when
+	Action(id == 'boat_survey_complete')
+	ChallengeConcept( modelName == "survey", fields["surveyType"] == "boat", isCompleted() != true )
+	$customData : CustomData()	
+then
+	Integer steps = (Integer) $customData.get("boat-challenge-steps");
+	if(steps == null) {
+		steps = 1;
+	} else {
+		steps += 1;
+	}
+ 	utils.log('Completed the boat survey, challenge steps completed ' + steps);
+    modify($customData) { put("boat-challenge-steps", steps); }
+end
+
+rule 'ch_boat_trip_step'
+no-loop
+when
+	Action(id == 'save_itinerary')
+	ChallengeConcept( modelName == "survey", fields["surveyType"] == "boat", isCompleted() != true )	
+	$boatTrips : PointConcept(name == 'Boat_Trips', $score: score)
+	$customData : CustomData()
+then
+    Double trips = $boatTrips.getPeriodCurrentScore("weekly");
+    if( trips >= 1.0) {
+	Integer steps = (Integer) $customData.get("boat-challenge-steps");
+	if(steps == null) {
+		steps = 1;
+	} else {
+		steps += 1;
+	}
+	utils.log('Almost 1 boat trip completed, challenge steps completed ' + steps);
+    modify($customData) { put("boat-challenge-steps", steps); }
+    }
+end
+
+rule 'ch_boat_check'
+no-loop
+when
+	$challenge : ChallengeConcept( modelName == "survey", fields["surveyType"] == 'boat', $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)
+	CustomData(this['boat-challenge-steps'] == 2)
+then
+	utils.log('Boat challenge COMPLETED');
+	$challenge.completed();
+	double newScore = $pc.getScore() + (Double) $bonusScore;
+	modify($pc)  { setScore(newScore); }
+	update($challenge);
+end

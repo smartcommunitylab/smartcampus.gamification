@@ -88,9 +88,10 @@ const MonitorShowContent = () => {
                                     <Datagrid sx={{ '& .RaDatagrid-headerCell': { fontWeight: 600 } }} bulkActionButtons={false}>
                                         <TextField source="name" />
                                         <TextField source="modelName" />
-                                        <TextField source="fields.bonusPointType" />
+                                        {/* <TextField source="fields.bonusPointType" />
                                         <TextField source="fields.bonusScore" />
-                                        <TextField source="fields.counterName" />
+                                        <TextField source="fields.counterName" /> */}
+                                        <TextField source="fields" />
                                         <TextField source="group" />
                                         <DateField source="start" />
                                         <DateField source="dateCompleted" />

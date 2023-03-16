@@ -1,0 +1,57 @@
+package eu.trentorise.game.model
+
+import eu.trentorise.game.notification.BadgeNotification;
+import eu.trentorise.game.task.Classification;
+import eu.trentorise.game.core.Utility;
+
+//declare any global variables here
+global Utility utils;
+
+/* ***************************************************************************
+GREEN FINAL CLASSIFICATION
+  
+*************************************************************************** */
+rule "final classification gold badge green"
+	salience -1000
+when
+	Classification( name == 'final classification green', position == 1)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'gold-medal-green')
+then
+	utils.log("apply \'gold-medal-green badge\'");
+	$bc.getBadgeEarned().add('gold-medal-green');
+	insert( new BadgeNotification($gameId,$playerId, "green leaves", 'gold-medal-green'));
+	insert ( new BadgeUpdate("gold-medal-green", "green leaves"));
+	update( $bc );
+end
+
+rule "final classification silver badge green"
+	salience -1000
+when
+	Classification( name == 'final classification green', position == 2)	
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'silver-medal-green')
+then
+	utils.log("apply \'silver-medal-green badge\'");
+	$bc.getBadgeEarned().add('silver-medal-green');
+	insert( new BadgeNotification($gameId,$playerId,"green leaves",'silver-medal-green'));
+	insert ( new BadgeUpdate("silver-medal-green", "green leaves"));
+	update( $bc );
+end
+
+rule "final classification bronze badge green"
+	salience -1000
+when
+	Classification( name == 'final classification green', position == 3)
+    Game( $gameId: id)
+    Player( $playerId : id)
+    $bc : BadgeCollectionConcept(name == "green leaves", badgeEarned not contains 'bronze-medal-green')
+then
+	utils.log("apply \'bronze-medal-green badge\'");
+	$bc.getBadgeEarned().add('bronze-medal-green');
+	insert( new BadgeNotification($gameId,$playerId,"green leaves",'bronze-medal-green'));
+	insert ( new BadgeUpdate("bronze-medal-green", "green leaves"));
+	update( $bc );
+end

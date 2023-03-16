@@ -1,0 +1,66 @@
+package eu.trentorise.game.model;
+import eu.trentorise.game.core.Utility;
+global Utility utils;
+
+rule "ch_total_members"
+    salience -3000
+when
+    $challenge : ChallengeConcept(
+        modelName == "totalMembers",
+        $target: fields["target"] != null,
+        $bonusPointType : fields["bonusPointType"],
+        $bonusScore : fields["bonusScore"],
+        isCompleted() != true
+    )
+    Player($teamId : id, team == true, $totalMembers: totalMembers >= utils.getInteger($target))
+    $pc : PointConcept(name == (String) $bonusPointType)
+then
+
+    utils.log("totalMembers COMPLETED");
+    utils.log($teamId);
+    $challenge.completed();
+    $pc.setScore($pc.getScore() + utils.getDouble($bonusScore));
+    update($pc);
+    update($challenge);
+end
+
+
+rule "ch_percentageIncrement_check"
+    salience -2000
+when
+    $challenge : ChallengeConcept(
+        modelName == "percentageIncrement",
+        $counter: fields["counterName"],
+        $target: fields["target"],
+        $periodName: fields["periodName"] ,
+        $bonusPointType : fields["bonusPointType"],
+        $bonusScore : fields["bonusScore"],
+        isCompleted() != true
+       )
+
+    $pc1 : PointConcept(name == (String) $counter, $score: score, getPeriodCurrentScore((String)$periodName) >= $target)
+
+    $pc : PointConcept(name == (String) $bonusPointType)
+then
+
+    utils.log("percentageIncrement COMPLETED");
+    $challenge.completed();
+    $pc.setScore($pc.getScore() + utils.getDouble($bonusScore));
+    update($pc);
+    update($challenge);
+end
+
+rule "ch_absoluteIncrement_check"
+    salience -2000
+when
+    $challenge : ChallengeConcept( modelName == "absoluteIncrement", $counter: fields["counterName"], $target: fields["target"], $periodName: fields["periodName"] , $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )
+    $pc1 : PointConcept(name == (String) $counter, $score : score, getPeriodCurrentScore((String)$periodName) >= $target)
+    $pc : PointConcept(name == (String) $bonusPointType)
+then
+    utils.log("absoluteIncrement COMPLETED");
+
+    $challenge.completed();
+    $pc.setScore($pc.getScore() + utils.getDouble($bonusScore));
+    update($pc);
+    update($challenge);
+end

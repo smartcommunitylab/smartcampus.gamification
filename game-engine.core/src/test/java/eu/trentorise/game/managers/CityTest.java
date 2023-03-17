@@ -158,7 +158,7 @@ public class CityTest {
 		System.out.println(psD.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
 		
-		// D L4 Player
+		// S L4 Player
 		definePlayerState("S");
 		Map<String, Object> dataS = new HashMap<>();
 		dataS.put("bikeDistance", 70.0);
@@ -183,11 +183,9 @@ public class CityTest {
 		Assert.assertTrue(psE.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Master"));
 		
 		// initial challengers list for D(L4) [F, B, S, E]
-		Assert.assertEquals(4, playerSrv.readSystemPlayerState(GAME, "D", POINT_NAME).size());
+		Assert.assertEquals(4, playerSrv.readSystemPlayerState(GAME, "D", POINT_NAME).size());		
 		
-		
-		// F(L6) invite to B(L2), D(L4) invite to B(L2), S(L4) invite to B(L2)
-		
+		// F(L6) invite to B(L2), D(L4) invite to B(L2), S(L4) invite to B(L2)		
 		String guestId= "B";
 		String proposerId = "F";
 		String challengeName = "p_u_f89ebf548d8c48bcb367a73e0c18fbfa_ff95f02b-bcc3-47fa-839b-b801e2989960_FB";

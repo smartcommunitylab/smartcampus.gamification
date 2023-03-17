@@ -116,8 +116,174 @@ public class CityTest {
 	@Test
 	public void sfidaMigliorPerformanceScenario3() throws Exception {
 		init();
-		scenario2();
+		scenario2();		
 	}
+	
+	@Test
+	public void Scenario3InvitiMultipliAllaStessaersona() throws Exception {
+		init();
+		
+		// L6 Player
+		definePlayerState("F");
+		Map<String, Object> dataF = new HashMap<>();
+		dataF.put("bikeDistance", 110.0);
+		dataF.put("trackId", "f1");
+		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
+		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psF = playerSrv.saveState(psF);
+		printScore(psF);
+		System.out.println(psF.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psF.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Ambassador"));
+		
+		// L2 Player
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("bikeDistance", 40.0);
+		dataB.put("trackId", "B1");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		printScore(psB);
+		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
+		
+		// D L4 Player
+		definePlayerState("D");
+		Map<String, Object> dataD = new HashMap<>();
+		dataD.put("bikeDistance", 70.0);
+		dataD.put("trackId", "D1");
+		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psD = playerSrv.saveState(psD);
+		printScore(psD);
+		System.out.println(psD.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
+		
+		// D L4 Player
+		definePlayerState("S");
+		Map<String, Object> dataS = new HashMap<>();
+		dataS.put("bikeDistance", 70.0);
+		dataS.put("trackId", "D1");
+		PlayerState psS = playerSrv.loadState(GAME, "S", true, false);
+		psS = engine.execute(GAME, psS, ACTION, dataS, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psS = playerSrv.saveState(psS);
+		printScore(psS);
+		System.out.println(psS.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psS.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
+			
+		// E L5 Player
+		definePlayerState("E");
+		Map<String, Object> dataE = new HashMap<>();
+		dataE.put("bikeDistance", 90.0);
+		dataE.put("trackId", "e1");
+		PlayerState psE = playerSrv.loadState(GAME, "E", true, false);
+		psE = engine.execute(GAME, psE, ACTION, dataE, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psE = playerSrv.saveState(psE);
+		printScore(psE);
+		System.out.println(psE.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psE.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Master"));
+		
+		// initial challengers list for D(L4) [F, B, S, E]
+		Assert.assertEquals(4, playerSrv.readSystemPlayerState(GAME, "D", POINT_NAME).size());
+		
+		
+		// F(L6) invite to B(L2), D(L4) invite to B(L2), S(L4) invite to B(L2)
+		
+		String guestId= "B";
+		String proposerId = "F";
+		String challengeName = "p_u_f89ebf548d8c48bcb367a73e0c18fbfa_ff95f02b-bcc3-47fa-839b-b801e2989960_FB";
+		
+		String groupChallenge = ""
+				+ "{"
+				+ "\"gameId\" : \"" + GAME + "\","
+				+ "\"instanceName\" : \"" + challengeName + "\","
+				+ "\"attendees\" : [ "
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ "],"
+				+ "\"challengeModel\" : \"groupCooperative\","
+				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
+				+ "\"challengeTarget\" : 3.0,"
+				+ "\"reward\" : {\"percentage\" : 0.0,\"threshold\" : 0.0,\"bonusScore\" : {\"" + proposerId + "\" : 50.0, \"" + guestId + "\" : 50.0},"
+				+ "\"calculationPointConcept\" : {\"name\" : \"NoCar_Trips\"},"
+				+ "\"targetPointConcept\" : {\"name\" : \"NoCar_Trips\"}},"
+				+ "\"state\" : \"PROPOSED\","
+				+ "\"priority\" : 0"
+				+ "}";
+		
+		// create groupChallenge
+		GroupChallenge assignment = mapper.readValue(groupChallenge, GroupChallenge.class);
+		DateTime startOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(1);
+		DateTime endOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(1);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, guestId, true).size());
+		
+		proposerId = "D";
+		challengeName = "p_u_f89ebf548d8c48bcb367a73e0c18fbfa_ff95f02b-bcc3-47fa-839b-b801e2989960_DB";
+		
+		groupChallenge = ""
+				+ "{"
+				+ "\"gameId\" : \"" + GAME + "\","
+				+ "\"instanceName\" : \"" + challengeName + "\","
+				+ "\"attendees\" : [ "
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ "],"
+				+ "\"challengeModel\" : \"groupCooperative\","
+				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
+				+ "\"challengeTarget\" : 3.0,"
+				+ "\"reward\" : {\"percentage\" : 0.0,\"threshold\" : 0.0,\"bonusScore\" : {\"" + proposerId + "\" : 50.0, \"" + guestId + "\" : 50.0},"
+				+ "\"calculationPointConcept\" : {\"name\" : \"NoCar_Trips\"},"
+				+ "\"targetPointConcept\" : {\"name\" : \"NoCar_Trips\"}},"
+				+ "\"state\" : \"PROPOSED\","
+				+ "\"priority\" : 0"
+				+ "}";
+		
+		// create groupChallenge
+		assignment = mapper.readValue(groupChallenge, GroupChallenge.class);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		Assert.assertEquals(2, challengeSrv.readChallenges(GAME, guestId, true).size());
+		
+		proposerId = "S";
+		challengeName = "p_u_f89ebf548d8c48bcb367a73e0c18fbfa_ff95f02b-bcc3-47fa-839b-b801e2989960_SB";
+		
+		groupChallenge = ""
+				+ "{"
+				+ "\"gameId\" : \"" + GAME + "\","
+				+ "\"instanceName\" : \"" + challengeName + "\","
+				+ "\"attendees\" : [ "
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ "],"
+				+ "\"challengeModel\" : \"groupCooperative\","
+				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
+				+ "\"challengeTarget\" : 3.0,"
+				+ "\"reward\" : {\"percentage\" : 0.0,\"threshold\" : 0.0,\"bonusScore\" : {\"" + proposerId + "\" : 50.0, \"" + guestId + "\" : 50.0},"
+				+ "\"calculationPointConcept\" : {\"name\" : \"NoCar_Trips\"},"
+				+ "\"targetPointConcept\" : {\"name\" : \"NoCar_Trips\"}},"
+				+ "\"state\" : \"PROPOSED\","
+				+ "\"priority\" : 0"
+				+ "}";
+		
+		// create groupChallenge
+		assignment = mapper.readValue(groupChallenge, GroupChallenge.class);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		Assert.assertEquals(3, challengeSrv.readChallenges(GAME, guestId, true).size());
+		
+		// challengers list for D(L4) [F, S, E]
+		Assert.assertEquals(3, playerSrv.readSystemPlayerState(GAME, "D", POINT_NAME).size());
+		// B accept challenge from S(L4)
+		challengeSrv.acceptInvitation(GAME, "B", challengeName);
+		// challengers list for D(L4) [F, E]
+		Assert.assertEquals(2, playerSrv.readSystemPlayerState(GAME, "D", POINT_NAME).size());
+		
+	}
+	
 	
 	private void scenario2() throws JsonParseException, JsonMappingException, IOException {
 		

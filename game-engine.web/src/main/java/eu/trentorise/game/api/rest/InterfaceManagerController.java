@@ -81,6 +81,8 @@ import eu.trentorise.game.model.core.TimeInterval;
 import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.repo.ChallengeConceptPersistence;
 import eu.trentorise.game.repo.ChallengeConceptRepo;
+import eu.trentorise.game.repo.PlayerRepo;
+import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.service.IdentityLookupService;
 import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
@@ -105,6 +107,9 @@ public class InterfaceManagerController {
 
 	@Autowired
 	private ChallengeConceptRepo challengeConceptRepo;
+	
+	@Autowired
+	private PlayerRepo playerRepo;
 
 	@Autowired
 	private TaskService taskSrv;
@@ -868,14 +873,25 @@ public class InterfaceManagerController {
 	}
 
 	@GetMapping(value = "/monitor/{gameId}")
-	public GetListResponse readPlayerStates(@PathVariable String gameId, Pageable pageable) {
+	public GetListResponse readPlayerStates(@PathVariable String gameId, Pageable pageable,
+			@RequestParam(required = false) String filter) {
 		gameId = decodePathVariable(gameId);
-		Page<PlayerState> playerStates = playerSrv.loadStates(gameId, pageable, true, false);
 		List<PlayerStateDTO> monitors = new ArrayList<PlayerStateDTO>();
-		for (PlayerState ps : playerStates) {
-			PlayerStateDTO temp = converter.convertPlayerState(ps);
-			temp.setId(ps.getPlayerId());
-			monitors.add(temp);
+		if (filter != null && !filter.isEmpty()) {
+			StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId, filter);
+			if (state != null) {
+				PlayerState ps = playerSrv.loadState(gameId, filter, true, true, false);
+				PlayerStateDTO temp = converter.convertPlayerState(ps);
+				temp.setId(ps.getPlayerId());
+				monitors.add(temp);
+			}
+		} else {
+			Page<PlayerState> playerStates = playerSrv.loadStates(gameId, pageable, true, false);
+			for (PlayerState ps : playerStates) {
+				PlayerStateDTO temp = converter.convertPlayerState(ps);
+				temp.setId(ps.getPlayerId());
+				monitors.add(temp);
+			}
 		}
 		return monitors == null ? null : new GetListResponse(monitors.size(), monitors);
 	}

@@ -1115,6 +1115,30 @@ public class DBPlayerManager implements PlayerService {
 
 		return res;
 	}
+
+	@Override
+	public List<String> getPlayerIdsWithProposedChallenges(String gameId) {
+		HashSet<String> playerIdsSet = new HashSet<String>();
+		Date now = new Date();
+		// single challenges
+		HashSet<String> scplayerIdsSet = new HashSet<String>();
+		List<ChallengeConceptPersistence> listSC = challengeConceptRepo.getProposedChallengePlayerIds(gameId, now, ChallengeConcept.ChallengeState.PROPOSED.name());
+		for (ChallengeConceptPersistence sc: listSC) {
+			scplayerIdsSet.add(sc.getPlayerId());
+		}
+	   //group challenges
+		HashSet<String> gcplayerIdsSet = new HashSet<String>();
+		List<GroupChallenge> listGC = groupChallengeRepo.getProposedChallengePlayerIds(gameId, now, ChallengeConcept.ChallengeState.PROPOSED.name());
+		for (GroupChallenge gc: listGC) {
+			for (Attendee att: gc.getAttendees()) {
+				gcplayerIdsSet.add(att.getPlayerId());
+			}
+		}
+		playerIdsSet.addAll(scplayerIdsSet);
+		playerIdsSet.addAll(gcplayerIdsSet);
+		ArrayList<String> playerIds = new ArrayList<>(playerIdsSet);
+		return playerIds;
+	}
 	
 	
 }

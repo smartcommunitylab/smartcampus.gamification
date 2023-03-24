@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,6 +94,9 @@ public class CityTest {
 	@Autowired
 	private GameEngine engine;
 	
+    @Autowired
+    private GameWorkflow workflow;
+    
 	@Autowired
 	private ChallengeManager challengeSrv;
 		
@@ -124,7 +126,7 @@ public class CityTest {
 	}
 	
 	@Test
-	public void Scenario3InvitiMultipliAllaStessaPersona() throws Exception {
+	public void scenario3InvitiMultipliAllaStessaPersona() throws Exception {
 		init();
 		
 		// L6 Player
@@ -285,8 +287,7 @@ public class CityTest {
 		Assert.assertEquals(2, playerSrv.readSystemPlayerState(GAME, "D", POINT_NAME).size());
 		
 	}
-	
-	
+		
 	@Test
 	public void apiGetPlayerIdsWithProposedChallenges() throws Exception {
 		init();
@@ -460,6 +461,84 @@ public class CityTest {
 		
 		Assert.assertEquals(1, playerSrv.getPlayerIdsWithProposedChallenges(GAME).size());
 		
+	}
+	
+	@Test
+	public void groupCompetitiveTime() throws Exception {
+		init();
+	
+		// L6 Player
+		definePlayerState("F");
+		Map<String, Object> dataF = new HashMap<>();
+		dataF.put("bikeDistance", 110.0);
+		dataF.put("trackId", "f1");
+		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
+		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psF = playerSrv.saveState(psF);
+		Double scoreBeforeF = printScore(psF);
+		System.out.println(psF.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psF.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Ambassador"));
+		
+		// L2 Player
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("bikeDistance", 40.0);
+		dataB.put("trackId", "B1");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		Double scoreBeforeB = printScore(psB);
+		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
+				
+		String groupCompetitiveTimeChallenge = "{"
+				+ "\"gameId\" : \"" + GAME + "\","
+				+ "\"instanceName\" : \"p_rs_27e9c8ca-18d1-43b2-8962-e248ee000530\","
+				+ "\"attendees\" : [ "
+					+ "{"
+						+ "\"playerId\" : \"" + "F" + "\","
+						+ "\"role\" : \"GUEST\","
+						+ "\"isWinner\" : false,"
+						+ "\"challengeScore\" : 0.0"
+					 + "},"
+					 + "{"
+					 	+ "\"playerId\" : \"" + "B" + "\","
+					 	+ "\"role\" : \"GUEST\","
+					 	+ "\"isWinner\" : false,"
+					 	+ "\"challengeScore\" : 0.0}"
+				+ "],"
+				+ "\"challengeModel\" : \"groupCompetitiveTime\","
+				+ "\"challengePointConcept\" : {\"name\" : \"Bike_Km\",\"period\" : \"weekly\"},"
+				+ "\"challengeTarget\" : 1.0,"
+				+ "\"reward\" : {"
+						+ "\"percentage\" : 0.0,\"threshold\" : 0.0,\"bonusScore\" : {\"" + "F" + "\" : 140.0,\"" + "B" + "\" : 140.0},"
+						+ "\"calculationPointConcept\" : {\"name\" : \"green leaves\",\"period\" : \"weekly\"},"
+						+ "\"targetPointConcept\" : {\"name\" : \"green leaves\"}"
+					+ "},"
+				+ "\"state\" : \"ASSIGNED\","
+				+ "\"origin\" : \"gca\","
+				+ "\"priority\" : 0"			
+			+ "}";
+		
+		// create groupChallenge
+		GroupChallenge assignment = mapper.readValue(groupCompetitiveTimeChallenge, GroupChallenge.class);
+		DateTime startOfWeek = DateTime.now().weekOfWeekyear().getDateTime().minusDays(2);
+		DateTime endOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(4);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, "B", true).size());
+		dataB.put("bikeDistance", 1.0);
+		dataB.put("trackId", "B1");
+		workflow.apply(GAME, ACTION, "B", dataB, null);
+	    psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = playerSrv.saveState(psB);
+		Double scoreAfterB = printScore(psB);
+		//daily Km: 1.0
+		//city-test - calculated score: 6.0
+		Double scoreAfterF = printScore(psF);
+		Assert.assertEquals(140, ((int) (scoreAfterB-scoreBeforeB-6)));
+		// other player score unchanged
+		Assert.assertEquals((int) (scoreBeforeF-0), (int) (scoreAfterF-0));
 	}
 	
 	private void scenario2() throws JsonParseException, JsonMappingException, IOException {
@@ -793,13 +872,14 @@ public class CityTest {
 		playerSrv.saveState(player);
 	}
 
-	private void printScore(PlayerState p) {
+	private double printScore(PlayerState p) {
 		for (GameConcept gc : p.getState()) {
 			if (gc instanceof PointConcept && gc.getName().equals(POINT_NAME)) {
 				System.out.println(((PointConcept) gc).getScore().doubleValue());
-				break;
+				return (((PointConcept) gc).getScore().doubleValue());				
 			}
 		}
+		return 0;
 	}
 
 }

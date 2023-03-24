@@ -201,8 +201,8 @@ public class CityTest {
 				+ "\"gameId\" : \"" + GAME + "\","
 				+ "\"instanceName\" : \"" + challengeName + "\","
 				+ "\"attendees\" : [ "
-				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
-				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\"},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\"}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
@@ -231,8 +231,8 @@ public class CityTest {
 				+ "\"gameId\" : \"" + GAME + "\","
 				+ "\"instanceName\" : \"" + challengeName + "\","
 				+ "\"attendees\" : [ "
-				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
-				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\"},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\"}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
@@ -259,8 +259,8 @@ public class CityTest {
 				+ "\"gameId\" : \"" + GAME + "\","
 				+ "\"instanceName\" : \"" + challengeName + "\","
 				+ "\"attendees\" : [ "
-				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
-				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\"},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\"}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
@@ -364,8 +364,8 @@ public class CityTest {
 				+ "\"gameId\" : \"" + GAME + "\","
 				+ "\"instanceName\" : \"" + challengeName + "\","
 				+ "\"attendees\" : [ "
-				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
-				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\"},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\"}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
@@ -394,8 +394,8 @@ public class CityTest {
 				+ "\"gameId\" : \"" + GAME + "\","
 				+ "\"instanceName\" : \"" + challengeName + "\","
 				+ "\"attendees\" : [ "
-				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
-				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\"},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\"}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
@@ -422,8 +422,8 @@ public class CityTest {
 				+ "\"gameId\" : \"" + GAME + "\","
 				+ "\"instanceName\" : \"" + challengeName + "\","
 				+ "\"attendees\" : [ "
-				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
-				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\"},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\"}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
@@ -490,21 +490,19 @@ public class CityTest {
 		Double scoreBeforeB = printScore(psB);
 		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
 				
+		String instanceName = "p_rs_27e9c8ca-18d1-43b2-8962-e248ee000530";
 		String groupCompetitiveTimeChallenge = "{"
 				+ "\"gameId\" : \"" + GAME + "\","
-				+ "\"instanceName\" : \"p_rs_27e9c8ca-18d1-43b2-8962-e248ee000530\","
+				+ "\"instanceName\" : \"" + instanceName + "\","
 				+ "\"attendees\" : [ "
 					+ "{"
 						+ "\"playerId\" : \"" + "F" + "\","
-						+ "\"role\" : \"GUEST\","
-						+ "\"isWinner\" : false,"
-						+ "\"challengeScore\" : 0.0"
+						+ "\"role\" : \"GUEST\""
 					 + "},"
 					 + "{"
 					 	+ "\"playerId\" : \"" + "B" + "\","
-					 	+ "\"role\" : \"GUEST\","
-					 	+ "\"isWinner\" : false,"
-					 	+ "\"challengeScore\" : 0.0}"
+					 	+ "\"role\" : \"GUEST\""
+					 + "}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCompetitiveTime\","
 				+ "\"challengePointConcept\" : {\"name\" : \"Bike_Km\",\"period\" : \"weekly\"},"
@@ -570,13 +568,12 @@ public class CityTest {
 		String proposerId = "D";
 		String challengeName = "p_u_f89ebf548d8c48bcb367a73e0c18fbfa_ff95f02b-bcc3-47fa-839b-b801e2989960";
 		
-		String groupChallenge = ""
-				+ "{"
+		String groupChallenge = "{"
 				+ "\"gameId\" : \"" + GAME + "\","
 				+ "\"instanceName\" : \"" + challengeName + "\","
 				+ "\"attendees\" : [ "
-				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\",\"isWinner\" : false,\"challengeScore\" : 0.0},"
-				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\", \"isWinner\" : false,\"challengeScore\" : 0.0}"
+				+ 	"{\"playerId\" : \"" + guestId + "\", \"role\" : \"GUEST\"},"
+				+ 	"{\"playerId\" : \"" + proposerId + "\", \"role\" : \"PROPOSER\"}"
 				+ "],"
 				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\" : {\"name\" : \"NoCar_Trips\",\"period\" : \"weekly\"},"
@@ -607,6 +604,67 @@ public class CityTest {
 		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, guestId, true).size());
 		challengeSrv.cancelInvitation(GAME, proposerId, challengeName);
 		Assert.assertEquals(0, challengeSrv.readChallenges(GAME, guestId, true).size());		
+		
+	}
+	
+	@Test
+	public void groupCooperativeDifferentCounters() throws Exception {
+		
+		
+		String groupCoopChgGreenLeaves = "{"
+				+ "\"gameId\": \"" + GAME + "\","
+				+ "\"attendees\": ["
+				+ "{\"playerId\": \"u_5eae76b8-2828-4932-a821-a16a4811a9c7\", \"role\": \"GUEST\"},"
+				+ "{\"playerId\": \"u_84d11a2769e1479cb43c23da416e29e7\", \"role\": \"PROPOSER\"}" + "],"
+				+ "\"state\":\"ASSIGNED\","
+				+ "\"challengePointConcept\": {\"name\":\"green leaves\", \"period\": \"weekly\"},"
+				+ "\"challengeTarget\": 50," + "\"challengeModelName\": \"groupCooperative\","
+				+ "\"start\": 1678662000000," + "\"end\": 1679353140000,"
+				+ "\"reward\": {"
+				+ 		"\"bonusScore\" : {\"u_5eae76b8-2828-4932-a821-a16a4811a9c7\": 10.0, \"u_d995fe2ae909486399d89861aef2f450\":10.0},"
+				+ 		"\"targetPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"green leaves\"},"
+				+		"\"calculationPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"NoCar_Trips\"}"
+				+ 	"}"
+				+ "}";		
+
+		
+	   String groupCoopChgWalkKM = "{"
+	   		+ "\"gameId\": \"" + GAME + "\","
+	   		+ "\"attendees\": ["
+	   		+ 	"{\"playerId\": \"u_affaea06d6014e7cb58f411817a5a82b\", \"role\": \"GUEST\"},"
+	   		+	"{\"playerId\": \"u_e15f28792c574f318ae808790974e43b\", \"role\": \"PROPOSER\"}"
+	   		+ "],"
+	   		+ "\"state\":\"ASSIGNED\","
+	   		+ "\"challengePointConcept\": {\"name\":\"Walk_Km\", \"period\": \"weekly\"},"
+	   		+ "\"challengeTarget\": 50,"
+	   		+ "\"challengeModelName\": \"groupCooperative\","
+	   		+ "\"start\": 1678662000000,"
+	   		+ "\"end\": 1679353140000,"
+	   		+ "\"reward\": {"
+	   		+ 		"\"bonusScore\" : {\"u_affaea06d6014e7cb58f411817a5a82b\": 10.0, \"u_e15f28792c574f318ae808790974e43b\":5.0},"
+	   		+ 		"\"targetPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Walk_Km\"},"
+	   		+ 		"\"calculationPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Walk_Km\"}"
+	   		+ 	"}"
+	   		+ "}";
+	   
+	   String groupCoopChgBikeKm = "{"
+	   		+ "\"gameId\": \"" + GAME + "\","
+	   		+ "\"attendees\": ["
+	   		+ 	"{\"playerId\": \"u_d995fe2ae909486399d89861aef2f450\", \"role\": \"GUEST\"},"
+	   		+ 	"{\"playerId\": \"u_f89ebf548d8c48bcb367a73e0c18fbfa\", \"role\": \"PROPOSER\"}"
+	   		+ "],"
+	   		+ "\"state\":\"ASSIGNED\","
+	   		+ "\"challengePointConcept\": {\"name\":\"Bike_Km\", \"period\": \"weekly\"},"
+	   		+ "\"challengeTarget\": 50,"
+	   		+ "\"challengeModelName\": \"groupCooperative\","
+	   		+ "\"start\": 1678662000000,"
+	   		+ "\"end\": 1679353140000,"
+	   		+ "\"reward\": {"
+	   		+ 	"\"bonusScore\" : {\"u_f89ebf548d8c48bcb367a73e0c18fbfa\": 10.0, \"u_d995fe2ae909486399d89861aef2f450\":10.0},"
+	   		+ 	"\"targetPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Bike_Km\"},"
+	   		+ 	"\"calculationPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Bike_Km\"}"
+	   		+ 	"}"
+	   		+ "}";
 		
 	}
 

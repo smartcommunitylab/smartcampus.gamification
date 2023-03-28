@@ -137,7 +137,7 @@ public class CityTest {
 		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
 		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psF = playerSrv.saveState(psF);
-		printScore(psF);
+		printScore(psF, POINT_NAME);
 		System.out.println(psF.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psF.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Ambassador"));
 		
@@ -149,7 +149,7 @@ public class CityTest {
 		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
 		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psB = playerSrv.saveState(psB);
-		printScore(psB);
+		printScore(psB, POINT_NAME);
 		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
 		
 		// D L4 Player
@@ -160,7 +160,7 @@ public class CityTest {
 		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
 		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psD = playerSrv.saveState(psD);
-		printScore(psD);
+		printScore(psD, POINT_NAME);
 		System.out.println(psD.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
 		
@@ -172,7 +172,7 @@ public class CityTest {
 		PlayerState psS = playerSrv.loadState(GAME, "S", true, false);
 		psS = engine.execute(GAME, psS, ACTION, dataS, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psS = playerSrv.saveState(psS);
-		printScore(psS);
+		printScore(psS, POINT_NAME);
 		System.out.println(psS.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psS.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
 			
@@ -184,7 +184,7 @@ public class CityTest {
 		PlayerState psE = playerSrv.loadState(GAME, "E", true, false);
 		psE = engine.execute(GAME, psE, ACTION, dataE, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psE = playerSrv.saveState(psE);
-		printScore(psE);
+		printScore(psE, POINT_NAME);
 		System.out.println(psE.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psE.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Master"));
 		
@@ -300,7 +300,7 @@ public class CityTest {
 		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
 		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psF = playerSrv.saveState(psF);
-		printScore(psF);
+		printScore(psF, POINT_NAME);
 		System.out.println(psF.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psF.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Ambassador"));
 		
@@ -312,7 +312,7 @@ public class CityTest {
 		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
 		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psB = playerSrv.saveState(psB);
-		printScore(psB);
+		printScore(psB, POINT_NAME);
 		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
 		
 		// D L4 Player
@@ -323,7 +323,7 @@ public class CityTest {
 		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
 		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psD = playerSrv.saveState(psD);
-		printScore(psD);
+		printScore(psD, POINT_NAME);
 		System.out.println(psD.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
 		
@@ -335,7 +335,7 @@ public class CityTest {
 		PlayerState psS = playerSrv.loadState(GAME, "S", true, false);
 		psS = engine.execute(GAME, psS, ACTION, dataS, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psS = playerSrv.saveState(psS);
-		printScore(psS);
+		printScore(psS, POINT_NAME);
 		System.out.println(psS.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psS.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
 			
@@ -347,7 +347,7 @@ public class CityTest {
 		PlayerState psE = playerSrv.loadState(GAME, "E", true, false);
 		psE = engine.execute(GAME, psE, ACTION, dataE, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psE = playerSrv.saveState(psE);
-		printScore(psE);
+		printScore(psE, POINT_NAME);
 		System.out.println(psE.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psE.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Master"));
 		
@@ -475,7 +475,7 @@ public class CityTest {
 		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
 		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psF = playerSrv.saveState(psF);
-		Double scoreBeforeF = printScore(psF);
+		Double scoreBeforeF = printScore(psF, POINT_NAME);
 		System.out.println(psF.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psF.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Ambassador"));
 		
@@ -487,7 +487,7 @@ public class CityTest {
 		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
 		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psB = playerSrv.saveState(psB);
-		Double scoreBeforeB = printScore(psB);
+		Double scoreBeforeB = printScore(psB, POINT_NAME);
 		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
 				
 		String instanceName = "p_rs_27e9c8ca-18d1-43b2-8962-e248ee000530";
@@ -530,10 +530,10 @@ public class CityTest {
 		workflow.apply(GAME, ACTION, "B", dataB, null);
 	    psB = playerSrv.loadState(GAME, "B", true, false);
 		psB = playerSrv.saveState(psB);
-		Double scoreAfterB = printScore(psB);
+		Double scoreAfterB = printScore(psB, POINT_NAME);
 		//daily Km: 1.0
 		//city-test - calculated score: 6.0
-		Double scoreAfterF = printScore(psF);
+		Double scoreAfterF = printScore(psF, POINT_NAME);
 		Assert.assertEquals(140, ((int) (scoreAfterB-scoreBeforeB-6)));
 		// other player score unchanged
 		Assert.assertEquals((int) (scoreBeforeF-0), (int) (scoreAfterF-0));
@@ -549,7 +549,7 @@ public class CityTest {
 		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
 		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psB = playerSrv.saveState(psB);
-		printScore(psB);
+		printScore(psB, POINT_NAME);
 		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
 
 		// L4 Player
@@ -560,7 +560,7 @@ public class CityTest {
 		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
 		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psD = playerSrv.saveState(psD);
-		printScore(psD);
+		printScore(psD, POINT_NAME);
 		System.out.println(psD.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
 	
@@ -668,6 +668,33 @@ public class CityTest {
 		
 	}
 
+	
+	@Test
+	public void testBikeCounter() throws Exception {
+		init();
+		
+		/**
+		 * 2023-03-27 10:13:01 2023-03-27 10:13:01,801 INFO [LogHub-pool-3-thread-1] - 640ef0a3d82bd2057035f94e - gameId:640ef0a3d82bd2057035f94e, actionId: save_itinerary, playerId: u_5eae76b8-2828-4932-a821-a16a4811a9c7, executionMoment: 27-03-2023 10:10:54, data: {bikeDistance=30.0, startTime=1679904654644, trackId=64214f93daa44d39aed70add, travelId=bike_1679904654644}, factObjs: null
+		   2023-03-27 10:10:58 2023-03-27 10:10:58,622 INFO [LogHub-pool-3-thread-1] - 640ef0a3d82bd2057035f94e - gameId:640ef0a3d82bd2057035f94e, actionId: save_itinerary, playerId: u_5eae76b8-2828-4932-a821-a16a4811a9c7, executionMoment: 27-03-2023 10:09:26, data: {bikeDistance=30.0, startTime=1679904566486, trackId=64214f3bdaa44d39aed70ac8, travelId=bike_1679904566486}, factObjs: null
+		 */
+		// L2 Player
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("bikeDistance", 30.0); //bikeDistance=30.0
+		dataB.put("travelId", "bike_1679904654644");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(),
+				DateTime.now().getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		dataB.put("bikeDistance", 30.0); //bikeDistance=30.0
+		dataB.put("travelId", "bike_1679904566486");
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(),
+				DateTime.now().getMillis(), null);
+		double score = printScore(psB, "Bike_Km");
+		System.out.println(score);
+		Assert.assertEquals((int)60, (int)(score - 0));
+	}
+	
 	private void init() throws Exception {
 		// define game
 		Game game = defineGame();
@@ -805,7 +832,7 @@ public class CityTest {
 		PlayerState psA = playerSrv.loadState(GAME, "A", true, false);
 		psA = engine.execute(GAME, psA, ACTION, dataA, UUID.randomUUID().toString(), DateTime.now().getMillis(), null);
 		psA = playerSrv.saveState(psA);
-		printScore(psA);
+		printScore(psA, POINT_NAME);
 		Assert.assertTrue(psA.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Follower"));
 
 		// B "Green Follower" 200
@@ -816,7 +843,7 @@ public class CityTest {
 		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
 		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psB = playerSrv.saveState(psB);
-		printScore(psB);
+		printScore(psB, POINT_NAME);
 		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
 
 		//	C "Green Influencer" 300
@@ -826,7 +853,7 @@ public class CityTest {
 		dataC.put("trackId", "C1");
 		PlayerState psC = playerSrv.loadState(GAME, "C", true, false);
 		psC = engine.execute(GAME, psC, ACTION, dataC, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
-		printScore(psC);
+		printScore(psC, POINT_NAME);
 		System.out.println(psC.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psC.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Influencer"));
 		
@@ -838,7 +865,7 @@ public class CityTest {
 		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
 		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psD = playerSrv.saveState(psD);
-		printScore(psD);
+		printScore(psD, POINT_NAME);
 		System.out.println(psD.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
 		
@@ -850,7 +877,7 @@ public class CityTest {
 		PlayerState psE = playerSrv.loadState(GAME, "E", true, false);
 		psE = engine.execute(GAME, psE, ACTION, dataE, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psE = playerSrv.saveState(psE);
-		printScore(psE);
+		printScore(psE, POINT_NAME);
 		System.out.println(psE.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psE.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Master"));
 		
@@ -862,7 +889,7 @@ public class CityTest {
 		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
 		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psF = playerSrv.saveState(psF);
-		printScore(psF);
+		printScore(psF, POINT_NAME);
 		System.out.println(psF.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psF.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Ambassador"));
 		
@@ -874,7 +901,7 @@ public class CityTest {
 		PlayerState psG = playerSrv.loadState(GAME, "G", true, false);
 		psG = engine.execute(GAME, psG, ACTION, dataG, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psG = playerSrv.saveState(psG);
-		printScore(psG);
+		printScore(psG, POINT_NAME);
 		System.out.println(psG.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psG.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Warrior"));
 
@@ -886,7 +913,7 @@ public class CityTest {
 		PlayerState psH = playerSrv.loadState(GAME, "H", true, false);
 		psH = engine.execute(GAME, psH, ACTION, dataH, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psH = playerSrv.saveState(psH);
-		printScore(psH);
+		printScore(psH, POINT_NAME);
 		System.out.println(psH.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psH.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Veteran"));
 
@@ -899,7 +926,7 @@ public class CityTest {
 		PlayerState psI = playerSrv.loadState(GAME, "I", true, false);
 		psI = engine.execute(GAME, psI, ACTION, dataI, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psI = playerSrv.saveState(psI);
-		printScore(psI);
+		printScore(psI, POINT_NAME);
 		System.out.println(psI.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psI.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Guru"));
 
@@ -911,7 +938,7 @@ public class CityTest {
 		PlayerState psJ = playerSrv.loadState(GAME, "J", true, false);
 		psJ = engine.execute(GAME, psJ, ACTION, dataJ, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
 		psJ = playerSrv.saveState(psJ);
-		printScore(psJ);
+		printScore(psJ, POINT_NAME);
 		System.out.println(psJ.getLevels().get(0).getLevelValue());
 		Assert.assertTrue(psJ.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green God"));
 		
@@ -930,9 +957,9 @@ public class CityTest {
 		playerSrv.saveState(player);
 	}
 
-	private double printScore(PlayerState p) {
+	private double printScore(PlayerState p, String point) {
 		for (GameConcept gc : p.getState()) {
-			if (gc instanceof PointConcept && gc.getName().equals(POINT_NAME)) {
+			if (gc instanceof PointConcept && gc.getName().equals(point)) {
 				System.out.println(((PointConcept) gc).getScore().doubleValue());
 				return (((PointConcept) gc).getScore().doubleValue());				
 			}

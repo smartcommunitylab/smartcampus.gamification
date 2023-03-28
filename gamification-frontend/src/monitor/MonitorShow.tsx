@@ -177,7 +177,7 @@ const StateDate = (props: any) => {
             {
                 Object.entries(record.stateDate).map((elem: any) => (
                     <li>
-                        {elem[0]}: {new Date(parseInt(elem[1])).toUTCString()}
+                        {elem[0]}: {new Date(parseInt(elem[1])).toLocaleString()}
                     </li>
 
                 ))

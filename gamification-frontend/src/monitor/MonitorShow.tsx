@@ -92,7 +92,8 @@ const MonitorShowContent = () => {
                                         <TextField source="fields" />
                                         <TextField source="group" />
                                         <DateField source="start" />
-                                        <DateField source="dateCompleted" />
+                                        <DateField source="end" />
+                                        <StateDate source="stateDate" />
                                         <CustomDeleteButton playerId={record.id} />
                                     </Datagrid>
                                 </ArrayField >
@@ -159,6 +160,24 @@ const CustomField = (props: any) => {
                 Object.entries(record.customData).map((elem: any) => (
                     <li>
                         {elem[0]}: {String(elem[1])}
+                    </li>
+
+                ))
+            }
+        </ul>
+
+    );
+}
+
+const StateDate = (props: any) => {
+    const record = useRecordContext();
+
+    return (
+        <ul style={customListStyle}>
+            {
+                Object.entries(record.stateDate).map((elem: any) => (
+                    <li>
+                        {elem[0]}: {new Date(parseInt(elem[1])).toUTCString()}
                     </li>
 
                 ))

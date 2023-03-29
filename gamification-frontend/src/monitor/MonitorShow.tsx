@@ -85,7 +85,7 @@ const MonitorShowContent = () => {
                             <Box>
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Challenges</Typography>
                                 <ArrayField source="state.ChallengeConcept">
-                                    <Datagrid sx={{ '& .RaDatagrid-headerCell': { fontWeight: 600 } }} bulkActionButtons={false}>
+                                    <Datagrid size='small' sx={{ '& .RaDatagrid-headerCell': { fontWeight: 600 }}} bulkActionButtons={false}>
                                         <TextField source="name" />
                                         <TextField source="modelName" />
                                         <TextField source="state" />
@@ -177,7 +177,7 @@ const StateDate = (props: any) => {
             {
                 Object.entries(record.stateDate).map((elem: any) => (
                     <li>
-                        {elem[0]}: {new Date(parseInt(elem[1])).toLocaleString()}
+                        {elem[0]}: {new Date(parseInt(elem[1])).toLocaleDateString()}
                     </li>
 
                 ))

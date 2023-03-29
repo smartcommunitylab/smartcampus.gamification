@@ -312,6 +312,7 @@ public class GroupChallenge {
         challenge.setState(state);
         copyStateStoryIntoChallenge(ChallengeState.PROPOSED, challenge);
         copyStateStoryIntoChallenge(ChallengeState.ASSIGNED, challenge);
+        copyStateStoryIntoChallenge(ChallengeState.FAILED, challenge);
         
         if (challenge.getState() == ChallengeState.COMPLETED) {
             if(attendee.isWinner){

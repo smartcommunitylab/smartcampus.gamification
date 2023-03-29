@@ -93,7 +93,7 @@ public class CityTest {
 		mongo.dropCollection(NotificationPersistence.class);
 	}
 
-	@Test
+
 	public void simpleEnv() throws Exception {
 		// define game
 		Game game = defineGame();
@@ -119,8 +119,6 @@ public class CityTest {
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/survey.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/visitPointInterest.drl"));
 		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
-
-		scenario1();
 
 	}
 
@@ -202,7 +200,21 @@ public class CityTest {
 
 	}
 
+	private void definePlayerState(String playerId) {
+		PlayerState player = new PlayerState(GAME, playerId);
+		Set<GameConcept> myState = new HashSet<>();
+		PointConcept pc = new PointConcept(POINT_NAME);
+		pc.setScore(0d);
+		pc.addPeriod("daily", new Date(), 60000);
+		myState.add(pc);
+		player.setState(myState);
+		playerSrv.saveState(player);
+	}
+
+	@Test
 	public void scenario1() throws Exception {
+
+		simpleEnv();
 
 		/**
 		 * SCENARIO 1 **
@@ -252,15 +264,6 @@ public class CityTest {
 
 	}
 
-	private void definePlayerState(String playerId) {
-		PlayerState player = new PlayerState(GAME, playerId);
-		Set<GameConcept> myState = new HashSet<>();
-		PointConcept pc = new PointConcept(POINT_NAME);
-		pc.setScore(0d);
-		pc.addPeriod("daily", new Date(), 60000);
-		myState.add(pc);
-		player.setState(myState);
-		playerSrv.saveState(player);
-	}
+
 
 }

@@ -44,6 +44,7 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Level;
@@ -60,6 +61,7 @@ import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
+import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 import eu.trentorise.game.task.IncrementalClassificationTask;
@@ -87,6 +89,9 @@ public class CityTest {
 
 	@Autowired
 	private PlayerService playerSrv;
+	
+	@Autowired
+	private GameService gameSrv;
 
 	@Autowired
 	private MongoTemplate mongo;
@@ -539,6 +544,141 @@ public class CityTest {
 		Assert.assertEquals((int) (scoreBeforeF-0), (int) (scoreAfterF-0));
 	}
 	
+	@Test
+	public void groupCompetitivePerformance() throws Exception {
+		initFromLastWeek();
+	
+		String instanceName = "test_performance_F_B";
+		String groupCompetitivePerformanceChallenge = "{"
+				+ "\"gameId\": \"" + GAME + "\","
+				+ "\"instanceName\": \"" + instanceName + "\","
+				+ "\"attendees\": ["
+				+ 		"{\"playerId\": \"" + "F" + "\",\"role\": \"GUEST\"},"
+				+   	"{\"playerId\": \"" + "B" + "\",\"role\": \"GUEST\"}"
+				+ 	"],"
+				+ "\"challengePointConcept\": {\"name\": \"Walk_Km\",\"period\": \"weekly\"},"
+				+ "\"challengeTarget\": -1.0,"
+				+ "\"reward\": {"
+				+ 	"\"percentage\": 50.0,"
+				+ 	"\"threshold\": 1.0,"
+				+ 	"\"bonusScore\": {"
+				+ 		"\"F\": 250.0,"
+				+ 		"\"B\": 250.0"
+				+ "},"
+				+ "\"calculationPointConcept\": {\"name\": \"green leaves\",\"period\": \"weekly\"},"
+				+ "\"targetPointConcept\": {\"name\": \"green leaves\"}"
+				+ "},"
+				+ "\"challengeModel\": \"groupCompetitivePerformance\","
+				+ "\"state\": \"ASSIGNED\","
+				+ "\"origin\": \"gca\","
+				+ "\"priority\": 0"
+				+ "}";
+		
+		// create groupChallenge
+		GroupChallenge assignment = mapper.readValue(groupCompetitivePerformanceChallenge, GroupChallenge.class);
+		DateTime startOfWeek = DateTime.now().weekOfWeekyear().getDateTime().minusDays(5);
+		DateTime endOfWeek = DateTime.now().weekOfWeekyear().getDateTime().minusDays(1);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+
+		// L6 Player
+		definePlayerState("F");
+		Map<String, Object> dataF = new HashMap<>();
+		dataF.put("walkDistance", 5.0);
+		dataF.put("trackId", "F1");
+		PlayerState psF = playerSrv.loadState(GAME, "F", true, false);
+		psF = engine.execute(GAME, psF, ACTION, dataF, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psF = playerSrv.saveState(psF);
+		Double scoreBeforeF = printScore(psF, POINT_NAME);
+		System.out.println(psF.getLevels().get(0).getLevelValue());
+		
+		// L2 Player
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("walkDistance", 6.0);
+		dataB.put("trackId", "B1");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		Double scoreBeforeB = printScore(psB, POINT_NAME);
+
+		gameSrv.taskCheckPerformanceGroupChallenges();
+		
+		psB = playerSrv.loadState(GAME, "B", true, true);
+		psF = playerSrv.loadState(GAME, "F", true, false);
+		
+		Double scoreB = printScore(psB, POINT_NAME);
+		Double scoreF = printScore(psF, POINT_NAME);
+//		ChallengeConcept cc = challengeSrv.readChallenges(GAME, "F", false).get(0);
+		Assert.assertEquals((int) (scoreBeforeF-0), (int) (scoreF-0));
+		Assert.assertEquals((int) (scoreBeforeB+250), (int) (scoreB-0));
+		
+		
+	}
+	
+	private void initFromLastWeek() throws Exception {
+		// define game
+		Game game = new Game();
+		game.setId(GAME);
+		game.setName(GAME);
+		game.setDomain(DOMAIN);
+		// action
+		game.setActions(new HashSet<String>());
+		game.getActions().add(ACTION);
+		// point concepts
+		HashSet<GameConcept> gc = new HashSet<>();
+		for (String s : POINT_CONCEPTS) {
+			PointConcept pt = new PointConcept(s);
+			pt.addPeriod("daily", DateTime.now().weekOfWeekyear().getDateTime().minusDays(7).toDate(), 86400000);
+			pt.addPeriod("weekly", DateTime.now().weekOfWeekyear().getDateTime().minusDays(7).toDate(), 604800000);
+			gc.add(pt);
+		}
+		game.setConcepts(gc);
+		// badges
+		for (String badge : BADGES_COLLECTION) {
+			gc.add(new BadgeCollectionConcept(badge));
+		}
+		// tasks
+		game.setTasks(new HashSet<GameTask>());
+		PointConcept score = new PointConcept("green leaves");
+		Date today = LocalDate.now().toDate();
+		long oneDay = 86400000;
+		score.addPeriod("my-period", today, oneDay);
+		IncrementalClassificationTask task1 = new IncrementalClassificationTask(score, "my-period",
+				"week classification green");
+		game.getTasks().add(task1);
+		TaskSchedule schedule = new TaskSchedule();
+		schedule = new TaskSchedule(); //
+		schedule.setCronExpression("0 0 1 1 1 2030 *");
+		GeneralClassificationTask task2 = new GeneralClassificationTask(schedule, 3, "green leaves",
+				"global classification green");
+		game.getTasks().add(task2);
+		gameManager.saveGameDefinition(game);
+		// add level.
+		upsertLevel(game);
+		// rules.
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_absoluteIncrement.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_boat.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_checkin.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_incentiveGroupChallengeReward.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_multiTarget.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_nextBadge.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_percentageIncrement.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/challenge_repetitiveBehaviour.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/constants.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/finalClassificationBadges.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenBadges.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/greenPoints.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/mode-counters.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/poiPoints.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/specialBadges.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/survey.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/visitPointInterest.drl"));
+		gameManager.addRule(new ClasspathRule(GAME, "rules/" + GAME + "/weekClassificationBadges.drl"));
+		
+	}
+
 	private void scenario2() throws JsonParseException, JsonMappingException, IOException {
 		
 		// L2 Player
@@ -667,6 +807,7 @@ public class CityTest {
 	   		+ "}";
 		
 	}
+
 	
 	@Test
 	public void testBikeCounter() throws Exception {
@@ -800,21 +941,7 @@ public class CityTest {
 
 	}
 
-	private void definePlayerState(String playerId) {
-		PlayerState player = new PlayerState(GAME, playerId);
-		Set<GameConcept> myState = new HashSet<>();
-		PointConcept pc = new PointConcept(POINT_NAME);
-		pc.setScore(0d);
-		pc.addPeriod("daily", new Date(), 60000);
-		myState.add(pc);
-		player.setState(myState);
-		playerSrv.saveState(player);
-	}
-
-	@Test
 	public void scenario1() throws Exception {
-
-		simpleEnv();
 
 		/**
 		 * SCENARIO 1 **
@@ -959,7 +1086,16 @@ public class CityTest {
 
 	}
 
-
+	private void definePlayerState(String playerId) {
+		PlayerState player = new PlayerState(GAME, playerId);
+		Set<GameConcept> myState = new HashSet<>();
+		PointConcept pc = new PointConcept(POINT_NAME);
+		pc.setScore(0d);
+		pc.addPeriod("daily", new Date(), 60000);
+		myState.add(pc);
+		player.setState(myState);
+		playerSrv.saveState(player);
+	}
 
 	private double printScore(PlayerState p, String point) {
 		for (GameConcept gc : p.getState()) {

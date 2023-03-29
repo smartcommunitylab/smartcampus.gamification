@@ -41,24 +41,26 @@ public interface PlayerService {
 
 	public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges);
 
-    public PlayerState loadState(String gameId, String playerId, boolean upsert,
-            boolean mergeGroupChallenges, boolean filterHiddenChallenges);
+	public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges,
+			boolean filterHiddenChallenges);
 
 	public Page<PlayerState> loadStates(String gameId, Pageable pageable, boolean mergeGroupChallenges);
 
-    public Page<PlayerState> loadStates(String gameId, Pageable pageable,
-            boolean mergeGroupChallenges, boolean filterHiddenChallenges);
+	public Page<PlayerState> loadStates(String gameId, Pageable pageable, boolean mergeGroupChallenges,
+			boolean filterHiddenChallenges);
 
 	public List<PlayerState> loadStates(String gameId);
 
-	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges);
+	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable,
+			boolean mergeGroupChallenges);
 
-    public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable,
-            boolean mergeGroupChallenges, boolean filterHiddenChallenges);
+	public Page<PlayerState> loadStates(String gameId, String playerId, Pageable pageable, boolean mergeGroupChallenges,
+			boolean filterHiddenChallenges);
 
 	public ClassificationBoard classifyAllPlayerStates(Game g, String itemType, Pageable pageable);
 
-	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName, String key, String gameId, Pageable pageable);
+	public ClassificationBoard classifyPlayerStatesWithKey(long timestamp, String pointConceptName, String periodName,
+			String key, String gameId, Pageable pageable);
 
 	public PlayerState saveState(PlayerState state);
 
@@ -76,7 +78,7 @@ public interface PlayerService {
 
 	public Page<PlayerState> search(String gameId, StringSearchQuery query, Pageable pageable);
 
-    public Inventory choiceActivation(String gameId, String playerId, ItemChoice choice);
+	public Inventory choiceActivation(String gameId, String playerId, ItemChoice choice);
 
 	/*
 	 * TEAM METHODS
@@ -98,27 +100,28 @@ public interface PlayerService {
 	 * CHALLENGE METHODS
 	 */
 
-    public ChallengeConcept assignChallenge(String gameId, String playerId, ChallengeAssignment challengeAssignment);
+	public ChallengeConcept assignChallenge(String gameId, String playerId, ChallengeAssignment challengeAssignment);
 
-    public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName);
+	public ChallengeConcept acceptChallenge(String gameId, String playerId, String challengeName);
 
-    public ChallengeConcept forceChallengeChoice(String gameId, String playerId);
-    
-    /*
-     * BLACKLIST
-     */
-    public PlayerBlackList blockPlayer(String gameId, String playerId, String otherPlayerId);
-    
-    public PlayerBlackList unblockPlayer(String gameId, String playerId, String otherPlayerId);
-    
-    public PlayerBlackList readBlackList(String gameId, String playerId);
-    
-    /*
-     * SYSTEM PLAYERS LIST FOR PLAYER
-     */
-    public List<String> readSystemPlayerState(String gameId, String playerId, String conceptName);
+	public ChallengeConcept forceChallengeChoice(String gameId, String playerId);
+
+	/*
+	 * BLACKLIST
+	 */
+	public PlayerBlackList blockPlayer(String gameId, String playerId, String otherPlayerId);
+
+	public PlayerBlackList unblockPlayer(String gameId, String playerId, String otherPlayerId);
+
+	public PlayerBlackList readBlackList(String gameId, String playerId);
+
+	/*
+	 * SYSTEM PLAYERS LIST FOR PLAYER
+	 */
+	public List<String> readSystemPlayerState(String gameId, String playerId, String conceptName);
 
 	public PlayerState readPlayerState(String gameId, String playerId, boolean b, Boolean readChallenges, boolean c,
 			List<String> points, List<String> badges);
 
+	public List<String> getPlayerIdsWithProposedChallenges(String gameId);
 }

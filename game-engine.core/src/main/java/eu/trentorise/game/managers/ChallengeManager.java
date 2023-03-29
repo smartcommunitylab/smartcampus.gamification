@@ -114,7 +114,7 @@ public class ChallengeManager {
 			challenge.validate(game);
 			if (StringUtils.isBlank(challenge.getInstanceName())) {
 				Attendee proposer = challenge.proposer();
-				challenge.setInstanceName(String.format("p_%s_%s", proposer != null ? proposer.getPlayerId() : null,
+				challenge.setInstanceName(String.format("p_%s_%s", proposer != null ? proposer.getPlayerId() : "rs",
 						UUID.randomUUID().toString()));
 			}
 			return groupChallengeRepo.save(challenge);

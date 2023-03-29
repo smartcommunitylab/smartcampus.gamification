@@ -85,15 +85,15 @@ const MonitorShowContent = () => {
                             <Box>
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Challenges</Typography>
                                 <ArrayField source="state.ChallengeConcept">
-                                    <Datagrid sx={{ '& .RaDatagrid-headerCell': { fontWeight: 600 } }} bulkActionButtons={false}>
+                                    <Datagrid size='small' sx={{ '& .RaDatagrid-headerCell': { fontWeight: 600 }}} bulkActionButtons={false}>
                                         <TextField source="name" />
                                         <TextField source="modelName" />
-                                        <TextField source="fields.bonusPointType" />
-                                        <TextField source="fields.bonusScore" />
-                                        <TextField source="fields.counterName" />
+                                        <TextField source="state" />
+                                        <TextField source="fields" />
                                         <TextField source="group" />
                                         <DateField source="start" />
-                                        <DateField source="dateCompleted" />
+                                        <DateField source="end" />
+                                        <StateDate source="stateDate" />
                                         <CustomDeleteButton playerId={record.id} />
                                     </Datagrid>
                                 </ArrayField >
@@ -160,6 +160,24 @@ const CustomField = (props: any) => {
                 Object.entries(record.customData).map((elem: any) => (
                     <li>
                         {elem[0]}: {String(elem[1])}
+                    </li>
+
+                ))
+            }
+        </ul>
+
+    );
+}
+
+const StateDate = (props: any) => {
+    const record = useRecordContext();
+
+    return (
+        <ul style={customListStyle}>
+            {
+                Object.entries(record.stateDate).map((elem: any) => (
+                    <li>
+                        {elem[0]}: {new Date(parseInt(elem[1])).toLocaleDateString()}
                     </li>
 
                 ))

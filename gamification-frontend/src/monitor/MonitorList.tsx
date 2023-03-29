@@ -4,7 +4,8 @@ import {
     useListContext, Pagination, Datagrid,
     TextField,
     useStore,
-    ShowButton
+    ShowButton,
+    SearchInput
 } from 'react-admin';
 
 const MonitorListContent = () => {
@@ -45,10 +46,15 @@ export const MonitorList = () => {
             perPage={20}
             pagination={<Pagination rowsPerPageOptions={[10, 20, 30, 40]} />}
             sort={{ field: 'last_seen', order: 'DESC' }}
+            filters={MonitorFilters}
         >
             <MonitorListContent />
         </RaList>
     )
 };
+
+const MonitorFilters = [
+    <SearchInput placeholder='Search by player id' source="q" alwaysOn />
+];
 
 

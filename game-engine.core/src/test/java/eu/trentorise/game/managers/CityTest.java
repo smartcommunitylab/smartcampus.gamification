@@ -814,8 +814,6 @@ public class CityTest {
 	@Test
 	public void scenario1() throws Exception {
 
-		simpleEnv();
-
 		/**
 		 * SCENARIO 1 **
 		 * https://docs.google.com/document/d/1njKGeraPiM5ljlhwwOZUn8vVvvjTZDxJy1IC2TdV5sU/edit#

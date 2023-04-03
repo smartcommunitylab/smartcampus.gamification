@@ -1,6 +1,6 @@
 import {
     ShowBase, useShowContext,
-    EditButton, useStore, DateField
+    EditButton, useStore, DateField, FormDataConsumer
 } from 'react-admin';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { Game } from '../types';
@@ -27,8 +27,12 @@ const GameShowContent = () => {
                         <Box display="flex" width={630}>
                             <Box>
                                 <Typography >Name: {record.name}</Typography>
-                                <br />
-                                <Typography >Expiration: <DateField source="expiration" /> </Typography>
+                                { record.expiration > 0 &&
+                                    <Box mt={2} width={630}>
+                                         <Typography >Expiration: <DateField source="expiration" /> </Typography>
+                                    </Box>
+                                   
+                                }
                                 <br />
                                 <Typography >Notify PointConcept : {record.notifyPCName}</Typography>
                                 <br />

@@ -44,7 +44,6 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
-import eu.trentorise.game.model.ChallengeConcept;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Level;
@@ -750,61 +749,165 @@ public class CityTest {
 	@Test
 	public void groupCooperativeDifferentCounters() throws Exception {
 		
+		init();
+		
+		String playerId1 = "B";
+		String playerId2 = "D";
 		
 		String groupCoopChgGreenLeaves = "{"
 				+ "\"gameId\": \"" + GAME + "\","
 				+ "\"attendees\": ["
-				+ "{\"playerId\": \"u_5eae76b8-2828-4932-a821-a16a4811a9c7\", \"role\": \"GUEST\"},"
-				+ "{\"playerId\": \"u_84d11a2769e1479cb43c23da416e29e7\", \"role\": \"PROPOSER\"}" + "],"
+				+ "{\"playerId\": \"" + playerId1 + "\", \"role\": \"GUEST\"},"
+				+ "{\"playerId\": \"" + playerId2 + "\", \"role\": \"GUEST\"}" + "],"
 				+ "\"state\":\"ASSIGNED\","
+				+ "\"challengeModel\" : \"groupCooperative\","
 				+ "\"challengePointConcept\": {\"name\":\"green leaves\", \"period\": \"weekly\"},"
-				+ "\"challengeTarget\": 50," + "\"challengeModelName\": \"groupCooperative\","
-				+ "\"start\": 1678662000000," + "\"end\": 1679353140000,"
+				+ "\"challengeTarget\": 1,"
 				+ "\"reward\": {"
-				+ 		"\"bonusScore\" : {\"u_5eae76b8-2828-4932-a821-a16a4811a9c7\": 10.0, \"u_d995fe2ae909486399d89861aef2f450\":10.0},"
+				+ 		"\"bonusScore\" : {\"" + playerId1 + "\": 10.0, \"" + playerId2 + "\":10.0},"
 				+ 		"\"targetPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"green leaves\"},"
 				+		"\"calculationPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"NoCar_Trips\"}"
 				+ 	"}"
-				+ "}";		
+				+ "}";	
+		
+		// L2 Player
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("bikeDistance", 40.0);
+		dataB.put("trackId", "B1");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(),
+				DateTime.now().minusDays(2).getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		Double scoreBeforeB = printScore(psB, POINT_NAME);
+		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
 
+		// L4 Player
+		definePlayerState("D");
+		Map<String, Object> dataD = new HashMap<>();
+		dataD.put("bikeDistance", 70.0);
+		dataD.put("trackId", "D1");
+		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(),
+				DateTime.now().minusDays(2).getMillis(), null);
+		psD = playerSrv.saveState(psD);
+		Double scoreBeforeD = printScore(psD, POINT_NAME);
+		System.out.println(psD.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
+		
+		// create groupChallenge
+		GroupChallenge assignment = mapper.readValue(groupCoopChgGreenLeaves, GroupChallenge.class);
+		DateTime startOfWeek = DateTime.now().weekOfWeekyear().getDateTime().minusDays(2);
+		DateTime endOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(4);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, playerId1, true).size());
+		dataB.clear();		
+		dataB.put("walkDistance", 1.0);
+		dataB.put("trackId", "B2");
+		workflow.apply(GAME, ACTION, "B", dataB, null);
+	    psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = playerSrv.saveState(psB);
+		Double scoreAfterB = printScore(psB, POINT_NAME);
+		dataD.clear();
+		dataD.put("walkDistance", 1.0);
+		dataD.put("trackId", "D2");
+		workflow.apply(GAME, ACTION, "D", dataD, null);
+		psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = playerSrv.saveState(psD);
+		Double scoreAfterD = printScore(psD, POINT_NAME);
+		// 1 Km = 10 score
+		Assert.assertEquals( 10, (int) (scoreAfterB - scoreBeforeB - 10));
+		Assert.assertEquals( 10, (int) (scoreAfterD - scoreBeforeD - 10));
 		
 	   String groupCoopChgWalkKM = "{"
 	   		+ "\"gameId\": \"" + GAME + "\","
 	   		+ "\"attendees\": ["
-	   		+ 	"{\"playerId\": \"u_affaea06d6014e7cb58f411817a5a82b\", \"role\": \"GUEST\"},"
-	   		+	"{\"playerId\": \"u_e15f28792c574f318ae808790974e43b\", \"role\": \"PROPOSER\"}"
+	   		+ 	"{\"playerId\": \"" + playerId1 + "\", \"role\": \"GUEST\"},"
+	   		+	"{\"playerId\": \"" + playerId2 + "\", \"role\": \"GUEST\"}"
 	   		+ "],"
 	   		+ "\"state\":\"ASSIGNED\","
+	   		+ "\"challengeModel\" : \"groupCooperative\","
 	   		+ "\"challengePointConcept\": {\"name\":\"Walk_Km\", \"period\": \"weekly\"},"
-	   		+ "\"challengeTarget\": 50,"
-	   		+ "\"challengeModelName\": \"groupCooperative\","
-	   		+ "\"start\": 1678662000000,"
-	   		+ "\"end\": 1679353140000,"
+	   		+ "\"challengeTarget\": 5,"
 	   		+ "\"reward\": {"
-	   		+ 		"\"bonusScore\" : {\"u_affaea06d6014e7cb58f411817a5a82b\": 10.0, \"u_e15f28792c574f318ae808790974e43b\":5.0},"
+	   		+ 		"\"bonusScore\" : {\"" + playerId1 + "\": 10.0, \"" + playerId2 + "\":10.0},"
 	   		+ 		"\"targetPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Walk_Km\"},"
 	   		+ 		"\"calculationPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Walk_Km\"}"
 	   		+ 	"}"
 	   		+ "}";
 	   
+		assignment = mapper.readValue(groupCoopChgWalkKM, GroupChallenge.class);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		
+		// MODE COUNTER (Walk_Km)
+		dataB.clear();		
+		dataB.put("walkDistance", 3.0);
+		dataB.put("trackId", "B3");
+		workflow.apply(GAME, ACTION, "B", dataB, null);
+		psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = playerSrv.saveState(psB);
+		scoreBeforeB = printScore(psB, "Walk_Km");
+		
+		psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = playerSrv.saveState(psD);
+		scoreBeforeD = printScore(psD, "Walk_Km");
+		dataD.clear();
+		dataD.put("walkDistance", 3.0);
+		dataD.put("trackId", "D3");
+		workflow.apply(GAME, ACTION, "D", dataD, null);
+		psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = playerSrv.saveState(psD);
+		scoreAfterD = printScore(psD, "Walk_Km");
+		Assert.assertEquals( 10, (int) (scoreAfterD - scoreBeforeD - 3.0));
+		
+	    psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = playerSrv.saveState(psB);
+		scoreAfterB = printScore(psB, "Walk_Km");
+		Assert.assertEquals( 10, (int) (scoreAfterB - scoreBeforeB));
+				
+	   
 	   String groupCoopChgBikeKm = "{"
 	   		+ "\"gameId\": \"" + GAME + "\","
 	   		+ "\"attendees\": ["
-	   		+ 	"{\"playerId\": \"u_d995fe2ae909486399d89861aef2f450\", \"role\": \"GUEST\"},"
-	   		+ 	"{\"playerId\": \"u_f89ebf548d8c48bcb367a73e0c18fbfa\", \"role\": \"PROPOSER\"}"
+	   		+ 	"{\"playerId\": \"" + playerId1 + "\", \"role\": \"GUEST\"},"
+	   		+ 	"{\"playerId\": \"" + playerId2 + "\", \"role\": \"PROPOSER\"}"
 	   		+ "],"
 	   		+ "\"state\":\"ASSIGNED\","
 	   		+ "\"challengePointConcept\": {\"name\":\"Bike_Km\", \"period\": \"weekly\"},"
-	   		+ "\"challengeTarget\": 50,"
-	   		+ "\"challengeModelName\": \"groupCooperative\","
-	   		+ "\"start\": 1678662000000,"
-	   		+ "\"end\": 1679353140000,"
+	   		+ "\"challengeTarget\": 5,"
+	   		+ "\"challengeModel\": \"groupCooperative\","
 	   		+ "\"reward\": {"
-	   		+ 	"\"bonusScore\" : {\"u_f89ebf548d8c48bcb367a73e0c18fbfa\": 10.0, \"u_d995fe2ae909486399d89861aef2f450\":10.0},"
+	   		+ 	"\"bonusScore\" : {\"" + playerId1 + "\": 10.0, \"" + playerId2 + "\":10.0},"
 	   		+ 	"\"targetPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Bike_Km\"},"
 	   		+ 	"\"calculationPointConcept\": {\"periodName\" : \"weekly\", \"name\" : \"Bike_Km\"}"
 	   		+ 	"}"
 	   		+ "}";
+	   
+		assignment = mapper.readValue(groupCoopChgBikeKm, GroupChallenge.class);
+		assignment.setStart(startOfWeek.toDate());
+		assignment.setEnd(endOfWeek.toDate());
+		challengeSrv.save(assignment);
+		
+		// MODE COUNTER (Bike_Km)
+		scoreBeforeB = printScore(psB, "Bike_Km");
+		scoreBeforeD = printScore(psD, "Bike_Km");		
+		dataD.clear();
+		dataD.put("bikeDistance", 6.0);
+		dataD.put("trackId", "D4");
+		workflow.apply(GAME, ACTION, "D", dataD, null);
+		psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = playerSrv.saveState(psD);
+		scoreAfterD = printScore(psD, "Bike_Km");		
+		psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = playerSrv.saveState(psB);
+		scoreAfterB = printScore(psB, "Bike_Km");
+		
+		Assert.assertEquals( 10, (int) (scoreAfterB - scoreBeforeB));
+		Assert.assertEquals( 10, (int) (scoreAfterD - scoreBeforeD - 6.0));
 		
 	}
 
@@ -1092,6 +1195,7 @@ public class CityTest {
 		PointConcept pc = new PointConcept(POINT_NAME);
 		pc.setScore(0d);
 		pc.addPeriod("daily", new Date(), 60000);
+		pc.addPeriod("weekly", new Date(), 60000);
 		myState.add(pc);
 		player.setState(myState);
 		playerSrv.saveState(player);

@@ -938,6 +938,54 @@ public class CityTest {
 		Assert.assertEquals((int)60, (int)(score - 0));
 	}
 	
+	@Test
+	public void testDeiscrizione() throws Exception {
+		init();
+		
+		// A "Green Starter" 100
+		definePlayerState("A");
+		Map<String, Object> dataA = new HashMap<>();
+		dataA.put("walkDistance", 50.0);
+		dataA.put("trackId", "A");
+		PlayerState psA = playerSrv.loadState(GAME, "A", true, false);
+		psA = engine.execute(GAME, psA, ACTION, dataA, UUID.randomUUID().toString(), DateTime.now().getMillis(), null);
+		psA = playerSrv.saveState(psA);
+		printScore(psA, POINT_NAME);
+		Assert.assertTrue(psA.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Follower"));
+
+		// B "Green Follower" 200
+		definePlayerState("B");
+		Map<String, Object> dataB = new HashMap<>();
+		dataB.put("bikeDistance", 40.0);
+		dataB.put("trackId", "B1");
+		PlayerState psB = playerSrv.loadState(GAME, "B", true, false);
+		psB = engine.execute(GAME, psB, ACTION, dataB, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psB = playerSrv.saveState(psB);
+		printScore(psB, POINT_NAME);
+		Assert.assertTrue(psB.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Lover"));
+
+		// D "Green Soldier" 400
+		definePlayerState("D");
+		Map<String, Object> dataD = new HashMap<>();
+		dataD.put("bikeDistance", 70.0);
+		dataD.put("trackId", "D1");
+		PlayerState psD = playerSrv.loadState(GAME, "D", true, false);
+		psD = engine.execute(GAME, psD, ACTION, dataD, UUID.randomUUID().toString(), DateTime.now().minusDays(2).getMillis(), null);
+		psD = playerSrv.saveState(psD);
+		printScore(psD, POINT_NAME);
+		System.out.println(psD.getLevels().get(0).getLevelValue());
+		Assert.assertTrue(psD.getLevels().get(0).getLevelValue().equalsIgnoreCase("Green Soldier"));
+		
+		Assert.assertEquals(2, playerSrv.readSystemPlayerState(GAME, "B", POINT_NAME).size());
+		
+		Map<String, Object> customData = new HashMap<>();
+		customData.put("activePlayer", false);
+		psD = playerSrv.updateCustomData(GAME, "D", customData);
+		psD = playerSrv.saveState(psD);
+		
+		Assert.assertEquals(1, playerSrv.readSystemPlayerState(GAME, "B", POINT_NAME).size());
+	}
+	
 	private void init() throws Exception {
 		// define game
 		Game game = defineGame();

@@ -115,6 +115,8 @@ public class DBPlayerManager implements PlayerService {
     private ArchiveManager archiveSrv;
     
     private static final int PROPOSER_RANGE = 2;
+    
+    public static final String ACTIVE_CAMPAIGN_KEY = "activePlayer";
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
         return loadState(gameId, playerId, upsert, mergeGroupChallenges, false);
@@ -1013,7 +1015,12 @@ public class DBPlayerManager implements PlayerService {
                         // }
                         // }
                         // if (!isChallengeAssignedInFuture) {
-                            sps.add(ps.getPlayerId());
+						// filter custom data.
+						if (ps.getCustomData().containsKey(ACTIVE_CAMPAIGN_KEY)
+								&& ps.getCustomData().get(ACTIVE_CAMPAIGN_KEY).equals(false)) {
+							continue;
+						}
+						sps.add(ps.getPlayerId());
                         // }
 					}
 				}

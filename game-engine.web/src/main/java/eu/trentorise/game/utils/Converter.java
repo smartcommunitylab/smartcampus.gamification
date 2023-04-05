@@ -153,6 +153,7 @@ public class Converter {
                     } else if (gt instanceof AutoChallengeChoiceTask) {
                         ChallengeChoiceConfig config = new ChallengeChoiceConfig();
                         config.setDeadline(gt.getSchedule().getStart());
+                        config.setCronExpression(gt.getSchedule().getCronExpression());
                         gDTO.setChallengeChoiceConfig(config);
                     }
 
@@ -218,8 +219,7 @@ public class Converter {
 		    AutoChallengeChoiceTask task = new AutoChallengeChoiceTask();
 		    task.setName("auto challenge choice");
 		    TaskSchedule schedule = new TaskSchedule();
-            schedule.setStart(game.getChallengeChoiceConfig().getDeadline());
-            schedule.setPeriod(ONE_WEEK_MILLIS);
+            schedule.setCronExpression(game.getChallengeChoiceConfig().getCronExpression());
             task.setSchedule(schedule);
             g.getTasks().add(task);
 		}

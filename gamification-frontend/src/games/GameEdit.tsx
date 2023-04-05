@@ -89,7 +89,7 @@ const GameEditContent = () => {
                                 <BooleanInput source="hide" />
                             </Box>
                             <FormDataConsumer>
-                                {({ formData, ...rest }) => !formData.hide &&
+                                {({ formData, ...rest }) => formData.hide &&
                                     <Box width={630}>
                                         Disclosure date<br />
                                         <DateTimeInput source="settings.challengeSettings.disclosure.startDate" />
@@ -111,6 +111,9 @@ const GameEditContent = () => {
                                         optionValue='pc.name'                                        
                                     />
                                 </ReferenceInput>
+                            </Box>
+                            <Box width={630}>
+                                <TextInput source="challengeChoiceConfig.cronExpression" />
                             </Box>
                         </CardContent>
                         {/* <Toolbar /> */}

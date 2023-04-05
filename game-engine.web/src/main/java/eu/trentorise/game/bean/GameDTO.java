@@ -51,6 +51,7 @@ public class GameDTO {
 
 	public static class ChallengeChoiceConfig {
 		private Date deadline;
+		private String cronExpression;
 
 		public Date getDeadline() {
 			return deadline;
@@ -58,6 +59,14 @@ public class GameDTO {
 
 		public void setDeadline(Date deadline) {
 			this.deadline = deadline;
+		}
+
+		public String getCronExpression() {
+			return cronExpression;
+		}
+
+		public void setCronExpression(String cronExpression) {
+			this.cronExpression = cronExpression;
 		}
 
 	}

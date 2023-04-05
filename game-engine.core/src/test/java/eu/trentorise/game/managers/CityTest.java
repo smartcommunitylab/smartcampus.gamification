@@ -44,6 +44,8 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.ChallengeConcept.Visibility;
+import eu.trentorise.game.model.ChallengeUpdate;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Level;
@@ -55,6 +57,8 @@ import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
+import eu.trentorise.game.model.core.TimeInterval;
+import eu.trentorise.game.model.core.TimeUnit;
 import eu.trentorise.game.repo.ChallengeConceptPersistence;
 import eu.trentorise.game.repo.GamePersistence;
 import eu.trentorise.game.repo.NotificationPersistence;
@@ -984,6 +988,68 @@ public class CityTest {
 		psD = playerSrv.saveState(psD);
 		
 		Assert.assertEquals(1, playerSrv.readSystemPlayerState(GAME, "B", POINT_NAME).size());
+	}
+	
+	@Test
+	public void testSingleChallengeVisibility() throws Exception {  
+	
+		Game game = defineGame();
+		game.getSettings().getChallengeSettings().getDisclosure()
+          .setStartDate(new Date());
+		game.getSettings().getChallengeSettings().getDisclosure()
+          .setFrequency(new TimeInterval(7, TimeUnit.DAY));
+		gameManager.saveGameDefinition(game);
+		
+		
+		DateTime startOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(1);
+		DateTime endOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(7);
+		
+		ChallengeAssignment singleChallenge = new ChallengeAssignment();
+		singleChallenge.setChallengeType("PROPOSED");
+		singleChallenge.setInstanceName("firstProposedWithHideTrue");
+		singleChallenge.setModelName("prize");
+		singleChallenge.setPriority(5);
+		singleChallenge.setStart(startOfWeek.toDate());
+		singleChallenge.setEnd(endOfWeek.toDate());
+		singleChallenge.setHide(true);
+		playerSrv.assignChallenge(GAME, "B", singleChallenge);
+		
+		ChallengeAssignment singleChallenge2 = new ChallengeAssignment();
+		singleChallenge2.setChallengeType("PROPOSED");
+		singleChallenge2.setInstanceName("secondProposedWithHideFalse");
+		singleChallenge2.setModelName("prize");
+		singleChallenge2.setPriority(5);
+		singleChallenge2.setStart(startOfWeek.toDate());
+		singleChallenge2.setEnd(endOfWeek.toDate());
+		singleChallenge2.setHide(false);
+		playerSrv.assignChallenge(GAME, "B", singleChallenge2);
+		
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, "B", true).size());
+		
+		ChallengeAssignment singleChallenge3 = new ChallengeAssignment();
+		singleChallenge3.setChallengeType("PROPOSED");
+		singleChallenge3.setInstanceName("thirdProposedWithHideNull");
+		singleChallenge3.setModelName("prize");
+		singleChallenge3.setPriority(5);
+		singleChallenge3.setStart(startOfWeek.toDate());
+		singleChallenge3.setEnd(endOfWeek.toDate());
+		playerSrv.assignChallenge(GAME, "B", singleChallenge3);
+		
+		Assert.assertEquals(2, challengeSrv.readChallenges(GAME, "B", true).size());
+		
+		// update visibility of first challenge (hidden disclosure date in past)
+		ChallengeUpdate update = new ChallengeUpdate();
+		update.setName("firstProposedWithHideTrue");
+		Visibility visibility = new Visibility();
+		visibility.setHidden(true);
+		visibility.setDisclosureDate(DateTime.now().weekOfWeekyear().getDateTime().minusHours(1).toDate());
+		update.setVisibility(visibility);
+		update.setStart(startOfWeek.toDate());
+		update.setEnd(endOfWeek.toDate());
+		challengeSrv.update(GAME, "B", update);
+		
+		Assert.assertEquals(3, challengeSrv.readChallenges(GAME, "B", true).size());
+		
 	}
 	
 	private void init() throws Exception {

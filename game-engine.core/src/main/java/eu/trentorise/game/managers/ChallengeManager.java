@@ -787,8 +787,17 @@ public class ChallengeManager {
 		List<ChallengeConcept> result = new ArrayList<>();
 		Query query = new Query();
 		Criteria criteria = Criteria.where("gameId").is(gameId).and("playerId").is(playerId);
+		
 		if (inprogress) {
-			criteria = criteria.and("concept.end").gt(new Date());
+			Criteria hiddenCriteria1 = Criteria.where("concept.visibility.hidden").is(null);
+			Criteria hiddenCriteria2 = Criteria.where("concept.visibility.hidden").is(false);
+			Criteria hiddenCriteria3 = Criteria.where("concept.visibility.hidden").is(true).and("concept.visibility.disclosureDate").lte(new Date());
+			List<Criteria> hidden = new ArrayList<Criteria>();
+			hidden.add(hiddenCriteria1);
+			hidden.add(hiddenCriteria2);
+			hidden.add(hiddenCriteria3);
+			Criteria hiddenCriteria = new Criteria().orOperator(hidden);		
+			criteria = criteria.and("concept.end").gt(new Date()).andOperator(hiddenCriteria);
 		}
 		query.addCriteria(criteria);
 		List<ChallengeConceptPersistence> singleChallenges = mongoTemplate.find(query,

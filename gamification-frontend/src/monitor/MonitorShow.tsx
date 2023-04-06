@@ -94,6 +94,7 @@ const MonitorShowContent = () => {
                                         <DateField source="start" />
                                         <DateField source="end" />
                                         <StateDate source="stateDate" />
+                                        <TextField source="visibility" />
                                         <CustomDeleteButton playerId={record.id} />
                                     </Datagrid>
                                 </ArrayField >

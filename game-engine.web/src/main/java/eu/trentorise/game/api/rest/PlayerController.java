@@ -484,6 +484,16 @@ public class PlayerController {
 		return playerSrv.readSystemPlayerState(gameId, playerId, conceptName);
 
 	}
+    
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/data/game/{gameId}/proposedChallengePlayers",
+            produces = {
+			"application/json" })
+    @Operation(summary = "Get list of playerIds with proposed challenges")
+	public List<String> getProposedChallengePlayerIds(@PathVariable String gameId) throws Exception {
+		gameId = decodePathVariable(gameId);		
+		return playerSrv.getPlayerIdsWithProposedChallenges(gameId);
+	}
 	 
 
 }

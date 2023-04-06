@@ -267,6 +267,7 @@ public class GroupChallenge {
         challenge.getFields().put("challengeScoreName",
                 challengePointConcept != null ? challengePointConcept.getName() : null);
         challenge.getFields().put("challengeScore", player.getChallengeScore());
+        challenge.getFields().put("isWinner", player.isWinner());
         List<Map<String, Object>> otherAttendeeScores = new ArrayList<>();
         attendees.stream().filter(a -> !a.getPlayerId().equals(player.getPlayerId())).forEach(a -> {
             Map<String, Object> attendeeScore = new HashMap<>();
@@ -312,6 +313,7 @@ public class GroupChallenge {
         challenge.setState(state);
         copyStateStoryIntoChallenge(ChallengeState.PROPOSED, challenge);
         copyStateStoryIntoChallenge(ChallengeState.ASSIGNED, challenge);
+        copyStateStoryIntoChallenge(ChallengeState.FAILED, challenge);
         
         if (challenge.getState() == ChallengeState.COMPLETED) {
             if(attendee.isWinner){

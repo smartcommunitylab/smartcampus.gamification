@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { AppBar, useStore } from 'react-admin';
+import { AppBar, Button, useRedirect, useStore } from 'react-admin';
 import Typography from '@mui/material/Typography';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 
 export const MyAppBar = function (props:any) {
-    const [gameName, getGameName] = useStore('game.name');
+    const [gameName] = useStore('game.name');
+    const [gameId] = useStore('game.selected');
     const [role, getRole] = useStore('user.role');
+    const redirect = useRedirect();
   
     return (
         <AppBar
@@ -34,6 +37,12 @@ export const MyAppBar = function (props:any) {
                 style={{ width:'60%' }}
             > {gameName} </Typography>
 
+            {gameName ? <Button style={{ minWidth: 'auto' }} startIcon={<SettingsApplicationsIcon style={{ fontSize: '24px', fill: 'white'}}/>} onClick={() => {
+                console.log('/game/' + gameId + '/show');
+                redirect('/game/' + gameId + '/show');
+            }
+            }></Button> : ''}
+           
             <Typography>{role}</Typography>
         </AppBar>
     );

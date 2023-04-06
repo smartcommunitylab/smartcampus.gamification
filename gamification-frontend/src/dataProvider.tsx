@@ -19,9 +19,9 @@ const gamificationDataProvider = {
 
         if (resource !== "game") {
             const gameId = params.meta.gameId;
-            url = url + '/' + gameId + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order;
+            url = url + '/' + gameId + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order + "&filter=" + filter;
         } else {
-            url = url + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order + "&filter=" + filter;;
+            url = url + "?&page=" + page + "&size=" + perPage + "&sort=" + field + "," + order + "&filter=" + filter;
         }
 
         return fetch(url, { method: 'GET', headers: headers })

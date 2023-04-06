@@ -30,7 +30,8 @@ export const GameEdit = () => {
         console.log('on success');
         setGameName(data.name);
         notify(`Game updated successfully`); // default message is 'ra.notification.updated'
-        redirect('list', 'game');
+        // redirect('list', 'game');
+        redirect('/game/' + gameId + '/show');
     };
     
     return (
@@ -88,7 +89,7 @@ const GameEditContent = () => {
                                 <BooleanInput source="hide" />
                             </Box>
                             <FormDataConsumer>
-                                {({ formData, ...rest }) => !formData.hide &&
+                                {({ formData, ...rest }) => formData.hide &&
                                     <Box width={630}>
                                         Disclosure date<br />
                                         <DateTimeInput source="settings.challengeSettings.disclosure.startDate" />
@@ -110,6 +111,9 @@ const GameEditContent = () => {
                                         optionValue='pc.name'                                        
                                     />
                                 </ReferenceInput>
+                            </Box>
+                            <Box width={630}>
+                                <TextInput source="challengeChoiceConfig.cronExpression" />
                             </Box>
                         </CardContent>
                         {/* <Toolbar /> */}

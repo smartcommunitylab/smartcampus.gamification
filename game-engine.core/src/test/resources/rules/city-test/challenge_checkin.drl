@@ -1,0 +1,22 @@
+package eu.trentorise.game.model
+
+//list any import classes here.
+import eu.trentorise.game.core.Utility;
+
+//declare any global variables here
+global Utility utils;
+
+rule 'notte_ricercatori_checkin'
+when
+	Action(id == 'checkin_notte_dei_ricercatori')
+	$challenge : ChallengeConcept( modelName == "checkin", $checkinType : fields["checkinType"], $bonusPointType : fields["bonusPointType"], $bonusScore : fields["bonusScore"], isCompleted() != true )	
+	$pc : PointConcept(name == (String) $bonusPointType)		
+then
+	if("notte_dei_ricercatori".equals($checkinType)){
+		utils.log('Notte dei ricercatori - Check in DONE');
+		$challenge.completed();
+		$pc.setScore($pc.getScore() + (Double) $bonusScore);
+		update($pc);
+		update($challenge);
+	}
+end

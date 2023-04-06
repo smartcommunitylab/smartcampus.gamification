@@ -115,6 +115,8 @@ public class DBPlayerManager implements PlayerService {
     private ArchiveManager archiveSrv;
     
     private static final int PROPOSER_RANGE = 2;
+    
+    public static final String ACTIVE_CAMPAIGN_KEY = "activePlayer";
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
         return loadState(gameId, playerId, upsert, mergeGroupChallenges, false);
@@ -1013,7 +1015,12 @@ public class DBPlayerManager implements PlayerService {
                         // }
                         // }
                         // if (!isChallengeAssignedInFuture) {
-                            sps.add(ps.getPlayerId());
+						// filter custom data.
+						if (ps.getCustomData().containsKey(ACTIVE_CAMPAIGN_KEY)
+								&& ps.getCustomData().get(ACTIVE_CAMPAIGN_KEY).equals(false)) {
+							continue;
+						}
+						sps.add(ps.getPlayerId());
                         // }
 					}
 				}
@@ -1114,6 +1121,30 @@ public class DBPlayerManager implements PlayerService {
 		}
 
 		return res;
+	}
+
+	@Override
+	public List<String> getPlayerIdsWithProposedChallenges(String gameId) {
+		HashSet<String> playerIdsSet = new HashSet<String>();
+		Date now = new Date();
+		// single challenges
+		HashSet<String> scplayerIdsSet = new HashSet<String>();
+		List<ChallengeConceptPersistence> listSC = challengeConceptRepo.getProposedChallengePlayerIds(gameId, now, ChallengeConcept.ChallengeState.PROPOSED.name());
+		for (ChallengeConceptPersistence sc: listSC) {
+			scplayerIdsSet.add(sc.getPlayerId());
+		}
+	   //group challenges
+		HashSet<String> gcplayerIdsSet = new HashSet<String>();
+		List<GroupChallenge> listGC = groupChallengeRepo.getProposedChallengePlayerIds(gameId, now, ChallengeConcept.ChallengeState.PROPOSED.name());
+		for (GroupChallenge gc: listGC) {
+			for (Attendee att: gc.getAttendees()) {
+				gcplayerIdsSet.add(att.getPlayerId());
+			}
+		}
+		playerIdsSet.addAll(scplayerIdsSet);
+		playerIdsSet.addAll(gcplayerIdsSet);
+		ArrayList<String> playerIds = new ArrayList<>(playerIdsSet);
+		return playerIds;
 	}
 	
 	

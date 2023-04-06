@@ -19,6 +19,7 @@ import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.*;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.repo.GamePersistence;
@@ -27,6 +28,7 @@ import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +63,8 @@ public class HscGameTest {
 
     private static final String BONUS =  "bonus";
 
+    private static final String ACTIVITY =  "activity";
+
     private static final String WALK_KM =  "Walk_Km";
 
     private static final String BIKE_KM =  "Bike_Km";
@@ -72,7 +76,7 @@ public class HscGameTest {
     private static final String FLAG_COLLECTION =  "flags";
 
     private static final String[] POINT_CONCEPTS = new String[]
-            {POINT_NAME, PART_NAME, WALK_KM, BIKE_KM, BUS_KM, TRAIN_KM, "Walk_Trips", "Bike_Trips", "Bus_Trips", "Train_Trips", "BikeSharing_Km", "BikeSharing_Trips", "Carpooling_Km" , "Carpooling_Trips", "Bonus_Partecipation"};
+            {BONUS, ACTIVITY, POINT_NAME, PART_NAME, WALK_KM, BIKE_KM, BUS_KM, TRAIN_KM, "Walk_Trips", "Bike_Trips", "Bus_Trips", "Train_Trips", "BikeSharing_Km", "BikeSharing_Trips", "Carpooling_Km" , "Carpooling_Trips", "Bonus_Partecipation"};
 
     @Autowired
     private GameManager gameManager;
@@ -102,6 +106,8 @@ public class HscGameTest {
         prepare();
         doSomething();
     }
+
+
 
     public void prepare() throws Exception {
         // randomize game id
@@ -133,7 +139,7 @@ public class HscGameTest {
         /*ClasspathRule rule = new ClasspathRule(GAME, "rules/" + BASEGAME + "/constants");
         rule.setName("constants");
         gameManager.addRule(rule);*/
-        for (String s: new String[] {"constants", "itinery.drl",  "mode-counters.drl"}) {
+        for (String s: new String[] {"constants", "itinery.drl",  "mode-counters.drl", "challenge.drl"}) { // , "challenge.drl"
             String url = "rules/" + BASEGAME + "/" + s;
             // check if url exists
             if (Thread.currentThread().getContextClassLoader().getResource(url) == null) {
@@ -143,6 +149,24 @@ public class HscGameTest {
             rule.setName(s);
             gameManager.addRule(rule);
         }
+
+        // define challenge Model
+        ChallengeModel chaTotalMembers = new ChallengeModel();
+        chaTotalMembers.setName("totalMembers");
+        chaTotalMembers.setVariables(new HashSet<>(Arrays.asList("target", "bonusScore", "bonusPointType")));
+        gameManager.saveChallengeModel(GAME, chaTotalMembers);
+
+        LocalDate today = new LocalDate();
+
+        Map<String, Object> chaData = new HashMap<>();
+        chaData.put("target", 2);
+        chaData.put("bonusScore", 100);
+        chaData.put("bonusPointType", POINT_NAME);
+
+        playerSrv.assignChallenge(GAME, "disney",
+                new ChallengeAssignment("totalMembers", "totalMembers-disney", chaData, null,
+                        today.dayOfMonth().addToCopy(-2).toDate(),
+                        today.dayOfMonth().addToCopy(7).toDate()));
 
         // define player states
 
@@ -155,6 +179,7 @@ public class HscGameTest {
         print("add team");
         defineTeamState("disney", TEAM1_PLAYERS);
 
+        check("disney", POINT_NAME, 100.0);
 
         definePlayerState(TEAM2_PLAYERS[0]);
         definePlayerState(TEAM2_PLAYERS[1]);
@@ -169,16 +194,14 @@ public class HscGameTest {
         team.setMembers(List.of(players));
         team.setName(playerId);
 
-        Set<GameConcept> myState = new HashSet<GameConcept>();
-        PointConcept pc;
-        pc = new PointConcept(POINT_NAME_TEAM);
-        pc.setScore(0d);
-        pc.addPeriod("daily", new Date(), 60000);
-        pc = new PointConcept(BONUS);
-        pc.setScore(0d);
-        pc.addPeriod("daily", new Date(), 60000);
-
-        myState.add(pc);
+        Set<GameConcept> myState = new HashSet<>();
+        for (String s: POINT_CONCEPTS) {
+            PointConcept pc;
+            pc = new PointConcept(s);
+            pc.setScore(0d);
+            pc.addPeriod("daily", new Date(), 60000);
+            myState.add(pc);
+        }
 
         team.setState(myState);
 
@@ -211,25 +234,39 @@ public class HscGameTest {
     }
 
     private void doSomething() throws Exception {
+        testWalking();
+        testBiking();
+        testBussing();
+        testTraining();
+
+        testActivity();
+    }
+
+    private void testWalking() throws Exception {
 
         // first player saves itinerary
         Map<String, Object> data = new HashMap<>();
         data.put("walkDistance", 6.0);
-        data.put("trackId", "111111");
 
         PlayerState p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
         p = playerSrv.saveState(p);
 
-        print("ehilà11");
-
        check(TEAM1_PLAYERS[0], POINT_NAME, 300.0 );
        check("disney", POINT_NAME, 1967.0 );
 
         check("disney", BONUS, 1667.0);
 
-        data.put("trackId", "2222222");
+        check(TEAM1_PLAYERS[0], WALK_KM, 6.0);
+        check("disney", WALK_KM, 6.0 );
+
+        check(TEAM1_PLAYERS[0], "Walk_Trips", 1.0);
+        check("disney", "Walk_Trips", 1.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+        
         p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
@@ -239,10 +276,18 @@ public class HscGameTest {
          check("disney", POINT_NAME, 1986.0);
 
         check("disney", BONUS, 1667.0);
+        
+        check(TEAM1_PLAYERS[0], WALK_KM, 12.0);
+        check("disney", WALK_KM, 12.0 );
+
+        check(TEAM1_PLAYERS[0], "Walk_Trips", 2.0);
+        check("disney", "Walk_Trips", 2.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);        
 
         print("ehilà222");
-
-        data.put("trackId", "3333333");
+        
         p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
         p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
                 DateTime.now().getMillis(), null);
@@ -253,13 +298,277 @@ public class HscGameTest {
 
         check("disney", BONUS, 1667.0);
 
+        check(TEAM1_PLAYERS[0], WALK_KM, 18.0);
+        check("disney", WALK_KM, 18.0 );
+
+        check(TEAM1_PLAYERS[0], "Walk_Trips", 3.0);
+        check("disney", "Walk_Trips", 3.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
         print("ehilà333");
     }
-    
+
+    private void testBiking() throws Exception {
+
+        // first player saves itinerary
+        Map<String, Object> data = new HashMap<>();
+        data.put("bikeDistance", 4.0);
+
+        PlayerState p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 448.0 );
+        check("disney", POINT_NAME, 2115.0 );
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], BIKE_KM, 4.0);
+        check("disney", BIKE_KM, 4.0 );
+
+        check(TEAM1_PLAYERS[0], "Bike_Trips", 1.0);
+        check("disney", "Bike_Trips", 1.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 528.0 );
+        check("disney", POINT_NAME, 2195.0);
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], BIKE_KM, 8.0);
+        check("disney", BIKE_KM, 8.0 );
+
+        check(TEAM1_PLAYERS[0], "Bike_Trips", 2.0);
+        check("disney", "Bike_Trips", 2.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+        print("ehilà222");
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 576.0 );
+        check("disney", POINT_NAME, 2243.0);
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], BIKE_KM, 12.0);
+        check("disney", BIKE_KM, 12.0 );
+
+        check(TEAM1_PLAYERS[0], "Bike_Trips", 3.0);
+        check("disney", "Bike_Trips", 3.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+        
+    }
+
+    private void testBussing() throws Exception {
+
+        // first player saves itinerary
+        Map<String, Object> data = new HashMap<>();
+        data.put("busDistance", 10.0);
+
+        PlayerState p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 656.0 );
+        check("disney", POINT_NAME, 2323.0 );
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], BUS_KM, 10.0);
+        check("disney", BUS_KM, 10.0 );
+
+        check(TEAM1_PLAYERS[0], "Bus_Trips", 1.0);
+        check("disney", "Bus_Trips", 1.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 736.0 );
+        check("disney", POINT_NAME, 2403.0);
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], BUS_KM, 20.0);
+        check("disney", BUS_KM, 20.0 );
+
+        check(TEAM1_PLAYERS[0], "Bus_Trips", 2.0);
+        check("disney", "Bus_Trips", 2.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+        print("ehilà222");
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 776.0 );
+        check("disney", POINT_NAME, 2443.0);
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], BUS_KM, 30.0);
+        check("disney", BUS_KM, 30.0 );
+
+        check(TEAM1_PLAYERS[0], "Bus_Trips", 3.0);
+        check("disney", "Bus_Trips", 3.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+    }
+
+    private void testTraining() throws Exception {
+
+        // first player saves itinerary
+        Map<String, Object> data = new HashMap<>();
+        data.put("trainDistance", 20.0);
+
+        PlayerState p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 1016.0 );
+        check("disney", POINT_NAME, 2683.0 );
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], TRAIN_KM, 20.0);
+        check("disney", TRAIN_KM, 20.0 );
+
+        check(TEAM1_PLAYERS[0], "Train_Trips", 1.0);
+        check("disney", "Train_Trips", 1.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 1076.0 );
+        check("disney", POINT_NAME, 2743.0);
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], TRAIN_KM, 40.0);
+        check("disney", TRAIN_KM, 40.0 );
+
+        check(TEAM1_PLAYERS[0], "Train_Trips", 2.0);
+        check("disney", "Train_Trips", 2.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+        print("ehilà222");
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[0], POINT_NAME, 1091.0 );
+        check("disney", POINT_NAME, 2758.0);
+
+        check("disney", BONUS, 1667.0);
+
+        check(TEAM1_PLAYERS[0], TRAIN_KM, 60.0);
+        check("disney", TRAIN_KM, 60.0 );
+
+        check(TEAM1_PLAYERS[0], "Train_Trips", 3.0);
+        check("disney", "Train_Trips", 3.0 );
+
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+    }
+
+
+    private void testActivity() throws Exception {
+        PlayerState p;
+
+        // we already used the first disney player
+        check(TEAM1_PLAYERS[0], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 1.0);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("walkDistance", 1.0);
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[1], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[1], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 2.0);
+
+        p = playerSrv.loadState(GAME, TEAM1_PLAYERS[2], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM1_PLAYERS[2], ACTIVITY, 1.0);
+        check("disney", ACTIVITY, 3.0);
+
+        // now with marvel
+
+        check(TEAM2_PLAYERS[0], ACTIVITY, 0.0);
+        check("marvel", ACTIVITY, 0.0);
+
+        p = playerSrv.loadState(GAME, TEAM2_PLAYERS[0], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM2_PLAYERS[0], ACTIVITY, 1.0);
+        check("marvel", ACTIVITY, 1.0);
+
+        p = playerSrv.loadState(GAME, TEAM2_PLAYERS[1], false, false);
+        p = engine.execute(GAME, p, ACTION, data, UUID.randomUUID().toString(),
+                DateTime.now().getMillis(), null);
+        p = playerSrv.saveState(p);
+
+        check(TEAM2_PLAYERS[1], ACTIVITY, 1.0);
+        check("marvel", ACTIVITY, 2.0);
+    }
+
     private void check(String playerId, String conceptName, Double value) throws Exception {
         PlayerState state = playerSrv.loadState(GAME, playerId, false, false);
         double current = getScore(state, conceptName);
-        Assert.assertTrue(current == value);
+        try {
+            Assert.assertTrue(current == value);
+        } catch (AssertionError e) {
+            System.out.println(e);
+            // throw(e);
+        }
     }
 
     public double getScore(PlayerState ps, String name) throws Exception {

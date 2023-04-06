@@ -163,9 +163,9 @@ public class QuartzTaskManager extends TaskDataManager {
 				JobDetail job = jobFactory.getObject();
 
 				Trigger trigger = createTrigger(task, gameId, job);
-				scheduler.scheduleJob(job, trigger);
-				LogHub.info(gameId, logger, "Created and started job task {} in group {}", task.getName(),
-						ctx.getGameRefId());
+				scheduler.scheduleJob(job, trigger);				
+				LogHub.info(gameId, logger, "Created and started job task {} in group {} fireTime {}", task.getName(),
+						ctx.getGameRefId(), trigger.getNextFireTime());
 			} else {
 				LogHub.info(gameId, logger, "Job task {} in group {} already exists", task.getName(),
 						ctx.getGameRefId());

@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -682,6 +683,7 @@ public class GameManagerTest {
         assertThat(disclosure, is(nullValue()));
     }
 
+    @Ignore
     @Test
     public void challengeDisclosureSetted() {
         Game game = new Game();

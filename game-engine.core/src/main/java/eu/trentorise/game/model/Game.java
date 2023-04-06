@@ -78,14 +78,16 @@ public class Game {
 	public Date nextChallengeDisclosureDate(Date from) {
 		ChallengeDisclosure disclosure = settings.getChallengeSettings().getDisclosure();
 		if (disclosure.getFrequency() != null) {
-			final Date disclosureStart = disclosure.getStartDate();
+//			final Date disclosureStart = disclosure.getStartDate();
 			final TimeInterval frequency = disclosure.getFrequency();
-
-			LocalDateTime cursorDate = new LocalDateTime(disclosureStart);
-			final DateTime fromDateTime = new DateTime(from);
-			while (cursorDate.toDateTime().isBefore(fromDateTime)) {
-				cursorDate = cursorDate.plus(periodFromFrequency(frequency));
-			}
+//			LocalDateTime cursorDate = new LocalDateTime(disclosureStart);
+//			final DateTime fromDateTime = new DateTime(from);
+//			while (cursorDate.toDateTime().isBefore(fromDateTime)) {
+//				cursorDate = cursorDate.plus(periodFromFrequency(frequency));
+//			}
+			LocalDateTime cursorDate = new LocalDateTime(from);
+			cursorDate = cursorDate.plus(periodFromFrequency(frequency).toPeriod());
+			
 			return cursorDate.toDate();
 		} else {
 			return null;

@@ -1052,6 +1052,34 @@ public class CityTest {
 		
 	}
 	
+	@Test
+	public void testSingleChallengeDisclosureDate() throws Exception {
+		
+		Game game = defineGame();
+		game.getSettings().getChallengeSettings().getDisclosure()
+          .setStartDate(new Date());
+		game.getSettings().getChallengeSettings().getDisclosure()
+          .setFrequency(new TimeInterval(-1, TimeUnit.MINUTE));
+		gameManager.saveGameDefinition(game);
+		
+		
+		DateTime startOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(1);
+		DateTime endOfWeek = DateTime.now().weekOfWeekyear().getDateTime().plusDays(7);
+		
+		ChallengeAssignment singleChallenge = new ChallengeAssignment();
+		singleChallenge.setChallengeType("PROPOSED");
+		singleChallenge.setInstanceName("firstProposedWithHideTrue");
+		singleChallenge.setModelName("prize");
+		singleChallenge.setPriority(5);
+		singleChallenge.setStart(startOfWeek.toDate());
+		singleChallenge.setEnd(endOfWeek.toDate());
+		singleChallenge.setHide(true);
+		playerSrv.assignChallenge(GAME, "B", singleChallenge);
+		
+		Assert.assertEquals(1, challengeSrv.readChallenges(GAME, "B", true).size());
+		
+	}
+	
 	private void init() throws Exception {
 		// define game
 		Game game = defineGame();

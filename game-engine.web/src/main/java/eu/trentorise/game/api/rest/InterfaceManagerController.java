@@ -906,6 +906,17 @@ public class InterfaceManagerController {
 		return new GetOneResponse(playerState);
 	}
 
+	@GetMapping("/challenges/{gameId}/{playerId}/challenge/{instanceName}")
+	public GetOneResponse readChallenge(@PathVariable String gameId, @PathVariable String playerId,
+			@PathVariable String instanceName) {
+		gameId = decodePathVariable(gameId);
+		final String decodedPlayerId = decodePathVariable(playerId);
+		final String decodedInstanceName = decodePathVariable(instanceName);
+		ChallengeConceptPersistence challenge = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId, decodedPlayerId, decodedInstanceName);
+		challenge.setId(challenge.getName());
+		return new GetOneResponse(challenge);
+	}
+	
 	@DeleteMapping("/challenges/{gameId}/{playerId}/challenge/{instanceName}")
 	public GetOneResponse deleteChallenge(@PathVariable String gameId, @PathVariable String playerId,
 			@PathVariable String instanceName) {
@@ -929,6 +940,24 @@ public class InterfaceManagerController {
 		throw new IllegalArgumentException(String.format("challenge %s doesn't exist in state of player %s",
 				decodedInstanceName, decodedPlayerId));
 	}
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/challenges/{gameId}/{playerId}/challenge/{instanceName}", consumes = {
+	"application/json" }, produces = { "application/json" })
+    public GetOneResponse updateCustomData(@PathVariable String gameId,
+            @PathVariable String playerId, @RequestBody ChallengeConceptPersistence challenge) {
+        ChallengeConceptPersistence saved = challengeConceptRepo.findByGameIdAndPlayerIdAndName(gameId, playerId, challenge.getName());
+        if (saved == null) {
+            throw new IllegalArgumentException(
+                    String.format("challenge %s doesn't exist in game %s", playerId, gameId));
+        } else {
+        	saved.getConcept().setStart(challenge.getConcept().getStart());
+        	saved.getConcept().setEnd(challenge.getConcept().getEnd());
+        	saved.getConcept().setVisibility(challenge.getConcept().getVisibility());
+            saved = challengeConceptRepo.save(saved);
+            saved.setId(saved.getName());
+            return new GetOneResponse(saved);
+        }
+    }
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/downloadJsonDB", produces = {"application/json" })
 	public @ResponseBody HttpEntity<byte[]> downloadJsonDB() throws Exception {

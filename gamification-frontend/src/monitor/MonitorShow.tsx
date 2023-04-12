@@ -1,13 +1,14 @@
 import {
     ShowBase, useShowContext,
-    useStore, ArrayField, Datagrid, TextField, RichTextField, DateField, useRecordContext, useRedirect, useDelete, Confirm, useNotify, useRefresh} from 'react-admin';
+    useStore, ArrayField, Datagrid, TextField, RichTextField, DateField, useRecordContext, useDelete, Confirm, useNotify, useRefresh, EditButton
+} from 'react-admin';
 import { Box, Card, CardContent, Typography, Button } from '@mui/material';
 import { dateFormatter } from '../misc/Utils';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import React from 'react';
 
 
-export const MonitorShow = () => {
+export const MonitorShow = (params: any) => {
     const [gameId] = useStore('game.selected');
     const options = { meta: { gameId: gameId } };
 
@@ -85,7 +86,7 @@ const MonitorShowContent = () => {
                             <Box>
                                 <Typography sx={{ fontWeight: 400, color: 'rgb(55,159,244)', borderBottom: 1, borderColor: 'grey.300' }}>Challenges</Typography>
                                 <ArrayField source="state.ChallengeConcept">
-                                    <Datagrid size='small' sx={{ '& .RaDatagrid-headerCell': { fontWeight: 600 }}} bulkActionButtons={false}>
+                                    <Datagrid size='small' style={{ tableLayout: 'fixed', wordWrap: 'break-word' }} bulkActionButtons={false}>
                                         <TextField source="name" />
                                         <TextField source="modelName" />
                                         <TextField source="state" />
@@ -197,7 +198,7 @@ const CustomDeleteButton = (params: any) => {
     const handleClick = () => setOpen(true);
     const [deleteOne, { isLoading }] = useDelete(
         'challenges',
-        { id: record.name, meta: { gameId: gameId, playerId: params.playerId }},
+        { id: record.name, meta: { gameId: gameId, playerId: params.playerId } },
         {
             onSuccess: () => {
                 notify(`Challenge deleted successfully`);
@@ -212,21 +213,30 @@ const CustomDeleteButton = (params: any) => {
     const handleDialogClose = () => setOpen(false);
     const handleConfirm = (data: any) => {
         deleteOne();
-        setOpen(false);      
+        setOpen(false);
     };
 
-    return (
-        <>
-            <Button disabled={isLoading} endIcon={<DeleteOutlineIcon sx={{ color: 'red' }} />} onClick={handleClick} />
-            <Confirm
-                isOpen={open}
-                loading={isLoading}
-                title={title}
-                content={content}
-                onConfirm={handleConfirm}
-                onClose={handleDialogClose}
-                onTouchCancel={handleDialogClose}
-            />
-        </>
-    );
+    if (!record.group) {
+        return (
+            <>
+                <span>
+                    {/* <Button disabled={isLoading} endIcon={<DeleteOutlineIcon sx={{ color: 'red' }} />} onClick={handleClick} /> */}
+                    {/* create library of custom edit dialog  */}
+                    <EditButton to={"/challenges/" + record.name + "?playerId=" + params.playerId} label="" />
+                </span>
+                <Confirm
+                    isOpen={open}
+                    loading={isLoading}
+                    title={title}
+                    content={content}
+                    onConfirm={handleConfirm}
+                    onClose={handleDialogClose}
+                    onTouchCancel={handleDialogClose}
+                />
+            </>
+        );
+    } else {
+        return null;
+    }
+
 }

@@ -47,6 +47,8 @@ export const TaskInputs = () => {
             <NumberInput label="Delay" source="task.delayValue"/>
             &nbsp;
             <SelectInput label="Delay unit"  source="task.delayUnit" choices={[{ id: 'DAY', name: 'DAY' }, { id: 'HOUR', name: 'HOUR' }, { id: 'MINUTE', name: 'MINUTE' }]} />
+            &nbsp;
+            <TextInput label="Cron expression" source="task.cronExpression" fullWidth />
             </Box>
             }
             </FormDataConsumer>              

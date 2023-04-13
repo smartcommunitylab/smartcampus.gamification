@@ -274,6 +274,9 @@ public class Converter {
 
 				if (StringUtils.isBlank(t.getDelayUnit())) {
 					task = new IncrementalClassificationTask(pc, t.getPeriodName(), t.getClassificationName());
+					if (t.getCronExpression() != null) {
+						task.getSchedule().setCronExpression(t.getCronExpression());
+					}
 				} else {
 					task = new IncrementalClassificationTask(pc, t.getPeriodName(), t.getClassificationName(),
 							new TimeInterval(t.getDelayValue(), TimeUnit.valueOf(t.getDelayUnit())));
@@ -299,10 +302,12 @@ public class Converter {
 			result.setItemsToNotificate(classification.getItemsToNotificate());
 			result.setName(classification.getName());
 			result.setGameId(gameId);
+			result.setCronExpression(classification.getSchedule().getCronExpression() != null ? classification.getSchedule().getCronExpression() : null);
 			if (classification.getSchedule() != null && classification.getSchedule().getDelay() != null) {
 				result.setDelayValue(classification.getSchedule().getDelay().getValue());
 				result.setDelayUnit(classification.getSchedule().getDelay().getUnit().toString());
 			}
+			
 		}
 
 		return result;

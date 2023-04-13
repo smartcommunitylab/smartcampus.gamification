@@ -78,6 +78,7 @@ function createTaskBody(data: any, gameId:any) {
             body['type'] = data.type;
             body['delayValue'] = data.task.delayValue;
             body['delayUnit'] = data.task.delayUnit;
+            body['cronExpression'] = data.task.cronExpression;
             body['gameId'] = gameId;
         }    
         return body; 

@@ -42,6 +42,10 @@ const gamificationDataProvider = {
         if (resource === "game") {
             const gameId = params.meta.gameId;
             url = url + '/' + gameId;
+        } else if (resource === 'challenges') {
+            const gameId = params.meta.gameId;
+            const playerId = params.meta.playerId;
+            url = url + '/' + gameId + '/' + playerId + '/challenge/' + params.id;
         } else {
             const gameId = params.meta.gameId;
             url = url + '/' + gameId + '/' + params.id;
@@ -165,6 +169,12 @@ const gamificationDataProvider = {
         }
         if (resource === 'game') {
             body = JSON.stringify(params.data);
+        }
+        if (resource === 'challenges') {
+            const gameId = params.meta.gameId;
+            const playerId = params.meta.playerId;
+            body = JSON.stringify(params.data);
+            url = url + '/' + gameId + '/' + playerId + '/challenge/' + params.id;
         }
 
         return fetch(url, { method: 'PUT', headers: headers, body: body })

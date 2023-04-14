@@ -302,7 +302,9 @@ public class Converter {
 			result.setItemsToNotificate(classification.getItemsToNotificate());
 			result.setName(classification.getName());
 			result.setGameId(gameId);
-			result.setCronExpression(classification.getSchedule().getCronExpression() != null ? classification.getSchedule().getCronExpression() : null);
+			if (classification.getSchedule() != null && classification.getSchedule().getCronExpression() != null ) {
+				result.setCronExpression(classification.getSchedule().getCronExpression());
+			}
 			if (classification.getSchedule() != null && classification.getSchedule().getDelay() != null) {
 				result.setDelayValue(classification.getSchedule().getDelay().getValue());
 				result.setDelayUnit(classification.getSchedule().getDelay().getUnit().toString());

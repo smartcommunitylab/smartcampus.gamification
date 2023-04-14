@@ -218,13 +218,6 @@ public class DroolsEngine implements GameEngine {
             customData.add(stateCustomData);
         }
 
-        iter = ((QueryResults) results.getValue("retrieveNotifications")).iterator();
-        while (iter.hasNext()) {
-            Notification note = (Notification) iter.next().get("$notifications");
-            notificationSrv.notificate(note);
-            LogHub.info(gameId, logger, "send notification: {}", note.toString());
-        }
-
         iter = ((QueryResults) results.getValue("retrieveUpdateTeams")).iterator();
 
         if (iter.hasNext()) {
@@ -312,6 +305,18 @@ public class DroolsEngine implements GameEngine {
             stopWatch.stop("game execution", String.format("execution for game %s of player %s",
                     gameId, state.getPlayerId()));
         }
+        
+        boolean result = playerSrv.saveState(state) != null;
+        
+        iter = ((QueryResults) results.getValue("retrieveNotifications")).iterator();
+        while (iter.hasNext()) {
+            Notification note = (Notification) iter.next().get("$notifications");
+            notificationSrv.notificate(note);
+            LogHub.info(gameId, logger, "send notification: {}", note.toString());
+        }
+        
+        LogHub.info(gameId, logger, "player state updated: {}", result);
+        
         return state;
     }
 

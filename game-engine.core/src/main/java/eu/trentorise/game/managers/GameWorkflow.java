@@ -109,7 +109,7 @@ public class GameWorkflow implements Workflow {
         
         // Game notification.
         if (Utils.isNotEmpty(g.getNotifyPCName())) {
-        	sendGameNotificationforPlayer(g, actionId, data, oldState, newState);
+        	sendGameNotificationforPlayer(g, actionId, data, oldState, newState, executionMoment);
         }
         
         // update score of all player active groupChallenges
@@ -171,7 +171,7 @@ public class GameWorkflow implements Workflow {
     }
 
 	private void sendGameNotificationforPlayer(Game g, String actionId, Map<String, Object> data, PlayerState oldState,
-			PlayerState newState) {
+			PlayerState newState, long executionMoment) {
 		PointConcept oldPC = oldState.pointConcept(g.getNotifyPCName());
 		PointConcept newPC = newState.pointConcept(g.getNotifyPCName());
 		boolean samePCScore = oldPC.getScore().equals(newPC.getScore());
@@ -184,6 +184,7 @@ public class GameWorkflow implements Workflow {
 			pcNotification.setActionId(actionId);
 			pcNotification.setDataPayLoad(data);
 			pcNotification.setDelta(newPC.getScore() - oldPC.getScore());
+			pcNotification.setTimestamp(executionMoment);
 			notificationSrv.notificate(pcNotification);
 			LogHub.info(g.getId(), logger, "send game notification: {}", pcNotification.toString());
 		}

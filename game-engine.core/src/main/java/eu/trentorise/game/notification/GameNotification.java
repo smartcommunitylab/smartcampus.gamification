@@ -54,8 +54,8 @@ public class GameNotification extends Notification {
 	
 	@Override
 	public String toString() {
-		return String.format("[gameId=%s, playerId=%s, pointConceptName=%s, actionId=%s, score=%s, delta=%s, dataPayLoad=%s]",
-				getGameId(), getPlayerId(), pointConceptName, actionId, score, delta, dataPayLoad);
+		return String.format("[gameId=%s, playerId=%s, executionMoment=%s, pointConceptName=%s, actionId=%s, score=%s, delta=%s, dataPayLoad=%s]",
+				getGameId(), getPlayerId(), getTimestamp(), pointConceptName, actionId, score, delta, dataPayLoad);
 	}
 
 }

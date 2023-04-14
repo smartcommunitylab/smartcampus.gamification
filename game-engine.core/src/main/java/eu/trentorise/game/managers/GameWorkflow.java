@@ -100,7 +100,7 @@ public class GameWorkflow implements Workflow {
         PlayerState newState = gameEngine.execute(gameId, playerState, actionId, data, executionId,
                 executionMoment, factObjects);
 
-        boolean result = playerSrv.saveState(newState) != null;
+//        boolean result = playerSrv.saveState(newState) != null;
 
         if (isSurveyCompleteAction(actionId)) {
             StatsLogger.logSurveyCompleted(g.getDomain(), gameId, userId, executionId,
@@ -165,7 +165,7 @@ public class GameWorkflow implements Workflow {
             traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
             LogHub.info(gameId, logger, "Traced player {} move", userId);
         }
-        LogHub.info(gameId, logger, "Process terminated: {}", result);
+        LogHub.info(gameId, logger, "Process terminated");
         StatsLogger.logEndGameAction(g.getDomain(), gameId, userId, executionId, executionMoment,
                 System.currentTimeMillis());
     }

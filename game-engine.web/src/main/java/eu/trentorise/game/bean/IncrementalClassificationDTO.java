@@ -4,6 +4,7 @@ public class IncrementalClassificationDTO extends ClassificationDTO {
 	private String periodName;
 	private int delayValue;
 	private String delayUnit;
+	private String cronExpression;
 
 	public IncrementalClassificationDTO() {
 		super.setType("incremental");
@@ -31,6 +32,14 @@ public class IncrementalClassificationDTO extends ClassificationDTO {
 
 	public void setDelayUnit(String delayUnit) {
 		this.delayUnit = delayUnit;
+	}
+
+	public String getCronExpression() {
+		return cronExpression;
+	}
+
+	public void setCronExpression(String cronExpression) {
+		this.cronExpression = cronExpression;
 	}
 
 }

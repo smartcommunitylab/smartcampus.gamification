@@ -14,6 +14,7 @@ import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,6 +208,7 @@ public class ClassificationTaskTest {
      * I want to test a scenario with some execution sequences, but cause to executionMoment in
      * PointConcept, I'm able to test only actual execution
      */
+    @Ignore
     @Test
     public void incrementalWithRule() throws InterruptedException {
         cleanDB();

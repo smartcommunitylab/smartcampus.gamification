@@ -473,6 +473,10 @@ public class InterfaceManagerController {
 						} else {
 							ct.getSchedule().setDelay(null);
 						}
+						
+						if (StringUtils.isNotBlank(task.getCronExpression())) {
+							ct.getSchedule().setCronExpression(task.getCronExpression());
+						}
 
 						if (StringUtils.isNotBlank(task.getPeriodName())) {
 							if (ct.getPeriodName() == null || !ct.getPeriodName().equals(task.getPeriodName())

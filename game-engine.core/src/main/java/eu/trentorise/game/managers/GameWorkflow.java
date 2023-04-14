@@ -100,7 +100,7 @@ public class GameWorkflow implements Workflow {
         PlayerState newState = gameEngine.execute(gameId, playerState, actionId, data, executionId,
                 executionMoment, factObjects);
 
-        boolean result = playerSrv.saveState(newState) != null;
+//        boolean result = playerSrv.saveState(newState) != null;
 
         if (isSurveyCompleteAction(actionId)) {
             StatsLogger.logSurveyCompleted(g.getDomain(), gameId, userId, executionId,
@@ -109,7 +109,7 @@ public class GameWorkflow implements Workflow {
         
         // Game notification.
         if (Utils.isNotEmpty(g.getNotifyPCName())) {
-        	sendGameNotificationforPlayer(g, actionId, data, oldState, newState);
+        	sendGameNotificationforPlayer(g, actionId, data, oldState, newState, executionMoment);
         }
         
         // update score of all player active groupChallenges
@@ -165,13 +165,13 @@ public class GameWorkflow implements Workflow {
             traceSrv.tracePlayerMove(oldState, newState, data, executionMoment);
             LogHub.info(gameId, logger, "Traced player {} move", userId);
         }
-        LogHub.info(gameId, logger, "Process terminated: {}", result);
+        LogHub.info(gameId, logger, "Process terminated");
         StatsLogger.logEndGameAction(g.getDomain(), gameId, userId, executionId, executionMoment,
                 System.currentTimeMillis());
     }
 
 	private void sendGameNotificationforPlayer(Game g, String actionId, Map<String, Object> data, PlayerState oldState,
-			PlayerState newState) {
+			PlayerState newState, long executionMoment) {
 		PointConcept oldPC = oldState.pointConcept(g.getNotifyPCName());
 		PointConcept newPC = newState.pointConcept(g.getNotifyPCName());
 		boolean samePCScore = oldPC.getScore().equals(newPC.getScore());
@@ -184,6 +184,7 @@ public class GameWorkflow implements Workflow {
 			pcNotification.setActionId(actionId);
 			pcNotification.setDataPayLoad(data);
 			pcNotification.setDelta(newPC.getScore() - oldPC.getScore());
+			pcNotification.setTimestamp(executionMoment);
 			notificationSrv.notificate(pcNotification);
 			LogHub.info(g.getId(), logger, "send game notification: {}", pcNotification.toString());
 		}

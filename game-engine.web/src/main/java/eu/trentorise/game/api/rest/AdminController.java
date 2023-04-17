@@ -67,11 +67,11 @@ public class AdminController {
             @RequestParam(required = false) String playerFilter) {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
-        final boolean mergeGroupChallenges = true;
+        final boolean mergeChallenges = true;
         final boolean hideHiddenChallenges = false;
         return converter
                 .convertPlayerState(playerSrv.loadState(gameId, playerId, true,
-                        mergeGroupChallenges, hideHiddenChallenges));
+                        mergeChallenges, mergeChallenges, hideHiddenChallenges));
     }
     
     @GetMapping("/exportJsonDB")

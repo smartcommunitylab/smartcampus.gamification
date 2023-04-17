@@ -884,7 +884,7 @@ public class InterfaceManagerController {
 		if (filter != null && !filter.isEmpty()) {
 			StatePersistence state = playerRepo.findByGameIdAndPlayerId(gameId, filter);
 			if (state != null) {
-				PlayerState ps = playerSrv.loadState(gameId, filter, true, true, false);
+				PlayerState ps = playerSrv.loadState(gameId, filter, true, true, true, false);
 				PlayerStateDTO temp = converter.convertPlayerState(ps);
 				temp.setId(ps.getPlayerId());
 				monitors.add(temp);
@@ -905,7 +905,7 @@ public class InterfaceManagerController {
 		gameId = decodePathVariable(gameId);
 		playerId = decodePathVariable(playerId);
 		PlayerStateDTO playerState = converter
-				.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, false));
+				.convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true, false));
 		playerState.setId(playerState.getPlayerId());
 		return new GetOneResponse(playerState);
 	}

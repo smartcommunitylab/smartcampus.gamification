@@ -450,7 +450,7 @@ public class GameManager implements GameService {
         String executionId = UUID.randomUUID().toString();
         final String gameId = game.getId();
         pagedPlayerIds.forEach(id -> {
-            PlayerState player = playerSrv.loadState(gameId, id, false, true);
+            PlayerState player = playerSrv.loadState(gameId, id, true, true, false, true);
             player.challenges().forEach(challenge -> {
                 if (challenge.getEnd() != null && challenge.getEnd().before(deadline)
                         && challenge.persistedState() != ChallengeState.COMPLETED

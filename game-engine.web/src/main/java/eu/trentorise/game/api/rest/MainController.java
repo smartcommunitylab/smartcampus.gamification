@@ -101,7 +101,7 @@ public class MainController {
         gameId = decodePathVariable(gameId);
         playerId = decodePathVariable(playerId);
         return converter
-                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true));
+                .convertPlayerState(playerSrv.loadState(gameId, playerId, true, true, true, true));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/state/{gameId}",

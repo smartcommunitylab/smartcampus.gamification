@@ -118,27 +118,32 @@ public class DBPlayerManager implements PlayerService {
     
     public static final String ACTIVE_CAMPAIGN_KEY = "activePlayer";
 
-    public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeGroupChallenges) {
-        return loadState(gameId, playerId, upsert, mergeGroupChallenges, false);
+    public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeChallenges) {
+        return loadState(gameId, playerId, upsert,mergeChallenges, mergeChallenges, false);
     }
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert,
-            boolean mergeChallenges, boolean filterHiddenChallenges) {
+            boolean mergeSingleChallenges, boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
         eu.trentorise.game.repo.StatePersistence state =
                 playerRepo.findByGameIdAndPlayerId(gameId, playerId);
         PlayerState res = state == null ? (upsert ? new PlayerState(gameId, playerId) : null)
                 : isTeam(state) ? new TeamState(state) : new PlayerState(state);
               
         res = initDefaultLevels(initConceptsStructure(res, gameId), gameId);
-        if (mergeChallenges) {
+        
+        if (mergeSingleChallenges) {
         	List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerId);
     		res.loadChallengeConcepts(listCcs);
-            res = mergeGroupChallenges(res, gameId);
-            
-            if (filterHiddenChallenges) {
-                res = filterHiddenChallenges(res);
-            }
-        }       
+        }
+        
+        if (mergeGroupChallenges) {
+        	res = mergeGroupChallenges(res, gameId);
+        	
+        }
+        
+        if (filterHiddenChallenges) {
+            res = filterHiddenChallenges(res);
+        }
 
         return res;
     }
@@ -296,7 +301,7 @@ public class DBPlayerManager implements PlayerService {
     }
 
     public Page<PlayerState> loadStates(String gameId, Pageable pageable,
-            boolean mergeGroupChallenges, boolean filterHiddenChallenges) {
+            boolean mergeChallenges, boolean filterHiddenChallenges) {
         StopWatch stopWatch =
                 LogManager.getLogger(StopWatch.DEFAULT_LOGGER_NAME).getAppender("perf-file") != null
                         ? new Log4JStopWatch() : null;
@@ -308,7 +313,7 @@ public class DBPlayerManager implements PlayerService {
         for (StatePersistence state : states) {
             PlayerState playerState = initDefaultLevels(
                     initConceptsStructure(new PlayerState(state), gameId), gameId);
-            if (mergeGroupChallenges) {
+            if (mergeChallenges) {
             	playerState = mergeGroupChallenges(playerState, gameId);
             	List<ChallengeConceptPersistence> listCcs = challengeConceptRepo.findByGameIdAndPlayerId(gameId, playerState.getPlayerId());
             	playerState.loadChallengeConcepts(listCcs);
@@ -327,8 +332,8 @@ public class DBPlayerManager implements PlayerService {
     }
 
     public Page<PlayerState> loadStates(String gameId, Pageable pageable,
-            boolean mergeGroupChallenges) {
-        return loadStates(gameId, pageable, mergeGroupChallenges, false);
+            boolean mergeChallenges) {
+        return loadStates(gameId, pageable, mergeChallenges, false);
     }
 
     // TODO: method use only by a test, investigate
@@ -1146,6 +1151,5 @@ public class DBPlayerManager implements PlayerService {
 		ArrayList<String> playerIds = new ArrayList<>(playerIdsSet);
 		return playerIds;
 	}
-	
 	
 }

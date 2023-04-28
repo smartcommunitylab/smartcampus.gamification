@@ -9,6 +9,7 @@ stages:
   - test
   - deploy-dev
   - deploy-frontend-dev
+  - deploy-frontend-prod
   - deploy-test
   - deploy-prod
 
@@ -122,7 +123,7 @@ backend-container-build:
   artifacts:
     expire_in: 1 week
 
-frontend-container-build:
+frontend-container-build-dev:
   stage: container-build
   variables:
     BUILDKIT_PROGRESS: plain
@@ -135,6 +136,22 @@ frontend-container-build:
     - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
   only:
     - playAndGo-dev-v2
+  artifacts:
+    expire_in: 1 week
+
+frontend-container-build-prod:
+  stage: container-build
+  variables:
+    BUILDKIT_PROGRESS: plain
+    DOCKER_BUILDKIT: 1 
+  script:
+    - docker login -u $DHUB_USER -p $DHUB_PASS
+    - cd gamification-frontend
+    - docker build -f Dockerfile --build-arg REACT_APP_API_ENDPOINT=https://ge.playngo.it/gamification -t $CONTAINER_FRONTEND_IMAGE -t $CONTAINER_FRONTEND_IMAGE_LATEST .
+    - docker push $CONTAINER_FRONTEND_IMAGE
+    - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
+  only:
+    - playAndGo-prod-v2
   artifacts:
     expire_in: 1 week
 
@@ -206,5 +223,19 @@ deploy-prod:
     - echo "deploy backend"
     - kubectl -n playngo-prod set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
     - kubectl -n playngo-prod rollout status deployment gamification-engine
+  only:
+    - playAndGo-prod-v2
+
+deploy-frontend-prod:
+  stage: deploy-frontend-prod
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  environment:
+    name: platform-new
+  script:
+    - echo "deploy frontend"
+    - kubectl -n playngo-prod set image deployments/gamification-frontend gamification-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
+    - kubectl -n playngo-prod rollout status deployment gamification-frontend
   only:
     - playAndGo-prod-v2

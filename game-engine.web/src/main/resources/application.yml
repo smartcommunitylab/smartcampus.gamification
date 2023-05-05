@@ -37,6 +37,8 @@ server:
       include-message: always
 
 spring:
+  application:
+    name: gamefication-engine
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true

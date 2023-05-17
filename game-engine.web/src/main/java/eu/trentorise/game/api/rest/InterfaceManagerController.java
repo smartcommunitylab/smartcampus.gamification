@@ -147,7 +147,7 @@ public class InterfaceManagerController {
 
 		Page<GameDTO> page = new PageImpl<GameDTO>(r.subList(min, max), pageable, r.size());
 
-		return r == null ? null : new GetListResponse(page.getSize(), page.getContent());
+		return r == null ? null : new GetListResponse(r.size(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/game/{gameId}", produces = { "application/json" })
@@ -214,7 +214,7 @@ public class InterfaceManagerController {
 
 		Page<ActionDTO> page = new PageImpl<ActionDTO>(actions.subList(min, max), pageable, actions.size());
 
-		return g == null ? null : new GetListResponse(page.getSize(), page.getContent());
+		return g == null ? null : new GetListResponse(actions.size(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/actions/{gameId}/{actions}", produces = {
@@ -276,7 +276,7 @@ public class InterfaceManagerController {
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
 		Page<PointConceptDTO> page = new PageImpl<PointConceptDTO>(pcs.subList(min, max), pageable, pcs.size());
-		return g == null ? null : new GetListResponse(page.getSize(), page.getContent());
+		return g == null ? null : new GetListResponse(pcs.size(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/pointconcepts/{gameId}/{pointId}", produces = {
@@ -609,7 +609,7 @@ public class InterfaceManagerController {
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
 		Page<BadgeCollectionConcept> page = new PageImpl<BadgeCollectionConcept>(badgeColl.subList(min, max), pageable,
 				badgeColl.size());
-		return badgeColl == null ? null : new GetListResponse(page.getSize(), page.getContent());
+		return badgeColl == null ? null : new GetListResponse(badgeColl.size(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/badges/{gameId}/{badges}", produces = {
@@ -676,7 +676,7 @@ public class InterfaceManagerController {
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
 		Page<RuleDTO> page = new PageImpl<RuleDTO>(rules.subList(min, max), pageable, rules.size());
-		return rules == null ? null : new GetListResponse(page.getSize(), page.getContent());
+		return rules == null ? null : new GetListResponse(rules.size(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/rules/{gameId}/{ruleUrl}", produces = { "application/json" })
@@ -757,7 +757,7 @@ public class InterfaceManagerController {
 				: pageable.getPageSize() * (pageable.getPageNumber() + 1);
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
 		Page<LevelDTO> page = new PageImpl<LevelDTO>(levels.subList(min, max), pageable, levels.size());
-		return levels == null ? null : new GetListResponse(page.getSize(), page.getContent());
+		return levels == null ? null : new GetListResponse(levels.size(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/levels/{gameId}/{levelName}", produces = {
@@ -836,7 +836,7 @@ public class InterfaceManagerController {
 		int min = pageable.getPageNumber() > totalpages ? max : pageable.getPageSize() * pageable.getPageNumber();
 		Page<ChallengeModel> page = new PageImpl<ChallengeModel>(challengeModelList.subList(min, max), pageable,
 				challengeModelList.size());
-		return challengeModelList == null ? null : new GetListResponse(page.getSize(), page.getContent());
+		return challengeModelList == null ? null : new GetListResponse(challengeModelList.size(), page.getContent());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/challengemodels/{gameId}/{id}", produces = {
@@ -889,6 +889,7 @@ public class InterfaceManagerController {
 				temp.setId(ps.getPlayerId());
 				monitors.add(temp);
 			}
+			return monitors == null ? null : new GetListResponse(monitors.size(), monitors);
 		} else {
 			Page<PlayerState> playerStates = playerSrv.loadStates(gameId, pageable, true, false);
 			for (PlayerState ps : playerStates) {
@@ -896,8 +897,9 @@ public class InterfaceManagerController {
 				temp.setId(ps.getPlayerId());
 				monitors.add(temp);
 			}
+			return monitors == null ? null : new GetListResponse((int) playerStates.getTotalElements(), monitors);
 		}
-		return monitors == null ? null : new GetListResponse(monitors.size(), monitors);
+		
 	}
 
 	@GetMapping(value = "/monitor/{gameId}/{playerId}")

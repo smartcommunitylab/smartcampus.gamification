@@ -25,7 +25,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoException;
-import com.mongodb.util.JSONParseException;
 
 import eu.trentorise.game.core.LogHub;
 import eu.trentorise.game.managers.ClassificationUtils;
@@ -77,11 +76,14 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 
 			result = mongo.find(q, StatePersistence.class);
 
-		} catch (JSONParseException | UncategorizedMongoDbException | MongoException | JsonProcessingException e) {
+		} catch (UncategorizedMongoDbException | MongoException | JsonProcessingException e) {
 			exceptionHandler(gameId, e);
 		}
 
-		long totalSize = mongo.count(q, StatePersistence.class);
+		Query qT = new BasicQuery(queryString);
+		qT.addCriteria(Criteria.where("gameId").is(gameId));
+		long totalSize = mongo.count(qT, StatePersistence.class);
+		
 		return new PageImpl<>(result, pageable, totalSize);
 	}
 
@@ -120,10 +122,14 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		}
 		try {
 			result = mongo.find(q, StatePersistence.class);
-		} catch (JSONParseException | UncategorizedMongoDbException | MongoException e) {
+		} catch (UncategorizedMongoDbException | MongoException e) {
 			exceptionHandler(gameId, e);
 		}
-		long totalSize = mongo.count(q, StatePersistence.class);
+		
+		Query qT = new BasicQuery(queryString);
+		qT.addCriteria(Criteria.where("gameId").is(gameId));
+		long totalSize = mongo.count(qT, StatePersistence.class);
+		
 		return new PageImpl<>(result, pageable, totalSize);
 	}
 
@@ -142,10 +148,14 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		}
 		try {
 			result = mongo.find(q, StatePersistence.class);
-		} catch (JSONParseException | UncategorizedMongoDbException | MongoException e) {
+		} catch (UncategorizedMongoDbException | MongoException e) {
 			exceptionHandler(gameId, e);
 		}
-		long totalSize = mongo.count(q, StatePersistence.class);
+		
+		Query qT = new BasicQuery(queryString);
+		qT.addCriteria(Criteria.where("gameId").is(gameId));
+		long totalSize = mongo.count(qT, StatePersistence.class);
+		
 		return new PageImpl<>(result, pageable, totalSize);
 
 	}
@@ -413,24 +423,25 @@ public class PlayerRepoImpl implements ExtendPlayerRepo {
 		Criteria criteria = Criteria.where("gameId").is(gameId).and("playerId").is(playerId);
 		Query query = new Query();
 		query.addCriteria(criteria);
-		query.fields().include("id").include("gameId").include("playerId").include("customData").include("inventory").include("levels").include("metaData");
-		
+		query.fields().include("id").include("gameId").include("playerId").include("customData").include("inventory")
+				.include("levels").include("metaData");
+
 		if (points != null && !points.isEmpty()) {
-			for (String pt: points) {
-				query.fields().include("concepts.PointConcept." + pt );				
-			}	
+			for (String pt : points) {
+				query.fields().include("concepts.PointConcept." + pt);
+			}
 		} else {
 			query.fields().include("concepts.PointConcept");
 		}
-		
+
 		if (badges != null && !badges.isEmpty()) {
-			for (String bg: badges) {
-				query.fields().include("concepts.BadgeCollectionConcept." + bg );				
+			for (String bg : badges) {
+				query.fields().include("concepts.BadgeCollectionConcept." + bg);
 			}
 		} else {
 			query.fields().include("concepts.BadgeCollectionConcept");
 		}
-		
+
 		List<StatePersistence> result = mongo.find(query, StatePersistence.class);
 
 		if (!result.isEmpty()) {

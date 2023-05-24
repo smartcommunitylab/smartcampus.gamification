@@ -16,7 +16,22 @@ public class RabbitConf {
 
     @Value("${rabbitmq.pngExchangeName}")
     private String geExchangeName;    
-        
+    
+    @Value("${spring.rabbitmq.host}")
+    private String host;    
+    
+    @Value("${spring.rabbitmq.port}")
+    private int port;    
+    
+    @Value("${spring.rabbitmq.username}")
+    private String user;
+    
+    @Value("${spring.rabbitmq.password}")
+    private String pass;
+    
+    @Value("${spring.rabbitmq.virtual-host}")
+    private String virtualHost;
+    
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
@@ -24,7 +39,13 @@ public class RabbitConf {
     
     @Bean
     public ConnectionFactory connectionFactory() {
-    	return new CachingConnectionFactory();
+    	CachingConnectionFactory  conn = new CachingConnectionFactory();
+    	conn.setHost(host);
+    	conn.setPort(port);
+    	conn.setUsername(user);
+    	conn.setPassword(pass);
+    	conn.setVirtualHost(virtualHost);
+    	return conn;
     }
     
     @Bean

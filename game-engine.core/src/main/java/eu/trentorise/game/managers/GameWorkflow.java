@@ -69,7 +69,7 @@ public class GameWorkflow implements Workflow {
     @Autowired
     private Environment env;
     
-	@Autowired
+//	@Autowired
 	Tracer tracing;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

@@ -43,8 +43,8 @@ public class RabbitMQManager {
 //	@Autowired
 //	private Environment env;
     
-	@Autowired
-    RabbitListenerEndpointRegistry listenerEdnpointRegistry;
+//	@Autowired
+//    RabbitListenerEndpointRegistry listenerEdnpointRegistry;
     
     @Autowired
     RabbitAdmin rabbitAdmin;

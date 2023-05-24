@@ -53,8 +53,8 @@ public class QueueGameWorkflow extends GameWorkflow {
             String executionId = UUID.randomUUID().toString();
         	Execution execution = new Execution(gameId, actionId, userId, executionId, executionMoment,
                     data, factObjects);
-//        	Runnable wrapExec = this.tracing.currentTraceContext().wrap(execution);
-            executor.execute(execution);
+        	Runnable wrapExec = this.tracing.currentTraceContext().wrap(execution);
+            executor.execute(wrapExec);
         } catch (Exception e) {
             LogHub.error(gameId, logger, "Exception in game queue execution", e);
         }

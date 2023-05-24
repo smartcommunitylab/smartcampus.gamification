@@ -28,6 +28,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -48,7 +49,6 @@ import eu.trentorise.game.model.GroupChallenge.PointConceptRef;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
 import eu.trentorise.game.model.core.ChallengeAssignment;
-import eu.trentorise.game.repo.ChallengeConceptPersistence;
 import eu.trentorise.game.repo.ChallengeConceptRepo;
 import eu.trentorise.game.repo.ChallengeModelRepo;
 import eu.trentorise.game.repo.GroupChallengeRepo;
@@ -56,7 +56,7 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, BraveAutoConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class ChallengeManagerTest {
 

@@ -14,11 +14,38 @@
 
 package eu.trentorise.game.managers;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
-import eu.trentorise.game.model.*;
+import eu.trentorise.game.model.BadgeCollectionConcept;
+import eu.trentorise.game.model.ChallengeModel;
+import eu.trentorise.game.model.Game;
+import eu.trentorise.game.model.PlayerState;
+import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.TeamState;
 import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.ClasspathRule;
 import eu.trentorise.game.model.core.GameConcept;
@@ -27,22 +54,9 @@ import eu.trentorise.game.repo.NotificationPersistence;
 import eu.trentorise.game.repo.StatePersistence;
 import eu.trentorise.game.services.GameEngine;
 import eu.trentorise.game.services.PlayerService;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
-import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class, BraveAutoConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class HscGameTest {
 

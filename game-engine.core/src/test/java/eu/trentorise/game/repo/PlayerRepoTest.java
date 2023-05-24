@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -43,7 +44,7 @@ import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, BraveAutoConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class PlayerRepoTest {
 

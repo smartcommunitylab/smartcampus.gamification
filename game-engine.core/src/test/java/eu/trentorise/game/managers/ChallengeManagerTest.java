@@ -36,6 +36,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.RabbitConf;
 import eu.trentorise.game.core.Clock;
 import eu.trentorise.game.model.ChallengeConcept.ChallengeState;
 import eu.trentorise.game.model.ChallengeInvitation;
@@ -56,7 +57,7 @@ import eu.trentorise.game.services.GameService;
 import eu.trentorise.game.services.PlayerService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, BraveAutoConfiguration.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, BraveAutoConfiguration.class, RabbitConf.class},
         loader = AnnotationConfigContextLoader.class)
 public class ChallengeManagerTest {
 

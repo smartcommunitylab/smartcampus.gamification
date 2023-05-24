@@ -48,6 +48,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.RabbitConf;
 import eu.trentorise.game.core.TaskSchedule;
 import eu.trentorise.game.core.config.TestCoreConfiguration;
 import eu.trentorise.game.model.BadgeCollectionConcept;
@@ -69,7 +70,7 @@ import eu.trentorise.game.services.PlayerService;
 import eu.trentorise.game.task.GeneralClassificationTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, TestCoreConfiguration.class, BraveAutoConfiguration.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, RabbitConf.class, TestCoreConfiguration.class, BraveAutoConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class GameEngineTest {
 

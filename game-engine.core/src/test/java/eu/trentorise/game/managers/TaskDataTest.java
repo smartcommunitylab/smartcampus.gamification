@@ -33,12 +33,13 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.RabbitConf;
 import eu.trentorise.game.core.AppContextProvider;
 import eu.trentorise.game.core.GameContext;
 import eu.trentorise.game.model.core.GameTask;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class, BraveAutoConfiguration.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class, RabbitConf.class, BraveAutoConfiguration.class }, loader = AnnotationConfigContextLoader.class)
 public class TaskDataTest {
 
 	@Autowired

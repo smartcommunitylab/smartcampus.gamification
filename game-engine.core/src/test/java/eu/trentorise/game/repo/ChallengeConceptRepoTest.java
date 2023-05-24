@@ -23,10 +23,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.RabbitConf;
 import eu.trentorise.game.model.ChallengeConcept;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class, BraveAutoConfiguration.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { AppConfig.class, MongoConfig.class, RabbitConf.class, BraveAutoConfiguration.class }, loader = AnnotationConfigContextLoader.class)
 public class ChallengeConceptRepoTest {
 
 	private static final String GAME = "TESTREPO";

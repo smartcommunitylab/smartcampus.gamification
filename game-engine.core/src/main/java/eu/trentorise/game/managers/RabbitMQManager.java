@@ -1,139 +1,160 @@
 package eu.trentorise.game.managers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
-import javax.annotation.PostConstruct;
-
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 import eu.trentorise.game.repo.NotificationPersistence;
 
 @Component
 public class RabbitMQManager {
 
+	@Value("${rabbitmq.enabled}")
 	private Boolean rabbitMQEnabled;
 
-	private String rabbitMQHost;
+//	private String rabbitMQHost;
 
-	private String rabbitMQVirtualHost;
+//	private String rabbitMQVirtualHost;
 
-	private Integer rabbitMQPort;
+//	private Integer rabbitMQPort;
 
-	private String rabbitMQUser;
+//	private String rabbitMQUser;
 
-	private String rabbitMQPassword;
+//	private String rabbitMQPassword;
 
+	@Value("${rabbitmq.pngExchangeName}")
 	private String rabbitMQExchangeName;
 
+	@Value("${rabbitmq.pngRoutingKeyPrefix}")
 	private String rabbitMQroutingKeyPrefix;
 
-	@Autowired
-	private Environment env;
+//	@Autowired
+//	private Environment env;
+    
+//	@Autowired
+//    RabbitListenerEndpointRegistry listenerEdnpointRegistry;
+    
+    @Autowired
+    RabbitAdmin rabbitAdmin;
+	
+    @Autowired
+	RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    @Qualifier("gameExchange")
+    DirectExchange gameExchange;
 
 	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(RabbitMQManager.class);
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	private Channel rabbitMQChannel;
-	private boolean initialized = false;
+//	private Channel rabbitMQChannel;
+//	private boolean initialized = false;
 
-	@PostConstruct
-	public synchronized void init() {
-		try {
-			rabbitMQEnabled = Boolean.parseBoolean(env.getProperty("rabbitmq.enabled"));
+//	@PostConstruct
+//	public synchronized void init() {
+//		try {
+//			rabbitMQEnabled = Boolean.parseBoolean(env.getProperty("rabbitmq.enabled"));
+//
+//			if (rabbitMQEnabled) {
+//				rabbitMQHost = env.getProperty("rabbitmq.host");
+//				rabbitMQVirtualHost = env.getProperty("rabbitmq.virtualhost");
+//				rabbitMQPort = Integer.parseInt(env.getProperty("rabbitmq.port"));
+//				rabbitMQUser = env.getProperty("rabbitmq.user");
+//				rabbitMQPassword = env.getProperty("rabbitmq.password");
+//				rabbitMQExchangeName = env.getProperty("rabbitmq.pngExchangeName");
+//				rabbitMQroutingKeyPrefix = env.getProperty("rabbitmq.pngRoutingKeyPrefix");
+//
+//				logger.info("Connecting to RabbitMQ");
+//
+//				ConnectionFactory connectionFactory = new ConnectionFactory();
+//				connectionFactory.setUsername(rabbitMQUser);
+//				connectionFactory.setPassword(rabbitMQPassword);
+//				connectionFactory.setVirtualHost(rabbitMQVirtualHost);
+//				connectionFactory.setHost(rabbitMQHost);
+//				connectionFactory.setPort(rabbitMQPort);
+//				connectionFactory.setAutomaticRecoveryEnabled(true);
+//				connectionFactory.setTopologyRecoveryEnabled(true);				
+//				
+//				Connection connection = connectionFactory.newConnection();
+//				rabbitMQChannel = connection.createChannel();
+//				rabbitMQChannel.basicQos(1);
+//				rabbitMQChannel.exchangeDeclare(rabbitMQExchangeName, "direct", true);
+//
+//				initialized = true;
+//			}
+//		} catch (Exception e) {
+//			logger.error("Problems connecting to RabbitMQ: " + e.getMessage());
+//		}
+//	}
 
-			if (rabbitMQEnabled) {
-				rabbitMQHost = env.getProperty("rabbitmq.host");
-				rabbitMQVirtualHost = env.getProperty("rabbitmq.virtualhost");
-				rabbitMQPort = Integer.parseInt(env.getProperty("rabbitmq.port"));
-				rabbitMQUser = env.getProperty("rabbitmq.user");
-				rabbitMQPassword = env.getProperty("rabbitmq.password");
-				rabbitMQExchangeName = env.getProperty("rabbitmq.pngExchangeName");
-				rabbitMQroutingKeyPrefix = env.getProperty("rabbitmq.pngRoutingKeyPrefix");
-
-				logger.info("Connecting to RabbitMQ");
-
-				ConnectionFactory connectionFactory = new ConnectionFactory();
-				connectionFactory.setUsername(rabbitMQUser);
-				connectionFactory.setPassword(rabbitMQPassword);
-				connectionFactory.setVirtualHost(rabbitMQVirtualHost);
-				connectionFactory.setHost(rabbitMQHost);
-				connectionFactory.setPort(rabbitMQPort);
-				connectionFactory.setAutomaticRecoveryEnabled(true);
-				connectionFactory.setTopologyRecoveryEnabled(true);				
-				
-				Connection connection = connectionFactory.newConnection();
-				rabbitMQChannel = connection.createChannel();
-				rabbitMQChannel.basicQos(1);
-				rabbitMQChannel.exchangeDeclare(rabbitMQExchangeName, "direct", true);
-
-				initialized = true;
-			}
-		} catch (Exception e) {
-			logger.error("Problems connecting to RabbitMQ: " + e.getMessage());
-		}
-	}
+	private void addNewQueueToExchange(String queueName, String routingKey) throws Exception {
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-queue-type", "quorum");
+        Queue queue = new Queue(queueName, true, false, false, args);
+        rabbitAdmin.declareQueue(queue);
+        rabbitAdmin.declareBinding(BindingBuilder.bind(queue).to(gameExchange).with(routingKey));
+    }
 
 	public void sendMessage(NotificationPersistence notification) {
 		try {
 			String gameId = (String) notification.getObj().get("gameId");
 			String queueId = "queue-" + gameId;
+			String routingKey = "game-" + gameId;
 
 			if (!rabbitMQEnabled) {
 				return;
 			}
-			if (!initialized) {
-				init();
-				if (!initialized) {
-					return;
-				}
-			}
+			
+			addNewQueueToExchange(queueId, routingKey);
 
-			createQueue(queueId, gameId);
-
-			byte[] messageBodyBytes = mapper.writeValueAsBytes(notification);
-			AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
-			propsBuilder.deliveryMode(2); // persistent message
-			rabbitMQChannel.basicPublish(rabbitMQExchangeName, "game-" + gameId, propsBuilder.build(),
-					messageBodyBytes);
+			String msg = mapper.writeValueAsString(notification);
+			rabbitTemplate.convertAndSend(rabbitMQExchangeName, routingKey, msg);
+			
+//			byte[] messageBodyBytes = mapper.writeValueAsBytes(notification);
+//			AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
+//			propsBuilder.deliveryMode(2); // persistent message
+//			rabbitMQChannel.basicPublish(rabbitMQExchangeName, "game-" + gameId, propsBuilder.build(),
+//					messageBodyBytes);
 		} catch (Exception e) {
 			logger.error("Error sending message.", e.getMessage());
 		}
 	}
 
-	private void createQueue(String queueId, String gameId) throws IOException {
-		Map<String, Object> args = new HashMap<>();
-		args.put("x-queue-type", "quorum");
-		String queueName = rabbitMQChannel.queueDeclare(queueId, true, false, false, args).getQueue();
-		rabbitMQChannel.queueBind(queueName, rabbitMQExchangeName, rabbitMQroutingKeyPrefix + "-" + gameId);
-		logger.info("Connected to RabbitMQ queues: " + queueName);
-	}
+//	private void createQueue(String queueId, String gameId) throws IOException {
+//		Map<String, Object> args = new HashMap<>();
+//		args.put("x-queue-type", "quorum");
+//		String queueName = rabbitMQChannel.queueDeclare(queueId, true, false, false, args).getQueue();
+//		rabbitMQChannel.queueBind(queueName, rabbitMQExchangeName, rabbitMQroutingKeyPrefix + "-" + gameId);
+//		logger.info("Connected to RabbitMQ queues: " + queueName);
+//	}
 
-	public Channel getRabbitMQChannel() {
-		return rabbitMQChannel;
-	}
+//	public Channel getRabbitMQChannel() {
+//		return rabbitMQChannel;
+//	}
 
-	public void drop(String queueId) throws IOException {
-		rabbitMQChannel.queueDelete(queueId);
-	}
+//	public void drop(String queueId) throws IOException {
+//		rabbitMQChannel.queueDelete(queueId);
+//	}
 
-	public void close() throws IOException, TimeoutException {
-		rabbitMQChannel.close();
-	}
+//	public void close() throws IOException, TimeoutException {
+//		rabbitMQChannel.close();
+//	}
 
-	public void setInitialized(boolean initialized) {
-		this.initialized = initialized;
-	}
+//	public void setInitialized(boolean initialized) {
+//		this.initialized = initialized;
+//	}
 
 }

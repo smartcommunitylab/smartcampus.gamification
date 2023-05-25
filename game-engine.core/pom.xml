@@ -172,9 +172,22 @@
 
 		<!-- RABBITMQ DEP -->
 		<dependency>
-			<groupId>com.rabbitmq</groupId>
-			<artifactId>amqp-client</artifactId>
-			<version>5.5.0</version>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit</artifactId>
+			<version>2.4.6</version>
+		</dependency>
+
+
+		<!-- Sleuth -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+			<version>3.1.1</version>
 		</dependency>
 
 		<!-- POSTGRES -->
@@ -298,11 +311,13 @@
 	<distributionManagement>
 		<repository>
 			<id>SmartCommunityLab-releases</id>
-			<url>https://repository.smartcommunitylab.it/content/repositories/releases</url>
+			<url>
+				https://repository.smartcommunitylab.it/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>SmartCommunityLab-snapshots</id>
-			<url>https://repository.smartcommunitylab.it/content/repositories/snapshots</url>
+			<url>
+				https://repository.smartcommunitylab.it/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 

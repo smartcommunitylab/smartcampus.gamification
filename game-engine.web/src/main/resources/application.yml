@@ -37,10 +37,18 @@ server:
       include-message: always
 
 spring:
+  application:
+    name: gamefication-engine
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
-
+  sleuth:
+    sampler:
+      probability: ${SAMPLER_PROB:}        
+  zipkin:
+    base-url: ${ZIPKIN_ENDPOINT:}
+    enabled: ${ZIPKIN_ENABLED:}
+    
 openapi:
    version: 1.0.0
    license: Apache License, Version 2.0

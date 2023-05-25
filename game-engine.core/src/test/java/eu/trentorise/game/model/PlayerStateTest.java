@@ -13,12 +13,14 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.RabbitConf;
 import eu.trentorise.game.model.ChallengeChoice.ChoiceState;
 import eu.trentorise.game.model.Inventory.ItemChoice;
 import eu.trentorise.game.model.Inventory.ItemChoice.ChoiceType;
@@ -26,7 +28,7 @@ import eu.trentorise.game.model.Level.Config;
 import eu.trentorise.game.model.Level.Threshold;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, RabbitConf.class, BraveAutoConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class PlayerStateTest {
 

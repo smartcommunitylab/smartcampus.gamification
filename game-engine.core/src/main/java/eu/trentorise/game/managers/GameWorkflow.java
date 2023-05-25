@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -67,6 +68,9 @@ public class GameWorkflow implements Workflow {
 
     @Autowired
     private Environment env;
+    
+	@Autowired
+	Tracer tracing;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 

@@ -3,6 +3,7 @@ import { RaRecord, Identifier } from 'react-admin';
 export interface Game extends RaRecord {
     name: string;
     id: string;
+    notifyPCName: string[]
 }
 
 export interface Badge extends RaRecord {

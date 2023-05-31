@@ -112,7 +112,7 @@ public class GameWorkflow implements Workflow {
         }
         
         // Game notification.
-        if (Utils.isNotEmpty(g.getNotifyPCName())) {
+        if (g.getNotifyPCName() != null && !g.getNotifyPCName().isEmpty()) {
         	sendGameNotificationforPlayer(g, actionId, data, oldState, newState, executionMoment);
         }
         
@@ -176,22 +176,30 @@ public class GameWorkflow implements Workflow {
 
 	private void sendGameNotificationforPlayer(Game g, String actionId, Map<String, Object> data, PlayerState oldState,
 			PlayerState newState, long executionMoment) {
-		PointConcept oldPC = oldState.pointConcept(g.getNotifyPCName());
-		PointConcept newPC = newState.pointConcept(g.getNotifyPCName());
-		boolean samePCScore = oldPC.getScore().equals(newPC.getScore());
-		if (!samePCScore) {
-			GameNotification pcNotification = new GameNotification();
-			pcNotification.setGameId(g.getId());
-			pcNotification.setPlayerId(oldState.getPlayerId());
-			pcNotification.setPointConceptName(g.getNotifyPCName());
-			pcNotification.setScore(newPC.getScore());
-			pcNotification.setActionId(actionId);
-			pcNotification.setDataPayLoad(data);
-			pcNotification.setDelta(newPC.getScore() - oldPC.getScore());
-			pcNotification.setTimestamp(executionMoment);
-			notificationSrv.notificate(pcNotification);
-			LogHub.info(g.getId(), logger, "send game notification: {}", pcNotification.toString());
+		GameNotification pcNotification = new GameNotification();
+		pcNotification.setGameId(g.getId());
+		pcNotification.setPlayerId(oldState.getPlayerId());
+		pcNotification.setActionId(actionId);
+		pcNotification.setDataPayLoad(data);
+		for (String pc : g.getNotifyPCName()) {
+			PointConcept oldPC = oldState.pointConcept(pc);
+			PointConcept newPC = newState.pointConcept(pc);
+			pcNotification.getScoreMap().put(pc, newPC.getScore());
+			pcNotification.getDeltaMap().put(pc, (newPC.getScore() - oldPC.getScore()));
 		}
+		pcNotification.setTimestamp(executionMoment);
+		notificationSrv.notificate(pcNotification);
+		LogHub.info(g.getId(), logger, "send game notification: {}", pcNotification.toString());
+	}
+
+	private void setDeltaMap(PlayerState newState, PlayerState oldState) {
+		
+		
+	}
+
+	private void setScoreMap(PlayerState newState) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private boolean isClassificationAction(String actionId) {

@@ -1,32 +1,16 @@
 package eu.trentorise.game.notification;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import eu.trentorise.game.model.core.Notification;
 
 public class GameNotification extends Notification {
 
-	private String pointConceptName;
-	private Double score;
 	private String actionId;
-	private Double delta;
 	private Map<String, Object> dataPayLoad;
-
-	public String getPointConceptName() {
-		return pointConceptName;
-	}
-
-	public void setPointConceptName(String pointConceptName) {
-		this.pointConceptName = pointConceptName;
-	}
-
-	public Double getScore() {
-		return score;
-	}
-
-	public void setScore(Double score) {
-		this.score = score;
-	}
+	private Map<String, Double> scoreMap = new HashMap<>();
+	private Map<String, Double> deltaMap = new HashMap<>();
 
 	public String getActionId() {
 		return actionId;
@@ -43,19 +27,27 @@ public class GameNotification extends Notification {
 	public void setDataPayLoad(Map<String, Object> dataPayLoad) {
 		this.dataPayLoad = dataPayLoad;
 	}
-
-	public Double getDelta() {
-		return delta;
-	}
-
-	public void setDelta(Double delta) {
-		this.delta = delta;
-	}
 	
+	public Map<String, Double> getScoreMap() {
+		return scoreMap;
+	}
+
+	public void setScoreMap(Map<String, Double> scoreMap) {
+		this.scoreMap = scoreMap;
+	}
+
+	public Map<String, Double> getDeltaMap() {
+		return deltaMap;
+	}
+
+	public void setDeltaMap(Map<String, Double> deltaMap) {
+		this.deltaMap = deltaMap;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("[gameId=%s, playerId=%s, executionMoment=%s, pointConceptName=%s, actionId=%s, score=%s, delta=%s, dataPayLoad=%s]",
-				getGameId(), getPlayerId(), getTimestamp(), pointConceptName, actionId, score, delta, dataPayLoad);
+		return String.format("[gameId=%s, playerId=%s, executionMoment=%s, actionId=%s, scoreMap=%s, deltaMap=%s, dataPayLoad=%s]",
+				getGameId(), getPlayerId(), getTimestamp(), actionId, scoreMap, deltaMap, dataPayLoad);
 	}
 
 }

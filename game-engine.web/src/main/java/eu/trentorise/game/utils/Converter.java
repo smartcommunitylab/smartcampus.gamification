@@ -183,7 +183,13 @@ public class Converter {
 				g.getRules().add(r.getId());
 			}
 		}
-		g.setTerminated(game.isTerminated());
+		
+		if (game.getExpiration() > 0 && game.getExpiration() > System.currentTimeMillis()) {
+			g.setTerminated(false);
+		} else if (game.getExpiration() > 0 && game.getExpiration() < System.currentTimeMillis()) {
+			g.setTerminated(true);	
+		}
+		
 
         g.getLevels().addAll(
                 game.getLevels().stream().map(dto -> convert(dto)).collect(Collectors.toList()));

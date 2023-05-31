@@ -29,4 +29,4 @@ RUN  addgroup -g ${USER_GROUP_ID} ${USER_GROUP}; \
 WORKDIR ${USER_HOME}
 COPY --chown=gamification:gamification --from=mvn /tmp/game-engine.web/target/${APP}.jar ${USER_HOME}
 USER gamification
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar ${APP}.jar --spring.profiles.active=sec"]
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar ${APP}.jar --spring.profiles.active=sec --MONGO_DBNAME=gamification --SPRING_DATA_MONGODB_URL=mongodb://gamification-mongo:27017/gamification"]

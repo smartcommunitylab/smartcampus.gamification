@@ -29,5 +29,14 @@ services:
     env_file: gamification.env
     volumes:
       - ./logs:/app/game-engine.web/logs
+  gamification-frontend:
+    build:
+      context: ./gamification-frontend
+    container_name: gamification-frontend
+    ports:
+      - "3000:8080"
+    depends_on:
+      - gamification-engine
+    env_file: gamification-frontend.env
 volumes:
   mongo-data:

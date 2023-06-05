@@ -70,7 +70,7 @@ public class GamePersistence {
 
 	private Settings settings;
 
-	private String notifyPCName;
+	private List<String> notifyPCName;
 
 	public GamePersistence() {
 
@@ -250,11 +250,11 @@ public class GamePersistence {
 		this.settings = settings;
 	}
 
-	public String getNotifyPCName() {
+	public List<String> getNotifyPCName() {
 		return notifyPCName;
 	}
 
-	public void setNotifyPCName(String notifyPCName) {
+	public void setNotifyPCName(List<String> notifyPCName) {
 		this.notifyPCName = notifyPCName;
 	}
 

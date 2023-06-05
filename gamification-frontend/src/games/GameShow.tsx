@@ -34,8 +34,14 @@ const GameShowContent = () => {
                                    
                                 }
                                 <br />
-                                <Typography >Notify PointConcept : {record.notifyPCName}</Typography>
-                                <br />
+                                <Typography >Notify PointConcept :
+                                    <ul>
+                                        {record.notifyPCName.map(item => (
+                                            <li>{item}</li>
+                                        ))}
+                                    </ul>
+                                </Typography>
+                                <Typography >Challenge choice config(CRON Expression): {record.challengeChoiceConfig.cronExpression}</Typography>
                             </Box>
                         </Box>
                     </CardContent>

@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.autoconfig.brave.BraveAutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,6 +28,7 @@ import com.mongodb.util.JSON;
 
 import eu.trentorise.game.config.AppConfig;
 import eu.trentorise.game.config.MongoConfig;
+import eu.trentorise.game.config.RabbitConf;
 import eu.trentorise.game.model.CustomData;
 import eu.trentorise.game.model.Game;
 import eu.trentorise.game.model.PointConcept;
@@ -43,7 +45,7 @@ import eu.trentorise.game.model.core.StringSearchQuery;
 import eu.trentorise.game.services.GameService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class},
+@ContextConfiguration(classes = {AppConfig.class, MongoConfig.class, RabbitConf.class, BraveAutoConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 public class PlayerRepoTest {
 

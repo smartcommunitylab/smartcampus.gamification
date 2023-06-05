@@ -34,7 +34,7 @@ import eu.trentorise.game.core.LogHub;
  */
 @Component
 public class QueueGameWorkflow extends GameWorkflow {
-
+	
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(QueueGameWorkflow.class);
 
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -42,14 +42,8 @@ public class QueueGameWorkflow extends GameWorkflow {
     @Override
     public void apply(String gameId, String actionId, String userId, Map<String, Object> data,
             List<Object> factObjects) {
-        try {
-            String executionId = UUID.randomUUID().toString();
-            long executionMoment = System.currentTimeMillis();
-            executor.execute(new Execution(gameId, actionId, userId, executionId, executionMoment,
-                    data, factObjects));
-        } catch (Exception e) {
-            LogHub.error(gameId, logger, "Exception in game queue execution", e);
-        }
+    	long executionMoment = System.currentTimeMillis();
+    	apply(gameId, actionId, userId, executionMoment, data, factObjects);
     }
 
     @Override
@@ -57,13 +51,16 @@ public class QueueGameWorkflow extends GameWorkflow {
             Map<String, Object> data, List<Object> factObjects) {
         try {
             String executionId = UUID.randomUUID().toString();
-            executor.execute(new Execution(gameId, actionId, userId, executionId, executionMoment,
-                    data, factObjects));
+        	Execution execution = new Execution(gameId, actionId, userId, executionId, executionMoment,
+                    data, factObjects);
+        	Runnable wrapExec = this.tracing.currentTraceContext().wrap(execution);
+            executor.execute(wrapExec);
         } catch (Exception e) {
             LogHub.error(gameId, logger, "Exception in game queue execution", e);
         }
     }
 
+    
     class Execution implements Runnable {
 
         private String gameId;

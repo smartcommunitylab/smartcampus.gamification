@@ -1,4 +1,4 @@
-import { DateTimeInput, EditBase, Form, NumberInput, ReferenceInput, SelectInput, TextInput, useEditContext, CheckboxGroupInput, FormDataConsumer, BooleanInput, useStore, useNotify, useRefresh, useRedirect, Button, Confirm, useDeleteMany, useListContext, useUnselectAll, TopToolbar, ToolbarProps, DeleteButton, SaveButton, ToolbarClasses, Toolbar, useDelete } from 'react-admin';
+import { DateTimeInput, EditBase, Form, NumberInput, ReferenceInput, SelectInput, TextInput, useEditContext, CheckboxGroupInput, FormDataConsumer, BooleanInput, useStore, useNotify, useRefresh, useRedirect, Button, Confirm, useDeleteMany, useListContext, useUnselectAll, TopToolbar, ToolbarProps, DeleteButton, SaveButton, ToolbarClasses, Toolbar, useDelete, SelectArrayInput } from 'react-admin';
 import { Card, CardContent, Box, Theme, useMediaQuery } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Game } from '../types';
@@ -103,7 +103,7 @@ const GameEditContent = () => {
                             </FormDataConsumer>
                             <Box>
                                 <ReferenceInput source="notifyPCName" queryOptions={options} reference="pointconcepts" perPage={1000}>
-                                    <SelectInput
+                                    <SelectArrayInput
                                         label="Point Concept"
                                         optionText={(pointconcept: any) =>
                                             `${pointconcept.pc.name}`

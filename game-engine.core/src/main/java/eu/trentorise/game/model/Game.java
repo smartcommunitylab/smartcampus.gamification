@@ -47,7 +47,7 @@ public class Game {
 	private Set<GameConcept> concepts;
 	private List<Level> levels = new ArrayList<>();
 	private Settings settings = new Settings();
-	private String notifyPCName;
+	private List<String> notifyPCName;
 
 	public void setLevels(List<Level> levels) {
 		this.levels = levels;
@@ -215,11 +215,11 @@ public class Game {
 		this.settings = settings;
 	}
 
-	public String getNotifyPCName() {
+	public List<String> getNotifyPCName() {
 		return notifyPCName;
 	}
 
-	public void setNotifyPCName(String notifyPCName) {
+	public void setNotifyPCName(List<String> notifyPCName) {
 		this.notifyPCName = notifyPCName;
 	}
 

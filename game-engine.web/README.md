@@ -17,7 +17,7 @@ java -jar game-engine.web.jar --spring.profiles.active=platform
 ```
 
 ### Docker Image
-In order to start the image run the following command from root
+In order to start the image run the following command from root (/smartcampus.gamification)
 
 ```
 docker-compose up

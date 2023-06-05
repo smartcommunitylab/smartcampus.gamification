@@ -1,4 +1,4 @@
-image: docker:latest
+image: docker:dind
 
 services:
   - docker:dind
@@ -103,6 +103,10 @@ nodejs-scan-sast:
      - if: '$CI_COMMIT_REF_NAME == "master"'
 
 gemnasium-maven-dependency_scanning:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
+
+gemnasium-dependency_scanning:
   rules:
      - if: '$CI_COMMIT_REF_NAME == "master"'
 

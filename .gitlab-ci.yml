@@ -5,13 +5,8 @@ services:
 
 stages:
   - build
-  - container-build
   - test
-  - deploy-dev
-  - deploy-frontend-dev
-  - deploy-frontend-prod
-  - deploy-test
-  - deploy-prod
+  - deploy
 
 include:
   - template: Security/Container-Scanning.gitlab-ci.yml
@@ -57,34 +52,11 @@ update-frontend-cache-image:
     - changes:
       - gamification-frontend/package.json
 
-maven-build:
-  image: maven:3-openjdk-11
-  stage: build
-  script:
-    - cd ${CI_PROJECT_DIR}/game-engine.core
-    - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-    - cd ${CI_PROJECT_DIR}/game-engine.web
-    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-    - cd ${CI_PROJECT_DIR}/game-engine.tools/log2timescaledb
-    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-  artifacts:
-    paths:
-      - ${CI_PROJECT_DIR}/.m2/
-      - game-engine.core/
-      - game-engine.web/
-      - game-engine.tools/log2timescaledb
-    expire_in: 1 week
-  only:
-    - master
-
 spotbugs-sast:
-  dependencies:
-    - maven-build
   variables:
     MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/
     SECURE_LOG_LEVEL: "debug"
     SAST_JAVA_VERSION: 11
-    COMPILE: "false"
     SAST_EXCLUDED_PATHS: "geme-engine.games, game-engine.test, game-engine.tools, gamification-java-client"
     SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
   artifacts:
@@ -111,7 +83,7 @@ gemnasium-dependency_scanning:
      - if: '$CI_COMMIT_REF_NAME == "master"'
 
 backend-container-build:
-  stage: container-build
+  stage: build
   variables:
     BUILDKIT_PROGRESS: plain
     DOCKER_BUILDKIT: 1 
@@ -128,7 +100,7 @@ backend-container-build:
     expire_in: 1 week
 
 frontend-container-build-dev:
-  stage: container-build
+  stage: build
   variables:
     BUILDKIT_PROGRESS: plain
     DOCKER_BUILDKIT: 1 
@@ -169,18 +141,35 @@ container_scanning:
     GIT_STRATEGY: fetch
     DOCKER_USER: ""
     DOCKER_PASSWORD: ""
+    CS_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
+  artifacts:
+    expire_in: 1 week
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
+
+container_scanning_frontend:
+  stage: test
+  dependencies:
+  - frontend-container-build-dev
+  variables:
+    DOCKER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+    DOCKERFILE_PATH: "Dockerfile"
+    GIT_STRATEGY: fetch
+    DOCKER_USER: ""
+    DOCKER_PASSWORD: ""
+    CS_IMAGE: smartcommunitylab/gamification-engine-frontend:$CI_COMMIT_REF_NAME-latest
   artifacts:
     expire_in: 1 week
   rules:
      - if: '$CI_COMMIT_REF_NAME == "master"'
     
 deploy-dev:
-  stage: deploy-dev
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy backend"
     - kubectl -n playngo-dev set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
@@ -189,12 +178,12 @@ deploy-dev:
     - playAndGo-dev-v2
 
 deploy-frontend-dev:
-  stage: deploy-frontend-dev
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy frontend"
     - kubectl -n playngo-dev set image deployments/gamification-frontend gamification-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
@@ -203,12 +192,12 @@ deploy-frontend-dev:
     - playAndGo-dev-v2
 
 deploy-test:
-  stage: deploy-test
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy backend"
     - kubectl -n gamification-test set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
@@ -217,12 +206,12 @@ deploy-test:
     - playAndGo-dev-v2
 
 deploy-prod:
-  stage: deploy-prod
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy backend"
     - kubectl -n playngo-prod set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
@@ -231,12 +220,12 @@ deploy-prod:
     - playAndGo-prod-v2
 
 deploy-frontend-prod:
-  stage: deploy-frontend-prod
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy frontend"
     - kubectl -n playngo-prod set image deployments/gamification-frontend gamification-frontend=$CONTAINER_FRONTEND_IMAGE --record=true

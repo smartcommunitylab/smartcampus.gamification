@@ -112,6 +112,7 @@ frontend-container-build-dev:
     - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
   only:
     - playAndGo-dev-v2
+    - master
   artifacts:
     expire_in: 1 week
 

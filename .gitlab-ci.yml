@@ -116,7 +116,7 @@ frontend-container-build-dev:
     expire_in: 1 week
 
 frontend-container-build-prod:
-  stage: container-build
+  stage: build
   variables:
     BUILDKIT_PROGRESS: plain
     DOCKER_BUILDKIT: 1 

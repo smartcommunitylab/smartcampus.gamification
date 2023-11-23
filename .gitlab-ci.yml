@@ -148,6 +148,7 @@ container_scanning:
      - if: '$CI_COMMIT_REF_NAME == "master"'
 
 container_scanning_frontend:
+  extends: container_scanning
   stage: test
   dependencies:
   - frontend-container-build-dev

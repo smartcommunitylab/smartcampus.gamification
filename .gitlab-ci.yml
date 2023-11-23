@@ -52,11 +52,34 @@ update-frontend-cache-image:
     - changes:
       - gamification-frontend/package.json
 
+maven-build:
+  image: maven:3-openjdk-11
+  stage: build
+  script:
+    - cd ${CI_PROJECT_DIR}/game-engine.core
+    - mvn -DskipTests=true clean install -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+    - cd ${CI_PROJECT_DIR}/game-engine.web
+    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+    - cd ${CI_PROJECT_DIR}/game-engine.tools/log2timescaledb
+    - mvn clean install -DskipTests -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/.m2/
+      - game-engine.core/
+      - game-engine.web/
+      - game-engine.tools/log2timescaledb
+    expire_in: 1 week
+  only:
+    - master
+
 spotbugs-sast:
+  dependencies:
+    - maven-build
   variables:
     MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/
     SECURE_LOG_LEVEL: "debug"
     SAST_JAVA_VERSION: 11
+    COMPILE: "false"
     SAST_EXCLUDED_PATHS: "geme-engine.games, game-engine.test, game-engine.tools, gamification-java-client"
     SAST_BANDIT_EXCLUDED_PATHS: '*/geme-engine.games/*, */game-engine.test/*, */game-engine.tools/*, */gamification-java-client/*'
   artifacts:

@@ -1,17 +1,12 @@
-image: docker:latest
+image: docker:dind
 
 services:
   - docker:dind
 
 stages:
   - build
-  - container-build
   - test
-  - deploy-dev
-  - deploy-frontend-dev
-  - deploy-frontend-prod
-  - deploy-test
-  - deploy-prod
+  - deploy
 
 include:
   - template: Security/Container-Scanning.gitlab-ci.yml
@@ -106,8 +101,12 @@ gemnasium-maven-dependency_scanning:
   rules:
      - if: '$CI_COMMIT_REF_NAME == "master"'
 
+gemnasium-dependency_scanning:
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
+
 backend-container-build:
-  stage: container-build
+  stage: build
   variables:
     BUILDKIT_PROGRESS: plain
     DOCKER_BUILDKIT: 1 
@@ -124,7 +123,7 @@ backend-container-build:
     expire_in: 1 week
 
 frontend-container-build-dev:
-  stage: container-build
+  stage: build
   variables:
     BUILDKIT_PROGRESS: plain
     DOCKER_BUILDKIT: 1 
@@ -136,11 +135,12 @@ frontend-container-build-dev:
     - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
   only:
     - playAndGo-dev-v2
+    - master
   artifacts:
     expire_in: 1 week
 
 frontend-container-build-prod:
-  stage: container-build
+  stage: build
   variables:
     BUILDKIT_PROGRESS: plain
     DOCKER_BUILDKIT: 1 
@@ -165,18 +165,36 @@ container_scanning:
     GIT_STRATEGY: fetch
     DOCKER_USER: ""
     DOCKER_PASSWORD: ""
+    CS_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-latest
+  artifacts:
+    expire_in: 1 week
+  rules:
+     - if: '$CI_COMMIT_REF_NAME == "master"'
+
+container_scanning_frontend:
+  extends: container_scanning
+  stage: test
+  dependencies:
+  - frontend-container-build-dev
+  variables:
+    DOCKER_IMAGE: smartcommunitylab/gamification-engine:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+    DOCKERFILE_PATH: "Dockerfile"
+    GIT_STRATEGY: fetch
+    DOCKER_USER: ""
+    DOCKER_PASSWORD: ""
+    CS_IMAGE: smartcommunitylab/gamification-engine-frontend:$CI_COMMIT_REF_NAME-latest
   artifacts:
     expire_in: 1 week
   rules:
      - if: '$CI_COMMIT_REF_NAME == "master"'
     
 deploy-dev:
-  stage: deploy-dev
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy backend"
     - kubectl -n playngo-dev set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
@@ -185,12 +203,12 @@ deploy-dev:
     - playAndGo-dev-v2
 
 deploy-frontend-dev:
-  stage: deploy-frontend-dev
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy frontend"
     - kubectl -n playngo-dev set image deployments/gamification-frontend gamification-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
@@ -199,12 +217,12 @@ deploy-frontend-dev:
     - playAndGo-dev-v2
 
 deploy-test:
-  stage: deploy-test
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy backend"
     - kubectl -n gamification-test set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
@@ -213,12 +231,12 @@ deploy-test:
     - playAndGo-dev-v2
 
 deploy-prod:
-  stage: deploy-prod
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy backend"
     - kubectl -n playngo-prod set image deployments/gamification-engine gamification-engine=$CONTAINER_IMAGE --record=true
@@ -227,12 +245,12 @@ deploy-prod:
     - playAndGo-prod-v2
 
 deploy-frontend-prod:
-  stage: deploy-frontend-prod
+  stage: deploy
   image: 
     name: bitnami/kubectl:latest
     entrypoint: ['']
   environment:
-    name: platform-new
+    name: dslab
   script:
     - echo "deploy frontend"
     - kubectl -n playngo-prod set image deployments/gamification-frontend gamification-frontend=$CONTAINER_FRONTEND_IMAGE --record=true

@@ -126,6 +126,14 @@ const gamificationDataProvider = {
             console.log(body.get('data'));
         }
 
+        if (resource === 'challenges') {
+            headers = { 'Authorization': `Basic ${token}`, 'Content-type': 'application/json' };
+            const gameId = params.meta.gameId;
+            body = JSON.stringify(params.data);
+            const playerId = params.meta.playerId;
+            url = url + '/' + gameId + '/' + playerId;
+        }
+
         return fetch(url, { method: 'POST', headers: headers, body: body })
             .then(async (response: any) => {
                 const json = await response.json();

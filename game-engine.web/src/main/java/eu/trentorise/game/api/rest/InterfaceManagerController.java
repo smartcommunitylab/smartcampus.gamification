@@ -51,6 +51,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.trentorise.game.bean.ActionDTO;
+import eu.trentorise.game.bean.ChallengeAssignmentDTO;
 import eu.trentorise.game.bean.ClassificationDTO;
 import eu.trentorise.game.bean.GameDTO;
 import eu.trentorise.game.bean.GeneralClassificationDTO;
@@ -73,6 +74,7 @@ import eu.trentorise.game.model.GroupChallenge;
 import eu.trentorise.game.model.Level;
 import eu.trentorise.game.model.PlayerState;
 import eu.trentorise.game.model.PointConcept;
+import eu.trentorise.game.model.core.ChallengeAssignment;
 import eu.trentorise.game.model.core.DBRule;
 import eu.trentorise.game.model.core.GameConcept;
 import eu.trentorise.game.model.core.GameTask;
@@ -912,6 +914,20 @@ public class InterfaceManagerController {
 		return new GetOneResponse(playerState);
 	}
 
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/challenges/{gameId}/{playerId}", consumes = { "application/json" }, produces = {
+			"application/json" })
+	public GetOneResponse assignChallenge(@RequestBody ChallengeAssignmentDTO challengeData,
+			@PathVariable String gameId, @PathVariable String playerId) {
+		gameId = decodePathVariable(gameId);
+		playerId = decodePathVariable(playerId);
+		ChallengeAssignment assignment = converter.convert(challengeData);
+		ChallengeConcept challenge = playerSrv.assignChallenge(gameId, playerId, assignment);
+		challenge.setId(challenge.getName());
+		return new GetOneResponse(challenge);
+	}
+
+	
 	@GetMapping("/challenges/{gameId}/{playerId}/challenge/{instanceName}")
 	public GetOneResponse readChallenge(@PathVariable String gameId, @PathVariable String playerId,
 			@PathVariable String instanceName) {

@@ -1,4 +1,4 @@
-import { DateTimeInput, Form, SelectInput, TextInput, BooleanInput, useStore, useNotify, useRedirect, Toolbar, CreateBase, Create, SimpleForm, ReferenceInput, required } from 'react-admin';
+import { DateTimeInput, Form, SelectInput, TextInput, useStore, useNotify, useRedirect, Toolbar, Create, ReferenceInput, required } from 'react-admin';
 import { Card, CardContent, Box } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 
@@ -31,7 +31,7 @@ export const ChallengeCreate = (params: any) => {
     }
 
     const choices = [
-        { _id: 'PROPOSED', label: 'PROPOSED' },
+        // { _id: 'PROPOSED', label: 'PROPOSED' },
         { _id: 'ASSIGNED', label: 'ASSIGNED' },
     ];
 
@@ -50,7 +50,7 @@ export const ChallengeCreate = (params: any) => {
                                 <TextInput label="Challenge Name" source="instanceName" fullWidth />
                             </Box>
                             <Box width={630}>
-                                <SelectInput
+                                <SelectInput  sx={{ minWidth: 225}}
                                     source="modelName"
                                     choices={modelChoices}
                                     optionText="label"
@@ -58,7 +58,7 @@ export const ChallengeCreate = (params: any) => {
                                 />
                             </Box>
                             <Box width={630}>
-                                <SelectInput
+                                <SelectInput  sx={{ minWidth: 225}}
                                     source="state"
                                     choices={choices}
                                     optionText="label"
@@ -76,7 +76,7 @@ export const ChallengeCreate = (params: any) => {
                             </Box>
                             <Box width={630}>
                                 <ReferenceInput source="bonusPC" queryOptions={options} reference="pointconcepts" perPage={1000}>
-                                    <SelectInput
+                                    <SelectInput sx={{ minWidth: 225}}
                                         label="Bounus Point Concept"
                                         optionText={(pointconcept: any) =>
                                             `${pointconcept.pc.name}`
@@ -85,9 +85,9 @@ export const ChallengeCreate = (params: any) => {
                                     />
                                 </ReferenceInput>
                             </Box>
-                            <Box width={630}>
+                            <Box>
                                 <ReferenceInput source="targetPC" queryOptions={options} reference="pointconcepts" perPage={1000}>
-                                    <SelectInput
+                                    <SelectInput sx={{ minWidth: 225}}
                                         label="Target Point Concept"
                                         optionText={(pointconcept: any) =>
                                             `${pointconcept.pc.name}`

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -34,14 +35,16 @@ public class NotificationManager {
 	@Autowired
 	NotificationRepo repo;
 	
-	@Autowired
+	@Autowired(required = false)
 	private RabbitMQManager rabbitMQManager;
 
 	public void notificate(Notification n) {
 		NotificationPersistence np = new NotificationPersistence(n); 
 		repo.save(np);
 		
-		rabbitMQManager.sendMessage(np);
+		if (rabbitMQManager != null) {
+			rabbitMQManager.sendMessage(np);	
+		}		
 	}
 
 	public List<Notification> readNotifications(String gameId) {

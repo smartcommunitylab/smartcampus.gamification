@@ -117,6 +117,8 @@ public class DBPlayerManager implements PlayerService {
     private static final int PROPOSER_RANGE = 2;
     
     public static final String ACTIVE_CAMPAIGN_KEY = "activePlayer";
+    
+    public static final String IS_TEAM = "isTeam";
 
     public PlayerState loadState(String gameId, String playerId, boolean upsert, boolean mergeChallenges) {
         return loadState(gameId, playerId, upsert,mergeChallenges, mergeChallenges, false);
@@ -695,9 +697,11 @@ public class DBPlayerManager implements PlayerService {
     private Page<PlayerState> convertToPlayerState(Page<StatePersistence> states,
             Pageable pageable) {
         List<PlayerState> contents = new ArrayList<>();
-        for (StatePersistence state : states) {
-            contents.add(new PlayerState(state));
-        }
+		for (StatePersistence state : states) {
+			PlayerState ps = new PlayerState(state);
+			ps.getCustomData().put(IS_TEAM, isTeam(state));
+			contents.add(ps);
+		}
         Page<PlayerState> result = new PageImpl<>(contents, pageable, states.getTotalElements());
 
         return result;

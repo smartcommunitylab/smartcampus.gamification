@@ -1,6 +1,6 @@
 import {
     ShowBase, useShowContext,
-    useStore, ArrayField, Datagrid, TextField, RichTextField, DateField, useRecordContext, useDelete, Confirm, useNotify, useRefresh, EditButton
+    useStore, ArrayField, Datagrid, TextField, RichTextField, DateField, useRecordContext, useDelete, Confirm, useNotify, useRefresh, EditButton, CreateButton
 } from 'react-admin';
 import { Box, Card, CardContent, Typography, Button } from '@mui/material';
 import { dateFormatter } from '../misc/Utils';
@@ -28,6 +28,9 @@ const MonitorShowContent = () => {
             <Box flex="1">
                 <Card>
                     <CardContent>
+                        <Box sx={{textAlign: 'right'}} >
+                            <CreateSingleChallengeButton />
+                        </Box>
                         <Box >
                             <Box>
                                 <Typography sx={{ fontWeight: 600 }} >{record.playerId}</Typography>
@@ -239,4 +242,13 @@ const CustomDeleteButton = (params: any) => {
         return null;
     }
 
+}
+
+const CreateSingleChallengeButton = (params: any) => {
+    const record = useRecordContext();
+        return (
+            <span>
+                <CreateButton to={"/challenges/create" + "?playerId=" + record.playerId} title="Create Single Challenge" label="Create Single Challenge" />
+            </span>
+        );   
 }

@@ -12,6 +12,7 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.game.repo.NotificationPersistence;
 
 @Component
+@ConditionalOnProperty("rabbitmq.enabled")
 public class RabbitMQManager {
 
 	@Value("${rabbitmq.enabled}")

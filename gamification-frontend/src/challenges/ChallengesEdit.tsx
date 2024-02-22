@@ -1,48 +1,25 @@
-import { DateTimeInput, EditBase, Form, NumberInput, ReferenceInput, SelectInput, TextInput, useEditContext, CheckboxGroupInput, FormDataConsumer, BooleanInput, useStore, useNotify, useRefresh, useRedirect, Button, Confirm, useDeleteMany, useListContext, useUnselectAll, TopToolbar, ToolbarProps, DeleteButton, SaveButton, ToolbarClasses, Toolbar, useDelete } from 'react-admin';
+import { DateTimeInput, EditBase, Form, SelectInput, TextInput, useEditContext, FormDataConsumer, BooleanInput, useStore, useNotify, useRedirect, Button, Confirm, SaveButton, ToolbarClasses, Toolbar, useDelete } from 'react-admin';
 import { Card, CardContent, Box, Theme, useMediaQuery } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Game } from '../types';
-import { Children, useState } from 'react';
 import clsx from 'clsx';
-import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { EditToolbar } from '../misc/EditToolbar';
 import React from 'react';
 
 export const ChallengeEdit = (params: any) => {
     const [gameId] = useStore('game.selected');
     const notify = useNotify();
-    const redirect = useRedirect();
     const [searchParams] = useSearchParams();
     const options = { meta: { gameId: gameId, playerId: searchParams ? searchParams.get('playerId') : null } };
 
-    const transform = (data: Game) => {
-        {
-            if (!data.expiry) {
-                data.expiration = 0;
-            }
-            // convert date to long.
-            console.log(typeof data.expiration);
-            if (data.expiration != 0) {
-                if (typeof (data.expiration) === 'object') {
-                    data.expiration = data.expiration.getTime();
-                }
-            }
-            return data
-        }
-    }
-
     const onSuccess = (data: any) => {
         console.log('on success');
-        notify(`Challenge updated successfully`); // default message is 'ra.notification.updated'
-        // redirect('/moinitor/' + gameId + '/show');
+        notify(`Challenge updated successfully`);
     };
 
     return (
         <EditBase
             mutationMode='pessimistic'
             redirect="list"
-            // transform={transform}
             mutationOptions={{ ...options, onSuccess }}
             queryOptions={options}
         >
@@ -177,7 +154,7 @@ export const ChallengeEditToolbar = (props: any) => {
 };
 
 const validateUserCreation = (values: any) => {
-    var errors: any = {};
+    let errors: any = {};
     if (values.concept.start > values.concept.end) {
         errors.start = 'start date must be less than end date';
     }

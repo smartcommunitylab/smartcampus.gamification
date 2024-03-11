@@ -1,4 +1,4 @@
-import { DateTimeInput, Form, SelectInput, TextInput, useStore, useNotify, useRedirect, Toolbar, Create, ReferenceInput, required } from 'react-admin';
+import { DateTimeInput, Form, SelectInput, TextInput, useStore, useNotify, useRedirect, Toolbar, Create, ReferenceInput, required, FormDataConsumer } from 'react-admin';
 import { Card, CardContent, Box } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 
@@ -22,22 +22,34 @@ export const ChallengeCreate = (params: any) => {
             body['end'] = new Date(data.end).getTime();            
             let dataChallenge: any = {};
             dataChallenge['bonusScore'] = parseFloat(data.bonusScore);
-            dataChallenge['periodName'] = 'weekly';
+            dataChallenge['periodName'] = data.periodName;
             dataChallenge['bonusPointType'] = data.bonusPC;
             dataChallenge['counterName'] = data.targetPC;
             dataChallenge['target'] = parseFloat(data.target);
+            if (data.modelName === 'repetitiveBehaviour') {
+                dataChallenge['periodTarget'] = parseFloat(data.periodTarget);  
+            } else if (data.modelName === 'percentageIncrement') {
+                dataChallenge['percentage'] = parseFloat(data.percentage);
+                dataChallenge['baseline'] = parseFloat(data.baseline);
+            }
             body['data'] = dataChallenge;
             return body;
     }
 
-    const choices = [
+    const stateChoices = [
         // { _id: 'PROPOSED', label: 'PROPOSED' },
         { _id: 'ASSIGNED', label: 'ASSIGNED' },
     ];
 
-    const modelChoices = [
-        { _id: 'absoluteIncrement', label: 'absoluteIncrement' }
+    const periodChoices = [
+        { _id: 'daily', label: 'daily' },
+        { _id: 'weekly', label: 'weekly' },
+    ];
 
+    const modelChoices = [
+        { _id: 'absoluteIncrement', label: 'absoluteIncrement' },
+        { _id: 'percentageIncrement', label: 'percentageIncrement' },
+        { _id: 'repetitiveBehaviour', label: 'repetitiveBehaviour' }
     ];
 
     return (<Create transform={transform} mutationOptions={{ ...options, onSuccess }} >
@@ -60,7 +72,15 @@ export const ChallengeCreate = (params: any) => {
                             <Box width={630}>
                                 <SelectInput  sx={{ minWidth: 225}}
                                     source="state"
-                                    choices={choices}
+                                    choices={stateChoices}
+                                    optionText="label"
+                                    optionValue="_id"
+                                />
+                            </Box>
+                            <Box width={630}>
+                                <SelectInput  sx={{ minWidth: 225}}
+                                    source="periodName"
+                                    choices={periodChoices}
                                     optionText="label"
                                     optionValue="_id"
                                 />
@@ -99,6 +119,27 @@ export const ChallengeCreate = (params: any) => {
                             <Box width={630}>
                                 <TextInput label="Target" source="target" fullWidth />
                             </Box>
+                            <FormDataConsumer>
+                                 {({ formData, ...rest }) => formData.modelName=='repetitiveBehaviour' &&
+                                  <Box width={630}>
+                                  <TextInput label="Period Target" source="periodTarget" fullWidth />
+                              </Box>
+                            }
+                            </FormDataConsumer>
+                            <FormDataConsumer>
+                                 {({ formData, ...rest }) => formData.modelName=='percentageIncrement' &&
+                                  <Box width={630}>
+                                  <TextInput label="Percentage" source="percentage" fullWidth />
+                              </Box>
+                            }
+                            </FormDataConsumer>
+                            <FormDataConsumer>
+                                 {({ formData, ...rest }) => formData.modelName=='percentageIncrement' &&
+                                  <Box width={630}>
+                                  <TextInput label="Baseline" source="baseline" fullWidth />
+                              </Box>
+                            }
+                            </FormDataConsumer>
                         </CardContent>
                         <Toolbar />
                     </Card>
@@ -125,6 +166,10 @@ const validateUserCreation = (values: any) => {
         errors.state = 'The challenge state is required';
     }
 
+    if (!values.periodName) {
+        errors.periodName = 'The period is required';
+    }
+
     if (!values.start) {
         errors.start = 'The start date is required';
     }
@@ -146,7 +191,7 @@ const validateUserCreation = (values: any) => {
     }
 
     if (!values.targetPC) {
-        errors.pointConcept = 'The target point concept is required';
+        errors.targetPC = 'The target point concept is required';
     }
 
     if (!values.target) {

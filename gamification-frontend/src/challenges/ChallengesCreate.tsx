@@ -18,19 +18,20 @@ export const ChallengeCreate = (params: any) => {
             let body: any = {};
             body['instanceName'] = data.instanceName;
             body['modelName'] = data.modelName;
+            body['origin'] = 'gcra';
             body['start'] = new Date(data.start).getTime();
             body['end'] = new Date(data.end).getTime();            
             let dataChallenge: any = {};
-            dataChallenge['bonusScore'] = parseFloat(data.bonusScore);
+            dataChallenge['bonusScore'] = parseFloat(data.bonusScore).toFixed(1);
             dataChallenge['periodName'] = data.periodName;
             dataChallenge['bonusPointType'] = data.bonusPC;
             dataChallenge['counterName'] = data.targetPC;
-            dataChallenge['target'] = parseFloat(data.target);
+            dataChallenge['target'] = parseFloat(data.target).toFixed(1);;
             if (data.modelName === 'repetitiveBehaviour') {
-                dataChallenge['periodTarget'] = parseFloat(data.periodTarget);  
+                dataChallenge['periodTarget'] = parseFloat(data.periodTarget).toFixed(1);;  
             } else if (data.modelName === 'percentageIncrement') {
-                dataChallenge['percentage'] = parseFloat(data.percentage);
-                dataChallenge['baseline'] = parseFloat(data.baseline);
+                dataChallenge['percentage'] = parseFloat(data.percentage).toFixed(1);;
+                dataChallenge['baseline'] = parseFloat(data.baseline).toFixed(1);;
             }
             body['data'] = dataChallenge;
             return body;

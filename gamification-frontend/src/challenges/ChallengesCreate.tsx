@@ -1,4 +1,4 @@
-import { DateTimeInput, Form, SelectInput, TextInput, useStore, useNotify, useRedirect, Toolbar, Create, ReferenceInput, required, FormDataConsumer } from 'react-admin';
+import { DateTimeInput, Form, SelectInput, TextInput, useStore, useNotify, useRedirect, Toolbar, Create, ReferenceInput, required, FormDataConsumer, NumberInput } from 'react-admin';
 import { Card, CardContent, Box } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 
@@ -22,16 +22,16 @@ export const ChallengeCreate = (params: any) => {
             body['start'] = new Date(data.start).getTime();
             body['end'] = new Date(data.end).getTime();            
             let dataChallenge: any = {};
-            dataChallenge['bonusScore'] = parseFloat(data.bonusScore).toFixed(1);
+            dataChallenge['bonusScore'] = data.bonusScore;
             dataChallenge['periodName'] = data.periodName;
             dataChallenge['bonusPointType'] = data.bonusPC;
             dataChallenge['counterName'] = data.targetPC;
-            dataChallenge['target'] = parseFloat(data.target).toFixed(1);;
+            dataChallenge['target'] = data.target;
             if (data.modelName === 'repetitiveBehaviour') {
-                dataChallenge['periodTarget'] = parseFloat(data.periodTarget).toFixed(1);;  
+                dataChallenge['periodTarget'] = data.periodTarget;  
             } else if (data.modelName === 'percentageIncrement') {
-                dataChallenge['percentage'] = parseFloat(data.percentage).toFixed(1);;
-                dataChallenge['baseline'] = parseFloat(data.baseline).toFixed(1);;
+                dataChallenge['percentage'] = data.percentage;
+                dataChallenge['baseline'] = data.baseline;
             }
             body['data'] = dataChallenge;
             return body;
@@ -93,7 +93,7 @@ export const ChallengeCreate = (params: any) => {
                                 <DateTimeInput source="end" onKeyDown={(event) => { event.preventDefault(); }}  validate={required()} />
                             </Box>
                             <Box width={630}>
-                                <TextInput label="Bonus Score" source="bonusScore" fullWidth />
+                                <NumberInput label="Bonus Score" source="bonusScore" fullWidth />
                             </Box>
                             <Box width={630}>
                                 <ReferenceInput source="bonusPC" queryOptions={options} reference="pointconcepts" perPage={1000}>
@@ -118,26 +118,26 @@ export const ChallengeCreate = (params: any) => {
                                 </ReferenceInput>
                             </Box>
                             <Box width={630}>
-                                <TextInput label="Target" source="target" fullWidth />
+                                <NumberInput label="Target" source="target" fullWidth />
                             </Box>
                             <FormDataConsumer>
                                  {({ formData, ...rest }) => formData.modelName=='repetitiveBehaviour' &&
                                   <Box width={630}>
-                                  <TextInput label="Period Target" source="periodTarget" fullWidth />
+                                  <NumberInput label="Period Target" source="periodTarget" fullWidth />
                               </Box>
                             }
                             </FormDataConsumer>
                             <FormDataConsumer>
                                  {({ formData, ...rest }) => formData.modelName=='percentageIncrement' &&
                                   <Box width={630}>
-                                  <TextInput label="Percentage" source="percentage" fullWidth />
+                                  <NumberInput label="Percentage" source="percentage" fullWidth />
                               </Box>
                             }
                             </FormDataConsumer>
                             <FormDataConsumer>
                                  {({ formData, ...rest }) => formData.modelName=='percentageIncrement' &&
                                   <Box width={630}>
-                                  <TextInput label="Baseline" source="baseline" fullWidth />
+                                  <NumberInput label="Baseline" source="baseline" fullWidth />
                               </Box>
                             }
                             </FormDataConsumer>

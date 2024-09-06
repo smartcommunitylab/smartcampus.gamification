@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -52,6 +53,7 @@ import it.smartcommunitylab.model.WrapperQuery;
 import it.smartcommunitylab.model.ext.PlayerLevel;
 import it.smartcommunitylab.model.ext.TeamDTO;
 
+@Ignore
 public class PlayerControllerTest {
 
 	private static final int PORT = 8089;

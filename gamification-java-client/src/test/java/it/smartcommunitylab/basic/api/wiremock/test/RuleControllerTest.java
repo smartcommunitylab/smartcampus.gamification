@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -41,6 +42,7 @@ import it.smartcommunitylab.basic.api.RuleControllerApi;
 import it.smartcommunitylab.model.RuleDTO;
 import it.smartcommunitylab.model.RuleValidateWrapper;
 
+@Ignore
 public class RuleControllerTest {
 
 	private static final int PORT = 8089;

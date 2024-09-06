@@ -10,16 +10,17 @@ import java.util.Set;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
-import org.springframework.data.mongodb.core.MongoFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.google.common.math.Quantiles;
-import com.mongodb.Mongo;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClients;
 
 import eu.trentorise.game.managers.ClassificationUtils;
 import eu.trentorise.game.model.GameStatistics;
@@ -27,117 +28,106 @@ import eu.trentorise.game.repo.StatePersistence;
 
 public class App {
 
-    private static final String GAME_ID = "5b7a885149c95d50c5f9d442";
-    private static final String PERIOD_NAME = "weekly";
+	private static final String GAME_ID = "5b7a885149c95d50c5f9d442";
+	private static final String PERIOD_NAME = "weekly";
 
-    private static final long START_DATE = 1539986400000L;
-    private static final long PERIOD = 604800000;
+	private static final long START_DATE = 1539986400000L;
+	private static final long PERIOD = 604800000;
 
+	private static final String MONGO_URI = "mongodb://localhost:27017/gamification";
+	private static final String DB_NAME = "gamification";
 
-    private static final String MONGO_HOST = "localhost";
-    private static final int MONGO_PORT = 27017;
-    private static final String DB_NAME = "gamification";
+	private static final Set<String> scoreNames = new HashSet<>();
 
-    private static final Set<String> scoreNames = new HashSet<>();
+	@Autowired
+	private MongoTemplate mongo;
 
-    static {
-        scoreNames.add("green leaves");
-        scoreNames.add("Walk_Km");
-        scoreNames.add("Bike_Km");
-        scoreNames.add("Bus_Trips");
-        scoreNames.add("Train_Trips");
-    }
+	static {
+		scoreNames.add("green leaves");
+		scoreNames.add("Walk_Km");
+		scoreNames.add("Bike_Km");
+		scoreNames.add("Bus_Trips");
+		scoreNames.add("Train_Trips");
+	}
 
+	public static void main(String[] args) {
+		MongoTemplate mongoTemplate = getInstance();
+		long now = System.currentTimeMillis();
+		for (String pointConceptName : scoreNames) {
+			LocalDateTime cursorDate = new LocalDateTime(START_DATE);
+			final Period period = new Period(PERIOD);
+			Interval interval = null;
+			do {
+				interval = new Interval(cursorDate.toDateTime(), cursorDate.withPeriodAdded(period, 1).toDateTime());
+				cursorDate = interval.getEnd().toLocalDateTime();
 
-    public static void main(String[] args) {
-        MongoTemplate mongoTemplate = getInstance();
-        long now = System.currentTimeMillis();
-        for (String pointConceptName : scoreNames) {
-            LocalDateTime cursorDate = new LocalDateTime(START_DATE);
-            final Period period = new Period(PERIOD);
-            Interval interval = null;
-            do {
-                interval = new Interval(cursorDate.toDateTime(),
-                        cursorDate.withPeriodAdded(period, 1).toDateTime());
-                cursorDate = interval.getEnd().toLocalDateTime();
+				String key = interval.getStart().toString("yyyy-MM-dd'T'HH:mm:ss");
 
-                String key = interval.getStart().toString("yyyy-MM-dd'T'HH:mm:ss");
+				Query query = new Query();
+				Criteria criteria = new Criteria("gameId").is(GAME_ID);
+				query.addCriteria(criteria);
+				query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods." + PERIOD_NAME
+						+ ".instances." + key + ".score");
 
-                Query query = new Query();
-                Criteria criteria = new Criteria("gameId").is(GAME_ID);
-                query.addCriteria(criteria);
-                query.fields().include("concepts.PointConcept." + pointConceptName + ".obj.periods."
-                        + PERIOD_NAME + ".instances." + key + ".score");
+				List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
 
-                List<StatePersistence> pStates = mongoTemplate.find(query, StatePersistence.class);
+				List<Double> data = new ArrayList<>();
+				for (StatePersistence state : pStates) {
+					double value = state.getIncrementalScore(pointConceptName, PERIOD_NAME, key);
+					if (value > 0) {
+						data.add(value);
+					}
+				}
 
-                List<Double> data = new ArrayList<>();
-                for (StatePersistence state : pStates) {
-                    double value = state.getIncrementalScore(pointConceptName, PERIOD_NAME, key);
-                    if (value > 0) {
-                        data.add(value);
-                    }
-                }
+				double average = data.stream().mapToDouble(a -> a).average().orElse(0d);
 
-                double average = data.stream().mapToDouble(a -> a).average().orElse(0d);
+				// variance.
+				double variance = 0d;
+				// 10 quantiles.
+				Map<Integer, Double> q = null;
+				if (data.size() > 0) {
+					variance = ClassificationUtils.calculateVariance(data);
+					q = Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).compute(data);
+				} else {
+					q = new HashMap<>();
+					for (int i = 0; i < 10; i++) {
+						q.put(i, 0d);
+					}
+				}
 
-                // variance.
-                double variance = 0d;
-                // 10 quantiles.
-                Map<Integer, Double> q = null;
-                if (data.size() > 0) {
-                    variance = ClassificationUtils.calculateVariance(data);
-                    q =
-                        Quantiles.scale(10).indexes(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).compute(data);
-                } else {
-                    q = new HashMap<>();
-                    for (int i = 0; i < 10; i++) {
-                        q.put(i, 0d);
-                    }
-                }
+				Query qGameStats = new Query();
+				Criteria cGameStats = new Criteria("gameId").is(GAME_ID).and("pointConceptName").is(pointConceptName)
+						.and("periodName").is(PERIOD_NAME).and("periodIndex").is(key);
+				qGameStats.addCriteria(cGameStats);
 
-                Query qGameStats = new Query();
-                Criteria cGameStats = new Criteria("gameId").is(GAME_ID).and("pointConceptName")
-                        .is(pointConceptName).and("periodName").is(PERIOD_NAME).and("periodIndex")
-                        .is(key);
-                qGameStats.addCriteria(cGameStats);
+				Update update = new Update();
+				update.set("gameId", GAME_ID);
+				update.set("pointConceptName", pointConceptName);
+				update.set("periodName", PERIOD_NAME);
+				update.set("periodIndex", key);
+				update.set("startDate", interval.getStart().toDate().getTime());
+				update.set("endDate", interval.getEnd().toDate().getTime());
+				update.set("average", average);
+				update.set("variance", variance);
+				update.set("quantiles", q);
+				update.set("lastUpdated", System.currentTimeMillis());
 
-                Update update = new Update();
-                update.set("gameId", GAME_ID);
-                update.set("pointConceptName", pointConceptName);
-                update.set("periodName", PERIOD_NAME);
-                update.set("periodIndex", key);
-                update.set("startDate", interval.getStart().toDate().getTime());
-                update.set("endDate", interval.getEnd().toDate().getTime());
-                update.set("average", average);
-                update.set("variance", variance);
-                update.set("quantiles", q);
-                update.set("lastUpdated", System.currentTimeMillis());
+				FindAndModifyOptions options = new FindAndModifyOptions();
+				options.upsert(true);
+				options.returnNew(true);
+				mongoTemplate.findAndModify(qGameStats, update, options, GameStatistics.class);
+				System.out.println(String.format("Calculated statistic on key %s score %s", key, pointConceptName));
+			} while (!interval.contains(now));
+		}
+		System.out.println("end statistics calculation");
+	}
 
-                FindAndModifyOptions options = new FindAndModifyOptions();
-                options.upsert(true);
-                options.returnNew(true);
-                mongoTemplate.findAndModify(qGameStats, update, options, GameStatistics.class);
-                System.out.println(String.format("Calculated statistic on key %s score %s", key,
-                        pointConceptName));
-            } while (!interval.contains(now));
-        }
-        System.out.println("end statistics calculation");
-    }
+	private static MongoTemplate getInstance() {
+		ConnectionString connectionString = new ConnectionString(MONGO_URI);
+		MongoClientSettings mongoClientSettings = MongoClientSettings.builder().applyConnectionString(connectionString)
+				.build();
 
-    private static MongoTemplate getInstance() {
-        MongoFactoryBean mongo = new MongoFactoryBean();
-        mongo.setHost(MONGO_HOST);
-        mongo.setPort(MONGO_PORT);
-        try {
-            mongo.afterPropertiesSet();
-            Mongo mongoObj = mongo.getObject();
-            MongoTemplate mongoTemplate = new MongoTemplate(
-                    new SimpleMongoDbFactory(mongoObj, DB_NAME));
-            return mongoTemplate;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+		return new MongoTemplate(MongoClients.create(mongoClientSettings), DB_NAME);
+	}
+
 }

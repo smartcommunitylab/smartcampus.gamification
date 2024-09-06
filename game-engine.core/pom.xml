@@ -295,10 +295,6 @@
 
 	<repositories>
 		<repository>
-			<id>SmartCommunityLab</id>
-			<url>https://repository.smartcommunitylab.it/content/groups/public</url>
-		</repository>
-		<repository>
 			<id>clojars.org</id>
 			<url>https://clojars.org/repo</url>
 		</repository>
@@ -310,15 +306,9 @@
 
 	<distributionManagement>
 		<repository>
-			<id>SmartCommunityLab-releases</id>
-			<url>
-				https://repository.smartcommunitylab.it/content/repositories/releases</url>
+			<id>smartcampus.gamification</id>
+			<url>https://maven.pkg.github.com/smartcommunitylab/smartcampus.gamification</url>
 		</repository>
-		<snapshotRepository>
-			<id>SmartCommunityLab-snapshots</id>
-			<url>
-				https://repository.smartcommunitylab.it/content/repositories/snapshots</url>
-		</snapshotRepository>
 	</distributionManagement>
 
 </project>

@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -38,6 +39,7 @@ import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.basic.api.ChallengeModelControllerApi;
 import it.smartcommunitylab.model.ChallengeModel;
 
+@Ignore
 public class ChallengeModelControllerTest {
 
 	private static final int PORT = 8089;

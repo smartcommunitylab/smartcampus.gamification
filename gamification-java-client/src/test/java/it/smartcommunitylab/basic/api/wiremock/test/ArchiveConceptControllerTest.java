@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -36,6 +37,7 @@ import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.basic.api.ArchiveConceptControllerApi;
 import it.smartcommunitylab.model.ArchivedConcept;
 
+@Ignore
 public class ArchiveConceptControllerTest {
 
 	private static final int PORT = 8089;

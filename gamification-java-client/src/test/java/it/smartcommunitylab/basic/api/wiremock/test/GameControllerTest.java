@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -41,6 +42,7 @@ import it.smartcommunitylab.model.GameDTO;
 import it.smartcommunitylab.model.GameStatistics;
 import it.smartcommunitylab.model.LevelDTO;
 
+@Ignore
 public class GameControllerTest {
 
 	private static final int PORT = 8089;

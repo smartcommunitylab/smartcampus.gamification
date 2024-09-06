@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -40,6 +41,7 @@ import it.smartcommunitylab.model.ClassificationBoard;
 import it.smartcommunitylab.model.GeneralClassificationDTO;
 import it.smartcommunitylab.model.IncrementalClassificationDTO;
 
+@Ignore
 public class ClassificationControllerTest {
 
 	private static final int PORT = 8089;

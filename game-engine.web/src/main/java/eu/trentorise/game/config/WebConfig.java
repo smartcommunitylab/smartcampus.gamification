@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -28,8 +27,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import eu.trentorise.game.platform.PlatformAuthorizationInterceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -69,11 +66,6 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addViewController(String.format("/%s/", CONSOLE_LOGIN_URL_MAPPING)).setViewName("forward:login.html");
 	}
 
-	 @Bean
-     public HandlerInterceptor platformInterceptor() {
-     return new PlatformAuthorizationInterceptor();
-     }
-	
 	public void addInterceptors(InterceptorRegistry registry) {
         String[] paths = null;
         if (Arrays.stream(env.getActiveProfiles())

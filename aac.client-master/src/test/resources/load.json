@@ -1,0 +1,61 @@
+{
+    "name": "cartellastudente",
+    "nodes": [
+        {
+            "qname": "student",
+            "params": [
+                "studentId"
+            ],
+            "childrenQnames": [
+                "student-data"
+            ]
+        },
+        {
+            "qname": "student-data",
+            "params": [
+                "dataType"
+            ],
+            "childrenQnames": [
+                "student-data-attr"
+            ]
+        },
+        {
+            "qname": "student-data-attr",
+            "params": [
+                "expId",
+                "expType",
+                "schoolYear",
+                "institutional"
+            ],
+            "childrenQnames": []
+        },
+        {
+            "qname": "institute",
+            "params": [
+                "teachingUnitId"
+            ],
+            "childrenQnames": [
+                "institute-data"
+            ]
+        },
+        {
+            "qname": "institute-data",
+            "params": [
+                "dataType"
+            ],
+            "childrenQnames": [
+                "institute-data-attr"
+            ]
+        },
+        {
+            "qname": "institute-data-attr",
+            "params": [
+                "expId",
+                "expType",
+                "schoolYear",
+                "institutional"
+            ],
+            "childrenQnames": []
+        }
+    ]
+}

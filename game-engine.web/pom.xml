@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>it.smartcommunitylab</groupId>
 			<artifactId>aac.client</artifactId>
-			<version>2.2.0</version>
+			<version>3.1.2</version>
 		</dependency>
 
 		<!-- SPRING DOC -->
@@ -234,12 +234,5 @@
 			</plugin>
 		</plugins>
 		<finalName>${project.artifactId}</finalName>
-	</build>
-
-	<repositories>
-		<repository>
-			<id>SmartCommunityLab</id>
-			<url>https://repository.smartcommunitylab.it/content/groups/public</url>
-		</repository>
-	</repositories>
+	</build>	
 </project>

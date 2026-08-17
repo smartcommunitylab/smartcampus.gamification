@@ -42,6 +42,12 @@
 			<artifactId>snakeyaml</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>it.smartcommunitylab</groupId>
+			<artifactId>aac.client</artifactId>
+			<version>3.1.2</version>
+		</dependency>
+
 		<!-- SPRING DOC -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -228,12 +234,5 @@
 			</plugin>
 		</plugins>
 		<finalName>${project.artifactId}</finalName>
-	</build>
-
-	<repositories>
-		<repository>
-			<id>smartcampus.gamification</id>
-			<url>https://maven.pkg.github.com/smartcommunitylab/smartcampus.gamification</url>
-		</repository>
-	</repositories>
+	</build>	
 </project>

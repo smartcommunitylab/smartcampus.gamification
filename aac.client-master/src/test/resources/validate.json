@@ -1,0 +1,41 @@
+{
+	"id": null,
+	"subject": null,
+	"action": "GET",
+	"resource":
+	{
+		"qnameRef": "institute-data-attr",
+		"values": [
+			{
+				"qname": "institute",
+				"name": "teachingUnitId",
+				"value": "d8f92050-f7ee-4280-8a69-363944d64cd4"
+			},
+			{
+				"qname": "institute-data-attr",
+				"name": "expType",
+				"value": "EXAM"
+			},
+			{
+				"qname": "institute-data",
+				"name": "dataType",
+				"value": "Experience"
+			},
+			{
+				"qname": "institute-data-attr",
+				"name": "schoolYear",
+				"value": "2016-2017"
+			},
+			{
+				"qname": "institute-data",
+				"name": "attr.institutional",
+				"value": "true"
+			}
+		]
+	},
+	"entity":
+	{
+		"id": "2",
+		"type": "user"
+	}
+}

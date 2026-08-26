@@ -12,28 +12,51 @@ import java.util.Calendar;
 global Utility utils;
 
 
-function Double numberOfActivePeriods(PointConcept pc, Double target, String pName, long start) {
-	Double activePeriods = 0d;
-	
-	PeriodInstance pi = pc.getPeriodCurrentInstance(pName);
-	
-	if (pi == null){
-		//System.out.println(pc.getName() + " NULL");
-		return activePeriods;
-	}
-	
-	
-	int i = pi.getIndex();
-	while ( (i >= 0) && (pi.getStart() >= start) ) {	
-		Double s = pi.getScore();	
-		if(s >= target)
-			activePeriods++;
-		i--;	
-                pi = pc.getPeriodInstance(pName, i);
-	}
-	
-	return activePeriods;
+function Double numberOfActivePeriods(PointConcept pc, Number target, String pName, long start) {
+
+    Double activePeriods = 0d;
+
+    PeriodInstance pi = pc.getPeriodCurrentInstance(pName);
+
+    if (pi == null) {
+        System.out.println(pc.getName() + " NULL");
+        return activePeriods;
+    }
+
+    java.time.LocalDate startDate =
+        java.time.Instant.ofEpochMilli(start)
+            .atZone(java.time.ZoneId.systemDefault())
+            .toLocalDate();
+
+    int i = pi.getIndex();
+
+    while (pi != null && i >= 0) {
+
+        java.time.LocalDate piDate =
+            java.time.Instant.ofEpochMilli(pi.getStart())
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate();
+
+        if (piDate.isBefore(startDate)) {
+            break;
+        }
+
+        Double s = pi.getScore();
+        System.out.println(s);
+        
+        if (s != null && s >= target.doubleValue()) {
+            activePeriods++;
+        }
+
+        i--;
+        pi = pc.getPeriodInstance(pName, i);
+        System.out.println(pi);
+    }
+
+    System.out.println("ACTIVE PERIODS:  " + activePeriods);
+    return activePeriods;
 }
+
 
 rule "repetitiveBehaviour"
 	salience -2000

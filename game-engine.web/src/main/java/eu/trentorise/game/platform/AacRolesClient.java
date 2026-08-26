@@ -2,8 +2,8 @@ package eu.trentorise.game.platform;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -62,7 +62,7 @@ public class AacRolesClient implements PlatformRolesClient {
         restTemplate.getMessageConverters().add(new RolesConverter());
         List<String> domains = new ArrayList<String>();
 		try {
-			Set<Role> roles = aacRoleService.getRoles(token);
+			Collection<Role> roles = aacRoleService.getRoles(token);
 			for (Role role : roles) {
 				if (context.equalsIgnoreCase(role.getContext()) && role.getRole().equalsIgnoreCase(rolePrefix)) {
 					domains.add(role.getSpace());

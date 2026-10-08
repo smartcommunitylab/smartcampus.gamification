@@ -42,12 +42,6 @@
 			<artifactId>snakeyaml</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>it.smartcommunitylab</groupId>
-			<artifactId>aac.client</artifactId>
-			<version>3.1.2</version>
-		</dependency>
-
 		<!-- SPRING DOC -->
 		<dependency>
 			<groupId>org.springdoc</groupId>

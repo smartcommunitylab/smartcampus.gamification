@@ -36,8 +36,7 @@ update-backend-cache-image:
   rules:
     - changes:
       - game-engine.core/pom.xml
-      - game-engine.web/pom.xml
-      - aac.client-master/pom.xml
+      - game-engine.web/pom.xml      
 
 update-frontend-cache-image:
   stage: build

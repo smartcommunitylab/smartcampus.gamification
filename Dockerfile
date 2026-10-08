@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM maven:3-openjdk-11 as mvn
+FROM maven:3-eclipse-temurin-11 as mvn
 COPY ./game-engine.core /tmp/game-engine.core
 COPY ./game-engine.web /tmp/game-engine.web
 ENV DEBIAN_FRONTEND=noninteractive

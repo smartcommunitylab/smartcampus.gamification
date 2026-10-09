@@ -5,50 +5,37 @@
 	<groupId>it.smartcommunitylab.gamification</groupId>
 	<artifactId>game-engine.web</artifactId>
 	<version>3.0.0</version>
-
-	<properties>
-		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-	</properties>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.6.6</version>
+		<relativePath />
 	</parent>
-
-	<dependencies>
-		<!-- ####### # # DON'T INTRODUCE spring-boot-devtools DEPENDENCY. IT BREAKS 
-			HOW DROOLS WORKS # ####### -->
+	<properties>
+		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+	</properties>
+	<dependencies> <!-- Do not introduce spring-boot-devtools; it breaks Drools
+		behavior. -->
 		<dependency>
 			<groupId>it.smartcommunitylab.gamification</groupId>
 			<artifactId>game-engine.core</artifactId>
 			<version>4.0.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>slf4j-log4j12</artifactId>
 					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.jolokia</groupId>
 			<artifactId>jolokia-core</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>it.smartcommunitylab</groupId>
-			<artifactId>aac.client</artifactId>
-			<version>3.1.2</version>
-		</dependency>
-
-		<!-- SPRING DOC -->
+		</dependency> <!--
+		SpringDoc -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
@@ -58,9 +45,8 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-data-rest</artifactId>
 			<version>1.6.6</version>
-		</dependency>
-
-		<!-- SPRING BOOT / SECURITY -->
+		</dependency> <!-- Spring Boot /
+		Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jetty</artifactId>
@@ -68,9 +54,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
-			<exclusions>
-				<!-- Exclude logback dependency, with log4j 1.x library doesn't work 
-					correctly -->
+			<exclusions> <!-- Exclude Logback -->
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
@@ -80,8 +64,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
-				<!-- Exclude the Tomcat dependency -->
+			<exclusions> <!-- Exclude Tomcat -->
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
@@ -106,7 +89,6 @@
 			<artifactId>spring-security-oauth2</artifactId>
 			<version>2.3.4.RELEASE</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
@@ -114,14 +96,12 @@
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz-jobs</artifactId>
-		</dependency>
-
-		<!-- LOG -->
+		</dependency> <!--
+		Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
@@ -130,9 +110,7 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>3.12.10</version>
-		</dependency>
-
-		<!-- TEST -->
+		</dependency> <!-- Tests -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -144,8 +122,8 @@
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
-					<artifactId>hamcrest-core</artifactId>
 					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -161,7 +139,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -178,14 +155,15 @@
 				<configuration>
 					<skipTests>true</skipTests>
 				</configuration>
-			</plugin>
+			</plugin> <!--
+			Declared only once -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
 						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultImplementationEntries> true </addDefaultImplementationEntries>
 						</manifest>
 					</archive>
 				</configuration>
@@ -204,7 +182,6 @@
 					</includes>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -212,7 +189,6 @@
 					<nohelp>true</nohelp>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -221,18 +197,7 @@
 					<layout>ZIP</layout>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
 		</plugins>
 		<finalName>${project.artifactId}</finalName>
-	</build>	
+	</build>
 </project>

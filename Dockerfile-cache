@@ -1,9 +1,6 @@
-FROM maven:3-openjdk-11 as mvn
+FROM maven:3-eclipse-temurin-11 as mvn
 COPY ./game-engine.core /tmp/game-engine.core
 COPY ./game-engine.web /tmp/game-engine.web
-COPY ./aac.client-master /tmp/aac.client-master
-WORKDIR /tmp/aac.client-master
-RUN mvn clean install -DskipTests
 WORKDIR /tmp/game-engine.core
 RUN mvn clean install -DskipTests
 WORKDIR /tmp/game-engine.web

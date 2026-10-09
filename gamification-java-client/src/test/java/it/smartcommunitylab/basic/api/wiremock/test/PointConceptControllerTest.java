@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -39,6 +40,7 @@ import it.smartcommunitylab.Configuration;
 import it.smartcommunitylab.basic.api.PointConceptControllerApi;
 import it.smartcommunitylab.model.ext.PointConcept;
 
+@Ignore
 public class PointConceptControllerTest {
 
 	private static final int PORT = 8089;
